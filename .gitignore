@@ -1,0 +1,18 @@
+# Exe
+*.exe
+*.out
+
+# Obj
+*.o
+*.obj
+
+# Editors
+.vscode/
+*.code-workspace
+*.swp
+
+# Git
+.git/
+
+# Build
+build/
