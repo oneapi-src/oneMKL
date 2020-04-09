@@ -28,16 +28,16 @@ oneMKL interfaces is an open-source implementation of oneMKL Data Parallel C++ (
         <tr>
             <td rowspan=4 align="center">oneMKL interface</td>
             <td rowspan=4 align="center">oneMKL selector</td>
-            <td align="center">[Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) for Intel CPU</td>
+            <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for Intel CPU</td>
             <td align="center">Intel CPU</td>
         </tr>
         <tr>
-            <td align="center">[Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) for Intel GPU</td>
+            <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for Intel GPU</td>
             <td align="center">Intel GPU</td>
         </tr>
     </tbody>
 </table>
- 
+
 ### Supported Usage Models:
 
 There are two oneMKL selector layer implementations:
