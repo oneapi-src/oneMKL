@@ -203,7 +203,7 @@ Product | Supported Version | License
 Python | 3.6 or higher | [PSF](https://docs.python.org/3.6/license.html)
 [CMake](https://cmake.org/download/) | 3.13 or higher | [The OSI-approved BSD 3-clause License](https://gitlab.kitware.com/cmake/cmake/raw/master/Copyright.txt)
 [Ninja](https://ninja-build.org/) | 1.9.0 | [Apache License v2.0](https://github.com/ninja-build/ninja/blob/master/COPYING)
-[GNU* FORTRAN Compiler](https://gcc.gnu.org/wiki/GFortran) | 7.4.0 or higher | [GNU General Public License v2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+[GNU* FORTRAN Compiler](https://gcc.gnu.org/wiki/GFortran) | 7.4.0 or higher | [GNU General Public License, version 3](https://gcc.gnu.org/onlinedocs/gcc-7.5.0/gfortran/Copying.html)
 [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) | 2021.1-beta05 | [End User License Agreement for the Intel(R) Software Development Products](https://software.intel.com/en-us/license/eula-for-intel-software-development-products)
 [Intel project for LLVM* technology binary for Intel CPU](https://github.com/intel/llvm/releases) | Daily builds (experimental) tested with [20200331](https://github.com/intel/llvm/releases/download/20200331/dpcpp-compiler.tar.gz) | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
 [Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) | 2021.1-beta05 | [Intel Simplified Software License](https://software.intel.com/en-us/license/intel-simplified-software-license)
