@@ -20,6 +20,7 @@
 #ifndef ONEMKL_CONFIG_H
 #define ONEMKL_CONFIG_H
 
+#cmakedefine ENABLE_CUBLAS_BACKEND
 #cmakedefine ENABLE_MKLCPU_BACKEND
 #cmakedefine ENABLE_MKLGPU_BACKEND
 #cmakedefine BUILD_SHARED_LIBS

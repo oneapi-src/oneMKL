@@ -29,7 +29,8 @@
     #define LIB_NAME(a) "lib" a ".so"
 #endif
 
-#define INTEL_ID 32902
+#define INTEL_ID  32902
+#define NVIDIA_ID 4318
 
 namespace onemkl {
 inline char *select_backend(cl::sycl::queue &queue) {
@@ -45,6 +46,8 @@ inline char *select_backend(cl::sycl::queue &queue) {
 
         if (vendor_id == INTEL_ID)
             return (char *)LIB_NAME("onemkl_blas_mklgpu");
+        else if (vendor_id == NVIDIA_ID)
+            return (char *)LIB_NAME("onemkl_blas_cublas");
         return (char *)"unsupported";
     }
     else {

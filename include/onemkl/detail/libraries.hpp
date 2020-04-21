@@ -30,7 +30,8 @@ enum class library { intelmkl, cublas };
 
 typedef std::map<library, std::string> librarymap;
 
-static librarymap library_map = { { library::intelmkl, "intelmkl" } };
+static librarymap library_map = { { library::intelmkl, "intelmkl" },
+                                  { library::cublas, "cublas" } };
 
 } //namespace onemkl
 

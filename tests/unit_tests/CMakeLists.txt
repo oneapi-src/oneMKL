@@ -70,6 +70,17 @@ if(ENABLE_MKLGPU_BACKEND)
   endif()
 endif()
 
+if(ENABLE_CUBLAS_BACKEND)
+  add_dependencies(test_main_ct onemkl_blas_cublas)
+  if(BUILD_SHARED_LIBS)
+    list(APPEND ONEMKL_LIBRARIES onemkl_blas_cublas)
+  else()
+    list(APPEND ONEMKL_LIBRARIES -foffload-static-lib=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libonemkl_blas_cublas.a)
+    find_package(cuBLAS REQUIRED)
+    list(APPEND ONEMKL_LIBRARIES ONEMKL::cuBLAS::cuBLAS)
+  endif()
+endif()
+
 target_link_libraries(test_main_ct PUBLIC
     gtest
     gtest_main

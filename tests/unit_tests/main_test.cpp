@@ -99,6 +99,10 @@ int main(int argc, char** argv) {
                         if (dev.is_gpu() && vendor_id == INTEL_ID)
                             continue;
 #endif
+#ifndef ENABLE_CUBLAS_BACKEND
+                        if (dev.is_gpu() && vendor_id == NVIDIA_ID)
+                            continue;
+#endif
                         if (!dev.is_accelerator())
                             devices.push_back(dev);
                     }
