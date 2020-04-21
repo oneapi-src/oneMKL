@@ -36,6 +36,13 @@
     #define TEST_RUN_INTELGPU(q, func, args)
 #endif
 
+#ifdef ENABLE_CUBLAS_BACKEND
+    #define TEST_RUN_NVIDIAGPU(q, func, args) \
+        func<onemkl::library::cublas, onemkl::backend::nvidiagpu> args
+#else
+    #define TEST_RUN_NVIDIAGPU(q, func, args)
+#endif
+
 #define TEST_RUN_CT(q, func, args)                                             \
     do {                                                                       \
         if (q.is_host() || q.get_device().is_cpu())                            \
@@ -45,6 +52,8 @@
                 q.get_device().get_info<cl::sycl::info::device::vendor_id>()); \
             if (vendor_id == INTEL_ID)                                         \
                 TEST_RUN_INTELGPU(q, func, args);                              \
+            else if (vendor_id == NVIDIA_ID)                                   \
+                TEST_RUN_NVIDIAGPU(q, func, args);                             \
         }                                                                      \
     } while (0);
 
@@ -61,6 +70,8 @@ public:
             switch (vendor_id) {
                 case INTEL_ID:
                     return std::string("INTELGPU");
+                case NVIDIA_ID:
+                    return std::string("NVIDIAGPU");
             }
         }
         if (dev.param.is_accelerator())

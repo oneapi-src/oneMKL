@@ -25,12 +25,13 @@
 
 namespace onemkl {
 
-enum class backend { intelcpu, intelgpu, unsupported };
+enum class backend { intelcpu, intelgpu, nvidiagpu, unsupported };
 
 typedef std::map<backend, std::string> backendmap;
 
 static backendmap backend_map = { { backend::intelcpu, "intelcpu" },
                                   { backend::intelgpu, "intelgpu" },
+                                  { backend::nvidiagpu, "nvidiagpu" },
                                   { backend::unsupported, "unsupported" } };
 
 } //namespace onemkl

@@ -31,6 +31,7 @@
 #include "onemkl/blas/predicates.hpp"
 
 #include "onemkl/blas/detail/blas_loader.hpp"
+#include "onemkl/blas/detail/cublas/blas_ct.hpp"
 #include "onemkl/blas/detail/mklcpu/blas_ct.hpp"
 #include "onemkl/blas/detail/mklgpu/blas_ct.hpp"
 

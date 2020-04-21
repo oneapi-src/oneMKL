@@ -35,6 +35,10 @@ oneMKL interfaces is an open-source implementation of oneMKL Data Parallel C++ (
             <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for Intel GPU</td>
             <td align="center">Intel GPU</td>
         </tr>
+        <tr>
+            <td align="center"><a href="https://developer.nvidia.com/cublas"> NVIDIA cuBLAS</a> for NVIDIA GPU </td>
+            <td align="center">NVIDIA GPU</td>
+        </tr>
     </tbody>
 </table>
 
@@ -81,13 +85,13 @@ cl::sycl::queue cpu_queue(cpu_dev);
 cl::sycl::queue gpu_queue(gpu_dev);
 
 onemkl::blas::gemm<intelcpu,intelmkl>(cpu_queue, transA, transB, m, ...);
-onemkl::blas::gemm<intelgpu,intelmkl>(gpu_queue, transA, transB, m, ...);
+onemkl::blas::gemm<nvidiagpu,cublas>(gpu_queue, transA, transB, m, ...);
 ```
 How to build an application with run-time dispatching:
 
 ```cmd
 $> clang++ -fsycl –I$ONEMKL/include app.cpp
-$> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl_blas_mklcpu –lonemkl_blas_mklgpu
+$> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl_blas_mklcpu –lonemkl_blas_cublas
 ```
 
 ### Supported Configurations:
@@ -100,6 +104,7 @@ Supported domains: BLAS
  :------| :-------| :------------------
  Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
  Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+ NVIDIA GPU | NVIDIA cuBLAS | Dynamic, Static
  
 ---
 
@@ -114,18 +119,19 @@ Supported domains: BLAS
     - Intel(R) Xeon(R) Processor Family
 - Accelerators
     - Intel(R) Processor Graphics GEN9
+    - NVIDIA(R) TITAN RTX(TM) (Not tested with other NVIDIA GPU families and products.)
 
 ---
 ### Supported Operating Systems
 
 #### Linux*
 
-Operating System | CPU Host/Target | Integrated Graphics from Intel (Intel GPU)
-:--- | :--- | :---
-Ubuntu                            | 18.04.3, 19.04 | 18.04.3, 19.10
-SUSE Linux Enterprise Server*     | 15             | *Not supported*
-Red Hat Enterprise Linux* (RHEL*) | 8              | *Not supported*
-Linux* kernel                      | *N/A*          | 4.11 or higher
+Operating System | CPU Host/Target | Integrated Graphics from Intel (Intel GPU) |  NVIDIA GPU
+:--- | :--- | :--- | :---
+Ubuntu                            | 18.04.3, 19.04 | 18.04.3, 19.10  | 18.04.3
+SUSE Linux Enterprise Server*     | 15             | *Not supported* | *Not supported*
+Red Hat Enterprise Linux* (RHEL*) | 8              | *Not supported* | *Not supported*
+Linux* kernel                     | *N/A*          | 4.11 or higher | *N/A*
 
 ---
 
@@ -174,7 +180,7 @@ Linux* kernel                      | *N/A*          | 4.11 or higher
     </thead>
     <tbody>
         <tr>
-            <td rowspan=6> Linux* </td>
+            <td rowspan=8> Linux* </td>
             <td> Any </td>
             <td colspan=2 align="center"> GNU* GCC 5.1 or higher </td>
             <tr>
@@ -192,6 +198,11 @@ Linux* kernel                      | *N/A*          | 4.11 or higher
             <tr>
                 <td> Intel(R) oneAPI Math Kernel Library </td>
             </tr>
+            <td rowspan=2> NVIDIA GPU </td>
+            <td> Intel project for LLVM* technology </td>
+            <tr>
+            <td> NVIDIA CUDA SDK </td>
+            </tr>
         </tr>
     </tbody>
 </table>
@@ -206,7 +217,9 @@ Python | 3.6 or higher | [PSF](https://docs.python.org/3.6/license.html)
 [GNU* FORTRAN Compiler](https://gcc.gnu.org/wiki/GFortran) | 7.4.0 or higher | [GNU General Public License, version 3](https://gcc.gnu.org/onlinedocs/gcc-7.5.0/gfortran/Copying.html)
 [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) | 2021.1-beta05 | [End User License Agreement for the Intel(R) Software Development Products](https://software.intel.com/en-us/license/eula-for-intel-software-development-products)
 [Intel project for LLVM* technology binary for Intel CPU](https://github.com/intel/llvm/releases) | Daily builds (experimental) tested with [20200331](https://github.com/intel/llvm/releases/download/20200331/dpcpp-compiler.tar.gz) | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
+[Intel project for LLVM* technology source for NVIDIA GPU](https://github.com/intel/llvm/releases) | Daily source releases: tested with [20200421](https://github.com/intel/llvm/tree/20200421) | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
 [Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) | 2021.1-beta05 | [Intel Simplified Software License](https://software.intel.com/en-us/license/intel-simplified-software-license)
+[NVIDIA CUDA SDK](https://developer.nvidia.com/cublas) | 10.2 | [End User License Agreement](https://docs.nvidia.com/cuda/eula/index.html)
 [NETLIB LAPACK](https://github.com/Reference-LAPACK/lapack) | 3.7.1 | [BSD like license](http://www.netlib.org/lapack/LICENSE.txt)
 [Sphinx](https://www.sphinx-doc.org/en/master/) | 2.4.4 | [BSD License](https://github.com/sphinx-doc/sphinx/blob/3.x/LICENSE)
 
@@ -248,6 +261,7 @@ You can specify build options using `-D<cmake_option>=<value>`. The following ta
 CMake Option | Supported Values | Default Value
 :----------- | :--------------- | :---
 BUILD_SHARED_LIBS        | True, False         | True
+ENABLE_CUBLAS_BACKEND    | True, False         | False
 ENABLE_MKLCPU_BACKEND    | True, False         | True
 ENABLE_MKLGPU_BACKEND    | True, False         | True
 ENABLE_MKLCPU_THREAD_TBB | True, False         | True
