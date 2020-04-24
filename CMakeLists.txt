@@ -21,14 +21,15 @@ cmake_minimum_required (VERSION 3.13)
 
 project(oneMKL VERSION 0.1.0 LANGUAGES CXX)
 
-# Default options. Override by defining in command
-## Build type
-option(BUILD_DEBUG "" OFF)
+# Define build type
+set(DEFAULT_BUILD_TYPE "Release")
 
-if(BUILD_DEBUG)
-    set(CMAKE_BUILD_TYPE "Debug")
+if("${CMAKE_BUILD_TYPE}" STREQUAL "")
+    message(STATUS "CMAKE_BUILD_TYPE: None, set to ${DEFAULT_BUILD_TYPE} by default")
+    set(CMAKE_BUILD_TYPE ${DEFAULT_BUILD_TYPE} CACHE STRING
+            "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel RelWithAssert" FORCE)
 else()
-    set(CMAKE_BUILD_TYPE "Release")
+    message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 endif()
 
 option(BUILD_SHARED_LIBS "Build dynamic libraries" ON)
