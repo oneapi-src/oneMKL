@@ -5,8 +5,10 @@
 - [Introduction](#introduction)
 - [Support and Requirements](#support-and-requirements)
 - [Build Setup](#build-setup)
+- [Building with Conan](#building-with-conan)
 - [Building with CMake](#building-with-cmake)
 - [Project Cleanup](#project-cleanup)
+- [FAQs](#faqs)
 - [Legal Information](#legal-information)
 
 ---
@@ -155,6 +157,11 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
 <table>
     <thead>
         <tr align="center">
+            <th>Using Conan</th>
+            <th colspan=3> Using CMake Directly </th>
+        </tr>
+        <tr align="center">
+            <th> </th>
             <th> Functional Testing </th>
             <th> Build Only </th>
             <th>Documentation</th>
@@ -162,19 +169,21 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
     </thead>
     <tbody>
         <tr>
-            <td> CMake </td>
-            <td> CMake </td>
-            <td> CMake </td>
+            <td rowspan=2> Python 3.6 or higher </td>
+            <td colspan=3 align=center> CMake </td>
             <tr>
-                <td> Ninja (optional) </td>
-                <td rowspan=3> Ninja (optional) </td>
-                <td rowspan=3> Sphinx </td>
+                <td colspan=3 align=center> Ninja (optional) </td>
             </tr>
             <tr>
+                <td rowspan=2> Conan C++ package manager </td>
                 <td> GNU* FORTRAN Compiler </td>
+                <td> - </td>
+                <td> Sphinx </td>
             </tr>
             <tr>
                 <td> NETLIB LAPACK </td>
+                <td> - </td>
+                <td> - </td>
             </tr>
         </tr>
     </tbody>
@@ -187,7 +196,8 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
         <tr align="center">
             <th>Operating System</th>
             <th>Hardware</th>
-            <th>Using CMake</th>
+            <th>Using Conan</th>
+            <th>Using CMake Directly</th>
         </tr>
     </thead>
     <tbody>
@@ -212,38 +222,50 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
             <td rowspan=8> Linux*/Windows* </td>
             <tr>
                 <td rowspan=2> Intel CPU </td>
+                <td rowspan=2> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
                 <td> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
                 <tr>
                     <td> Intel(R) oneAPI Math Kernel Library </td>
                 </tr>
             </tr>
             <td rowspan=3> Intel GPU </td>
+            <td rowspan=2> Intel(R) oneAPI DPC++ Compiler </td>
             <td> Intel(R) oneAPI DPC++ Compiler </td>
             <tr>
                 <td> Intel GPU driver </td>
             </tr>
             <tr>
+                <td> Intel GPU driver </td>
                 <td> Intel(R) oneAPI Math Kernel Library </td>
             </tr>
-        </tr>    
+            <td rowspan=2> NVIDIA GPU </td>
+            <td rowspan=2> Intel project for LLVM* technology </td>
+            <td> Intel project for LLVM* technology </td>
+            <tr>
+            <td> NVIDIA CUDA SDK </td>
+            </tr>
+        </tr>
     </tbody>
 </table>
 
 #### Product and Version Information:
 
-Product | Supported Version | License
-:--- | :--- | :---
-Python | 3.6 or higher | [PSF](https://docs.python.org/3.6/license.html)
-[CMake](https://cmake.org/download/) | 3.13 or higher | [The OSI-approved BSD 3-clause License](https://gitlab.kitware.com/cmake/cmake/raw/master/Copyright.txt)
-[Ninja](https://ninja-build.org/) | 1.9.0 | [Apache License v2.0](https://github.com/ninja-build/ninja/blob/master/COPYING)
-[GNU* FORTRAN Compiler](https://gcc.gnu.org/wiki/GFortran) | 7.4.0 or higher | [GNU General Public License, version 3](https://gcc.gnu.org/onlinedocs/gcc-7.5.0/gfortran/Copying.html)
-[Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) | 2021.1-beta05 | [End User License Agreement for the Intel(R) Software Development Products](https://software.intel.com/en-us/license/eula-for-intel-software-development-products)
-[Intel project for LLVM* technology binary for Intel CPU](https://github.com/intel/llvm/releases) | Daily builds (experimental) tested with [20200331](https://github.com/intel/llvm/releases/download/20200331/dpcpp-compiler.tar.gz) | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
-[Intel project for LLVM* technology source for NVIDIA GPU](https://github.com/intel/llvm/releases) | Daily source releases: tested with [20200421](https://github.com/intel/llvm/tree/20200421) | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
-[Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) | 2021.1-beta05 | [Intel Simplified Software License](https://software.intel.com/en-us/license/intel-simplified-software-license)
-[NVIDIA CUDA SDK](https://developer.nvidia.com/cublas) | 10.2 | [End User License Agreement](https://docs.nvidia.com/cuda/eula/index.html)
-[NETLIB LAPACK](https://github.com/Reference-LAPACK/lapack) | 3.7.1 | [BSD like license](http://www.netlib.org/lapack/LICENSE.txt)
-[Sphinx](https://www.sphinx-doc.org/en/master/) | 2.4.4 | [BSD License](https://github.com/sphinx-doc/sphinx/blob/3.x/LICENSE)
+Product | Supported Version | Conan Package Source | Conan Package Install Location | License
+:--- | :--- | :--- | :--- | :---
+Python | 3.6 or higher | *Not Applicable* | *Not Applicable* | [PSF](https://docs.python.org/3.6/license.html)
+[Conan C++ Package Manager](https://conan.io/downloads.html) | 1.23 or higher | *Not Applicable* | *Not Applicable* | [MIT](https://github.com/conan-io/conan/blob/develop/LICENSE.md)
+[CMake](https://cmake.org/download/) | 3.13 or higher | conan-center | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [The OSI-approved BSD 3-clause License](https://gitlab.kitware.com/cmake/cmake/raw/master/Copyright.txt)
+[Ninja](https://ninja-build.org/) | 1.9.0 | conan-center | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [Apache License v2.0](https://github.com/ninja-build/ninja/blob/master/COPYING)
+[GNU* FORTRAN Compiler](https://gcc.gnu.org/wiki/GFortran) | 7.4.0 or higher | apt | /usr/bin | [GNU General Public License, version 3](https://gcc.gnu.org/onlinedocs/gcc-7.5.0/gfortran/Copying.html)
+[Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) | 2021.1-beta05 | *Not Applicable* | *Not Applicable* | [End User License Agreement for the Intel(R) Software Development Products](https://software.intel.com/en-us/license/eula-for-intel-software-development-products)
+[Intel project for LLVM* technology binary for Intel CPU](https://github.com/intel/llvm/releases) | Daily builds (experimental) tested with [20200331](https://github.com/intel/llvm/releases/download/20200331/dpcpp-compiler.tar.gz) | *Not Applicable* | *Not Applicable* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
+[Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) | 2021.1-beta05 | apt | /opt/intel/inteloneapi/mkl | [Intel Simplified Software License](https://software.intel.com/en-us/license/intel-simplified-software-license)
+[NETLIB LAPACK](https://www.netlib.org/) | 3.7.1 | conan-community | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [BSD like license](http://www.netlib.org/lapack/LICENSE.txt)
+[Sphinx](https://www.sphinx-doc.org/en/master/) | 2.4.4 | pip | ~/.local/bin (or similar user local directory) | [BSD License](https://github.com/sphinx-doc/sphinx/blob/3.x/LICENSE)
+
+*conan-center: https://api.bintray.com/conan/conan/conan-center*
+
+*conan-community: https://api.bintray.com/conan/conan-community/conan*
 
 ---
 
@@ -253,7 +275,131 @@ Python | 3.6 or higher | [PSF](https://docs.python.org/3.6/license.html)
 
 2. Clone this project to `<path to onemkl>`, where `<path to onemkl>` is the root directory of this repository.
 
-3. [Build with CMake](#building-with-cmake).
+3. You can [Build with Conan](#building-with-conan) to automate the process of getting dependencies or you can download and install the required dependencies manually and [Build with CMake](#building-with-cmake) directly .
+
+*Note: Conan package manager automates the process of getting required packages, so that you do not have to go to different web location and follow different instructions to install them.*
+
+---
+
+## Building with Conan
+
+** Make sure you have completed [Build Setup](#build-setup). **
+
+*Note: To understand how dependencies are resolved, refer to the [Product and Version Information](#product-and-version-information) section. For details about Conan package manager, refer to [Conan Documentation](https://docs.conan.io/en/latest/).*
+
+### Getting Conan
+Conan can be [installed](https://docs.conan.io/en/latest/installation.html) from pip:
+```bash
+pip3 install conan
+```
+
+### Setting up Conan
+
+#### Conan Default Directory
+
+Conan stores all files and data in `~/.conan`. If you are fine with this behavior, you can skip to [Conan Profiles](#conan-profiles) section.
+
+To change this behavior, set the environment variable `CONAN_USER_HOME` to a path of your choice. A `.conan/` directory will be created in this path and future Conan commands will use this directory to find configuration files and download dependent packages. Packages will be downloaded into `$CONAN_USER_HOME/data`. To change the `"/data"` part of this directory, refer to the `[storage]` section of `conan.conf` file.
+
+To make this setting persistent across terminal sessions, you can add below line to your `~/.bashrc` or custom runscript. Refer to [Conan Documentation](https://docs.conan.io/en/latest/reference/env_vars.html#conan-user-home) for more details.
+
+```sh
+export CONAN_USER_HOME=/usr/local/my_workspace/conan_cache
+```
+
+#### Conan Profiles
+
+Profiles are a way for Conan to determine a basic environment to use for building a project. This project ships with profiles for:
+
+- Intel(R) oneAPI DPC++ Compiler for Intel CPU and Intel GPU backend: `inteldpcpp_lnx`
+
+1. Open the profile you wish to use from `<path to onemkl>/conan/profiles/` and set `COMPILER_PREFIX` to the path to the root folder of compiler. The root folder is the one that contains the `bin` and `lib` directories. For example, Intel(R) oneAPI DPC++ Compiler root folder for default installation on Linux is `/opt/intel/inteloneapi/compiler/<version>/linux`. User can define custom path for installing the compiler.
+
+```ini
+COMPILER_PREFIX=<path to Intel(R) oneAPI DPC++ Compiler>
+```
+
+2. You can customize the `[env]` section of the profile based on individual requirements.
+
+3. Install configurations for this project:
+```sh
+# Inside <path to onemkl>
+$ conan config install conan/
+```
+This command installs all contents of `<path to onemkl>/conan/`, most importantly profiles, to conan default directory.
+
+*Note: If you change the profile, you must re-run the above command before you can use the new profile.*
+
+### Building
+
+1. Out-of-source build
+```bash
+# Inside <path to onemkl>
+mkdir build && cd build
+```
+
+2. If you choose to build backends with the Intel(R) oneAPI Math Kernel Library, install the GPG key as mentioned here, https://software.intel.com/en-us/articles/oneapi-repo-instructions#aptpkg
+
+3. Install dependencies
+```sh
+conan install .. --profile <profile_name> --build missing [-o <option1>=<value1>] [-o <option2>=<value2>]
+```
+The `conan install` command downloads and installs all requirements for the oneMKL DPC++ Interfaces project as defined in `<path to onemkl>/conanfile.py` based on the options passed. It also creates `conanbuildinfo.cmake` file that contains information about all dependencies and their directories. This file is used in top-level `CMakeLists.txt`.
+
+`-pr | --profile <profile_name>`
+Defines a profile for Conan to use for building the project.
+
+`-b | --build <package_name|missing>`
+Tells Conan to build or re-build a specific package. If `missing` is passed as a value, all missing packages are built. This option is recommended when you build the project for the first time, because it caches required packages. You can skip this option for later use of this command.
+
+4. Build Project
+```sh
+conan build .. [--configure] [--build] [--test]  # Default is all
+```
+
+The `conan build` command executes the `build()` procedure from `<path to onemkl>/conanfile.py`. Since this project uses `CMake`, you can choose to `configure`, `build`, `test` individually or perform all steps by passing no optional arguments.
+
+5. Optionally, you can also install the package. Similar to `cmake --install . --prefix <install_dir>`.
+
+```sh
+conan package .. --build-folder . --install-folder <install_dir>
+```
+
+`-bf | --build-folder`
+Tells Conan where to find the built project.
+
+`-if | --install-folder`
+Tells Conan where to install the package. It is similar to specifying `CMAKE_INSTALL_PREFIX`
+
+*Note: For a detailed list of commands and options, refer to the [Conan Command Reference](https://docs.conan.io/en/latest/reference/commands.html).*
+
+### Conan Build Options
+
+#### Backend-related Options
+
+The following `options` are available to pass on `conan install` when building the oneMKL library:
+
+- `build_shared_libs=[True | False]`. Setting it to `True` enables the building of dynamic libraries. The default value is `True`.
+- `enable_mklcpu_backend=[True | False]`. Setting it to `True` enables the building of oneMKL intelmkl cpu backend. The default value is `True`.
+- `enable_mklgpu_backend=[True | False]`. Setting it to `True` enables the building of oneMKL intelmkl gpu backend. The default value is `True`.
+- `enable_mklcpu_thread_tbb=[True | False]`. Setting it to `True` enables oneMKL on CPU with TBB threading instead of sequential. The default value is `True`.
+
+#### Testing-related Options
+- `build_functional_tests=[True | False]`. Setting it to `True` enables the building of functional tests. The default value is `True`.
+
+#### Documentation
+- `build_doc=[True | False]`. Setting it to `True` enables the building of rst files to generate HTML files for updated documentation. The default value is `False`.
+
+*Note: For a mapping between Conan and CMake options, refer to [build options](#build-options) under the CMake section.*
+
+### Example
+#### Build oneMKL as a static library for oneMKL cpu and gpu backend:
+```sh
+# Inside <path to onemkl>
+mkdir build && cd build
+conan install .. --build missing --profile inteldpcpp_lnx -o build_shared_libs=False
+conan build ..
+```
 
 ---
 
@@ -290,23 +436,25 @@ cmake --install . --prefix <path_to_install_dir>
 ```
 
 ### Build Options
-You can specify build options using `-D<cmake_option>=<value>`. The following table provides the list of options supported by CMake.
+All options specified in the Conan section are available to CMake. You can specify these options using `-D<cmake_option>=<value>`.
 
-CMake Option | Supported Values | Default Value
-:----------- | :--------------- | :---
-BUILD_SHARED_LIBS        | True, False         | True
-ENABLE_CUBLAS_BACKEND    | True, False         | False
-ENABLE_MKLCPU_BACKEND    | True, False         | True
-ENABLE_MKLGPU_BACKEND    | True, False         | True
-ENABLE_MKLCPU_THREAD_TBB | True, False         | True
-BUILD_FUNCTIONAL_TESTS   | True, False         | True
-BUILD_DOC                | True, False         | False
+The following table provides a detailed mapping of options between Conan and CMake.
+
+Conan Option | CMake Option | Supported Values | Default Value
+ :---------- | :----------- | :--------------- | :---
+build_shared_libs        | BUILD_SHARED_LIBS        | True, False         | True
+enable_mklcpu_backend    | ENABLE_MKLCPU_BACKEND    | True, False         | True
+enable_mklgpu_backend    | ENABLE_MKLGPU_BACKEND    | True, False         | True
+*Not Supported*          | ENABLE_CUBLAS_BACKEND    | True, False         | False
+enable_mklcpu_thread_tbb | ENABLE_MKLCPU_THREAD_TBB | True, False         | True
+build_functional_tests   | BUILD_FUNCTIONAL_TESTS   | True, False         | True
+build_doc                | BUILD_DOC                | True, False         | False
 
 ---
 
 ## Project Cleanup
 
-Most use-cases involve building the project without the need to cleanup the build directory. However, if you wish to cleanup the build directory, you can delete the `build` folder and create a new one. If you wish to cleanup the build files but retain the build configuration, following commands will help you do so.
+Most use-cases involve building the project without the need to cleanup the build directory. However, if you wish to cleanup the build directory, you can delete the `build` folder and create a new one. If you wish to cleanup the build files but retain the build configuration, following commands will help you do so. They apply to both `Conan` and `CMake` methods of building this project.
 
 ```sh
 # If you use "GNU/Unix Makefiles" for building,
@@ -318,4 +466,13 @@ ninja -t clean
 
 ---
 
-## [Legal information](legal_information.md)
+## FAQs
+
+### Conan
+
+1. I am behind a proxy. How can Conan download dependencies from external network?
+   - `~/.conan/conan.conf` has a `[proxies]` section where you can add the list of proxies. For details refer to [Conan proxy settings](https://docs.conan.io/en/latest/reference/config_files/conan.conf.html#proxies).
+
+---
+
+[Legal information](legal_information.md)

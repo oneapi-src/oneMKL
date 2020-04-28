@@ -4,7 +4,7 @@
 Inside the `unit_tests` directory, there are domain-level directories which contain domain-specific tests, usually per function or per configuration.
 
 ## Steps
-Functional testing is enabled by default via `CMake`, so all relevant functional tests will run automatically after the project is built successfully.
+Functional testing is enabled by default via `Conan` and `CMake`, so all relevant functional tests will run automatically after the project is built successfully.
 
 *Note: A set of `build options` define a `build configuration`. `CMake` builds and runs different set of tests depending on your `build configuration`. This is because `CMake` generates an export header file (config.hpp) for the selected build configuration. Check `<path to onemkl>/src/config.hpp.in` and `<path to onemkl>/src/CMakeLists.txt` for details. For details on how `CMake` performs export header generation, refer to [CMake documentation](https://cmake.org/cmake/help/v3.13/module/GenerateExportHeader.html).*
 
