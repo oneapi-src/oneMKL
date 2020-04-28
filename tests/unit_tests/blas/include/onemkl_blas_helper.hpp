@@ -24,6 +24,8 @@
 
 #include "onemkl/types.hpp"
 
+typedef enum { CblasFixOffset = 101, CblasColOffset = 102, CblasRowOffset = 103 } CBLAS_OFFSET;
+
 /**
  * Helper methods for converting between onemkl types and their BLAS
  * equivalents.
@@ -48,6 +50,15 @@ inline CBLAS_DIAG convert_to_cblas_diag(onemkl::diag is_unit) {
 
 inline CBLAS_SIDE convert_to_cblas_side(onemkl::side is_left) {
     return is_left == onemkl::side::left ? CBLAS_SIDE::CblasLeft : CBLAS_SIDE::CblasRight;
+}
+
+inline CBLAS_OFFSET convert_to_cblas_offset(onemkl::offset offsetc) {
+    if (offsetc == onemkl::offset::fix)
+        return CBLAS_OFFSET::CblasFixOffset;
+    else if (offsetc == onemkl::offset::column)
+        return CBLAS_OFFSET::CblasColOffset;
+    else
+        return CBLAS_OFFSET::CblasRowOffset;
 }
 
 #endif // ONEMKL_BLAS_HELPER_HPP
