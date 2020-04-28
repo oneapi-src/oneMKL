@@ -19,6 +19,7 @@
 
 from conans import ConanFile, CMake, tools
 from packaging.version import parse
+from six import StringIO
 
 class oneMKLConan(ConanFile):
     name = "oneMKL"
@@ -91,9 +92,9 @@ class oneMKLConan(ConanFile):
             python_exe = "python"
             my_buffer = StringIO()
             self.run(f"{python_exe} --version", output=my_buffer)
-            ver_found = parse( my_buffer.get_value().replace('Python ', '') )
+            ver_found = parse( my_buffer.getvalue().replace('Python ', '') )
             if ver_found < parse('3.6.0'):
-                self.output.error("Python 3.6.0 or higher not found")
+                self.output.error(f"Python 3.6.0 or higher required. Found {ver_found}")
                 return
         return python_exe
 
