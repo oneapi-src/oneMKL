@@ -25,7 +25,7 @@ class oneMKLConan(ConanFile):
     name = "oneMKL"
     version = "0.1.0-beta"
     url = ""
-    description = "oneMKL Data Parallel C++ (DPC++) Interface is an open-source implementation of oneMKL specification that can work with multiple devices (backends) using device specific libraries underneath"
+    description = "oneMKL interfaces is an open-source implementation of oneMKL Data Parallel C++ (DPC++) interfaces according to oneMKL specification that can work with multiple devices (backends) using device specific libraries underneath."
 
     # Dependencies
     oneapi_version = "2021.1-beta05"
