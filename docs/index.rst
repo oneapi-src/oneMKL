@@ -19,3 +19,4 @@ oneMKL Interfaces is an open-source implementation of oneMKL Data Parallel C++ (
    onemkl-datatypes.rst
    domains/matrix-storage.rst
    domains/blas/blas.rst
+   create_new_backend.rst

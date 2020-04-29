@@ -1,7 +1,7 @@
 # Contributing Guidelines
 If you have improvements, new libraries integrated under oneAPI Math Kernel Library (oneMKL) interfaces, or new interfaces to contribute to the oneMKL Specification, please send us your pull requests! For getting started, see GitHub [howto](https://help.github.com/en/articles/about-pull-requests).
 
-The current guidelines are a work in progress.
+For how to enable new third-party library see the [guidelines](docs/create_new_backend.rst).
 
 ## Pull Request Checklist
 

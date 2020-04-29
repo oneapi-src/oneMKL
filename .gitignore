@@ -5,6 +5,7 @@
 # Obj
 *.o
 *.obj
+*.pyc
 
 # Editors
 .vscode/
