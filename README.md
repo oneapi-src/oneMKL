@@ -7,7 +7,7 @@
 - [Build Setup](#build-setup)
 - [Building with CMake](#building-with-cmake)
 - [Project Cleanup](#project-cleanup)
-- [Notice and Disclaimer](#notice-and-disclaimer)
+- [Legal Information](#legal-information)
 
 ---
 
@@ -284,4 +284,4 @@ ninja -t clean
 
 ---
 
-[Legal information](legal_information.md)
+## [Legal information](legal_information.md)
