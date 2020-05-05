@@ -24,8 +24,18 @@ from six import StringIO
 class oneMKLConan(ConanFile):
     name = "oneMKL"
     version = "0.1.0-beta"
-    url = ""
+    url = "https://github.com/oneapi-src/oneMKL"
     description = "oneMKL interfaces is an open-source implementation of oneMKL Data Parallel C++ (DPC++) interfaces according to oneMKL specification that can work with multiple devices (backends) using device specific libraries underneath."
+    license = "Apache License Version 2.0"
+    legal_notice = "\
+LEGAL NOTICE: By downloading and using this container or script as applicable \n \
+(the “Software Package”), and any included software or software made available \n \
+for download, you agree to the terms and conditions of the software license \n \
+agreements for the Software Package, which may also include notices, \n \
+disclaimers or license terms for third party software (the “Agreements”) \n \
+located at https://github.com/conan-io/conan/blob/develop/LICENSE.md, the \n \
+THIRD-PARTY-PROGRAMS file and in the README.md file included with the Software Package. \n \
+    "
 
     # Dependencies
     oneapi_version = "2021.1-beta05"
@@ -71,6 +81,7 @@ class oneMKLConan(ConanFile):
 
 
     def system_requirements(self):
+        self.output.info(f"\n {self.legal_notice}")
         self.global_system_requirements = True
         installer = tools.SystemPackageTool()
         if self.options.enable_mklcpu_backend or self.options.enable_mklgpu_backend:
