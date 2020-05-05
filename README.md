@@ -169,6 +169,9 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
     </thead>
     <tbody>
         <tr>
+            <td colspan=4 align=center> GNU* GCC 5.1 or higher </td>
+        </tr>
+        <tr>
             <td rowspan=2> Python 3.6 or higher </td>
             <td colspan=3 align=center> CMake </td>
             <tr>
@@ -195,71 +198,68 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
     <thead>
         <tr align="center">
             <th>Operating System</th>
-            <th>Hardware</th>
-            <th>Using Conan</th>
-            <th>Using CMake Directly</th>
+            <th>Device</th>
+            <th>Package</th>
+            <th>Installed by Conan</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td rowspan=3> Linux* </td>
-            <td> Any </td>
-            <td colspan=2> GNU* GCC 5.1 or higher </td>
-            <tr>
-                <td rowspan=2> NVIDIA GPU </td>
-                <td> Intel project for LLVM* technology </td>
-                <tr>
-                    <td> NVIDIA CUDA SDK </td>
-                </tr>
-            </tr>    
-        </tr>
-        <tr>
-            <td rowspan=1> Windows* </td>
-            <td> Any </td>
-            <td colspan=2> MSVS* 2017 <br> or <br> MSVS* 2019 (version 16.5 or newer) </td>
-        </tr>
-        <tr>
-            <td rowspan=8> Linux*/Windows* </td>
+            <td rowspan=8> Linux* </td>
             <tr>
                 <td rowspan=2> Intel CPU </td>
-                <td rowspan=2> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
                 <td> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
+                <td> No</td>
                 <tr>
                     <td> Intel(R) oneAPI Math Kernel Library </td>
+                    <td> Yes </td>
                 </tr>
             </tr>
             <td rowspan=3> Intel GPU </td>
-            <td rowspan=2> Intel(R) oneAPI DPC++ Compiler </td>
             <td> Intel(R) oneAPI DPC++ Compiler </td>
+            <td> No </td>
             <tr>
                 <td> Intel GPU driver </td>
+                <td> No </td>
             </tr>
             <tr>
-                <td> Intel GPU driver </td>
                 <td> Intel(R) oneAPI Math Kernel Library </td>
+                <td> Yes </td>
             </tr>
             <td rowspan=2> NVIDIA GPU </td>
-            <td rowspan=2> Intel project for LLVM* technology </td>
             <td> Intel project for LLVM* technology </td>
+            <td> No </td>
             <tr>
-            <td> NVIDIA CUDA SDK </td>
+                <td> NVIDIA CUDA SDK </td>
+                <td> No </td>
             </tr>
         </tr>
     </tbody>
 </table>
 
+*If [Building with Conan](#building-with-conan), above packages marked as "No" must be installed manually.*
+
+*If [Building with CMake](#building-with-cmake), above packages must be installed manually.*
+
+#### Notice for Use of Conan Package Manager
+**LEGAL NOTICE: By downloading and using this container or script as applicable (the “Software Package”) and the included software or software made available for download, you agree to the terms and conditions of the software license agreements for the Software Package, which may also include notices, disclaimers, or license terms for third party software (together, the “Agreements”) included in this README file.**
+
+**If the Software Package is installed through a silent install, your download and use of the
+Software Package indicates your acceptance of the Agreements.**
+
 #### Product and Version Information:
 
 Product | Supported Version | Conan Package Source | Conan Package Install Location | License
 :--- | :--- | :--- | :--- | :---
-Python | 3.6 or higher | *Not Applicable* | *Not Applicable* | [PSF](https://docs.python.org/3.6/license.html)
-[Conan C++ Package Manager](https://conan.io/downloads.html) | 1.23 or higher | *Not Applicable* | *Not Applicable* | [MIT](https://github.com/conan-io/conan/blob/develop/LICENSE.md)
+Python | 3.6 or higher | *Pre-installed* | *Pre-installed* | [PSF](https://docs.python.org/3.6/license.html)
+[Conan C++ Package Manager](https://conan.io/downloads.html) | 1.23 or higher | *Installed by user* | *Installed by user* | [MIT](https://github.com/conan-io/conan/blob/develop/LICENSE.md)
 [CMake](https://cmake.org/download/) | 3.13 or higher | conan-center | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [The OSI-approved BSD 3-clause License](https://gitlab.kitware.com/cmake/cmake/raw/master/Copyright.txt)
 [Ninja](https://ninja-build.org/) | 1.9.0 | conan-center | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [Apache License v2.0](https://github.com/ninja-build/ninja/blob/master/COPYING)
 [GNU* FORTRAN Compiler](https://gcc.gnu.org/wiki/GFortran) | 7.4.0 or higher | apt | /usr/bin | [GNU General Public License, version 3](https://gcc.gnu.org/onlinedocs/gcc-7.5.0/gfortran/Copying.html)
-[Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) | 2021.1-beta05 | *Not Applicable* | *Not Applicable* | [End User License Agreement for the Intel(R) Software Development Products](https://software.intel.com/en-us/license/eula-for-intel-software-development-products)
-[Intel project for LLVM* technology binary for Intel CPU](https://github.com/intel/llvm/releases) | Daily builds (experimental) tested with [20200331](https://github.com/intel/llvm/releases/download/20200331/dpcpp-compiler.tar.gz) | *Not Applicable* | *Not Applicable* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
+[Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) | 2021.1-beta05 | *Installed by user* | *Installed by user* | [End User License Agreement for the Intel(R) Software Development Products](https://software.intel.com/en-us/license/eula-for-intel-software-development-products)
+[Intel project for LLVM* technology binary for Intel CPU](https://github.com/intel/llvm/releases) | Daily builds (experimental) tested with [20200331](https://github.com/intel/llvm/releases/download/20200331/dpcpp-compiler.tar.gz) | *Installed by user* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
 [Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) | 2021.1-beta05 | apt | /opt/intel/inteloneapi/mkl | [Intel Simplified Software License](https://software.intel.com/en-us/license/intel-simplified-software-license)
+[NVIDIA CUDA SDK](https://developer.nvidia.com/cublas) | 10.2 | *Installed by user* | *Installed by user* |[End User License Agreement](https://docs.nvidia.com/cuda/eula/index.html)
 [NETLIB LAPACK](https://www.netlib.org/) | 3.7.1 | conan-community | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [BSD like license](http://www.netlib.org/lapack/LICENSE.txt)
 [Sphinx](https://www.sphinx-doc.org/en/master/) | 2.4.4 | pip | ~/.local/bin (or similar user local directory) | [BSD License](https://github.com/sphinx-doc/sphinx/blob/3.x/LICENSE)
 
@@ -475,4 +475,4 @@ ninja -t clean
 
 ---
 
-[Legal information](legal_information.md)
+#### [Legal information](legal_information.md)
