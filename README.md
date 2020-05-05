@@ -221,6 +221,12 @@ Linux* kernel                     | *N/A*          | 4.11 or higher | *N/A*
     </tbody>
 </table>
 
+#### Notice for Use of Conan Package Manager
+**LEGAL NOTICE: By downloading and using this container or script as applicable (the “Software Package”) and the included software or software made available for download, you agree to the terms and conditions of the software license agreements for the Software Package, which may also include notices, disclaimers, or license terms for third party software (together, the “Agreements”) included in this README file.**
+
+**If the Software Package is installed through a silent install, your download and use of the
+Software Package indicates your acceptance of the Agreements.**
+
 #### Product and Version Information:
 
 Product | Supported Version | Conan Package Source | Conan Package Install Location | License
