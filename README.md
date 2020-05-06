@@ -443,4 +443,4 @@ ninja -t clean
 
 ---
 
-[Legal information](legal_information.md)
+#### [Legal information](legal_information.md)
