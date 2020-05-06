@@ -157,6 +157,9 @@ Linux* kernel                     | *N/A*          | 4.11 or higher | *N/A*
     </thead>
     <tbody>
         <tr>
+            <td colspan=4 align=center> GNU* GCC 5.1 or higher </td>
+        </tr>
+        <tr>
             <td rowspan=2> Python 3.6 or higher </td>
             <td colspan=3 align=center> CMake </td>
             <tr>
@@ -183,41 +186,48 @@ Linux* kernel                     | *N/A*          | 4.11 or higher | *N/A*
     <thead>
         <tr align="center">
             <th>Operating System</th>
-            <th>Hardware</th>
-            <th>Using Conan</th>
-            <th>Using CMake Directly</th>
+            <th>Device</th>
+            <th>Package</th>
+            <th>Installed by Conan</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td rowspan=8> Linux* </td>
-            <td> Any </td>
-            <td colspan=2 align="center"> GNU* GCC 5.1 or higher </td>
             <tr>
                 <td rowspan=2> Intel CPU </td>
-                <td colspan=2 align=center> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
+                <td> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
+                <td> No</td>
                 <tr>
-                    <td> - </td>
                     <td> Intel(R) oneAPI Math Kernel Library </td>
+                    <td> Yes </td>
                 </tr>
             </tr>
             <td rowspan=3> Intel GPU </td>
-            <td colspan=2 align=center> Intel(R) oneAPI DPC++ Compiler </td>
+            <td> Intel(R) oneAPI DPC++ Compiler </td>
+            <td> No </td>
             <tr>
-                <td colspan=2 align=center> Intel GPU driver </td>
+                <td> Intel GPU driver </td>
+                <td> No </td>
             </tr>
             <tr>
-                <td> - </td>
                 <td> Intel(R) oneAPI Math Kernel Library </td>
+                <td> Yes </td>
             </tr>
             <td rowspan=2> NVIDIA GPU </td>
-            <td colspan=2 align=center> Intel project for LLVM* technology </td>
+            <td> Intel project for LLVM* technology </td>
+            <td> No </td>
             <tr>
-                <td colspan=2 align=center> NVIDIA CUDA SDK </td>
+                <td> NVIDIA CUDA SDK </td>
+                <td> No </td>
             </tr>
         </tr>
     </tbody>
 </table>
+
+*If [Building with Conan](#building-with-conan), above packages marked as "No" must be installed manually.*
+
+*If [Building with CMake](#building-with-cmake), above packages must be installed manually.*
 
 #### Notice for Use of Conan Package Manager
 **LEGAL NOTICE: By downloading and using this container or script as applicable (the “Software Package”) and the included software or software made available for download, you agree to the terms and conditions of the software license agreements for the Software Package, which may also include notices, disclaimers, or license terms for third party software (together, the “Agreements”) included in this README file.**
