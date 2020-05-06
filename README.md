@@ -195,27 +195,25 @@ Linux* kernel                     | *N/A*          | 4.11 or higher | *N/A*
             <td colspan=2 align="center"> GNU* GCC 5.1 or higher </td>
             <tr>
                 <td rowspan=2> Intel CPU </td>
-                <td rowspan=2> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
-                <td> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
+                <td colspan=2 align=center> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
                 <tr>
+                    <td> - </td>
                     <td> Intel(R) oneAPI Math Kernel Library </td>
                 </tr>
             </tr>
             <td rowspan=3> Intel GPU </td>
-            <td rowspan=2> Intel(R) oneAPI DPC++ Compiler </td>
-            <td> Intel(R) oneAPI DPC++ Compiler </td>
+            <td colspan=2 align=center> Intel(R) oneAPI DPC++ Compiler </td>
             <tr>
-                <td> Intel GPU driver </td>
+                <td colspan=2 align=center> Intel GPU driver </td>
             </tr>
             <tr>
-                <td> Intel GPU driver </td>
+                <td> - </td>
                 <td> Intel(R) oneAPI Math Kernel Library </td>
             </tr>
             <td rowspan=2> NVIDIA GPU </td>
-            <td rowspan=2> Intel project for LLVM* technology </td>
-            <td> Intel project for LLVM* technology </td>
+            <td colspan=2 align=center> Intel project for LLVM* technology </td>
             <tr>
-            <td> NVIDIA CUDA SDK </td>
+                <td colspan=2 align=center> NVIDIA CUDA SDK </td>
             </tr>
         </tr>
     </tbody>
