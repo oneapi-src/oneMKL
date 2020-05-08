@@ -1444,7 +1444,7 @@ void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, cons
               const int *k, const float *alpha, const half *a, const int *lda, const half *b,
               const int *ldb, const float *beta, float *c, const int *ldc) {
     // Not supported in NETLIB. SGEMM is used as reference.
-    int sizea, sizeb, sizec;
+    int sizea, sizeb;
     sizea     = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
     sizeb     = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
     float *af = (float *)aligned_alloc(64, sizeof(float) * sizea);
