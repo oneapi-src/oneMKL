@@ -124,8 +124,8 @@ TEST_P(GemmTests, RealSinglePrecision) {
 }
 
 TEST_P(GemmTests, RealDoublePrecision) {
-    float alpha(2.0);
-    float beta(3.0);
+    double alpha(2.0);
+    double beta(3.0);
     EXPECT_TRUE(test<double>(GetParam(), onemkl::transpose::nontrans, onemkl::transpose::nontrans,
                              79, 83, 91, 103, 105, 106, alpha, beta));
     EXPECT_TRUE(test<double>(GetParam(), onemkl::transpose::nontrans, onemkl::transpose::trans, 79,

@@ -25,6 +25,15 @@
 
 #include <CL/sycl.hpp>
 
+namespace std {
+static cl::sycl::half abs(cl::sycl::half v) {
+    if (v < cl::sycl::half(0))
+        return -v;
+    else
+        return v;
+}
+} // namespace std
+
 // Complex helpers.
 template <typename T>
 struct complex_info {
@@ -73,7 +82,6 @@ template <typename T>
 struct ref_type_info {
     using type = T;
 };
-
 template <>
 struct ref_type_info<std::complex<float>> {
     using type = std::complex<float>;
@@ -123,6 +131,11 @@ int32_t rand_scalar() {
 template <>
 uint8_t rand_scalar() {
     return std::rand() % 128;
+}
+
+template <>
+half rand_scalar() {
+    return half(std::rand() % 32000) / half(32000) - half(0.5);
 }
 
 template <typename fp>
@@ -380,6 +393,27 @@ bool check_equal_matrix(fp *M, fp *M_ref, int m, int n, int ld, int error_mag, s
                 out << "Difference in entry (" << i << ',' << j << "): DPC++ " << M[i + j * ld]
                     << " vs. Reference " << M_ref[i + j * ld] << std::endl;
                 good = false;
+            }
+        }
+    }
+
+    return good;
+}
+
+template <typename acc1, typename acc2>
+bool check_equal_matrix(acc1 &M, acc2 &M_ref, onemkl::uplo upper_lower, int m, int n, int ld,
+                        int error_mag, std::ostream &out) {
+    bool good = true;
+
+    for (int j = 0; j < n; j++) {
+        for (int i = 0; i < m; i++) {
+            if (((upper_lower == onemkl::uplo::upper) && (j >= i)) ||
+                ((upper_lower == onemkl::uplo::lower) && (j <= i))) {
+                if (!check_equal(M[i + j * ld], M_ref[i + j * ld], error_mag)) {
+                    out << "Difference in entry (" << i << ',' << j << "): DPC++ " << M[i + j * ld]
+                        << " vs. Reference " << M_ref[i + j * ld] << std::endl;
+                    good = false;
+                }
             }
         }
     }

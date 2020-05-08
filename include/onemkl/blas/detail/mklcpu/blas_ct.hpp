@@ -866,6 +866,216 @@ void iamin<library::intelmkl, backend::intelcpu>(cl::sycl::queue &queue, std::in
 }
 
 template <onemkl::library lib, onemkl::backend backend>
+static inline void gemm_batch(cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
+                              cl::sycl::buffer<transpose, 1> &transb,
+                              cl::sycl::buffer<std::int64_t, 1> &m,
+                              cl::sycl::buffer<std::int64_t, 1> &n,
+                              cl::sycl::buffer<std::int64_t, 1> &k,
+                              cl::sycl::buffer<float, 1> &alpha, cl::sycl::buffer<float, 1> &a,
+                              cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<float, 1> &b,
+                              cl::sycl::buffer<std::int64_t, 1> &ldb,
+                              cl::sycl::buffer<float, 1> &beta, cl::sycl::buffer<float, 1> &c,
+                              cl::sycl::buffer<std::int64_t, 1> &ldc, std::int64_t group_count,
+                              cl::sycl::buffer<std::int64_t, 1> &group_size);
+template <>
+void gemm_batch<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
+    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
+    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
+    cl::sycl::buffer<float, 1> &alpha, cl::sycl::buffer<float, 1> &a,
+    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<float, 1> &b,
+    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<float, 1> &beta,
+    cl::sycl::buffer<float, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc, std::int64_t group_count,
+    cl::sycl::buffer<std::int64_t, 1> &group_size) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                            group_count, group_size);
+    onemkl::mklcpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                               group_count, group_size);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                             group_count, group_size);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemm_batch(
+    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
+    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
+    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
+    cl::sycl::buffer<double, 1> &alpha, cl::sycl::buffer<double, 1> &a,
+    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<double, 1> &b,
+    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<double, 1> &beta,
+    cl::sycl::buffer<double, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
+    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size);
+template <>
+void gemm_batch<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
+    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
+    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
+    cl::sycl::buffer<double, 1> &alpha, cl::sycl::buffer<double, 1> &a,
+    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<double, 1> &b,
+    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<double, 1> &beta,
+    cl::sycl::buffer<double, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
+    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                            group_count, group_size);
+    onemkl::mklcpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                               group_count, group_size);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                             group_count, group_size);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemm_batch(
+    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
+    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
+    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
+    cl::sycl::buffer<std::complex<float>, 1> &alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
+    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<std::complex<float>, 1> &b,
+    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<std::complex<float>, 1> &beta,
+    cl::sycl::buffer<std::complex<float>, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
+    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size);
+template <>
+void gemm_batch<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
+    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
+    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
+    cl::sycl::buffer<std::complex<float>, 1> &alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
+    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<std::complex<float>, 1> &b,
+    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<std::complex<float>, 1> &beta,
+    cl::sycl::buffer<std::complex<float>, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
+    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                            group_count, group_size);
+    onemkl::mklcpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                               group_count, group_size);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                             group_count, group_size);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemm_batch(
+    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
+    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
+    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
+    cl::sycl::buffer<std::complex<double>, 1> &alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
+    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<std::complex<double>, 1> &b,
+    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<std::complex<double>, 1> &beta,
+    cl::sycl::buffer<std::complex<double>, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
+    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size);
+template <>
+void gemm_batch<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
+    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
+    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
+    cl::sycl::buffer<std::complex<double>, 1> &alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
+    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<std::complex<double>, 1> &b,
+    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<std::complex<double>, 1> &beta,
+    cl::sycl::buffer<std::complex<double>, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
+    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                            group_count, group_size);
+    onemkl::mklcpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                               group_count, group_size);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                             group_count, group_size);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
+                              std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                              cl::sycl::buffer<float, 1> &a, std::int64_t lda,
+                              std::int64_t stride_a, cl::sycl::buffer<float, 1> &b,
+                              std::int64_t ldb, std::int64_t stride_b, float beta,
+                              cl::sycl::buffer<float, 1> &c, std::int64_t ldc,
+                              std::int64_t stride_c, std::int64_t batch_size);
+template <>
+void gemm_batch<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
+    std::int64_t stride_a, cl::sycl::buffer<float, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+    float beta, cl::sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
+    std::int64_t batch_size) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                            stride_b, beta, c, ldc, stride_c, batch_size);
+    onemkl::mklcpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                               stride_b, beta, c, ldc, stride_c, batch_size);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                             stride_b, beta, c, ldc, stride_c, batch_size);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
+                              std::int64_t m, std::int64_t n, std::int64_t k, double alpha,
+                              cl::sycl::buffer<double, 1> &a, std::int64_t lda,
+                              std::int64_t stride_a, cl::sycl::buffer<double, 1> &b,
+                              std::int64_t ldb, std::int64_t stride_b, double beta,
+                              cl::sycl::buffer<double, 1> &c, std::int64_t ldc,
+                              std::int64_t stride_c, std::int64_t batch_size);
+template <>
+void gemm_batch<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
+    std::int64_t stride_a, cl::sycl::buffer<double, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+    double beta, cl::sycl::buffer<double, 1> &c, std::int64_t ldc, std::int64_t stride_c,
+    std::int64_t batch_size) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                            stride_b, beta, c, ldc, stride_c, batch_size);
+    onemkl::mklcpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                               stride_b, beta, c, ldc, stride_c, batch_size);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                             stride_b, beta, c, ldc, stride_c, batch_size);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
+                              std::int64_t m, std::int64_t n, std::int64_t k,
+                              std::complex<float> alpha,
+                              cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+                              std::int64_t stride_a, cl::sycl::buffer<std::complex<float>, 1> &b,
+                              std::int64_t ldb, std::int64_t stride_b, std::complex<float> beta,
+                              cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc,
+                              std::int64_t stride_c, std::int64_t batch_size);
+template <>
+void gemm_batch<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
+    std::int64_t lda, std::int64_t stride_a, cl::sycl::buffer<std::complex<float>, 1> &b,
+    std::int64_t ldb, std::int64_t stride_b, std::complex<float> beta,
+    cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc, std::int64_t stride_c,
+    std::int64_t batch_size) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                            stride_b, beta, c, ldc, stride_c, batch_size);
+    onemkl::mklcpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                               stride_b, beta, c, ldc, stride_c, batch_size);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                             stride_b, beta, c, ldc, stride_c, batch_size);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
+                              std::int64_t m, std::int64_t n, std::int64_t k,
+                              std::complex<double> alpha,
+                              cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+                              std::int64_t stride_a, cl::sycl::buffer<std::complex<double>, 1> &b,
+                              std::int64_t ldb, std::int64_t stride_b, std::complex<double> beta,
+                              cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc,
+                              std::int64_t stride_c, std::int64_t batch_size);
+template <>
+void gemm_batch<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
+    std::int64_t lda, std::int64_t stride_a, cl::sycl::buffer<std::complex<double>, 1> &b,
+    std::int64_t ldb, std::int64_t stride_b, std::complex<double> beta,
+    cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc, std::int64_t stride_c,
+    std::int64_t batch_size) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                            stride_b, beta, c, ldc, stride_c, batch_size);
+    onemkl::mklcpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                               stride_b, beta, c, ldc, stride_c, batch_size);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                             stride_b, beta, c, ldc, stride_c, batch_size);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
 static inline void spmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
                         cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<float, 1> &x,
                         std::int64_t incx, float beta, cl::sycl::buffer<float, 1> &y,
@@ -897,6 +1107,138 @@ void spmv<library::intelmkl, backend::intelcpu>(cl::sycl::queue &queue, uplo upp
     spmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy);
     onemkl::mklcpu::spmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy);
     spmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb,
+                            std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                            cl::sycl::buffer<half, 1> &a, std::int64_t lda,
+                            cl::sycl::buffer<half, 1> &b, std::int64_t ldb, float beta,
+                            cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
+template <>
+void gemm_ext<library::intelmkl, backend::intelcpu>(cl::sycl::queue &queue, transpose transa,
+                                                    transpose transb, std::int64_t m,
+                                                    std::int64_t n, std::int64_t k, float alpha,
+                                                    cl::sycl::buffer<half, 1> &a, std::int64_t lda,
+                                                    cl::sycl::buffer<half, 1> &b, std::int64_t ldb,
+                                                    float beta, cl::sycl::buffer<float, 1> &c,
+                                                    std::int64_t ldc) {
+    gemm_ext_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    onemkl::mklcpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb,
+                            offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
+                            float alpha, cl::sycl::buffer<int8_t, 1> &a, std::int64_t lda,
+                            int8_t ao, cl::sycl::buffer<uint8_t, 1> &b, std::int64_t ldb,
+                            uint8_t bo, float beta, cl::sycl::buffer<int32_t, 1> &c,
+                            std::int64_t ldc, cl::sycl::buffer<int32_t, 1> &co);
+template <>
+void gemm_ext<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, transpose transa, transpose transb, offset offsetc, std::int64_t m,
+    std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<int8_t, 1> &a, std::int64_t lda,
+    int8_t ao, cl::sycl::buffer<uint8_t, 1> &b, std::int64_t ldb, uint8_t bo, float beta,
+    cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc, cl::sycl::buffer<int32_t, 1> &co) {
+    gemm_ext_precondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                          beta, c, ldc, co);
+    onemkl::mklcpu::gemm_ext(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                             beta, c, ldc, co);
+    gemm_ext_postcondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                           beta, c, ldc, co);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb,
+                            std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                            cl::sycl::buffer<float, 1> &a, std::int64_t lda,
+                            cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
+                            cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
+template <>
+void gemm_ext<library::intelmkl, backend::intelcpu>(cl::sycl::queue &queue, transpose transa,
+                                                    transpose transb, std::int64_t m,
+                                                    std::int64_t n, std::int64_t k, float alpha,
+                                                    cl::sycl::buffer<float, 1> &a, std::int64_t lda,
+                                                    cl::sycl::buffer<float, 1> &b, std::int64_t ldb,
+                                                    float beta, cl::sycl::buffer<float, 1> &c,
+                                                    std::int64_t ldc) {
+    gemm_ext_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    onemkl::mklcpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb,
+                            std::int64_t m, std::int64_t n, std::int64_t k, double alpha,
+                            cl::sycl::buffer<double, 1> &a, std::int64_t lda,
+                            cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
+                            cl::sycl::buffer<double, 1> &c, std::int64_t ldc);
+template <>
+void gemm_ext<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
+    cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta, cl::sycl::buffer<double, 1> &c,
+    std::int64_t ldc) {
+    gemm_ext_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    onemkl::mklcpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb,
+                            std::int64_t m, std::int64_t n, std::int64_t k,
+                            std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
+                            std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &b,
+                            std::int64_t ldb, std::complex<float> beta,
+                            cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc);
+template <>
+void gemm_ext<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
+    std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
+    std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
+    gemm_ext_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    onemkl::mklcpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb,
+                            std::int64_t m, std::int64_t n, std::int64_t k,
+                            std::complex<double> alpha,
+                            cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+                            cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
+                            std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
+                            std::int64_t ldc);
+template <>
+void gemm_ext<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
+    std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
+    std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
+    gemm_ext_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    onemkl::mklcpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb,
+                            std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
+                            cl::sycl::buffer<half, 1> &a, std::int64_t lda,
+                            cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
+                            cl::sycl::buffer<half, 1> &c, std::int64_t ldc);
+template <>
+void gemm_ext<library::intelmkl, backend::intelcpu>(cl::sycl::queue &queue, transpose transa,
+                                                    transpose transb, std::int64_t m,
+                                                    std::int64_t n, std::int64_t k, half alpha,
+                                                    cl::sycl::buffer<half, 1> &a, std::int64_t lda,
+                                                    cl::sycl::buffer<half, 1> &b, std::int64_t ldb,
+                                                    half beta, cl::sycl::buffer<half, 1> &c,
+                                                    std::int64_t ldc) {
+    gemm_ext_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    onemkl::mklcpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
 template <onemkl::library lib, onemkl::backend backend>
@@ -1955,6 +2297,92 @@ void hemv<library::intelmkl, backend::intelcpu>(
 }
 
 template <onemkl::library lib, onemkl::backend backend>
+static inline void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa,
+                         transpose transb, std::int64_t n, std::int64_t k, float alpha,
+                         cl::sycl::buffer<float, 1> &a, std::int64_t lda,
+                         cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
+                         cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
+template <>
+void gemmt<library::intelmkl, backend::intelcpu>(cl::sycl::queue &queue, uplo upper_lower,
+                                                 transpose transa, transpose transb, std::int64_t n,
+                                                 std::int64_t k, float alpha,
+                                                 cl::sycl::buffer<float, 1> &a, std::int64_t lda,
+                                                 cl::sycl::buffer<float, 1> &b, std::int64_t ldb,
+                                                 float beta, cl::sycl::buffer<float, 1> &c,
+                                                 std::int64_t ldc) {
+    gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                       ldc);
+    onemkl::mklcpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                          ldc);
+    gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                        ldc);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa,
+                         transpose transb, std::int64_t n, std::int64_t k, double alpha,
+                         cl::sycl::buffer<double, 1> &a, std::int64_t lda,
+                         cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
+                         cl::sycl::buffer<double, 1> &c, std::int64_t ldc);
+template <>
+void gemmt<library::intelmkl, backend::intelcpu>(cl::sycl::queue &queue, uplo upper_lower,
+                                                 transpose transa, transpose transb, std::int64_t n,
+                                                 std::int64_t k, double alpha,
+                                                 cl::sycl::buffer<double, 1> &a, std::int64_t lda,
+                                                 cl::sycl::buffer<double, 1> &b, std::int64_t ldb,
+                                                 double beta, cl::sycl::buffer<double, 1> &c,
+                                                 std::int64_t ldc) {
+    gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                       ldc);
+    onemkl::mklcpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                          ldc);
+    gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                        ldc);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa,
+                         transpose transb, std::int64_t n, std::int64_t k,
+                         std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
+                         std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &b,
+                         std::int64_t ldb, std::complex<float> beta,
+                         cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc);
+template <>
+void gemmt<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
+    std::int64_t k, std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
+    std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
+    std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
+    gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                       ldc);
+    onemkl::mklcpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                          ldc);
+    gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                        ldc);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa,
+                         transpose transb, std::int64_t n, std::int64_t k,
+                         std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
+                         std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &b,
+                         std::int64_t ldb, std::complex<double> beta,
+                         cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc);
+template <>
+void gemmt<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
+    std::int64_t k, std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
+    std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
+    std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
+    gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                       ldc);
+    onemkl::mklcpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                          ldc);
+    gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                        ldc);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
 static inline void sbmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
                         float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
                         cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
@@ -2182,6 +2610,196 @@ void iamax<library::intelmkl, backend::intelcpu>(cl::sycl::queue &queue, std::in
     iamax_precondition(queue, n, x, incx, result);
     onemkl::mklcpu::iamax(queue, n, x, incx, result);
     iamax_postcondition(queue, n, x, incx, result);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
+                              cl::sycl::buffer<uplo, 1> &upper_lower,
+                              cl::sycl::buffer<transpose, 1> &trans,
+                              cl::sycl::buffer<diag, 1> &unit_diag,
+                              cl::sycl::buffer<std::int64_t, 1> &m,
+                              cl::sycl::buffer<std::int64_t, 1> &n,
+                              cl::sycl::buffer<float, 1> &alpha, cl::sycl::buffer<float, 1> &a,
+                              cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<float, 1> &b,
+                              cl::sycl::buffer<std::int64_t, 1> &ldb, std::int64_t group_count,
+                              cl::sycl::buffer<std::int64_t, 1> &group_size);
+template <>
+void trsm_batch<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
+    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
+    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
+    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<float, 1> &alpha,
+    cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
+    cl::sycl::buffer<float, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb, std::int64_t group_count,
+    cl::sycl::buffer<std::int64_t, 1> &group_size) {
+    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                            b, ldb, group_count, group_size);
+    onemkl::mklcpu::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
+                               lda, b, ldb, group_count, group_size);
+    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                             b, ldb, group_count, group_size);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void trsm_batch(
+    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
+    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
+    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
+    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<double, 1> &alpha,
+    cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
+    cl::sycl::buffer<double, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
+    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size);
+template <>
+void trsm_batch<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
+    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
+    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
+    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<double, 1> &alpha,
+    cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
+    cl::sycl::buffer<double, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
+    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
+    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                            b, ldb, group_count, group_size);
+    onemkl::mklcpu::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
+                               lda, b, ldb, group_count, group_size);
+    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                             b, ldb, group_count, group_size);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void trsm_batch(
+    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
+    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
+    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
+    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::complex<float>, 1> &alpha,
+    cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
+    cl::sycl::buffer<std::complex<float>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
+    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size);
+template <>
+void trsm_batch<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
+    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
+    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
+    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::complex<float>, 1> &alpha,
+    cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
+    cl::sycl::buffer<std::complex<float>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
+    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
+    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                            b, ldb, group_count, group_size);
+    onemkl::mklcpu::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
+                               lda, b, ldb, group_count, group_size);
+    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                             b, ldb, group_count, group_size);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void trsm_batch(
+    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
+    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
+    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
+    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::complex<double>, 1> &alpha,
+    cl::sycl::buffer<std::complex<double>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
+    cl::sycl::buffer<std::complex<double>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
+    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size);
+template <>
+void trsm_batch<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
+    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
+    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
+    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::complex<double>, 1> &alpha,
+    cl::sycl::buffer<std::complex<double>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
+    cl::sycl::buffer<std::complex<double>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
+    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
+    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                            b, ldb, group_count, group_size);
+    onemkl::mklcpu::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
+                               lda, b, ldb, group_count, group_size);
+    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                             b, ldb, group_count, group_size);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                              transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
+                              float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
+                              std::int64_t stride_a, cl::sycl::buffer<float, 1> &b,
+                              std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size);
+template <>
+void trsm_batch<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
+    std::int64_t stride_a, cl::sycl::buffer<float, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+    std::int64_t batch_size) {
+    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                            stride_a, b, ldb, stride_b, batch_size);
+    onemkl::mklcpu::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
+                               lda, stride_a, b, ldb, stride_b, batch_size);
+    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                             stride_a, b, ldb, stride_b, batch_size);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                              transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
+                              double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
+                              std::int64_t stride_a, cl::sycl::buffer<double, 1> &b,
+                              std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size);
+template <>
+void trsm_batch<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
+    std::int64_t stride_a, cl::sycl::buffer<double, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+    std::int64_t batch_size) {
+    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                            stride_a, b, ldb, stride_b, batch_size);
+    onemkl::mklcpu::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
+                               lda, stride_a, b, ldb, stride_b, batch_size);
+    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                             stride_a, b, ldb, stride_b, batch_size);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                              transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
+                              std::complex<float> alpha,
+                              cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+                              std::int64_t stride_a, cl::sycl::buffer<std::complex<float>, 1> &b,
+                              std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size);
+template <>
+void trsm_batch<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, std::complex<float> alpha,
+    cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda, std::int64_t stride_a,
+    cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+    std::int64_t batch_size) {
+    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                            stride_a, b, ldb, stride_b, batch_size);
+    onemkl::mklcpu::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
+                               lda, stride_a, b, ldb, stride_b, batch_size);
+    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                             stride_a, b, ldb, stride_b, batch_size);
+}
+
+template <onemkl::library lib, onemkl::backend backend>
+static inline void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                              transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
+                              std::complex<double> alpha,
+                              cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+                              std::int64_t stride_a, cl::sycl::buffer<std::complex<double>, 1> &b,
+                              std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size);
+template <>
+void trsm_batch<library::intelmkl, backend::intelcpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, std::complex<double> alpha,
+    cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda, std::int64_t stride_a,
+    cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+    std::int64_t batch_size) {
+    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                            stride_a, b, ldb, stride_b, batch_size);
+    onemkl::mklcpu::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
+                               lda, stride_a, b, ldb, stride_b, batch_size);
+    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                             stride_a, b, ldb, stride_b, batch_size);
 }
 
 template <onemkl::library lib, onemkl::backend backend>

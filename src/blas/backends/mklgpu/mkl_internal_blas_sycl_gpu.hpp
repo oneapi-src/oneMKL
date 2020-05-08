@@ -78,6 +78,14 @@ inline MKL_SIDE cblas_convert(onemkl::side s) {
     return MKL_LEFT;
 }
 
+inline CBLAS_OFFSET cblas_convert(onemkl::offset o) {
+    if (o == onemkl::offset::fix)
+        return CblasFixOffset;
+    if (o == onemkl::offset::column)
+        return CblasColOffset;
+    return CblasRowOffset;
+}
+
 namespace gpu {
 
 // gemm

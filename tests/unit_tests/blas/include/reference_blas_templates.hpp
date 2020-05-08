@@ -20,6 +20,7 @@
 #ifndef _REFERENCE_BLAS_TEMPLATES_HPP__
 #define _REFERENCE_BLAS_TEMPLATES_HPP__
 
+#include <stdlib.h>
 #include <complex>
 #include "cblas.h"
 
@@ -36,12 +37,132 @@ void crotg_(void *a, void *b, const float *c, void *s);
 void zrotg_(void *a, void *b, const double *c, void *s);
 }
 
-// Level 3
+template <typename T_src, typename T_dest>
+static inline void copy_mat(T_src &src, CBLAS_TRANSPOSE trans, int row, int col, int ld,
+                            T_dest *&dest) {
+    int i, j;
+    if (trans == CblasNoTrans) {
+        for (j = 0; j < col; j++) {
+            for (i = 0; i < row; i++) {
+                dest[i + ld * j] = (T_dest)src[i + ld * j];
+            }
+        }
+    }
+    else {
+        for (i = 0; i < row; i++) {
+            for (j = 0; j < col; j++) {
+                dest[i * ld + j] = (T_dest)src[i * ld + j];
+            }
+        }
+    }
+}
+
+template <typename T_src, typename T_dest>
+static inline void copy_mat(T_src &src, CBLAS_TRANSPOSE trans, int row, int col, int ld, T_dest off,
+                            T_dest *&dest) {
+    int i, j;
+    if (trans == CblasNoTrans) {
+        for (j = 0; j < col; j++) {
+            for (i = 0; i < row; i++) {
+                dest[i + ld * j] = (T_dest)src[i + ld * j] - off;
+            }
+        }
+    }
+    else {
+        for (i = 0; i < row; i++) {
+            for (j = 0; j < col; j++) {
+                dest[i * ld + j] = (T_dest)src[i * ld + j] - off;
+            }
+        }
+    }
+}
+
+template <typename T_src, typename T_dest, typename T_off>
+static inline void copy_mat(T_src &src, int row, int col, int ld, CBLAS_OFFSET off_kind, T_off off,
+                            T_dest &dest) {
+    using T_data = typename std::remove_reference<decltype(dest[0])>::type;
+    int i, j;
+    T_data tmp;
+
+    if (off_kind == CblasFixOffset) {
+        tmp = off[0];
+        for (j = 0; j < col; j++) {
+            for (i = 0; i < row; i++) {
+                dest[i + ld * j] = tmp + (T_data)src[i + ld * j];
+            }
+        }
+    }
+    else if (off_kind == CblasColOffset) {
+        for (j = 0; j < col; j++) {
+            for (i = 0; i < row; i++) {
+                tmp              = off[i];
+                dest[i + ld * j] = tmp + (T_data)src[i + ld * j];
+            }
+        }
+    }
+    else {
+        for (j = 0; j < col; j++) {
+            tmp = off[j];
+            for (i = 0; i < row; i++) {
+                dest[i + ld * j] = tmp + (T_data)src[i + ld * j];
+            }
+        }
+    }
+}
+
+template <typename T_src, typename T_desc>
+static inline void update_c(T_src &src, CBLAS_UPLO upper_lower, int row, int col, int ld,
+                            T_desc *&dest) {
+    int i, j;
+    for (j = 0; j < col; j++) {
+        for (i = 0; i < row; i++) {
+            if (upper_lower == CblasUpper) {
+                if (j >= i)
+                    dest[i + ld * j] = (T_desc)src[i + ld * j];
+                else
+                    dest[i + ld * j] = (T_desc)0.0;
+            }
+            else {
+                if (j <= i)
+                    dest[i + ld * j] = (T_desc)src[i + ld * j];
+                else
+                    dest[i + ld * j] = (T_desc)0.0;
+            }
+        }
+    }
+}
+
+/* Level 3 */
 
 template <typename fp>
 static void gemm(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
                  const int *k, const fp *alpha, const fp *a, const int *lda, const fp *b,
                  const int *ldb, const fp *beta, fp *c, const int *ldc);
+
+template <>
+void gemm(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n, const int *k,
+          const half *alpha, const half *a, const int *lda, const half *b, const int *ldb,
+          const half *beta, half *c, const int *ldc) {
+    // Not supported in NETLIB. SGEMM is used as reference.
+    int sizea, sizeb, sizec;
+    const float alphaf = *alpha;
+    const float betaf  = *beta;
+    sizea              = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
+    sizeb              = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
+    sizec              = *ldc * *n;
+    float *af          = (float *)aligned_alloc(64, sizeof(float) * sizea);
+    float *bf          = (float *)aligned_alloc(64, sizeof(float) * sizeb);
+    float *cf          = (float *)aligned_alloc(64, sizeof(float) * sizec);
+    copy_mat(a, transa, *m, *k, *lda, af);
+    copy_mat(b, transb, *k, *n, *ldb, bf);
+    copy_mat(c, CblasNoTrans, *m, *n, *ldc, cf);
+    cblas_sgemm(CblasColMajor, transa, transb, *m, *n, *k, alphaf, af, *lda, bf, *ldb, betaf, cf,
+                *ldc);
+    copy_mat(cf, CblasNoTrans, *m, *n, *ldc, c);
+    free(af);
+    free(bf);
+    free(cf);
+}
 
 template <>
 void gemm(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n, const int *k,
@@ -303,7 +424,7 @@ void trsm(CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa, CBLAS_DIAG d
     cblas_ztrsm(CblasColMajor, side, uplo, transa, diag, *m, *n, alpha, a, *lda, b, *ldb);
 }
 
-// Level 2
+/*  Level 2 */
 
 template <typename fp>
 static void gemv(CBLAS_TRANSPOSE trans, const int *m, const int *n, const fp *alpha, const fp *a,
@@ -842,7 +963,7 @@ void trsv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, c
     cblas_ztrsv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
 }
 
-// Level 1
+/* Level 1 */
 
 template <typename fp_data, typename fp_res>
 static fp_res asum(const int *n, const fp_data *x, const int *incx);
@@ -1247,6 +1368,190 @@ int iamin(const int *n, const std::complex<double> *x, const int *incx) {
         }
     }
     return min_idx;
+}
+
+/* Extensions */
+
+template <typename fp>
+static void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
+                     const int *k, const fp *alpha, const fp *a, const int *lda, const fp *b,
+                     const int *ldb, const fp *beta, fp *c, const int *ldc);
+
+template <>
+void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
+              const int *k, const half *alpha, const half *a, const int *lda, const half *b,
+              const int *ldb, const half *beta, half *c, const int *ldc) {
+    // Not supported in NETLIB. SGEMM is used as reference.
+    int sizea, sizeb, sizec;
+    const float alphaf = *alpha;
+    const float betaf  = *beta;
+    sizea              = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
+    sizeb              = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
+    sizec              = *ldc * *n;
+    float *af          = (float *)aligned_alloc(64, sizeof(float) * sizea);
+    float *bf          = (float *)aligned_alloc(64, sizeof(float) * sizeb);
+    float *cf          = (float *)aligned_alloc(64, sizeof(float) * sizec);
+    copy_mat(a, transa, *m, *k, *lda, af);
+    copy_mat(b, transb, *k, *n, *ldb, bf);
+    copy_mat(c, CblasNoTrans, *m, *n, *ldc, cf);
+    cblas_sgemm(CblasColMajor, transa, transb, *m, *n, *k, alphaf, af, *lda, bf, *ldb, betaf, cf,
+                *ldc);
+    copy_mat(cf, CblasNoTrans, *m, *n, *ldc, c);
+    free(af);
+    free(bf);
+    free(cf);
+}
+
+template <>
+void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
+              const int *k, const float *alpha, const float *a, const int *lda, const float *b,
+              const int *ldb, const float *beta, float *c, const int *ldc) {
+    cblas_sgemm(CblasColMajor, transa, transb, *m, *n, *k, *alpha, a, *lda, b, *ldb, *beta, c,
+                *ldc);
+}
+
+template <>
+void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
+              const int *k, const double *alpha, const double *a, const int *lda, const double *b,
+              const int *ldb, const double *beta, double *c, const int *ldc) {
+    cblas_dgemm(CblasColMajor, transa, transb, *m, *n, *k, *alpha, a, *lda, b, *ldb, *beta, c,
+                *ldc);
+}
+
+template <>
+void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
+              const int *k, const std::complex<float> *alpha, const std::complex<float> *a,
+              const int *lda, const std::complex<float> *b, const int *ldb,
+              const std::complex<float> *beta, std::complex<float> *c, const int *ldc) {
+    cblas_cgemm(CblasColMajor, transa, transb, *m, *n, *k, alpha, a, *lda, b, *ldb, beta, c, *ldc);
+}
+
+template <>
+void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
+              const int *k, const std::complex<double> *alpha, const std::complex<double> *a,
+              const int *lda, const std::complex<double> *b, const int *ldb,
+              const std::complex<double> *beta, std::complex<double> *c, const int *ldc) {
+    cblas_zgemm(CblasColMajor, transa, transb, *m, *n, *k, alpha, a, *lda, b, *ldb, beta, c, *ldc);
+}
+
+template <typename fpa, typename fpc>
+static void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
+                     const int *k, const fpc *alpha, const fpa *a, const int *lda, const fpa *b,
+                     const int *ldb, const fpc *beta, fpc *c, const int *ldc);
+
+template <>
+void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
+              const int *k, const float *alpha, const half *a, const int *lda, const half *b,
+              const int *ldb, const float *beta, float *c, const int *ldc) {
+    // Not supported in NETLIB. SGEMM is used as reference.
+    int sizea, sizeb;
+    sizea     = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
+    sizeb     = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
+    float *af = (float *)aligned_alloc(64, sizeof(float) * sizea);
+    float *bf = (float *)aligned_alloc(64, sizeof(float) * sizeb);
+    copy_mat(a, transa, *m, *k, *lda, af);
+    copy_mat(b, transb, *k, *n, *ldb, bf);
+    cblas_sgemm(CblasColMajor, transa, transb, *m, *n, *k, *alpha, af, *lda, bf, *ldb, *beta, c,
+                *ldc);
+    free(af);
+    free(bf);
+}
+
+template <typename fps, typename fpa, typename fpb, typename fpc>
+static void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, CBLAS_OFFSET offsetc,
+                     const int *m, const int *n, const int *k, const fps *alpha, const fpa *a,
+                     const int *lda, const fpa *ao, const fpb *b, const int *ldb, const fpb *bo,
+                     const fps *beta, fpc *c, const int *ldc, const fpc *co);
+
+template <>
+void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, CBLAS_OFFSET offsetc, const int *m,
+              const int *n, const int *k, const float *alpha, const int8_t *a, const int *lda,
+              const int8_t *ao, const uint8_t *b, const int *ldb, const uint8_t *bo,
+              const float *beta, int32_t *c, const int *ldc, const int32_t *co) {
+    // Not supported in NETLIB. DGEMM is used as reference.
+    int sizea, sizeb, sizec;
+    sizea         = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
+    sizeb         = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
+    sizec         = *ldc * *n;
+    double *ad    = (double *)aligned_alloc(64, sizeof(double) * sizea);
+    double *bd    = (double *)aligned_alloc(64, sizeof(double) * sizeb);
+    double *cd    = (double *)aligned_alloc(64, sizeof(double) * sizec);
+    double alphad = *alpha;
+    double betad  = *beta;
+    double aod    = *ao;
+    double bod    = *bo;
+    copy_mat(a, transa, *m, *k, *lda, aod, ad);
+    copy_mat(b, transb, *k, *n, *ldb, bod, bd);
+    copy_mat(c, CblasNoTrans, *m, *n, *ldc, 0.0, cd);
+    cblas_dgemm(CblasColMajor, transa, transb, *m, *n, *k, alphad, ad, *lda, bd, *ldb, betad, cd,
+                *ldc);
+    copy_mat(cd, *m, *n, *ldc, offsetc, co, c);
+    free(ad);
+    free(bd);
+    free(cd);
+}
+
+template <typename fp>
+static void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb,
+                  const int *n, const int *k, const fp *alpha, const fp *a, const int *lda,
+                  const fp *b, const int *ldb, const fp *beta, fp *c, const int *ldc);
+
+template <>
+void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *n,
+           const int *k, const float *alpha, const float *a, const int *lda, const float *b,
+           const int *ldb, const float *beta, float *c, const int *ldc) {
+    // Not supported in NETLIB. SGEMM is used as reference.
+    int sizec;
+    sizec     = *ldc * *n;
+    float *cf = (float *)aligned_alloc(64, sizeof(float) * sizec);
+    update_c(c, upper_lower, *n, *n, *ldc, cf);
+    cblas_sgemm(CblasColMajor, transa, transb, *n, *n, *k, *alpha, a, *lda, b, *ldb, *beta, cf,
+                *ldc);
+    update_c(cf, upper_lower, *n, *n, *ldc, c);
+}
+
+template <>
+void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *n,
+           const int *k, const double *alpha, const double *a, const int *lda, const double *b,
+           const int *ldb, const double *beta, double *c, const int *ldc) {
+    // Not supported in NETLIB. DGEMM is used as reference.
+    int sizec;
+    sizec      = *ldc * *n;
+    double *cf = (double *)aligned_alloc(64, sizeof(double) * sizec);
+    update_c(c, upper_lower, *n, *n, *ldc, cf);
+    cblas_dgemm(CblasColMajor, transa, transb, *n, *n, *k, *alpha, a, *lda, b, *ldb, *beta, cf,
+                *ldc);
+    update_c(cf, upper_lower, *n, *n, *ldc, c);
+}
+
+template <>
+void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *n,
+           const int *k, const std::complex<float> *alpha, const std::complex<float> *a,
+           const int *lda, const std::complex<float> *b, const int *ldb,
+           const std::complex<float> *beta, std::complex<float> *c, const int *ldc) {
+    // Not supported in NETLIB. CGEMM is used as reference.
+    int sizec;
+    sizec = *ldc * *n;
+    std::complex<float> *cf =
+        (std::complex<float> *)aligned_alloc(64, sizeof(std::complex<float>) * sizec);
+    update_c(c, upper_lower, *n, *n, *ldc, cf);
+    cblas_cgemm(CblasColMajor, transa, transb, *n, *n, *k, alpha, a, *lda, b, *ldb, beta, cf, *ldc);
+    update_c(cf, upper_lower, *n, *n, *ldc, c);
+}
+
+template <>
+void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *n,
+           const int *k, const std::complex<double> *alpha, const std::complex<double> *a,
+           const int *lda, const std::complex<double> *b, const int *ldb,
+           const std::complex<double> *beta, std::complex<double> *c, const int *ldc) {
+    // Not supported in NETLIB. ZGEMM is used as reference.
+    int sizec;
+    sizec = *ldc * *n;
+    std::complex<double> *cf =
+        (std::complex<double> *)aligned_alloc(64, sizeof(std::complex<double>) * sizec);
+    update_c(c, upper_lower, *n, *n, *ldc, cf);
+    cblas_zgemm(CblasColMajor, transa, transb, *n, *n, *k, alpha, a, *lda, b, *ldb, beta, cf, *ldc);
+    update_c(cf, upper_lower, *n, *n, *ldc, c);
 }
 
 #endif /* header guard */
