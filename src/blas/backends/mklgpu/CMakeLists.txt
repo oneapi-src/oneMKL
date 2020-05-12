@@ -31,6 +31,7 @@ add_library(${LIB_OBJ} OBJECT
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
           ${PROJECT_SOURCE_DIR}/src
+          ${CMAKE_BINARY_DIR}/bin
           ${MKL_INCLUDE}
 )
 
@@ -38,7 +39,6 @@ target_compile_options(${LIB_OBJ} PRIVATE ${MKL_COPT})
 
 target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ${MKL_LINK_SYCL})
 
-target_compile_features(${LIB_OBJ} PUBLIC cxx_std_14)
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON
 )

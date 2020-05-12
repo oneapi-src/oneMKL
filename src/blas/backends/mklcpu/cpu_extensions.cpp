@@ -21,6 +21,7 @@
 
 #include "cpu_common.hpp"
 #include "fp16.hpp"
+#include "onemkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
 
 namespace onemkl {
 namespace mklcpu {
