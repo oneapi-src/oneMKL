@@ -31,6 +31,7 @@ find_path(TBB_LIB_DIR ${TBB_LIBNAME}
       PATH_SUFFIXES "lib" "lib/intel64/gcc4.4" "lib/intel64/gcc4.8"
                "../tbb/lib/intel64/gcc4.4" "../tbb/lib/intel64/gcc4.8"
                "../../tbb/latest/lib/intel64/gcc4.8"
+               "../tbb/lib/intel64/vc_mt" "lib/intel64/vc_mt"
 )
 
 find_library(TBB_LIBRARIES NAMES tbb
@@ -38,13 +39,15 @@ find_library(TBB_LIBRARIES NAMES tbb
         PATH_SUFFIXES "lib" "lib/intel64/gcc4.4" "lib/intel64/gcc4.8"
                  "../tbb/lib/intel64/gcc4.4" "../tbb/lib/intel64/gcc4.8"
                  "../../tbb/latest/lib/intel64/gcc4.8"
-)
+                 "../tbb/lib/intel64/vc_mt"
+                 )
 
 #Workaround for ref problem
 if(UNIX)
   set(TBB_LINK "-Wl,-rpath,${TBB_LIB_DIR} -L${TBB_LIB_DIR} -ltbb")
+else()
+  set(TBB_LINK "-LIBPATH:\"${TBB_LIB_DIR}\" tbb.lib")
 endif()
-
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(TBB REQUIRED_VARS TBB_LIBRARIES TBB_LINK)
 
