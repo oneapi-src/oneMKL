@@ -27,6 +27,8 @@
 
 #ifdef __linux__
     #define LIB_NAME(a) "lib" a ".so"
+#elif defined(_WIN64)
+    #define LIB_NAME(a) a ".dll"
 #endif
 
 #define INTEL_ID  32902

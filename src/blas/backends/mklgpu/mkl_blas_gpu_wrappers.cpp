@@ -22,7 +22,7 @@
 
 #define WRAPPER_VERSION 1
 
-extern "C" function_table_t mkl_blas_table = {
+extern "C" ONEMKL_EXPORT function_table_t mkl_blas_table = {
     WRAPPER_VERSION,
     onemkl::mklgpu::asum,
     onemkl::mklgpu::asum,

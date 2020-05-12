@@ -25,6 +25,8 @@
 #include <limits>
 #include <type_traits>
 
+#include "onemkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
+
 namespace onemkl {
 namespace mklcpu {
 

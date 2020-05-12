@@ -24,6 +24,7 @@
 #include <complex>
 #include <cstdint>
 
+#include "onemkl/detail/config.hpp"
 #include "onemkl/types.hpp"
 
 #include "onemkl/detail/backends_selector.hpp"
@@ -31,9 +32,15 @@
 #include "onemkl/blas/predicates.hpp"
 
 #include "onemkl/blas/detail/blas_loader.hpp"
-#include "onemkl/blas/detail/cublas/blas_ct.hpp"
-#include "onemkl/blas/detail/mklcpu/blas_ct.hpp"
-#include "onemkl/blas/detail/mklgpu/blas_ct.hpp"
+#ifdef ENABLE_CUBLAS_BACKEND
+    #include "onemkl/blas/detail/cublas/blas_ct.hpp"
+#endif
+#ifdef ENABLE_MKLCPU_BACKEND
+    #include "onemkl/blas/detail/mklcpu/blas_ct.hpp"
+#endif
+#ifdef ENABLE_MKLGPU_BACKEND
+    #include "onemkl/blas/detail/mklgpu/blas_ct.hpp"
+#endif
 
 namespace onemkl {
 namespace blas {

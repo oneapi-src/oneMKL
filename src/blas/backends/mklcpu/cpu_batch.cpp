@@ -20,6 +20,7 @@
 #include <CL/sycl.hpp>
 
 #include "cpu_common.hpp"
+#include "onemkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
 
 namespace onemkl {
 namespace mklcpu {
@@ -632,7 +633,7 @@ void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
             MKL_INT *lda_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
             MKL_INT *ldb_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
             MKL_INT *group_size_ = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            int64_t offset_a = 0, offset_b = 0, offset_c = 0, idx = 0;
+            int64_t offset_a = 0, offset_b = 0, idx = 0;
             char *side_  = (char *)::malloc(sizeof(char) * group_count);
             char *uplo_  = (char *)::malloc(sizeof(char) * group_count);
             char *trans_ = (char *)::malloc(sizeof(char) * group_count);
@@ -757,7 +758,7 @@ void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
             MKL_INT *lda_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
             MKL_INT *ldb_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
             MKL_INT *group_size_ = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            int64_t offset_a = 0, offset_b = 0, offset_c = 0, idx = 0;
+            int64_t offset_a = 0, offset_b = 0, idx = 0;
             char *side_  = (char *)::malloc(sizeof(char) * group_count);
             char *uplo_  = (char *)::malloc(sizeof(char) * group_count);
             char *trans_ = (char *)::malloc(sizeof(char) * group_count);
@@ -882,7 +883,7 @@ void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
             MKL_INT *lda_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
             MKL_INT *ldb_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
             MKL_INT *group_size_   = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            int64_t offset_a = 0, offset_b = 0, offset_c = 0, idx = 0;
+            int64_t offset_a = 0, offset_b = 0, idx = 0;
             char *side_  = (char *)::malloc(sizeof(char) * group_count);
             char *uplo_  = (char *)::malloc(sizeof(char) * group_count);
             char *trans_ = (char *)::malloc(sizeof(char) * group_count);
@@ -1011,7 +1012,7 @@ void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
             MKL_INT *lda_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
             MKL_INT *ldb_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
             MKL_INT *group_size_ = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            int64_t offset_a = 0, offset_b = 0, offset_c = 0, idx = 0;
+            int64_t offset_a = 0, offset_b = 0, idx = 0;
             char *side_  = (char *)::malloc(sizeof(char) * group_count);
             char *uplo_  = (char *)::malloc(sizeof(char) * group_count);
             char *trans_ = (char *)::malloc(sizeof(char) * group_count);
