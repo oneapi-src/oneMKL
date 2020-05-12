@@ -27,7 +27,7 @@
 #include <CL/sycl.hpp>
 #include "allocator_helper.hpp"
 #include "cblas.h"
-#include "config.hpp"
+#include "onemkl/detail/config.hpp"
 #include "onemkl/onemkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
@@ -46,35 +46,35 @@ namespace {
 template <typename fp>
 bool test(const device &dev, int64_t group_count) {
     // Prepare data.
-    int64_t *m   = (int64_t *)aligned_alloc(64, sizeof(int64_t) * group_count);
-    int64_t *n   = (int64_t *)aligned_alloc(64, sizeof(int64_t) * group_count);
-    int64_t *k   = (int64_t *)aligned_alloc(64, sizeof(int64_t) * group_count);
-    int64_t *lda = (int64_t *)aligned_alloc(64, sizeof(int64_t) * group_count);
-    int64_t *ldb = (int64_t *)aligned_alloc(64, sizeof(int64_t) * group_count);
-    int64_t *ldc = (int64_t *)aligned_alloc(64, sizeof(int64_t) * group_count);
+    int64_t *m   = (int64_t *)onemkl::aligned_alloc(64, sizeof(int64_t) * group_count);
+    int64_t *n   = (int64_t *)onemkl::aligned_alloc(64, sizeof(int64_t) * group_count);
+    int64_t *k   = (int64_t *)onemkl::aligned_alloc(64, sizeof(int64_t) * group_count);
+    int64_t *lda = (int64_t *)onemkl::aligned_alloc(64, sizeof(int64_t) * group_count);
+    int64_t *ldb = (int64_t *)onemkl::aligned_alloc(64, sizeof(int64_t) * group_count);
+    int64_t *ldc = (int64_t *)onemkl::aligned_alloc(64, sizeof(int64_t) * group_count);
     onemkl::transpose *transa =
-        (onemkl::transpose *)aligned_alloc(64, sizeof(onemkl::transpose) * group_count);
+        (onemkl::transpose *)onemkl::aligned_alloc(64, sizeof(onemkl::transpose) * group_count);
     onemkl::transpose *transb =
-        (onemkl::transpose *)aligned_alloc(64, sizeof(onemkl::transpose) * group_count);
-    fp *alpha           = (fp *)aligned_alloc(64, sizeof(fp) * group_count);
-    fp *beta            = (fp *)aligned_alloc(64, sizeof(fp) * group_count);
-    int64_t *group_size = (int64_t *)aligned_alloc(64, sizeof(int64_t) * group_count);
+        (onemkl::transpose *)onemkl::aligned_alloc(64, sizeof(onemkl::transpose) * group_count);
+    fp *alpha           = (fp *)onemkl::aligned_alloc(64, sizeof(fp) * group_count);
+    fp *beta            = (fp *)onemkl::aligned_alloc(64, sizeof(fp) * group_count);
+    int64_t *group_size = (int64_t *)onemkl::aligned_alloc(64, sizeof(int64_t) * group_count);
 
     if ((m == NULL) || (n == NULL) || (k == NULL) || (lda == NULL) || (ldb == NULL) ||
         (ldc == NULL) || (transa == NULL) || (transb == NULL) || (alpha == NULL) ||
         (beta == NULL) || (group_size == NULL)) {
         std::cout << "Error cannot allocate input arrays\n";
-        free(m);
-        free(n);
-        free(k);
-        free(lda);
-        free(ldb);
-        free(ldc);
-        free(transa);
-        free(transb);
-        free(alpha);
-        free(beta);
-        free(group_size);
+        onemkl::aligned_free(m);
+        onemkl::aligned_free(n);
+        onemkl::aligned_free(k);
+        onemkl::aligned_free(lda);
+        onemkl::aligned_free(ldb);
+        onemkl::aligned_free(ldc);
+        onemkl::aligned_free(transa);
+        onemkl::aligned_free(transb);
+        onemkl::aligned_free(alpha);
+        onemkl::aligned_free(beta);
+        onemkl::aligned_free(group_size);
         return false;
     }
 
@@ -118,17 +118,17 @@ bool test(const device &dev, int64_t group_count) {
         total_batch_count += group_size[i];
     }
 
-    fp **a_array     = (fp **)aligned_alloc(64, sizeof(fp *) * total_batch_count);
-    fp **b_array     = (fp **)aligned_alloc(64, sizeof(fp *) * total_batch_count);
-    fp **c_array     = (fp **)aligned_alloc(64, sizeof(fp *) * total_batch_count);
-    fp **c_ref_array = (fp **)aligned_alloc(64, sizeof(fp *) * total_batch_count);
+    fp **a_array     = (fp **)onemkl::aligned_alloc(64, sizeof(fp *) * total_batch_count);
+    fp **b_array     = (fp **)onemkl::aligned_alloc(64, sizeof(fp *) * total_batch_count);
+    fp **c_array     = (fp **)onemkl::aligned_alloc(64, sizeof(fp *) * total_batch_count);
+    fp **c_ref_array = (fp **)onemkl::aligned_alloc(64, sizeof(fp *) * total_batch_count);
 
     if ((a_array == NULL) || (b_array == NULL) || (c_array == NULL) || (c_ref_array == NULL)) {
         std::cout << "Error cannot allocate arrays of pointers\n";
-        free(a_array);
-        free(b_array);
-        free(c_array);
-        free(c_ref_array);
+        onemkl::aligned_free(a_array);
+        onemkl::aligned_free(b_array);
+        onemkl::aligned_free(c_array);
+        onemkl::aligned_free(c_ref_array);
         return false;
     }
 
@@ -237,21 +237,21 @@ bool test(const device &dev, int64_t group_count) {
         // GEMM_BATCH currently not supported with CUBLAS backend.
         std::string error_msg(error.what());
         if (error_msg.compare("Not implemented for cublas") == 0) {
-            free(m);
-            free(n);
-            free(k);
-            free(lda);
-            free(ldb);
-            free(ldc);
-            free(transa);
-            free(transb);
-            free(alpha);
-            free(beta);
-            free(group_size);
-            free(a_array);
-            free(b_array);
-            free(c_array);
-            free(c_ref_array);
+            onemkl::aligned_free(m);
+            onemkl::aligned_free(n);
+            onemkl::aligned_free(k);
+            onemkl::aligned_free(lda);
+            onemkl::aligned_free(ldb);
+            onemkl::aligned_free(ldc);
+            onemkl::aligned_free(transa);
+            onemkl::aligned_free(transb);
+            onemkl::aligned_free(alpha);
+            onemkl::aligned_free(beta);
+            onemkl::aligned_free(group_size);
+            onemkl::aligned_free(a_array);
+            onemkl::aligned_free(b_array);
+            onemkl::aligned_free(c_array);
+            onemkl::aligned_free(c_ref_array);
             return true;
         }
 #endif
@@ -265,21 +265,21 @@ bool test(const device &dev, int64_t group_count) {
                                   std::cout);
     }
 
-    free(m);
-    free(n);
-    free(k);
-    free(lda);
-    free(ldb);
-    free(ldc);
-    free(transa);
-    free(transb);
-    free(alpha);
-    free(beta);
-    free(group_size);
-    free(a_array);
-    free(b_array);
-    free(c_array);
-    free(c_ref_array);
+    onemkl::aligned_free(m);
+    onemkl::aligned_free(n);
+    onemkl::aligned_free(k);
+    onemkl::aligned_free(lda);
+    onemkl::aligned_free(ldb);
+    onemkl::aligned_free(ldc);
+    onemkl::aligned_free(transa);
+    onemkl::aligned_free(transb);
+    onemkl::aligned_free(alpha);
+    onemkl::aligned_free(beta);
+    onemkl::aligned_free(group_size);
+    onemkl::aligned_free(a_array);
+    onemkl::aligned_free(b_array);
+    onemkl::aligned_free(c_array);
+    onemkl::aligned_free(c_ref_array);
 
     return good;
 }

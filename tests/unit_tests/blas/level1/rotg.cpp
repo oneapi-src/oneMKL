@@ -25,7 +25,7 @@
 
 #include <CL/sycl.hpp>
 #include "cblas.h"
-#include "config.hpp"
+#include "onemkl/detail/config.hpp"
 #include "onemkl/onemkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
@@ -42,10 +42,10 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp, typename fp_scalar>
-bool test(const device &dev) {
+bool test(const device &dev, fp s, fp_scalar c) {
     // Prepare data.
-    fp a, b, s, a_ref, b_ref, s_ref;
-    fp_scalar c, c_ref;
+    fp a, b, a_ref, b_ref, s_ref;
+    fp_scalar c_ref;
 
     a     = rand_scalar<fp>();
     b     = rand_scalar<fp>();
@@ -117,30 +117,30 @@ class RotgTests : public ::testing::TestWithParam<cl::sycl::device> {};
 TEST_P(RotgTests, RealSinglePrecision) {
     float c(2.0);
     float s(-0.5);
-    EXPECT_TRUE((test<float, float>(GetParam())));
-    EXPECT_TRUE((test<float, float>(GetParam())));
-    EXPECT_TRUE((test<float, float>(GetParam())));
+    EXPECT_TRUE((test<float, float>(GetParam(), c, s)));
+    EXPECT_TRUE((test<float, float>(GetParam(), c, s)));
+    EXPECT_TRUE((test<float, float>(GetParam(), c, s)));
 }
 TEST_P(RotgTests, RealDoublePrecision) {
     double c(2.0);
     double s(-0.5);
-    EXPECT_TRUE((test<double, double>(GetParam())));
-    EXPECT_TRUE((test<double, double>(GetParam())));
-    EXPECT_TRUE((test<double, double>(GetParam())));
+    EXPECT_TRUE((test<double, double>(GetParam(), c, s)));
+    EXPECT_TRUE((test<double, double>(GetParam(), c, s)));
+    EXPECT_TRUE((test<double, double>(GetParam(), c, s)));
 }
 TEST_P(RotgTests, ComplexSinglePrecision) {
     float c = 2.0;
     float s = -0.5;
-    EXPECT_TRUE((test<std::complex<float>, float>(GetParam())));
-    EXPECT_TRUE((test<std::complex<float>, float>(GetParam())));
-    EXPECT_TRUE((test<std::complex<float>, float>(GetParam())));
+    EXPECT_TRUE((test<std::complex<float>, float>(GetParam(), c, s)));
+    EXPECT_TRUE((test<std::complex<float>, float>(GetParam(), c, s)));
+    EXPECT_TRUE((test<std::complex<float>, float>(GetParam(), c, s)));
 }
 TEST_P(RotgTests, ComplexDoublePrecision) {
     double c = 2.0;
     double s = -0.5;
-    EXPECT_TRUE((test<std::complex<double>, double>(GetParam())));
-    EXPECT_TRUE((test<std::complex<double>, double>(GetParam())));
-    EXPECT_TRUE((test<std::complex<double>, double>(GetParam())));
+    EXPECT_TRUE((test<std::complex<double>, double>(GetParam(), c, s)));
+    EXPECT_TRUE((test<std::complex<double>, double>(GetParam(), c, s)));
+    EXPECT_TRUE((test<std::complex<double>, double>(GetParam(), c, s)));
 }
 
 INSTANTIATE_TEST_SUITE_P(RotgTestSuite, RotgTests, ::testing::ValuesIn(devices),

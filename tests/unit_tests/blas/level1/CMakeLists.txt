@@ -22,26 +22,26 @@ set(L1_SOURCES "nrm2.cpp" "iamin.cpp" "iamax.cpp" "dotu.cpp" "dot.cpp" "dotc.cpp
 
 if(BUILD_SHARED_LIBS)
   add_library(blas_level1_rt OBJECT ${L1_SOURCES})
-  target_compile_options(blas_level1_rt PRIVATE -DCALL_RT_API)
+  target_compile_options(blas_level1_rt PRIVATE -DCALL_RT_API -DNOMINMAX)
   target_include_directories(blas_level1_rt
       PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
       PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include
       PUBLIC ${PROJECT_SOURCE_DIR}/include
       PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
-      PUBLIC ${CMAKE_BINARY_DIR}/bin/onemkl
+      PUBLIC ${CMAKE_BINARY_DIR}/bin
       PUBLIC ${CBLAS_INCLUDE}
   )
   target_link_libraries(blas_level1_rt PUBLIC ONEMKL::SYCL::SYCL)
 endif()
 
 add_library(blas_level1_ct OBJECT ${L1_SOURCES})
-target_compile_options(blas_level1_ct PRIVATE)
+target_compile_options(blas_level1_ct PRIVATE -DNOMINMAX)
 target_include_directories(blas_level1_ct
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
-    PUBLIC ${CMAKE_BINARY_DIR}/bin/onemkl
+    PUBLIC ${CMAKE_BINARY_DIR}/bin
     PUBLIC ${CBLAS_INCLUDE}
 )
 target_link_libraries(blas_level1_ct PUBLIC ONEMKL::SYCL::SYCL)

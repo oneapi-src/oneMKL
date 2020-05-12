@@ -23,16 +23,15 @@
 #include <limits>
 #include <vector>
 
+#include <gtest/gtest.h>
 #include <CL/sycl.hpp>
 #include "cblas.h"
-#include "config.hpp"
+#include "onemkl/detail/config.hpp"
 #include "onemkl/onemkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
 #include "test_helper.hpp"
-
-#include <gtest/gtest.h>
 
 using namespace cl::sycl;
 using std::vector;
@@ -42,7 +41,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp, typename fp_res>
-bool test(const device& dev, int N, int incx) {
+bool test(const device& dev, int64_t N, int64_t incx) {
     // Prepare data.
     vector<fp> x;
     fp_res result = fp_res(-1), result_ref = fp_res(-1);

@@ -27,7 +27,7 @@
 #include <CL/sycl.hpp>
 #include "allocator_helper.hpp"
 #include "cblas.h"
-#include "config.hpp"
+#include "onemkl/detail/config.hpp"
 #include "onemkl/onemkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
@@ -155,6 +155,7 @@ TEST_P(GemmExtOffTests, Int8Uint8Int32Precision) {
     EXPECT_TRUE((test<float, int8_t, uint8_t, int32_t>(
         GetParam(), onemkl::transpose::trans, onemkl::transpose::trans, onemkl::offset::fix, 79, 83,
         91, 103, 105, 106, alpha, beta)));
+
     EXPECT_TRUE((test<float, int8_t, uint8_t, int32_t>(
         GetParam(), onemkl::transpose::nontrans, onemkl::transpose::nontrans,
         onemkl::offset::column, 79, 83, 91, 103, 105, 106, alpha, beta)));
@@ -167,6 +168,7 @@ TEST_P(GemmExtOffTests, Int8Uint8Int32Precision) {
     EXPECT_TRUE((test<float, int8_t, uint8_t, int32_t>(
         GetParam(), onemkl::transpose::trans, onemkl::transpose::trans, onemkl::offset::column, 79,
         83, 91, 103, 105, 106, alpha, beta)));
+
     EXPECT_TRUE((test<float, int8_t, uint8_t, int32_t>(
         GetParam(), onemkl::transpose::nontrans, onemkl::transpose::nontrans, onemkl::offset::row,
         79, 83, 91, 103, 105, 106, alpha, beta)));

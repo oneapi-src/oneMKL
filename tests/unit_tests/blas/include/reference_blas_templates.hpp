@@ -23,18 +23,81 @@
 #include <stdlib.h>
 #include <complex>
 #include "cblas.h"
+#include "test_helper.hpp"
+
+#ifdef __linux__
+    #include <dlfcn.h>
+    #define LIB_TYPE                void *
+    #define GET_LIB_HANDLE(libname) dlopen((libname), RTLD_LAZY | RTLD_GLOBAL)
+    #define GET_FUNC(lib, fn)       dlsym(lib, (fn))
+#elif defined(_WIN64)
+    #include <windows.h>
+    #define LIB_TYPE                HINSTANCE
+    #define GET_LIB_HANDLE(libname) LoadLibrary(libname)
+    #define GET_FUNC(lib, fn)       GetProcAddress((lib), (fn))
+#endif
 
 extern "C" {
+static LIB_TYPE h = NULL;
+static void (*csrot_p)(const int *N, void *X, const int *incX, void *Y, const int *incY,
+                       const float *c, const float *s);
+static void (*zdrot_p)(const int *N, void *X, const int *incX, void *Y, const int *incY,
+                       const double *c, const double *s);
+static void (*crotg_p)(void *a, void *b, const float *c, void *s);
+static void (*zrotg_p)(void *a, void *b, const double *c, void *s);
 
-void csrot_(const int *N, void *X, const int *incX, void *Y, const int *incY, const float *c,
-            const float *s);
+static LIB_TYPE cblas_library() {
+    if (h == NULL) {
+#ifdef _WIN64
+        h = GET_LIB_HANDLE("libblas.dll");
+        if (h == NULL)
+            h = GET_LIB_HANDLE("blas.dll");
+#else
+        h = GET_LIB_HANDLE("libblas.so");
+#endif
+    }
+    return h;
+}
 
-void zdrot_(const int *N, void *X, const int *incX, void *Y, const int *incY, const double *c,
-            const double *s);
+static void onemkl_csrot(const int *N, void *X, const int *incX, void *Y, const int *incY,
+                         const float *c, const float *s) {
+    if (cblas_library() != NULL) {
+        if (csrot_p == NULL)
+            csrot_p = (void (*)(const int *N, void *X, const int *incX, void *Y, const int *incY,
+                                const float *c, const float *s))GET_FUNC(h, "csrot_");
+        if (csrot_p != NULL)
+            csrot_p(N, X, incX, Y, incY, c, s);
+    }
+}
 
-void crotg_(void *a, void *b, const float *c, void *s);
+static void onemkl_zdrot(const int *N, void *X, const int *incX, void *Y, const int *incY,
+                         const double *c, const double *s) {
+    if (cblas_library() != NULL) {
+        if (zdrot_p == NULL)
+            zdrot_p = (void (*)(const int *N, void *X, const int *incX, void *Y, const int *incY,
+                                const double *c, const double *s))GET_FUNC(h, "zdrot_");
+        if (zdrot_p != NULL)
+            zdrot_p(N, X, incX, Y, incY, c, s);
+    }
+}
 
-void zrotg_(void *a, void *b, const double *c, void *s);
+static void onemkl_crotg(void *a, void *b, const float *c, void *s) {
+    if (cblas_library() != NULL) {
+        if (crotg_p == NULL)
+            crotg_p = (void (*)(void *a, void *b, const float *c, void *s))GET_FUNC(h, "crotg_");
+        if (crotg_p != NULL)
+            crotg_p(a, b, c, s);
+    }
+}
+
+static void onemkl_zrotg(void *a, void *b, const double *c, void *s) {
+    if (cblas_library() != NULL) {
+        if (zrotg_p == NULL)
+            zrotg_p = (void (*)(void *a, void *b, const double *c, void *s))GET_FUNC(h, "zrotg_");
+        if (zrotg_p != NULL)
+            zrotg_p(a, b, c, s);
+    }
+}
 }
 
 template <typename T_src, typename T_dest>
@@ -150,18 +213,18 @@ void gemm(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const in
     sizea              = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
     sizeb              = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
     sizec              = *ldc * *n;
-    float *af          = (float *)aligned_alloc(64, sizeof(float) * sizea);
-    float *bf          = (float *)aligned_alloc(64, sizeof(float) * sizeb);
-    float *cf          = (float *)aligned_alloc(64, sizeof(float) * sizec);
+    float *af          = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizea);
+    float *bf          = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizeb);
+    float *cf          = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizec);
     copy_mat(a, transa, *m, *k, *lda, af);
     copy_mat(b, transb, *k, *n, *ldb, bf);
     copy_mat(c, CblasNoTrans, *m, *n, *ldc, cf);
     cblas_sgemm(CblasColMajor, transa, transb, *m, *n, *k, alphaf, af, *lda, bf, *ldb, betaf, cf,
                 *ldc);
     copy_mat(cf, CblasNoTrans, *m, *n, *ldc, c);
-    free(af);
-    free(bf);
-    free(cf);
+    onemkl::aligned_free(af);
+    onemkl::aligned_free(bf);
+    onemkl::aligned_free(cf);
 }
 
 template <>
@@ -1103,13 +1166,13 @@ void rot(const int *n, double *x, const int *incx, double *y, const int *incy, c
 template <>
 void rot(const int *n, std::complex<float> *x, const int *incx, std::complex<float> *y,
          const int *incy, const float *c, const float *s) {
-    csrot_(n, (void *)x, incx, (void *)y, incy, c, s);
+    onemkl_csrot(n, (void *)x, incx, (void *)y, incy, c, s);
 }
 
 template <>
 void rot(const int *n, std::complex<double> *x, const int *incx, std::complex<double> *y,
          const int *incy, const double *c, const double *s) {
-    zdrot_(n, (void *)x, incx, (void *)y, incy, c, s);
+    onemkl_zdrot(n, (void *)x, incx, (void *)y, incy, c, s);
 }
 
 template <typename fp, typename fp_c>
@@ -1127,12 +1190,12 @@ void rotg(double *a, double *b, double *c, double *s) {
 
 template <>
 void rotg(std::complex<float> *a, std::complex<float> *b, float *c, std::complex<float> *s) {
-    crotg_((void *)a, (void *)b, c, (void *)s);
+    onemkl_crotg((void *)a, (void *)b, c, (void *)s);
 }
 
 template <>
 void rotg(std::complex<double> *a, std::complex<double> *b, double *c, std::complex<double> *s) {
-    zrotg_((void *)a, (void *)b, c, (void *)s);
+    onemkl_zrotg((void *)a, (void *)b, c, (void *)s);
 }
 
 template <typename fp>
@@ -1388,18 +1451,18 @@ void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, cons
     sizea              = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
     sizeb              = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
     sizec              = *ldc * *n;
-    float *af          = (float *)aligned_alloc(64, sizeof(float) * sizea);
-    float *bf          = (float *)aligned_alloc(64, sizeof(float) * sizeb);
-    float *cf          = (float *)aligned_alloc(64, sizeof(float) * sizec);
+    float *af          = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizea);
+    float *bf          = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizeb);
+    float *cf          = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizec);
     copy_mat(a, transa, *m, *k, *lda, af);
     copy_mat(b, transb, *k, *n, *ldb, bf);
     copy_mat(c, CblasNoTrans, *m, *n, *ldc, cf);
     cblas_sgemm(CblasColMajor, transa, transb, *m, *n, *k, alphaf, af, *lda, bf, *ldb, betaf, cf,
                 *ldc);
     copy_mat(cf, CblasNoTrans, *m, *n, *ldc, c);
-    free(af);
-    free(bf);
-    free(cf);
+    onemkl::aligned_free(af);
+    onemkl::aligned_free(bf);
+    onemkl::aligned_free(cf);
 }
 
 template <>
@@ -1447,14 +1510,14 @@ void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, cons
     int sizea, sizeb;
     sizea     = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
     sizeb     = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
-    float *af = (float *)aligned_alloc(64, sizeof(float) * sizea);
-    float *bf = (float *)aligned_alloc(64, sizeof(float) * sizeb);
+    float *af = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizea);
+    float *bf = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizeb);
     copy_mat(a, transa, *m, *k, *lda, af);
     copy_mat(b, transb, *k, *n, *ldb, bf);
     cblas_sgemm(CblasColMajor, transa, transb, *m, *n, *k, *alpha, af, *lda, bf, *ldb, *beta, c,
                 *ldc);
-    free(af);
-    free(bf);
+    onemkl::aligned_free(af);
+    onemkl::aligned_free(bf);
 }
 
 template <typename fps, typename fpa, typename fpb, typename fpc>
@@ -1473,9 +1536,9 @@ void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, CBLAS_OFFSET offse
     sizea         = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
     sizeb         = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
     sizec         = *ldc * *n;
-    double *ad    = (double *)aligned_alloc(64, sizeof(double) * sizea);
-    double *bd    = (double *)aligned_alloc(64, sizeof(double) * sizeb);
-    double *cd    = (double *)aligned_alloc(64, sizeof(double) * sizec);
+    double *ad    = (double *)onemkl::aligned_alloc(64, sizeof(double) * sizea);
+    double *bd    = (double *)onemkl::aligned_alloc(64, sizeof(double) * sizeb);
+    double *cd    = (double *)onemkl::aligned_alloc(64, sizeof(double) * sizec);
     double alphad = *alpha;
     double betad  = *beta;
     double aod    = *ao;
@@ -1486,9 +1549,9 @@ void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, CBLAS_OFFSET offse
     cblas_dgemm(CblasColMajor, transa, transb, *m, *n, *k, alphad, ad, *lda, bd, *ldb, betad, cd,
                 *ldc);
     copy_mat(cd, *m, *n, *ldc, offsetc, co, c);
-    free(ad);
-    free(bd);
-    free(cd);
+    onemkl::aligned_free(ad);
+    onemkl::aligned_free(bd);
+    onemkl::aligned_free(cd);
 }
 
 template <typename fp>
@@ -1503,11 +1566,12 @@ void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE trans
     // Not supported in NETLIB. SGEMM is used as reference.
     int sizec;
     sizec     = *ldc * *n;
-    float *cf = (float *)aligned_alloc(64, sizeof(float) * sizec);
+    float *cf = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizec);
     update_c(c, upper_lower, *n, *n, *ldc, cf);
     cblas_sgemm(CblasColMajor, transa, transb, *n, *n, *k, *alpha, a, *lda, b, *ldb, *beta, cf,
                 *ldc);
     update_c(cf, upper_lower, *n, *n, *ldc, c);
+    onemkl::aligned_free(cf);
 }
 
 template <>
@@ -1517,11 +1581,12 @@ void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE trans
     // Not supported in NETLIB. DGEMM is used as reference.
     int sizec;
     sizec      = *ldc * *n;
-    double *cf = (double *)aligned_alloc(64, sizeof(double) * sizec);
+    double *cf = (double *)onemkl::aligned_alloc(64, sizeof(double) * sizec);
     update_c(c, upper_lower, *n, *n, *ldc, cf);
     cblas_dgemm(CblasColMajor, transa, transb, *n, *n, *k, *alpha, a, *lda, b, *ldb, *beta, cf,
                 *ldc);
     update_c(cf, upper_lower, *n, *n, *ldc, c);
+    onemkl::aligned_free(cf);
 }
 
 template <>
@@ -1533,10 +1598,11 @@ void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE trans
     int sizec;
     sizec = *ldc * *n;
     std::complex<float> *cf =
-        (std::complex<float> *)aligned_alloc(64, sizeof(std::complex<float>) * sizec);
+        (std::complex<float> *)onemkl::aligned_alloc(64, sizeof(std::complex<float>) * sizec);
     update_c(c, upper_lower, *n, *n, *ldc, cf);
     cblas_cgemm(CblasColMajor, transa, transb, *n, *n, *k, alpha, a, *lda, b, *ldb, beta, cf, *ldc);
     update_c(cf, upper_lower, *n, *n, *ldc, c);
+    onemkl::aligned_free(cf);
 }
 
 template <>
@@ -1548,10 +1614,11 @@ void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE trans
     int sizec;
     sizec = *ldc * *n;
     std::complex<double> *cf =
-        (std::complex<double> *)aligned_alloc(64, sizeof(std::complex<double>) * sizec);
+        (std::complex<double> *)onemkl::aligned_alloc(64, sizeof(std::complex<double>) * sizec);
     update_c(c, upper_lower, *n, *n, *ldc, cf);
     cblas_zgemm(CblasColMajor, transa, transb, *n, *n, *k, alpha, a, *lda, b, *ldb, beta, cf, *ldc);
     update_c(cf, upper_lower, *n, *n, *ldc, c);
+    onemkl::aligned_free(cf);
 }
 
 #endif /* header guard */

@@ -22,26 +22,26 @@ set(BATCH_SOURCES "gemm_batch.cpp" "gemm_batch_stride.cpp" "trsm_batch.cpp" "trs
 
 if(BUILD_SHARED_LIBS)
   add_library(blas_batch_rt OBJECT ${BATCH_SOURCES})
-  target_compile_options(blas_batch_rt PRIVATE -DCALL_RT_API)
+  target_compile_options(blas_batch_rt PRIVATE -DCALL_RT_API -DNOMINMAX)
   target_include_directories(blas_batch_rt
       PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
       PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include
       PUBLIC ${PROJECT_SOURCE_DIR}/include
       PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
-      PUBLIC ${CMAKE_BINARY_DIR}/bin/onemkl
+      PUBLIC ${CMAKE_BINARY_DIR}/bin
       PUBLIC ${CBLAS_INCLUDE}
   )
   target_link_libraries(blas_batch_rt PUBLIC ONEMKL::SYCL::SYCL)
 endif()
 
 add_library(blas_batch_ct OBJECT ${BATCH_SOURCES})
-target_compile_options(blas_batch_ct PRIVATE)
+target_compile_options(blas_batch_ct PRIVATE  -DNOMINMAX)
 target_include_directories(blas_batch_ct
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
-    PUBLIC ${CMAKE_BINARY_DIR}/bin/onemkl
+    PUBLIC ${CMAKE_BINARY_DIR}/bin
     PUBLIC ${CBLAS_INCLUDE}
 )
 target_link_libraries(blas_batch_ct PUBLIC ONEMKL::SYCL::SYCL)

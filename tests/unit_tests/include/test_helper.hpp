@@ -82,17 +82,17 @@ namespace onemkl {
 
 static inline void *aligned_alloc(size_t align, size_t size) {
 #ifdef _WIN64
-    return _aligned_malloc(size, align);
+    return ::_aligned_malloc(size, align);
 #else
-    return aligned_alloc(align, size);
+    return ::aligned_alloc(align, size);
 #endif
 }
 
 static inline void aligned_free(void *p) {
 #ifdef _WIN64
-    _aligned_free(p);
+    ::_aligned_free(p);
 #else
-    free(p);
+    ::free(p);
 #endif
 }
 } // namespace onemkl
