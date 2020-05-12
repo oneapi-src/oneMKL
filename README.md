@@ -13,7 +13,7 @@
 
 ## Introduction
 
-oneMKL interfaces is an open-source implementation of oneMKL Data Parallel C++ (DPC++) interfaces according to [oneMKL specification](https://spec.oneapi.com/versions/latest/elements/oneMKL/source/index.html) that can work with multiple devices (backends) using device specific libraries underneath.
+oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel C++ (DPC++) interface according to the [oneMKL specification](https://spec.oneapi.com/versions/latest/elements/oneMKL/source/index.html). It works with multiple devices (backends) using device-specific libraries underneath.
 
 <table>
     <thead>
@@ -46,7 +46,7 @@ oneMKL interfaces is an open-source implementation of oneMKL Data Parallel C++ (
 
 There are two oneMKL selector layer implementations:
 
-- **Run-time dispatching**: The application is linked with the onemkl library and the required backend is loaded at run-time based on device vendor (all libraries should be dynamic).
+- **Run-time dispatching**: The application is linked with the oneMKL library and the required backend is loaded at run-time based on device vendor (all libraries should be dynamic).
 
 Example of app.cpp with run-time dispatching:
 
@@ -70,7 +70,7 @@ $> clang++ -fsycl –I$ONEMKL/include app.cpp
 $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl
 ```
 
-- **Compile-time dispatching**: The application uses a templated API where the template parameters specify the required backends and third-party libraries and the application is linked with required onemkl backend wrapper libraries (libraries can be static or dynamic).
+- **Compile-time dispatching**: The application uses a templated API where the template parameters specify the required backends and third-party libraries and the application is linked with the required oneMKL backend wrapper libraries (libraries can be static or dynamic).
 
 Example of app.cpp with compile-time dispatching:
 
@@ -105,7 +105,14 @@ Supported domains: BLAS
  Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
  Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
  NVIDIA GPU | NVIDIA cuBLAS | Dynamic, Static
- 
+
+#### Windows*
+
+ Backend | Library | Supported Link Type
+ :------| :-------| :------------------
+ Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+ Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+  
 ---
 
 ## Support and Requirements
@@ -121,6 +128,13 @@ Supported domains: BLAS
     - Intel(R) Processor Graphics GEN9
     - NVIDIA(R) TITAN RTX(TM) (Not tested with other NVIDIA GPU families and products.)
 
+#### Windows*
+- CPU
+    - Intel Atom(R) Processors
+    - Intel(R) Core(TM) Processor Family
+    - Intel(R) Xeon(R) Processor Family
+- Accelerators
+    - Intel(R) Processor Graphics Gen9
 ---
 ### Supported Operating Systems
 
@@ -133,6 +147,12 @@ SUSE Linux Enterprise Server*     | 15             | *Not supported* | *Not supp
 Red Hat Enterprise Linux* (RHEL*) | 8              | *Not supported* | *Not supported*
 Linux* kernel                     | *N/A*          | 4.11 or higher | *N/A*
 
+#### Windows*
+
+Operating System | CPU Host/Target | Integrated Graphics from Intel (Intel GPU)
+:--- | :--- | :---
+Microsoft Windows* | 10 (64-bit version only) | 10 (64-bit version only)
+Microsoft Windows* Server | 2016, 2019 | *Not supported*
 ---
 
 ### Software Requirements
@@ -204,6 +224,24 @@ Linux* kernel                     | *N/A*          | 4.11 or higher | *N/A*
             <td> NVIDIA CUDA SDK </td>
             </tr>
         </tr>
+        <tr>
+            <td rowspan=8> Windows* </td>
+            <tr>
+                <td rowspan=2> Intel CPU </td>
+                <td> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
+                <tr>
+                    <td> Intel(R) oneAPI Math Kernel Library </td>
+                </tr>
+            </tr>
+            <td rowspan=3> Intel GPU </td>
+            <td> Intel(R) oneAPI DPC++ Compiler </td>
+            <tr>
+                <td> Intel GPU driver </td>
+            </tr>
+            <tr>
+                <td> Intel(R) oneAPI Math Kernel Library </td>
+            </tr>
+        </tr>    
     </tbody>
 </table>
 
@@ -251,6 +289,18 @@ export CXX=<path_to_dpcpp_compiler>/bin/dpcpp;
 cmake .. [-DMKL_ROOT=<mkl_install_prefix>] \               # required only if enviroment variable MKLROOT is not set
          [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] # required only for testing
 cmake --build .
+ctest
+cmake --install . --prefix <path_to_install_dir>
+```
+- On Windows*
+```bash
+# Inside <path to onemkl>
+md build && cd build
+cmake .. -G Ninja  -DCMAKE_TOOLCHAIN_FILE="..\cmake\toolchain\intel_clang-cl-toolchain.cmake"  
+                  [-DMKL_ROOT=<mkl_install_prefix>] \                   # required only if enviroment variable MKLROOT is not set
+                  [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]     # required only for testing
+
+ninja 
 ctest
 cmake --install . --prefix <path_to_install_dir>
 ```
