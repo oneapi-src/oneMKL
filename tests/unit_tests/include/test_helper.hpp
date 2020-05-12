@@ -21,6 +21,13 @@
 #define _TEST_HELPER_HPP_
 
 #include <gtest/gtest.h>
+#include "onemkl/detail/config.hpp"
+
+#ifdef _WIN64
+    #include <malloc.h>
+#else
+    #incude < stdlib.h>
+#endif
 
 #ifdef ENABLE_MKLCPU_BACKEND
     #define TEST_RUN_INTELCPU(q, func, args) \
@@ -60,24 +67,34 @@
 class DeviceNamePrint {
 public:
     std::string operator()(testing::TestParamInfo<cl::sycl::device> dev) const {
-        if (dev.param.is_cpu())
-            return std::string("CPU");
-        if (dev.param.is_host())
-            return std::string("HOST");
-        if (dev.param.is_gpu()) {
-            unsigned int vendor_id =
-                static_cast<unsigned int>(dev.param.get_info<cl::sycl::info::device::vendor_id>());
-            switch (vendor_id) {
-                case INTEL_ID:
-                    return std::string("INTELGPU");
-                case NVIDIA_ID:
-                    return std::string("NVIDIAGPU");
-            }
+        std::string dev_name = dev.param.get_info<cl::sycl::info::device::name>();
+        for (std::string::size_type i = 0; i < dev_name.size(); ++i) {
+            if (!isalnum(dev_name[i]))
+                dev_name[i] = '_';
         }
-        if (dev.param.is_accelerator())
-            return std::string("ACCELERATOR");
-        return std::string("UNKNOWN");
+        return dev_name;
     }
 };
+
+/* to accomodate Windows and Linux differences between alligned_alloc and 
+   _aligned_malloc calls use onemkl::aligned_alloc and onemkl::aligned_free instead */
+namespace onemkl {
+
+static inline void *aligned_alloc(size_t align, size_t size) {
+#ifdef _WIN64
+    return _aligned_malloc(size, align);
+#else
+    return aligned_alloc(align, size);
+#endif
+}
+
+static inline void aligned_free(void *p) {
+#ifdef _WIN64
+    _aligned_free(p);
+#else
+    free(p);
+#endif
+}
+} // namespace onemkl
 
 #endif // _TEST_HELPER_HPP_

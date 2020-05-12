@@ -24,6 +24,7 @@
 #include <cstddef>
 #include <limits>
 #include <type_traits>
+#include "test_helper.hpp"
 
 template <typename T, int align>
 struct allocator_helper {
@@ -47,7 +48,7 @@ struct allocator_helper {
     allocator_helper(allocator_helper<U, align2>&& other) noexcept {}
 
     T* allocate(size_t n) {
-        void* mem = aligned_alloc(align, n * sizeof(T));
+        void* mem = onemkl::aligned_alloc(align, n * sizeof(T));
         if (!mem)
             throw std::bad_alloc();
 
@@ -55,7 +56,7 @@ struct allocator_helper {
     }
 
     void deallocate(T* p, size_t n) noexcept {
-        free(p);
+        onemkl::aligned_free(p);
     }
 
     constexpr size_t max_size() const noexcept {

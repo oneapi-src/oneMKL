@@ -20,6 +20,8 @@
 #ifndef _TEST_COMMON_HPP__
 #define _TEST_COMMON_HPP__
 
+#include <algorithm>
+
 #include <complex>
 #include <type_traits>
 

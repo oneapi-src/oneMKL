@@ -22,26 +22,26 @@ set(L3_SOURCES "gemm.cpp" "symm.cpp" "syrk.cpp" "hemm.cpp" "herk.cpp" "syr2k.cpp
 
 if(BUILD_SHARED_LIBS)
   add_library(blas_level3_rt OBJECT ${L3_SOURCES})
-  target_compile_options(blas_level3_rt PRIVATE -DCALL_RT_API)
+  target_compile_options(blas_level3_rt PRIVATE -DCALL_RT_API -DNOMINMAX)
   target_include_directories(blas_level3_rt
       PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
       PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include
       PUBLIC ${PROJECT_SOURCE_DIR}/include
       PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
-      PUBLIC ${CMAKE_BINARY_DIR}/bin/onemkl
+      PUBLIC ${CMAKE_BINARY_DIR}/bin
       PUBLIC ${CBLAS_INCLUDE}
   )
   target_link_libraries(blas_level3_rt PUBLIC ONEMKL::SYCL::SYCL)
 endif()
 
 add_library(blas_level3_ct OBJECT ${L3_SOURCES})
-target_compile_options(blas_level3_ct PRIVATE)
+target_compile_options(blas_level3_ct PRIVATE  -DNOMINMAX)
 target_include_directories(blas_level3_ct
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
-    PUBLIC ${CMAKE_BINARY_DIR}/bin/onemkl
+    PUBLIC ${CMAKE_BINARY_DIR}/bin
     PUBLIC ${CBLAS_INCLUDE}
 )
 target_link_libraries(blas_level3_ct PUBLIC ONEMKL::SYCL::SYCL)
