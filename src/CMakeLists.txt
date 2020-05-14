@@ -23,8 +23,12 @@ add_subdirectory(blas)
 # generate header with enabled backends for testing
 configure_file(config.hpp.in "${CMAKE_CURRENT_BINARY_DIR}/onemkl/config.hpp.configured")
 file(GENERATE
-  OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/onemkl/config.hpp"
+  OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/onemkl/detail/config.hpp"
   INPUT "${CMAKE_CURRENT_BINARY_DIR}/onemkl/config.hpp.configured"
+)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/onemkl/detail/config.hpp"
+  DESTINATION include/onemkl/detail
+  COMPONENT Devel
 )
 
 # Add recipe for onemkl loader library
@@ -40,12 +44,6 @@ set_target_properties(onemkl PROPERTIES
   SOVERSION ${PROJECT_VERSION_MAJOR}
 )
 
-# generate header file for exporting symbols
-include(GenerateExportHeader)
-generate_export_header(
-  onemkl
-  EXPORT_FILE_NAME "onemkl/export.hpp"
-)
 # Build dispatcher library
 target_link_libraries(onemkl PUBLIC onemkl_blas)
 

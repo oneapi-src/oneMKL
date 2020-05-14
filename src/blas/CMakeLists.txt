@@ -27,8 +27,11 @@ target_sources(onemkl_blas PRIVATE blas_loader.cpp)
 target_include_directories(onemkl_blas
   PRIVATE ${PROJECT_SOURCE_DIR}/include
           ${PROJECT_SOURCE_DIR}/src
+          ${CMAKE_BINARY_DIR}/bin
           $<TARGET_FILE_DIR:onemkl>
 )
+
+target_compile_options(onemkl_blas PRIVATE "-Donemkl_EXPORTS")
 
 set_target_properties(onemkl_blas PROPERTIES
   POSITION_INDEPENDENT_CODE ON

@@ -22,26 +22,26 @@ set(EXTENSIONS_SOURCES "gemm_ext.cpp" "gemm_ext_off.cpp" "gemmt.cpp")
 
 if(BUILD_SHARED_LIBS)
   add_library(blas_extensions_rt OBJECT ${EXTENSIONS_SOURCES})
-  target_compile_options(blas_extensions_rt PRIVATE -DCALL_RT_API)
+  target_compile_options(blas_extensions_rt PRIVATE -DCALL_RT_API -DNOMINMAX)
   target_include_directories(blas_extensions_rt
       PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
       PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include
       PUBLIC ${PROJECT_SOURCE_DIR}/include
       PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
-      PUBLIC ${CMAKE_BINARY_DIR}/bin/onemkl
+      PUBLIC ${CMAKE_BINARY_DIR}/bin
       PUBLIC ${CBLAS_INCLUDE}
   )
   target_link_libraries(blas_extensions_rt PUBLIC ONEMKL::SYCL::SYCL)
 endif()
 
 add_library(blas_extensions_ct OBJECT ${EXTENSIONS_SOURCES})
-target_compile_options(blas_extensions_ct PRIVATE)
+target_compile_options(blas_extensions_ct PRIVATE  -DNOMINMAX)
 target_include_directories(blas_extensions_ct
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
-    PUBLIC ${CMAKE_BINARY_DIR}/bin/onemkl
+    PUBLIC ${CMAKE_BINARY_DIR}/bin
     PUBLIC ${CBLAS_INCLUDE}
 )
 target_link_libraries(blas_extensions_ct PUBLIC ONEMKL::SYCL::SYCL)

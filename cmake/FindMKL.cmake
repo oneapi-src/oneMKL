@@ -35,7 +35,6 @@ endif()
 
 list(APPEND MKL_C ${MKL_CORE})
 
-
 if (ENABLE_MKLCPU_BACKEND OR ENABLE_MKLGPU_BACKEND)
   if(ENABLE_MKLGPU_BACKEND)
     list(APPEND MKL_LIBRARIES ${MKL_SYCL})
@@ -50,15 +49,7 @@ foreach(lib ${MKL_LIBRARIES})
   find_package_handle_standard_args(MKL REQUIRED_VARS ${lib}_file)
 endforeach()
 
-if(UNIX)
-  set(MKL_CORE_LIBNAME libmkl_core.so)
-else()
-  set(MKL_CORE_LIBNAME mkl_core.lib)
-endif()
-
-find_path(MKL_LIB_DIR ${MKL_CORE_LIBNAME}
-          HINTS $ENV{MKLROOT} ${MKL_ROOT}
-          PATH_SUFFIXES lib/intel64)
+get_filename_component(MKL_LIB_DIR ${mkl_core_file} DIRECTORY)
 
 find_path(MKL_INCLUDE mkl.h
           HINTS $ENV{MKLROOT} ${MKL_ROOT}
@@ -70,25 +61,34 @@ else()
   set(MKL_COPT "")
 endif()
 
-#Workaround for soname problem
 if(UNIX)
   list(APPEND MKL_LINK_PREFIX "-Wl,-rpath,${MKL_LIB_DIR}")
   list(APPEND MKL_LINK_PREFIX "-L${MKL_LIB_DIR}")
-  if (ENABLE_MKLCPU_BACKEND OR ENABLE_MKLGPU_BACKEND)
-    set(MKL_LINK_C ${MKL_LINK_PREFIX})
-    foreach(lib ${MKL_C})
-      list(APPEND MKL_LINK_C -l${lib})
-    endforeach()
-    if(ENABLE_MKLCPU_THREAD_TBB)
-      list(APPEND MKL_LINK_C ${TBB_LINK})
-    endif()
-    if(ENABLE_MKLGPU_BACKEND)
-      set(MKL_LINK_SYCL ${MKL_LINK_PREFIX} -l${MKL_SYCL} ${MKL_LINK_C} -lOpenCL)
-    endif()
+  set(LIB_PREFIX "-l")
+  set(OPENCL_LIBNAME "OpenCL")
+else()
+  if(${BUILD_SHARED_LIBS})
+    set(MKL_COPT ${MKL_COPT} "-Donemkl_EXPORTS")
+  endif()
+  list(APPEND MKL_LINK_PREFIX "-LIBPATH:\"${MKL_LIB_DIR}\"")
+  set(LIB_PREFIX "")
+  set(OPENCL_LIBNAME "OpenCL.lib")
+endif()
+
+if (ENABLE_MKLCPU_BACKEND OR ENABLE_MKLGPU_BACKEND)
+  set(MKL_LINK_C ${MKL_LINK_PREFIX})
+  foreach(lib ${MKL_C})
+    list(APPEND MKL_LINK_C ${LIB_PREFIX}${lib})
+  endforeach()
+  if(ENABLE_MKLCPU_THREAD_TBB)
+    list(APPEND MKL_LINK_C ${TBB_LINK})
+  endif()
+  if(ENABLE_MKLGPU_BACKEND)
+    set(MKL_LINK_SYCL ${MKL_LINK_PREFIX} ${LIB_PREFIX}${MKL_SYCL} ${MKL_LINK_C} ${LIB_PREFIX}${OPENCL_LIBNAME})
   endif()
 endif()
 
-
+#Workaround for soname problem
 include(FindPackageHandleStandardArgs)
 if (ENABLE_MKLCPU_BACKEND)
   find_package_handle_standard_args(MKL REQUIRED_VARS MKL_INCLUDE MKL_COPT MKL_LINK_C)

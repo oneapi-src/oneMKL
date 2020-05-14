@@ -17,6 +17,7 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
+#include "onemkl/blas/detail/blas_loader.hpp"
 #include "loader.hpp"
 
 namespace onemkl {
