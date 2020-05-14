@@ -20,6 +20,7 @@
 #include <CL/sycl.hpp>
 
 #include "cpu_common.hpp"
+#include "onemkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
 
 namespace onemkl {
 namespace mklcpu {

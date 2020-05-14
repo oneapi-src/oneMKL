@@ -20,6 +20,7 @@
 #include <CL/sycl.hpp>
 
 #include "mkl_internal_blas_gpu_wrappers.hpp"
+#include "onemkl/blas/detail/mklgpu/onemkl_blas_mklgpu.hpp"
 #include "onemkl/types.hpp"
 
 namespace onemkl {

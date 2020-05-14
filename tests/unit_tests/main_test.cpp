@@ -20,7 +20,7 @@
 #include <gtest/gtest.h>
 #include <CL/sycl.hpp>
 #include <string>
-#include "config.hpp"
+#include "onemkl/detail/config.hpp"
 #include "onemkl/onemkl.hpp"
 
 #define MAX_STR 128

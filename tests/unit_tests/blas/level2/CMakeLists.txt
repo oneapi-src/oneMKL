@@ -22,26 +22,26 @@ set(L2_SOURCES "hpr2.cpp" "hpmv.cpp" "her.cpp" "her2.cpp" "hemv.cpp" "hbmv.cpp" 
 
 if(BUILD_SHARED_LIBS)
   add_library(blas_level2_rt OBJECT ${L2_SOURCES})
-  target_compile_options(blas_level2_rt PRIVATE -DCALL_RT_API)
+  target_compile_options(blas_level2_rt PRIVATE -DCALL_RT_API -DNOMINMAX)
   target_include_directories(blas_level2_rt
       PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
       PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include
       PUBLIC ${PROJECT_SOURCE_DIR}/include
       PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
-      PUBLIC ${CMAKE_BINARY_DIR}/bin/onemkl
+      PUBLIC ${CMAKE_BINARY_DIR}/bin
       PUBLIC ${CBLAS_INCLUDE}
   )
   target_link_libraries(blas_level2_rt PUBLIC ONEMKL::SYCL::SYCL)
 endif()
 
 add_library(blas_level2_ct OBJECT ${L2_SOURCES})
-target_compile_options(blas_level2_ct PRIVATE)
+target_compile_options(blas_level2_ct PRIVATE -DNOMINMAX)
 target_include_directories(blas_level2_ct
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
-    PUBLIC ${CMAKE_BINARY_DIR}/bin/onemkl
+    PUBLIC ${CMAKE_BINARY_DIR}/bin
     PUBLIC ${CBLAS_INCLUDE}
 )
 target_link_libraries(blas_level2_ct PUBLIC ONEMKL::SYCL::SYCL)

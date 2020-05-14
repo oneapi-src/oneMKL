@@ -19,6 +19,7 @@
 
 #include <CL/sycl.hpp>
 
+#include "include/allocator_helper.hpp"
 #include "mkl_internal_blas_gpu_wrappers.hpp"
 #include "mkl_internal_blas_sycl_gpu.hpp"
 
@@ -1465,20 +1466,18 @@ void gemm_ext(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpos
     // DGEMM is used for reference implementation to maximize accuracy.
     // Optimized implementation for specific architectures will be added in future releases.
     int64_t sizea, sizeb, sizec;
-    sizea         = (transa == onemkl::transpose::nontrans) ? lda * k : lda * m;
-    sizeb         = (transb == onemkl::transpose::nontrans) ? ldb * n : ldb * k;
-    sizec         = ldc * n;
-    double *ad    = (double *)aligned_alloc(64, sizeof(double) * sizea);
-    double *bd    = (double *)aligned_alloc(64, sizeof(double) * sizeb);
-    double *cd    = (double *)aligned_alloc(64, sizeof(double) * sizec);
-    double alphad = alpha;
-    double betad  = beta;
-    double aod    = ao;
-    double bod    = bo;
-    auto acc_a    = a.template get_access<cl::sycl::access::mode::read>();
-    auto acc_b    = b.template get_access<cl::sycl::access::mode::read>();
-    auto acc_c    = c.template get_access<cl::sycl::access::mode::read_write>();
-    auto acc_co   = co.template get_access<cl::sycl::access::mode::read_write>();
+    sizea       = (transa == onemkl::transpose::nontrans) ? lda * k : lda * m;
+    sizeb       = (transb == onemkl::transpose::nontrans) ? ldb * n : ldb * k;
+    sizec       = ldc * n;
+    double *ad  = (double *)onemkl::aligned_alloc(64, sizeof(double) * sizea);
+    double *bd  = (double *)onemkl::aligned_alloc(64, sizeof(double) * sizeb);
+    double *cd  = (double *)onemkl::aligned_alloc(64, sizeof(double) * sizec);
+    double aod  = ao;
+    double bod  = bo;
+    auto acc_a  = a.template get_access<cl::sycl::access::mode::read>();
+    auto acc_b  = b.template get_access<cl::sycl::access::mode::read>();
+    auto acc_c  = c.template get_access<cl::sycl::access::mode::read_write>();
+    auto acc_co = co.template get_access<cl::sycl::access::mode::read_write>();
     copy_mat(acc_a, transa, m, k, lda, aod, ad);
     copy_mat(acc_b, transb, k, n, ldb, bod, bd);
     copy_mat(acc_c, onemkl::transpose::nontrans, m, n, ldc, 0.0, cd);
@@ -1489,9 +1488,9 @@ void gemm_ext(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpos
                     A_buf, lda, B_buf, ldb, beta, C_buf, ldc);
     auto acc_cd = C_buf.template get_access<cl::sycl::access::mode::read>();
     copy_mat(acc_cd, m, n, ldc, offsetc, acc_co, acc_c);
-    free(ad);
-    free(bd);
-    free(cd);
+    onemkl::aligned_free(ad);
+    onemkl::aligned_free(bd);
+    onemkl::aligned_free(cd);
 }
 
 } //namespace internal

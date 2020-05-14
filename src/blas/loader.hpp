@@ -33,6 +33,13 @@
     #define GET_FUNC(lib, fn)        dlsym(lib, (fn))
     #define FREE_LIB_HANDLE(libname) dlclose(libname)
     #define ERROR_MSG                dlerror()
+#elif defined(_WIN64)
+    #include <windows.h>
+    #define LIB_TYPE                 HINSTANCE
+    #define GET_LIB_HANDLE(libname)  LoadLibrary(libname)
+    #define GET_FUNC(lib, fn)        GetProcAddress((lib), (fn))
+    #define FREE_LIB_HANDLE(libname) FreeLibrary(libname)
+    #define ERROR_MSG                GetLastErrorStdStr()
 #endif
 
 namespace onemkl {
@@ -57,6 +64,29 @@ public:
     }
 
 private:
+#ifdef _WIN64
+    // Create a string with last error message
+    std::string GetLastErrorStdStr() {
+        DWORD error = GetLastError();
+        if (error) {
+            LPVOID lpMsgBuf;
+            DWORD bufLen = FormatMessage(
+                FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
+                    FORMAT_MESSAGE_IGNORE_INSERTS,
+                NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL);
+            if (bufLen) {
+                LPCSTR lpMsgStr = (LPCSTR)lpMsgBuf;
+                std::string result(lpMsgStr, lpMsgStr + bufLen);
+
+                LocalFree(lpMsgBuf);
+
+                return result;
+            }
+        }
+        return std::string();
+    }
+#endif
+
     function_table_t &add_table(const char *libname) {
         auto handle = dlhandle{ ::GET_LIB_HANDLE(libname) };
         if (!handle) {

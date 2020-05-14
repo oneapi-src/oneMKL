@@ -38,20 +38,33 @@ else()
     message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 endif()
 
+project(oneMKL VERSION 0.1.0 LANGUAGES CXX)
+
 option(BUILD_SHARED_LIBS "Build dynamic libraries" ON)
 ## Backends
 option(ENABLE_MKLCPU_BACKEND "" ON)
 option(ENABLE_MKLGPU_BACKEND "" ON)
 if(ENABLE_MKLCPU_BACKEND)
-    option(ENABLE_MKLCPU_THREAD_TBB "" ON)
+  option(ENABLE_MKLCPU_THREAD_TBB "" ON)
 endif()
+
 ## Testing
 option(BUILD_FUNCTIONAL_TESTS "" ON)
 ## Documentation
 option(BUILD_DOC "" OFF)
 
 # Set compilation flags
-set(CMAKE_CXX_STANDARD 11)
+if(UNIX)
+  set(CMAKE_CXX_STANDARD 11)
+else()
+  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function")
+  foreach (flag_var
+           CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+           CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+    string(REPLACE "/MD" "-MT" ${flag_var} "${${flag_var}}")
+  endforeach()
+endif()
 
 set(CMAKE_CXX_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
