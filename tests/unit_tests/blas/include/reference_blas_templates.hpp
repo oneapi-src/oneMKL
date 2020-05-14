@@ -59,8 +59,8 @@ static LIB_TYPE cblas_library() {
     return h;
 }
 
-static void onemkl_csrot(const int *N, void *X, const int *incX, void *Y, const int *incY,
-                         const float *c, const float *s) {
+static void csrot_wrapper(const int *N, void *X, const int *incX, void *Y, const int *incY,
+                          const float *c, const float *s) {
     if (cblas_library() != NULL) {
         if (csrot_p == NULL)
             csrot_p = (void (*)(const int *N, void *X, const int *incX, void *Y, const int *incY,
@@ -70,8 +70,8 @@ static void onemkl_csrot(const int *N, void *X, const int *incX, void *Y, const 
     }
 }
 
-static void onemkl_zdrot(const int *N, void *X, const int *incX, void *Y, const int *incY,
-                         const double *c, const double *s) {
+static void zdrot_wrapper(const int *N, void *X, const int *incX, void *Y, const int *incY,
+                          const double *c, const double *s) {
     if (cblas_library() != NULL) {
         if (zdrot_p == NULL)
             zdrot_p = (void (*)(const int *N, void *X, const int *incX, void *Y, const int *incY,
@@ -81,7 +81,7 @@ static void onemkl_zdrot(const int *N, void *X, const int *incX, void *Y, const 
     }
 }
 
-static void onemkl_crotg(void *a, void *b, const float *c, void *s) {
+static void crotg_wrapper(void *a, void *b, const float *c, void *s) {
     if (cblas_library() != NULL) {
         if (crotg_p == NULL)
             crotg_p = (void (*)(void *a, void *b, const float *c, void *s))GET_FUNC(h, "crotg_");
@@ -90,7 +90,7 @@ static void onemkl_crotg(void *a, void *b, const float *c, void *s) {
     }
 }
 
-static void onemkl_zrotg(void *a, void *b, const double *c, void *s) {
+static void zrotg_wrapper(void *a, void *b, const double *c, void *s) {
     if (cblas_library() != NULL) {
         if (zrotg_p == NULL)
             zrotg_p = (void (*)(void *a, void *b, const double *c, void *s))GET_FUNC(h, "zrotg_");
@@ -1166,13 +1166,13 @@ void rot(const int *n, double *x, const int *incx, double *y, const int *incy, c
 template <>
 void rot(const int *n, std::complex<float> *x, const int *incx, std::complex<float> *y,
          const int *incy, const float *c, const float *s) {
-    onemkl_csrot(n, (void *)x, incx, (void *)y, incy, c, s);
+    csrot_wrapper(n, (void *)x, incx, (void *)y, incy, c, s);
 }
 
 template <>
 void rot(const int *n, std::complex<double> *x, const int *incx, std::complex<double> *y,
          const int *incy, const double *c, const double *s) {
-    onemkl_zdrot(n, (void *)x, incx, (void *)y, incy, c, s);
+    zdrot_wrapper(n, (void *)x, incx, (void *)y, incy, c, s);
 }
 
 template <typename fp, typename fp_c>
@@ -1190,12 +1190,12 @@ void rotg(double *a, double *b, double *c, double *s) {
 
 template <>
 void rotg(std::complex<float> *a, std::complex<float> *b, float *c, std::complex<float> *s) {
-    onemkl_crotg((void *)a, (void *)b, c, (void *)s);
+    crotg_wrapper((void *)a, (void *)b, c, (void *)s);
 }
 
 template <>
 void rotg(std::complex<double> *a, std::complex<double> *b, double *c, std::complex<double> *s) {
-    onemkl_zrotg((void *)a, (void *)b, c, (void *)s);
+    zrotg_wrapper((void *)a, (void *)b, c, (void *)s);
 }
 
 template <typename fp>

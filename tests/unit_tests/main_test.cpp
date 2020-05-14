@@ -84,8 +84,6 @@ int main(int argc, char** argv) {
     for (auto plat : platforms) {
         if (!plat.is_host()) {
             auto plat_devs = plat.get_devices();
-            std::cout << "FOUND " << plat_devs.size() << " DEVICES "
-                      << "\n";
             for (auto dev : plat_devs) {
                 try {
                     if (unique_devices.find(dev.get_info<cl::sycl::info::device::name>()) ==
