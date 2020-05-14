@@ -119,22 +119,14 @@ Supported domains: BLAS
 
 ### Hardware Platform Support
 
-#### Linux*
 - CPU
     - Intel Atom(R) Processors
     - Intel(R) Core(TM) Processor Family
     - Intel(R) Xeon(R) Processor Family
 - Accelerators
     - Intel(R) Processor Graphics GEN9
-    - NVIDIA(R) TITAN RTX(TM) (Not tested with other NVIDIA GPU families and products.)
-
-#### Windows*
-- CPU
-    - Intel Atom(R) Processors
-    - Intel(R) Core(TM) Processor Family
-    - Intel(R) Xeon(R) Processor Family
-- Accelerators
-    - Intel(R) Processor Graphics Gen9
+    - NVIDIA(R) TITAN RTX(TM) (Linux* only. Not tested with other NVIDIA GPU families and products.)
+    
 ---
 ### Supported Operating Systems
 
@@ -200,32 +192,24 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
     </thead>
     <tbody>
         <tr>
-            <td rowspan=8> Linux* </td>
+            <td rowspan=3> Linux* </td>
             <td> Any </td>
-            <td colspan=2 align="center"> GNU* GCC 5.1 or higher </td>
+            <td colspan=2> GNU* GCC 5.1 or higher </td>
             <tr>
-                <td rowspan=2> Intel CPU </td>
-                <td> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
+                <td rowspan=2> NVIDIA GPU </td>
+                <td> Intel project for LLVM* technology </td>
                 <tr>
-                    <td> Intel(R) oneAPI Math Kernel Library </td>
+                    <td> NVIDIA CUDA SDK </td>
                 </tr>
-            </tr>
-            <td rowspan=3> Intel GPU </td>
-            <td> Intel(R) oneAPI DPC++ Compiler </td>
-            <tr>
-                <td> Intel GPU driver </td>
-            </tr>
-            <tr>
-                <td> Intel(R) oneAPI Math Kernel Library </td>
-            </tr>
-            <td rowspan=2> NVIDIA GPU </td>
-            <td> Intel project for LLVM* technology </td>
-            <tr>
-            <td> NVIDIA CUDA SDK </td>
-            </tr>
+            </tr>    
         </tr>
         <tr>
-            <td rowspan=8> Windows* </td>
+            <td rowspan=1> Windows* </td>
+            <td> Any </td>
+            <td colspan=2> MSVS* 2017 <br> or <br> MSVS* 2019 (version 16.5 or newer) </td>
+        </tr>
+        <tr>
+            <td rowspan=8> Linux*/Windows* </td>
             <tr>
                 <td rowspan=2> Intel CPU </td>
                 <td> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
