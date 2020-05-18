@@ -1,7 +1,6 @@
 ---
 name: Request a documentation change
-about: Use this template to report documentation issue or request documentation
-changes
+about: Use this template to report documentation issue or request documentation changes
 title: ''
 labels: 'documentation'
 assignees: ''

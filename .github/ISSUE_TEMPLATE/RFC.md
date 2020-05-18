@@ -1,7 +1,6 @@
 ---
 name: RFC for new interface
-about: Use this template to request new functionality or change behavior of the
-library
+about: Use this template to request new functionality or change the behavior of the library
 title: ''
 labels: 'RFC'
 assignees: ''
