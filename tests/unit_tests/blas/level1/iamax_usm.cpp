@@ -66,7 +66,7 @@ int test(const device& dev, int N, int incx) {
     // Prepare data.
     auto ua = usm_allocator_helper<fp, 64>(cxt, dev);
     vector<fp, decltype(ua)> x(ua);
-    int64_t result = -1, result_ref = -1;
+    int64_t result_ref = -1;
     rand_vector(x, N, incx);
 
     // Call Reference IAMAX.

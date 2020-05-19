@@ -66,7 +66,7 @@ int test(const device &dev, int N, int incx, int incy) {
     // Prepare data.
     auto ua = usm_allocator_helper<fp, 64>(cxt, dev);
     vector<fp, decltype(ua)> x(ua), y(ua);
-    fp result = 0.0, result_reference = 0.0;
+    fp result_reference = 0.0;
 
     rand_vector(x, N, incx);
     rand_vector(y, N, incy);
