@@ -28,6 +28,12 @@
 #include <complex>
 #include <stdexcept>
 #include "onemkl/types.hpp"
+
+class backend_unsupported_exception : public std::runtime_error {
+public:
+    backend_unsupported_exception() : std::runtime_error("Not yet supported for this backend") {}
+};
+
 namespace onemkl {
 namespace cublas {
 

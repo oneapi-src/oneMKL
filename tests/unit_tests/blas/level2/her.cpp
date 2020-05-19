@@ -43,7 +43,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp, typename fp_scalar>
-bool test(const device &dev, onemkl::uplo upper_lower, int n, fp_scalar alpha, int incx, int lda) {
+int test(const device &dev, onemkl::uplo upper_lower, int n, fp_scalar alpha, int incx, int lda) {
     // Prepare data.
     vector<fp> x, A_ref, A;
     rand_vector(x, n, incx);
@@ -93,6 +93,14 @@ bool test(const device &dev, onemkl::uplo upper_lower, int n, fp_scalar alpha, i
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const backend_unsupported_exception &e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error &error) {
+        std::cout << "Error raised during execution of HER:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -100,39 +108,39 @@ bool test(const device &dev, onemkl::uplo upper_lower, int n, fp_scalar alpha, i
         good            = check_equal_matrix(A_accessor, A_ref, n, n, lda, n, std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class HerTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(HerTests, ComplexSinglePrecision) {
     float alpha(2.0);
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         (test<std::complex<float>, float>(GetParam(), onemkl::uplo::lower, 30, alpha, 2, 42)));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         (test<std::complex<float>, float>(GetParam(), onemkl::uplo::upper, 30, alpha, 2, 42)));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         (test<std::complex<float>, float>(GetParam(), onemkl::uplo::lower, 30, alpha, -2, 42)));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         (test<std::complex<float>, float>(GetParam(), onemkl::uplo::upper, 30, alpha, -2, 42)));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         (test<std::complex<float>, float>(GetParam(), onemkl::uplo::lower, 30, alpha, 1, 42)));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         (test<std::complex<float>, float>(GetParam(), onemkl::uplo::upper, 30, alpha, 1, 42)));
 }
 TEST_P(HerTests, ComplexDoublePrecision) {
     double alpha(2.0);
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         (test<std::complex<double>, double>(GetParam(), onemkl::uplo::lower, 30, alpha, 2, 42)));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         (test<std::complex<double>, double>(GetParam(), onemkl::uplo::upper, 30, alpha, 2, 42)));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         (test<std::complex<double>, double>(GetParam(), onemkl::uplo::lower, 30, alpha, -2, 42)));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         (test<std::complex<double>, double>(GetParam(), onemkl::uplo::upper, 30, alpha, -2, 42)));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         (test<std::complex<double>, double>(GetParam(), onemkl::uplo::lower, 30, alpha, 1, 42)));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         (test<std::complex<double>, double>(GetParam(), onemkl::uplo::upper, 30, alpha, 1, 42)));
 }
 

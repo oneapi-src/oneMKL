@@ -27,6 +27,8 @@ namespace onemkl {
 namespace mklgpu {
 namespace internal {
 
+// Buffer APIs
+
 void gemm(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb, int64_t m,
           int64_t n, int64_t k, float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda,
           cl::sycl::buffer<float, 1> &b, int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c,
@@ -989,155 +991,6 @@ void iamin(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<doub
     mkl::gpu::izamin(queue, n, x, incx, result);
 }
 
-void gemm_batch(cl::sycl::queue &queue, cl::sycl::buffer<onemkl::transpose, 1> &transa,
-                cl::sycl::buffer<onemkl::transpose, 1> &transb,
-                cl::sycl::buffer<std::int64_t, 1> &m, cl::sycl::buffer<std::int64_t, 1> &n,
-                cl::sycl::buffer<std::int64_t, 1> &k, cl::sycl::buffer<float, 1> &alpha,
-                cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<float, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-                cl::sycl::buffer<float, 1> &beta, cl::sycl::buffer<float, 1> &c,
-                cl::sycl::buffer<std::int64_t, 1> &ldc, std::int64_t group_count,
-                cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    auto transa_acc     = transa.get_access<cl::sycl::access::mode::read>();
-    auto transb_acc     = transb.get_access<cl::sycl::access::mode::read>();
-    auto m_acc          = m.get_access<cl::sycl::access::mode::read>();
-    auto n_acc          = n.get_access<cl::sycl::access::mode::read>();
-    auto k_acc          = k.get_access<cl::sycl::access::mode::read>();
-    auto alpha_acc      = alpha.get_access<cl::sycl::access::mode::read>();
-    auto lda_acc        = lda.get_access<cl::sycl::access::mode::read>();
-    auto ldb_acc        = ldb.get_access<cl::sycl::access::mode::read>();
-    auto beta_acc       = beta.get_access<cl::sycl::access::mode::read>();
-    auto ldc_acc        = ldc.get_access<cl::sycl::access::mode::read>();
-    auto group_size_acc = group_size.get_access<cl::sycl::access::mode::read>();
-    int64_t stride_a, stride_b, stride_c, off_a = 0, off_b = 0, off_c = 0;
-    for (int64_t i = 0; i < group_count; i++) {
-        stride_a =
-            (transa_acc[i] == transpose::nontrans) ? lda_acc[i] * k_acc[i] : lda_acc[i] * m_acc[i];
-        stride_b =
-            (transb_acc[i] == transpose::nontrans) ? ldb_acc[i] * n_acc[i] : ldb_acc[i] * k_acc[i];
-        stride_c = ldc_acc[i] * n_acc[i];
-        mkl::gpu::sgemm_batch(
-            queue, mkl::cblas_convert(transa_acc[i]), mkl::cblas_convert(transb_acc[i]), m_acc[i],
-            n_acc[i], k_acc[i], alpha_acc[i], a, lda_acc[i], stride_a, b, ldb_acc[i], stride_b,
-            beta_acc[i], c, ldc_acc[i], stride_c, group_size_acc[i], off_a, off_b, off_c);
-        off_a += stride_a * group_size_acc[i];
-        off_b += stride_b * group_size_acc[i];
-        off_c += stride_c * group_size_acc[i];
-    }
-}
-
-void gemm_batch(cl::sycl::queue &queue, cl::sycl::buffer<onemkl::transpose, 1> &transa,
-                cl::sycl::buffer<onemkl::transpose, 1> &transb,
-                cl::sycl::buffer<std::int64_t, 1> &m, cl::sycl::buffer<std::int64_t, 1> &n,
-                cl::sycl::buffer<std::int64_t, 1> &k, cl::sycl::buffer<double, 1> &alpha,
-                cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<double, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-                cl::sycl::buffer<double, 1> &beta, cl::sycl::buffer<double, 1> &c,
-                cl::sycl::buffer<std::int64_t, 1> &ldc, std::int64_t group_count,
-                cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    auto transa_acc     = transa.get_access<cl::sycl::access::mode::read>();
-    auto transb_acc     = transb.get_access<cl::sycl::access::mode::read>();
-    auto m_acc          = m.get_access<cl::sycl::access::mode::read>();
-    auto n_acc          = n.get_access<cl::sycl::access::mode::read>();
-    auto k_acc          = k.get_access<cl::sycl::access::mode::read>();
-    auto alpha_acc      = alpha.get_access<cl::sycl::access::mode::read>();
-    auto lda_acc        = lda.get_access<cl::sycl::access::mode::read>();
-    auto ldb_acc        = ldb.get_access<cl::sycl::access::mode::read>();
-    auto beta_acc       = beta.get_access<cl::sycl::access::mode::read>();
-    auto ldc_acc        = ldc.get_access<cl::sycl::access::mode::read>();
-    auto group_size_acc = group_size.get_access<cl::sycl::access::mode::read>();
-    int64_t stride_a, stride_b, stride_c, off_a = 0, off_b = 0, off_c = 0;
-    for (int64_t i = 0; i < group_count; i++) {
-        stride_a =
-            (transa_acc[i] == transpose::nontrans) ? lda_acc[i] * k_acc[i] : lda_acc[i] * m_acc[i];
-        stride_b =
-            (transb_acc[i] == transpose::nontrans) ? ldb_acc[i] * n_acc[i] : ldb_acc[i] * k_acc[i];
-        stride_c = ldc_acc[i] * n_acc[i];
-        mkl::gpu::dgemm_batch(
-            queue, mkl::cblas_convert(transa_acc[i]), mkl::cblas_convert(transb_acc[i]), m_acc[i],
-            n_acc[i], k_acc[i], alpha_acc[i], a, lda_acc[i], stride_a, b, ldb_acc[i], stride_b,
-            beta_acc[i], c, ldc_acc[i], stride_c, group_size_acc[i], off_a, off_b, off_c);
-        off_a += stride_a * group_size_acc[i];
-        off_b += stride_b * group_size_acc[i];
-        off_c += stride_c * group_size_acc[i];
-    }
-}
-
-void gemm_batch(cl::sycl::queue &queue, cl::sycl::buffer<onemkl::transpose, 1> &transa,
-                cl::sycl::buffer<onemkl::transpose, 1> &transb,
-                cl::sycl::buffer<std::int64_t, 1> &m, cl::sycl::buffer<std::int64_t, 1> &n,
-                cl::sycl::buffer<std::int64_t, 1> &k,
-                cl::sycl::buffer<std::complex<float>, 1> &alpha,
-                cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<std::complex<float>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-                cl::sycl::buffer<std::complex<float>, 1> &beta,
-                cl::sycl::buffer<std::complex<float>, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-                std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    auto transa_acc     = transa.get_access<cl::sycl::access::mode::read>();
-    auto transb_acc     = transb.get_access<cl::sycl::access::mode::read>();
-    auto m_acc          = m.get_access<cl::sycl::access::mode::read>();
-    auto n_acc          = n.get_access<cl::sycl::access::mode::read>();
-    auto k_acc          = k.get_access<cl::sycl::access::mode::read>();
-    auto alpha_acc      = alpha.get_access<cl::sycl::access::mode::read>();
-    auto lda_acc        = lda.get_access<cl::sycl::access::mode::read>();
-    auto ldb_acc        = ldb.get_access<cl::sycl::access::mode::read>();
-    auto beta_acc       = beta.get_access<cl::sycl::access::mode::read>();
-    auto ldc_acc        = ldc.get_access<cl::sycl::access::mode::read>();
-    auto group_size_acc = group_size.get_access<cl::sycl::access::mode::read>();
-    int64_t stride_a, stride_b, stride_c, off_a = 0, off_b = 0, off_c = 0;
-    for (int64_t i = 0; i < group_count; i++) {
-        stride_a =
-            (transa_acc[i] == transpose::nontrans) ? lda_acc[i] * k_acc[i] : lda_acc[i] * m_acc[i];
-        stride_b =
-            (transb_acc[i] == transpose::nontrans) ? ldb_acc[i] * n_acc[i] : ldb_acc[i] * k_acc[i];
-        stride_c = ldc_acc[i] * n_acc[i];
-        mkl::gpu::cgemm_batch(
-            queue, mkl::cblas_convert(transa_acc[i]), mkl::cblas_convert(transb_acc[i]), m_acc[i],
-            n_acc[i], k_acc[i], alpha_acc[i], a, lda_acc[i], stride_a, b, ldb_acc[i], stride_b,
-            beta_acc[i], c, ldc_acc[i], stride_c, group_size_acc[i], off_a, off_b, off_c);
-        off_a += stride_a * group_size_acc[i];
-        off_b += stride_b * group_size_acc[i];
-        off_c += stride_c * group_size_acc[i];
-    }
-}
-
-void gemm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<onemkl::transpose, 1> &transa,
-    cl::sycl::buffer<onemkl::transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
-    cl::sycl::buffer<std::complex<double>, 1> &alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<std::complex<double>, 1> &b,
-    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<std::complex<double>, 1> &beta,
-    cl::sycl::buffer<std::complex<double>, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    auto transa_acc     = transa.get_access<cl::sycl::access::mode::read>();
-    auto transb_acc     = transb.get_access<cl::sycl::access::mode::read>();
-    auto m_acc          = m.get_access<cl::sycl::access::mode::read>();
-    auto n_acc          = n.get_access<cl::sycl::access::mode::read>();
-    auto k_acc          = k.get_access<cl::sycl::access::mode::read>();
-    auto alpha_acc      = alpha.get_access<cl::sycl::access::mode::read>();
-    auto lda_acc        = lda.get_access<cl::sycl::access::mode::read>();
-    auto ldb_acc        = ldb.get_access<cl::sycl::access::mode::read>();
-    auto beta_acc       = beta.get_access<cl::sycl::access::mode::read>();
-    auto ldc_acc        = ldc.get_access<cl::sycl::access::mode::read>();
-    auto group_size_acc = group_size.get_access<cl::sycl::access::mode::read>();
-    int64_t stride_a, stride_b, stride_c, off_a = 0, off_b = 0, off_c = 0;
-    for (int64_t i = 0; i < group_count; i++) {
-        stride_a =
-            (transa_acc[i] == transpose::nontrans) ? lda_acc[i] * k_acc[i] : lda_acc[i] * m_acc[i];
-        stride_b =
-            (transb_acc[i] == transpose::nontrans) ? ldb_acc[i] * n_acc[i] : ldb_acc[i] * k_acc[i];
-        stride_c = ldc_acc[i] * n_acc[i];
-        mkl::gpu::zgemm_batch(
-            queue, mkl::cblas_convert(transa_acc[i]), mkl::cblas_convert(transb_acc[i]), m_acc[i],
-            n_acc[i], k_acc[i], alpha_acc[i], a, lda_acc[i], stride_a, b, ldb_acc[i], stride_b,
-            beta_acc[i], c, ldc_acc[i], stride_c, group_size_acc[i], off_a, off_b, off_c);
-        off_a += stride_a * group_size_acc[i];
-        off_b += stride_b * group_size_acc[i];
-        off_c += stride_c * group_size_acc[i];
-    }
-}
-
 void gemm_batch(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
                 std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
                 cl::sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a,
@@ -1182,135 +1035,6 @@ void gemm_batch(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transp
     mkl::gpu::zgemm_batch(queue, mkl::cblas_convert(transa), mkl::cblas_convert(transb), m, n, k,
                           alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc, stride_c,
                           batch_size);
-}
-
-void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<onemkl::side, 1> &left_right,
-                cl::sycl::buffer<onemkl::uplo, 1> &upper_lower,
-                cl::sycl::buffer<onemkl::transpose, 1> &trans,
-                cl::sycl::buffer<onemkl::diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-                cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<float, 1> &alpha,
-                cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<float, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-                std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    auto side_acc       = left_right.get_access<cl::sycl::access::mode::read>();
-    auto uplo_acc       = upper_lower.get_access<cl::sycl::access::mode::read>();
-    auto trans_acc      = trans.get_access<cl::sycl::access::mode::read>();
-    auto diag_acc       = unit_diag.get_access<cl::sycl::access::mode::read>();
-    auto m_acc          = m.get_access<cl::sycl::access::mode::read>();
-    auto n_acc          = n.get_access<cl::sycl::access::mode::read>();
-    auto alpha_acc      = alpha.get_access<cl::sycl::access::mode::read>();
-    auto lda_acc        = lda.get_access<cl::sycl::access::mode::read>();
-    auto ldb_acc        = ldb.get_access<cl::sycl::access::mode::read>();
-    auto group_size_acc = group_size.get_access<cl::sycl::access::mode::read>();
-    int64_t stride_a, stride_b, off_a = 0, off_b = 0;
-    for (int64_t i = 0; i < group_count; i++) {
-        stride_a = (side_acc[i] == side::left) ? lda_acc[i] * m_acc[i] : lda_acc[i] * n_acc[i];
-        stride_b = ldb_acc[i] * n_acc[i];
-        mkl::gpu::strsm_batch(queue, mkl::cblas_convert(side_acc[i]),
-                              mkl::cblas_convert(uplo_acc[i]), mkl::cblas_convert(trans_acc[i]),
-                              mkl::cblas_convert(diag_acc[i]), m_acc[i], n_acc[i], alpha_acc[i], a,
-                              lda_acc[i], stride_a, b, ldb_acc[i], stride_b, group_size_acc[i],
-                              off_a, off_b);
-        off_a += stride_a * group_size_acc[i];
-        off_b += stride_b * group_size_acc[i];
-    }
-}
-
-void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<onemkl::side, 1> &left_right,
-                cl::sycl::buffer<onemkl::uplo, 1> &upper_lower,
-                cl::sycl::buffer<onemkl::transpose, 1> &trans,
-                cl::sycl::buffer<onemkl::diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-                cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<double, 1> &alpha,
-                cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<double, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-                std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    auto side_acc       = left_right.get_access<cl::sycl::access::mode::read>();
-    auto uplo_acc       = upper_lower.get_access<cl::sycl::access::mode::read>();
-    auto trans_acc      = trans.get_access<cl::sycl::access::mode::read>();
-    auto diag_acc       = unit_diag.get_access<cl::sycl::access::mode::read>();
-    auto m_acc          = m.get_access<cl::sycl::access::mode::read>();
-    auto n_acc          = n.get_access<cl::sycl::access::mode::read>();
-    auto alpha_acc      = alpha.get_access<cl::sycl::access::mode::read>();
-    auto lda_acc        = lda.get_access<cl::sycl::access::mode::read>();
-    auto ldb_acc        = ldb.get_access<cl::sycl::access::mode::read>();
-    auto group_size_acc = group_size.get_access<cl::sycl::access::mode::read>();
-    int64_t stride_a, stride_b, off_a = 0, off_b = 0;
-    for (int64_t i = 0; i < group_count; i++) {
-        stride_a = (side_acc[i] == side::left) ? lda_acc[i] * m_acc[i] : lda_acc[i] * n_acc[i];
-        stride_b = ldb_acc[i] * n_acc[i];
-        mkl::gpu::dtrsm_batch(queue, mkl::cblas_convert(side_acc[i]),
-                              mkl::cblas_convert(uplo_acc[i]), mkl::cblas_convert(trans_acc[i]),
-                              mkl::cblas_convert(diag_acc[i]), m_acc[i], n_acc[i], alpha_acc[i], a,
-                              lda_acc[i], stride_a, b, ldb_acc[i], stride_b, group_size_acc[i],
-                              off_a, off_b);
-        off_a += stride_a * group_size_acc[i];
-        off_b += stride_b * group_size_acc[i];
-    }
-}
-
-void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<onemkl::side, 1> &left_right,
-                cl::sycl::buffer<onemkl::uplo, 1> &upper_lower,
-                cl::sycl::buffer<onemkl::transpose, 1> &trans,
-                cl::sycl::buffer<onemkl::diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-                cl::sycl::buffer<std::int64_t, 1> &n,
-                cl::sycl::buffer<std::complex<float>, 1> &alpha,
-                cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<std::complex<float>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-                std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    auto side_acc       = left_right.get_access<cl::sycl::access::mode::read>();
-    auto uplo_acc       = upper_lower.get_access<cl::sycl::access::mode::read>();
-    auto trans_acc      = trans.get_access<cl::sycl::access::mode::read>();
-    auto diag_acc       = unit_diag.get_access<cl::sycl::access::mode::read>();
-    auto m_acc          = m.get_access<cl::sycl::access::mode::read>();
-    auto n_acc          = n.get_access<cl::sycl::access::mode::read>();
-    auto alpha_acc      = alpha.get_access<cl::sycl::access::mode::read>();
-    auto lda_acc        = lda.get_access<cl::sycl::access::mode::read>();
-    auto ldb_acc        = ldb.get_access<cl::sycl::access::mode::read>();
-    auto group_size_acc = group_size.get_access<cl::sycl::access::mode::read>();
-    int64_t stride_a, stride_b, off_a = 0, off_b = 0;
-    for (int64_t i = 0; i < group_count; i++) {
-        stride_a = (side_acc[i] == side::left) ? lda_acc[i] * m_acc[i] : lda_acc[i] * n_acc[i];
-        stride_b = ldb_acc[i] * n_acc[i];
-        mkl::gpu::ctrsm_batch(queue, mkl::cblas_convert(side_acc[i]),
-                              mkl::cblas_convert(uplo_acc[i]), mkl::cblas_convert(trans_acc[i]),
-                              mkl::cblas_convert(diag_acc[i]), m_acc[i], n_acc[i], alpha_acc[i], a,
-                              lda_acc[i], stride_a, b, ldb_acc[i], stride_b, group_size_acc[i],
-                              off_a, off_b);
-        off_a += stride_a * group_size_acc[i];
-        off_b += stride_b * group_size_acc[i];
-    }
-}
-
-void trsm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<onemkl::side, 1> &left_right,
-    cl::sycl::buffer<onemkl::uplo, 1> &upper_lower, cl::sycl::buffer<onemkl::transpose, 1> &trans,
-    cl::sycl::buffer<onemkl::diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::complex<double>, 1> &alpha,
-    cl::sycl::buffer<std::complex<double>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-    cl::sycl::buffer<std::complex<double>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    auto side_acc       = left_right.get_access<cl::sycl::access::mode::read>();
-    auto uplo_acc       = upper_lower.get_access<cl::sycl::access::mode::read>();
-    auto trans_acc      = trans.get_access<cl::sycl::access::mode::read>();
-    auto diag_acc       = unit_diag.get_access<cl::sycl::access::mode::read>();
-    auto m_acc          = m.get_access<cl::sycl::access::mode::read>();
-    auto n_acc          = n.get_access<cl::sycl::access::mode::read>();
-    auto alpha_acc      = alpha.get_access<cl::sycl::access::mode::read>();
-    auto lda_acc        = lda.get_access<cl::sycl::access::mode::read>();
-    auto ldb_acc        = ldb.get_access<cl::sycl::access::mode::read>();
-    auto group_size_acc = group_size.get_access<cl::sycl::access::mode::read>();
-    int64_t stride_a, stride_b, off_a = 0, off_b = 0;
-    for (int64_t i = 0; i < group_count; i++) {
-        stride_a = (side_acc[i] == side::left) ? lda_acc[i] * m_acc[i] : lda_acc[i] * n_acc[i];
-        stride_b = ldb_acc[i] * n_acc[i];
-        mkl::gpu::ztrsm_batch(queue, mkl::cblas_convert(side_acc[i]),
-                              mkl::cblas_convert(uplo_acc[i]), mkl::cblas_convert(trans_acc[i]),
-                              mkl::cblas_convert(diag_acc[i]), m_acc[i], n_acc[i], alpha_acc[i], a,
-                              lda_acc[i], stride_a, b, ldb_acc[i], stride_b, group_size_acc[i],
-                              off_a, off_b);
-        off_a += stride_a * group_size_acc[i];
-        off_b += stride_b * group_size_acc[i];
-    }
 }
 
 void trsm_batch(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
@@ -1491,6 +1215,1282 @@ void gemm_ext(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpos
     onemkl::aligned_free(ad);
     onemkl::aligned_free(bd);
     onemkl::aligned_free(cd);
+}
+
+// USM APIs
+
+cl::sycl::event gemm(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+                     int64_t m, int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
+                     const float *b, int64_t ldb, float beta, float *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::sgemm_sycl(&queue, mkl::cblas_convert(transa), mkl::cblas_convert(transb), m,
+                                n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event gemm(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+                     int64_t m, int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
+                     const double *b, int64_t ldb, double beta, double *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dgemm_sycl(&queue, mkl::cblas_convert(transa), mkl::cblas_convert(transb), m,
+                                n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event gemm(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+                     int64_t m, int64_t n, int64_t k, std::complex<float> alpha,
+                     const std::complex<float> *a, int64_t lda, const std::complex<float> *b,
+                     int64_t ldb, std::complex<float> beta, std::complex<float> *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::cgemm_sycl(&queue, mkl::cblas_convert(transa), mkl::cblas_convert(transb), m,
+                                n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event gemm(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+                     int64_t m, int64_t n, int64_t k, std::complex<double> alpha,
+                     const std::complex<double> *a, int64_t lda, const std::complex<double> *b,
+                     int64_t ldb, std::complex<double> beta, std::complex<double> *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zgemm_sycl(&queue, mkl::cblas_convert(transa), mkl::cblas_convert(transb), m,
+                                n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event symm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+                     int64_t m, int64_t n, float alpha, const float *a, int64_t lda, const float *b,
+                     int64_t ldb, float beta, float *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ssymm_sycl(&queue, mkl::cblas_convert(left_right),
+                                mkl::cblas_convert(upper_lower), m, n, alpha, a, lda, b, ldb, beta,
+                                c, ldc, dependencies);
+}
+
+cl::sycl::event symm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+                     int64_t m, int64_t n, double alpha, const double *a, int64_t lda,
+                     const double *b, int64_t ldb, double beta, double *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dsymm_sycl(&queue, mkl::cblas_convert(left_right),
+                                mkl::cblas_convert(upper_lower), m, n, alpha, a, lda, b, ldb, beta,
+                                c, ldc, dependencies);
+}
+
+cl::sycl::event symm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+                     int64_t m, int64_t n, std::complex<float> alpha, const std::complex<float> *a,
+                     int64_t lda, const std::complex<float> *b, int64_t ldb,
+                     std::complex<float> beta, std::complex<float> *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::csymm_sycl(&queue, mkl::cblas_convert(left_right),
+                                mkl::cblas_convert(upper_lower), m, n, alpha, a, lda, b, ldb, beta,
+                                c, ldc, dependencies);
+}
+
+cl::sycl::event symm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+                     int64_t m, int64_t n, std::complex<double> alpha,
+                     const std::complex<double> *a, int64_t lda, const std::complex<double> *b,
+                     int64_t ldb, std::complex<double> beta, std::complex<double> *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zsymm_sycl(&queue, mkl::cblas_convert(left_right),
+                                mkl::cblas_convert(upper_lower), m, n, alpha, a, lda, b, ldb, beta,
+                                c, ldc, dependencies);
+}
+
+cl::sycl::event hemm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+                     int64_t m, int64_t n, std::complex<float> alpha, const std::complex<float> *a,
+                     int64_t lda, const std::complex<float> *b, int64_t ldb,
+                     std::complex<float> beta, std::complex<float> *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::chemm_sycl(&queue, mkl::cblas_convert(left_right),
+                                mkl::cblas_convert(upper_lower), m, n, alpha, a, lda, b, ldb, beta,
+                                c, ldc, dependencies);
+}
+
+cl::sycl::event hemm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+                     int64_t m, int64_t n, std::complex<double> alpha,
+                     const std::complex<double> *a, int64_t lda, const std::complex<double> *b,
+                     int64_t ldb, std::complex<double> beta, std::complex<double> *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zhemm_sycl(&queue, mkl::cblas_convert(left_right),
+                                mkl::cblas_convert(upper_lower), m, n, alpha, a, lda, b, ldb, beta,
+                                c, ldc, dependencies);
+}
+
+cl::sycl::event syrk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+                     int64_t n, int64_t k, float alpha, const float *a, int64_t lda, float beta,
+                     float *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ssyrk_sycl(&queue, mkl::cblas_convert(upper_lower), mkl::cblas_convert(trans),
+                                n, k, alpha, a, lda, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event syrk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+                     int64_t n, int64_t k, double alpha, const double *a, int64_t lda, double beta,
+                     double *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dsyrk_sycl(&queue, mkl::cblas_convert(upper_lower), mkl::cblas_convert(trans),
+                                n, k, alpha, a, lda, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event syrk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+                     int64_t n, int64_t k, std::complex<float> alpha, const std::complex<float> *a,
+                     int64_t lda, std::complex<float> beta, std::complex<float> *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::csyrk_sycl(&queue, mkl::cblas_convert(upper_lower), mkl::cblas_convert(trans),
+                                n, k, alpha, a, lda, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event syrk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+                     int64_t n, int64_t k, std::complex<double> alpha,
+                     const std::complex<double> *a, int64_t lda, std::complex<double> beta,
+                     std::complex<double> *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zsyrk_sycl(&queue, mkl::cblas_convert(upper_lower), mkl::cblas_convert(trans),
+                                n, k, alpha, a, lda, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event herk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+                     int64_t n, int64_t k, float alpha, const std::complex<float> *a, int64_t lda,
+                     float beta, std::complex<float> *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::cherk_sycl(&queue, mkl::cblas_convert(upper_lower), mkl::cblas_convert(trans),
+                                n, k, alpha, a, lda, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event herk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+                     int64_t n, int64_t k, double alpha, const std::complex<double> *a, int64_t lda,
+                     double beta, std::complex<double> *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zherk_sycl(&queue, mkl::cblas_convert(upper_lower), mkl::cblas_convert(trans),
+                                n, k, alpha, a, lda, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event syr2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+                      int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
+                      const float *b, int64_t ldb, float beta, float *c, int64_t ldc,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ssyr2k_sycl(&queue, mkl::cblas_convert(upper_lower), mkl::cblas_convert(trans),
+                                 n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event syr2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+                      int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
+                      const double *b, int64_t ldb, double beta, double *c, int64_t ldc,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dsyr2k_sycl(&queue, mkl::cblas_convert(upper_lower), mkl::cblas_convert(trans),
+                                 n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event syr2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+                      int64_t n, int64_t k, std::complex<float> alpha, const std::complex<float> *a,
+                      int64_t lda, const std::complex<float> *b, int64_t ldb,
+                      std::complex<float> beta, std::complex<float> *c, int64_t ldc,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::csyr2k_sycl(&queue, mkl::cblas_convert(upper_lower), mkl::cblas_convert(trans),
+                                 n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event syr2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+                      int64_t n, int64_t k, std::complex<double> alpha,
+                      const std::complex<double> *a, int64_t lda, const std::complex<double> *b,
+                      int64_t ldb, std::complex<double> beta, std::complex<double> *c, int64_t ldc,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zsyr2k_sycl(&queue, mkl::cblas_convert(upper_lower), mkl::cblas_convert(trans),
+                                 n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event her2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+                      int64_t n, int64_t k, std::complex<float> alpha, const std::complex<float> *a,
+                      int64_t lda, const std::complex<float> *b, int64_t ldb, float beta,
+                      std::complex<float> *c, int64_t ldc,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::cher2k_sycl(&queue, mkl::cblas_convert(upper_lower), mkl::cblas_convert(trans),
+                                 n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event her2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+                      int64_t n, int64_t k, std::complex<double> alpha,
+                      const std::complex<double> *a, int64_t lda, const std::complex<double> *b,
+                      int64_t ldb, double beta, std::complex<double> *c, int64_t ldc,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zher2k_sycl(&queue, mkl::cblas_convert(upper_lower), mkl::cblas_convert(trans),
+                                 n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event trmm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+                     onemkl::transpose transa, onemkl::diag unit_diag, int64_t m, int64_t n,
+                     float alpha, const float *a, int64_t lda, float *b, int64_t ldb,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::strmm_sycl(&queue, mkl::cblas_convert(left_right),
+                                mkl::cblas_convert(upper_lower), mkl::cblas_convert(transa),
+                                mkl::cblas_convert(unit_diag), m, n, alpha, a, lda, b, ldb,
+                                dependencies);
+}
+
+cl::sycl::event trmm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+                     onemkl::transpose transa, onemkl::diag unit_diag, int64_t m, int64_t n,
+                     double alpha, const double *a, int64_t lda, double *b, int64_t ldb,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dtrmm_sycl(&queue, mkl::cblas_convert(left_right),
+                                mkl::cblas_convert(upper_lower), mkl::cblas_convert(transa),
+                                mkl::cblas_convert(unit_diag), m, n, alpha, a, lda, b, ldb,
+                                dependencies);
+}
+
+cl::sycl::event trmm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+                     onemkl::transpose transa, onemkl::diag unit_diag, int64_t m, int64_t n,
+                     std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                     std::complex<float> *b, int64_t ldb,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ctrmm_sycl(&queue, mkl::cblas_convert(left_right),
+                                mkl::cblas_convert(upper_lower), mkl::cblas_convert(transa),
+                                mkl::cblas_convert(unit_diag), m, n, alpha, a, lda, b, ldb,
+                                dependencies);
+}
+
+cl::sycl::event trmm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+                     onemkl::transpose transa, onemkl::diag unit_diag, int64_t m, int64_t n,
+                     std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                     std::complex<double> *b, int64_t ldb,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ztrmm_sycl(&queue, mkl::cblas_convert(left_right),
+                                mkl::cblas_convert(upper_lower), mkl::cblas_convert(transa),
+                                mkl::cblas_convert(unit_diag), m, n, alpha, a, lda, b, ldb,
+                                dependencies);
+}
+
+cl::sycl::event trsm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+                     onemkl::transpose transa, onemkl::diag unit_diag, int64_t m, int64_t n,
+                     float alpha, const float *a, int64_t lda, float *b, int64_t ldb,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::strsm_sycl(&queue, mkl::cblas_convert(left_right),
+                                mkl::cblas_convert(upper_lower), mkl::cblas_convert(transa),
+                                mkl::cblas_convert(unit_diag), m, n, alpha, a, lda, b, ldb,
+                                dependencies);
+}
+
+cl::sycl::event trsm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+                     onemkl::transpose transa, onemkl::diag unit_diag, int64_t m, int64_t n,
+                     double alpha, const double *a, int64_t lda, double *b, int64_t ldb,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dtrsm_sycl(&queue, mkl::cblas_convert(left_right),
+                                mkl::cblas_convert(upper_lower), mkl::cblas_convert(transa),
+                                mkl::cblas_convert(unit_diag), m, n, alpha, a, lda, b, ldb,
+                                dependencies);
+}
+
+cl::sycl::event trsm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+                     onemkl::transpose transa, onemkl::diag unit_diag, int64_t m, int64_t n,
+                     std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                     std::complex<float> *b, int64_t ldb,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ctrsm_sycl(&queue, mkl::cblas_convert(left_right),
+                                mkl::cblas_convert(upper_lower), mkl::cblas_convert(transa),
+                                mkl::cblas_convert(unit_diag), m, n, alpha, a, lda, b, ldb,
+                                dependencies);
+}
+
+cl::sycl::event trsm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+                     onemkl::transpose transa, onemkl::diag unit_diag, int64_t m, int64_t n,
+                     std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                     std::complex<double> *b, int64_t ldb,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ztrsm_sycl(&queue, mkl::cblas_convert(left_right),
+                                mkl::cblas_convert(upper_lower), mkl::cblas_convert(transa),
+                                mkl::cblas_convert(unit_diag), m, n, alpha, a, lda, b, ldb,
+                                dependencies);
+}
+
+cl::sycl::event gemv(cl::sycl::queue &queue, onemkl::transpose trans, int64_t m, int64_t n,
+                     float alpha, const float *a, int64_t lda, const float *x, int64_t incx,
+                     float beta, float *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::sgemv_sycl(&queue, mkl::cblas_convert(trans), m, n, alpha, a, lda, x, incx,
+                                beta, y, incy, dependencies);
+}
+
+cl::sycl::event gemv(cl::sycl::queue &queue, onemkl::transpose trans, int64_t m, int64_t n,
+                     double alpha, const double *a, int64_t lda, const double *x, int64_t incx,
+                     double beta, double *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dgemv_sycl(&queue, mkl::cblas_convert(trans), m, n, alpha, a, lda, x, incx,
+                                beta, y, incy, dependencies);
+}
+
+cl::sycl::event gemv(cl::sycl::queue &queue, onemkl::transpose trans, int64_t m, int64_t n,
+                     std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                     const std::complex<float> *x, int64_t incx, std::complex<float> beta,
+                     std::complex<float> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::cgemv_sycl(&queue, mkl::cblas_convert(trans), m, n, alpha, a, lda, x, incx,
+                                beta, y, incy, dependencies);
+}
+
+cl::sycl::event gemv(cl::sycl::queue &queue, onemkl::transpose trans, int64_t m, int64_t n,
+                     std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                     const std::complex<double> *x, int64_t incx, std::complex<double> beta,
+                     std::complex<double> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zgemv_sycl(&queue, mkl::cblas_convert(trans), m, n, alpha, a, lda, x, incx,
+                                beta, y, incy, dependencies);
+}
+
+cl::sycl::event gbmv(cl::sycl::queue &queue, onemkl::transpose trans, int64_t m, int64_t n,
+                     int64_t kl, int64_t ku, float alpha, const float *a, int64_t lda,
+                     const float *x, int64_t incx, float beta, float *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::sgbmv_sycl(&queue, mkl::cblas_convert(trans), m, n, kl, ku, alpha, a, lda, x,
+                                incx, beta, y, incy, dependencies);
+}
+
+cl::sycl::event gbmv(cl::sycl::queue &queue, onemkl::transpose trans, int64_t m, int64_t n,
+                     int64_t kl, int64_t ku, double alpha, const double *a, int64_t lda,
+                     const double *x, int64_t incx, double beta, double *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dgbmv_sycl(&queue, mkl::cblas_convert(trans), m, n, kl, ku, alpha, a, lda, x,
+                                incx, beta, y, incy, dependencies);
+}
+
+cl::sycl::event gbmv(cl::sycl::queue &queue, onemkl::transpose trans, int64_t m, int64_t n,
+                     int64_t kl, int64_t ku, std::complex<float> alpha,
+                     const std::complex<float> *a, int64_t lda, const std::complex<float> *x,
+                     int64_t incx, std::complex<float> beta, std::complex<float> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::cgbmv_sycl(&queue, mkl::cblas_convert(trans), m, n, kl, ku, alpha, a, lda, x,
+                                incx, beta, y, incy, dependencies);
+}
+
+cl::sycl::event gbmv(cl::sycl::queue &queue, onemkl::transpose trans, int64_t m, int64_t n,
+                     int64_t kl, int64_t ku, std::complex<double> alpha,
+                     const std::complex<double> *a, int64_t lda, const std::complex<double> *x,
+                     int64_t incx, std::complex<double> beta, std::complex<double> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zgbmv_sycl(&queue, mkl::cblas_convert(trans), m, n, kl, ku, alpha, a, lda, x,
+                                incx, beta, y, incy, dependencies);
+}
+
+cl::sycl::event ger(cl::sycl::queue &queue, int64_t m, int64_t n, float alpha, const float *x,
+                    int64_t incx, const float *y, int64_t incy, float *a, int64_t lda,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::sger_sycl(&queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+}
+
+cl::sycl::event ger(cl::sycl::queue &queue, int64_t m, int64_t n, double alpha, const double *x,
+                    int64_t incx, const double *y, int64_t incy, double *a, int64_t lda,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dger_sycl(&queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+}
+
+cl::sycl::event gerc(cl::sycl::queue &queue, int64_t m, int64_t n, std::complex<float> alpha,
+                     const std::complex<float> *x, int64_t incx, const std::complex<float> *y,
+                     int64_t incy, std::complex<float> *a, int64_t lda,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::cgerc_sycl(&queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+}
+
+cl::sycl::event gerc(cl::sycl::queue &queue, int64_t m, int64_t n, std::complex<double> alpha,
+                     const std::complex<double> *x, int64_t incx, const std::complex<double> *y,
+                     int64_t incy, std::complex<double> *a, int64_t lda,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zgerc_sycl(&queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+}
+
+cl::sycl::event geru(cl::sycl::queue &queue, int64_t m, int64_t n, std::complex<float> alpha,
+                     const std::complex<float> *x, int64_t incx, const std::complex<float> *y,
+                     int64_t incy, std::complex<float> *a, int64_t lda,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::cgeru_sycl(&queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+}
+
+cl::sycl::event geru(cl::sycl::queue &queue, int64_t m, int64_t n, std::complex<double> alpha,
+                     const std::complex<double> *x, int64_t incx, const std::complex<double> *y,
+                     int64_t incy, std::complex<double> *a, int64_t lda,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zgeru_sycl(&queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+}
+
+cl::sycl::event hbmv(cl::sycl::queue &queue, onemkl::uplo uplo, int64_t n, int64_t k,
+                     std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                     const std::complex<float> *x, int64_t incx, std::complex<float> beta,
+                     std::complex<float> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::chbmv_sycl(&queue, mkl::cblas_convert(uplo), n, k, alpha, a, lda, x, incx,
+                                beta, y, incy, dependencies);
+}
+
+cl::sycl::event hbmv(cl::sycl::queue &queue, onemkl::uplo uplo, int64_t n, int64_t k,
+                     std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                     const std::complex<double> *x, int64_t incx, std::complex<double> beta,
+                     std::complex<double> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zhbmv_sycl(&queue, mkl::cblas_convert(uplo), n, k, alpha, a, lda, x, incx,
+                                beta, y, incy, dependencies);
+}
+
+cl::sycl::event hemv(cl::sycl::queue &queue, onemkl::uplo uplo, int64_t n,
+                     std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                     const std::complex<float> *x, int64_t incx, std::complex<float> beta,
+                     std::complex<float> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::chemv_sycl(&queue, mkl::cblas_convert(uplo), n, alpha, a, lda, x, incx, beta,
+                                y, incy, dependencies);
+}
+
+cl::sycl::event hemv(cl::sycl::queue &queue, onemkl::uplo uplo, int64_t n,
+                     std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                     const std::complex<double> *x, int64_t incx, std::complex<double> beta,
+                     std::complex<double> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zhemv_sycl(&queue, mkl::cblas_convert(uplo), n, alpha, a, lda, x, incx, beta,
+                                y, incy, dependencies);
+}
+
+cl::sycl::event her(cl::sycl::queue &queue, onemkl::uplo upplo, int64_t n, float alpha,
+                    const std::complex<float> *x, int64_t incx, std::complex<float> *a, int64_t lda,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::cher_sycl(&queue, mkl::cblas_convert(upplo), n, alpha, x, incx, a, lda,
+                               dependencies);
+}
+
+cl::sycl::event her(cl::sycl::queue &queue, onemkl::uplo upplo, int64_t n, double alpha,
+                    const std::complex<double> *x, int64_t incx, std::complex<double> *a,
+                    int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zher_sycl(&queue, mkl::cblas_convert(upplo), n, alpha, x, incx, a, lda,
+                               dependencies);
+}
+
+cl::sycl::event her2(cl::sycl::queue &queue, onemkl::uplo upplo, int64_t n,
+                     std::complex<float> alpha, const std::complex<float> *x, int64_t incx,
+                     const std::complex<float> *y, int64_t incy, std::complex<float> *a,
+                     int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::cher2_sycl(&queue, mkl::cblas_convert(upplo), n, alpha, x, incx, y, incy, a,
+                                lda, dependencies);
+}
+
+cl::sycl::event her2(cl::sycl::queue &queue, onemkl::uplo upplo, int64_t n,
+                     std::complex<double> alpha, const std::complex<double> *x, int64_t incx,
+                     const std::complex<double> *y, int64_t incy, std::complex<double> *a,
+                     int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zher2_sycl(&queue, mkl::cblas_convert(upplo), n, alpha, x, incx, y, incy, a,
+                                lda, dependencies);
+}
+
+cl::sycl::event hpmv(cl::sycl::queue &queue, onemkl::uplo uplo, int64_t n,
+                     std::complex<float> alpha, const std::complex<float> *a,
+                     const std::complex<float> *x, int64_t incx, std::complex<float> beta,
+                     std::complex<float> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::chpmv_sycl(&queue, mkl::cblas_convert(uplo), n, alpha, a, x, incx, beta, y,
+                                incy, dependencies);
+}
+
+cl::sycl::event hpmv(cl::sycl::queue &queue, onemkl::uplo uplo, int64_t n,
+                     std::complex<double> alpha, const std::complex<double> *a,
+                     const std::complex<double> *x, int64_t incx, std::complex<double> beta,
+                     std::complex<double> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zhpmv_sycl(&queue, mkl::cblas_convert(uplo), n, alpha, a, x, incx, beta, y,
+                                incy, dependencies);
+}
+
+cl::sycl::event hpr(cl::sycl::queue &queue, onemkl::uplo upplo, int64_t n, float alpha,
+                    const std::complex<float> *x, int64_t incx, std::complex<float> *a,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::chpr_sycl(&queue, mkl::cblas_convert(upplo), n, alpha, x, incx, a,
+                               dependencies);
+}
+
+cl::sycl::event hpr(cl::sycl::queue &queue, onemkl::uplo upplo, int64_t n, double alpha,
+                    const std::complex<double> *x, int64_t incx, std::complex<double> *a,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zhpr_sycl(&queue, mkl::cblas_convert(upplo), n, alpha, x, incx, a,
+                               dependencies);
+}
+
+cl::sycl::event hpr2(cl::sycl::queue &queue, onemkl::uplo upplo, int64_t n,
+                     std::complex<float> alpha, const std::complex<float> *x, int64_t incx,
+                     const std::complex<float> *y, int64_t incy, std::complex<float> *a,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::chpr2_sycl(&queue, mkl::cblas_convert(upplo), n, alpha, x, incx, y, incy, a,
+                                dependencies);
+}
+
+cl::sycl::event hpr2(cl::sycl::queue &queue, onemkl::uplo upplo, int64_t n,
+                     std::complex<double> alpha, const std::complex<double> *x, int64_t incx,
+                     const std::complex<double> *y, int64_t incy, std::complex<double> *a,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zhpr2_sycl(&queue, mkl::cblas_convert(upplo), n, alpha, x, incx, y, incy, a,
+                                dependencies);
+}
+
+cl::sycl::event sbmv(cl::sycl::queue &queue, onemkl::uplo uplo, int64_t n, int64_t k, float alpha,
+                     const float *a, int64_t lda, const float *x, int64_t incx, float beta,
+                     float *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ssbmv_sycl(&queue, mkl::cblas_convert(uplo), n, k, alpha, a, lda, x, incx,
+                                beta, y, incy, dependencies);
+}
+
+cl::sycl::event sbmv(cl::sycl::queue &queue, onemkl::uplo uplo, int64_t n, int64_t k, double alpha,
+                     const double *a, int64_t lda, const double *x, int64_t incx, double beta,
+                     double *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dsbmv_sycl(&queue, mkl::cblas_convert(uplo), n, k, alpha, a, lda, x, incx,
+                                beta, y, incy, dependencies);
+}
+
+cl::sycl::event spmv(cl::sycl::queue &queue, onemkl::uplo uplo, int64_t n, float alpha,
+                     const float *a, const float *x, int64_t incx, float beta, float *y,
+                     int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::sspmv_sycl(&queue, mkl::cblas_convert(uplo), n, alpha, a, x, incx, beta, y,
+                                incy, dependencies);
+}
+
+cl::sycl::event spmv(cl::sycl::queue &queue, onemkl::uplo uplo, int64_t n, double alpha,
+                     const double *a, const double *x, int64_t incx, double beta, double *y,
+                     int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dspmv_sycl(&queue, mkl::cblas_convert(uplo), n, alpha, a, x, incx, beta, y,
+                                incy, dependencies);
+}
+
+cl::sycl::event spr(cl::sycl::queue &queue, onemkl::uplo upplo, int64_t n, float alpha,
+                    const float *x, int64_t incx, float *a,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::sspr_sycl(&queue, mkl::cblas_convert(upplo), n, alpha, x, incx, a,
+                               dependencies);
+}
+
+cl::sycl::event spr(cl::sycl::queue &queue, onemkl::uplo upplo, int64_t n, double alpha,
+                    const double *x, int64_t incx, double *a,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dspr_sycl(&queue, mkl::cblas_convert(upplo), n, alpha, x, incx, a,
+                               dependencies);
+}
+
+cl::sycl::event spr2(cl::sycl::queue &queue, onemkl::uplo upplo, int64_t n, float alpha,
+                     const float *x, int64_t incx, const float *y, int64_t incy, float *a,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::sspr2_sycl(&queue, mkl::cblas_convert(upplo), n, alpha, x, incx, y, incy, a,
+                                dependencies);
+}
+
+cl::sycl::event spr2(cl::sycl::queue &queue, onemkl::uplo upplo, int64_t n, double alpha,
+                     const double *x, int64_t incx, const double *y, int64_t incy, double *a,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dspr2_sycl(&queue, mkl::cblas_convert(upplo), n, alpha, x, incx, y, incy, a,
+                                dependencies);
+}
+
+cl::sycl::event symv(cl::sycl::queue &queue, onemkl::uplo uplo, int64_t n, float alpha,
+                     const float *a, int64_t lda, const float *x, int64_t incx, float beta,
+                     float *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ssymv_sycl(&queue, mkl::cblas_convert(uplo), n, alpha, a, lda, x, incx, beta,
+                                y, incy, dependencies);
+}
+
+cl::sycl::event symv(cl::sycl::queue &queue, onemkl::uplo uplo, int64_t n, double alpha,
+                     const double *a, int64_t lda, const double *x, int64_t incx, double beta,
+                     double *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dsymv_sycl(&queue, mkl::cblas_convert(uplo), n, alpha, a, lda, x, incx, beta,
+                                y, incy, dependencies);
+}
+
+cl::sycl::event syr(cl::sycl::queue &queue, onemkl::uplo upplo, int64_t n, float alpha,
+                    const float *x, int64_t incx, float *a, int64_t lda,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ssyr_sycl(&queue, mkl::cblas_convert(upplo), n, alpha, x, incx, a, lda,
+                               dependencies);
+}
+
+cl::sycl::event syr(cl::sycl::queue &queue, onemkl::uplo upplo, int64_t n, double alpha,
+                    const double *x, int64_t incx, double *a, int64_t lda,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dsyr_sycl(&queue, mkl::cblas_convert(upplo), n, alpha, x, incx, a, lda,
+                               dependencies);
+}
+
+cl::sycl::event syr2(cl::sycl::queue &queue, onemkl::uplo upplo, int64_t n, float alpha,
+                     const float *x, int64_t incx, const float *y, int64_t incy, float *a,
+                     int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ssyr2_sycl(&queue, mkl::cblas_convert(upplo), n, alpha, x, incx, y, incy, a,
+                                lda, dependencies);
+}
+
+cl::sycl::event syr2(cl::sycl::queue &queue, onemkl::uplo upplo, int64_t n, double alpha,
+                     const double *x, int64_t incx, const double *y, int64_t incy, double *a,
+                     int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dsyr2_sycl(&queue, mkl::cblas_convert(upplo), n, alpha, x, incx, y, incy, a,
+                                lda, dependencies);
+}
+
+cl::sycl::event tbmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, int64_t k, const float *a, int64_t lda, float *x,
+                     int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::stbmv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, k, a, lda, x, incx, dependencies);
+}
+
+cl::sycl::event tbmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, int64_t k, const double *a, int64_t lda,
+                     double *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dtbmv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, k, a, lda, x, incx, dependencies);
+}
+
+cl::sycl::event tbmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, int64_t k, const std::complex<float> *a,
+                     int64_t lda, std::complex<float> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ctbmv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, k, a, lda, x, incx, dependencies);
+}
+
+cl::sycl::event tbmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, int64_t k, const std::complex<double> *a,
+                     int64_t lda, std::complex<double> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ztbmv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, k, a, lda, x, incx, dependencies);
+}
+
+cl::sycl::event tbsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, int64_t k, const float *a, int64_t lda, float *x,
+                     int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::stbsv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, k, a, lda, x, incx, dependencies);
+}
+
+cl::sycl::event tbsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, int64_t k, const double *a, int64_t lda,
+                     double *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dtbsv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, k, a, lda, x, incx, dependencies);
+}
+
+cl::sycl::event tbsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, int64_t k, const std::complex<float> *a,
+                     int64_t lda, std::complex<float> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ctbsv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, k, a, lda, x, incx, dependencies);
+}
+
+cl::sycl::event tbsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, int64_t k, const std::complex<double> *a,
+                     int64_t lda, std::complex<double> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ztbsv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, k, a, lda, x, incx, dependencies);
+}
+
+cl::sycl::event tpmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, const float *a, float *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::stpmv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, a, x, incx, dependencies);
+}
+
+cl::sycl::event tpmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, const double *a, double *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dtpmv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, a, x, incx, dependencies);
+}
+
+cl::sycl::event tpmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, const std::complex<float> *a,
+                     std::complex<float> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ctpmv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, a, x, incx, dependencies);
+}
+
+cl::sycl::event tpmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, const std::complex<double> *a,
+                     std::complex<double> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ztpmv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, a, x, incx, dependencies);
+}
+
+cl::sycl::event tpsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, const float *a, float *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::stpsv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, a, x, incx, dependencies);
+}
+
+cl::sycl::event tpsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, const double *a, double *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dtpsv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, a, x, incx, dependencies);
+}
+
+cl::sycl::event tpsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, const std::complex<float> *a,
+                     std::complex<float> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ctpsv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, a, x, incx, dependencies);
+}
+
+cl::sycl::event tpsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, const std::complex<double> *a,
+                     std::complex<double> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ztpsv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, a, x, incx, dependencies);
+}
+
+cl::sycl::event trmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, const float *a, int64_t lda, float *x,
+                     int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::strmv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, a, lda, x, incx, dependencies);
+}
+
+cl::sycl::event trmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, const double *a, int64_t lda, double *x,
+                     int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dtrmv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, a, lda, x, incx, dependencies);
+}
+
+cl::sycl::event trmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, const std::complex<float> *a, int64_t lda,
+                     std::complex<float> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ctrmv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, a, lda, x, incx, dependencies);
+}
+
+cl::sycl::event trmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, const std::complex<double> *a, int64_t lda,
+                     std::complex<double> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ztrmv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, a, lda, x, incx, dependencies);
+}
+
+cl::sycl::event trsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, const float *a, int64_t lda, float *x,
+                     int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::strsv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, a, lda, x, incx, dependencies);
+}
+
+cl::sycl::event trsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, const double *a, int64_t lda, double *x,
+                     int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dtrsv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, a, lda, x, incx, dependencies);
+}
+
+cl::sycl::event trsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, const std::complex<float> *a, int64_t lda,
+                     std::complex<float> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ctrsv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, a, lda, x, incx, dependencies);
+}
+
+cl::sycl::event trsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
+                     onemkl::diag diag, int64_t n, const std::complex<double> *a, int64_t lda,
+                     std::complex<double> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ztrsv_sycl(&queue, mkl::cblas_convert(upplo), mkl::cblas_convert(trans),
+                                mkl::cblas_convert(diag), n, a, lda, x, incx, dependencies);
+}
+
+cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const std::complex<float> *x, int64_t incx,
+                     float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::scasum_sycl(&queue, n, x, incx, result, dependencies);
+}
+
+cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const std::complex<double> *x, int64_t incx,
+                     double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dzasum_sycl(&queue, n, x, incx, result, dependencies);
+}
+
+cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, float *result,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::sasum_sycl(&queue, n, x, incx, result, dependencies);
+}
+
+cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const double *x, int64_t incx,
+                     double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dasum_sycl(&queue, n, x, incx, result, dependencies);
+}
+
+cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, float alpha, const float *x, int64_t incx,
+                     float *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::saxpy_sycl(&queue, n, alpha, x, incx, y, incy, dependencies);
+}
+
+cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, double alpha, const double *x, int64_t incx,
+                     double *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::daxpy_sycl(&queue, n, alpha, x, incx, y, incy, dependencies);
+}
+
+cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, std::complex<float> alpha,
+                     const std::complex<float> *x, int64_t incx, std::complex<float> *y,
+                     int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::caxpy_sycl(&queue, n, alpha, x, incx, y, incy, dependencies);
+}
+
+cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
+                     const std::complex<double> *x, int64_t incx, std::complex<double> *y,
+                     int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zaxpy_sycl(&queue, n, alpha, x, incx, y, incy, dependencies);
+}
+
+cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, float *y,
+                     int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::scopy_sycl(&queue, n, x, incx, y, incy, dependencies);
+}
+
+cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const double *x, int64_t incx, double *y,
+                     int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dcopy_sycl(&queue, n, x, incx, y, incy, dependencies);
+}
+
+cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const std::complex<float> *x, int64_t incx,
+                     std::complex<float> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ccopy_sycl(&queue, n, x, incx, y, incy, dependencies);
+}
+
+cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const std::complex<double> *x, int64_t incx,
+                     std::complex<double> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zcopy_sycl(&queue, n, x, incx, y, incy, dependencies);
+}
+
+cl::sycl::event dot(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, const float *y,
+                    int64_t incy, float *result,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::sdot_sycl(&queue, n, x, incx, y, incy, result, dependencies);
+}
+
+cl::sycl::event dot(cl::sycl::queue &queue, int64_t n, const double *x, int64_t incx,
+                    const double *y, int64_t incy, double *result,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::ddot_sycl(&queue, n, x, incx, y, incy, result, dependencies);
+}
+
+cl::sycl::event sdsdot(cl::sycl::queue &queue, int64_t n, float sb, const float *x, int64_t incx,
+                       const float *y, int64_t incy, float *result,
+                       const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::sdsdot_sycl(&queue, n, sb, x, incx, y, incy, result, dependencies);
+}
+
+cl::sycl::event dot(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, const float *y,
+                    int64_t incy, double *result,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dsdot_sycl(&queue, n, x, incx, y, incy, result, dependencies);
+}
+
+cl::sycl::event dotc(cl::sycl::queue &queue, int64_t n, const std::complex<float> *x, int64_t incx,
+                     const std::complex<float> *y, int64_t incy, std::complex<float> *result,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::cdotc_sycl(&queue, n, x, incx, y, incy, result, dependencies);
+}
+
+cl::sycl::event dotc(cl::sycl::queue &queue, int64_t n, const std::complex<double> *x, int64_t incx,
+                     const std::complex<double> *y, int64_t incy, std::complex<double> *result,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zdotc_sycl(&queue, n, x, incx, y, incy, result, dependencies);
+}
+
+cl::sycl::event dotu(cl::sycl::queue &queue, int64_t n, const std::complex<float> *x, int64_t incx,
+                     const std::complex<float> *y, int64_t incy, std::complex<float> *result,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::cdotu_sycl(&queue, n, x, incx, y, incy, result, dependencies);
+}
+
+cl::sycl::event dotu(cl::sycl::queue &queue, int64_t n, const std::complex<double> *x, int64_t incx,
+                     const std::complex<double> *y, int64_t incy, std::complex<double> *result,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zdotu_sycl(&queue, n, x, incx, y, incy, result, dependencies);
+}
+
+cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const std::complex<float> *x, int64_t incx,
+                     float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::scnrm2_sycl(&queue, n, x, incx, result, dependencies);
+}
+
+cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const std::complex<double> *x, int64_t incx,
+                     double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dznrm2_sycl(&queue, n, x, incx, result, dependencies);
+}
+
+cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, float *result,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::snrm2_sycl(&queue, n, x, incx, result, dependencies);
+}
+
+cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const double *x, int64_t incx,
+                     double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dnrm2_sycl(&queue, n, x, incx, result, dependencies);
+}
+
+cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, std::complex<float> *x, int64_t incx,
+                    std::complex<float> *y, int64_t incy, float c, float s,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::csrot_sycl(&queue, n, x, incx, y, incy, c, s, dependencies);
+}
+
+cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, std::complex<double> *x, int64_t incx,
+                    std::complex<double> *y, int64_t incy, double c, double s,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zdrot_sycl(&queue, n, x, incx, y, incy, c, s, dependencies);
+}
+
+cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, float *x, int64_t incx, float *y,
+                    int64_t incy, float c, float s,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::srot_sycl(&queue, n, x, incx, y, incy, c, s, dependencies);
+}
+
+cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, double *x, int64_t incx, double *y,
+                    int64_t incy, double c, double s,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::drot_sycl(&queue, n, x, incx, y, incy, c, s, dependencies);
+}
+
+cl::sycl::event rotg(cl::sycl::queue &queue, float *a, float *b, float *c, float *s,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::srotg_sycl(&queue, a, b, c, s, dependencies);
+}
+
+cl::sycl::event rotg(cl::sycl::queue &queue, double *a, double *b, double *c, double *s,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::drotg_sycl(&queue, a, b, c, s, dependencies);
+}
+
+cl::sycl::event rotg(cl::sycl::queue &queue, std::complex<float> *a, std::complex<float> *b,
+                     float *c, std::complex<float> *s,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::crotg_sycl(&queue, a, b, c, s, dependencies);
+}
+
+cl::sycl::event rotg(cl::sycl::queue &queue, std::complex<double> *a, std::complex<double> *b,
+                     double *c, std::complex<double> *s,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zrotg_sycl(&queue, a, b, c, s, dependencies);
+}
+
+cl::sycl::event rotm(cl::sycl::queue &queue, int64_t n, float *x, int64_t incx, float *y,
+                     int64_t incy, float *param,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::srotm_sycl(&queue, n, x, incx, y, incy, param, dependencies);
+}
+
+cl::sycl::event rotm(cl::sycl::queue &queue, int64_t n, double *x, int64_t incx, double *y,
+                     int64_t incy, double *param,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::drotm_sycl(&queue, n, x, incx, y, incy, param, dependencies);
+}
+
+cl::sycl::event rotmg(cl::sycl::queue &queue, float *d1, float *d2, float *x1, float y1,
+                      float *param, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::srotmg_sycl(&queue, d1, d2, x1, y1, param, dependencies);
+}
+
+cl::sycl::event rotmg(cl::sycl::queue &queue, double *d1, double *d2, double *x1, double y1,
+                      double *param, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::drotmg_sycl(&queue, d1, d2, x1, y1, param, dependencies);
+}
+
+cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, float alpha, float *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::sscal_sycl(&queue, n, alpha, x, incx, dependencies);
+}
+
+cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, double alpha, double *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dscal_sycl(&queue, n, alpha, x, incx, dependencies);
+}
+
+cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, std::complex<float> alpha,
+                     std::complex<float> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::cscal_sycl(&queue, n, alpha, x, incx, dependencies);
+}
+
+cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
+                     std::complex<double> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zscal_sycl(&queue, n, alpha, x, incx, dependencies);
+}
+
+cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, float alpha, std::complex<float> *x,
+                     int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::csscal_sycl(&queue, n, alpha, x, incx, dependencies);
+}
+
+cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, double alpha, std::complex<double> *x,
+                     int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zdscal_sycl(&queue, n, alpha, x, incx, dependencies);
+}
+
+cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, float *x, int64_t incx, float *y,
+                     int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::sswap_sycl(&queue, n, x, incx, y, incy, dependencies);
+}
+
+cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, double *x, int64_t incx, double *y,
+                     int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dswap_sycl(&queue, n, x, incx, y, incy, dependencies);
+}
+
+cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, std::complex<float> *x, int64_t incx,
+                     std::complex<float> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::cswap_sycl(&queue, n, x, incx, y, incy, dependencies);
+}
+
+cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, std::complex<double> *x, int64_t incx,
+                     std::complex<double> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zswap_sycl(&queue, n, x, incx, y, incy, dependencies);
+}
+
+cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx,
+                      std::int64_t *result,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::isamax_sycl(&queue, n, x, incx, result, dependencies);
+}
+
+cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const double *x, int64_t incx,
+                      std::int64_t *result,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::idamax_sycl(&queue, n, x, incx, result, dependencies);
+}
+
+cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const std::complex<float> *x, int64_t incx,
+                      std::int64_t *result,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::icamax_sycl(&queue, n, x, incx, result, dependencies);
+}
+
+cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const std::complex<double> *x,
+                      int64_t incx, std::int64_t *result,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::izamax_sycl(&queue, n, x, incx, result, dependencies);
+}
+
+cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx,
+                      std::int64_t *result,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::isamin_sycl(&queue, n, x, incx, result, dependencies);
+}
+
+cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const double *x, int64_t incx,
+                      std::int64_t *result,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::idamin_sycl(&queue, n, x, incx, result, dependencies);
+}
+
+cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const std::complex<float> *x, int64_t incx,
+                      std::int64_t *result,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::icamin_sycl(&queue, n, x, incx, result, dependencies);
+}
+
+cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const std::complex<double> *x,
+                      int64_t incx, std::int64_t *result,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::izamin_sycl(&queue, n, x, incx, result, dependencies);
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                           int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
+                           int64_t stride_a, const float *b, int64_t ldb, int64_t stride_b,
+                           float beta, float *c, int64_t ldc, int64_t stride_c, int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::sgemm_batch(queue, mkl::cblas_convert(transa), mkl::cblas_convert(transb), m,
+                                 n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
+                                 stride_c, batch_size, dependencies);
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                           int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
+                           int64_t stride_a, const double *b, int64_t ldb, int64_t stride_b,
+                           double beta, double *c, int64_t ldc, int64_t stride_c,
+                           int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dgemm_batch(queue, mkl::cblas_convert(transa), mkl::cblas_convert(transb), m,
+                                 n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
+                                 stride_c, batch_size, dependencies);
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                           int64_t n, int64_t k, std::complex<float> alpha,
+                           const std::complex<float> *a, int64_t lda, int64_t stride_a,
+                           const std::complex<float> *b, int64_t ldb, int64_t stride_b,
+                           std::complex<float> beta, std::complex<float> *c, int64_t ldc,
+                           int64_t stride_c, int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::cgemm_batch(queue, mkl::cblas_convert(transa), mkl::cblas_convert(transb), m,
+                                 n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
+                                 stride_c, batch_size, dependencies);
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                           int64_t n, int64_t k, std::complex<double> alpha,
+                           const std::complex<double> *a, int64_t lda, int64_t stride_a,
+                           const std::complex<double> *b, int64_t ldb, int64_t stride_b,
+                           std::complex<double> beta, std::complex<double> *c, int64_t ldc,
+                           int64_t stride_c, int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zgemm_batch(queue, mkl::cblas_convert(transa), mkl::cblas_convert(transb), m,
+                                 n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
+                                 stride_c, batch_size, dependencies);
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+                           int64_t *n, int64_t *k, float *alpha, const float **a, int64_t *lda,
+                           const float **b, int64_t *ldb, float *beta, float **c, int64_t *ldc,
+                           int64_t group_count, int64_t *groupsize,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    std::vector<cl::sycl::event *> coalesced_events;
+    coalesced_events.reserve(group_count);
+    int64_t total_groupsize = 0;
+    for (int64_t i = 0; i < group_count; i++) {
+        cl::sycl::event *gemm_event = new cl::sycl::event(mkl::gpu::sgemm_batch(
+            queue, mkl::cblas_convert(transa[i]), mkl::cblas_convert(transb[i]), m[i], n[i], k[i],
+            alpha[i], a, lda[i], b, ldb[i], beta[i], c, ldc[i], total_groupsize, groupsize[i],
+            dependencies));
+        coalesced_events.push_back(gemm_event);
+        total_groupsize += groupsize[i];
+    }
+    cl::sycl::event *return_event = new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
+        for (int64_t j = 0; j < group_count; j++)
+            cgh.depends_on(*coalesced_events[j]);
+        cgh.single_task<class sgemm_batch_coalesce_events_kernel>([]() {
+        });
+    }));
+    return *return_event;
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+                           int64_t *n, int64_t *k, double *alpha, const double **a, int64_t *lda,
+                           const double **b, int64_t *ldb, double *beta, double **c, int64_t *ldc,
+                           int64_t group_count, int64_t *groupsize,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    std::vector<cl::sycl::event *> coalesced_events;
+    coalesced_events.reserve(group_count);
+    int64_t total_groupsize = 0;
+    for (int64_t i = 0; i < group_count; i++) {
+        cl::sycl::event *gemm_event = new cl::sycl::event(mkl::gpu::dgemm_batch(
+            queue, mkl::cblas_convert(transa[i]), mkl::cblas_convert(transb[i]), m[i], n[i], k[i],
+            alpha[i], a, lda[i], b, ldb[i], beta[i], c, ldc[i], total_groupsize, groupsize[i],
+            dependencies));
+        coalesced_events.push_back(gemm_event);
+        total_groupsize += groupsize[i];
+    }
+    cl::sycl::event *return_event = new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
+        for (int64_t j = 0; j < group_count; j++)
+            cgh.depends_on(*coalesced_events[j]);
+        cgh.single_task<class dgemm_batch_coalesce_events_kernel>([]() {
+        });
+    }));
+    return *return_event;
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+                           int64_t *n, int64_t *k, std::complex<float> *alpha,
+                           const std::complex<float> **a, int64_t *lda,
+                           const std::complex<float> **b, int64_t *ldb, std::complex<float> *beta,
+                           std::complex<float> **c, int64_t *ldc, int64_t group_count,
+                           int64_t *groupsize,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    std::vector<cl::sycl::event *> coalesced_events;
+    coalesced_events.reserve(group_count);
+    int64_t total_groupsize = 0;
+    for (int64_t i = 0; i < group_count; i++) {
+        cl::sycl::event *gemm_event = new cl::sycl::event(mkl::gpu::cgemm_batch(
+            queue, mkl::cblas_convert(transa[i]), mkl::cblas_convert(transb[i]), m[i], n[i], k[i],
+            alpha[i], a, lda[i], b, ldb[i], beta[i], c, ldc[i], total_groupsize, groupsize[i],
+            dependencies));
+        coalesced_events.push_back(gemm_event);
+        total_groupsize += groupsize[i];
+    }
+    cl::sycl::event *return_event = new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
+        for (int64_t j = 0; j < group_count; j++)
+            cgh.depends_on(*coalesced_events[j]);
+        cgh.single_task<class cgemm_batch_coalesce_events_kernel>([]() {
+        });
+    }));
+    return *return_event;
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+                           int64_t *n, int64_t *k, std::complex<double> *alpha,
+                           const std::complex<double> **a, int64_t *lda,
+                           const std::complex<double> **b, int64_t *ldb, std::complex<double> *beta,
+                           std::complex<double> **c, int64_t *ldc, int64_t group_count,
+                           int64_t *groupsize,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    std::vector<cl::sycl::event *> coalesced_events;
+    coalesced_events.reserve(group_count);
+    int64_t total_groupsize = 0;
+    for (int64_t i = 0; i < group_count; i++) {
+        cl::sycl::event *gemm_event = new cl::sycl::event(mkl::gpu::zgemm_batch(
+            queue, mkl::cblas_convert(transa[i]), mkl::cblas_convert(transb[i]), m[i], n[i], k[i],
+            alpha[i], a, lda[i], b, ldb[i], beta[i], c, ldc[i], total_groupsize, groupsize[i],
+            dependencies));
+        coalesced_events.push_back(gemm_event);
+        total_groupsize += groupsize[i];
+    }
+    cl::sycl::event *return_event = new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
+        for (int64_t j = 0; j < group_count; j++)
+            cgh.depends_on(*coalesced_events[j]);
+        cgh.single_task<class zgemm_batch_coalesce_events_kernel>([]() {
+        });
+    }));
+    return *return_event;
+}
+
+cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
+                      int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
+                      const float *b, int64_t ldb, float beta, float *c, int64_t ldc,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::sgemmt_sycl(&queue, mkl::cblas_convert(upper_lower),
+                                 mkl::cblas_convert(transa), mkl::cblas_convert(transb), n, k,
+                                 alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
+                      int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
+                      const double *b, int64_t ldb, double beta, double *c, int64_t ldc,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::dgemmt_sycl(&queue, mkl::cblas_convert(upper_lower),
+                                 mkl::cblas_convert(transa), mkl::cblas_convert(transb), n, k,
+                                 alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
+                      int64_t n, int64_t k, std::complex<float> alpha, const std::complex<float> *a,
+                      int64_t lda, const std::complex<float> *b, int64_t ldb,
+                      std::complex<float> beta, std::complex<float> *c, int64_t ldc,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::cgemmt_sycl(&queue, mkl::cblas_convert(upper_lower),
+                                 mkl::cblas_convert(transa), mkl::cblas_convert(transb), n, k,
+                                 alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
+                      int64_t n, int64_t k, std::complex<double> alpha,
+                      const std::complex<double> *a, int64_t lda, const std::complex<double> *b,
+                      int64_t ldb, std::complex<double> beta, std::complex<double> *c, int64_t ldc,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return mkl::gpu::zgemmt_sycl(&queue, mkl::cblas_convert(upper_lower),
+                                 mkl::cblas_convert(transa), mkl::cblas_convert(transb), n, k,
+                                 alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
 
 } //namespace internal

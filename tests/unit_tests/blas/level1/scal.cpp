@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp, typename fp_scalar>
-bool test(const device& dev, int N, int incx, fp_scalar alpha) {
+int test(const device& dev, int N, int incx, fp_scalar alpha) {
     // Prepare data.
     vector<fp> x, x_ref;
 
@@ -90,6 +90,14 @@ bool test(const device& dev, int N, int incx, fp_scalar alpha) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const backend_unsupported_exception& e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error& error) {
+        std::cout << "Error raised during execution of SCAL:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -97,40 +105,43 @@ bool test(const device& dev, int N, int incx, fp_scalar alpha) {
         good            = check_equal_vector(x_accessor, x_ref, N, incx, N, std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class ScalTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(ScalTests, RealSinglePrecision) {
     float alpha(2.0);
-    EXPECT_TRUE((test<float, float>(GetParam(), 1357, 2, alpha)));
-    EXPECT_TRUE((test<float, float>(GetParam(), 1357, -3, alpha)));
+    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, 2, alpha)));
+    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, -3, alpha)));
 }
 TEST_P(ScalTests, RealDoublePrecision) {
     double alpha(2.0);
-    EXPECT_TRUE((test<double, double>(GetParam(), 1357, 2, alpha)));
-    EXPECT_TRUE((test<double, double>(GetParam(), 1357, -3, alpha)));
+    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, 2, alpha)));
+    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, -3, alpha)));
 }
 TEST_P(ScalTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
-    EXPECT_TRUE((test<std::complex<float>, std::complex<float>>(GetParam(), 1357, 2, alpha)));
-    EXPECT_TRUE((test<std::complex<float>, std::complex<float>>(GetParam(), 1357, -3, alpha)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, std::complex<float>>(GetParam(), 1357, 2, alpha)));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<float>, std::complex<float>>(GetParam(), 1357, -3, alpha)));
 }
 TEST_P(ScalTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
-    EXPECT_TRUE((test<std::complex<double>, std::complex<double>>(GetParam(), 1357, 2, alpha)));
-    EXPECT_TRUE((test<std::complex<double>, std::complex<double>>(GetParam(), 1357, -3, alpha)));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<double>, std::complex<double>>(GetParam(), 1357, 2, alpha)));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<double>, std::complex<double>>(GetParam(), 1357, -3, alpha)));
 }
 TEST_P(ScalTests, ComplexRealSinglePrecision) {
     float alpha(2.0);
-    EXPECT_TRUE((test<std::complex<float>, float>(GetParam(), 1357, 2, alpha)));
-    EXPECT_TRUE((test<std::complex<float>, float>(GetParam(), 1357, -3, alpha)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), 1357, 2, alpha)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), 1357, -3, alpha)));
 }
 TEST_P(ScalTests, ComplexRealDoublePrecision) {
     double alpha(2.0);
-    EXPECT_TRUE((test<std::complex<double>, double>(GetParam(), 1357, 2, alpha)));
-    EXPECT_TRUE((test<std::complex<double>, double>(GetParam(), 1357, -3, alpha)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), 1357, 2, alpha)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), 1357, -3, alpha)));
 }
 
 INSTANTIATE_TEST_SUITE_P(ScalTestSuite, ScalTests, ::testing::ValuesIn(devices),

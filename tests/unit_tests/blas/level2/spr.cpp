@@ -43,7 +43,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, int incx) {
+int test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, int incx) {
     // Prepare data.
     vector<fp> x, A_ref, A;
     rand_vector(x, n, incx);
@@ -92,6 +92,14 @@ bool test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, int incx
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const backend_unsupported_exception &e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error &error) {
+        std::cout << "Error raised during execution of SPR:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -99,28 +107,28 @@ bool test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, int incx
         good            = check_equal_matrix(A_accessor, A_ref, n, n, n, n, std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class SprTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(SprTests, RealSinglePrecision) {
     float alpha(2.0);
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, 2));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, 2));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, -2));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, -2));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, 1));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, 1));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, 2));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, 2));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, -2));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, -2));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, 1));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, 1));
 }
 TEST_P(SprTests, RealDoublePrecision) {
     double alpha(2.0);
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, 2));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, 2));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, -2));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, -2));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, 1));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, 1));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, 2));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, 2));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, -2));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, -2));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, 1));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, 1));
 }
 
 INSTANTIATE_TEST_SUITE_P(SprTestSuite, SprTests, ::testing::ValuesIn(devices), ::DeviceNamePrint());

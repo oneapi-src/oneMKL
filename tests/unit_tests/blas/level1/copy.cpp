@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device& dev, int N, int incx, int incy) {
+int test(const device& dev, int N, int incx, int incy) {
     // Prepare data.
     vector<fp> x, y, y_ref;
 
@@ -91,6 +91,14 @@ bool test(const device& dev, int N, int incx, int incy) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const backend_unsupported_exception& e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error& error) {
+        std::cout << "Error raised during execution of COPY:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -98,30 +106,30 @@ bool test(const device& dev, int N, int incx, int incy) {
         good            = check_equal_vector(y_accessor, y_ref, N, incy, N, std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class CopyTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(CopyTests, RealSinglePrecision) {
-    EXPECT_TRUE(test<float>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUE(test<float>(GetParam(), 1357, 1, 1));
-    EXPECT_TRUE(test<float>(GetParam(), 1357, -3, -2));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -3, -2));
 }
 TEST_P(CopyTests, RealDoublePrecision) {
-    EXPECT_TRUE(test<double>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUE(test<double>(GetParam(), 1357, 1, 1));
-    EXPECT_TRUE(test<double>(GetParam(), 1357, -3, -2));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -3, -2));
 }
 TEST_P(CopyTests, ComplexSinglePrecision) {
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 1357, 1, 1));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 1357, -3, -2));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, -3, -2));
 }
 TEST_P(CopyTests, ComplexDoublePrecision) {
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 1357, 1, 1));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 1357, -3, -2));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, -3, -2));
 }
 
 INSTANTIATE_TEST_SUITE_P(CopyTestSuite, CopyTests, ::testing::ValuesIn(devices),

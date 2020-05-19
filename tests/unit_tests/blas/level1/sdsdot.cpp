@@ -41,7 +41,7 @@ extern std::vector<cl::sycl::device> devices;
 
 namespace {
 
-bool test(const device &dev, int N, int incx, int incy, float alpha) {
+int test(const device &dev, int N, int incx, int incy, float alpha) {
     // Prepare data.
     vector<float> x, y;
     float result = float(-1), result_ref = float(-1);
@@ -91,6 +91,14 @@ bool test(const device &dev, int N, int incx, int incy, float alpha) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const backend_unsupported_exception &e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error &error) {
+        std::cout << "Error raised during execution of SDSDOT:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -98,15 +106,15 @@ bool test(const device &dev, int N, int incx, int incy, float alpha) {
         good                 = check_equal(result_accessor[0], result_ref, N, std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class SdsdotTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(SdsdotTests, RealSinglePrecision) {
-    EXPECT_TRUE(test(GetParam(), 1357, 2, 3, 2.0));
-    EXPECT_TRUE(test(GetParam(), 1357, -2, -3, 2.0));
-    EXPECT_TRUE(test(GetParam(), 1357, 1, 1, 2.0));
+    EXPECT_TRUEORSKIP(test(GetParam(), 1357, 2, 3, 2.0));
+    EXPECT_TRUEORSKIP(test(GetParam(), 1357, -2, -3, 2.0));
+    EXPECT_TRUEORSKIP(test(GetParam(), 1357, 1, 1, 2.0));
 }
 
 INSTANTIATE_TEST_SUITE_P(SdsdotTestSuite, SdsdotTests, ::testing::ValuesIn(devices),

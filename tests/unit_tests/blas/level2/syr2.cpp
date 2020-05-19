@@ -43,8 +43,8 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, int incx, int incy,
-          int lda) {
+int test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, int incx, int incy,
+         int lda) {
     // Prepare data.
     vector<fp> x, y, A_ref, A;
     rand_vector(x, n, incx);
@@ -97,6 +97,14 @@ bool test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, int incx
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const backend_unsupported_exception &e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error &error) {
+        std::cout << "Error raised during execution of SYR2:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -104,28 +112,28 @@ bool test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, int incx
         good            = check_equal_matrix(A_accessor, A_ref, n, n, lda, n, std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class Syr2Tests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(Syr2Tests, RealSinglePrecision) {
     float alpha(2.0);
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, 2, 3, 42));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, 2, 3, 42));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, -2, -3, 42));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, -2, -3, 42));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, 1, 1, 42));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, 1, 1, 42));
 }
 TEST_P(Syr2Tests, RealDoublePrecision) {
     double alpha(2.0);
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, 2, 3, 42));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, 2, 3, 42));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, -2, -3, 42));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, -2, -3, 42));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, 1, 1, 42));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, 1, 1, 42));
 }
 
 INSTANTIATE_TEST_SUITE_P(Syr2TestSuite, Syr2Tests, ::testing::ValuesIn(devices),

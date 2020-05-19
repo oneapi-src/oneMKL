@@ -44,7 +44,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device &dev, int64_t batch_size) {
+int test(const device &dev, int64_t batch_size) {
     // Prepare data.
     int64_t m, n, k;
     int64_t lda, ldb, ldc;
@@ -153,16 +153,13 @@ bool test(const device &dev, int64_t batch_size) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const backend_unsupported_exception &e) {
+        return test_skipped;
+    }
+
     catch (const std::runtime_error &error) {
         std::cout << "Error raised during execution of GEMM_BATCH_STRIDE:\n"
                   << error.what() << std::endl;
-#ifdef ENABLE_CUBLAS_BACKEND
-        // GEMM_BATCH_STRIDE currently not supported with CUBLAS backend
-        std::string error_msg(error.what());
-        if (error_msg.compare("Not implemented for cublas") == 0) {
-            return true;
-        }
-#endif
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
@@ -173,25 +170,25 @@ bool test(const device &dev, int64_t batch_size) {
                                   stride_c * batch_size, 10 * k, std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class GemmBatchStrideTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(GemmBatchStrideTests, RealSinglePrecision) {
-    EXPECT_TRUE(test<float>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 5));
 }
 
 TEST_P(GemmBatchStrideTests, RealDoublePrecision) {
-    EXPECT_TRUE(test<double>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 5));
 }
 
 TEST_P(GemmBatchStrideTests, ComplexSinglePrecision) {
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 5));
 }
 
 TEST_P(GemmBatchStrideTests, ComplexDoublePrecision) {
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 5));
 }
 
 INSTANTIATE_TEST_SUITE_P(GemmBatchStrideTestSuite, GemmBatchStrideTests,

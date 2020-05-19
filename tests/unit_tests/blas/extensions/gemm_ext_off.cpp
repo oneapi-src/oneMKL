@@ -44,9 +44,9 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename Ts, typename Ta, typename Tb, typename Tc>
-bool test(const device& dev, onemkl::transpose transa, onemkl::transpose transb,
-          onemkl::offset offsetc, int m, int n, int k, int lda, int ldb, int ldc, Ts alpha,
-          Ts beta) {
+int test(const device& dev, onemkl::transpose transa, onemkl::transpose transb,
+         onemkl::offset offsetc, int m, int n, int k, int lda, int ldb, int ldc, Ts alpha,
+         Ts beta) {
     // Prepare data.
     vector<Ta, allocator_helper<Ta, 64>> A;
     vector<Tb, allocator_helper<Tb, 64>> B;
@@ -120,22 +120,20 @@ bool test(const device& dev, onemkl::transpose transa, onemkl::transpose transb,
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const backend_unsupported_exception& e) {
+        return test_skipped;
+    }
+
     catch (const std::runtime_error& error) {
-        std::cout << "Error raised during execution of GEMM_EXT:\n" << error.what() << std::endl;
-#ifdef ENABLE_CUBLAS_BACKEND
-        // GEMM_EXT currently not supported with CUBLAS backend.
-        std::string error_msg(error.what());
-        if (error_msg.compare("Not implemented for cublas") == 0) {
-            return true;
-        }
-#endif
+        std::cout << "Error raised during execution of GEMM_EXT_OFF:\n"
+                  << error.what() << std::endl;
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
     auto C_accessor = C_buffer.template get_access<access::mode::read>();
     bool good       = check_equal_matrix(C_accessor, C_ref, m, n, ldc, 10 * k, std::cout);
 
-    return good;
+    return (int)good;
 }
 
 class GemmExtOffTests : public ::testing::TestWithParam<cl::sycl::device> {};
@@ -143,40 +141,40 @@ class GemmExtOffTests : public ::testing::TestWithParam<cl::sycl::device> {};
 TEST_P(GemmExtOffTests, Int8Uint8Int32Precision) {
     float alpha(2.0);
     float beta(3.0);
-    EXPECT_TRUE((test<float, int8_t, uint8_t, int32_t>(
+    EXPECT_TRUEORSKIP((test<float, int8_t, uint8_t, int32_t>(
         GetParam(), onemkl::transpose::nontrans, onemkl::transpose::nontrans, onemkl::offset::fix,
         79, 83, 91, 103, 105, 106, alpha, beta)));
-    EXPECT_TRUE((test<float, int8_t, uint8_t, int32_t>(
+    EXPECT_TRUEORSKIP((test<float, int8_t, uint8_t, int32_t>(
         GetParam(), onemkl::transpose::nontrans, onemkl::transpose::trans, onemkl::offset::fix, 79,
         83, 91, 103, 105, 106, alpha, beta)));
-    EXPECT_TRUE((test<float, int8_t, uint8_t, int32_t>(
+    EXPECT_TRUEORSKIP((test<float, int8_t, uint8_t, int32_t>(
         GetParam(), onemkl::transpose::trans, onemkl::transpose::nontrans, onemkl::offset::fix, 79,
         83, 91, 103, 105, 106, alpha, beta)));
-    EXPECT_TRUE((test<float, int8_t, uint8_t, int32_t>(
+    EXPECT_TRUEORSKIP((test<float, int8_t, uint8_t, int32_t>(
         GetParam(), onemkl::transpose::trans, onemkl::transpose::trans, onemkl::offset::fix, 79, 83,
         91, 103, 105, 106, alpha, beta)));
-    EXPECT_TRUE((test<float, int8_t, uint8_t, int32_t>(
+    EXPECT_TRUEORSKIP((test<float, int8_t, uint8_t, int32_t>(
         GetParam(), onemkl::transpose::nontrans, onemkl::transpose::nontrans,
         onemkl::offset::column, 79, 83, 91, 103, 105, 106, alpha, beta)));
-    EXPECT_TRUE((test<float, int8_t, uint8_t, int32_t>(
+    EXPECT_TRUEORSKIP((test<float, int8_t, uint8_t, int32_t>(
         GetParam(), onemkl::transpose::nontrans, onemkl::transpose::trans, onemkl::offset::column,
         79, 83, 91, 103, 105, 106, alpha, beta)));
-    EXPECT_TRUE((test<float, int8_t, uint8_t, int32_t>(
+    EXPECT_TRUEORSKIP((test<float, int8_t, uint8_t, int32_t>(
         GetParam(), onemkl::transpose::trans, onemkl::transpose::nontrans, onemkl::offset::column,
         79, 83, 91, 103, 105, 106, alpha, beta)));
-    EXPECT_TRUE((test<float, int8_t, uint8_t, int32_t>(
+    EXPECT_TRUEORSKIP((test<float, int8_t, uint8_t, int32_t>(
         GetParam(), onemkl::transpose::trans, onemkl::transpose::trans, onemkl::offset::column, 79,
         83, 91, 103, 105, 106, alpha, beta)));
-    EXPECT_TRUE((test<float, int8_t, uint8_t, int32_t>(
+    EXPECT_TRUEORSKIP((test<float, int8_t, uint8_t, int32_t>(
         GetParam(), onemkl::transpose::nontrans, onemkl::transpose::nontrans, onemkl::offset::row,
         79, 83, 91, 103, 105, 106, alpha, beta)));
-    EXPECT_TRUE((test<float, int8_t, uint8_t, int32_t>(
+    EXPECT_TRUEORSKIP((test<float, int8_t, uint8_t, int32_t>(
         GetParam(), onemkl::transpose::nontrans, onemkl::transpose::trans, onemkl::offset::row, 79,
         83, 91, 103, 105, 106, alpha, beta)));
-    EXPECT_TRUE((test<float, int8_t, uint8_t, int32_t>(
+    EXPECT_TRUEORSKIP((test<float, int8_t, uint8_t, int32_t>(
         GetParam(), onemkl::transpose::trans, onemkl::transpose::nontrans, onemkl::offset::row, 79,
         83, 91, 103, 105, 106, alpha, beta)));
-    EXPECT_TRUE((test<float, int8_t, uint8_t, int32_t>(
+    EXPECT_TRUEORSKIP((test<float, int8_t, uint8_t, int32_t>(
         GetParam(), onemkl::transpose::trans, onemkl::transpose::trans, onemkl::offset::row, 79, 83,
         91, 103, 105, 106, alpha, beta)));
 }

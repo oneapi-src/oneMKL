@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp, typename fp_scalar>
-bool test(const device &dev, int N, int incx, int incy, fp_scalar c, fp_scalar s) {
+int test(const device &dev, int N, int incx, int incy, fp_scalar c, fp_scalar s) {
     // Prepare data.
     vector<fp> x, x_ref, y, y_ref;
     rand_vector(x, N, incx);
@@ -92,6 +92,14 @@ bool test(const device &dev, int N, int incx, int incy, fp_scalar c, fp_scalar s
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const backend_unsupported_exception &e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error &error) {
+        std::cout << "Error raised during execution of ROT:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -102,7 +110,7 @@ bool test(const device &dev, int N, int incx, int incy, fp_scalar c, fp_scalar s
         good            = good_x && good_y;
     }
 
-    return good;
+    return (int)good;
 }
 
 class RotTests : public ::testing::TestWithParam<cl::sycl::device> {};
@@ -110,30 +118,30 @@ class RotTests : public ::testing::TestWithParam<cl::sycl::device> {};
 TEST_P(RotTests, RealSinglePrecision) {
     float c(2.0);
     float s(-0.5);
-    EXPECT_TRUE((test<float, float>(GetParam(), 1357, 2, 3, c, s)));
-    EXPECT_TRUE((test<float, float>(GetParam(), 1357, 1, 1, c, s)));
-    EXPECT_TRUE((test<float, float>(GetParam(), 1357, -2, -3, c, s)));
+    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, 2, 3, c, s)));
+    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, 1, 1, c, s)));
+    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, -2, -3, c, s)));
 }
 TEST_P(RotTests, RealDoublePrecision) {
     double c(2.0);
     double s(-0.5);
-    EXPECT_TRUE((test<double, double>(GetParam(), 1357, 2, 3, c, s)));
-    EXPECT_TRUE((test<double, double>(GetParam(), 1357, 1, 1, c, s)));
-    EXPECT_TRUE((test<double, double>(GetParam(), 1357, -2, -3, c, s)));
+    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, 2, 3, c, s)));
+    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, 1, 1, c, s)));
+    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, -2, -3, c, s)));
 }
 TEST_P(RotTests, ComplexSinglePrecision) {
     float c = 2.0;
     float s = -0.5;
-    EXPECT_TRUE((test<std::complex<float>, float>(GetParam(), 1357, 2, 3, c, s)));
-    EXPECT_TRUE((test<std::complex<float>, float>(GetParam(), 1357, 1, 1, c, s)));
-    EXPECT_TRUE((test<std::complex<float>, float>(GetParam(), 1357, -2, -3, c, s)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), 1357, 2, 3, c, s)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), 1357, 1, 1, c, s)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), 1357, -2, -3, c, s)));
 }
 TEST_P(RotTests, ComplexDoublePrecision) {
     double c = 2.0;
     double s = -0.5;
-    EXPECT_TRUE((test<std::complex<double>, double>(GetParam(), 1357, 2, 3, c, s)));
-    EXPECT_TRUE((test<std::complex<double>, double>(GetParam(), 1357, 1, 1, c, s)));
-    EXPECT_TRUE((test<std::complex<double>, double>(GetParam(), 1357, -2, -3, c, s)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), 1357, 2, 3, c, s)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), 1357, 1, 1, c, s)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), 1357, -2, -3, c, s)));
 }
 
 INSTANTIATE_TEST_SUITE_P(RotTestSuite, RotTests, ::testing::ValuesIn(devices), ::DeviceNamePrint());

@@ -23,9 +23,15 @@
 #include <algorithm>
 
 #include <complex>
+#include <stdexcept>
 #include <type_traits>
 
 #include <CL/sycl.hpp>
+// Exceptions
+class backend_unsupported_exception : public std::runtime_error {
+public:
+    backend_unsupported_exception() : std::runtime_error("Not yet supported for this backend") {}
+};
 
 namespace std {
 static cl::sycl::half abs(cl::sycl::half v) {
@@ -199,6 +205,20 @@ void copy_matrix(vec_src &src, onemkl::transpose trans, int m, int n, int ld, ve
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
                 dest[j + i * ld] = (T_data)src[j + i * ld];
+    }
+}
+
+template <typename fp>
+void copy_matrix(fp *src, onemkl::transpose trans, int m, int n, int ld, fp *dest) {
+    if (trans == onemkl::transpose::nontrans) {
+        for (int j = 0; j < n; j++)
+            for (int i = 0; i < m; i++)
+                dest[i + j * ld] = (fp)src[i + j * ld];
+    }
+    else {
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++)
+                dest[j + i * ld] = (fp)src[j + i * ld];
     }
 }
 

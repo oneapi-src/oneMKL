@@ -25,6 +25,7 @@ add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
   mkl_internal_blas_gpu_wrappers.cpp
   mkl_blas_sycl_buffer.cpp
+  mkl_blas_sycl_usm.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_blas_gpu_wrappers.cpp>
 )
 

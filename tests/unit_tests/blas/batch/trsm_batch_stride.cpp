@@ -44,7 +44,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device &dev) {
+int test(const device &dev) {
     // Prepare data.
     int64_t m, n;
     int64_t lda, ldb;
@@ -151,16 +151,13 @@ bool test(const device &dev) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const backend_unsupported_exception &e) {
+        return test_skipped;
+    }
+
     catch (const std::runtime_error &error) {
         std::cout << "Error raised during execution of TRSM_BATCH_STRIDE:\n"
                   << error.what() << std::endl;
-#ifdef ENABLE_CUBLAS_BACKEND
-        // TRSM_BATCH_STRIDE currently not supported with CUBLAS backend.
-        std::string error_msg(error.what());
-        if (error_msg.compare("Not implemented for cublas") == 0) {
-            return true;
-        }
-#endif
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
@@ -171,25 +168,25 @@ bool test(const device &dev) {
                                        10 * std::max(m, n), std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class TrsmBatchStrideTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(TrsmBatchStrideTests, RealSinglePrecision) {
-    EXPECT_TRUE(test<float>(GetParam()));
+    EXPECT_TRUEORSKIP(test<float>(GetParam()));
 }
 
 TEST_P(TrsmBatchStrideTests, RealDoublePrecision) {
-    EXPECT_TRUE(test<double>(GetParam()));
+    EXPECT_TRUEORSKIP(test<double>(GetParam()));
 }
 
 TEST_P(TrsmBatchStrideTests, ComplexSinglePrecision) {
-    EXPECT_TRUE(test<std::complex<float>>(GetParam()));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam()));
 }
 
 TEST_P(TrsmBatchStrideTests, ComplexDoublePrecision) {
-    EXPECT_TRUE(test<std::complex<double>>(GetParam()));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam()));
 }
 
 INSTANTIATE_TEST_SUITE_P(TrsmBatchStrideTestSuite, TrsmBatchStrideTests,

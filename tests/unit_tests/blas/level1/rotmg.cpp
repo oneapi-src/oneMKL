@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device& dev) {
+int test(const device& dev) {
     // Prepare data.
     fp d1, d2, x1, y1, d1_ref, d2_ref, x1_ref;
     vector<fp> param(5, fp(0)), param_ref(5, fp(0));
@@ -96,6 +96,14 @@ bool test(const device& dev) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const backend_unsupported_exception& e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error& error) {
+        std::cout << "Error raised during execution of ROTMG:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -110,16 +118,16 @@ bool test(const device& dev) {
         good                = good_d1 && good_d2 && good_x1 && good_param;
     }
 
-    return good;
+    return (int)good;
 }
 
 class RotmgTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(RotmgTests, RealSinglePrecision) {
-    EXPECT_TRUE(test<float>(GetParam()));
+    EXPECT_TRUEORSKIP(test<float>(GetParam()));
 }
 TEST_P(RotmgTests, RealDoublePrecision) {
-    EXPECT_TRUE(test<double>(GetParam()));
+    EXPECT_TRUEORSKIP(test<double>(GetParam()));
 }
 
 INSTANTIATE_TEST_SUITE_P(RotmgTestSuite, RotmgTests, ::testing::ValuesIn(devices),

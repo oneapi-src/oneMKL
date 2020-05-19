@@ -17,12 +17,16 @@
 *
 **************************************************************************/
 #include <CL/sycl/detail/pi.hpp>
+#include <stdexcept>
 #include "cublas_helper.hpp"
 #include "cublas_scope_handle.hpp"
 #include "onemkl/blas/detail/cublas/onemkl_blas_cublas.hpp"
 
 namespace onemkl {
 namespace cublas {
+
+// Buffer APIs
+
 template <typename Func, typename T>
 inline void gemm(Func func, cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                  int64_t n, int64_t k, T alpha, cl::sycl::buffer<T, 1> &a, int64_t lda,
@@ -375,5 +379,229 @@ TRSM_LAUNCHER(std::complex<float>, cublasCtrsm)
 TRSM_LAUNCHER(std::complex<double>, cublasZtrsm)
 
 #undef TRSM_LAUNCHER
+
+// USM APIs
+
+template <typename Func, typename T>
+inline cl::sycl::event gemm(Func func, cl::sycl::queue &queue, transpose transa, transpose transb,
+                            int64_t m, int64_t n, int64_t k, T alpha, const T *a, int64_t lda,
+                            const T *b, int64_t ldb, T beta, T *c, int64_t ldc,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
+#define GEMM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                  \
+    cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,  \
+                         int64_t n, int64_t k, TYPE alpha, const TYPE *a, int64_t lda,           \
+                         const TYPE *b, int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,            \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {          \
+        return gemm(CUBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, \
+                    c, ldc, dependencies);                                                       \
+    }
+
+GEMM_LAUNCHER_USM(float, cublasSgemm)
+GEMM_LAUNCHER_USM(double, cublasDgemm)
+GEMM_LAUNCHER_USM(std::complex<float>, cublasCgemm)
+GEMM_LAUNCHER_USM(std::complex<double>, cublasZgemm)
+
+#undef GEMM_LAUNCHER_USM
+
+template <typename Func, typename T>
+inline cl::sycl::event symm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                            int64_t m, int64_t n, T alpha, const T *a, int64_t lda, const T *b,
+                            int64_t ldb, T beta, T *c, int64_t ldc,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
+#define SYMM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                  \
+    cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,   \
+                         int64_t n, TYPE alpha, const TYPE *a, int64_t lda, const TYPE *b,       \
+                         int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,                           \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {          \
+        return symm(CUBLAS_ROUTINE, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, \
+                    beta, c, ldc, dependencies);                                                 \
+    }
+
+SYMM_LAUNCHER_USM(float, cublasSsymm)
+SYMM_LAUNCHER_USM(double, cublasDsymm)
+SYMM_LAUNCHER_USM(std::complex<float>, cublasCsymm)
+SYMM_LAUNCHER_USM(std::complex<double>, cublasZsymm)
+
+#undef SYMM_LAUNCHER_USM
+
+template <typename Func, typename T>
+inline cl::sycl::event hemm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                            int64_t m, int64_t n, T alpha, const T *a, int64_t lda, const T *b,
+                            int64_t ldb, T beta, T *c, int64_t ldc,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
+#define HEMM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                  \
+    cl::sycl::event hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,   \
+                         int64_t n, TYPE alpha, const TYPE *a, int64_t lda, const TYPE *b,       \
+                         int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,                           \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {          \
+        return hemm(CUBLAS_ROUTINE, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, \
+                    beta, c, ldc, dependencies);                                                 \
+    }
+HEMM_LAUNCHER_USM(std::complex<float>, cublasChemm)
+HEMM_LAUNCHER_USM(std::complex<double>, cublasZhemm)
+
+#undef HEMM_LAUNCHER_USM
+
+template <typename Func, typename T>
+inline cl::sycl::event syrk(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                            int64_t n, int64_t k, T alpha, const T *a, int64_t lda, T beta, T *c,
+                            int64_t ldc,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
+#define SYRK_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
+    cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
+                         int64_t k, TYPE alpha, const TYPE *a, int64_t lda, TYPE beta, TYPE *c,   \
+                         int64_t ldc,                                                             \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+        return syrk(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, \
+                    dependencies);                                                                \
+    }
+
+SYRK_LAUNCHER_USM(float, cublasSsyrk)
+SYRK_LAUNCHER_USM(double, cublasDsyrk)
+SYRK_LAUNCHER_USM(std::complex<float>, cublasCsyrk)
+SYRK_LAUNCHER_USM(std::complex<double>, cublasZsyrk)
+
+#undef SYRK_LAUNCHER_USM
+
+template <typename Func, typename DataType, typename ScalarType>
+inline cl::sycl::event herk(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                            int64_t n, int64_t k, ScalarType alpha, const DataType *a, int64_t lda,
+                            ScalarType beta, DataType *c, int64_t ldc,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
+#define HERK_LAUNCHER_USM(DATA_TYPE, SCALAR_TYPE, CUBLAS_ROUTINE)                                 \
+    cl::sycl::event herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
+                         int64_t k, SCALAR_TYPE alpha, const DATA_TYPE *a, int64_t lda,           \
+                         SCALAR_TYPE beta, DATA_TYPE *c, int64_t ldc,                             \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+        return herk(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, \
+                    dependencies);                                                                \
+    }
+
+HERK_LAUNCHER_USM(std::complex<float>, float, cublasCherk)
+HERK_LAUNCHER_USM(std::complex<double>, double, cublasZherk)
+
+#undef HERK_LAUNCHER_USM
+
+template <typename Func, typename T>
+inline cl::sycl::event syr2k(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                             int64_t n, int64_t k, T alpha, const T *a, int64_t lda, const T *b,
+                             int64_t ldb, T beta, T *c, int64_t ldc,
+                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
+#define SYR2K_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
+    cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
+                          int64_t k, TYPE alpha, const TYPE *a, int64_t lda, const TYPE *b,        \
+                          int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,                            \
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+        return syr2k(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, \
+                     c, ldc, dependencies);                                                        \
+    }
+SYR2K_LAUNCHER_USM(float, cublasSsyr2k)
+SYR2K_LAUNCHER_USM(double, cublasDsyr2k)
+SYR2K_LAUNCHER_USM(std::complex<float>, cublasCsyr2k)
+SYR2K_LAUNCHER_USM(std::complex<double>, cublasZsyr2k)
+
+#undef SYR2K_LAUNCHER_USM
+
+template <typename Func, typename DataType, typename ScalarType>
+inline cl::sycl::event her2k(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                             int64_t n, int64_t k, DataType alpha, const DataType *a, int64_t lda,
+                             const DataType *b, int64_t ldb, ScalarType beta, DataType *c,
+                             int64_t ldc,
+                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
+#define HER2K_LAUNCHER_USM(DATA_TYPE, SCALAR_TYPE, CUBLAS_ROUTINE)                                 \
+    cl::sycl::event her2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
+                          int64_t k, DATA_TYPE alpha, const DATA_TYPE *a, int64_t lda,             \
+                          const DATA_TYPE *b, int64_t ldb, SCALAR_TYPE beta, DATA_TYPE *c,         \
+                          int64_t ldc,                                                             \
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+        return her2k(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, \
+                     c, ldc, dependencies);                                                        \
+    }
+
+HER2K_LAUNCHER_USM(std::complex<float>, float, cublasCher2k)
+HER2K_LAUNCHER_USM(std::complex<double>, double, cublasZher2k)
+
+#undef HER2K_LAUNCHER_USM
+
+// NOTE: In cublas TRMM diverted from the netlib blas and for performance
+// reason it requires the C matrix to be
+// separated from the B matrix. It is possible to use B instead of C, but this
+// will slow-down the code.
+template <typename Func, typename T>
+inline cl::sycl::event trmm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                            transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha,
+                            const T *a, int64_t lda, T *b, int64_t ldb,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
+#define TRMM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                    \
+    cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower,                \
+                         transpose trans, diag unit_diag, int64_t m, int64_t n, TYPE alpha,        \
+                         const TYPE *a, int64_t lda, TYPE *b, int64_t ldb,                         \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {            \
+        return trmm(CUBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, \
+                    a, lda, b, ldb, dependencies);                                                 \
+    }
+TRMM_LAUNCHER_USM(float, cublasStrmm)
+TRMM_LAUNCHER_USM(double, cublasDtrmm)
+TRMM_LAUNCHER_USM(std::complex<float>, cublasCtrmm)
+TRMM_LAUNCHER_USM(std::complex<double>, cublasZtrmm)
+
+#undef TRMM_LAUNCHER_USM
+
+template <typename Func, typename T>
+inline cl::sycl::event trsm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                            transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha,
+                            const T *a, int64_t lda, T *b, int64_t ldb,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
+#define TRSM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                    \
+    cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower,                \
+                         transpose trans, diag unit_diag, int64_t m, int64_t n, TYPE alpha,        \
+                         const TYPE *a, int64_t lda, TYPE *b, int64_t ldb,                         \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {            \
+        return trsm(CUBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, \
+                    a, lda, b, ldb, dependencies);                                                 \
+    }
+TRSM_LAUNCHER_USM(float, cublasStrsm)
+TRSM_LAUNCHER_USM(double, cublasDtrsm)
+TRSM_LAUNCHER_USM(std::complex<float>, cublasCtrsm)
+TRSM_LAUNCHER_USM(std::complex<double>, cublasZtrsm)
+
+#undef TRSM_LAUNCHER_USM
+
 } // namespace cublas
 } // namespace onemkl

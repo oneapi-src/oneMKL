@@ -17,63 +17,20 @@
 *
 **************************************************************************/
 #include <stdexcept>
+#include "cublas_helper.hpp"
 #include "onemkl/blas/detail/cublas/onemkl_blas_cublas.hpp"
 
 namespace onemkl {
 namespace cublas {
 
-void gemm_batch(cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-                cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
-                cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
-                cl::sycl::buffer<float, 1> &alpha, cl::sycl::buffer<float, 1> &a,
-                cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<float, 1> &b,
-                cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<float, 1> &beta,
-                cl::sycl::buffer<float, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-                std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    throw std::runtime_error("Not implemented for cublas");
-}
-
-void gemm_batch(cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-                cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
-                cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
-                cl::sycl::buffer<double, 1> &alpha, cl::sycl::buffer<double, 1> &a,
-                cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<double, 1> &b,
-                cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<double, 1> &beta,
-                cl::sycl::buffer<double, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-                std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    throw std::runtime_error("Not implemented for cublas");
-}
-
-void gemm_batch(cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-                cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
-                cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
-                cl::sycl::buffer<std::complex<float>, 1> &alpha,
-                cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<std::complex<float>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-                cl::sycl::buffer<std::complex<float>, 1> &beta,
-                cl::sycl::buffer<std::complex<float>, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-                std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    throw std::runtime_error("Not implemented for cublas");
-}
-
-void gemm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
-    cl::sycl::buffer<std::complex<double>, 1> &alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<std::complex<double>, 1> &b,
-    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<std::complex<double>, 1> &beta,
-    cl::sycl::buffer<std::complex<double>, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    throw std::runtime_error("Not implemented for cublas");
-}
+// Buffer APIs
 
 void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
                 std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<float, 1> &a,
                 std::int64_t lda, std::int64_t stride_a, cl::sycl::buffer<float, 1> &b,
                 std::int64_t ldb, std::int64_t stride_b, float beta, cl::sycl::buffer<float, 1> &c,
                 std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size) {
-    throw std::runtime_error("Not implemented for cublas");
+    throw backend_unsupported_exception();
 }
 
 void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
@@ -82,7 +39,7 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, std:
                 std::int64_t ldb, std::int64_t stride_b, double beta,
                 cl::sycl::buffer<double, 1> &c, std::int64_t ldc, std::int64_t stride_c,
                 std::int64_t batch_size) {
-    throw std::runtime_error("Not implemented for cublas");
+    throw backend_unsupported_exception();
 }
 
 void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
@@ -92,7 +49,7 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, std:
                 std::int64_t ldb, std::int64_t stride_b, std::complex<float> beta,
                 cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc,
                 std::int64_t stride_c, std::int64_t batch_size) {
-    throw std::runtime_error("Not implemented for cublas");
+    throw backend_unsupported_exception();
 }
 
 void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
@@ -102,51 +59,7 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, std:
                 std::int64_t ldb, std::int64_t stride_b, std::complex<double> beta,
                 cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc,
                 std::int64_t stride_c, std::int64_t batch_size) {
-    throw std::runtime_error("Not implemented for cublas");
-}
-
-void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-                cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-                cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-                cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<float, 1> &alpha,
-                cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<float, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-                std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    throw std::runtime_error("Not implemented for cublas");
-}
-
-void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-                cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-                cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-                cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<double, 1> &alpha,
-                cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<double, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-                std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    throw std::runtime_error("Not implemented for cublas");
-}
-
-void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-                cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-                cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-                cl::sycl::buffer<std::int64_t, 1> &n,
-                cl::sycl::buffer<std::complex<float>, 1> &alpha,
-                cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<std::complex<float>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-                std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    throw std::runtime_error("Not implemented for cublas");
-}
-
-void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-                cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-                cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-                cl::sycl::buffer<std::int64_t, 1> &n,
-                cl::sycl::buffer<std::complex<double>, 1> &alpha,
-                cl::sycl::buffer<std::complex<double>, 1> &a,
-                cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<std::complex<double>, 1> &b,
-                cl::sycl::buffer<std::int64_t, 1> &ldb, std::int64_t group_count,
-                cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    throw std::runtime_error("Not implemented for cublas");
+    throw backend_unsupported_exception();
 }
 
 void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
@@ -154,7 +67,7 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 cl::sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a,
                 cl::sycl::buffer<float, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 std::int64_t batch_size) {
-    throw std::runtime_error("Not implemented for cublas");
+    throw backend_unsupported_exception();
 }
 
 void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
@@ -162,7 +75,7 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 cl::sycl::buffer<double, 1> &a, std::int64_t lda, std::int64_t stride_a,
                 cl::sycl::buffer<double, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 std::int64_t batch_size) {
-    throw std::runtime_error("Not implemented for cublas");
+    throw backend_unsupported_exception();
 }
 
 void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
@@ -170,7 +83,7 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
                 std::int64_t stride_a, cl::sycl::buffer<std::complex<float>, 1> &b,
                 std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
-    throw std::runtime_error("Not implemented for cublas");
+    throw backend_unsupported_exception();
 }
 
 void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
@@ -178,7 +91,91 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                 std::int64_t stride_a, cl::sycl::buffer<std::complex<double>, 1> &b,
                 std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
-    throw std::runtime_error("Not implemented for cublas");
+    throw backend_unsupported_exception();
 }
+
+// USM APIs
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+                           int64_t *n, int64_t *k, float *alpha, const float **a, int64_t *lda,
+                           const float **b, int64_t *ldb, float *beta, float **c, int64_t *ldc,
+                           int64_t group_count, int64_t *groupsize,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+                           int64_t *n, int64_t *k, double *alpha, const double **a, int64_t *lda,
+                           const double **b, int64_t *ldb, double *beta, double **c, int64_t *ldc,
+                           int64_t group_count, int64_t *groupsize,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+                           int64_t *n, int64_t *k, std::complex<float> *alpha,
+                           const std::complex<float> **a, int64_t *lda,
+                           const std::complex<float> **b, int64_t *ldb, std::complex<float> *beta,
+                           std::complex<float> **c, int64_t *ldc, int64_t group_count,
+                           int64_t *groupsize,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+                           int64_t *n, int64_t *k, std::complex<double> *alpha,
+                           const std::complex<double> **a, int64_t *lda,
+                           const std::complex<double> **b, int64_t *ldb, std::complex<double> *beta,
+                           std::complex<double> **c, int64_t *ldc, int64_t group_count,
+                           int64_t *groupsize,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                           int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
+                           int64_t stride_a, const float *b, int64_t ldb, int64_t stride_b,
+                           float beta, float *c, int64_t ldc, int64_t stride_c, int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                           int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
+                           int64_t stride_a, const double *b, int64_t ldb, int64_t stride_b,
+                           double beta, double *c, int64_t ldc, int64_t stride_c,
+                           int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                           int64_t n, int64_t k, std::complex<float> alpha,
+                           const std::complex<float> *a, int64_t lda, int64_t stride_a,
+                           const std::complex<float> *b, int64_t ldb, int64_t stride_b,
+                           std::complex<float> beta, std::complex<float> *c, int64_t ldc,
+                           int64_t stride_c, int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                           int64_t n, int64_t k, std::complex<double> alpha,
+                           const std::complex<double> *a, int64_t lda, int64_t stride_a,
+                           const std::complex<double> *b, int64_t ldb, int64_t stride_b,
+                           std::complex<double> beta, std::complex<double> *c, int64_t ldc,
+                           int64_t stride_c, int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+    return cl::sycl::event();
+}
+
 } // namespace cublas
 } // namespace onemkl

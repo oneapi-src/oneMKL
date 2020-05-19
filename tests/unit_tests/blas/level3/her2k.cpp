@@ -44,8 +44,8 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp, typename fp_scalar>
-bool test(const device& dev, onemkl::uplo upper_lower, onemkl::transpose trans, int n, int k,
-          int lda, int ldb, int ldc, fp alpha, fp_scalar beta) {
+int test(const device& dev, onemkl::uplo upper_lower, onemkl::transpose trans, int n, int k,
+         int lda, int ldb, int ldc, fp alpha, fp_scalar beta) {
     // Prepare data.
     vector<fp, allocator_helper<fp, 64>> A, B, C, C_ref;
     rand_matrix(A, trans, n, k, lda);
@@ -102,6 +102,14 @@ bool test(const device& dev, onemkl::uplo upper_lower, onemkl::transpose trans, 
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const backend_unsupported_exception& e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error& error) {
+        std::cout << "Error raised during execution of HER2K:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -109,7 +117,7 @@ bool test(const device& dev, onemkl::uplo upper_lower, onemkl::transpose trans, 
         good = check_equal_matrix(C_accessor, C_ref, n, n, ldc, 10 * std::max(n, k), std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class Her2kTests : public ::testing::TestWithParam<cl::sycl::device> {};
@@ -117,34 +125,34 @@ class Her2kTests : public ::testing::TestWithParam<cl::sycl::device> {};
 TEST_P(Her2kTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
     float beta(1.0);
-    EXPECT_TRUE((test<std::complex<float>, float>(GetParam(), onemkl::uplo::lower,
-                                                  onemkl::transpose::nontrans, 72, 27, 101, 102,
-                                                  103, alpha, beta)));
-    EXPECT_TRUE((test<std::complex<float>, float>(GetParam(), onemkl::uplo::upper,
-                                                  onemkl::transpose::nontrans, 72, 27, 101, 102,
-                                                  103, alpha, beta)));
-    EXPECT_TRUE((test<std::complex<float>, float>(GetParam(), onemkl::uplo::lower,
-                                                  onemkl::transpose::conjtrans, 72, 27, 101, 102,
-                                                  103, alpha, beta)));
-    EXPECT_TRUE((test<std::complex<float>, float>(GetParam(), onemkl::uplo::upper,
-                                                  onemkl::transpose::conjtrans, 72, 27, 101, 102,
-                                                  103, alpha, beta)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), onemkl::uplo::lower,
+                                                        onemkl::transpose::nontrans, 72, 27, 101,
+                                                        102, 103, alpha, beta)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), onemkl::uplo::upper,
+                                                        onemkl::transpose::nontrans, 72, 27, 101,
+                                                        102, 103, alpha, beta)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), onemkl::uplo::lower,
+                                                        onemkl::transpose::conjtrans, 72, 27, 101,
+                                                        102, 103, alpha, beta)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), onemkl::uplo::upper,
+                                                        onemkl::transpose::conjtrans, 72, 27, 101,
+                                                        102, 103, alpha, beta)));
 }
 TEST_P(Her2kTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
     double beta(1.0);
-    EXPECT_TRUE((test<std::complex<double>, double>(GetParam(), onemkl::uplo::lower,
-                                                    onemkl::transpose::nontrans, 72, 27, 101, 102,
-                                                    103, alpha, beta)));
-    EXPECT_TRUE((test<std::complex<double>, double>(GetParam(), onemkl::uplo::upper,
-                                                    onemkl::transpose::nontrans, 72, 27, 101, 102,
-                                                    103, alpha, beta)));
-    EXPECT_TRUE((test<std::complex<double>, double>(GetParam(), onemkl::uplo::lower,
-                                                    onemkl::transpose::conjtrans, 72, 27, 101, 102,
-                                                    103, alpha, beta)));
-    EXPECT_TRUE((test<std::complex<double>, double>(GetParam(), onemkl::uplo::upper,
-                                                    onemkl::transpose::conjtrans, 72, 27, 101, 102,
-                                                    103, alpha, beta)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), onemkl::uplo::lower,
+                                                          onemkl::transpose::nontrans, 72, 27, 101,
+                                                          102, 103, alpha, beta)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), onemkl::uplo::upper,
+                                                          onemkl::transpose::nontrans, 72, 27, 101,
+                                                          102, 103, alpha, beta)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), onemkl::uplo::lower,
+                                                          onemkl::transpose::conjtrans, 72, 27, 101,
+                                                          102, 103, alpha, beta)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), onemkl::uplo::upper,
+                                                          onemkl::transpose::conjtrans, 72, 27, 101,
+                                                          102, 103, alpha, beta)));
 }
 
 INSTANTIATE_TEST_SUITE_P(Her2kTestSuite, Her2kTests, ::testing::ValuesIn(devices),

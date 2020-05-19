@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp, typename fp_res>
-bool test(const device& dev, int N, int incx, int incy) {
+int test(const device& dev, int N, int incx, int incy) {
     // Prepare data.
     vector<fp> x, y;
     fp_res result = fp_res(-1), result_ref = fp_res(-1);
@@ -91,6 +91,14 @@ bool test(const device& dev, int N, int incx, int incy) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const backend_unsupported_exception& e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error& error) {
+        std::cout << "Error raised during execution of DOT:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -98,25 +106,25 @@ bool test(const device& dev, int N, int incx, int incy) {
         good                 = check_equal(result_accessor[0], result_ref, N, std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class DotTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(DotTests, RealSinglePrecision) {
-    EXPECT_TRUE((test<float, float>(GetParam(), 1357, 2, 3)));
-    EXPECT_TRUE((test<float, float>(GetParam(), 1357, 1, 1)));
-    EXPECT_TRUE((test<float, float>(GetParam(), 1357, -3, -2)));
+    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, 2, 3)));
+    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, 1, 1)));
+    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, -3, -2)));
 }
 TEST_P(DotTests, RealDoublePrecision) {
-    EXPECT_TRUE((test<double, double>(GetParam(), 1357, 2, 3)));
-    EXPECT_TRUE((test<double, double>(GetParam(), 1357, 1, 1)));
-    EXPECT_TRUE((test<double, double>(GetParam(), 1357, -3, -2)));
+    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, 2, 3)));
+    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, 1, 1)));
+    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, -3, -2)));
 }
 //TEST_P(DotTests, RealDoubleSinglePrecision) {
-//    EXPECT_TRUE((test<float, double>(GetParam(), 1357, 2, 3)));
-//    EXPECT_TRUE((test<float, double>(GetParam(), 1357, 1, 1)));
-//    EXPECT_TRUE((test<float, double>(GetParam(), 1357, -3, -2)));
+//    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, 2, 3)));
+//    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, 1, 1)));
+//    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, -3, -2)));
 //}
 
 INSTANTIATE_TEST_SUITE_P(DotTestSuite, DotTests, ::testing::ValuesIn(devices), ::DeviceNamePrint());

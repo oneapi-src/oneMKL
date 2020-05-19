@@ -79,6 +79,8 @@ static inline void copy_mat(T_src &src, int64_t row, int64_t col, int64_t ld, of
     }
 }
 
+// Buffer APIs
+
 void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
           int64_t k, half alpha, cl::sycl::buffer<half, 1> &a, int64_t lda,
           cl::sycl::buffer<half, 1> &b, int64_t ldb, half beta, cl::sycl::buffer<half, 1> &c,
@@ -307,6 +309,106 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
                      (const MKL_INT *)&ldc);
         });
     });
+}
+
+// USM APIs
+
+cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
+                      int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
+                      const float *b, int64_t ldb, float beta, float *c, int64_t ldc,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char transa_      = *fortran_char(transa);
+        const char transb_      = *fortran_char(transb);
+        host_task<class mkl_kernel_sgemmt_usm>(cgh, [=]() {
+            ::sgemmt((const char *)&upper_lower_, (const char *)&transa_, (const char *)&transb_,
+                     (const MKL_INT *)&n, (const MKL_INT *)&k, (const float *)&alpha, a,
+                     (const MKL_INT *)&lda, b, (const MKL_INT *)&ldb, (const float *)&beta, c,
+                     (const MKL_INT *)&ldc);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
+                      int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
+                      const double *b, int64_t ldb, double beta, double *c, int64_t ldc,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char transa_      = *fortran_char(transa);
+        const char transb_      = *fortran_char(transb);
+        host_task<class mkl_kernel_dgemmt_usm>(cgh, [=]() {
+            ::dgemmt((const char *)&upper_lower_, (const char *)&transa_, (const char *)&transb_,
+                     (const MKL_INT *)&n, (const MKL_INT *)&k, (const double *)&alpha, a,
+                     (const MKL_INT *)&lda, b, (const MKL_INT *)&ldb, (const double *)&beta, c,
+                     (const MKL_INT *)&ldc);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
+                      int64_t n, int64_t k, std::complex<float> alpha, const std::complex<float> *a,
+                      int64_t lda, const std::complex<float> *b, int64_t ldb,
+                      std::complex<float> beta, std::complex<float> *c, int64_t ldc,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char transa_      = *fortran_char(transa);
+        const char transb_      = *fortran_char(transb);
+        float alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        float beta_real = beta.real(), beta_imag = beta.imag();
+        host_task<class mkl_kernel_cgemmt_usm>(cgh, [=]() {
+            MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
+            MKL_Complex8 beta_  = { beta_real, beta_imag };
+            ::cgemmt((const char *)&upper_lower_, (const char *)&transa_, (const char *)&transb_,
+                     (const MKL_INT *)&n, (const MKL_INT *)&k, (const MKL_Complex8 *)&alpha_, a,
+                     (const MKL_INT *)&lda, b, (const MKL_INT *)&ldb, (const MKL_Complex8 *)&beta_,
+                     c, (const MKL_INT *)&ldc);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
+                      int64_t n, int64_t k, std::complex<double> alpha,
+                      const std::complex<double> *a, int64_t lda, const std::complex<double> *b,
+                      int64_t ldb, std::complex<double> beta, std::complex<double> *c, int64_t ldc,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char transa_      = *fortran_char(transa);
+        const char transb_      = *fortran_char(transb);
+        double alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        double beta_real = beta.real(), beta_imag = beta.imag();
+        host_task<class mkl_kernel_zgemmt_usm>(cgh, [=]() {
+            MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
+            MKL_Complex16 beta_  = { beta_real, beta_imag };
+            ::zgemmt((const char *)&upper_lower_, (const char *)&transa_, (const char *)&transb_,
+                     (const MKL_INT *)&n, (const MKL_INT *)&k, (const MKL_Complex16 *)&alpha_, a,
+                     (const MKL_INT *)&lda, b, (const MKL_INT *)&ldb, (const MKL_Complex16 *)&beta_,
+                     c, (const MKL_INT *)&ldc);
+        });
+    });
+    return done;
 }
 
 } // namespace mklcpu

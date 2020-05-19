@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device &dev, int N, int incx, int incy, fp alpha) {
+int test(const device &dev, int N, int incx, int incy, fp alpha) {
     // Prepare data.
     vector<fp> x, y, y_ref;
 
@@ -92,6 +92,14 @@ bool test(const device &dev, int N, int incx, int incy, fp alpha) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const backend_unsupported_exception &e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error &error) {
+        std::cout << "Error raised during execution of AXPY:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -99,34 +107,34 @@ bool test(const device &dev, int N, int incx, int incy, fp alpha) {
         good            = check_equal_vector(y_accessor, y_ref, N, incy, N, std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class AxpyTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(AxpyTests, RealSinglePrecision) {
     float alpha(2.0);
-    EXPECT_TRUE(test<float>(GetParam(), 1357, 2, 3, alpha));
-    EXPECT_TRUE(test<float>(GetParam(), 1357, 1, 1, alpha));
-    EXPECT_TRUE(test<float>(GetParam(), 1357, -3, -2, alpha));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2, 3, alpha));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1, 1, alpha));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -3, -2, alpha));
 }
 TEST_P(AxpyTests, RealDoublePrecision) {
     double alpha(2.0);
-    EXPECT_TRUE(test<double>(GetParam(), 1357, 2, 3, alpha));
-    EXPECT_TRUE(test<double>(GetParam(), 1357, 1, 1, alpha));
-    EXPECT_TRUE(test<double>(GetParam(), 1357, -3, -2, alpha));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2, 3, alpha));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1, 1, alpha));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -3, -2, alpha));
 }
 TEST_P(AxpyTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 1357, 2, 3, alpha));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 1357, 1, 1, alpha));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 1357, -3, -2, alpha));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, 2, 3, alpha));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, 1, 1, alpha));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, -3, -2, alpha));
 }
 TEST_P(AxpyTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 1357, 2, 3, alpha));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 1357, 1, 1, alpha));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 1357, -3, -2, alpha));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, 2, 3, alpha));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, 1, 1, alpha));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, -3, -2, alpha));
 }
 
 INSTANTIATE_TEST_SUITE_P(AxpyTestSuite, AxpyTests, ::testing::ValuesIn(devices),
