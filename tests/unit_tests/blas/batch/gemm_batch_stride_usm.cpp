@@ -72,7 +72,6 @@ int test(const device &dev, int64_t batch_size) {
     fp alpha, beta;
 
     int64_t i, tmp;
-    int64_t j;
 
     batch_size = 1 + std::rand() % 20;
     m          = 1 + std::rand() % 500;
