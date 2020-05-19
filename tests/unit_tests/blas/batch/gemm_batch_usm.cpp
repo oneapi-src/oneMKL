@@ -191,9 +191,9 @@ int test(const device &dev, int64_t group_count) {
     int *group_size_ref = (int *)onemkl::aligned_alloc(64, sizeof(int) * group_count);
 
     CBLAS_TRANSPOSE *transa_ref =
-        (CBLAS_TRANSPOSE *)aligned_alloc(64, sizeof(CBLAS_TRANSPOSE) * group_count);
+        (CBLAS_TRANSPOSE *)onemkl::aligned_alloc(64, sizeof(CBLAS_TRANSPOSE) * group_count);
     CBLAS_TRANSPOSE *transb_ref =
-        (CBLAS_TRANSPOSE *)aligned_alloc(64, sizeof(CBLAS_TRANSPOSE) * group_count);
+        (CBLAS_TRANSPOSE *)onemkl::aligned_alloc(64, sizeof(CBLAS_TRANSPOSE) * group_count);
 
     if ((m_ref == NULL) || (n_ref == NULL) || (k_ref == NULL) || (lda_ref == NULL) ||
         (ldb_ref == NULL) || (ldc_ref == NULL) || (transa_ref == NULL) || (transb_ref == NULL) ||
