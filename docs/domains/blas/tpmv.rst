@@ -1,4 +1,4 @@
-.. _tpmv:
+.. _onemkl_blas_tpmv:
 
 tpmv
 ====
@@ -10,16 +10,6 @@ tpmv
    Computes a matrix-vector product using a triangular packed matrix.
 
 
-   .. container:: section
-      :name: GUID-5785B6D6-DB9C-43FA-B98A-009D5E077A9D
-
-
-      .. rubric:: Syntax
-         :name: syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void tpmv(queue &exec_queue, uplo upper_lower,      transpose trans, diag unit_nonunit, std::int64_t n, buffer<T,1>      &a, buffer<T,1> &x, std::int64_t incx)
 
       ``tpmv`` supports the following precisions.
 
@@ -37,19 +27,14 @@ tpmv
 
 
 .. container:: section
-   :name: GUID-A045480A-2EC1-4C73-A836-468324FCC85A
 
 
    .. rubric:: Description
-      :name: description
       :class: sectiontitle
 
 
-   The tpmv routines compute a matrix-vector product with a triangular
+   The ``tpmv`` routines compute a matrix-vector product with a triangular
    packed matrix. The operation is defined as
-
-
-  
 
 
       x <- op(A)*x
@@ -69,36 +54,41 @@ tpmv
    ``x`` is a vector of length ``n``.
 
 
+tpmv (Buffer Version)
+---------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. cpp:function::  void onemkl::blas::tpmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_nonunit, std::int64_t n, sycl::buffer<T,1> &a, sycl::buffer<T,1> &x, std::int64_t incx)
+
 .. container:: section
-   :name: GUID-E1436726-01FE-4206-871E-B905F59A96B4
 
 
    .. rubric:: Input Parameters
-      :name: input-parameters
       :class: sectiontitle
 
 
-   exec_queue
+   queue
       The queue where the routine should be executed.
 
 
    upper_lower
-      Specifies whether ``A`` is upper or lower triangular. See
-      :ref:`onemkl_datatypes` for more
-      details.
+      Specifies whether ``A`` is upper or lower triangular. See :ref:`onemkl_datatypes` for more details.
 
 
    trans
-      Specifies op(``A``), the transposition operation applied to ``A``.
-      See
-      :ref:`onemkl_datatypes` for more
-      details.
+      Specifies op(``A``), the transposition operation applied to ``A``. See :ref:`onemkl_datatypes` for more details.
 
 
    unit_nonunit
-      Specifies whether the matrix ``A`` is unit triangular or not. See
-      :ref:`onemkl_datatypes`
-      for more details.
+      Specifies whether the matrix ``A`` is unit triangular or not. See :ref:`onemkl_datatypes` for more details.
 
 
    n
@@ -124,16 +114,104 @@ tpmv
 
 
 .. container:: section
-   :name: GUID-180038D9-902F-4B20-AB6B-E38F2A6C83E4
 
 
    .. rubric:: Output Parameters
-      :name: output-parameters
       :class: sectiontitle
 
 
    x
       Buffer holding the updated vector ``x``.
+
+
+tpmv (USM Version)
+------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. container:: dlsyntaxpara
+
+
+         .. cpp:function::  sycl::event onemkl::blas::tpmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_nonunit, std::int64_t n, const T *a, T *x, std::int64_t incx, const sycl::vector_class<sycl::event> &dependencies = {})
+   .. container:: section
+
+
+      .. rubric:: Input Parameters
+         :class: sectiontitle
+
+
+      queue
+         The queue where the routine should be executed.
+
+
+      upper_lower
+         Specifies whether ``A`` is upper or lower triangular. See :ref:`onemkl_datatypes` for more details.
+
+
+      trans
+         Specifies op(``A``), the transposition operation applied to
+         ``A``. See :ref:`onemkl_datatypes` for more details.
+
+
+      unit_nonunit
+         Specifies whether the matrix ``A`` is unit triangular or not. See :ref:`onemkl_datatypes` for more details.
+
+
+      n
+         Numbers of rows and columns of ``A``. Must be at least zero.
+
+
+      a
+         Pointer to input matrix ``A``. The array holding input matrix
+         ``A`` must have size at least (``n``\ \*(``n``\ +1))/2. See
+         `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      x
+         Pointer to input vector ``x``. The array holding input vector
+         ``x`` must be of size at least (1 + (``n`` - 1)*abs(``incx``)).
+         See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incx
+         Stride of vector ``x``.
+
+
+      dependencies
+         List of events to wait for before starting computation, if any.
+         If omitted, defaults to no dependencies.
+
+
+   .. container:: section
+
+
+      .. rubric:: Output Parameters
+         :class: sectiontitle
+
+
+      x
+         Pointer to the updated vector ``x``.
+
+
+   .. container:: section
+
+
+      .. rubric:: Return Values
+         :class: sectiontitle
+
+
+      Output event to wait on to ensure computation is complete.
 
 
 .. container:: familylinks
@@ -143,8 +221,3 @@ tpmv
 
 
       **Parent topic:** :ref:`blas-level-2-routines`
-      
-
-
-.. container::
-

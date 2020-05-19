@@ -1,4 +1,4 @@
-.. _rotm:
+.. _onemkl_blas_rotm:
 
 rotm
 ====
@@ -10,16 +10,6 @@ rotm
    Performs modified Givens rotation of points in the plane.
 
 
-   .. container:: section
-      :name: GUID-F8F2E2EB-1704-454D-BE45-C055D6F4E7D6
-
-
-      .. rubric:: Syntax
-         :name: syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void rotm(queue &exec_queue, std::int64_t n,      buffer<T,1> &x, std::int64_t incx, buffer<T,1> &y, std::int64_t      incy, buffer<T,1> &param)
 
       ``rotm`` supports the following precisions.
 
@@ -35,11 +25,9 @@ rotm
 
 
 .. container:: section
-   :name: GUID-856650C6-2998-4452-A34A-DF6CB801087D
 
 
    .. rubric:: Description
-      :name: description
       :class: sectiontitle
 
 
@@ -55,16 +43,28 @@ rotm
    transformation matrix.
 
 
+rotm (Buffer Version)
+---------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. cpp:function::  void onemkl::blas::rotm(sycl::queue &queue, std::int64_t n, sycl::buffer<T,1> &x, std::int64_t incx, sycl::buffer<T,1> &y, std::int64_t incy, sycl::buffer<T,1> &param)
+
 .. container:: section
-   :name: GUID-A615800D-734E-4997-BB91-1C76AEEE9EC2
 
 
    .. rubric:: Input Parameters
-      :name: input-parameters
       :class: sectiontitle
 
 
-   exec_queue
+   queue
       The queue where the routine should be executed.
 
 
@@ -80,7 +80,7 @@ rotm
 
 
    incx
-      Stride of vector x.
+      Stride of vector ``x``.
 
 
    y
@@ -91,7 +91,7 @@ rotm
 
 
    incy
-      Stride of vector y.
+      Stride of vector ``y``.
 
 
    param
@@ -102,12 +102,12 @@ rotm
       ``param``\ [0] contains a switch, ``flag``,
 
 
-      ``param``\ [1-4] contain *h\ 11*,\ *h\ 21*, *h\ 12*,\ *h\ 22*
-      respectively, the components ofthe modified Givens transformation
+      ``param``\ [1-4] contain *h\ 11*, \ *h\ 21*, *h\ 12*, and \ *h\ 22*
+      respectively, the components of the modified Givens transformation
       matrix ``H``.
 
 
-      Depending on the values of ``flag``, thecomponents of ``H`` are
+      Depending on the values of ``flag``, the components of ``H`` are
       set as follows:
 
 
@@ -133,11 +133,9 @@ rotm
 
 
 .. container:: section
-   :name: GUID-062D805B-68FF-41F6-8D9A-329C92A77EA3
 
 
    .. rubric:: Output Parameters
-      :name: output-parameters
       :class: sectiontitle
 
 
@@ -149,6 +147,129 @@ rotm
       Buffer holding updated buffer ``y``.
 
 
+rotm (USM Version)
+------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. container:: dlsyntaxpara
+
+
+         .. cpp:function::  sycl::event onemkl::blas::rotm(sycl::queue &queue, std::int64_t n, T *x, std::int64_t incx, T *y, std::int64_t incy, T *param, const sycl::vector_class<sycl::event> &dependencies = {})
+   .. container:: section
+
+
+      .. rubric:: Input Parameters
+         :class: sectiontitle
+
+
+      queue
+         The queue where the routine should be executed.
+
+
+      n
+         Number of elements in vector ``x``.
+
+
+      x
+         Pointer to the input vector ``x``. The array holding the vector
+         ``x`` must be of size at least (1 + (``n`` - 1)*abs(``incx``)).
+         See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incx
+         Stride of vector ``x``.
+
+
+      yparam
+         Pointer to the input vector ``y``. The array holding the vector
+         ``y`` must be of size at least (1 + (``n`` - 1)*abs(``incy``)).
+         See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incy
+         Stride of vector ``y``.
+
+
+      param
+         Pointer to an array of size 5. The elements of the ``param``
+         array are:
+
+
+         ``param``\ [0] contains a switch, ``flag``,
+
+
+         ``param``\ [1-4] contain *h\ 11*, \ *h\ 21*, *h\ 12*, and \ *h\ 22*
+         respectively, the components of the modified Givens
+         transformation matrix ``H``.
+
+
+         Depending on the values of ``flag``, the components of ``H`` are
+         set as follows:
+
+
+         | ``flag =``\ ``-1.0``:
+         | |image1|
+
+
+         | ``flag =``\ ``0.0``:
+         | |image2|
+
+
+         | ``flag =``\ ``1.0``:
+         | |image3|
+
+
+         | ``flag =``\ ``-2.0``:
+         | |image4|
+
+
+         In the last three cases, the matrix entries of 1.0, -1.0, 0.0
+         are assumed based on the value of ``flag`` and are not required
+         to be set in the ``param`` vector.
+
+
+      dependencies
+         List of events to wait for before starting computation, if any.
+         If omitted, defaults to no dependencies.
+
+
+   .. container:: section
+
+
+      .. rubric:: Output Parameters
+         :class: sectiontitle
+
+
+      x
+         Pointer to the updated array ``x``.
+
+
+      y
+         Pointer to the updated array ``y``.
+
+
+   .. container:: section
+
+
+      .. rubric:: Return Values
+         :class: sectiontitle
+
+
+      Output event to wait on to ensure computation is complete.
+
+
 .. container:: familylinks
 
 
@@ -156,15 +277,9 @@ rotm
 
 
       **Parent topic:** :ref:`blas-level-1-routines`
-      
-
-
-.. container::
-
-
-.. |image0| image:: ../equations/GUID-608D9BA6-827F-48DE-A01F-0EE5991F7ee1.png
-.. |image1| image:: ../equations/GUID-608D9BA6-827F-48DE-A01F-0EE5991F7ee2.png
-.. |image2| image:: ../equations/GUID-608D9BA6-827F-48DE-A01F-0EE5991F7ee3.png
-.. |image3| image:: ../equations/GUID-608D9BA6-827F-48DE-A01F-0EE5991F7ee4.png
-.. |image4| image:: ../equations/GUID-608D9BA6-827F-48DE-A01F-0EE5991F7ee5.png
+.. |image0| image:: ../equations/GUID-67FC4AB3-40CB-441F-BA9F-88BAAC78Cee1.png
+.. |image1| image:: ../equations/GUID-67FC4AB3-40CB-441F-BA9F-88BAAC78Cee2.png
+.. |image2| image:: ../equations/GUID-67FC4AB3-40CB-441F-BA9F-88BAAC78Cee3.png
+.. |image3| image:: ../equations/GUID-67FC4AB3-40CB-441F-BA9F-88BAAC78Cee4.png
+.. |image4| image:: ../equations/GUID-67FC4AB3-40CB-441F-BA9F-88BAAC78Cee5.png
 

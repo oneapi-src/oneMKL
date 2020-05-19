@@ -43,8 +43,8 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, fp beta, int incx,
-          int incy) {
+int test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, fp beta, int incx,
+         int incy) {
     // Prepare data.
     vector<fp> x, y, y_ref, A;
     rand_vector(x, n, incx);
@@ -97,6 +97,14 @@ bool test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, fp beta,
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const onemkl::backend_unsupported_exception &e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error &error) {
+        std::cout << "Error raised during execution of HPMV:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -104,7 +112,7 @@ bool test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, fp beta,
         good            = check_equal_vector(y_accessor, y_ref, n, incy, n, std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class HpmvTests : public ::testing::TestWithParam<cl::sycl::device> {};
@@ -112,26 +120,34 @@ class HpmvTests : public ::testing::TestWithParam<cl::sycl::device> {};
 TEST_P(HpmvTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
     std::complex<float> beta(3.0, -1.5);
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 2, 3));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 2, 3));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 2, 3));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 2, 3));
+    EXPECT_TRUEORSKIP(
         test<std::complex<float>>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, -2, -3));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         test<std::complex<float>>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, -2, -3));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 1, 1));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 1, 1));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 1, 1));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 1, 1));
 }
 TEST_P(HpmvTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 2, 3));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 2, 3));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 2, 3));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 2, 3));
+    EXPECT_TRUEORSKIP(
         test<std::complex<double>>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, -2, -3));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         test<std::complex<double>>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, -2, -3));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 1, 1));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 1, 1));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 1, 1));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 1, 1));
 }
 
 INSTANTIATE_TEST_SUITE_P(HpmvTestSuite, HpmvTests, ::testing::ValuesIn(devices),

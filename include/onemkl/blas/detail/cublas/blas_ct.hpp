@@ -33,14 +33,13 @@
 
 #include "onemkl_blas_cublas.hpp"
 
+#include "onemkl/blas/detail/blas_ct_templates.hpp"
+
 namespace onemkl {
 namespace blas {
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void syr2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
-                        cl::sycl::buffer<float, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<float, 1> &y, std::int64_t incy,
-                        cl::sycl::buffer<float, 1> &a, std::int64_t lda);
+// Buffer APIs
+
 template <>
 void syr2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                std::int64_t n, float alpha,
@@ -52,11 +51,6 @@ void syr2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     syr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void syr2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
-                        cl::sycl::buffer<double, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<double, 1> &y, std::int64_t incy,
-                        cl::sycl::buffer<double, 1> &a, std::int64_t lda);
 template <>
 void syr2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                std::int64_t n, double alpha,
@@ -68,9 +62,6 @@ void syr2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     syr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void scal(cl::sycl::queue &queue, std::int64_t n, float alpha,
-                        cl::sycl::buffer<float, 1> &x, std::int64_t incx);
 template <>
 void scal<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n, float alpha,
                                                cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
@@ -79,9 +70,6 @@ void scal<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     scal_postcondition(queue, n, alpha, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void scal(cl::sycl::queue &queue, std::int64_t n, double alpha,
-                        cl::sycl::buffer<double, 1> &x, std::int64_t incx);
 template <>
 void scal<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n, double alpha,
                                                cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
@@ -90,9 +78,6 @@ void scal<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     scal_postcondition(queue, n, alpha, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void scal(cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
-                        cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx);
 template <>
 void scal<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                std::complex<float> alpha,
@@ -103,9 +88,6 @@ void scal<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     scal_postcondition(queue, n, alpha, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void scal(cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
-                        cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx);
 template <>
 void scal<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                std::complex<double> alpha,
@@ -116,9 +98,6 @@ void scal<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     scal_postcondition(queue, n, alpha, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void scal(cl::sycl::queue &queue, std::int64_t n, float alpha,
-                        cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx);
 template <>
 void scal<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n, float alpha,
                                                cl::sycl::buffer<std::complex<float>, 1> &x,
@@ -128,9 +107,6 @@ void scal<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     scal_postcondition(queue, n, alpha, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void scal(cl::sycl::queue &queue, std::int64_t n, double alpha,
-                        cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx);
 template <>
 void scal<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n, double alpha,
                                                cl::sycl::buffer<std::complex<double>, 1> &x,
@@ -140,10 +116,6 @@ void scal<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     scal_postcondition(queue, n, alpha, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<float, 1> &x, std::int64_t incx);
 template <>
 void trmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -154,10 +126,6 @@ void trmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<double, 1> &x, std::int64_t incx);
 template <>
 void trmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -168,11 +136,6 @@ void trmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, cl::sycl::buffer<std::complex<float>, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &x,
-                        std::int64_t incx);
 template <>
 void trmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -185,11 +148,6 @@ void trmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, cl::sycl::buffer<std::complex<double>, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &x,
-                        std::int64_t incx);
 template <>
 void trmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -202,10 +160,6 @@ void trmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, cl::sycl::buffer<float, 1> &a,
-                        cl::sycl::buffer<float, 1> &x, std::int64_t incx);
 template <>
 void tpmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -216,10 +170,6 @@ void tpmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, cl::sycl::buffer<double, 1> &a,
-                        cl::sycl::buffer<double, 1> &x, std::int64_t incx);
 template <>
 void tpmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -230,10 +180,6 @@ void tpmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, cl::sycl::buffer<std::complex<float>, 1> &a,
-                        cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx);
 template <>
 void tpmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -245,10 +191,6 @@ void tpmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, cl::sycl::buffer<std::complex<double>, 1> &a,
-                        cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx);
 template <>
 void tpmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -260,10 +202,6 @@ void tpmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void spr(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
-                       cl::sycl::buffer<float, 1> &x, std::int64_t incx,
-                       cl::sycl::buffer<float, 1> &a);
 template <>
 void spr<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                               std::int64_t n, float alpha,
@@ -274,10 +212,6 @@ void spr<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper
     spr_postcondition(queue, upper_lower, n, alpha, x, incx, a);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void spr(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
-                       cl::sycl::buffer<double, 1> &x, std::int64_t incx,
-                       cl::sycl::buffer<double, 1> &a);
 template <>
 void spr<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                               std::int64_t n, double alpha,
@@ -288,12 +222,6 @@ void spr<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper
     spr_postcondition(queue, upper_lower, n, alpha, x, incx, a);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void hpmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-                        std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-                        cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
-                        std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &y,
-                        std::int64_t incy);
 template <>
 void hpmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                std::int64_t n, std::complex<float> alpha,
@@ -307,12 +235,6 @@ void hpmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     hpmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void hpmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-                        std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-                        cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
-                        std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &y,
-                        std::int64_t incy);
 template <>
 void hpmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                std::int64_t n, std::complex<double> alpha,
@@ -326,11 +248,6 @@ void hpmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     hpmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
-                        std::int64_t k, float alpha, cl::sycl::buffer<float, 1> &a,
-                        std::int64_t lda, float beta, cl::sycl::buffer<float, 1> &c,
-                        std::int64_t ldc);
 template <>
 void syrk<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, std::int64_t n, std::int64_t k,
@@ -342,11 +259,6 @@ void syrk<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
-                        std::int64_t k, double alpha, cl::sycl::buffer<double, 1> &a,
-                        std::int64_t lda, double beta, cl::sycl::buffer<double, 1> &c,
-                        std::int64_t ldc);
 template <>
 void syrk<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, std::int64_t n, std::int64_t k,
@@ -358,12 +270,6 @@ void syrk<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
-                        std::int64_t k, std::complex<float> alpha,
-                        cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
-                        std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c,
-                        std::int64_t ldc);
 template <>
 void syrk<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
@@ -374,12 +280,6 @@ void syrk<library::cublas, backend::nvidiagpu>(
     syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
-                        std::int64_t k, std::complex<double> alpha,
-                        cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-                        std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
-                        std::int64_t ldc);
 template <>
 void syrk<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
@@ -390,12 +290,6 @@ void syrk<library::cublas, backend::nvidiagpu>(
     syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void her2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-                        std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<std::complex<float>, 1> &y,
-                        std::int64_t incy, cl::sycl::buffer<std::complex<float>, 1> &a,
-                        std::int64_t lda);
 template <>
 void her2<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
@@ -407,12 +301,6 @@ void her2<library::cublas, backend::nvidiagpu>(
     her2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void her2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-                        std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<std::complex<double>, 1> &y,
-                        std::int64_t incy, cl::sycl::buffer<std::complex<double>, 1> &a,
-                        std::int64_t lda);
 template <>
 void her2<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
@@ -424,12 +312,6 @@ void her2<library::cublas, backend::nvidiagpu>(
     her2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void hbmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
-                        std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &x,
-                        std::int64_t incx, std::complex<float> beta,
-                        cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy);
 template <>
 void hbmv<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
@@ -441,12 +323,6 @@ void hbmv<library::cublas, backend::nvidiagpu>(
     hbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void hbmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
-                        std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &x,
-                        std::int64_t incx, std::complex<double> beta,
-                        cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy);
 template <>
 void hbmv<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
@@ -458,11 +334,6 @@ void hbmv<library::cublas, backend::nvidiagpu>(
     hbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void rot(cl::sycl::queue &queue, std::int64_t n,
-                       cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
-                       cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy, float c,
-                       float s);
 template <>
 void rot<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                               cl::sycl::buffer<std::complex<float>, 1> &x,
@@ -474,11 +345,6 @@ void rot<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64
     rot_postcondition(queue, n, x, incx, y, incy, c, s);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void rot(cl::sycl::queue &queue, std::int64_t n,
-                       cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
-                       cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy, double c,
-                       double s);
 template <>
 void rot<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                               cl::sycl::buffer<std::complex<double>, 1> &x,
@@ -490,10 +356,6 @@ void rot<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64
     rot_postcondition(queue, n, x, incx, y, incy, c, s);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void rot(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
-                       std::int64_t incx, cl::sycl::buffer<float, 1> &y, std::int64_t incy, float c,
-                       float s);
 template <>
 void rot<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                               cl::sycl::buffer<float, 1> &x, std::int64_t incx,
@@ -504,10 +366,6 @@ void rot<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64
     rot_postcondition(queue, n, x, incx, y, incy, c, s);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void rot(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<double, 1> &x,
-                       std::int64_t incx, cl::sycl::buffer<double, 1> &y, std::int64_t incy,
-                       double c, double s);
 template <>
 void rot<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                               cl::sycl::buffer<double, 1> &x, std::int64_t incx,
@@ -518,10 +376,6 @@ void rot<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64
     rot_postcondition(queue, n, x, incx, y, incy, c, s);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void axpy(cl::sycl::queue &queue, std::int64_t n, float alpha,
-                        cl::sycl::buffer<float, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<float, 1> &y, std::int64_t incy);
 template <>
 void axpy<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n, float alpha,
                                                cl::sycl::buffer<float, 1> &x, std::int64_t incx,
@@ -531,10 +385,6 @@ void axpy<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     axpy_postcondition(queue, n, alpha, x, incx, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void axpy(cl::sycl::queue &queue, std::int64_t n, double alpha,
-                        cl::sycl::buffer<double, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<double, 1> &y, std::int64_t incy);
 template <>
 void axpy<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n, double alpha,
                                                cl::sycl::buffer<double, 1> &x, std::int64_t incx,
@@ -544,10 +394,6 @@ void axpy<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     axpy_postcondition(queue, n, alpha, x, incx, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void axpy(cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
-                        cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy);
 template <>
 void axpy<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                std::complex<float> alpha,
@@ -560,10 +406,6 @@ void axpy<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     axpy_postcondition(queue, n, alpha, x, incx, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void axpy(cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
-                        cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy);
 template <>
 void axpy<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                std::complex<double> alpha,
@@ -576,12 +418,6 @@ void axpy<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     axpy_postcondition(queue, n, alpha, x, incx, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gerc(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
-                        std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<std::complex<float>, 1> &y,
-                        std::int64_t incy, cl::sycl::buffer<std::complex<float>, 1> &a,
-                        std::int64_t lda);
 template <>
 void gerc<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<float> alpha,
@@ -593,12 +429,6 @@ void gerc<library::cublas, backend::nvidiagpu>(
     gerc_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gerc(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
-                        std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<std::complex<double>, 1> &y,
-                        std::int64_t incy, cl::sycl::buffer<std::complex<double>, 1> &a,
-                        std::int64_t lda);
 template <>
 void gerc<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<double> alpha,
@@ -610,11 +440,6 @@ void gerc<library::cublas, backend::nvidiagpu>(
     gerc_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
-                         std::int64_t k, float alpha, cl::sycl::buffer<float, 1> &a,
-                         std::int64_t lda, cl::sycl::buffer<float, 1> &b, std::int64_t ldb,
-                         float beta, cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
 template <>
 void syr2k<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                 transpose trans, std::int64_t n, std::int64_t k,
@@ -627,11 +452,6 @@ void syr2k<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upp
     syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
-                         std::int64_t k, double alpha, cl::sycl::buffer<double, 1> &a,
-                         std::int64_t lda, cl::sycl::buffer<double, 1> &b, std::int64_t ldb,
-                         double beta, cl::sycl::buffer<double, 1> &c, std::int64_t ldc);
 template <>
 void syr2k<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                 transpose trans, std::int64_t n, std::int64_t k,
@@ -644,13 +464,6 @@ void syr2k<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upp
     syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
-                         std::int64_t k, std::complex<float> alpha,
-                         cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
-                         cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
-                         std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c,
-                         std::int64_t ldc);
 template <>
 void syr2k<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
@@ -662,13 +475,6 @@ void syr2k<library::cublas, backend::nvidiagpu>(
     syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
-                         std::int64_t k, std::complex<double> alpha,
-                         cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-                         cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
-                         std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
-                         std::int64_t ldc);
 template <>
 void syr2k<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
@@ -680,11 +486,6 @@ void syr2k<library::cublas, backend::nvidiagpu>(
     syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemv(cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
-                        float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
-                        cl::sycl::buffer<float, 1> &y, std::int64_t incy);
 template <>
 void gemv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose trans,
                                                std::int64_t m, std::int64_t n, float alpha,
@@ -697,11 +498,6 @@ void gemv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemv(cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
-                        double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
-                        cl::sycl::buffer<double, 1> &y, std::int64_t incy);
 template <>
 void gemv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose trans,
                                                std::int64_t m, std::int64_t n, double alpha,
@@ -714,12 +510,6 @@ void gemv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemv(cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
-                        std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &x,
-                        std::int64_t incx, std::complex<float> beta,
-                        cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy);
 template <>
 void gemv<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
@@ -731,12 +521,6 @@ void gemv<library::cublas, backend::nvidiagpu>(
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemv(cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
-                        std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &x,
-                        std::int64_t incx, std::complex<double> beta,
-                        cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy);
 template <>
 void gemv<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
@@ -748,10 +532,6 @@ void gemv<library::cublas, backend::nvidiagpu>(
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void her(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
-                       cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
-                       cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda);
 template <>
 void her<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                               std::int64_t n, float alpha,
@@ -764,10 +544,6 @@ void her<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper
     her_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void her(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
-                       cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
-                       cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda);
 template <>
 void her<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                               std::int64_t n, double alpha,
@@ -780,10 +556,6 @@ void her<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper
     her_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void hpr(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
-                       cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
-                       cl::sycl::buffer<std::complex<float>, 1> &a);
 template <>
 void hpr<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                               std::int64_t n, float alpha,
@@ -795,10 +567,6 @@ void hpr<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper
     hpr_postcondition(queue, upper_lower, n, alpha, x, incx, a);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void hpr(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
-                       cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
-                       cl::sycl::buffer<std::complex<double>, 1> &a);
 template <>
 void hpr<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                               std::int64_t n, double alpha,
@@ -810,9 +578,6 @@ void hpr<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper
     hpr_postcondition(queue, upper_lower, n, alpha, x, incx, a);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void iamin(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
-                         std::int64_t incx, cl::sycl::buffer<std::int64_t, 1> &result);
 template <>
 void iamin<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                 cl::sycl::buffer<float, 1> &x, std::int64_t incx,
@@ -822,9 +587,6 @@ void iamin<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int
     iamin_postcondition(queue, n, x, incx, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void iamin(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<double, 1> &x,
-                         std::int64_t incx, cl::sycl::buffer<std::int64_t, 1> &result);
 template <>
 void iamin<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                 cl::sycl::buffer<double, 1> &x, std::int64_t incx,
@@ -834,10 +596,6 @@ void iamin<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int
     iamin_postcondition(queue, n, x, incx, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void iamin(cl::sycl::queue &queue, std::int64_t n,
-                         cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
-                         cl::sycl::buffer<std::int64_t, 1> &result);
 template <>
 void iamin<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                 cl::sycl::buffer<std::complex<float>, 1> &x,
@@ -848,10 +606,6 @@ void iamin<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int
     iamin_postcondition(queue, n, x, incx, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void iamin(cl::sycl::queue &queue, std::int64_t n,
-                         cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
-                         cl::sycl::buffer<std::int64_t, 1> &result);
 template <>
 void iamin<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                 cl::sycl::buffer<std::complex<double>, 1> &x,
@@ -862,128 +616,6 @@ void iamin<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int
     iamin_postcondition(queue, n, x, incx, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm_batch(cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-                              cl::sycl::buffer<transpose, 1> &transb,
-                              cl::sycl::buffer<std::int64_t, 1> &m,
-                              cl::sycl::buffer<std::int64_t, 1> &n,
-                              cl::sycl::buffer<std::int64_t, 1> &k,
-                              cl::sycl::buffer<float, 1> &alpha, cl::sycl::buffer<float, 1> &a,
-                              cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<float, 1> &b,
-                              cl::sycl::buffer<std::int64_t, 1> &ldb,
-                              cl::sycl::buffer<float, 1> &beta, cl::sycl::buffer<float, 1> &c,
-                              cl::sycl::buffer<std::int64_t, 1> &ldc, std::int64_t group_count,
-                              cl::sycl::buffer<std::int64_t, 1> &group_size);
-template <>
-void gemm_batch<library::cublas, backend::nvidiagpu>(
-    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
-    cl::sycl::buffer<float, 1> &alpha, cl::sycl::buffer<float, 1> &a,
-    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<float, 1> &b,
-    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<float, 1> &beta,
-    cl::sycl::buffer<float, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc, std::int64_t group_count,
-    cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                            group_count, group_size);
-    onemkl::cublas::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                               group_count, group_size);
-    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                             group_count, group_size);
-}
-
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
-    cl::sycl::buffer<double, 1> &alpha, cl::sycl::buffer<double, 1> &a,
-    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<double, 1> &b,
-    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<double, 1> &beta,
-    cl::sycl::buffer<double, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size);
-template <>
-void gemm_batch<library::cublas, backend::nvidiagpu>(
-    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
-    cl::sycl::buffer<double, 1> &alpha, cl::sycl::buffer<double, 1> &a,
-    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<double, 1> &b,
-    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<double, 1> &beta,
-    cl::sycl::buffer<double, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                            group_count, group_size);
-    onemkl::cublas::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                               group_count, group_size);
-    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                             group_count, group_size);
-}
-
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
-    cl::sycl::buffer<std::complex<float>, 1> &alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<std::complex<float>, 1> &b,
-    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<std::complex<float>, 1> &beta,
-    cl::sycl::buffer<std::complex<float>, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size);
-template <>
-void gemm_batch<library::cublas, backend::nvidiagpu>(
-    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
-    cl::sycl::buffer<std::complex<float>, 1> &alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<std::complex<float>, 1> &b,
-    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<std::complex<float>, 1> &beta,
-    cl::sycl::buffer<std::complex<float>, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                            group_count, group_size);
-    onemkl::cublas::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                               group_count, group_size);
-    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                             group_count, group_size);
-}
-
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
-    cl::sycl::buffer<std::complex<double>, 1> &alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<std::complex<double>, 1> &b,
-    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<std::complex<double>, 1> &beta,
-    cl::sycl::buffer<std::complex<double>, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size);
-template <>
-void gemm_batch<library::cublas, backend::nvidiagpu>(
-    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
-    cl::sycl::buffer<std::complex<double>, 1> &alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<std::complex<double>, 1> &b,
-    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<std::complex<double>, 1> &beta,
-    cl::sycl::buffer<std::complex<double>, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                            group_count, group_size);
-    onemkl::cublas::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                               group_count, group_size);
-    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                             group_count, group_size);
-}
-
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
-                              std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-                              cl::sycl::buffer<float, 1> &a, std::int64_t lda,
-                              std::int64_t stride_a, cl::sycl::buffer<float, 1> &b,
-                              std::int64_t ldb, std::int64_t stride_b, float beta,
-                              cl::sycl::buffer<float, 1> &c, std::int64_t ldc,
-                              std::int64_t stride_c, std::int64_t batch_size);
 template <>
 void gemm_batch<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
@@ -999,14 +631,6 @@ void gemm_batch<library::cublas, backend::nvidiagpu>(
                              stride_b, beta, c, ldc, stride_c, batch_size);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
-                              std::int64_t m, std::int64_t n, std::int64_t k, double alpha,
-                              cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-                              std::int64_t stride_a, cl::sycl::buffer<double, 1> &b,
-                              std::int64_t ldb, std::int64_t stride_b, double beta,
-                              cl::sycl::buffer<double, 1> &c, std::int64_t ldc,
-                              std::int64_t stride_c, std::int64_t batch_size);
 template <>
 void gemm_batch<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
@@ -1022,15 +646,6 @@ void gemm_batch<library::cublas, backend::nvidiagpu>(
                              stride_b, beta, c, ldc, stride_c, batch_size);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
-                              std::int64_t m, std::int64_t n, std::int64_t k,
-                              std::complex<float> alpha,
-                              cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
-                              std::int64_t stride_a, cl::sycl::buffer<std::complex<float>, 1> &b,
-                              std::int64_t ldb, std::int64_t stride_b, std::complex<float> beta,
-                              cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc,
-                              std::int64_t stride_c, std::int64_t batch_size);
 template <>
 void gemm_batch<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
@@ -1047,15 +662,6 @@ void gemm_batch<library::cublas, backend::nvidiagpu>(
                              stride_b, beta, c, ldc, stride_c, batch_size);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
-                              std::int64_t m, std::int64_t n, std::int64_t k,
-                              std::complex<double> alpha,
-                              cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-                              std::int64_t stride_a, cl::sycl::buffer<std::complex<double>, 1> &b,
-                              std::int64_t ldb, std::int64_t stride_b, std::complex<double> beta,
-                              cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc,
-                              std::int64_t stride_c, std::int64_t batch_size);
 template <>
 void gemm_batch<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
@@ -1072,11 +678,6 @@ void gemm_batch<library::cublas, backend::nvidiagpu>(
                              stride_b, beta, c, ldc, stride_c, batch_size);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void spmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
-                        cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<float, 1> &x,
-                        std::int64_t incx, float beta, cl::sycl::buffer<float, 1> &y,
-                        std::int64_t incy);
 template <>
 void spmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                std::int64_t n, float alpha,
@@ -1089,11 +690,6 @@ void spmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     spmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void spmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
-                        cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<double, 1> &x,
-                        std::int64_t incx, double beta, cl::sycl::buffer<double, 1> &y,
-                        std::int64_t incy);
 template <>
 void spmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                std::int64_t n, double alpha,
@@ -1106,12 +702,6 @@ void spmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     spmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb,
-                            std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-                            cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-                            cl::sycl::buffer<half, 1> &b, std::int64_t ldb, float beta,
-                            cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
 template <>
 void gemm_ext<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose transa,
                                                    transpose transb, std::int64_t m, std::int64_t n,
@@ -1125,13 +715,6 @@ void gemm_ext<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, trans
     gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb,
-                            offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
-                            float alpha, cl::sycl::buffer<int8_t, 1> &a, std::int64_t lda,
-                            int8_t ao, cl::sycl::buffer<uint8_t, 1> &b, std::int64_t ldb,
-                            uint8_t bo, float beta, cl::sycl::buffer<int32_t, 1> &c,
-                            std::int64_t ldc, cl::sycl::buffer<int32_t, 1> &co);
 template <>
 void gemm_ext<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, transpose transa, transpose transb, offset offsetc, std::int64_t m,
@@ -1146,12 +729,6 @@ void gemm_ext<library::cublas, backend::nvidiagpu>(
                            beta, c, ldc, co);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb,
-                            std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-                            cl::sycl::buffer<float, 1> &a, std::int64_t lda,
-                            cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
-                            cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
 template <>
 void gemm_ext<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose transa,
                                                    transpose transb, std::int64_t m, std::int64_t n,
@@ -1165,12 +742,6 @@ void gemm_ext<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, trans
     gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb,
-                            std::int64_t m, std::int64_t n, std::int64_t k, double alpha,
-                            cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-                            cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
-                            cl::sycl::buffer<double, 1> &c, std::int64_t ldc);
 template <>
 void gemm_ext<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose transa,
                                                    transpose transb, std::int64_t m, std::int64_t n,
@@ -1184,13 +755,6 @@ void gemm_ext<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, trans
     gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb,
-                            std::int64_t m, std::int64_t n, std::int64_t k,
-                            std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-                            std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &b,
-                            std::int64_t ldb, std::complex<float> beta,
-                            cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc);
 template <>
 void gemm_ext<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
@@ -1202,14 +766,6 @@ void gemm_ext<library::cublas, backend::nvidiagpu>(
     gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb,
-                            std::int64_t m, std::int64_t n, std::int64_t k,
-                            std::complex<double> alpha,
-                            cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-                            cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
-                            std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
-                            std::int64_t ldc);
 template <>
 void gemm_ext<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
@@ -1221,12 +777,6 @@ void gemm_ext<library::cublas, backend::nvidiagpu>(
     gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb,
-                            std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
-                            cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-                            cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
-                            cl::sycl::buffer<half, 1> &c, std::int64_t ldc);
 template <>
 void gemm_ext<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose transa,
                                                    transpose transb, std::int64_t m, std::int64_t n,
@@ -1240,9 +790,6 @@ void gemm_ext<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, trans
     gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void swap(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<float, 1> &y, std::int64_t incy);
 template <>
 void swap<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<float, 1> &x, std::int64_t incx,
@@ -1252,9 +799,6 @@ void swap<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     swap_postcondition(queue, n, x, incx, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void swap(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<double, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<double, 1> &y, std::int64_t incy);
 template <>
 void swap<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<double, 1> &x, std::int64_t incx,
@@ -1264,10 +808,6 @@ void swap<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     swap_postcondition(queue, n, x, incx, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void swap(cl::sycl::queue &queue, std::int64_t n,
-                        cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy);
 template <>
 void swap<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<std::complex<float>, 1> &x,
@@ -1279,10 +819,6 @@ void swap<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     swap_postcondition(queue, n, x, incx, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void swap(cl::sycl::queue &queue, std::int64_t n,
-                        cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy);
 template <>
 void swap<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<std::complex<double>, 1> &x,
@@ -1294,12 +830,6 @@ void swap<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     swap_postcondition(queue, n, x, incx, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void geru(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
-                        std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<std::complex<float>, 1> &y,
-                        std::int64_t incy, cl::sycl::buffer<std::complex<float>, 1> &a,
-                        std::int64_t lda);
 template <>
 void geru<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<float> alpha,
@@ -1311,12 +841,6 @@ void geru<library::cublas, backend::nvidiagpu>(
     geru_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void geru(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
-                        std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<std::complex<double>, 1> &y,
-                        std::int64_t incy, cl::sycl::buffer<std::complex<double>, 1> &a,
-                        std::int64_t lda);
 template <>
 void geru<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<double> alpha,
@@ -1328,10 +852,6 @@ void geru<library::cublas, backend::nvidiagpu>(
     geru_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void nrm2(cl::sycl::queue &queue, std::int64_t n,
-                        cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<float, 1> &result);
 template <>
 void nrm2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<std::complex<float>, 1> &x,
@@ -1342,10 +862,6 @@ void nrm2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     nrm2_postcondition(queue, n, x, incx, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void nrm2(cl::sycl::queue &queue, std::int64_t n,
-                        cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<double, 1> &result);
 template <>
 void nrm2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<std::complex<double>, 1> &x,
@@ -1356,9 +872,6 @@ void nrm2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     nrm2_postcondition(queue, n, x, incx, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void nrm2(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<float, 1> &result);
 template <>
 void nrm2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<float, 1> &x, std::int64_t incx,
@@ -1368,9 +881,6 @@ void nrm2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     nrm2_postcondition(queue, n, x, incx, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void nrm2(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<double, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<double, 1> &result);
 template <>
 void nrm2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<double, 1> &x, std::int64_t incx,
@@ -1380,11 +890,6 @@ void nrm2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     nrm2_postcondition(queue, n, x, incx, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                        std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<float, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<float, 1> &b, std::int64_t ldb,
-                        float beta, cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
 template <>
 void gemm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose transa,
                                                transpose transb, std::int64_t m, std::int64_t n,
@@ -1398,12 +903,6 @@ void gemm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                        std::int64_t n, std::int64_t k, double alpha,
-                        cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
-                        cl::sycl::buffer<double, 1> &c, std::int64_t ldc);
 template <>
 void gemm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose transa,
                                                transpose transb, std::int64_t m, std::int64_t n,
@@ -1417,13 +916,6 @@ void gemm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                        std::int64_t n, std::int64_t k, std::complex<float> alpha,
-                        cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
-                        std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c,
-                        std::int64_t ldc);
 template <>
 void gemm<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
@@ -1435,13 +927,6 @@ void gemm<library::cublas, backend::nvidiagpu>(
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                        std::int64_t n, std::int64_t k, std::complex<double> alpha,
-                        cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
-                        std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
-                        std::int64_t ldc);
 template <>
 void gemm<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
@@ -1453,11 +938,6 @@ void gemm<library::cublas, backend::nvidiagpu>(
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                        std::int64_t n, std::int64_t k, half alpha, cl::sycl::buffer<half, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
-                        cl::sycl::buffer<half, 1> &c, std::int64_t ldc);
 template <>
 void gemm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose transa,
                                                transpose transb, std::int64_t m, std::int64_t n,
@@ -1471,11 +951,6 @@ void gemm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
-                        std::int64_t k, float alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-                        std::int64_t lda, float beta, cl::sycl::buffer<std::complex<float>, 1> &c,
-                        std::int64_t ldc);
 template <>
 void herk<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
@@ -1486,11 +961,6 @@ void herk<library::cublas, backend::nvidiagpu>(
     herk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
-                        std::int64_t k, double alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-                        std::int64_t lda, double beta, cl::sycl::buffer<std::complex<double>, 1> &c,
-                        std::int64_t ldc);
 template <>
 void herk<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
@@ -1501,11 +971,6 @@ void herk<library::cublas, backend::nvidiagpu>(
     herk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void ger(cl::sycl::queue &queue, std::int64_t m, std::int64_t n, float alpha,
-                       cl::sycl::buffer<float, 1> &x, std::int64_t incx,
-                       cl::sycl::buffer<float, 1> &y, std::int64_t incy,
-                       cl::sycl::buffer<float, 1> &a, std::int64_t lda);
 template <>
 void ger<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t m,
                                               std::int64_t n, float alpha,
@@ -1517,11 +982,6 @@ void ger<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64
     ger_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void ger(cl::sycl::queue &queue, std::int64_t m, std::int64_t n, double alpha,
-                       cl::sycl::buffer<double, 1> &x, std::int64_t incx,
-                       cl::sycl::buffer<double, 1> &y, std::int64_t incy,
-                       cl::sycl::buffer<double, 1> &a, std::int64_t lda);
 template <>
 void ger<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t m,
                                               std::int64_t n, double alpha,
@@ -1533,11 +993,6 @@ void ger<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64
     ger_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
-                        diag unit_diag, std::int64_t m, std::int64_t n, float alpha,
-                        cl::sycl::buffer<float, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<float, 1> &b, std::int64_t ldb);
 template <>
 void trsm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, side left_right,
                                                uplo upper_lower, transpose trans, diag unit_diag,
@@ -1552,11 +1007,6 @@ void trsm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, side left
                        ldb);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
-                        diag unit_diag, std::int64_t m, std::int64_t n, double alpha,
-                        cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<double, 1> &b, std::int64_t ldb);
 template <>
 void trsm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, side left_right,
                                                uplo upper_lower, transpose trans, diag unit_diag,
@@ -1571,11 +1021,6 @@ void trsm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, side left
                        ldb);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
-                        diag unit_diag, std::int64_t m, std::int64_t n, std::complex<float> alpha,
-                        cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb);
 template <>
 void trsm<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
@@ -1590,11 +1035,6 @@ void trsm<library::cublas, backend::nvidiagpu>(
                        ldb);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
-                        diag unit_diag, std::int64_t m, std::int64_t n, std::complex<double> alpha,
-                        cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb);
 template <>
 void trsm<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
@@ -1609,11 +1049,6 @@ void trsm<library::cublas, backend::nvidiagpu>(
                        ldb);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void dotu(cl::sycl::queue &queue, std::int64_t n,
-                        cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
-                        cl::sycl::buffer<std::complex<float>, 1> &result);
 template <>
 void dotu<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<std::complex<float>, 1> &x,
@@ -1626,11 +1061,6 @@ void dotu<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     dotu_postcondition(queue, n, x, incx, y, incy, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void dotu(cl::sycl::queue &queue, std::int64_t n,
-                        cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
-                        cl::sycl::buffer<std::complex<double>, 1> &result);
 template <>
 void dotu<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<std::complex<double>, 1> &x,
@@ -1643,13 +1073,6 @@ void dotu<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     dotu_postcondition(queue, n, x, incx, y, incy, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m,
-                        std::int64_t n, std::complex<float> alpha,
-                        cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
-                        std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c,
-                        std::int64_t ldc);
 template <>
 void hemm<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
@@ -1661,13 +1084,6 @@ void hemm<library::cublas, backend::nvidiagpu>(
     hemm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m,
-                        std::int64_t n, std::complex<double> alpha,
-                        cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
-                        std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
-                        std::int64_t ldc);
 template <>
 void hemm<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
@@ -1679,11 +1095,6 @@ void hemm<library::cublas, backend::nvidiagpu>(
     hemm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void hpr2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-                        std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<std::complex<float>, 1> &y,
-                        std::int64_t incy, cl::sycl::buffer<std::complex<float>, 1> &a);
 template <>
 void hpr2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                std::int64_t n, std::complex<float> alpha,
@@ -1697,11 +1108,6 @@ void hpr2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     hpr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void hpr2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-                        std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<std::complex<double>, 1> &y,
-                        std::int64_t incy, cl::sycl::buffer<std::complex<double>, 1> &a);
 template <>
 void hpr2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                std::int64_t n, std::complex<double> alpha,
@@ -1715,12 +1121,6 @@ void hpr2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     hpr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
-                        std::int64_t kl, std::int64_t ku, float alpha,
-                        cl::sycl::buffer<float, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
-                        cl::sycl::buffer<float, 1> &y, std::int64_t incy);
 template <>
 void gbmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose trans,
                                                std::int64_t m, std::int64_t n, std::int64_t kl,
@@ -1734,12 +1134,6 @@ void gbmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose
     gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
-                        std::int64_t kl, std::int64_t ku, double alpha,
-                        cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
-                        cl::sycl::buffer<double, 1> &y, std::int64_t incy);
 template <>
 void gbmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose trans,
                                                std::int64_t m, std::int64_t n, std::int64_t kl,
@@ -1753,13 +1147,6 @@ void gbmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, transpose
     gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
-                        std::int64_t kl, std::int64_t ku, std::complex<float> alpha,
-                        cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
-                        std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &y,
-                        std::int64_t incy);
 template <>
 void gbmv<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
@@ -1771,13 +1158,6 @@ void gbmv<library::cublas, backend::nvidiagpu>(
     gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
-                        std::int64_t kl, std::int64_t ku, std::complex<double> alpha,
-                        cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
-                        std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &y,
-                        std::int64_t incy);
 template <>
 void gbmv<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
@@ -1789,10 +1169,6 @@ void gbmv<library::cublas, backend::nvidiagpu>(
     gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, std::int64_t k, cl::sycl::buffer<float, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx);
 template <>
 void tbmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -1804,10 +1180,6 @@ void tbmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, std::int64_t k, cl::sycl::buffer<double, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<double, 1> &x, std::int64_t incx);
 template <>
 void tbmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -1819,11 +1191,6 @@ void tbmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, std::int64_t k, cl::sycl::buffer<std::complex<float>, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &x,
-                        std::int64_t incx);
 template <>
 void tbmv<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
@@ -1834,11 +1201,6 @@ void tbmv<library::cublas, backend::nvidiagpu>(
     tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, std::int64_t k,
-                        cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx);
 template <>
 void tbmv<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
@@ -1849,11 +1211,6 @@ void tbmv<library::cublas, backend::nvidiagpu>(
     tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m,
-                        std::int64_t n, float alpha, cl::sycl::buffer<float, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<float, 1> &b, std::int64_t ldb,
-                        float beta, cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
 template <>
 void symm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, side left_right,
                                                uplo upper_lower, std::int64_t m, std::int64_t n,
@@ -1866,11 +1223,6 @@ void symm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, side left
     symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m,
-                        std::int64_t n, double alpha, cl::sycl::buffer<double, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<double, 1> &b, std::int64_t ldb,
-                        double beta, cl::sycl::buffer<double, 1> &c, std::int64_t ldc);
 template <>
 void symm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, side left_right,
                                                uplo upper_lower, std::int64_t m, std::int64_t n,
@@ -1883,13 +1235,6 @@ void symm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, side left
     symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m,
-                        std::int64_t n, std::complex<float> alpha,
-                        cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
-                        std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c,
-                        std::int64_t ldc);
 template <>
 void symm<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
@@ -1901,13 +1246,6 @@ void symm<library::cublas, backend::nvidiagpu>(
     symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m,
-                        std::int64_t n, std::complex<double> alpha,
-                        cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
-                        std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
-                        std::int64_t ldc);
 template <>
 void symm<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
@@ -1919,11 +1257,6 @@ void symm<library::cublas, backend::nvidiagpu>(
     symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void dotc(cl::sycl::queue &queue, std::int64_t n,
-                        cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
-                        cl::sycl::buffer<std::complex<float>, 1> &result);
 template <>
 void dotc<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<std::complex<float>, 1> &x,
@@ -1936,11 +1269,6 @@ void dotc<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     dotc_postcondition(queue, n, x, incx, y, incy, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void dotc(cl::sycl::queue &queue, std::int64_t n,
-                        cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
-                        cl::sycl::buffer<std::complex<double>, 1> &result);
 template <>
 void dotc<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<std::complex<double>, 1> &x,
@@ -1953,10 +1281,6 @@ void dotc<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     dotc_postcondition(queue, n, x, incx, y, incy, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void syr(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
-                       cl::sycl::buffer<float, 1> &x, std::int64_t incx,
-                       cl::sycl::buffer<float, 1> &a, std::int64_t lda);
 template <>
 void syr<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                               std::int64_t n, float alpha,
@@ -1967,10 +1291,6 @@ void syr<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper
     syr_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void syr(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
-                       cl::sycl::buffer<double, 1> &x, std::int64_t incx,
-                       cl::sycl::buffer<double, 1> &a, std::int64_t lda);
 template <>
 void syr<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                               std::int64_t n, double alpha,
@@ -1981,11 +1301,6 @@ void syr<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper
     syr_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
-                        diag unit_diag, std::int64_t m, std::int64_t n, float alpha,
-                        cl::sycl::buffer<float, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<float, 1> &b, std::int64_t ldb);
 template <>
 void trmm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, side left_right,
                                                uplo upper_lower, transpose trans, diag unit_diag,
@@ -2000,11 +1315,6 @@ void trmm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, side left
                        ldb);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
-                        diag unit_diag, std::int64_t m, std::int64_t n, double alpha,
-                        cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<double, 1> &b, std::int64_t ldb);
 template <>
 void trmm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, side left_right,
                                                uplo upper_lower, transpose trans, diag unit_diag,
@@ -2019,11 +1329,6 @@ void trmm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, side left
                        ldb);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
-                        diag unit_diag, std::int64_t m, std::int64_t n, std::complex<float> alpha,
-                        cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb);
 template <>
 void trmm<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
@@ -2038,11 +1343,6 @@ void trmm<library::cublas, backend::nvidiagpu>(
                        ldb);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
-                        diag unit_diag, std::int64_t m, std::int64_t n, std::complex<double> alpha,
-                        cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb);
 template <>
 void trmm<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
@@ -2057,10 +1357,6 @@ void trmm<library::cublas, backend::nvidiagpu>(
                        ldb);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void rotmg(cl::sycl::queue &queue, cl::sycl::buffer<float, 1> &d1,
-                         cl::sycl::buffer<float, 1> &d2, cl::sycl::buffer<float, 1> &x1, float y1,
-                         cl::sycl::buffer<float, 1> &param);
 template <>
 void rotmg<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue,
                                                 cl::sycl::buffer<float, 1> &d1,
@@ -2072,10 +1368,6 @@ void rotmg<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue,
     rotmg_postcondition(queue, d1, d2, x1, y1, param);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void rotmg(cl::sycl::queue &queue, cl::sycl::buffer<double, 1> &d1,
-                         cl::sycl::buffer<double, 1> &d2, cl::sycl::buffer<double, 1> &x1,
-                         double y1, cl::sycl::buffer<double, 1> &param);
 template <>
 void rotmg<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue,
                                                 cl::sycl::buffer<double, 1> &d1,
@@ -2087,10 +1379,6 @@ void rotmg<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue,
     rotmg_postcondition(queue, d1, d2, x1, y1, param);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, cl::sycl::buffer<float, 1> &a,
-                        cl::sycl::buffer<float, 1> &x, std::int64_t incx);
 template <>
 void tpsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -2101,10 +1389,6 @@ void tpsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, cl::sycl::buffer<double, 1> &a,
-                        cl::sycl::buffer<double, 1> &x, std::int64_t incx);
 template <>
 void tpsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -2115,10 +1399,6 @@ void tpsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, cl::sycl::buffer<std::complex<float>, 1> &a,
-                        cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx);
 template <>
 void tpsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -2130,10 +1410,6 @@ void tpsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, cl::sycl::buffer<std::complex<double>, 1> &a,
-                        cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx);
 template <>
 void tpsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -2145,10 +1421,6 @@ void tpsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<float, 1> &x, std::int64_t incx);
 template <>
 void trsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -2159,10 +1431,6 @@ void trsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<double, 1> &x, std::int64_t incx);
 template <>
 void trsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -2173,11 +1441,6 @@ void trsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, cl::sycl::buffer<std::complex<float>, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &x,
-                        std::int64_t incx);
 template <>
 void trsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -2190,11 +1453,6 @@ void trsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, cl::sycl::buffer<std::complex<double>, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &x,
-                        std::int64_t incx);
 template <>
 void trsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -2207,9 +1465,6 @@ void trsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void copy(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<float, 1> &y, std::int64_t incy);
 template <>
 void copy<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<float, 1> &x, std::int64_t incx,
@@ -2219,9 +1474,6 @@ void copy<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     copy_postcondition(queue, n, x, incx, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void copy(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<double, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<double, 1> &y, std::int64_t incy);
 template <>
 void copy<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<double, 1> &x, std::int64_t incx,
@@ -2231,10 +1483,6 @@ void copy<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     copy_postcondition(queue, n, x, incx, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void copy(cl::sycl::queue &queue, std::int64_t n,
-                        cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy);
 template <>
 void copy<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<std::complex<float>, 1> &x,
@@ -2246,10 +1494,6 @@ void copy<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     copy_postcondition(queue, n, x, incx, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void copy(cl::sycl::queue &queue, std::int64_t n,
-                        cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy);
 template <>
 void copy<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<std::complex<double>, 1> &x,
@@ -2261,12 +1505,6 @@ void copy<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     copy_postcondition(queue, n, x, incx, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void hemv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-                        std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &x,
-                        std::int64_t incx, std::complex<float> beta,
-                        cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy);
 template <>
 void hemv<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
@@ -2278,12 +1516,6 @@ void hemv<library::cublas, backend::nvidiagpu>(
     hemv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void hemv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-                        std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &x,
-                        std::int64_t incx, std::complex<double> beta,
-                        cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy);
 template <>
 void hemv<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
@@ -2295,12 +1527,6 @@ void hemv<library::cublas, backend::nvidiagpu>(
     hemv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa,
-                         transpose transb, std::int64_t n, std::int64_t k, float alpha,
-                         cl::sycl::buffer<float, 1> &a, std::int64_t lda,
-                         cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
-                         cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
 template <>
 void gemmt<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                 transpose transa, transpose transb, std::int64_t n,
@@ -2317,12 +1543,6 @@ void gemmt<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upp
                         ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa,
-                         transpose transb, std::int64_t n, std::int64_t k, double alpha,
-                         cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-                         cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
-                         cl::sycl::buffer<double, 1> &c, std::int64_t ldc);
 template <>
 void gemmt<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                 transpose transa, transpose transb, std::int64_t n,
@@ -2339,13 +1559,6 @@ void gemmt<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upp
                         ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa,
-                         transpose transb, std::int64_t n, std::int64_t k,
-                         std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-                         std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &b,
-                         std::int64_t ldb, std::complex<float> beta,
-                         cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc);
 template <>
 void gemmt<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
@@ -2360,13 +1573,6 @@ void gemmt<library::cublas, backend::nvidiagpu>(
                         ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa,
-                         transpose transb, std::int64_t n, std::int64_t k,
-                         std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-                         std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &b,
-                         std::int64_t ldb, std::complex<double> beta,
-                         cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc);
 template <>
 void gemmt<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
@@ -2381,11 +1587,6 @@ void gemmt<library::cublas, backend::nvidiagpu>(
                         ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void sbmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
-                        float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
-                        cl::sycl::buffer<float, 1> &y, std::int64_t incy);
 template <>
 void sbmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                std::int64_t n, std::int64_t k, float alpha,
@@ -2398,11 +1599,6 @@ void sbmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     sbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void sbmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
-                        double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
-                        cl::sycl::buffer<double, 1> &y, std::int64_t incy);
 template <>
 void sbmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                std::int64_t n, std::int64_t k, double alpha,
@@ -2415,10 +1611,6 @@ void sbmv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     sbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void asum(cl::sycl::queue &queue, std::int64_t n,
-                        cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<float, 1> &result);
 template <>
 void asum<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<std::complex<float>, 1> &x,
@@ -2429,10 +1621,6 @@ void asum<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     asum_postcondition(queue, n, x, incx, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void asum(cl::sycl::queue &queue, std::int64_t n,
-                        cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<double, 1> &result);
 template <>
 void asum<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<std::complex<double>, 1> &x,
@@ -2443,9 +1631,6 @@ void asum<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     asum_postcondition(queue, n, x, incx, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void asum(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<float, 1> &result);
 template <>
 void asum<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<float, 1> &x, std::int64_t incx,
@@ -2455,9 +1640,6 @@ void asum<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     asum_postcondition(queue, n, x, incx, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void asum(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<double, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<double, 1> &result);
 template <>
 void asum<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<double, 1> &x, std::int64_t incx,
@@ -2467,10 +1649,6 @@ void asum<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     asum_postcondition(queue, n, x, incx, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, std::int64_t k, cl::sycl::buffer<float, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx);
 template <>
 void tbsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -2482,10 +1660,6 @@ void tbsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, std::int64_t k, cl::sycl::buffer<double, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<double, 1> &x, std::int64_t incx);
 template <>
 void tbsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                transpose trans, diag unit_diag, std::int64_t n,
@@ -2497,11 +1671,6 @@ void tbsv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, std::int64_t k, cl::sycl::buffer<std::complex<float>, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &x,
-                        std::int64_t incx);
 template <>
 void tbsv<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
@@ -2512,11 +1681,6 @@ void tbsv<library::cublas, backend::nvidiagpu>(
     tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
-                        std::int64_t n, std::int64_t k,
-                        cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx);
 template <>
 void tbsv<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
@@ -2527,11 +1691,6 @@ void tbsv<library::cublas, backend::nvidiagpu>(
     tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void spr2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
-                        cl::sycl::buffer<float, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<float, 1> &y, std::int64_t incy,
-                        cl::sycl::buffer<float, 1> &a);
 template <>
 void spr2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                std::int64_t n, float alpha,
@@ -2543,11 +1702,6 @@ void spr2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     spr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void spr2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
-                        cl::sycl::buffer<double, 1> &x, std::int64_t incx,
-                        cl::sycl::buffer<double, 1> &y, std::int64_t incy,
-                        cl::sycl::buffer<double, 1> &a);
 template <>
 void spr2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                std::int64_t n, double alpha,
@@ -2559,9 +1713,6 @@ void spr2<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     spr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void iamax(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
-                         std::int64_t incx, cl::sycl::buffer<std::int64_t, 1> &result);
 template <>
 void iamax<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                 cl::sycl::buffer<float, 1> &x, std::int64_t incx,
@@ -2571,9 +1722,6 @@ void iamax<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int
     iamax_postcondition(queue, n, x, incx, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void iamax(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<double, 1> &x,
-                         std::int64_t incx, cl::sycl::buffer<std::int64_t, 1> &result);
 template <>
 void iamax<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                 cl::sycl::buffer<double, 1> &x, std::int64_t incx,
@@ -2583,10 +1731,6 @@ void iamax<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int
     iamax_postcondition(queue, n, x, incx, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void iamax(cl::sycl::queue &queue, std::int64_t n,
-                         cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
-                         cl::sycl::buffer<std::int64_t, 1> &result);
 template <>
 void iamax<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                 cl::sycl::buffer<std::complex<float>, 1> &x,
@@ -2597,10 +1741,6 @@ void iamax<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int
     iamax_postcondition(queue, n, x, incx, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void iamax(cl::sycl::queue &queue, std::int64_t n,
-                         cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
-                         cl::sycl::buffer<std::int64_t, 1> &result);
 template <>
 void iamax<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                 cl::sycl::buffer<std::complex<double>, 1> &x,
@@ -2611,118 +1751,6 @@ void iamax<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int
     iamax_postcondition(queue, n, x, incx, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-                              cl::sycl::buffer<uplo, 1> &upper_lower,
-                              cl::sycl::buffer<transpose, 1> &trans,
-                              cl::sycl::buffer<diag, 1> &unit_diag,
-                              cl::sycl::buffer<std::int64_t, 1> &m,
-                              cl::sycl::buffer<std::int64_t, 1> &n,
-                              cl::sycl::buffer<float, 1> &alpha, cl::sycl::buffer<float, 1> &a,
-                              cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<float, 1> &b,
-                              cl::sycl::buffer<std::int64_t, 1> &ldb, std::int64_t group_count,
-                              cl::sycl::buffer<std::int64_t, 1> &group_size);
-template <>
-void trsm_batch<library::cublas, backend::nvidiagpu>(
-    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<float, 1> &alpha,
-    cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-    cl::sycl::buffer<float, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb, std::int64_t group_count,
-    cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
-                            b, ldb, group_count, group_size);
-    onemkl::cublas::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
-                               lda, b, ldb, group_count, group_size);
-    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
-                             b, ldb, group_count, group_size);
-}
-
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trsm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<double, 1> &alpha,
-    cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-    cl::sycl::buffer<double, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size);
-template <>
-void trsm_batch<library::cublas, backend::nvidiagpu>(
-    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<double, 1> &alpha,
-    cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-    cl::sycl::buffer<double, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
-                            b, ldb, group_count, group_size);
-    onemkl::cublas::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
-                               lda, b, ldb, group_count, group_size);
-    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
-                             b, ldb, group_count, group_size);
-}
-
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trsm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::complex<float>, 1> &alpha,
-    cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-    cl::sycl::buffer<std::complex<float>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size);
-template <>
-void trsm_batch<library::cublas, backend::nvidiagpu>(
-    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::complex<float>, 1> &alpha,
-    cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-    cl::sycl::buffer<std::complex<float>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
-                            b, ldb, group_count, group_size);
-    onemkl::cublas::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
-                               lda, b, ldb, group_count, group_size);
-    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
-                             b, ldb, group_count, group_size);
-}
-
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trsm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::complex<double>, 1> &alpha,
-    cl::sycl::buffer<std::complex<double>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-    cl::sycl::buffer<std::complex<double>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size);
-template <>
-void trsm_batch<library::cublas, backend::nvidiagpu>(
-    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::complex<double>, 1> &alpha,
-    cl::sycl::buffer<std::complex<double>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-    cl::sycl::buffer<std::complex<double>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
-                            b, ldb, group_count, group_size);
-    onemkl::cublas::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
-                               lda, b, ldb, group_count, group_size);
-    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
-                             b, ldb, group_count, group_size);
-}
-
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
-                              transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
-                              float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
-                              std::int64_t stride_a, cl::sycl::buffer<float, 1> &b,
-                              std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size);
 template <>
 void trsm_batch<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
@@ -2737,12 +1765,6 @@ void trsm_batch<library::cublas, backend::nvidiagpu>(
                              stride_a, b, ldb, stride_b, batch_size);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
-                              transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
-                              double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-                              std::int64_t stride_a, cl::sycl::buffer<double, 1> &b,
-                              std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size);
 template <>
 void trsm_batch<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
@@ -2757,13 +1779,6 @@ void trsm_batch<library::cublas, backend::nvidiagpu>(
                              stride_a, b, ldb, stride_b, batch_size);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
-                              transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
-                              std::complex<float> alpha,
-                              cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
-                              std::int64_t stride_a, cl::sycl::buffer<std::complex<float>, 1> &b,
-                              std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size);
 template <>
 void trsm_batch<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
@@ -2779,13 +1794,6 @@ void trsm_batch<library::cublas, backend::nvidiagpu>(
                              stride_a, b, ldb, stride_b, batch_size);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
-                              transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
-                              std::complex<double> alpha,
-                              cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-                              std::int64_t stride_a, cl::sycl::buffer<std::complex<double>, 1> &b,
-                              std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size);
 template <>
 void trsm_batch<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
@@ -2801,10 +1809,6 @@ void trsm_batch<library::cublas, backend::nvidiagpu>(
                              stride_a, b, ldb, stride_b, batch_size);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void rotm(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<float, 1> &y, std::int64_t incy,
-                        cl::sycl::buffer<float, 1> &param);
 template <>
 void rotm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<float, 1> &x, std::int64_t incx,
@@ -2815,10 +1819,6 @@ void rotm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     rotm_postcondition(queue, n, x, incx, y, incy, param);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void rotm(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<double, 1> &x,
-                        std::int64_t incx, cl::sycl::buffer<double, 1> &y, std::int64_t incy,
-                        cl::sycl::buffer<double, 1> &param);
 template <>
 void rotm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                                cl::sycl::buffer<double, 1> &x, std::int64_t incx,
@@ -2829,10 +1829,6 @@ void rotm<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int6
     rotm_postcondition(queue, n, x, incx, y, incy, param);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void rotg(cl::sycl::queue &queue, cl::sycl::buffer<float, 1> &a,
-                        cl::sycl::buffer<float, 1> &b, cl::sycl::buffer<float, 1> &c,
-                        cl::sycl::buffer<float, 1> &s);
 template <>
 void rotg<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue,
                                                cl::sycl::buffer<float, 1> &a,
@@ -2844,10 +1840,6 @@ void rotg<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue,
     rotg_postcondition(queue, a, b, c, s);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void rotg(cl::sycl::queue &queue, cl::sycl::buffer<double, 1> &a,
-                        cl::sycl::buffer<double, 1> &b, cl::sycl::buffer<double, 1> &c,
-                        cl::sycl::buffer<double, 1> &s);
 template <>
 void rotg<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue,
                                                cl::sycl::buffer<double, 1> &a,
@@ -2859,10 +1851,6 @@ void rotg<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue,
     rotg_postcondition(queue, a, b, c, s);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void rotg(cl::sycl::queue &queue, cl::sycl::buffer<std::complex<float>, 1> &a,
-                        cl::sycl::buffer<std::complex<float>, 1> &b, cl::sycl::buffer<float, 1> &c,
-                        cl::sycl::buffer<std::complex<float>, 1> &s);
 template <>
 void rotg<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue,
                                                cl::sycl::buffer<std::complex<float>, 1> &a,
@@ -2874,11 +1862,6 @@ void rotg<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue,
     rotg_postcondition(queue, a, b, c, s);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void rotg(cl::sycl::queue &queue, cl::sycl::buffer<std::complex<double>, 1> &a,
-                        cl::sycl::buffer<std::complex<double>, 1> &b,
-                        cl::sycl::buffer<double, 1> &c,
-                        cl::sycl::buffer<std::complex<double>, 1> &s);
 template <>
 void rotg<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue,
                                                cl::sycl::buffer<std::complex<double>, 1> &a,
@@ -2890,11 +1873,6 @@ void rotg<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue,
     rotg_postcondition(queue, a, b, c, s);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void sdsdot(cl::sycl::queue &queue, std::int64_t n, float sb,
-                          cl::sycl::buffer<float, 1> &x, std::int64_t incx,
-                          cl::sycl::buffer<float, 1> &y, std::int64_t incy,
-                          cl::sycl::buffer<float, 1> &result);
 template <>
 void sdsdot<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n, float sb,
                                                  cl::sycl::buffer<float, 1> &x, std::int64_t incx,
@@ -2905,12 +1883,6 @@ void sdsdot<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::in
     sdsdot_postcondition(queue, n, sb, x, incx, y, incy, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void her2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
-                         std::int64_t k, std::complex<float> alpha,
-                         cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
-                         cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, float beta,
-                         cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc);
 template <>
 void her2k<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
@@ -2922,13 +1894,6 @@ void her2k<library::cublas, backend::nvidiagpu>(
     her2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void her2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
-                         std::int64_t k, std::complex<double> alpha,
-                         cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-                         cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
-                         double beta, cl::sycl::buffer<std::complex<double>, 1> &c,
-                         std::int64_t ldc);
 template <>
 void her2k<library::cublas, backend::nvidiagpu>(
     cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
@@ -2940,10 +1905,6 @@ void her2k<library::cublas, backend::nvidiagpu>(
     her2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void dot(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
-                       std::int64_t incx, cl::sycl::buffer<float, 1> &y, std::int64_t incy,
-                       cl::sycl::buffer<float, 1> &result);
 template <>
 void dot<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                               cl::sycl::buffer<float, 1> &x, std::int64_t incx,
@@ -2954,10 +1915,6 @@ void dot<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64
     dot_postcondition(queue, n, x, incx, y, incy, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void dot(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<double, 1> &x,
-                       std::int64_t incx, cl::sycl::buffer<double, 1> &y, std::int64_t incy,
-                       cl::sycl::buffer<double, 1> &result);
 template <>
 void dot<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                               cl::sycl::buffer<double, 1> &x, std::int64_t incx,
@@ -2968,10 +1925,6 @@ void dot<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64
     dot_postcondition(queue, n, x, incx, y, incy, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void dot(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
-                       std::int64_t incx, cl::sycl::buffer<float, 1> &y, std::int64_t incy,
-                       cl::sycl::buffer<double, 1> &result);
 template <>
 void dot<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64_t n,
                                               cl::sycl::buffer<float, 1> &x, std::int64_t incx,
@@ -2982,11 +1935,6 @@ void dot<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, std::int64
     dot_postcondition(queue, n, x, incx, y, incy, result);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void symv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
-                        cl::sycl::buffer<float, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
-                        cl::sycl::buffer<float, 1> &y, std::int64_t incy);
 template <>
 void symv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                std::int64_t n, float alpha,
@@ -2999,11 +1947,6 @@ void symv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     symv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy);
 }
 
-template <onemkl::library lib, onemkl::backend backend>
-static inline void symv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
-                        cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
-                        cl::sycl::buffer<double, 1> &y, std::int64_t incy);
 template <>
 void symv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo upper_lower,
                                                std::int64_t n, double alpha,
@@ -3014,6 +1957,2068 @@ void symv<library::cublas, backend::nvidiagpu>(cl::sycl::queue &queue, uplo uppe
     symv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy);
     onemkl::cublas::symv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy);
     symv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy);
+}
+
+// USM APIs
+
+template <>
+cl::sycl::event syr2<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *x,
+    std::int64_t incx, const float *y, std::int64_t incy, float *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    syr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done =
+        onemkl::cublas::syr2(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    syr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event syr2<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *x,
+    std::int64_t incx, const double *y, std::int64_t incy, double *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    syr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done =
+        onemkl::cublas::syr2(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    syr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event scal<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, float alpha, float *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    scal_precondition(queue, n, alpha, x, incx, dependencies);
+    auto done = onemkl::cublas::scal(queue, n, alpha, x, incx, dependencies);
+    scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event scal<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, double alpha, double *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    scal_precondition(queue, n, alpha, x, incx, dependencies);
+    auto done = onemkl::cublas::scal(queue, n, alpha, x, incx, dependencies);
+    scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event scal<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha, std::complex<float> *x,
+    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    scal_precondition(queue, n, alpha, x, incx, dependencies);
+    auto done = onemkl::cublas::scal(queue, n, alpha, x, incx, dependencies);
+    scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event scal<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha, std::complex<double> *x,
+    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    scal_precondition(queue, n, alpha, x, incx, dependencies);
+    auto done = onemkl::cublas::scal(queue, n, alpha, x, incx, dependencies);
+    scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event scal<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, float alpha, std::complex<float> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    scal_precondition(queue, n, alpha, x, incx, dependencies);
+    auto done = onemkl::cublas::scal(queue, n, alpha, x, incx, dependencies);
+    scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event scal<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, double alpha, std::complex<double> *x,
+    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    scal_precondition(queue, n, alpha, x, incx, dependencies);
+    auto done = onemkl::cublas::scal(queue, n, alpha, x, incx, dependencies);
+    scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event trmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const float *a, std::int64_t lda, float *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    trmv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    auto done = onemkl::cublas::trmv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
+                                     dependencies);
+    trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event trmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const double *a, std::int64_t lda, double *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    trmv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    auto done = onemkl::cublas::trmv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
+                                     dependencies);
+    trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event trmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const std::complex<float> *a, std::int64_t lda, std::complex<float> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    trmv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    auto done = onemkl::cublas::trmv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
+                                     dependencies);
+    trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event trmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const std::complex<double> *a, std::int64_t lda, std::complex<double> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    trmv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    auto done = onemkl::cublas::trmv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
+                                     dependencies);
+    trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event tpmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const float *a, float *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    tpmv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done =
+        onemkl::cublas::tpmv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event tpmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const double *a, double *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    tpmv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done =
+        onemkl::cublas::tpmv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event tpmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const std::complex<float> *a, std::complex<float> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    tpmv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done =
+        onemkl::cublas::tpmv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event tpmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const std::complex<double> *a, std::complex<double> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    tpmv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done =
+        onemkl::cublas::tpmv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event spr<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *x,
+    std::int64_t incx, float *a, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    spr_precondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    auto done = onemkl::cublas::spr(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    spr_postcondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event spr<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *x,
+    std::int64_t incx, double *a, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    spr_precondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    auto done = onemkl::cublas::spr(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    spr_postcondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event hpmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+    const std::complex<float> *a, const std::complex<float> *x, std::int64_t incx,
+    std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    hpmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    auto done =
+        onemkl::cublas::hpmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    hpmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event hpmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+    const std::complex<double> *a, const std::complex<double> *x, std::int64_t incx,
+    std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    hpmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    auto done =
+        onemkl::cublas::hpmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    hpmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event syrk<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    float alpha, const float *a, std::int64_t lda, float beta, float *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    syrk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    auto done = onemkl::cublas::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
+                                     dependencies);
+    syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event syrk<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    double alpha, const double *a, std::int64_t lda, double beta, double *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    syrk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    auto done = onemkl::cublas::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
+                                     dependencies);
+    syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event syrk<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    syrk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    auto done = onemkl::cublas::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
+                                     dependencies);
+    syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event syrk<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    syrk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    auto done = onemkl::cublas::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
+                                     dependencies);
+    syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event her2<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+    const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
+    std::int64_t incy, std::complex<float> *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    her2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done =
+        onemkl::cublas::her2(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    her2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event her2<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+    const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
+    std::int64_t incy, std::complex<double> *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    her2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done =
+        onemkl::cublas::her2(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    her2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event hbmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
+    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
+    std::complex<float> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    hbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
+                      dependencies);
+    auto done = onemkl::cublas::hbmv(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
+                                     incy, dependencies);
+    hbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event hbmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
+    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
+    std::complex<double> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    hbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
+                      dependencies);
+    auto done = onemkl::cublas::hbmv(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
+                                     incy, dependencies);
+    hbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event rot<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, std::complex<float> *x, std::int64_t incx,
+    std::complex<float> *y, std::int64_t incy, float c, float s,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    rot_precondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    auto done = onemkl::cublas::rot(queue, n, x, incx, y, incy, c, s, dependencies);
+    rot_postcondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event rot<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, std::complex<double> *x, std::int64_t incx,
+    std::complex<double> *y, std::int64_t incy, double c, double s,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    rot_precondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    auto done = onemkl::cublas::rot(queue, n, x, incx, y, incy, c, s, dependencies);
+    rot_postcondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event rot<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
+    std::int64_t incy, float c, float s,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    rot_precondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    auto done = onemkl::cublas::rot(queue, n, x, incx, y, incy, c, s, dependencies);
+    rot_postcondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event rot<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
+    std::int64_t incy, double c, double s,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    rot_precondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    auto done = onemkl::cublas::rot(queue, n, x, incx, y, incy, c, s, dependencies);
+    rot_postcondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event axpy<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, float alpha, const float *x, std::int64_t incx,
+    float *y, std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    auto done = onemkl::cublas::axpy(queue, n, alpha, x, incx, y, incy, dependencies);
+    axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event axpy<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, double alpha, const double *x, std::int64_t incx,
+    double *y, std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    auto done = onemkl::cublas::axpy(queue, n, alpha, x, incx, y, incy, dependencies);
+    axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event axpy<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha, const std::complex<float> *x,
+    std::int64_t incx, std::complex<float> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    auto done = onemkl::cublas::axpy(queue, n, alpha, x, incx, y, incy, dependencies);
+    axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event axpy<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
+    const std::complex<double> *x, std::int64_t incx, std::complex<double> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    auto done = onemkl::cublas::axpy(queue, n, alpha, x, incx, y, incy, dependencies);
+    axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event axpy_batch<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t *n, float *alpha, const float **x, std::int64_t *incx,
+    float **y, std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    axpy_batch_precondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
+                            dependencies);
+    auto done = onemkl::cublas::axpy_batch(queue, n, alpha, x, incx, y, incy, group_count,
+                                           group_size, dependencies);
+    axpy_batch_postcondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
+                             dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event axpy_batch<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t *n, double *alpha, const double **x, std::int64_t *incx,
+    double **y, std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    axpy_batch_precondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
+                            dependencies);
+    auto done = onemkl::cublas::axpy_batch(queue, n, alpha, x, incx, y, incy, group_count,
+                                           group_size, dependencies);
+    axpy_batch_postcondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
+                             dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event axpy_batch<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t *n, std::complex<float> *alpha,
+    const std::complex<float> **x, std::int64_t *incx, std::complex<float> **y, std::int64_t *incy,
+    std::int64_t group_count, std::int64_t *group_size,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    axpy_batch_precondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
+                            dependencies);
+    auto done = onemkl::cublas::axpy_batch(queue, n, alpha, x, incx, y, incy, group_count,
+                                           group_size, dependencies);
+    axpy_batch_postcondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
+                             dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event axpy_batch<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t *n, std::complex<double> *alpha,
+    const std::complex<double> **x, std::int64_t *incx, std::complex<double> **y,
+    std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    axpy_batch_precondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
+                            dependencies);
+    auto done = onemkl::cublas::axpy_batch(queue, n, alpha, x, incx, y, incy, group_count,
+                                           group_size, dependencies);
+    axpy_batch_postcondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
+                             dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gerc<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<float> alpha,
+    const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
+    std::int64_t incy, std::complex<float> *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gerc_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = onemkl::cublas::gerc(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    gerc_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gerc<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<double> alpha,
+    const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
+    std::int64_t incy, std::complex<double> *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gerc_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = onemkl::cublas::gerc(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    gerc_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event syr2k<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    float alpha, const float *a, std::int64_t lda, const float *b, std::int64_t ldb, float beta,
+    float *c, std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    auto done = onemkl::cublas::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
+                                      c, ldc, dependencies);
+    syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                        dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event syr2k<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    double alpha, const double *a, std::int64_t lda, const double *b, std::int64_t ldb, double beta,
+    double *c, std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    auto done = onemkl::cublas::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
+                                      c, ldc, dependencies);
+    syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                        dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event syr2k<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
+    std::complex<float> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    auto done = onemkl::cublas::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
+                                      c, ldc, dependencies);
+    syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                        dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event syr2k<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
+    std::complex<double> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    auto done = onemkl::cublas::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
+                                      c, ldc, dependencies);
+    syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                        dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, float alpha,
+    const float *a, std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y,
+    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = onemkl::cublas::gemv(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
+                                     dependencies);
+    gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, double alpha,
+    const double *a, std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y,
+    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = onemkl::cublas::gemv(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
+                                     dependencies);
+    gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
+    std::complex<float> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = onemkl::cublas::gemv(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
+                                     dependencies);
+    gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
+    std::complex<double> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = onemkl::cublas::gemv(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
+                                     dependencies);
+    gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event her<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
+    const std::complex<float> *x, std::int64_t incx, std::complex<float> *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    her_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    auto done = onemkl::cublas::her(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    her_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event her<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+    const std::complex<double> *x, std::int64_t incx, std::complex<double> *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    her_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    auto done = onemkl::cublas::her(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    her_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event hpr<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
+    const std::complex<float> *x, std::int64_t incx, std::complex<float> *a,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    hpr_precondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    auto done = onemkl::cublas::hpr(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    hpr_postcondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event hpr<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+    const std::complex<double> *x, std::int64_t incx, std::complex<double> *a,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    hpr_precondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    auto done = onemkl::cublas::hpr(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    hpr_postcondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event iamin<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, std::int64_t *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    iamin_precondition(queue, n, x, incx, result, dependencies);
+    auto done = onemkl::cublas::iamin(queue, n, x, incx, result, dependencies);
+    iamin_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event iamin<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx,
+    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    iamin_precondition(queue, n, x, incx, result, dependencies);
+    auto done = onemkl::cublas::iamin(queue, n, x, incx, result, dependencies);
+    iamin_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event iamin<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    iamin_precondition(queue, n, x, incx, result, dependencies);
+    auto done = onemkl::cublas::iamin(queue, n, x, incx, result, dependencies);
+    iamin_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event iamin<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    iamin_precondition(queue, n, x, incx, result, dependencies);
+    auto done = onemkl::cublas::iamin(queue, n, x, incx, result, dependencies);
+    iamin_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemm_batch<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose *transa, transpose *transb, std::int64_t *m, std::int64_t *n,
+    std::int64_t *k, float *alpha, const float **a, std::int64_t *lda, const float **b,
+    std::int64_t *ldb, float *beta, float **c, std::int64_t *ldc, std::int64_t group_count,
+    std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                            group_count, group_size, dependencies);
+    auto done = onemkl::cublas::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
+                                           beta, c, ldc, group_count, group_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                             group_count, group_size, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemm_batch<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose *transa, transpose *transb, std::int64_t *m, std::int64_t *n,
+    std::int64_t *k, double *alpha, const double **a, std::int64_t *lda, const double **b,
+    std::int64_t *ldb, double *beta, double **c, std::int64_t *ldc, std::int64_t group_count,
+    std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                            group_count, group_size, dependencies);
+    auto done = onemkl::cublas::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
+                                           beta, c, ldc, group_count, group_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                             group_count, group_size, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemm_batch<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose *transa, transpose *transb, std::int64_t *m, std::int64_t *n,
+    std::int64_t *k, std::complex<float> *alpha, const std::complex<float> **a, std::int64_t *lda,
+    const std::complex<float> **b, std::int64_t *ldb, std::complex<float> *beta,
+    std::complex<float> **c, std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                            group_count, group_size, dependencies);
+    auto done = onemkl::cublas::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
+                                           beta, c, ldc, group_count, group_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                             group_count, group_size, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemm_batch<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose *transa, transpose *transb, std::int64_t *m, std::int64_t *n,
+    std::int64_t *k, std::complex<double> *alpha, const std::complex<double> **a, std::int64_t *lda,
+    const std::complex<double> **b, std::int64_t *ldb, std::complex<double> *beta,
+    std::complex<double> **c, std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                            group_count, group_size, dependencies);
+    auto done = onemkl::cublas::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
+                                           beta, c, ldc, group_count, group_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                             group_count, group_size, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemm_batch<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, float alpha, const float *a, std::int64_t lda, std::int64_t stride_a,
+    const float *b, std::int64_t ldb, std::int64_t stride_b, float beta, float *c, std::int64_t ldc,
+    std::int64_t stride_c, std::int64_t batch_size,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                            stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    auto done =
+        onemkl::cublas::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                                   stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemm_batch<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, double alpha, const double *a, std::int64_t lda, std::int64_t stride_a,
+    const double *b, std::int64_t ldb, std::int64_t stride_b, double beta, double *c,
+    std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                            stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    auto done =
+        onemkl::cublas::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                                   stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemm_batch<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    std::int64_t stride_a, const std::complex<float> *b, std::int64_t ldb, std::int64_t stride_b,
+    std::complex<float> beta, std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
+    std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                            stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    auto done =
+        onemkl::cublas::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                                   stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemm_batch<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    std::int64_t stride_a, const std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
+    std::complex<double> beta, std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
+    std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                            stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    auto done =
+        onemkl::cublas::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                                   stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event spmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *a,
+    const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    spmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    auto done =
+        onemkl::cublas::spmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    spmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event spmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *a,
+    const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    spmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    auto done =
+        onemkl::cublas::spmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    spmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event swap<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
+    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    swap_precondition(queue, n, x, incx, y, incy, dependencies);
+    auto done = onemkl::cublas::swap(queue, n, x, incx, y, incy, dependencies);
+    swap_postcondition(queue, n, x, incx, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event swap<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
+    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    swap_precondition(queue, n, x, incx, y, incy, dependencies);
+    auto done = onemkl::cublas::swap(queue, n, x, incx, y, incy, dependencies);
+    swap_postcondition(queue, n, x, incx, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event swap<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, std::complex<float> *x, std::int64_t incx,
+    std::complex<float> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    swap_precondition(queue, n, x, incx, y, incy, dependencies);
+    auto done = onemkl::cublas::swap(queue, n, x, incx, y, incy, dependencies);
+    swap_postcondition(queue, n, x, incx, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event swap<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, std::complex<double> *x, std::int64_t incx,
+    std::complex<double> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    swap_precondition(queue, n, x, incx, y, incy, dependencies);
+    auto done = onemkl::cublas::swap(queue, n, x, incx, y, incy, dependencies);
+    swap_postcondition(queue, n, x, incx, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event geru<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<float> alpha,
+    const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
+    std::int64_t incy, std::complex<float> *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    geru_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = onemkl::cublas::geru(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    geru_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event geru<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<double> alpha,
+    const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
+    std::int64_t incy, std::complex<double> *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    geru_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = onemkl::cublas::geru(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    geru_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event nrm2<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+    float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    nrm2_precondition(queue, n, x, incx, result, dependencies);
+    auto done = onemkl::cublas::nrm2(queue, n, x, incx, result, dependencies);
+    nrm2_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event nrm2<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+    double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    nrm2_precondition(queue, n, x, incx, result, dependencies);
+    auto done = onemkl::cublas::nrm2(queue, n, x, incx, result, dependencies);
+    nrm2_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event nrm2<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, float *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    nrm2_precondition(queue, n, x, incx, result, dependencies);
+    auto done = onemkl::cublas::nrm2(queue, n, x, incx, result, dependencies);
+    nrm2_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event nrm2<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, double *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    nrm2_precondition(queue, n, x, incx, result, dependencies);
+    auto done = onemkl::cublas::nrm2(queue, n, x, incx, result, dependencies);
+    nrm2_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, float alpha, const float *a, std::int64_t lda, const float *b, std::int64_t ldb,
+    float beta, float *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = onemkl::cublas::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
+                                     ldc, dependencies);
+    gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, double alpha, const double *a, std::int64_t lda, const double *b,
+    std::int64_t ldb, double beta, double *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = onemkl::cublas::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
+                                     ldc, dependencies);
+    gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
+    std::complex<float> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = onemkl::cublas::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
+                                     ldc, dependencies);
+    gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
+    std::complex<double> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = onemkl::cublas::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
+                                     ldc, dependencies);
+    gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event herk<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    float alpha, const std::complex<float> *a, std::int64_t lda, float beta, std::complex<float> *c,
+    std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    herk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    auto done = onemkl::cublas::herk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
+                                     dependencies);
+    herk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event herk<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    double alpha, const std::complex<double> *a, std::int64_t lda, double beta,
+    std::complex<double> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    herk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    auto done = onemkl::cublas::herk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
+                                     dependencies);
+    herk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event ger<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, float alpha, const float *x,
+    std::int64_t incx, const float *y, std::int64_t incy, float *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    ger_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = onemkl::cublas::ger(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    ger_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event ger<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, double alpha, const double *x,
+    std::int64_t incx, const double *y, std::int64_t incy, double *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    ger_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = onemkl::cublas::ger(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    ger_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event trsm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda, float *b,
+    std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
+                      dependencies);
+    auto done = onemkl::cublas::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
+                                     a, lda, b, ldb, dependencies);
+    trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
+                       ldb, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event trsm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, double alpha, const double *a, std::int64_t lda, double *b,
+    std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
+                      dependencies);
+    auto done = onemkl::cublas::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
+                                     a, lda, b, ldb, dependencies);
+    trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
+                       ldb, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event trsm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
+    std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
+                      dependencies);
+    auto done = onemkl::cublas::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
+                                     a, lda, b, ldb, dependencies);
+    trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
+                       ldb, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event trsm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
+    std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
+                      dependencies);
+    auto done = onemkl::cublas::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
+                                     a, lda, b, ldb, dependencies);
+    trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
+                       ldb, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event dotu<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+    const std::complex<float> *y, std::int64_t incy, std::complex<float> *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    dotu_precondition(queue, n, x, incx, y, incy, result, dependencies);
+    auto done = onemkl::cublas::dotu(queue, n, x, incx, y, incy, result, dependencies);
+    dotu_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event dotu<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+    const std::complex<double> *y, std::int64_t incy, std::complex<double> *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    dotu_precondition(queue, n, x, incx, y, incy, result, dependencies);
+    auto done = onemkl::cublas::dotu(queue, n, x, incx, y, incy, result, dependencies);
+    dotu_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event hemm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
+    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
+    std::complex<float> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    hemm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = onemkl::cublas::hemm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
+                                     beta, c, ldc, dependencies);
+    hemm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event hemm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
+    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
+    std::complex<double> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    hemm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = onemkl::cublas::hemm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
+                                     beta, c, ldc, dependencies);
+    hemm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event hpr2<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+    const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
+    std::int64_t incy, std::complex<float> *a,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    hpr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    auto done =
+        onemkl::cublas::hpr2(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    hpr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event hpr2<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+    const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
+    std::int64_t incy, std::complex<double> *a,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    hpr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    auto done =
+        onemkl::cublas::hpr2(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    hpr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gbmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
+    std::int64_t ku, float alpha, const float *a, std::int64_t lda, const float *x,
+    std::int64_t incx, float beta, float *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gbmv_precondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
+                      dependencies);
+    auto done = onemkl::cublas::gbmv(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
+                                     incy, dependencies);
+    gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gbmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
+    std::int64_t ku, double alpha, const double *a, std::int64_t lda, const double *x,
+    std::int64_t incx, double beta, double *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gbmv_precondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
+                      dependencies);
+    auto done = onemkl::cublas::gbmv(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
+                                     incy, dependencies);
+    gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gbmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
+    std::int64_t ku, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
+    std::complex<float> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gbmv_precondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
+                      dependencies);
+    auto done = onemkl::cublas::gbmv(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
+                                     incy, dependencies);
+    gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gbmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
+    std::int64_t ku, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
+    std::complex<double> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gbmv_precondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
+                      dependencies);
+    auto done = onemkl::cublas::gbmv(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
+                                     incy, dependencies);
+    gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event tbmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    std::int64_t k, const float *a, std::int64_t lda, float *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    auto done = onemkl::cublas::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
+                                     dependencies);
+    tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event tbmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    std::int64_t k, const double *a, std::int64_t lda, double *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    auto done = onemkl::cublas::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
+                                     dependencies);
+    tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event tbmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    std::int64_t k, const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
+    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    auto done = onemkl::cublas::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
+                                     dependencies);
+    tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event tbmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    std::int64_t k, const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
+    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    auto done = onemkl::cublas::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
+                                     dependencies);
+    tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event symm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
+    float alpha, const float *a, std::int64_t lda, const float *b, std::int64_t ldb, float beta,
+    float *c, std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = onemkl::cublas::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
+                                     beta, c, ldc, dependencies);
+    symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event symm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
+    double alpha, const double *a, std::int64_t lda, const double *b, std::int64_t ldb, double beta,
+    double *c, std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = onemkl::cublas::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
+                                     beta, c, ldc, dependencies);
+    symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event symm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
+    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
+    std::complex<float> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = onemkl::cublas::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
+                                     beta, c, ldc, dependencies);
+    symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event symm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
+    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
+    std::complex<double> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = onemkl::cublas::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
+                                     beta, c, ldc, dependencies);
+    symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event dotc<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+    const std::complex<float> *y, std::int64_t incy, std::complex<float> *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    dotc_precondition(queue, n, x, incx, y, incy, result, dependencies);
+    auto done = onemkl::cublas::dotc(queue, n, x, incx, y, incy, result, dependencies);
+    dotc_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event dotc<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+    const std::complex<double> *y, std::int64_t incy, std::complex<double> *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    dotc_precondition(queue, n, x, incx, y, incy, result, dependencies);
+    auto done = onemkl::cublas::dotc(queue, n, x, incx, y, incy, result, dependencies);
+    dotc_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event syr<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *x,
+    std::int64_t incx, float *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    syr_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    auto done = onemkl::cublas::syr(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    syr_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event syr<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *x,
+    std::int64_t incx, double *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    syr_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    auto done = onemkl::cublas::syr(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    syr_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event trmm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda, float *b,
+    std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
+                      dependencies);
+    auto done = onemkl::cublas::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
+                                     a, lda, b, ldb, dependencies);
+    trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
+                       ldb, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event trmm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, double alpha, const double *a, std::int64_t lda, double *b,
+    std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
+                      dependencies);
+    auto done = onemkl::cublas::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
+                                     a, lda, b, ldb, dependencies);
+    trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
+                       ldb, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event trmm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
+    std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
+                      dependencies);
+    auto done = onemkl::cublas::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
+                                     a, lda, b, ldb, dependencies);
+    trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
+                       ldb, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event trmm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
+    std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
+                      dependencies);
+    auto done = onemkl::cublas::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
+                                     a, lda, b, ldb, dependencies);
+    trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
+                       ldb, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event rotmg<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, float *d1, float *d2, float *x1, float y1, float *param,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    rotmg_precondition(queue, d1, d2, x1, y1, param, dependencies);
+    auto done = onemkl::cublas::rotmg(queue, d1, d2, x1, y1, param, dependencies);
+    rotmg_postcondition(queue, d1, d2, x1, y1, param, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event rotmg<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, double *d1, double *d2, double *x1, double y1, double *param,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    rotmg_precondition(queue, d1, d2, x1, y1, param, dependencies);
+    auto done = onemkl::cublas::rotmg(queue, d1, d2, x1, y1, param, dependencies);
+    rotmg_postcondition(queue, d1, d2, x1, y1, param, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event tpsv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const float *a, float *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    tpsv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done =
+        onemkl::cublas::tpsv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event tpsv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const double *a, double *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    tpsv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done =
+        onemkl::cublas::tpsv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event tpsv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const std::complex<float> *a, std::complex<float> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    tpsv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done =
+        onemkl::cublas::tpsv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event tpsv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const std::complex<double> *a, std::complex<double> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    tpsv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done =
+        onemkl::cublas::tpsv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event trsv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const float *a, std::int64_t lda, float *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    auto done = onemkl::cublas::trsv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
+                                     dependencies);
+    trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event trsv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const double *a, std::int64_t lda, double *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    auto done = onemkl::cublas::trsv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
+                                     dependencies);
+    trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event trsv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const std::complex<float> *a, std::int64_t lda, std::complex<float> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    auto done = onemkl::cublas::trsv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
+                                     dependencies);
+    trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event trsv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const std::complex<double> *a, std::int64_t lda, std::complex<double> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    auto done = onemkl::cublas::trsv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
+                                     dependencies);
+    trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event copy<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, float *y,
+    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    copy_precondition(queue, n, x, incx, y, incy, dependencies);
+    auto done = onemkl::cublas::copy(queue, n, x, incx, y, incy, dependencies);
+    copy_postcondition(queue, n, x, incx, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event copy<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, double *y,
+    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    copy_precondition(queue, n, x, incx, y, incy, dependencies);
+    auto done = onemkl::cublas::copy(queue, n, x, incx, y, incy, dependencies);
+    copy_postcondition(queue, n, x, incx, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event copy<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+    std::complex<float> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    copy_precondition(queue, n, x, incx, y, incy, dependencies);
+    auto done = onemkl::cublas::copy(queue, n, x, incx, y, incy, dependencies);
+    copy_postcondition(queue, n, x, incx, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event copy<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+    std::complex<double> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    copy_precondition(queue, n, x, incx, y, incy, dependencies);
+    auto done = onemkl::cublas::copy(queue, n, x, incx, y, incy, dependencies);
+    copy_postcondition(queue, n, x, incx, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event hemv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+    const std::complex<float> *a, std::int64_t lda, const std::complex<float> *x, std::int64_t incx,
+    std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    hemv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = onemkl::cublas::hemv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
+                                     dependencies);
+    hemv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event hemv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+    const std::complex<double> *a, std::int64_t lda, const std::complex<double> *x,
+    std::int64_t incx, std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    hemv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = onemkl::cublas::hemv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
+                                     dependencies);
+    hemv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemmt<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
+    std::int64_t k, float alpha, const float *a, std::int64_t lda, const float *b, std::int64_t ldb,
+    float beta, float *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                       ldc, dependencies);
+    auto done = onemkl::cublas::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b,
+                                      ldb, beta, c, ldc, dependencies);
+    gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                        ldc, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemmt<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
+    std::int64_t k, double alpha, const double *a, std::int64_t lda, const double *b,
+    std::int64_t ldb, double beta, double *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                       ldc, dependencies);
+    auto done = onemkl::cublas::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b,
+                                      ldb, beta, c, ldc, dependencies);
+    gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                        ldc, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemmt<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
+    std::int64_t k, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
+    std::complex<float> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                       ldc, dependencies);
+    auto done = onemkl::cublas::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b,
+                                      ldb, beta, c, ldc, dependencies);
+    gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                        ldc, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event gemmt<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
+    std::int64_t k, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
+    std::complex<double> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                       ldc, dependencies);
+    auto done = onemkl::cublas::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b,
+                                      ldb, beta, c, ldc, dependencies);
+    gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                        ldc, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event sbmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k, float alpha,
+    const float *a, std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y,
+    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    sbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
+                      dependencies);
+    auto done = onemkl::cublas::sbmv(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
+                                     incy, dependencies);
+    sbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event sbmv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k, double alpha,
+    const double *a, std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y,
+    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    sbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
+                      dependencies);
+    auto done = onemkl::cublas::sbmv(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
+                                     incy, dependencies);
+    sbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
+                       dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event asum<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+    float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    asum_precondition(queue, n, x, incx, result, dependencies);
+    auto done = onemkl::cublas::asum(queue, n, x, incx, result, dependencies);
+    asum_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event asum<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+    double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    asum_precondition(queue, n, x, incx, result, dependencies);
+    auto done = onemkl::cublas::asum(queue, n, x, incx, result, dependencies);
+    asum_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event asum<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, float *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    asum_precondition(queue, n, x, incx, result, dependencies);
+    auto done = onemkl::cublas::asum(queue, n, x, incx, result, dependencies);
+    asum_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event asum<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, double *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    asum_precondition(queue, n, x, incx, result, dependencies);
+    auto done = onemkl::cublas::asum(queue, n, x, incx, result, dependencies);
+    asum_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event tbsv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    std::int64_t k, const float *a, std::int64_t lda, float *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    auto done = onemkl::cublas::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
+                                     dependencies);
+    tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event tbsv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    std::int64_t k, const double *a, std::int64_t lda, double *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    auto done = onemkl::cublas::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
+                                     dependencies);
+    tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event tbsv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    std::int64_t k, const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
+    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    auto done = onemkl::cublas::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
+                                     dependencies);
+    tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event tbsv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    std::int64_t k, const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
+    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    auto done = onemkl::cublas::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
+                                     dependencies);
+    tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event spr2<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *x,
+    std::int64_t incx, const float *y, std::int64_t incy, float *a,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    spr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    auto done =
+        onemkl::cublas::spr2(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    spr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event spr2<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *x,
+    std::int64_t incx, const double *y, std::int64_t incy, double *a,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    spr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    auto done =
+        onemkl::cublas::spr2(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    spr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event iamax<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, std::int64_t *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    iamax_precondition(queue, n, x, incx, result, dependencies);
+    auto done = onemkl::cublas::iamax(queue, n, x, incx, result, dependencies);
+    iamax_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event iamax<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx,
+    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    iamax_precondition(queue, n, x, incx, result, dependencies);
+    auto done = onemkl::cublas::iamax(queue, n, x, incx, result, dependencies);
+    iamax_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event iamax<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    iamax_precondition(queue, n, x, incx, result, dependencies);
+    auto done = onemkl::cublas::iamax(queue, n, x, incx, result, dependencies);
+    iamax_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event iamax<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    iamax_precondition(queue, n, x, incx, result, dependencies);
+    auto done = onemkl::cublas::iamax(queue, n, x, incx, result, dependencies);
+    iamax_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event rotm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
+    std::int64_t incy, float *param, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    rotm_precondition(queue, n, x, incx, y, incy, param, dependencies);
+    auto done = onemkl::cublas::rotm(queue, n, x, incx, y, incy, param, dependencies);
+    rotm_postcondition(queue, n, x, incx, y, incy, param, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event rotm<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
+    std::int64_t incy, double *param, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    rotm_precondition(queue, n, x, incx, y, incy, param, dependencies);
+    auto done = onemkl::cublas::rotm(queue, n, x, incx, y, incy, param, dependencies);
+    rotm_postcondition(queue, n, x, incx, y, incy, param, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event rotg<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, float *a, float *b, float *c, float *s,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    rotg_precondition(queue, a, b, c, s, dependencies);
+    auto done = onemkl::cublas::rotg(queue, a, b, c, s, dependencies);
+    rotg_postcondition(queue, a, b, c, s, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event rotg<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, double *a, double *b, double *c, double *s,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    rotg_precondition(queue, a, b, c, s, dependencies);
+    auto done = onemkl::cublas::rotg(queue, a, b, c, s, dependencies);
+    rotg_postcondition(queue, a, b, c, s, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event rotg<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::complex<float> *a, std::complex<float> *b, float *c,
+    std::complex<float> *s, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    rotg_precondition(queue, a, b, c, s, dependencies);
+    auto done = onemkl::cublas::rotg(queue, a, b, c, s, dependencies);
+    rotg_postcondition(queue, a, b, c, s, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event rotg<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::complex<double> *a, std::complex<double> *b, double *c,
+    std::complex<double> *s, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    rotg_precondition(queue, a, b, c, s, dependencies);
+    auto done = onemkl::cublas::rotg(queue, a, b, c, s, dependencies);
+    rotg_postcondition(queue, a, b, c, s, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event sdsdot<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, float sb, const float *x, std::int64_t incx,
+    const float *y, std::int64_t incy, float *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    sdsdot_precondition(queue, n, sb, x, incx, y, incy, result, dependencies);
+    auto done = onemkl::cublas::sdsdot(queue, n, sb, x, incx, y, incy, result, dependencies);
+    sdsdot_postcondition(queue, n, sb, x, incx, y, incy, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event her2k<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *b, std::int64_t ldb, float beta, std::complex<float> *c,
+    std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    her2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    auto done = onemkl::cublas::her2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
+                                      c, ldc, dependencies);
+    her2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                        dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event her2k<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *b, std::int64_t ldb, double beta, std::complex<double> *c,
+    std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    her2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    auto done = onemkl::cublas::her2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
+                                      c, ldc, dependencies);
+    her2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                        dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event dot<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, const float *y,
+    std::int64_t incy, float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    dot_precondition(queue, n, x, incx, y, incy, result, dependencies);
+    auto done = onemkl::cublas::dot(queue, n, x, incx, y, incy, result, dependencies);
+    dot_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event dot<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, const double *y,
+    std::int64_t incy, double *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    dot_precondition(queue, n, x, incx, y, incy, result, dependencies);
+    auto done = onemkl::cublas::dot(queue, n, x, incx, y, incy, result, dependencies);
+    dot_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event dot<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, const float *y,
+    std::int64_t incy, double *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    dot_precondition(queue, n, x, incx, y, incy, result, dependencies);
+    auto done = onemkl::cublas::dot(queue, n, x, incx, y, incy, result, dependencies);
+    dot_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event symv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *a,
+    std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    symv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = onemkl::cublas::symv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
+                                     dependencies);
+    symv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+template <>
+cl::sycl::event symv<library::cublas, backend::nvidiagpu>(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *a,
+    std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    symv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = onemkl::cublas::symv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
+                                     dependencies);
+    symv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
 }
 
 } //namespace blas

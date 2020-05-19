@@ -23,9 +23,18 @@
 #include <algorithm>
 
 #include <complex>
+#include <stdexcept>
 #include <type_traits>
 
 #include <CL/sycl.hpp>
+
+// Exceptions
+namespace onemkl {
+class backend_unsupported_exception : public std::runtime_error {
+public:
+    backend_unsupported_exception() : std::runtime_error("Not yet supported for this backend") {}
+};
+} // namespace onemkl
 
 namespace std {
 static cl::sycl::half abs(cl::sycl::half v) {
@@ -161,6 +170,13 @@ std::complex<double> rand_scalar(int mag) {
     return rand_complex_scalar<double>(mag);
 }
 
+template <typename fp>
+void rand_vector(fp *v, int n, int inc) {
+    int abs_inc = std::abs(inc);
+    for (int i = 0; i < n; i++)
+        v[i * abs_inc] = rand_scalar<fp>();
+}
+
 template <typename vec>
 void rand_vector(vec &v, int n, int inc) {
     using fp    = typename vec::value_type;
@@ -186,6 +202,13 @@ void print_matrix(vec &M, onemkl::transpose trans, int m, int n, int ld, char *n
     }
 }
 
+template <typename fp>
+void copy_vector(fp *src, int n, int inc, fp *dest) {
+    int abs_inc = std::abs(inc);
+    for (int i = 0; i < n; i++)
+        dest[i * abs_inc] = src[i * abs_inc];
+}
+
 template <typename vec_src, typename vec_dest>
 void copy_matrix(vec_src &src, onemkl::transpose trans, int m, int n, int ld, vec_dest &dest) {
     using T_data = typename vec_dest::value_type;
@@ -199,6 +222,20 @@ void copy_matrix(vec_src &src, onemkl::transpose trans, int m, int n, int ld, ve
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
                 dest[j + i * ld] = (T_data)src[j + i * ld];
+    }
+}
+
+template <typename fp>
+void copy_matrix(fp *src, onemkl::transpose trans, int m, int n, int ld, fp *dest) {
+    if (trans == onemkl::transpose::nontrans) {
+        for (int j = 0; j < n; j++)
+            for (int i = 0; i < m; i++)
+                dest[i + j * ld] = (fp)src[i + j * ld];
+    }
+    else {
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++)
+                dest[j + i * ld] = (fp)src[j + i * ld];
     }
 }
 

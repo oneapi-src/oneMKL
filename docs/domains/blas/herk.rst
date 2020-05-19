@@ -1,4 +1,4 @@
-.. _herk:
+.. _onemkl_blas_herk:
 
 herk
 ====
@@ -10,18 +10,8 @@ herk
    Performs a Hermitian rank-k update.
 
 
-   .. container:: section
-      :name: GUID-407B8203-A28D-468B-BA79-87FA865E75A2
 
-
-      .. rubric:: Syntax
-         :name: syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void herk(queue &exec_queue, uplo upper_lower,      transpose trans, std::int64_t n, std::int64_t k, T_real alpha,      buffer<T,1> &a, std::int64_t lda, T_real beta, buffer<T,1> &c,      std::int64_t ldc)
-
-      herk supports the following precisions:
+      ``herk`` supports the following precisions:
 
 
       .. list-table:: 
@@ -38,19 +28,14 @@ herk
 
 
 .. container:: section
-   :name: GUID-539B4E63-9CDF-4834-999A-4133CE5DE1E5
 
 
    .. rubric:: Description
-      :name: description
       :class: sectiontitle
 
 
-   The herk routines compute a rank-``k`` update of a Hermitian matrix
-   *C* by a general matrix ``A``. The operation is defined as:
-
-
-  
+   The ``herk`` routines compute a rank-``k`` update of a Hermitian matrix
+   ``C`` by a general matrix ``A``. The operation is defined as:
 
 
       C <- alpha*op(A)*op(A) :sup:`H` + beta*C
@@ -71,29 +56,38 @@ herk
    Here op(``A``) is ``n`` x ``k``, and ``C`` is ``n`` x ``n``.
 
 
+herk (Buffer Version)
+---------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. cpp:function::  void onemkl::blas::herk(sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k, T_real alpha, sycl::buffer<T,1> &a, std::int64_t lda, T_real beta, sycl::buffer<T,1> &c, std::int64_t ldc)
+
 .. container:: section
-   :name: GUID-7B880A06-4E53-4DE9-B0E6-D70673CF2638
 
 
    .. rubric:: Input Parameters
-      :name: input-parameters
       :class: sectiontitle
 
 
-   exec_queue
+   queue
       The queue where the routine should be executed.
 
 
    upper_lower
       Specifies whether ``A``'s data is stored in its upper or lower
-      triangle. See
-      :ref:`onemkl_datatypes` for more
-      details.
+      triangle. See :ref:`onemkl_datatypes` for more details.
 
 
    trans
-      Specifies op(``A``), the transposition operation applied to ``A``.
-      See
+      Specifies op(``A``), the transposition operation applied to ``A``. See
       :ref:`onemkl_datatypes` for more
       details. Supported operations are ``transpose::nontrans`` and
       ``transpose::conjtrans``.
@@ -147,11 +141,9 @@ herk
 
 
 .. container:: section
-   :name: GUID-05309970-DEC8-4D87-90AA-958FC101E119
 
 
    .. rubric:: Output Parameters
-      :name: output-parameters
       :class: sectiontitle
 
 
@@ -161,6 +153,123 @@ herk
       The imaginary parts of the diagonal elements are set to zero.
 
 
+herk (USM Version)
+------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. container:: dlsyntaxpara
+
+
+         .. cpp:function::  sycl::event onemkl::blas::herk(sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k, T_real alpha, const T* a, std::int64_t lda, T_real beta, T* c, std::int64_t ldc, const sycl::vector_class<sycl::event> &dependencies = {})
+   .. container:: section
+
+
+      .. rubric:: Input Parameters
+         :class: sectiontitle
+
+
+      queue
+         The queue where the routine should be executed.
+
+
+      upper_lower
+         Specifies whether ``A``'s data is stored in its upper or lower
+         triangle. See :ref:`onemkl_datatypes` for more details.
+
+
+
+      trans
+         Specifies op(``A``), the transposition operation applied to
+         ``A``. See :ref:`onemkl_datatypes` for more details. Supported operations are ``transpose::nontrans``
+         and ``transpose::conjtrans``.
+
+
+      n
+         The number of rows and columns in ``C``.The value of ``n`` must
+         be at least zero.
+
+
+      k
+         Number of columns in op(``A``).
+
+
+         The value of ``k`` must be at least zero.
+
+
+      alpha
+         Real scaling factor for the rank-``k`` update.
+
+
+      a
+         Pointer to input matrix ``A``. If ``trans`` =
+         ``transpose::nontrans``, ``A`` is an ``n``-by-``k`` matrix so
+         the array ``a`` must have size at least ``lda``\ \*\ ``k``.
+         Otherwise, ``A`` is an ``k``-by-``n`` matrix so the array ``a``
+         must have size at least ``lda``\ \*\ ``n``. See `Matrix and
+         Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      lda
+         Leading dimension of ``A``. Must be at least ``n`` if ``A`` is
+         not transposed, and at least ``k`` if ``A`` is transposed. Must
+         be positive.
+
+
+      beta
+         Real scaling factor for matrix ``C``.
+
+
+      c
+         Pointer to input/output matrix ``C``. Must have size at least
+         ``ldc``\ \*\ ``n``. See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      ldc
+         Leading dimension of ``C``. Must be positive and at least
+         ``n``.
+
+
+      dependencies
+         List of events to wait for before starting computation, if any.
+         If omitted, defaults to no dependencies.
+
+
+   .. container:: section
+
+
+      .. rubric:: Output Parameters
+         :class: sectiontitle
+
+
+      c
+         Pointer to the output matrix, overwritten by
+         ``alpha``\ \*op(``A``)*op(``A``)\ :sup:`T` +
+         ``beta``\ \*\ ``C``. The imaginary parts of the diagonal
+         elements are set to zero.
+
+
+   .. container:: section
+
+
+      .. rubric:: Return Values
+         :class: sectiontitle
+
+
+      Output event to wait on to ensure computation is complete.
+
+
 .. container:: familylinks
 
 
@@ -168,8 +277,3 @@ herk
 
 
       **Parent topic:** :ref:`blas-level-3-routines`
-      
-
-
-.. container::
-

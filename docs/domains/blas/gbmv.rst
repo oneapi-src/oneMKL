@@ -1,4 +1,4 @@
-.. _gbmv:
+.. _onemkl_blas_gbmv:
 
 gbmv
 ====
@@ -10,16 +10,6 @@ gbmv
    Computes a matrix-vector product with a general band matrix.
 
 
-   .. container:: section
-      :name: GUID-870EA7B0-09B5-43FF-90A4-6378B5D94B55
-
-
-      .. rubric:: Syntax
-         :name: syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void gbmv(queue &exec_queue, transpose trans,      std::int64_t m, std::int64_t n, std::int64_t kl, std::int64_t ku,      T alpha, buffer<T,1> &a, std::int64_t lda, buffer<T,1> &x,      std::int64_t incx, T beta, buffer<T,1> &y, std::int64_t incy)
 
       ``gbmv`` supports the following precisions.
 
@@ -37,11 +27,9 @@ gbmv
 
 
 .. container:: section
-   :name: GUID-71614419-BC91-4A1A-B743-FE52767C4926
 
 
    .. rubric:: Description
-      :name: description
       :class: sectiontitle
 
 
@@ -73,16 +61,27 @@ gbmv
    -  ``x`` and ``y`` are vectors.
 
 
+gbmv (Buffer Version)
+---------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. cpp:function::  void onemkl::blas::gbmv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl, std::int64_t ku, T alpha, sycl::buffer<T,1> &a, std::int64_t lda, sycl::buffer<T,1> &x, std::int64_t incx, T beta, sycl::buffer<T,1> &y, std::int64_t incy)
 .. container:: section
-   :name: GUID-E1436726-01FE-4206-871E-B905F59A96B4
 
 
    .. rubric:: Input Parameters
-      :name: input-parameters
       :class: sectiontitle
 
 
-   exec_queue
+   queue
       The queue where the routine should be executed.
 
 
@@ -159,16 +158,142 @@ gbmv
 
 
 .. container:: section
-   :name: GUID-4B31584D-BC63-4032-A4A7-61BF3F163165
 
 
    .. rubric:: Output Parameters
-      :name: output-parameters
       :class: sectiontitle
 
 
    y
       Buffer holding the updated vector ``y``.
+
+
+gbmv (USM Version)
+------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. container:: dlsyntaxpara
+
+
+         .. cpp:function::  sycl::event onemkl::blas::gbmv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl, std::int64_t ku, T alpha, const T *a, std::int64_t lda, const T *x, std::int64_t incx, T beta, T *y, std::int64_t incy, const sycl::vector_class<sycl::event> &dependencies = {})
+   .. container:: section
+
+
+      .. rubric:: Input Parameters
+         :class: sectiontitle
+
+
+      queue
+         The queue where the routine should be executed.
+
+
+      trans
+         Specifies op(``A``), the transposition operation applied to
+         ``A``. See
+         :ref:`onemkl_datatypes` for
+         more details.
+
+
+      m
+         Number of rows of ``A``. Must be at least zero.
+
+
+      n
+         Number of columns of ``A``. Must be at least zero.
+
+
+      kl
+         Number of sub-diagonals of the matrix ``A``. Must be at least
+         zero.
+
+
+      ku
+         Number of super-diagonals of the matrix ``A``. Must be at least
+         zero.
+
+
+      alpha
+         Scaling factor for the matrix-vector product.
+
+
+      a
+         Pointer to input matrix ``A``. The array holding input matrix
+         ``A`` must have size at least ``lda``\ \*\ ``n``. See `Matrix
+         and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      lda
+         Leading dimension of matrix ``A``. Must be at least (``kl`` +
+         ``ku`` + 1), and positive.
+
+
+      x
+         Pointer to input vector ``x``. The length ``len`` of vector
+         ``x`` is ``n`` if ``A`` is not transposed, and ``m`` if ``A``
+         is transposed. The array holding input vector ``x`` must be of
+         size at least (1 + (``len`` - 1)*abs(``incx``)). See `Matrix
+         and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incx
+         Stride of vector ``x``.
+
+
+      beta
+         Scaling factor for vector ``y``.
+
+
+      y
+         Pointer to input/output vector ``y``. The length ``len`` of
+         vector ``y`` is ``m``, if ``A`` is not transposed, and ``n`` if
+         ``A`` is transposed. The array holding input/output vector
+         ``y`` must be of size at least (1 + (``len`` -
+         1)*abs(``incy``)) where ``len`` is this length. See `Matrix and
+         Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incy
+         Stride of vector ``y``.
+
+
+      dependencies
+         List of events to wait for before starting computation, if any.
+         If omitted, defaults to no dependencies.
+
+
+   .. container:: section
+
+
+      .. rubric:: Output Parameters
+         :class: sectiontitle
+
+
+      y
+         Pointer to the updated vector ``y``.
+
+
+   .. container:: section
+
+
+      .. rubric:: Return Values
+         :class: sectiontitle
+
+
+      Output event to wait on to ensure computation is complete.
 
 
 .. container:: familylinks
@@ -178,8 +303,3 @@ gbmv
 
 
       **Parent topic:** :ref:`blas-level-2-routines`
-      
-
-
-.. container::
-

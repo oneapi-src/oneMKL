@@ -989,59 +989,6 @@ void swap(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<std::complex<
     onemkl::mklgpu::internal::swap(queue, n, x, incx, y, incy);
 }
 
-void gemm_batch(cl::sycl::queue &queue, cl::sycl::buffer<onemkl::transpose, 1> &transa,
-                cl::sycl::buffer<onemkl::transpose, 1> &transb,
-                cl::sycl::buffer<std::int64_t, 1> &m, cl::sycl::buffer<std::int64_t, 1> &n,
-                cl::sycl::buffer<std::int64_t, 1> &k, cl::sycl::buffer<float, 1> &alpha,
-                cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<float, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-                cl::sycl::buffer<float, 1> &beta, cl::sycl::buffer<float, 1> &c,
-                cl::sycl::buffer<std::int64_t, 1> &ldc, std::int64_t group_count,
-                cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    onemkl::mklgpu::internal::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
-                                         beta, c, ldc, group_count, group_size);
-}
-
-void gemm_batch(cl::sycl::queue &queue, cl::sycl::buffer<onemkl::transpose, 1> &transa,
-                cl::sycl::buffer<onemkl::transpose, 1> &transb,
-                cl::sycl::buffer<std::int64_t, 1> &m, cl::sycl::buffer<std::int64_t, 1> &n,
-                cl::sycl::buffer<std::int64_t, 1> &k, cl::sycl::buffer<double, 1> &alpha,
-                cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<double, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-                cl::sycl::buffer<double, 1> &beta, cl::sycl::buffer<double, 1> &c,
-                cl::sycl::buffer<std::int64_t, 1> &ldc, std::int64_t group_count,
-                cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    onemkl::mklgpu::internal::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
-                                         beta, c, ldc, group_count, group_size);
-}
-
-void gemm_batch(cl::sycl::queue &queue, cl::sycl::buffer<onemkl::transpose, 1> &transa,
-                cl::sycl::buffer<onemkl::transpose, 1> &transb,
-                cl::sycl::buffer<std::int64_t, 1> &m, cl::sycl::buffer<std::int64_t, 1> &n,
-                cl::sycl::buffer<std::int64_t, 1> &k,
-                cl::sycl::buffer<std::complex<float>, 1> &alpha,
-                cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<std::complex<float>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-                cl::sycl::buffer<std::complex<float>, 1> &beta,
-                cl::sycl::buffer<std::complex<float>, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-                std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    onemkl::mklgpu::internal::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
-                                         beta, c, ldc, group_count, group_size);
-}
-
-void gemm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<onemkl::transpose, 1> &transa,
-    cl::sycl::buffer<onemkl::transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
-    cl::sycl::buffer<std::complex<double>, 1> &alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<std::complex<double>, 1> &b,
-    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<std::complex<double>, 1> &beta,
-    cl::sycl::buffer<std::complex<double>, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    onemkl::mklgpu::internal::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
-                                         beta, c, ldc, group_count, group_size);
-}
-
 void gemm_batch(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
                 std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
                 cl::sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a,
@@ -1082,55 +1029,6 @@ void gemm_batch(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transp
                 std::int64_t stride_c, std::int64_t batch_size) {
     onemkl::mklgpu::internal::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b,
                                          ldb, stride_b, beta, c, ldc, stride_c, batch_size);
-}
-
-void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<onemkl::side, 1> &left_right,
-                cl::sycl::buffer<onemkl::uplo, 1> &upper_lower,
-                cl::sycl::buffer<onemkl::transpose, 1> &trans,
-                cl::sycl::buffer<onemkl::diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-                cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<float, 1> &alpha,
-                cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<float, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-                std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    onemkl::mklgpu::internal::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n,
-                                         alpha, a, lda, b, ldb, group_count, group_size);
-}
-
-void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<onemkl::side, 1> &left_right,
-                cl::sycl::buffer<onemkl::uplo, 1> &upper_lower,
-                cl::sycl::buffer<onemkl::transpose, 1> &trans,
-                cl::sycl::buffer<onemkl::diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-                cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<double, 1> &alpha,
-                cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<double, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-                std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    onemkl::mklgpu::internal::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n,
-                                         alpha, a, lda, b, ldb, group_count, group_size);
-}
-
-void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<onemkl::side, 1> &left_right,
-                cl::sycl::buffer<onemkl::uplo, 1> &upper_lower,
-                cl::sycl::buffer<onemkl::transpose, 1> &trans,
-                cl::sycl::buffer<onemkl::diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-                cl::sycl::buffer<std::int64_t, 1> &n,
-                cl::sycl::buffer<std::complex<float>, 1> &alpha,
-                cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-                cl::sycl::buffer<std::complex<float>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-                std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    onemkl::mklgpu::internal::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n,
-                                         alpha, a, lda, b, ldb, group_count, group_size);
-}
-
-void trsm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<onemkl::side, 1> &left_right,
-    cl::sycl::buffer<onemkl::uplo, 1> &upper_lower, cl::sycl::buffer<onemkl::transpose, 1> &trans,
-    cl::sycl::buffer<onemkl::diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::complex<double>, 1> &alpha,
-    cl::sycl::buffer<std::complex<double>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-    cl::sycl::buffer<std::complex<double>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    onemkl::mklgpu::internal::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n,
-                                         alpha, a, lda, b, ldb, group_count, group_size);
 }
 
 void trsm_batch(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,

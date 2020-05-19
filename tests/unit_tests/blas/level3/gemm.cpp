@@ -44,8 +44,8 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device& dev, onemkl::transpose transa, onemkl::transpose transb, int m, int n,
-          int k, int lda, int ldb, int ldc, fp alpha, fp beta) {
+int test(const device& dev, onemkl::transpose transa, onemkl::transpose transb, int m, int n, int k,
+         int lda, int ldb, int ldc, fp alpha, fp beta) {
     // Prepare data.
     vector<fp, allocator_helper<fp, 64>> A, B, C, C_ref;
     rand_matrix(A, transa, m, k, lda);
@@ -101,11 +101,19 @@ bool test(const device& dev, onemkl::transpose transa, onemkl::transpose transb,
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const onemkl::backend_unsupported_exception& e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error& error) {
+        std::cout << "Error raised during execution of GEMM:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     auto C_accessor = C_buffer.template get_access<access::mode::read>();
     bool good       = check_equal_matrix(C_accessor, C_ref, m, n, ldc, 10 * k, std::cout);
 
-    return good;
+    return (int)good;
 }
 
 class GemmTests : public ::testing::TestWithParam<cl::sycl::device> {};
@@ -113,91 +121,95 @@ class GemmTests : public ::testing::TestWithParam<cl::sycl::device> {};
 TEST_P(GemmTests, RealSinglePrecision) {
     float alpha(2.0);
     float beta(3.0);
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::transpose::nontrans, onemkl::transpose::nontrans,
-                            79, 83, 91, 103, 105, 106, alpha, beta));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::transpose::nontrans, onemkl::transpose::trans, 79,
-                            83, 91, 103, 105, 106, alpha, beta));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::transpose::trans, onemkl::transpose::nontrans, 79,
-                            83, 91, 103, 105, 106, alpha, beta));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::transpose::trans, onemkl::transpose::trans, 79, 83,
-                            91, 103, 105, 106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::transpose::nontrans,
+                                  onemkl::transpose::nontrans, 79, 83, 91, 103, 105, 106, alpha,
+                                  beta));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::transpose::nontrans, onemkl::transpose::trans,
+                                  79, 83, 91, 103, 105, 106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::transpose::trans, onemkl::transpose::nontrans,
+                                  79, 83, 91, 103, 105, 106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::transpose::trans, onemkl::transpose::trans,
+                                  79, 83, 91, 103, 105, 106, alpha, beta));
 }
 
 TEST_P(GemmTests, RealDoublePrecision) {
     double alpha(2.0);
     double beta(3.0);
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::transpose::nontrans, onemkl::transpose::nontrans,
-                             79, 83, 91, 103, 105, 106, alpha, beta));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::transpose::nontrans, onemkl::transpose::trans, 79,
-                             83, 91, 103, 105, 106, alpha, beta));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::transpose::trans, onemkl::transpose::nontrans, 79,
-                             83, 91, 103, 105, 106, alpha, beta));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::transpose::trans, onemkl::transpose::trans, 79, 83,
-                             91, 103, 105, 106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::transpose::nontrans,
+                                   onemkl::transpose::nontrans, 79, 83, 91, 103, 105, 106, alpha,
+                                   beta));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::transpose::nontrans,
+                                   onemkl::transpose::trans, 79, 83, 91, 103, 105, 106, alpha,
+                                   beta));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::transpose::trans,
+                                   onemkl::transpose::nontrans, 79, 83, 91, 103, 105, 106, alpha,
+                                   beta));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::transpose::trans, onemkl::transpose::trans,
+                                   79, 83, 91, 103, 105, 106, alpha, beta));
 }
 
 TEST_P(GemmTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
     std::complex<float> beta(3.0, -1.5);
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::transpose::nontrans,
-                                          onemkl::transpose::nontrans, 79, 83, 91, 103, 105, 106,
-                                          alpha, beta));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::transpose::nontrans,
-                                          onemkl::transpose::trans, 79, 83, 91, 103, 105, 106,
-                                          alpha, beta));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::transpose::trans,
-                                          onemkl::transpose::nontrans, 79, 83, 91, 103, 105, 106,
-                                          alpha, beta));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::transpose::trans,
-                                          onemkl::transpose::trans, 79, 83, 91, 103, 105, 106,
-                                          alpha, beta));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::transpose::nontrans,
-                                          onemkl::transpose::conjtrans, 79, 83, 91, 103, 105, 106,
-                                          alpha, beta));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::transpose::trans,
-                                          onemkl::transpose::conjtrans, 79, 83, 91, 103, 105, 106,
-                                          alpha, beta));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::transpose::conjtrans,
-                                          onemkl::transpose::nontrans, 79, 83, 91, 103, 105, 106,
-                                          alpha, beta));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::transpose::conjtrans,
-                                          onemkl::transpose::trans, 79, 83, 91, 103, 105, 106,
-                                          alpha, beta));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::transpose::conjtrans,
-                                          onemkl::transpose::conjtrans, 79, 83, 91, 103, 105, 106,
-                                          alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::nontrans,
+                                                onemkl::transpose::nontrans, 79, 83, 91, 103, 105,
+                                                106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::nontrans,
+                                                onemkl::transpose::trans, 79, 83, 91, 103, 105, 106,
+                                                alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::trans,
+                                                onemkl::transpose::nontrans, 79, 83, 91, 103, 105,
+                                                106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::trans,
+                                                onemkl::transpose::trans, 79, 83, 91, 103, 105, 106,
+                                                alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::nontrans,
+                                                onemkl::transpose::conjtrans, 79, 83, 91, 103, 105,
+                                                106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::trans,
+                                                onemkl::transpose::conjtrans, 79, 83, 91, 103, 105,
+                                                106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::conjtrans,
+                                                onemkl::transpose::nontrans, 79, 83, 91, 103, 105,
+                                                106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::conjtrans,
+                                                onemkl::transpose::trans, 79, 83, 91, 103, 105, 106,
+                                                alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::conjtrans,
+                                                onemkl::transpose::conjtrans, 79, 83, 91, 103, 105,
+                                                106, alpha, beta));
 }
 
 TEST_P(GemmTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::transpose::nontrans,
-                                           onemkl::transpose::nontrans, 79, 83, 91, 103, 105, 106,
-                                           alpha, beta));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::transpose::nontrans,
-                                           onemkl::transpose::trans, 79, 83, 91, 103, 105, 106,
-                                           alpha, beta));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::transpose::trans,
-                                           onemkl::transpose::nontrans, 79, 83, 91, 103, 105, 106,
-                                           alpha, beta));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::transpose::trans,
-                                           onemkl::transpose::trans, 79, 83, 91, 103, 105, 106,
-                                           alpha, beta));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::transpose::nontrans,
-                                           onemkl::transpose::conjtrans, 79, 83, 91, 103, 105, 106,
-                                           alpha, beta));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::transpose::trans,
-                                           onemkl::transpose::conjtrans, 79, 83, 91, 103, 105, 106,
-                                           alpha, beta));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::transpose::conjtrans,
-                                           onemkl::transpose::nontrans, 79, 83, 91, 103, 105, 106,
-                                           alpha, beta));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::transpose::conjtrans,
-                                           onemkl::transpose::trans, 79, 83, 91, 103, 105, 106,
-                                           alpha, beta));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::transpose::conjtrans,
-                                           onemkl::transpose::conjtrans, 79, 83, 91, 103, 105, 106,
-                                           alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::nontrans,
+                                                 onemkl::transpose::nontrans, 79, 83, 91, 103, 105,
+                                                 106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::nontrans,
+                                                 onemkl::transpose::trans, 79, 83, 91, 103, 105,
+                                                 106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::trans,
+                                                 onemkl::transpose::nontrans, 79, 83, 91, 103, 105,
+                                                 106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::trans,
+                                                 onemkl::transpose::trans, 79, 83, 91, 103, 105,
+                                                 106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::nontrans,
+                                                 onemkl::transpose::conjtrans, 79, 83, 91, 103, 105,
+                                                 106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::trans,
+                                                 onemkl::transpose::conjtrans, 79, 83, 91, 103, 105,
+                                                 106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::conjtrans,
+                                                 onemkl::transpose::nontrans, 79, 83, 91, 103, 105,
+                                                 106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::conjtrans,
+                                                 onemkl::transpose::trans, 79, 83, 91, 103, 105,
+                                                 106, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::conjtrans,
+                                                 onemkl::transpose::conjtrans, 79, 83, 91, 103, 105,
+                                                 106, alpha, beta));
 }
 
 INSTANTIATE_TEST_SUITE_P(GemmTestSuite, GemmTests, ::testing::ValuesIn(devices),

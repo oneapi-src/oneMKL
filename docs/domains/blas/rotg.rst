@@ -1,4 +1,4 @@
-.. _rotg:
+.. _onemkl_blas_rotg:
 
 rotg
 ====
@@ -10,16 +10,6 @@ rotg
    Computes the parameters for a Givens rotation.
 
 
-   .. container:: section
-      :name: GUID-E4B6E693-AC8C-4BB3-A197-3EB9E905B925
-
-
-      .. rubric:: Syntax
-         :name: syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void rotg(queue &exec_queue, buffer<T,1> &a,      buffer<T,1> &b, buffer<T_real,1> &c, buffer<T,1> &s)
 
       ``rotg`` supports the following precisions.
 
@@ -42,15 +32,13 @@ rotg
 
 
 .. container:: section
-   :name: GUID-5614B81D-C736-4714-88AB-29B38F9B3589
 
 
    .. rubric:: Description
-      :name: description
       :class: sectiontitle
 
 
-   Given the Cartesian coordinates ``(a, b)`` of a point, the rotg
+   Given the Cartesian coordinates ``(a, b)`` of a point, the ``rotg``
    routines return the parameters ``c``, ``s``, ``r``, and ``z``
    associated with the Givens rotation. The parameters ``c`` and ``s``
    define a unitary matrix such that:
@@ -61,16 +49,28 @@ rotg
    1/``c``; otherwise ``z`` is 1.
 
 
+rotg (Buffer Version)
+---------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. cpp:function::  void onemkl::blas::rotg(sycl::queue &queue, sycl::buffer<T,1> &a, sycl::buffer<T,1> &b, sycl::buffer<T_real,1> &c, sycl::buffer<T,1> &s)
+
 .. container:: section
-   :name: GUID-C2003328-15AA-4DF0-A417-40BECCA7DEA3
 
 
    .. rubric:: Input Parameters
-      :name: input-parameters
       :class: sectiontitle
 
 
-   exec_queue
+   queue
       The queue where the routine should be executed
 
 
@@ -83,11 +83,9 @@ rotg
 
 
 .. container:: section
-   :name: GUID-3B7937E3-2DF7-49A3-8F1E-2C9406BB4E88
 
 
    .. rubric:: Output Parameters
-      :name: output-parameters
       :class: sectiontitle
 
 
@@ -111,6 +109,83 @@ rotg
       rotation.
 
 
+rotg (USM Version)
+------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. container:: dlsyntaxpara
+
+
+         .. cpp:function::  sycl::event onemkl::blas::rotg(sycl::queue &queue, T *a, T *b, T_real *c, T *s, const sycl::vector_class<sycl::event> &dependencies = {})
+   .. container:: section
+
+
+      .. rubric:: Input Parameters
+         :class: sectiontitle
+
+
+      queue
+         The queue where the routine should be executed
+
+
+      a
+         Pointer to the ``x``-coordinate of the point.
+
+
+      b
+         Pointer to the ``y``-coordinate of the point.
+
+
+      dependencies
+         List of events to wait for before starting computation, if any.
+         If omitted, defaults to no dependencies.
+
+
+   .. container:: section
+
+
+      .. rubric:: Output Parameters
+         :class: sectiontitle
+
+
+      a
+         Pointer to the parameter ``r`` associated with the Givens
+         rotation.
+
+
+      b
+         Pointer to the parameter ``z`` associated with the Givens
+         rotation.
+
+
+      c
+         Pointer to the parameter ``c`` associated with the Givens
+         rotation.
+
+
+      s
+         Pointer to the parameter ``s`` associated with the Givens
+         rotation.
+
+
+   .. container:: section
+
+
+      .. rubric:: Return Values
+         :class: sectiontitle
+
+
+      Output event to wait on to ensure computation is complete.
+
+
 .. container:: familylinks
 
 
@@ -118,8 +193,3 @@ rotg
 
 
       **Parent topic:** :ref:`blas-level-1-routines`
-      
-
-
-.. container::
-

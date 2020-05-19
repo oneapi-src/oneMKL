@@ -43,7 +43,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda) {
+int test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda) {
     // Prepare data.
 
     vector<fp> x, y, A_ref, A;
@@ -96,6 +96,14 @@ bool test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const onemkl::backend_unsupported_exception &e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error &error) {
+        std::cout << "Error raised during execution of GERU:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -103,22 +111,22 @@ bool test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda
         good = check_equal_matrix(A_accessor, A_ref, m, n, lda, std::max<int>(m, n), std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class GeruTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(GeruTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 25, 30, alpha, 2, 3, 42));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 25, 30, alpha, -2, -3, 42));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 25, 30, alpha, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 25, 30, alpha, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 25, 30, alpha, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 25, 30, alpha, 1, 1, 42));
 }
 TEST_P(GeruTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 25, 30, alpha, 2, 3, 42));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 25, 30, alpha, -2, -3, 42));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 25, 30, alpha, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 25, 30, alpha, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 25, 30, alpha, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 25, 30, alpha, 1, 1, 42));
 }
 
 INSTANTIATE_TEST_SUITE_P(GeruTestSuite, GeruTests, ::testing::ValuesIn(devices),

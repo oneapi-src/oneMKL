@@ -25,398 +25,7 @@
 namespace onemkl {
 namespace mklcpu {
 
-void gemm_batch(cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-                cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<int64_t, 1> &m,
-                cl::sycl::buffer<int64_t, 1> &n, cl::sycl::buffer<int64_t, 1> &k,
-                cl::sycl::buffer<float, 1> &alpha, cl::sycl::buffer<float, 1> &a,
-                cl::sycl::buffer<int64_t, 1> &lda, cl::sycl::buffer<float, 1> &b,
-                cl::sycl::buffer<int64_t, 1> &ldb, cl::sycl::buffer<float, 1> &beta,
-                cl::sycl::buffer<float, 1> &c, cl::sycl::buffer<int64_t, 1> &ldc,
-                int64_t group_count, cl::sycl::buffer<int64_t, 1> &group_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto transa_acc     = transa.get_access<cl::sycl::access::mode::read>(cgh);
-        auto transb_acc     = transb.get_access<cl::sycl::access::mode::read>(cgh);
-        auto m_acc          = m.get_access<cl::sycl::access::mode::read>(cgh);
-        auto n_acc          = n.get_access<cl::sycl::access::mode::read>(cgh);
-        auto k_acc          = k.get_access<cl::sycl::access::mode::read>(cgh);
-        auto alpha_acc      = alpha.get_access<cl::sycl::access::mode::read>(cgh);
-        auto a_acc          = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto lda_acc        = lda.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc          = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto ldb_acc        = ldb.get_access<cl::sycl::access::mode::read>(cgh);
-        auto beta_acc       = beta.get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc          = c.get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto ldc_acc        = ldc.get_access<cl::sycl::access::mode::read>(cgh);
-        auto group_size_acc = group_size.get_access<cl::sycl::access::mode::read>(cgh);
-
-        host_task<class mkl_kernel_init_sgemm_batch>(cgh, [=]() {
-            int64_t total_size = 0;
-
-            for (int64_t i = 0; i < group_count; i++) {
-                total_size += group_size_acc[i];
-            }
-
-            float **a_array      = (float **)::malloc(sizeof(float *) * total_size);
-            float **b_array      = (float **)::malloc(sizeof(float *) * total_size);
-            float **c_array      = (float **)::malloc(sizeof(float *) * total_size);
-            MKL_INT *m_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *n_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *k_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *lda_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *ldb_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *ldc_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *group_size_ = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            int64_t offset_a = 0, offset_b = 0, offset_c = 0, idx = 0;
-            char *transa_ = (char *)::malloc(sizeof(char) * group_count);
-            char *transb_ = (char *)::malloc(sizeof(char) * group_count);
-
-            for (int64_t i = 0; i < group_count; i++) {
-                m_[i]          = m_acc[i];
-                n_[i]          = n_acc[i];
-                k_[i]          = k_acc[i];
-                lda_[i]        = lda_acc[i];
-                ldb_[i]        = ldb_acc[i];
-                ldc_[i]        = ldc_acc[i];
-                group_size_[i] = group_size_acc[i];
-                transa_[i]     = *fortran_char(transa_acc[i]);
-                transb_[i]     = *fortran_char(transb_acc[i]);
-
-                for (int64_t j = 0; j < group_size_acc[i]; j++) {
-                    if (idx == 0) {
-                        a_array[0] = a_acc.get_pointer();
-                        b_array[0] = b_acc.get_pointer();
-                        c_array[0] = c_acc.get_pointer();
-                    }
-                    else {
-                        a_array[idx] = a_array[idx - 1] + offset_a;
-                        b_array[idx] = b_array[idx - 1] + offset_b;
-                        c_array[idx] = c_array[idx - 1] + offset_c;
-                    }
-                    idx++;
-                    offset_a = (transa_acc[i] == transpose::nontrans) ? lda_acc[i] * k_acc[i]
-                                                                      : lda_acc[i] * m_acc[i];
-                    offset_b = (transb_acc[i] == transpose::nontrans) ? ldb_acc[i] * n_acc[i]
-                                                                      : ldb_acc[i] * k_acc[i];
-                    offset_c = ldc_acc[i] * n_acc[i];
-                }
-            }
-
-            ::sgemm_batch(transa_, transb_, m_, n_, k_, alpha_acc.get_pointer(),
-                          (const float **)a_array, lda_, (const float **)b_array, ldb_,
-                          beta_acc.get_pointer(), c_array, ldc_, (MKL_INT *)&group_count,
-                          group_size_);
-
-            ::free(a_array);
-            ::free(b_array);
-            ::free(c_array);
-            ::free(m_);
-            ::free(n_);
-            ::free(k_);
-            ::free(lda_);
-            ::free(ldb_);
-            ::free(ldc_);
-            ::free(group_size_);
-            ::free(transa_);
-            ::free(transb_);
-        });
-    });
-}
-
-void gemm_batch(cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-                cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<int64_t, 1> &m,
-                cl::sycl::buffer<int64_t, 1> &n, cl::sycl::buffer<int64_t, 1> &k,
-                cl::sycl::buffer<double, 1> &alpha, cl::sycl::buffer<double, 1> &a,
-                cl::sycl::buffer<int64_t, 1> &lda, cl::sycl::buffer<double, 1> &b,
-                cl::sycl::buffer<int64_t, 1> &ldb, cl::sycl::buffer<double, 1> &beta,
-                cl::sycl::buffer<double, 1> &c, cl::sycl::buffer<int64_t, 1> &ldc,
-                int64_t group_count, cl::sycl::buffer<int64_t, 1> &group_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto transa_acc     = transa.get_access<cl::sycl::access::mode::read>(cgh);
-        auto transb_acc     = transb.get_access<cl::sycl::access::mode::read>(cgh);
-        auto m_acc          = m.get_access<cl::sycl::access::mode::read>(cgh);
-        auto n_acc          = n.get_access<cl::sycl::access::mode::read>(cgh);
-        auto k_acc          = k.get_access<cl::sycl::access::mode::read>(cgh);
-        auto alpha_acc      = alpha.get_access<cl::sycl::access::mode::read>(cgh);
-        auto a_acc          = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto lda_acc        = lda.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc          = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto ldb_acc        = ldb.get_access<cl::sycl::access::mode::read>(cgh);
-        auto beta_acc       = beta.get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc          = c.get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto ldc_acc        = ldc.get_access<cl::sycl::access::mode::read>(cgh);
-        auto group_size_acc = group_size.get_access<cl::sycl::access::mode::read>(cgh);
-
-        host_task<class mkl_kernel_dgemm_batch>(cgh, [=]() {
-            int64_t total_size = 0;
-
-            for (int64_t i = 0; i < group_count; i++) {
-                total_size += group_size_acc[i];
-            }
-
-            double **a_array     = (double **)::malloc(sizeof(double *) * total_size);
-            double **b_array     = (double **)::malloc(sizeof(double *) * total_size);
-            double **c_array     = (double **)::malloc(sizeof(double *) * total_size);
-            MKL_INT *m_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *n_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *k_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *lda_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *ldb_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *ldc_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *group_size_ = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            int64_t offset_a = 0, offset_b = 0, offset_c = 0, idx = 0;
-            char *transa_ = (char *)::malloc(sizeof(char) * group_count);
-            char *transb_ = (char *)::malloc(sizeof(char) * group_count);
-
-            for (int64_t i = 0; i < group_count; i++) {
-                m_[i]          = m_acc[i];
-                n_[i]          = n_acc[i];
-                k_[i]          = k_acc[i];
-                lda_[i]        = lda_acc[i];
-                ldb_[i]        = ldb_acc[i];
-                ldc_[i]        = ldc_acc[i];
-                group_size_[i] = group_size_acc[i];
-                transa_[i]     = *fortran_char(transa_acc[i]);
-                transb_[i]     = *fortran_char(transb_acc[i]);
-
-                for (int64_t j = 0; j < group_size_acc[i]; j++) {
-                    if (idx == 0) {
-                        a_array[0] = a_acc.get_pointer();
-                        b_array[0] = b_acc.get_pointer();
-                        c_array[0] = c_acc.get_pointer();
-                    }
-                    else {
-                        a_array[idx] = a_array[idx - 1] + offset_a;
-                        b_array[idx] = b_array[idx - 1] + offset_b;
-                        c_array[idx] = c_array[idx - 1] + offset_c;
-                    }
-                    idx++;
-                    offset_a = (transa_acc[i] == transpose::nontrans) ? lda_acc[i] * k_acc[i]
-                                                                      : lda_acc[i] * m_acc[i];
-                    offset_b = (transb_acc[i] == transpose::nontrans) ? ldb_acc[i] * n_acc[i]
-                                                                      : ldb_acc[i] * k_acc[i];
-                    offset_c = ldc_acc[i] * n_acc[i];
-                }
-            }
-
-            ::dgemm_batch(transa_, transb_, m_, n_, k_, alpha_acc.get_pointer(),
-                          (const double **)a_array, lda_, (const double **)b_array, ldb_,
-                          beta_acc.get_pointer(), c_array, ldc_, (MKL_INT *)&group_count,
-                          group_size_);
-
-            ::free(a_array);
-            ::free(b_array);
-            ::free(c_array);
-            ::free(m_);
-            ::free(n_);
-            ::free(k_);
-            ::free(lda_);
-            ::free(ldb_);
-            ::free(ldc_);
-            ::free(group_size_);
-            ::free(transa_);
-            ::free(transb_);
-        });
-    });
-}
-
-void gemm_batch(cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-                cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<int64_t, 1> &m,
-                cl::sycl::buffer<int64_t, 1> &n, cl::sycl::buffer<int64_t, 1> &k,
-                cl::sycl::buffer<std::complex<float>, 1> &alpha,
-                cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<int64_t, 1> &lda,
-                cl::sycl::buffer<std::complex<float>, 1> &b, cl::sycl::buffer<int64_t, 1> &ldb,
-                cl::sycl::buffer<std::complex<float>, 1> &beta,
-                cl::sycl::buffer<std::complex<float>, 1> &c, cl::sycl::buffer<int64_t, 1> &ldc,
-                int64_t group_count, cl::sycl::buffer<int64_t, 1> &group_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto transa_acc     = transa.get_access<cl::sycl::access::mode::read>(cgh);
-        auto transb_acc     = transb.get_access<cl::sycl::access::mode::read>(cgh);
-        auto m_acc          = m.get_access<cl::sycl::access::mode::read>(cgh);
-        auto n_acc          = n.get_access<cl::sycl::access::mode::read>(cgh);
-        auto k_acc          = k.get_access<cl::sycl::access::mode::read>(cgh);
-        auto alpha_acc      = alpha.get_access<cl::sycl::access::mode::read>(cgh);
-        auto a_acc          = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto lda_acc        = lda.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc          = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto ldb_acc        = ldb.get_access<cl::sycl::access::mode::read>(cgh);
-        auto beta_acc       = beta.get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc          = c.get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto ldc_acc        = ldc.get_access<cl::sycl::access::mode::read>(cgh);
-        auto group_size_acc = group_size.get_access<cl::sycl::access::mode::read>(cgh);
-
-        host_task<class mkl_kernel_cgemm_batch>(cgh, [=]() {
-            int64_t total_size = 0;
-
-            for (int64_t i = 0; i < group_count; i++) {
-                total_size += group_size_acc[i];
-            }
-
-            MKL_Complex8 **a_array = (MKL_Complex8 **)::malloc(sizeof(MKL_Complex8 *) * total_size);
-            MKL_Complex8 **b_array = (MKL_Complex8 **)::malloc(sizeof(MKL_Complex8 *) * total_size);
-            MKL_Complex8 **c_array = (MKL_Complex8 **)::malloc(sizeof(MKL_Complex8 *) * total_size);
-            MKL_INT *m_            = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *n_            = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *k_            = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *lda_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *ldb_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *ldc_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *group_size_   = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            int64_t offset_a = 0, offset_b = 0, offset_c = 0, idx = 0;
-            char *transa_ = (char *)::malloc(sizeof(char) * group_count);
-            char *transb_ = (char *)::malloc(sizeof(char) * group_count);
-
-            for (int64_t i = 0; i < group_count; i++) {
-                m_[i]          = m_acc[i];
-                n_[i]          = n_acc[i];
-                k_[i]          = k_acc[i];
-                lda_[i]        = lda_acc[i];
-                ldb_[i]        = ldb_acc[i];
-                ldc_[i]        = ldc_acc[i];
-                group_size_[i] = group_size_acc[i];
-                transa_[i]     = *fortran_char(transa_acc[i]);
-                transb_[i]     = *fortran_char(transb_acc[i]);
-
-                for (int64_t j = 0; j < group_size_acc[i]; j++) {
-                    if (idx == 0) {
-                        a_array[0] = a_acc.get_pointer();
-                        b_array[0] = b_acc.get_pointer();
-                        c_array[0] = c_acc.get_pointer();
-                    }
-                    else {
-                        a_array[idx] = a_array[idx - 1] + offset_a;
-                        b_array[idx] = b_array[idx - 1] + offset_b;
-                        c_array[idx] = c_array[idx - 1] + offset_c;
-                    }
-                    idx++;
-                    offset_a = (transa_acc[i] == transpose::nontrans) ? lda_acc[i] * k_acc[i]
-                                                                      : lda_acc[i] * m_acc[i];
-                    offset_b = (transb_acc[i] == transpose::nontrans) ? ldb_acc[i] * n_acc[i]
-                                                                      : ldb_acc[i] * k_acc[i];
-                    offset_c = ldc_acc[i] * n_acc[i];
-                }
-            }
-
-            ::cgemm_batch(transa_, transb_, m_, n_, k_, alpha_acc.get_pointer(),
-                          (const MKL_Complex8 **)a_array, lda_, (const MKL_Complex8 **)b_array,
-                          ldb_, beta_acc.get_pointer(), c_array, ldc_, (MKL_INT *)&group_count,
-                          group_size_);
-
-            ::free(a_array);
-            ::free(b_array);
-            ::free(c_array);
-            ::free(m_);
-            ::free(n_);
-            ::free(k_);
-            ::free(lda_);
-            ::free(ldb_);
-            ::free(ldc_);
-            ::free(group_size_);
-            ::free(transa_);
-            ::free(transb_);
-        });
-    });
-}
-
-void gemm_batch(cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-                cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<int64_t, 1> &m,
-                cl::sycl::buffer<int64_t, 1> &n, cl::sycl::buffer<int64_t, 1> &k,
-                cl::sycl::buffer<std::complex<double>, 1> &alpha,
-                cl::sycl::buffer<std::complex<double>, 1> &a, cl::sycl::buffer<int64_t, 1> &lda,
-                cl::sycl::buffer<std::complex<double>, 1> &b, cl::sycl::buffer<int64_t, 1> &ldb,
-                cl::sycl::buffer<std::complex<double>, 1> &beta,
-                cl::sycl::buffer<std::complex<double>, 1> &c, cl::sycl::buffer<int64_t, 1> &ldc,
-                int64_t group_count, cl::sycl::buffer<int64_t, 1> &group_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto transa_acc     = transa.get_access<cl::sycl::access::mode::read>(cgh);
-        auto transb_acc     = transb.get_access<cl::sycl::access::mode::read>(cgh);
-        auto m_acc          = m.get_access<cl::sycl::access::mode::read>(cgh);
-        auto n_acc          = n.get_access<cl::sycl::access::mode::read>(cgh);
-        auto k_acc          = k.get_access<cl::sycl::access::mode::read>(cgh);
-        auto alpha_acc      = alpha.get_access<cl::sycl::access::mode::read>(cgh);
-        auto a_acc          = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto lda_acc        = lda.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc          = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto ldb_acc        = ldb.get_access<cl::sycl::access::mode::read>(cgh);
-        auto beta_acc       = beta.get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc          = c.get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto ldc_acc        = ldc.get_access<cl::sycl::access::mode::read>(cgh);
-        auto group_size_acc = group_size.get_access<cl::sycl::access::mode::read>(cgh);
-
-        host_task<class mkl_kernel_zgemm_batch>(cgh, [=]() {
-            int64_t total_size = 0;
-
-            for (int64_t i = 0; i < group_count; i++) {
-                total_size += group_size_acc[i];
-            }
-
-            MKL_Complex16 **a_array =
-                (MKL_Complex16 **)::malloc(sizeof(MKL_Complex16 *) * total_size);
-            MKL_Complex16 **b_array =
-                (MKL_Complex16 **)::malloc(sizeof(MKL_Complex16 *) * total_size);
-            MKL_Complex16 **c_array =
-                (MKL_Complex16 **)::malloc(sizeof(MKL_Complex16 *) * total_size);
-            MKL_INT *m_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *n_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *k_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *lda_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *ldb_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *ldc_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *group_size_ = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            int64_t offset_a = 0, offset_b = 0, offset_c = 0, idx = 0;
-            char *transa_ = (char *)::malloc(sizeof(char) * group_count);
-            char *transb_ = (char *)::malloc(sizeof(char) * group_count);
-
-            for (int64_t i = 0; i < group_count; i++) {
-                m_[i]          = m_acc[i];
-                n_[i]          = n_acc[i];
-                k_[i]          = k_acc[i];
-                lda_[i]        = lda_acc[i];
-                ldb_[i]        = ldb_acc[i];
-                ldc_[i]        = ldc_acc[i];
-                group_size_[i] = group_size_acc[i];
-                transa_[i]     = *fortran_char(transa_acc[i]);
-                transb_[i]     = *fortran_char(transb_acc[i]);
-
-                for (int64_t j = 0; j < group_size_acc[i]; j++) {
-                    if (idx == 0) {
-                        a_array[0] = a_acc.get_pointer();
-                        b_array[0] = b_acc.get_pointer();
-                        c_array[0] = c_acc.get_pointer();
-                    }
-                    else {
-                        a_array[idx] = a_array[idx - 1] + offset_a;
-                        b_array[idx] = b_array[idx - 1] + offset_b;
-                        c_array[idx] = c_array[idx - 1] + offset_c;
-                    }
-                    idx++;
-                    offset_a = (transa_acc[i] == transpose::nontrans) ? lda_acc[i] * k_acc[i]
-                                                                      : lda_acc[i] * m_acc[i];
-                    offset_b = (transb_acc[i] == transpose::nontrans) ? ldb_acc[i] * n_acc[i]
-                                                                      : ldb_acc[i] * k_acc[i];
-                    offset_c = ldc_acc[i] * n_acc[i];
-                }
-            }
-
-            ::zgemm_batch(transa_, transb_, m_, n_, k_, alpha_acc.get_pointer(),
-                          (const MKL_Complex16 **)a_array, lda_, (const MKL_Complex16 **)b_array,
-                          ldb_, beta_acc.get_pointer(), c_array, ldc_, (MKL_INT *)&group_count,
-                          group_size_);
-
-            ::free(a_array);
-            ::free(b_array);
-            ::free(c_array);
-            ::free(m_);
-            ::free(n_);
-            ::free(k_);
-            ::free(lda_);
-            ::free(ldb_);
-            ::free(ldc_);
-            ::free(group_size_);
-            ::free(transa_);
-            ::free(transb_);
-        });
-    });
-}
+// Buffer APIs
 
 void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
                 int64_t k, float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda,
@@ -435,6 +44,13 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
             float **a_array = (float **)::malloc(sizeof(float *) * batch_size);
             float **b_array = (float **)::malloc(sizeof(float *) * batch_size);
             float **c_array = (float **)::malloc(sizeof(float *) * batch_size);
+            if ((a_array == NULL) || (b_array == NULL) || (c_array == NULL)) {
+                std::cout << "Error cannot allocate input arrays\n";
+                ::free(a_array);
+                ::free(b_array);
+                ::free(c_array);
+                return;
+            }
 
             for (int64_t i = 0; i < batch_size; i++) {
                 if (i == 0) {
@@ -479,6 +95,13 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
             double **a_array = (double **)::malloc(sizeof(double *) * batch_size);
             double **b_array = (double **)::malloc(sizeof(double *) * batch_size);
             double **c_array = (double **)::malloc(sizeof(double *) * batch_size);
+            if ((a_array == NULL) || (b_array == NULL) || (c_array == NULL)) {
+                std::cout << "Error cannot allocate input arrays\n";
+                ::free(a_array);
+                ::free(b_array);
+                ::free(c_array);
+                return;
+            }
 
             for (int64_t i = 0; i < batch_size; i++) {
                 if (i == 0) {
@@ -524,6 +147,13 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
             MKL_Complex8 **a_array = (MKL_Complex8 **)::malloc(sizeof(MKL_Complex8 *) * batch_size);
             MKL_Complex8 **b_array = (MKL_Complex8 **)::malloc(sizeof(MKL_Complex8 *) * batch_size);
             MKL_Complex8 **c_array = (MKL_Complex8 **)::malloc(sizeof(MKL_Complex8 *) * batch_size);
+            if ((a_array == NULL) || (b_array == NULL) || (c_array == NULL)) {
+                std::cout << "Error cannot allocate input arrays\n";
+                ::free(a_array);
+                ::free(b_array);
+                ::free(c_array);
+                return;
+            }
 
             for (int64_t i = 0; i < batch_size; i++) {
                 if (i == 0) {
@@ -572,6 +202,13 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
                 (MKL_Complex16 **)::malloc(sizeof(MKL_Complex16 *) * batch_size);
             MKL_Complex16 **c_array =
                 (MKL_Complex16 **)::malloc(sizeof(MKL_Complex16 *) * batch_size);
+            if ((a_array == NULL) || (b_array == NULL) || (c_array == NULL)) {
+                std::cout << "Error cannot allocate input arrays\n";
+                ::free(a_array);
+                ::free(b_array);
+                ::free(c_array);
+                return;
+            }
 
             for (int64_t i = 0; i < batch_size; i++) {
                 if (i == 0) {
@@ -599,92 +236,6 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
     });
 }
 
-void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-                cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-                cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<int64_t, 1> &m,
-                cl::sycl::buffer<int64_t, 1> &n, cl::sycl::buffer<float, 1> &alpha,
-                cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<int64_t, 1> &lda,
-                cl::sycl::buffer<float, 1> &b, cl::sycl::buffer<int64_t, 1> &ldb,
-                int64_t group_count, cl::sycl::buffer<int64_t, 1> &group_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto side_acc       = left_right.get_access<cl::sycl::access::mode::read>(cgh);
-        auto uplo_acc       = upper_lower.get_access<cl::sycl::access::mode::read>(cgh);
-        auto trans_acc      = trans.get_access<cl::sycl::access::mode::read>(cgh);
-        auto diag_acc       = unit_diag.get_access<cl::sycl::access::mode::read>(cgh);
-        auto m_acc          = m.get_access<cl::sycl::access::mode::read>(cgh);
-        auto n_acc          = n.get_access<cl::sycl::access::mode::read>(cgh);
-        auto alpha_acc      = alpha.get_access<cl::sycl::access::mode::read>(cgh);
-        auto a_acc          = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto lda_acc        = lda.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc          = b.get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto ldb_acc        = ldb.get_access<cl::sycl::access::mode::read>(cgh);
-        auto group_size_acc = group_size.get_access<cl::sycl::access::mode::read>(cgh);
-        host_task<class mkl_kernel_init_strsm_batch>(cgh, [=]() {
-            int64_t total_size = 0;
-
-            for (int64_t i = 0; i < group_count; i++) {
-                total_size += group_size_acc[i];
-            }
-
-            float **a_array      = (float **)::malloc(sizeof(float *) * total_size);
-            float **b_array      = (float **)::malloc(sizeof(float *) * total_size);
-            MKL_INT *m_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *n_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *lda_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *ldb_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *group_size_ = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            int64_t offset_a = 0, offset_b = 0, idx = 0;
-            char *side_  = (char *)::malloc(sizeof(char) * group_count);
-            char *uplo_  = (char *)::malloc(sizeof(char) * group_count);
-            char *trans_ = (char *)::malloc(sizeof(char) * group_count);
-            char *diag_  = (char *)::malloc(sizeof(char) * group_count);
-
-            for (int64_t i = 0; i < group_count; i++) {
-                m_[i]          = m_acc[i];
-                n_[i]          = n_acc[i];
-                lda_[i]        = lda_acc[i];
-                ldb_[i]        = ldb_acc[i];
-                group_size_[i] = group_size_acc[i];
-                trans_[i]      = *fortran_char(trans_acc[i]);
-                side_[i]       = *fortran_char(side_acc[i]);
-                uplo_[i]       = *fortran_char(uplo_acc[i]);
-                diag_[i]       = *fortran_char(diag_acc[i]);
-
-                for (int64_t j = 0; j < group_size_acc[i]; j++) {
-                    if (idx == 0) {
-                        a_array[0] = a_acc.get_pointer();
-                        b_array[0] = b_acc.get_pointer();
-                    }
-                    else {
-                        a_array[idx] = a_array[idx - 1] + offset_a;
-                        b_array[idx] = b_array[idx - 1] + offset_b;
-                    }
-                    idx++;
-                    offset_a =
-                        (side_acc[i] == side::left) ? lda_acc[i] * m_acc[i] : lda_acc[i] * n_acc[i];
-                    offset_b = ldb_acc[i] * n_acc[i];
-                }
-            }
-
-            ::strsm_batch(side_, uplo_, trans_, diag_, m_, n_, alpha_acc.get_pointer(),
-                          (const float **)a_array, lda_, (float **)b_array, ldb_,
-                          (MKL_INT *)&group_count, group_size_);
-
-            ::free(a_array);
-            ::free(b_array);
-            ::free(m_);
-            ::free(n_);
-            ::free(lda_);
-            ::free(ldb_);
-            ::free(group_size_);
-            ::free(side_);
-            ::free(uplo_);
-            ::free(trans_);
-            ::free(diag_);
-        });
-    });
-}
-
 void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
                 diag unit_diag, int64_t m, int64_t n, float alpha, cl::sycl::buffer<float, 1> &a,
                 int64_t lda, int64_t stride_a, cl::sycl::buffer<float, 1> &b, int64_t ldb,
@@ -701,6 +252,12 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
         host_task<class mkl_kernel_init_strsm_batch_stride>(cgh, [=]() {
             float **a_array = (float **)::malloc(sizeof(float *) * batch_size);
             float **b_array = (float **)::malloc(sizeof(float *) * batch_size);
+            if ((a_array == NULL) || (b_array == NULL)) {
+                std::cout << "Error cannot allocate input arrays\n";
+                ::free(a_array);
+                ::free(b_array);
+                return;
+            }
 
             for (int64_t i = 0; i < batch_size; i++) {
                 if (i == 0) {
@@ -724,92 +281,6 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
     });
 }
 
-void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-                cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-                cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<int64_t, 1> &m,
-                cl::sycl::buffer<int64_t, 1> &n, cl::sycl::buffer<double, 1> &alpha,
-                cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<int64_t, 1> &lda,
-                cl::sycl::buffer<double, 1> &b, cl::sycl::buffer<int64_t, 1> &ldb,
-                int64_t group_count, cl::sycl::buffer<int64_t, 1> &group_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto side_acc       = left_right.get_access<cl::sycl::access::mode::read>(cgh);
-        auto uplo_acc       = upper_lower.get_access<cl::sycl::access::mode::read>(cgh);
-        auto trans_acc      = trans.get_access<cl::sycl::access::mode::read>(cgh);
-        auto diag_acc       = unit_diag.get_access<cl::sycl::access::mode::read>(cgh);
-        auto m_acc          = m.get_access<cl::sycl::access::mode::read>(cgh);
-        auto n_acc          = n.get_access<cl::sycl::access::mode::read>(cgh);
-        auto alpha_acc      = alpha.get_access<cl::sycl::access::mode::read>(cgh);
-        auto a_acc          = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto lda_acc        = lda.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc          = b.get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto ldb_acc        = ldb.get_access<cl::sycl::access::mode::read>(cgh);
-        auto group_size_acc = group_size.get_access<cl::sycl::access::mode::read>(cgh);
-        host_task<class mkl_kernel_init_dtrsm_batch>(cgh, [=]() {
-            int64_t total_size = 0;
-
-            for (int64_t i = 0; i < group_count; i++) {
-                total_size += group_size_acc[i];
-            }
-
-            double **a_array     = (double **)::malloc(sizeof(double *) * total_size);
-            double **b_array     = (double **)::malloc(sizeof(double *) * total_size);
-            MKL_INT *m_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *n_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *lda_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *ldb_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *group_size_ = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            int64_t offset_a = 0, offset_b = 0, idx = 0;
-            char *side_  = (char *)::malloc(sizeof(char) * group_count);
-            char *uplo_  = (char *)::malloc(sizeof(char) * group_count);
-            char *trans_ = (char *)::malloc(sizeof(char) * group_count);
-            char *diag_  = (char *)::malloc(sizeof(char) * group_count);
-
-            for (int64_t i = 0; i < group_count; i++) {
-                m_[i]          = m_acc[i];
-                n_[i]          = n_acc[i];
-                lda_[i]        = lda_acc[i];
-                ldb_[i]        = ldb_acc[i];
-                group_size_[i] = group_size_acc[i];
-                trans_[i]      = *fortran_char(trans_acc[i]);
-                side_[i]       = *fortran_char(side_acc[i]);
-                uplo_[i]       = *fortran_char(uplo_acc[i]);
-                diag_[i]       = *fortran_char(diag_acc[i]);
-
-                for (int64_t j = 0; j < group_size_acc[i]; j++) {
-                    if (idx == 0) {
-                        a_array[0] = a_acc.get_pointer();
-                        b_array[0] = b_acc.get_pointer();
-                    }
-                    else {
-                        a_array[idx] = a_array[idx - 1] + offset_a;
-                        b_array[idx] = b_array[idx - 1] + offset_b;
-                    }
-                    idx++;
-                    offset_a =
-                        (side_acc[i] == side::left) ? lda_acc[i] * m_acc[i] : lda_acc[i] * n_acc[i];
-                    offset_b = ldb_acc[i] * n_acc[i];
-                }
-            }
-
-            ::dtrsm_batch(side_, uplo_, trans_, diag_, m_, n_, alpha_acc.get_pointer(),
-                          (const double **)a_array, lda_, (double **)b_array, ldb_,
-                          (MKL_INT *)&group_count, group_size_);
-
-            ::free(a_array);
-            ::free(b_array);
-            ::free(m_);
-            ::free(n_);
-            ::free(lda_);
-            ::free(ldb_);
-            ::free(group_size_);
-            ::free(side_);
-            ::free(uplo_);
-            ::free(trans_);
-            ::free(diag_);
-        });
-    });
-}
-
 void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
                 diag unit_diag, int64_t m, int64_t n, double alpha, cl::sycl::buffer<double, 1> &a,
                 int64_t lda, int64_t stride_a, cl::sycl::buffer<double, 1> &b, int64_t ldb,
@@ -826,6 +297,12 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
         host_task<class mkl_kernel_init_dtrsm_batch_stride>(cgh, [=]() {
             double **a_array = (double **)::malloc(sizeof(double *) * batch_size);
             double **b_array = (double **)::malloc(sizeof(double *) * batch_size);
+            if ((a_array == NULL) || (b_array == NULL)) {
+                std::cout << "Error cannot allocate input arrays\n";
+                ::free(a_array);
+                ::free(b_array);
+                return;
+            }
 
             for (int64_t i = 0; i < batch_size; i++) {
                 if (i == 0) {
@@ -849,92 +326,6 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
     });
 }
 
-void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-                cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-                cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<int64_t, 1> &m,
-                cl::sycl::buffer<int64_t, 1> &n, cl::sycl::buffer<std::complex<float>, 1> &alpha,
-                cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<int64_t, 1> &lda,
-                cl::sycl::buffer<std::complex<float>, 1> &b, cl::sycl::buffer<int64_t, 1> &ldb,
-                int64_t group_count, cl::sycl::buffer<int64_t, 1> &group_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto side_acc       = left_right.get_access<cl::sycl::access::mode::read>(cgh);
-        auto uplo_acc       = upper_lower.get_access<cl::sycl::access::mode::read>(cgh);
-        auto trans_acc      = trans.get_access<cl::sycl::access::mode::read>(cgh);
-        auto diag_acc       = unit_diag.get_access<cl::sycl::access::mode::read>(cgh);
-        auto m_acc          = m.get_access<cl::sycl::access::mode::read>(cgh);
-        auto n_acc          = n.get_access<cl::sycl::access::mode::read>(cgh);
-        auto alpha_acc      = alpha.get_access<cl::sycl::access::mode::read>(cgh);
-        auto a_acc          = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto lda_acc        = lda.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc          = b.get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto ldb_acc        = ldb.get_access<cl::sycl::access::mode::read>(cgh);
-        auto group_size_acc = group_size.get_access<cl::sycl::access::mode::read>(cgh);
-        host_task<class mkl_kernel_init_ctrsm_batch>(cgh, [=]() {
-            int64_t total_size = 0;
-
-            for (int64_t i = 0; i < group_count; i++) {
-                total_size += group_size_acc[i];
-            }
-
-            MKL_Complex8 **a_array = (MKL_Complex8 **)::malloc(sizeof(MKL_Complex8 *) * total_size);
-            MKL_Complex8 **b_array = (MKL_Complex8 **)::malloc(sizeof(MKL_Complex8 *) * total_size);
-            MKL_INT *m_            = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *n_            = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *lda_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *ldb_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *group_size_   = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            int64_t offset_a = 0, offset_b = 0, idx = 0;
-            char *side_  = (char *)::malloc(sizeof(char) * group_count);
-            char *uplo_  = (char *)::malloc(sizeof(char) * group_count);
-            char *trans_ = (char *)::malloc(sizeof(char) * group_count);
-            char *diag_  = (char *)::malloc(sizeof(char) * group_count);
-
-            for (int64_t i = 0; i < group_count; i++) {
-                m_[i]          = m_acc[i];
-                n_[i]          = n_acc[i];
-                lda_[i]        = lda_acc[i];
-                ldb_[i]        = ldb_acc[i];
-                group_size_[i] = group_size_acc[i];
-                trans_[i]      = *fortran_char(trans_acc[i]);
-                side_[i]       = *fortran_char(side_acc[i]);
-                uplo_[i]       = *fortran_char(uplo_acc[i]);
-                diag_[i]       = *fortran_char(diag_acc[i]);
-
-                for (int64_t j = 0; j < group_size_acc[i]; j++) {
-                    if (idx == 0) {
-                        a_array[0] = a_acc.get_pointer();
-                        b_array[0] = b_acc.get_pointer();
-                    }
-                    else {
-                        a_array[idx] = a_array[idx - 1] + offset_a;
-                        b_array[idx] = b_array[idx - 1] + offset_b;
-                    }
-                    idx++;
-                    offset_a =
-                        (side_acc[i] == side::left) ? lda_acc[i] * m_acc[i] : lda_acc[i] * n_acc[i];
-                    offset_b = ldb_acc[i] * n_acc[i];
-                }
-            }
-
-            ::ctrsm_batch(side_, uplo_, trans_, diag_, m_, n_, alpha_acc.get_pointer(),
-                          (const MKL_Complex8 **)a_array, lda_, (MKL_Complex8 **)b_array, ldb_,
-                          (MKL_INT *)&group_count, group_size_);
-
-            ::free(a_array);
-            ::free(b_array);
-            ::free(m_);
-            ::free(n_);
-            ::free(lda_);
-            ::free(ldb_);
-            ::free(group_size_);
-            ::free(side_);
-            ::free(uplo_);
-            ::free(trans_);
-            ::free(diag_);
-        });
-    });
-}
-
 void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
                 diag unit_diag, int64_t m, int64_t n, std::complex<float> alpha,
                 cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda, int64_t stride_a,
@@ -952,6 +343,12 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
         host_task<class mkl_kernel_init_ctrsm_batch_stride>(cgh, [=]() {
             MKL_Complex8 **a_array = (MKL_Complex8 **)::malloc(sizeof(MKL_Complex8 *) * batch_size);
             MKL_Complex8 **b_array = (MKL_Complex8 **)::malloc(sizeof(MKL_Complex8 *) * batch_size);
+            if ((a_array == NULL) || (b_array == NULL)) {
+                std::cout << "Error cannot allocate input arrays\n";
+                ::free(a_array);
+                ::free(b_array);
+                return;
+            }
 
             for (int64_t i = 0; i < batch_size; i++) {
                 if (i == 0) {
@@ -975,94 +372,6 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
     });
 }
 
-void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-                cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-                cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<int64_t, 1> &m,
-                cl::sycl::buffer<int64_t, 1> &n, cl::sycl::buffer<std::complex<double>, 1> &alpha,
-                cl::sycl::buffer<std::complex<double>, 1> &a, cl::sycl::buffer<int64_t, 1> &lda,
-                cl::sycl::buffer<std::complex<double>, 1> &b, cl::sycl::buffer<int64_t, 1> &ldb,
-                int64_t group_count, cl::sycl::buffer<int64_t, 1> &group_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto side_acc       = left_right.get_access<cl::sycl::access::mode::read>(cgh);
-        auto uplo_acc       = upper_lower.get_access<cl::sycl::access::mode::read>(cgh);
-        auto trans_acc      = trans.get_access<cl::sycl::access::mode::read>(cgh);
-        auto diag_acc       = unit_diag.get_access<cl::sycl::access::mode::read>(cgh);
-        auto m_acc          = m.get_access<cl::sycl::access::mode::read>(cgh);
-        auto n_acc          = n.get_access<cl::sycl::access::mode::read>(cgh);
-        auto alpha_acc      = alpha.get_access<cl::sycl::access::mode::read>(cgh);
-        auto a_acc          = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto lda_acc        = lda.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc          = b.get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto ldb_acc        = ldb.get_access<cl::sycl::access::mode::read>(cgh);
-        auto group_size_acc = group_size.get_access<cl::sycl::access::mode::read>(cgh);
-
-        host_task<class mkl_kernel_init_ztrsm_batch>(cgh, [=]() {
-            int64_t total_size = 0;
-
-            for (int64_t i = 0; i < group_count; i++) {
-                total_size += group_size_acc[i];
-            }
-
-            MKL_Complex16 **a_array =
-                (MKL_Complex16 **)::malloc(sizeof(MKL_Complex16 *) * total_size);
-            MKL_Complex16 **b_array =
-                (MKL_Complex16 **)::malloc(sizeof(MKL_Complex16 *) * total_size);
-            MKL_INT *m_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *n_          = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *lda_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *ldb_        = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            MKL_INT *group_size_ = (MKL_INT *)::malloc(sizeof(MKL_INT) * group_count);
-            int64_t offset_a = 0, offset_b = 0, idx = 0;
-            char *side_  = (char *)::malloc(sizeof(char) * group_count);
-            char *uplo_  = (char *)::malloc(sizeof(char) * group_count);
-            char *trans_ = (char *)::malloc(sizeof(char) * group_count);
-            char *diag_  = (char *)::malloc(sizeof(char) * group_count);
-
-            for (int64_t i = 0; i < group_count; i++) {
-                m_[i]          = m_acc[i];
-                n_[i]          = n_acc[i];
-                lda_[i]        = lda_acc[i];
-                ldb_[i]        = ldb_acc[i];
-                group_size_[i] = group_size_acc[i];
-                trans_[i]      = *fortran_char(trans_acc[i]);
-                side_[i]       = *fortran_char(side_acc[i]);
-                uplo_[i]       = *fortran_char(uplo_acc[i]);
-                diag_[i]       = *fortran_char(diag_acc[i]);
-                for (int64_t j = 0; j < group_size_acc[i]; j++) {
-                    if (idx == 0) {
-                        a_array[0] = a_acc.get_pointer();
-                        b_array[0] = b_acc.get_pointer();
-                    }
-                    else {
-                        a_array[idx] = a_array[idx - 1] + offset_a;
-                        b_array[idx] = b_array[idx - 1] + offset_b;
-                    }
-                    idx++;
-                    offset_a =
-                        (side_acc[i] == side::left) ? lda_acc[i] * m_acc[i] : lda_acc[i] * n_acc[i];
-                    offset_b = ldb_acc[i] * n_acc[i];
-                }
-            }
-
-            ::ztrsm_batch(side_, uplo_, trans_, diag_, m_, n_, alpha_acc.get_pointer(),
-                          (const MKL_Complex16 **)a_array, lda_, (MKL_Complex16 **)b_array, ldb_,
-                          (MKL_INT *)&group_count, group_size_);
-
-            ::free(a_array);
-            ::free(b_array);
-            ::free(m_);
-            ::free(n_);
-            ::free(lda_);
-            ::free(ldb_);
-            ::free(group_size_);
-            ::free(side_);
-            ::free(uplo_);
-            ::free(trans_);
-            ::free(diag_);
-        });
-    });
-}
-
 void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
                 diag unit_diag, int64_t m, int64_t n, std::complex<double> alpha,
                 cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda, int64_t stride_a,
@@ -1081,6 +390,12 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 (MKL_Complex16 **)::malloc(sizeof(MKL_Complex16 *) * batch_size);
             MKL_Complex16 **b_array =
                 (MKL_Complex16 **)::malloc(sizeof(MKL_Complex16 *) * batch_size);
+            if ((a_array == NULL) || (b_array == NULL)) {
+                std::cout << "Error cannot allocate input arrays\n";
+                ::free(a_array);
+                ::free(b_array);
+                return;
+            }
 
             for (int64_t i = 0; i < batch_size; i++) {
                 if (i == 0) {
@@ -1102,6 +417,459 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
             ::free(b_array);
         });
     });
+}
+
+// USM APIs
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+                           int64_t *n, int64_t *k, float *alpha, const float **a, int64_t *lda,
+                           const float **b, int64_t *ldb, float *beta, float **c, int64_t *ldc,
+                           int64_t group_count, int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        host_task<class mkl_kernel_usm_sgemm>(cgh, [=]() {
+            char *transa_ = (char *)::malloc(sizeof(char) * group_count);
+            char *transb_ = (char *)::malloc(sizeof(char) * group_count);
+            if ((transa_ == NULL) || (transb_ == NULL)) {
+                std::cout << "Error cannot allocate trans arrays\n";
+                ::free(transa_);
+                ::free(transb_);
+                return;
+            }
+            for (int64_t i = 0; i < group_count; i++) {
+                transa_[i] = *fortran_char(transa[i]);
+                transb_[i] = *fortran_char(transb[i]);
+            }
+            ::sgemm_batch(transa_, transb_, (const MKL_INT *)m, (const MKL_INT *)n,
+                          (const MKL_INT *)k, alpha, (const float **)a, (const MKL_INT *)lda,
+                          (const float **)b, (const MKL_INT *)ldb, beta, c, (const MKL_INT *)ldc,
+                          (const MKL_INT *)&group_count, (const MKL_INT *)group_size);
+            ::free(transa_);
+            ::free(transb_);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+                           int64_t *n, int64_t *k, double *alpha, const double **a, int64_t *lda,
+                           const double **b, int64_t *ldb, double *beta, double **c, int64_t *ldc,
+                           int64_t group_count, int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        host_task<class mkl_kernel_dgemm_batch_usm>(cgh, [=]() {
+            char *transa_ = (char *)::malloc(sizeof(char) * group_count);
+            char *transb_ = (char *)::malloc(sizeof(char) * group_count);
+            if ((transa_ == NULL) || (transb_ == NULL)) {
+                std::cout << "Error cannot allocate trans arrays\n";
+                ::free(transa_);
+                ::free(transb_);
+                return;
+            }
+            for (int64_t i = 0; i < group_count; i++) {
+                transa_[i] = *fortran_char(transa[i]);
+                transb_[i] = *fortran_char(transb[i]);
+            }
+            ::dgemm_batch(transa_, transb_, (const MKL_INT *)m, (const MKL_INT *)n,
+                          (const MKL_INT *)k, alpha, (const double **)a, (const MKL_INT *)lda,
+                          (const double **)b, (const MKL_INT *)ldb, beta, c, (const MKL_INT *)ldc,
+                          (const MKL_INT *)&group_count, (const MKL_INT *)group_size);
+            ::free(transa_);
+            ::free(transb_);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+                           int64_t *n, int64_t *k, std::complex<float> *alpha,
+                           const std::complex<float> **a, int64_t *lda,
+                           const std::complex<float> **b, int64_t *ldb, std::complex<float> *beta,
+                           std::complex<float> **c, int64_t *ldc, int64_t group_count,
+                           int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        host_task<class mkl_kernel_cgemm_batch_usm>(cgh, [=]() {
+            char *transa_ = (char *)::malloc(sizeof(char) * group_count);
+            char *transb_ = (char *)::malloc(sizeof(char) * group_count);
+            if ((transa_ == NULL) || (transb_ == NULL)) {
+                std::cout << "Error cannot allocate trans arrays\n";
+                ::free(transa_);
+                ::free(transb_);
+                return;
+            }
+            for (int64_t i = 0; i < group_count; i++) {
+                transa_[i] = *fortran_char(transa[i]);
+                transb_[i] = *fortran_char(transb[i]);
+            }
+            ::cgemm_batch(transa_, transb_, (const MKL_INT *)m, (const MKL_INT *)n,
+                          (const MKL_INT *)k, alpha, (const std::complex<float> **)a,
+                          (const MKL_INT *)lda, (const std::complex<float> **)b,
+                          (const MKL_INT *)ldb, beta, c, (const MKL_INT *)ldc,
+                          (const MKL_INT *)&group_count, (const MKL_INT *)group_size);
+            ::free(transa_);
+            ::free(transb_);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+                           int64_t *n, int64_t *k, std::complex<double> *alpha,
+                           const std::complex<double> **a, int64_t *lda,
+                           const std::complex<double> **b, int64_t *ldb, std::complex<double> *beta,
+                           std::complex<double> **c, int64_t *ldc, int64_t group_count,
+                           int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        host_task<class mkl_kernel_zgemm_batch_usm>(cgh, [=]() {
+            char *transa_ = (char *)::malloc(sizeof(char) * group_count);
+            char *transb_ = (char *)::malloc(sizeof(char) * group_count);
+            if ((transa_ == NULL) || (transb_ == NULL)) {
+                std::cout << "Error cannot allocate trans arrays\n";
+                ::free(transa_);
+                ::free(transb_);
+                return;
+            }
+            for (int64_t i = 0; i < group_count; i++) {
+                transa_[i] = *fortran_char(transa[i]);
+                transb_[i] = *fortran_char(transb[i]);
+            }
+            ::zgemm_batch(transa_, transb_, (const MKL_INT *)m, (const MKL_INT *)n,
+                          (const MKL_INT *)k, alpha, (const std::complex<double> **)a,
+                          (const MKL_INT *)lda, (const std::complex<double> **)b,
+                          (const MKL_INT *)ldb, beta, c, (const MKL_INT *)ldc,
+                          (const MKL_INT *)&group_count, (const MKL_INT *)group_size);
+            ::free(transa_);
+            ::free(transb_);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                           int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
+                           int64_t stride_a, const float *b, int64_t ldb, int64_t stride_b,
+                           float beta, float *c, int64_t ldc, int64_t stride_c, int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char transa_ = *fortran_char(transa);
+        const char transb_ = *fortran_char(transb);
+        MKL_INT one        = 1;
+        host_task<class mkl_kernel_sgemm_batch_usm>(cgh, [=]() {
+            float **a_array = (float **)::malloc(sizeof(float *) * batch_size);
+            float **b_array = (float **)::malloc(sizeof(float *) * batch_size);
+            float **c_array = (float **)::malloc(sizeof(float *) * batch_size);
+            if ((a_array == NULL) || (b_array == NULL) || (c_array == NULL)) {
+                std::cout << "Error cannot allocate input arrays\n";
+                ::free(a_array);
+                ::free(b_array);
+                ::free(c_array);
+                return;
+            }
+            for (int64_t i = 0; i < batch_size; i++) {
+                if (i == 0) {
+                    a_array[0] = (float *)a;
+                    b_array[0] = (float *)b;
+                    c_array[0] = (float *)c;
+                }
+                else {
+                    a_array[i] = a_array[i - 1] + stride_a;
+                    b_array[i] = b_array[i - 1] + stride_b;
+                    c_array[i] = c_array[i - 1] + stride_c;
+                }
+            }
+            ::sgemm_batch(&transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                          (const MKL_INT *)&k, &alpha, (const float **)a_array,
+                          (const MKL_INT *)&lda, (const float **)b_array, (const MKL_INT *)&ldb,
+                          &beta, c_array, (const MKL_INT *)&ldc, (const MKL_INT *)&one,
+                          (const MKL_INT *)&batch_size);
+
+            ::free(a_array);
+            ::free(b_array);
+            ::free(c_array);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                           int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
+                           int64_t stride_a, const double *b, int64_t ldb, int64_t stride_b,
+                           double beta, double *c, int64_t ldc, int64_t stride_c,
+                           int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char transa_ = *fortran_char(transa);
+        const char transb_ = *fortran_char(transb);
+        MKL_INT one        = 1;
+        host_task<class mkl_kernel_dgemm_batch_usm>(cgh, [=]() {
+            double **a_array = (double **)::malloc(sizeof(double *) * batch_size);
+            double **b_array = (double **)::malloc(sizeof(double *) * batch_size);
+            double **c_array = (double **)::malloc(sizeof(double *) * batch_size);
+            if ((a_array == NULL) || (b_array == NULL) || (c_array == NULL)) {
+                std::cout << "Error cannot allocate input arrays\n";
+                ::free(a_array);
+                ::free(b_array);
+                ::free(c_array);
+                return;
+            }
+            for (int64_t i = 0; i < batch_size; i++) {
+                if (i == 0) {
+                    a_array[0] = (double *)a;
+                    b_array[0] = (double *)b;
+                    c_array[0] = (double *)c;
+                }
+                else {
+                    a_array[i] = a_array[i - 1] + stride_a;
+                    b_array[i] = b_array[i - 1] + stride_b;
+                    c_array[i] = c_array[i - 1] + stride_c;
+                }
+            }
+            ::dgemm_batch(&transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                          (const MKL_INT *)&k, &alpha, (const double **)a_array,
+                          (const MKL_INT *)&lda, (const double **)b_array, (const MKL_INT *)&ldb,
+                          &beta, c_array, (const MKL_INT *)&ldc, (const MKL_INT *)&one,
+                          (const MKL_INT *)&batch_size);
+
+            ::free(a_array);
+            ::free(b_array);
+            ::free(c_array);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                           int64_t n, int64_t k, std::complex<float> alpha,
+                           const std::complex<float> *a, int64_t lda, int64_t stride_a,
+                           const std::complex<float> *b, int64_t ldb, int64_t stride_b,
+                           std::complex<float> beta, std::complex<float> *c, int64_t ldc,
+                           int64_t stride_c, int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char transa_ = *fortran_char(transa);
+        const char transb_ = *fortran_char(transb);
+        MKL_INT one        = 1;
+        host_task<class mkl_kernel_cgemm_batch_usm>(cgh, [=]() {
+            std::complex<float> **a_array =
+                (std::complex<float> **)::malloc(sizeof(std::complex<float> *) * batch_size);
+            std::complex<float> **b_array =
+                (std::complex<float> **)::malloc(sizeof(std::complex<float> *) * batch_size);
+            std::complex<float> **c_array =
+                (std::complex<float> **)::malloc(sizeof(std::complex<float> *) * batch_size);
+            if ((a_array == NULL) || (b_array == NULL) || (c_array == NULL)) {
+                std::cout << "Error cannot allocate input arrays\n";
+                ::free(a_array);
+                ::free(b_array);
+                ::free(c_array);
+                return;
+            }
+            for (int64_t i = 0; i < batch_size; i++) {
+                if (i == 0) {
+                    a_array[0] = (std::complex<float> *)a;
+                    b_array[0] = (std::complex<float> *)b;
+                    c_array[0] = (std::complex<float> *)c;
+                }
+                else {
+                    a_array[i] = a_array[i - 1] + stride_a;
+                    b_array[i] = b_array[i - 1] + stride_b;
+                    c_array[i] = c_array[i - 1] + stride_c;
+                }
+            }
+            ::cgemm_batch(&transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                          (const MKL_INT *)&k, &alpha, (const std::complex<float> **)a_array,
+                          (const MKL_INT *)&lda, (const std::complex<float> **)b_array,
+                          (const MKL_INT *)&ldb, &beta, c_array, (const MKL_INT *)&ldc,
+                          (const MKL_INT *)&one, (const MKL_INT *)&batch_size);
+
+            ::free(a_array);
+            ::free(b_array);
+            ::free(c_array);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                           int64_t n, int64_t k, std::complex<double> alpha,
+                           const std::complex<double> *a, int64_t lda, int64_t stride_a,
+                           const std::complex<double> *b, int64_t ldb, int64_t stride_b,
+                           std::complex<double> beta, std::complex<double> *c, int64_t ldc,
+                           int64_t stride_c, int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char transa_ = *fortran_char(transa);
+        const char transb_ = *fortran_char(transb);
+        MKL_INT one        = 1;
+        host_task<class mkl_kernel_zgemm_batch_usm>(cgh, [=]() {
+            std::complex<double> **a_array =
+                (std::complex<double> **)::malloc(sizeof(std::complex<double> *) * batch_size);
+            std::complex<double> **b_array =
+                (std::complex<double> **)::malloc(sizeof(std::complex<double> *) * batch_size);
+            std::complex<double> **c_array =
+                (std::complex<double> **)::malloc(sizeof(std::complex<double> *) * batch_size);
+            if ((a_array == NULL) || (b_array == NULL) || (c_array == NULL)) {
+                std::cout << "Error cannot allocate input arrays\n";
+                ::free(a_array);
+                ::free(b_array);
+                ::free(c_array);
+                return;
+            }
+            for (int64_t i = 0; i < batch_size; i++) {
+                if (i == 0) {
+                    a_array[0] = (std::complex<double> *)a;
+                    b_array[0] = (std::complex<double> *)b;
+                    c_array[0] = (std::complex<double> *)c;
+                }
+                else {
+                    a_array[i] = a_array[i - 1] + stride_a;
+                    b_array[i] = b_array[i - 1] + stride_b;
+                    c_array[i] = c_array[i - 1] + stride_c;
+                }
+            }
+            ::zgemm_batch(&transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                          (const MKL_INT *)&k, &alpha, (const std::complex<double> **)a_array,
+                          (const MKL_INT *)&lda, (const std::complex<double> **)b_array,
+                          (const MKL_INT *)&ldb, &beta, c_array, (const MKL_INT *)&ldc,
+                          (const MKL_INT *)&one, (const MKL_INT *)&batch_size);
+
+            ::free(a_array);
+            ::free(b_array);
+            ::free(c_array);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, float *alpha, const float **x,
+                           int64_t *incx, float **y, int64_t *incy, int64_t group_count,
+                           int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        host_task<class mkl_kernel_saxpy_batch_usm>(cgh, [=]() {
+            int64_t offset = 0;
+            for (int64_t i = 0; i < group_count; i++) {
+                for (int64_t j = 0; j < group_size[i]; j++) {
+                    ::saxpy((const MKL_INT *)(n + i), (const float *)(alpha + i), x[offset + j],
+                            (const MKL_INT *)(incx + i), y[offset + j],
+                            (const MKL_INT *)(incy + i));
+                }
+                offset += group_size[i];
+            }
+        });
+    });
+    return done;
+}
+
+cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, double *alpha, const double **x,
+                           int64_t *incx, double **y, int64_t *incy, int64_t group_count,
+                           int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        host_task<class mkl_kernel_daxpy_batch_usm>(cgh, [=]() {
+            int64_t offset = 0;
+            for (int64_t i = 0; i < group_count; i++) {
+                for (int64_t j = 0; j < group_size[i]; j++) {
+                    ::daxpy((const MKL_INT *)(n + i), (const double *)(alpha + i), x[offset + j],
+                            (const MKL_INT *)(incx + i), y[offset + j],
+                            (const MKL_INT *)(incy + i));
+                }
+                offset += group_size[i];
+            }
+        });
+    });
+    return done;
+}
+
+cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<float> *alpha,
+                           const std::complex<float> **x, int64_t *incx, std::complex<float> **y,
+                           int64_t *incy, int64_t group_count, int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        host_task<class mkl_kernel_caxpy_batch_usm>(cgh, [=]() {
+            int64_t offset = 0;
+            for (int64_t i = 0; i < group_count; i++) {
+                for (int64_t j = 0; j < group_size[i]; j++) {
+                    MKL_Complex8 alpha_ = { alpha[i].real(), alpha[i].imag() };
+                    ::caxpy((const MKL_INT *)(n + i), (const MKL_Complex8 *)&alpha_, x[offset + j],
+                            (const MKL_INT *)(incx + i), y[offset + j],
+                            (const MKL_INT *)(incy + i));
+                }
+                offset += group_size[i];
+            }
+        });
+    });
+    return done;
+}
+
+cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<double> *alpha,
+                           const std::complex<double> **x, int64_t *incx, std::complex<double> **y,
+                           int64_t *incy, int64_t group_count, int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        host_task<class mkl_kernel_zaxpy_batch_usm>(cgh, [=]() {
+            int64_t offset = 0;
+            for (int64_t i = 0; i < group_count; i++) {
+                for (int64_t j = 0; j < group_size[i]; j++) {
+                    MKL_Complex16 alpha_ = { alpha[i].real(), alpha[i].imag() };
+                    ::zaxpy((const MKL_INT *)(n + i), (const MKL_Complex16 *)&alpha_, x[offset + j],
+                            (const MKL_INT *)(incx + i), y[offset + j],
+                            (const MKL_INT *)(incy + i));
+                }
+                offset += group_size[i];
+            }
+        });
+    });
+    return done;
 }
 
 } // namespace mklcpu

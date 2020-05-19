@@ -43,8 +43,8 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device &dev, onemkl::uplo upper_lower, int n, int k, fp alpha, fp beta, int incx,
-          int incy, int lda) {
+int test(const device &dev, onemkl::uplo upper_lower, int n, int k, fp alpha, fp beta, int incx,
+         int incy, int lda) {
     // Prepare data.
 
     vector<fp> x, y, y_ref, A;
@@ -101,6 +101,14 @@ bool test(const device &dev, onemkl::uplo upper_lower, int n, int k, fp alpha, f
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const onemkl::backend_unsupported_exception &e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error &error) {
+        std::cout << "Error raised during execution of HBMV:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -108,7 +116,7 @@ bool test(const device &dev, onemkl::uplo upper_lower, int n, int k, fp alpha, f
         good            = check_equal_vector(y_accessor, y_ref, n, incy, n, std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class HbmvTests : public ::testing::TestWithParam<cl::sycl::device> {};
@@ -116,33 +124,33 @@ class HbmvTests : public ::testing::TestWithParam<cl::sycl::device> {};
 TEST_P(HbmvTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
     std::complex<float> beta(3.0, -1.5);
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         test<std::complex<float>>(GetParam(), onemkl::uplo::lower, 30, 5, alpha, beta, 2, 3, 42));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         test<std::complex<float>>(GetParam(), onemkl::uplo::upper, 30, 5, alpha, beta, 2, 3, 42));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         test<std::complex<float>>(GetParam(), onemkl::uplo::lower, 30, 5, alpha, beta, -2, -3, 42));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         test<std::complex<float>>(GetParam(), onemkl::uplo::upper, 30, 5, alpha, beta, -2, -3, 42));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         test<std::complex<float>>(GetParam(), onemkl::uplo::lower, 30, 5, alpha, beta, 1, 1, 42));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         test<std::complex<float>>(GetParam(), onemkl::uplo::upper, 30, 5, alpha, beta, 1, 1, 42));
 }
 TEST_P(HbmvTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         test<std::complex<double>>(GetParam(), onemkl::uplo::lower, 30, 5, alpha, beta, 2, 3, 42));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         test<std::complex<double>>(GetParam(), onemkl::uplo::upper, 30, 5, alpha, beta, 2, 3, 42));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::uplo::lower, 30, 5, alpha, beta, -2,
-                                           -3, 42));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::uplo::upper, 30, 5, alpha, beta, -2,
-                                           -3, 42));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::uplo::lower, 30, 5, alpha,
+                                                 beta, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::uplo::upper, 30, 5, alpha,
+                                                 beta, -2, -3, 42));
+    EXPECT_TRUEORSKIP(
         test<std::complex<double>>(GetParam(), onemkl::uplo::lower, 30, 5, alpha, beta, 1, 1, 42));
-    EXPECT_TRUE(
+    EXPECT_TRUEORSKIP(
         test<std::complex<double>>(GetParam(), onemkl::uplo::upper, 30, 5, alpha, beta, 1, 1, 42));
 }
 

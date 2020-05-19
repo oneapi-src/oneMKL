@@ -1,4 +1,4 @@
-.. _spmv:
+.. _onemkl_blas_spmv:
 
 spmv
 ====
@@ -10,16 +10,6 @@ spmv
    Computes a matrix-vector product with a symmetric packed matrix.
 
 
-   .. container:: section
-      :name: GUID-BCC82B03-92EB-4D73-B69C-8AE8646FBEAC
-
-
-      .. rubric:: Syntax
-         :name: syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void spmv(queue &exec_queue, uplo upper_lower,      std::int64_t n, T alpha, buffer<T,1> &a, buffer<T,1> &x,      std::int64_t incx, T beta, buffer<T,1> &y, std::int64_t incy)
 
       ``spmv`` supports the following precisions.
 
@@ -35,20 +25,15 @@ spmv
 
 
 .. container:: section
-   :name: GUID-D27BBFFF-79F4-4236-96A6-B305FA1858B0
 
 
    .. rubric:: Description
-      :name: description
       :class: sectiontitle
 
 
-   The spmv routines compute a scalar-matrix-vector product and add the
+   The ``spmv`` routines compute a scalar-matrix-vector product and add the
    result to a scalar-vector product, with a symmetric packed matrix.
    The operation is defined as
-
-
-  
 
 
       y <- alpha*A*x + beta*y
@@ -66,23 +51,33 @@ spmv
    ``x`` and ``y`` are vectors of length ``n``.
 
 
+spmv (Buffer Version)
+---------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. cpp:function::  void onemkl::blas::spmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, T alpha, sycl::buffer<T,1> &a, sycl::buffer<T,1> &x, std::int64_t incx, T beta, sycl::buffer<T,1> &y, std::int64_t incy)
+
 .. container:: section
-   :name: GUID-E1436726-01FE-4206-871E-B905F59A96B4
 
 
    .. rubric:: Input Parameters
-      :name: input-parameters
       :class: sectiontitle
 
 
-   exec_queue
+   queue
       The queue where the routine should be executed.
 
 
    upper_lower
-      Specifies whether ``A`` is upper or lower triangular. See
-      :ref:`onemkl_datatypes` for more
-      details.
+      Specifies whether ``A`` is upper or lower triangular. See :ref:`onemkl_datatypes` for more details.
 
 
    n
@@ -127,16 +122,115 @@ spmv
 
 
 .. container:: section
-   :name: GUID-23FF1F5C-5560-40B6-807D-B6352FA320D6
 
 
    .. rubric:: Output Parameters
-      :name: output-parameters
       :class: sectiontitle
 
 
    y
       Buffer holding the updated vector ``y``.
+
+
+spmv (USM Version)
+------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. container:: dlsyntaxpara
+
+
+         .. cpp:function::  sycl::event onemkl::blas::spmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, T alpha, const T *a, const T *x, std::int64_t incx, T beta, T *y, std::int64_t incy, const sycl::vector_class<sycl::event> &dependencies = {})
+   .. container:: section
+
+
+      .. rubric:: Input Parameters
+         :class: sectiontitle
+
+
+      queue
+         The queue where the routine should be executed.
+
+
+      upper_lower
+         Specifies whether ``A`` is upper or lower triangular. See :ref:`onemkl_datatypes` for more details.
+
+
+      n
+         Number of rows and columns of ``A``. Must be at least zero.
+
+
+      alpha
+         Scaling factor for the matrix-vector product.
+
+
+      a
+         Pointer to input matrix ``A``. The array holding input matrix
+         ``A`` must have size at least (``n``\ \*(``n``\ +1))/2. See
+         `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      x
+         Pointer to input vector ``x``. The array holding input vector
+         ``x`` must be of size at least (1 + (``n`` - 1)*abs(``incx``)).
+         See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incx
+         Stride of vector ``x``.
+
+
+      beta
+         Scaling factor for vector ``y``.
+
+
+      y
+         Pointer to input/output vector ``y``. The array holding
+         input/output vector ``y`` must be of size at least (1 + (``n``
+         - 1)*abs(``incy``)). See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incy
+         Stride of vector ``y``.
+
+
+      dependencies
+         List of events to wait for before starting computation, if any.
+         If omitted, defaults to no dependencies.
+
+
+   .. container:: section
+
+
+      .. rubric:: Output Parameters
+         :class: sectiontitle
+
+
+      y
+         Pointer to the updated vector ``y``.
+
+
+   .. container:: section
+
+
+      .. rubric:: Return Values
+         :class: sectiontitle
+
+
+      Output event to wait on to ensure computation is complete.
 
 
 .. container:: familylinks
@@ -146,8 +240,3 @@ spmv
 
 
       **Parent topic:** :ref:`blas-level-2-routines`
-      
-
-
-.. container::
-

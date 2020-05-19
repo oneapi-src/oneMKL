@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device& dev, int N, int incx, int incy) {
+int test(const device& dev, int N, int incx, int incy) {
     // Prepare data.
     vector<fp> x, x_ref, y, y_ref;
     rand_vector(x, N, incx);
@@ -91,6 +91,14 @@ bool test(const device& dev, int N, int incx, int incy) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const onemkl::backend_unsupported_exception& e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error& error) {
+        std::cout << "Error raised during execution of SWAP:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -101,30 +109,30 @@ bool test(const device& dev, int N, int incx, int incy) {
         good            = good_x && good_y;
     }
 
-    return good;
+    return (int)good;
 }
 
 class SwapTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(SwapTests, RealSinglePrecision) {
-    EXPECT_TRUE(test<float>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUE(test<float>(GetParam(), 1357, -2, -3));
-    EXPECT_TRUE(test<float>(GetParam(), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -2, -3));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1, 1));
 }
 TEST_P(SwapTests, RealDoublePrecision) {
-    EXPECT_TRUE(test<double>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUE(test<double>(GetParam(), 1357, -2, -3));
-    EXPECT_TRUE(test<double>(GetParam(), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -2, -3));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1, 1));
 }
 TEST_P(SwapTests, ComplexSinglePrecision) {
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 1357, -2, -3));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, -2, -3));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, 1, 1));
 }
 TEST_P(SwapTests, ComplexDoublePrecision) {
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 1357, -2, -3));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, -2, -3));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, 1, 1));
 }
 
 INSTANTIATE_TEST_SUITE_P(SwapTestSuite, SwapTests, ::testing::ValuesIn(devices),

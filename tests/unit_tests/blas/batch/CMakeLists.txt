@@ -18,7 +18,7 @@
 #===============================================================================
 
 # Build object from all test sources
-set(BATCH_SOURCES "gemm_batch.cpp" "gemm_batch_stride.cpp" "trsm_batch.cpp" "trsm_batch_stride.cpp")
+set(BATCH_SOURCES "gemm_batch_stride.cpp" "trsm_batch_stride.cpp" "gemm_batch_usm.cpp" "gemm_batch_stride_usm.cpp" "axpy_batch_usm.cpp")
 
 if(BUILD_SHARED_LIBS)
   add_library(blas_batch_rt OBJECT ${BATCH_SOURCES})

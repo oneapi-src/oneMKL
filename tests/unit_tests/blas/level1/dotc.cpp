@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device &dev, int N, int incx, int incy) {
+int test(const device &dev, int N, int incx, int incy) {
     // Prepare data.
     vector<fp> x, y;
     fp result = 0.0, result_reference = 0.0;
@@ -93,6 +93,14 @@ bool test(const device &dev, int N, int incx, int incy) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const onemkl::backend_unsupported_exception &e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error &error) {
+        std::cout << "Error raised during execution of DOTC:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -100,20 +108,20 @@ bool test(const device &dev, int N, int incx, int incy) {
         good                 = check_equal(result_accessor[0], result_reference, N, std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class DotcTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(DotcTests, ComplexSinglePrecision) {
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 1357, 1, 1));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 1357, -3, -2));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, -3, -2));
 }
 TEST_P(DotcTests, ComplexDoublePrecision) {
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 1357, 1, 1));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 1357, -3, -2));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, -3, -2));
 }
 
 INSTANTIATE_TEST_SUITE_P(DotcTestSuite, DotcTests, ::testing::ValuesIn(devices),
