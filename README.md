@@ -169,7 +169,7 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
     </thead>
     <tbody>
         <tr>
-            <td colspan=4 align=center> GNU* GCC 5.1 or higher </td>
+            <td colspan=4 align=center> Linux* : GNU* GCC 5.1 or higher <br> Windows* : MSVS* 2017 or MSVS* 2019 (version 16.5 or newer) </td>
         </tr>
         <tr>
             <td rowspan=2> Python 3.6 or higher </td>
@@ -204,36 +204,29 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
         </tr>
     </thead>
     <tbody>
+        <td rowspan=5> Linux*/Windows* </td>
+        <td rowspan=2> Intel CPU </td>
+        <td> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
+        <td> No</td>
         <tr>
-            <td rowspan=8> Linux* </td>
-            <tr>
-                <td rowspan=2> Intel CPU </td>
-                <td> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
-                <td> No</td>
-                <tr>
-                    <td> Intel(R) oneAPI Math Kernel Library </td>
-                    <td> Yes </td>
-                </tr>
-            </tr>
-            <td rowspan=3> Intel GPU </td>
-            <td> Intel(R) oneAPI DPC++ Compiler </td>
-            <td> No </td>
-            <tr>
-                <td> Intel GPU driver </td>
-                <td> No </td>
-            </tr>
-            <tr>
-                <td> Intel(R) oneAPI Math Kernel Library </td>
-                <td> Yes </td>
-            </tr>
-            <td rowspan=2> NVIDIA GPU </td>
-            <td> Intel project for LLVM* technology </td>
-            <td> No </td>
-            <tr>
-                <td> NVIDIA CUDA SDK </td>
-                <td> No </td>
-            </tr>
+            <td> Intel(R) oneAPI Math Kernel Library </td>
+            <td> Yes </td>
         </tr>
+        <td rowspan=3> Intel GPU </td>
+        <td> Intel(R) oneAPI DPC++ Compiler </td>
+        <td> No </td>
+        <tr>
+            <td> Intel GPU driver </td>
+            <td> No </td>
+        </tr>
+        <tr>
+            <td> Intel(R) oneAPI Math Kernel Library </td>
+            <td> Yes </td>
+        </tr>
+        <td> Linux* only </td>
+        <td> NVIDIA GPU </td>
+        <td> Intel project for LLVM* technology </td>
+        <td> No </td>
     </tbody>
 </table>
 
@@ -258,6 +251,7 @@ Python | 3.6 or higher | *Pre-installed* | *Pre-installed* | [PSF](https://docs.
 [GNU* FORTRAN Compiler](https://gcc.gnu.org/wiki/GFortran) | 7.4.0 or higher | apt | /usr/bin | [GNU General Public License, version 3](https://gcc.gnu.org/onlinedocs/gcc-7.5.0/gfortran/Copying.html)
 [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) | 2021.1-beta05 | *Installed by user* | *Installed by user* | [End User License Agreement for the Intel(R) Software Development Products](https://software.intel.com/en-us/license/eula-for-intel-software-development-products)
 [Intel project for LLVM* technology binary for Intel CPU](https://github.com/intel/llvm/releases) | Daily builds (experimental) tested with [20200331](https://github.com/intel/llvm/releases/download/20200331/dpcpp-compiler.tar.gz) | *Installed by user* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
+[Intel project for LLVM* technology source for NVIDIA GPU](https://github.com/intel/llvm/releases) | Daily source releases: tested with [20200421](https://github.com/intel/llvm/tree/20200421) | *Installed by user* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
 [Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) | 2021.1-beta05 | apt | /opt/intel/inteloneapi/mkl | [Intel Simplified Software License](https://software.intel.com/en-us/license/intel-simplified-software-license)
 [NVIDIA CUDA SDK](https://developer.nvidia.com/cublas) | 10.2 | *Installed by user* | *Installed by user* |[End User License Agreement](https://docs.nvidia.com/cuda/eula/index.html)
 [NETLIB LAPACK](https://www.netlib.org/) | 3.7.1 | conan-community | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [BSD like license](http://www.netlib.org/lapack/LICENSE.txt)
