@@ -113,7 +113,7 @@ static inline void aligned_free(void *p) {
 static inline void *malloc_shared(size_t align, size_t size, cl::sycl::device dev,
                                   cl::sycl::context ctx) {
 #ifdef _WIN64
-    return ::_aligned_malloc(size, align);
+    return cl::sycl::malloc_shared(size, dev, ctx);
 #else
     #ifdef ENABLE_CUBLAS_BACKEND
     return ::aligned_alloc(align, size);
@@ -125,7 +125,7 @@ static inline void *malloc_shared(size_t align, size_t size, cl::sycl::device de
 
 static inline void free_shared(void *p, cl::sycl::context ctx) {
 #ifdef _WIN64
-    ::_aligned_free(p);
+    cl::sycl::free(p, ctx);
 #else
     #ifdef ENABLE_CUBLAS_BACKEND
     ::free(p);
