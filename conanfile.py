@@ -93,6 +93,9 @@ THIRD-PARTY-PROGRAMS file and in the README.md file included with the Software P
 
     def get_python_exe(self):
         # Find supported Python binary
+        # Changes will be required with Python 4.x release -
+        # (Deprecate Python 2.x support?)
+        # (Deprecate use of "python3" and use "python" only?)
         python_exe = "python3"
         try:
             self.run(f"{python_exe} --version", output=False)
