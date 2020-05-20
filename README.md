@@ -8,10 +8,7 @@
 - [Building with Conan](#building-with-conan)
 - [Building with CMake](#building-with-cmake)
 - [Project Cleanup](#project-cleanup)
-<<<<<<< HEAD
 - [FAQs](#faqs)
-=======
->>>>>>> [README] Fixed links for legal notice
 - [Legal Information](#legal-information)
 
 ---
