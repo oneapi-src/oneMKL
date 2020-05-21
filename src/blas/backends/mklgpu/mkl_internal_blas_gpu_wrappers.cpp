@@ -2367,6 +2367,11 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
         coalesced_events.push_back(gemm_event);
         total_groupsize += groupsize[i];
     }
+#ifdef _WIN64
+    for (int64_t j = 0; j < group_count; j++)
+        *coalesced_events[j]->wait();
+    return new cl::sycl::event();
+#else
     cl::sycl::event *return_event = new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
         for (int64_t j = 0; j < group_count; j++)
             cgh.depends_on(*coalesced_events[j]);
@@ -2374,6 +2379,7 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
         });
     }));
     return *return_event;
+#endif
 }
 
 cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
@@ -2392,14 +2398,21 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
         coalesced_events.push_back(gemm_event);
         total_groupsize += groupsize[i];
     }
-    cl::sycl::event *return_event = new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
-        for (int64_t j = 0; j < group_count; j++)
-            cgh.depends_on(*coalesced_events[j]);
-        cgh.single_task<class dgemm_batch_coalesce_events_kernel>([]() {
-        });
-    }));
-    return *return_event;
 }
+#ifdef _WIN64
+for (int64_t j = 0; j < group_count; j++)
+    *coalesced_events[j]->wait();
+return new cl::sycl::event();
+#else
+cl::sycl::event *return_event = new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
+    for (int64_t j = 0; j < group_count; j++)
+        cgh.depends_on(*coalesced_events[j]);
+    cgh.single_task<class dgemm_batch_coalesce_events_kernel>([]() {
+    });
+}));
+return *return_event;
+#endif
+} // namespace internal
 
 cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
                            int64_t *n, int64_t *k, std::complex<float> *alpha,
@@ -2419,14 +2432,21 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
         coalesced_events.push_back(gemm_event);
         total_groupsize += groupsize[i];
     }
-    cl::sycl::event *return_event = new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
-        for (int64_t j = 0; j < group_count; j++)
-            cgh.depends_on(*coalesced_events[j]);
-        cgh.single_task<class cgemm_batch_coalesce_events_kernel>([]() {
-        });
-    }));
-    return *return_event;
 }
+#ifdef _WIN64
+for (int64_t j = 0; j < group_count; j++)
+    *coalesced_events[j]->wait();
+return new cl::sycl::event();
+#else
+cl::sycl::event *return_event = new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
+    for (int64_t j = 0; j < group_count; j++)
+        cgh.depends_on(*coalesced_events[j]);
+    cgh.single_task<class cgemm_batch_coalesce_events_kernel>([]() {
+    });
+}));
+return *return_event;
+#endif
+} // namespace mklgpu
 
 cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
                            int64_t *n, int64_t *k, std::complex<double> *alpha,
@@ -2446,14 +2466,21 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
         coalesced_events.push_back(gemm_event);
         total_groupsize += groupsize[i];
     }
-    cl::sycl::event *return_event = new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
-        for (int64_t j = 0; j < group_count; j++)
-            cgh.depends_on(*coalesced_events[j]);
-        cgh.single_task<class zgemm_batch_coalesce_events_kernel>([]() {
-        });
-    }));
-    return *return_event;
 }
+#ifdef _WIN64
+for (int64_t j = 0; j < group_count; j++)
+    *coalesced_events[j]->wait();
+return new cl::sycl::event();
+#else
+cl::sycl::event *return_event = new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
+    for (int64_t j = 0; j < group_count; j++)
+        cgh.depends_on(*coalesced_events[j]);
+    cgh.single_task<class zgemm_batch_coalesce_events_kernel>([]() {
+    });
+}));
+return *return_event;
+#endif
+} // namespace onemkl
 
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                       int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
