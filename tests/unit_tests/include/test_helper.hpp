@@ -33,13 +33,6 @@
 #define test_passed  1
 #define test_skipped 2
 
-//#ifdef _WIN64
-//    #define EXPECT_TRUEORSKIP(a)         \
-//        do {                             \
-//            int res = a;                 \
-//            EXPECT_EQ(res, test_passed); \
-//        } while (0);
-//#else
 #define EXPECT_TRUEORSKIP(a)             \
     do {                                 \
         int res = a;                     \
@@ -48,7 +41,6 @@
         else                             \
             EXPECT_EQ(res, test_passed); \
     } while (0);
-//#endif
 
 #ifdef ENABLE_MKLCPU_BACKEND
     #define TEST_RUN_INTELCPU(q, func, args) \
