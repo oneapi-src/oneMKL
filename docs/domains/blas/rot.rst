@@ -1,4 +1,4 @@
-.. _rot:
+.. _onemkl_blas_rot:
 
 rot
 ===
@@ -10,16 +10,6 @@ rot
    Performs rotation of points in the plane.
 
 
-   .. container:: section
-      :name: GUID-9DD44991-6A55-49EE-BD0C-F13406FFBE52
-
-
-      .. rubric:: Syntax
-         :name: syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void rot(queue &exec_queue, std::int64_t n,      buffer<T,1> &x, std::int64_t incx, buffer<T,1> &y, std::int64_t      incy, T_scalar c, T_scalar s)
 
       ``rot`` supports the following precisions.
 
@@ -42,15 +32,13 @@ rot
 
 
 .. container:: section
-   :name: GUID-8B7F46D1-5047-4D4C-AF66-F0A3E4AC2BA5
 
 
    .. rubric:: Description
-      :name: description
       :class: sectiontitle
 
 
-   Given two vectors ``x`` and ``y`` of ``n`` elements, the rot routines
+   Given two vectors ``x`` and ``y`` of ``n`` elements, the ``rot`` routines
    compute four scalar-vector products and update the input vectors with
    the sum of two of these scalar-vector products as follow:
 
@@ -61,16 +49,27 @@ rot
   
 
 
+rot (Buffer Version)
+--------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. cpp:function::  void onemkl::blas::rot(sycl::queue &queue, std::int64_t n,      sycl::buffer<T,1> &x, std::int64_t incx, sycl::buffer<T,1> &y, std::int64_t      incy, T_scalar c, T_scalar s)
 .. container:: section
-   :name: GUID-A615800D-734E-4997-BB91-1C76AEEE9EC2
 
 
    .. rubric:: Input Parameters
-      :name: input-parameters
       :class: sectiontitle
 
 
-   exec_queue
+   queue
       The queue where the routine should be executed.
 
 
@@ -86,7 +85,7 @@ rot
 
 
    incx
-      Stride of vector x.
+      Stride of vector ``x``.
 
 
    y
@@ -97,7 +96,7 @@ rot
 
 
    incy
-      Stride of vector y.
+      Stride of vector ``y``.
 
 
    c
@@ -109,11 +108,9 @@ rot
 
 
 .. container:: section
-   :name: GUID-2B160DEB-ADBB-4044-8078-4B613A0DA4E1
 
 
    .. rubric:: Output Parameters
-      :name: output-parameters
       :class: sectiontitle
 
 
@@ -125,6 +122,99 @@ rot
       Buffer holding updated buffer ``y``.
 
 
+rot (USM Version)
+-----------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. container:: dlsyntaxpara
+
+
+         .. cpp:function::  sycl::event onemkl::blas::rot(sycl::queue &queue, std::int64_t n, T *x, std::int64_t incx, T *y, std::int64_t incy, T_scalar c, T_scalar s, const sycl::vector_class<sycl::event> &dependencies = {})
+   .. container:: section
+
+
+      .. rubric:: Input Parameters
+         :class: sectiontitle
+
+
+      queue
+         The queue where the routine should be executed.
+
+
+      n
+         Number of elements in vector ``x``.
+
+
+      x
+         Pointer to input vector ``x``. The array holding input vector
+         ``x`` must be of size at least (1 + (``n`` - 1)*abs(``incx``)).
+         See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incx
+         Stride of vector ``x``.
+
+
+      y
+         Pointer to input vector ``y``. The array holding input vector
+         ``y`` must be of size at least (1 + (``n`` - 1)*abs(``incy``)).
+         See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incy
+         Stride of vector ``y``.
+
+
+      c
+         Scaling factor.
+
+
+      s
+         Scaling factor.
+
+
+      dependencies
+         List of events to wait for before starting computation, if any.
+         If omitted, defaults to no dependencies.
+
+
+   .. container:: section
+
+
+      .. rubric:: Output Parameters
+         :class: sectiontitle
+
+
+      x
+         Pointer to the updated matrix ``x``.
+
+
+      y
+         Pointer to the updated matrix ``y``.
+
+
+   .. container:: section
+
+
+      .. rubric:: Return Values
+         :class: sectiontitle
+
+
+      Output event to wait on to ensure computation is complete.
+
+
 .. container:: familylinks
 
 
@@ -132,8 +222,3 @@ rot
 
 
       **Parent topic:** :ref:`blas-level-1-routines`
-      
-
-
-.. container::
-

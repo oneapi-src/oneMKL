@@ -1,4 +1,4 @@
-.. _asum:
+.. _onemkl_blas_asum:
 
 asum
 ====
@@ -10,16 +10,6 @@ asum
    Computes the sum of magnitudes of the vector elements.
 
 
-   .. container:: section
-      :name: GUID-C135E117-8018-473E-BE83-8833C95BB3B5
-
-
-      .. rubric:: Syntax
-         :name: syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void asum(queue &exec_queue, std::int64_t n,      buffer<T,1> &x, std::int64_t incx, buffer<T_res,1> &result)
 
       ``asum`` supports the following precisions.
 
@@ -42,11 +32,9 @@ asum
 
 
 .. container:: section
-   :name: GUID-6AFCECB5-6614-46AC-B921-AB5DED0D22B2
 
 
    .. rubric:: Description
-      :name: description
       :class: sectiontitle
 
 
@@ -61,16 +49,27 @@ asum
    where ``x`` is a vector with ``n`` elements.
 
 
+asum (Buffer Version)
+---------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. cpp:function::  void onemkl::blas::asum(sycl::queue &queue, std::int64_t n,      sycl::buffer<T,1> &x, std::int64_t incx, sycl::buffer<T_res,1> &result)
 .. container:: section
-   :name: GUID-A615800D-734E-4997-BB91-1C76AEEE9EC2
 
 
    .. rubric:: Input Parameters
-      :name: input-parameters
       :class: sectiontitle
 
 
-   exec_queue
+   queue
       The queue where the routine should be executed.
 
 
@@ -86,21 +85,90 @@ asum
 
 
    incx
-      Stride of vector x.
+      Stride of vector ``x``.
 
 
 .. container:: section
-   :name: GUID-2B160DEB-ADBB-4044-8078-4B613A0DA4E1
 
 
    .. rubric:: Output Parameters
-      :name: output-parameters
       :class: sectiontitle
 
 
    result
       Buffer where the scalar result is stored (the sum of magnitudes of
       the real and imaginary parts of all elements of the vector).
+
+
+asum (USM Version)
+------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. container:: dlsyntaxpara
+
+
+         .. cpp:function::  sycl::event onemkl::blas::asum(sycl::queue &queue, std::int64_t n, const T *x, std::int64_t incx, T_res *result, const sycl::vector_class<sycl::event> &dependencies = {})
+   .. container:: section
+
+
+      .. rubric:: Input Parameters
+         :class: sectiontitle
+
+
+      queue
+         The queue where the routine should be executed.
+
+
+      n
+         Number of elements in vector ``x``.
+
+
+      x
+         Pointer to input vector ``x``. The array holding the vector
+         ``x`` must be of size at least (1 + (``n`` - 1)*abs(``incx``)).
+         See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incx
+         Stride of vector ``x``.
+
+
+      dependencies
+         List of events to wait for before starting computation, if any.
+         If omitted, defaults to no dependencies.
+
+
+   .. container:: section
+
+
+      .. rubric:: Output Parameters
+         :class: sectiontitle
+
+
+      result
+         Pointer to the output matrix where the scalar result is stored
+         (the sum of magnitudes of the real and imaginary parts of all
+         elements of the vector).
+
+
+   .. container:: section
+
+
+      .. rubric:: Return Values
+         :class: sectiontitle
+
+
+      Output event to wait on to ensure computation is complete.
 
 
 .. container:: familylinks
@@ -110,12 +178,6 @@ asum
 
 
       **Parent topic:** :ref:`blas-level-1-routines`
-      
-
-
-.. container::
-
-
-.. |image0| image:: ../equations/GUID-684BB993-83CA-4605-BD49-E493806C1ee1.png
+.. |image0| image:: ../equations/GUID-4F76F5A1-251F-4AC0-A2E0-A3B4B6F39ee1.png
    :class: img-middle
 

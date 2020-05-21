@@ -1,4 +1,4 @@
-.. _ger:
+.. _onemkl_blas_ger:
 
 ger
 ===
@@ -10,16 +10,6 @@ ger
    Computes a rank-1 update of a general matrix.
 
 
-   .. container:: section
-      :name: GUID-0DA23698-EB19-4AAF-A5FD-9BB530A9EFE0
-
-
-      .. rubric:: Syntax
-         :name: syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void ger(queue &exec_queue, std::int64_t m,      std::int64_t n, T alpha, buffer<T,1> &x, std::int64_t incx,      buffer<T,1> &y, std::int64_t incy, buffer<T,1> &a, std::int64_t      lda)
 
       ``ger`` supports the following precisions.
 
@@ -35,15 +25,13 @@ ger
 
 
 .. container:: section
-   :name: GUID-72E035B0-E1C2-442B-AE9D-2CB873E90FAF
 
 
    .. rubric:: Description
-      :name: description
       :class: sectiontitle
 
 
-   The ger routines compute a scalar-vector-vector product and add the
+   The ``ger`` routines compute a scalar-vector-vector product and add the
    result to a general matrix. The operation is defined as
 
 
@@ -68,16 +56,27 @@ ger
    ``y`` is a vector length ``n``.
 
 
+ger (Buffer Version)
+--------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. cpp:function::  void onemkl::blas::ger(sycl::queue &queue, std::int64_t m,      std::int64_t n, T alpha, sycl::buffer<T,1> &x, std::int64_t incx,      sycl::buffer<T,1> &y, std::int64_t incy, sycl::buffer<T,1> &a, std::int64_t      lda)
 .. container:: section
-   :name: GUID-6953A2E5-0065-425C-986B-15966C793067
 
 
    .. rubric:: Input Parameters
-      :name: input-parameters
       :class: sectiontitle
 
 
-   exec_queue
+   queue
       The queue where the routine should be executed.
 
 
@@ -128,16 +127,115 @@ ger
 
 
 .. container:: section
-   :name: GUID-E2A13688-1D12-4DD0-9752-3557E980ACC0
 
 
    .. rubric:: Output Parameters
-      :name: output-parameters
       :class: sectiontitle
 
 
    a
       Buffer holding the updated matrix ``A``.
+
+
+ger (USM Version)
+-----------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. container:: dlsyntaxpara
+
+
+         .. cpp:function::  sycl::event onemkl::blas::ger(sycl::queue &queue, std::int64_t m, std::int64_t n, T alpha, const T *x, std::int64_t incx, const T *y, std::int64_t incy, T *a, std::int64_t lda, const sycl::vector_class<sycl::event> &dependencies = {})
+   .. container:: section
+
+
+      .. rubric:: Input Parameters
+         :class: sectiontitle
+
+
+      queue
+         The queue where the routine should be executed.
+
+
+      m
+         Number of rows of ``A``. Must be at least zero.
+
+
+      n
+         Number of columns of ``A``. Must be at least zero.
+
+
+      alpha
+         Scaling factor for the matrix-vector product.
+
+
+      x
+         Pointer to input vector ``x``. The array holding input vector
+         ``x`` must be of size at least (1 + (``m`` - 1)*abs(``incx``)).
+         See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incx
+         Stride of vector ``x``.
+
+
+      y
+         Pointer to input/output vector ``y``. The array holding
+         input/output vector ``y`` must be of size at least (1 + (``n``
+         - 1)*abs(``incy``)). See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incy
+         Stride of vector ``y``.
+
+
+      a
+         Pointer to input matrix ``A``. Must have size at least
+         ``lda``\ \*\ ``n``. See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      lda
+         Leading dimension of matrix ``A``. Must be at least ``m``, and
+         positive.
+
+
+      dependencies
+         List of events to wait for before starting computation, if any.
+         If omitted, defaults to no dependencies.
+
+
+   .. container:: section
+
+
+      .. rubric:: Output Parameters
+         :class: sectiontitle
+
+
+      a
+         Pointer to the updated matrix ``A``.
+
+
+   .. container:: section
+
+
+      .. rubric:: Return Values
+         :class: sectiontitle
+
+
+      Output event to wait on to ensure computation is complete.
 
 
 .. container:: familylinks
@@ -147,8 +245,3 @@ ger
 
 
       **Parent topic:** :ref:`blas-level-2-routines`
-      
-
-
-.. container::
-

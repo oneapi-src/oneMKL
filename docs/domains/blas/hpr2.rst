@@ -1,4 +1,4 @@
-.. _hpr2:
+.. _onemkl_blas_hpr2:
 
 hpr2
 ====
@@ -10,16 +10,6 @@ hpr2
    Performs a rank-2 update of a Hermitian packed matrix.
 
 
-   .. container:: section
-      :name: GUID-9F8EB534-6520-4470-85AC-6AD8F2467AD4
-
-
-      .. rubric:: Syntax
-         :name: syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void hpr2(queue &exec_queue, uplo upper_lower,      std::int64_t n, T alpha, buffer<T,1> &x, std::int64_t incx,      buffer<T,1> &y, std::int64_t incy, buffer<T,1> &a)
 
       ``hpr2`` supports the following precisions.
 
@@ -35,15 +25,13 @@ hpr2
 
 
 .. container:: section
-   :name: GUID-16FE1EDC-1A72-4BAB-8AFF-C316C4CE5838
 
 
    .. rubric:: Description
-      :name: description
       :class: sectiontitle
 
 
-   The hpr2 routines compute two scalar-vector-vector products and add
+   The ``hpr2`` routines compute two scalar-vector-vector products and add
    them to a Hermitian packed matrix. The operation is defined as
 
 
@@ -65,23 +53,32 @@ hpr2
    ``x`` and ``y`` are vectors of length ``n``.
 
 
+hpr2 (Buffer Version)
+---------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. cpp:function::  void onemkl::blas::hpr2(sycl::queue &queue, uplo upper_lower,      std::int64_t n, T alpha, sycl::buffer<T,1> &x, std::int64_t incx,      sycl::buffer<T,1> &y, std::int64_t incy, sycl::buffer<T,1> &a)
 .. container:: section
-   :name: GUID-E1436726-01FE-4206-871E-B905F59A96B4
 
 
    .. rubric:: Input Parameters
-      :name: input-parameters
       :class: sectiontitle
 
 
-   exec_queue
+   queue
       The queue where the routine should be executed.
 
 
    upper_lower
-      Specifies whether *A* is upper or lower triangular. See
-      :ref:`onemkl_datatypes` for more
-      details.
+      Specifies whether ``A`` is upper or lower triangular. See :ref:`onemkl_datatypes` for more details.
 
 
    n
@@ -126,11 +123,9 @@ hpr2
 
 
 .. container:: section
-   :name: GUID-9A77A2E0-F610-44EE-A3EE-81327B90A3FD
 
 
    .. rubric:: Output Parameters
-      :name: output-parameters
       :class: sectiontitle
 
 
@@ -140,13 +135,120 @@ hpr2
 
 
    a
-      Buffer holding the updated upper triangularpart of the Hermitian
+      Buffer holding the updated upper triangular part of the Hermitian
       matrix ``A`` if ``upper_lower =upper``, or the updated lower
-      triangular part of theHermitian matrix ``A`` if
+      triangular part of the Hermitian matrix ``A`` if
       ``upper_lower =lower``.
 
 
-      The imaginary parts of the diagonal elements are set tozero.
+      The imaginary parts of the diagonal elements are set to zero.
+
+
+hpr2 (USM Version)
+------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. container:: dlsyntaxpara
+
+
+         .. cpp:function::  sycl::event onemkl::blas::hpr2(sycl::queue &queue, uplo upper_lower, std::int64_t n, T alpha, const T *x, std::int64_t incx, const T *y, std::int64_t incy, T *a, const sycl::vector_class<sycl::event> &dependencies = {})
+   .. container:: section
+
+
+      .. rubric:: Input Parameters
+         :class: sectiontitle
+
+
+      queue
+         The queue where the routine should be executed.
+
+
+      upper_lower
+         Specifies whether ``A`` is upper or lower triangular. See :ref:`onemkl_datatypes` for more details.
+
+
+      n
+         Number of rows and columns of ``A``. Must be at least zero.
+
+
+      alpha
+         Scaling factor for the matrix-vector product.
+
+
+      x
+         Pointer to input vector ``x``. The array holding input vector
+         ``x`` must be of size at least (1 + (``n`` - 1)*abs(``incx``)).
+         See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incx
+         Stride of vector ``x``.
+
+
+      y
+         Pointer to input/output vector ``y``. The array holding
+         input/output vector ``y`` must be of size at least (1 + (``n``
+         - 1)*abs(``incy``)). See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incy
+         Stride of vector ``y``.
+
+
+      a
+         Pointer to input matrix ``A``. The array holding input matrix
+         ``A`` must have size at least (``n``\ \*(``n``-1))/2. See
+         `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+         The imaginary parts of the diagonal elements need not be set
+         and are assumed to be zero.
+
+
+      dependencies
+         List of events to wait for before starting computation, if any.
+         If omitted, defaults to no dependencies.
+
+
+   .. container:: section
+
+
+      .. rubric:: Output Parameters
+         :class: sectiontitle
+
+
+      a
+         Pointer to the updated upper triangular part of the Hermitian
+         matrix ``A`` if ``upper_lower =upper``, or the updated lower
+         triangular part of the Hermitian matrix ``A`` if
+         ``upper_lower =lower``.
+
+
+         The imaginary parts of the diagonal elements are set to zero.
+
+
+   .. container:: section
+
+
+      .. rubric:: Return Values
+         :class: sectiontitle
+
+
+      Output event to wait on to ensure computation is complete.
 
 
 .. container:: familylinks
@@ -156,8 +258,3 @@ hpr2
 
 
       **Parent topic:** :ref:`blas-level-2-routines`
-      
-
-
-.. container::
-

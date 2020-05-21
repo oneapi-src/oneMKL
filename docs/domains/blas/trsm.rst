@@ -1,4 +1,4 @@
-.. _trsm:
+.. _onemkl_blas_trsm:
 
 trsm
 ====
@@ -10,18 +10,8 @@ trsm
    Solves a triangular matrix equation (forward or backward solve).
 
 
-   .. container:: section
-      :name: GUID-6F8E0E22-B30A-4825-B508-CEDE0CAC8B90
 
-
-      .. rubric:: Syntax
-         :name: syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void trsm(queue &exec_queue, side left_right,      uplo upper_lower, transpose transa, diag unit_diag, std::int64_t      m, std::int64_t n, T alpha, buffer<T,1> &a, std::int64_t lda,      buffer<T,1> &b, std::int64_t ldb)
-
-      trsm supports the following precisions.
+      ``trsm`` supports the following precisions.
 
 
       .. list-table:: 
@@ -37,15 +27,13 @@ trsm
 
 
 .. container:: section
-   :name: GUID-AE6CFEF4-4058-49C3-BABC-2B05D6594555
 
 
    .. rubric:: Description
-      :name: description
       :class: sectiontitle
 
 
-   The trsm routines solve one of the following matrix equations:
+   The ``trsm`` routines solve one of the following matrix equations:
 
 
   
@@ -84,45 +72,46 @@ trsm
    is overwritten by the solution matrix ``X``.
 
 
+trsm (Buffer Version)
+---------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. cpp:function::  void onemkl::blas::trsm(sycl::queue &queue, side left_right,      uplo upper_lower, transpose transa, diag unit_diag, std::int64_t      m, std::int64_t n, T alpha, sycl::buffer<T,1> &a, std::int64_t lda,      sycl::buffer<T,1> &b, std::int64_t ldb)
 .. container:: section
-   :name: GUID-0BBDCB60-8CDE-4EBD-BDE5-F7688B4B29F4
 
 
    .. rubric:: Input Parameters
-      :name: input-parameters
       :class: sectiontitle
 
 
-   exec_queue
+   queue
       The queue where the routine should be executed.
 
 
    left_right
       Specifies whether ``A`` multiplies ``X`` on the left
-      (``side::left``) or on the right (``side::right``). See
-      :ref:`onemkl_datatypes` for more
-      details.
+      (``side::left``) or on the right (``side::right``). See :ref:`onemkl_datatypes` for more details.
 
 
    uplo
-      Specifies whether the matrix ``A`` is upper or lower triangular.
-      See
-      :ref:`onemkl_datatypes` for more
-      details.
+      Specifies whether the matrix ``A`` is upper or lower triangular. See :ref:`onemkl_datatypes` for more details.
 
 
    trans
-      Specifies op(``A``), the transposition operation applied to ``A``.
-      See
-      :ref:`onemkl_datatypes` for more
-      details.
+      Specifies op(``A``), the transposition operation applied to ``A``. See :ref:`onemkl_datatypes` for more details.
 
 
    unit_diag
       Specifies whether ``A`` is assumed to be unit triangular (all
-      diagonal elements are 1). See
-      :ref:`onemkl_datatypes` for more
-      details.
+      diagonal elements are 1). See :ref:`onemkl_datatypes` for more details.
 
 
    m
@@ -166,11 +155,9 @@ trsm
 
 
 .. container:: section
-   :name: GUID-7AC6C3B9-7A31-4E0B-B770-FD607E7F9BE5
 
 
    .. rubric:: Output Parameters
-      :name: output-parameters
       :class: sectiontitle
 
 
@@ -179,16 +166,140 @@ trsm
 
 
 .. container:: section
-   :name: EXAMPLE_5EF48B8A07D849EA84A74FE22F0D5B24
 
 
    .. rubric:: Notes
-      :name: notes
       :class: sectiontitle
 
 
    If ``alpha`` = 0, matrix ``B`` is set to zero, and ``A`` and ``B`` do
    not need to be initialized at entry.
+
+
+trsm (USM Version)
+------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. container:: dlsyntaxpara
+
+
+         .. cpp:function::  sycl::event onemkl::blas::trsm(sycl::queue &queue, side left_right,         uplo upper_lower, transpose transa, diag unit_diag,         std::int64_t m, std::int64_t n, T alpha, const T* a,         std::int64_t lda, T* b, std::int64_t ldb, const         sycl::vector_class<sycl::event> &dependencies = {})
+   .. container:: section
+
+
+      .. rubric:: Input Parameters
+         :class: sectiontitle
+
+
+      queue
+         The queue where the routine should be executed.
+
+
+      left_right
+         Specifies whether ``A`` multiplies ``X`` on the left
+         (``side::left``) or on the right (``side::right``). See :ref:`onemkl_datatypes` for more details.
+
+
+      uplo
+         Specifies whether the matrix ``A`` is upper or lower
+         triangular. See :ref:`onemkl_datatypes` for more details.
+
+
+      transa
+         Specifies op(``A``), the transposition operation applied to
+         ``A``. See :ref:`onemkl_datatypes` for more details.
+
+
+      unit_diag
+         Specifies whether ``A`` is assumed to be unit triangular (all
+         diagonal elements are 1). See :ref:`onemkl_datatypes` for more details.
+
+
+      m
+         Specifies the number of rows of ``B``. The value of ``m`` must
+         be at least zero.
+
+
+      n
+         Specifies the number of columns of ``B``. The value of ``n``
+         must be at least zero.
+
+
+      alpha
+         Scaling factor for the solution.
+
+
+      a
+         Pointer to input matrix ``A``. Must have size at least
+         ``lda``\ \*\ ``m`` if ``left_right`` = ``side::left``, or
+         ``lda``\ \*\ ``n`` if ``left_right`` = ``side::right``. See
+         `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      lda
+         Leading dimension of ``A``. Must be at least ``m`` if
+         ``left_right`` = ``side::left``, and at least ``n`` if
+         ``left_right`` = ``side::right``. Must be positive.
+
+
+      b
+         Pointer to input/output matrix ``B``. Must have size at least
+         ``ldb``\ \*\ ``n``. See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      ldb
+         Leading dimension of ``B``. Must be at least ``m`` and
+         positive.
+
+
+      dependencies
+         List of events to wait for before starting computation, if any.
+         If omitted, defaults to no dependencies.
+
+
+   .. container:: section
+
+
+      .. rubric:: Output Parameters
+         :class: sectiontitle
+
+
+      b
+         Pointer to the output matrix. Overwritten by the solution
+         matrix ``X``.
+
+
+   .. container:: section
+
+
+      .. rubric:: Notes
+         :class: sectiontitle
+
+
+      If ``alpha`` = 0, matrix ``B`` is set to zero, and ``A`` and ``B``
+      do not need to be initialized at entry.
+
+
+   .. container:: section
+
+
+      .. rubric:: Return Values
+         :class: sectiontitle
+
+
+      Output event to wait on to ensure computation is complete.
 
 
 .. container:: familylinks
@@ -198,8 +309,3 @@ trsm
 
 
       **Parent topic:** :ref:`blas-level-3-routines`
-      
-
-
-.. container::
-

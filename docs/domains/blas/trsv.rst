@@ -1,4 +1,4 @@
-.. _trsv:
+.. _onemkl_blas_trsv:
 
 trsv
 ====
@@ -11,16 +11,6 @@ trsv
    triangular matrix.
 
 
-   .. container:: section
-      :name: GUID-9BA4C1B6-479B-41B1-BCA8-7826F40DA952
-
-
-      .. rubric:: Syntax
-         :name: syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void trsv(queue &exec_queue, uplo upper_lower,      transpose trans, diag unit_nonunit, std::int64_t n, std::int64_t      k, buffer<T,1> &a, std::int64_t lda, buffer<T,1> &x, std::int64_t      incx)
 
       ``trsv`` supports the following precisions.
 
@@ -38,15 +28,13 @@ trsv
 
 
 .. container:: section
-   :name: GUID-D500B67B-5DD6-4471-B0BD-53FD9A3C7BF2
 
 
    .. rubric:: Description
-      :name: description
       :class: sectiontitle
 
 
-   The trsv routines compute a matrix-vector product with a triangular
+   The ``trsv`` routines compute a matrix-vector product with a triangular
    band matrix. The operation is defined as
 
 
@@ -70,36 +58,40 @@ trsv
    ``b`` and ``x`` are vectors of length ``n``.
 
 
+trsv (Buffer Version)
+---------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. cpp:function::  void onemkl::blas::trsv(sycl::queue &queue, uplo upper_lower,      transpose trans, diag unit_nonunit, std::int64_t n, std::int64_t      k, sycl::buffer<T,1> &a, std::int64_t lda, sycl::buffer<T,1> &x, std::int64_t      incx)
 .. container:: section
-   :name: GUID-E1436726-01FE-4206-871E-B905F59A96B4
 
 
    .. rubric:: Input Parameters
-      :name: input-parameters
       :class: sectiontitle
 
 
-   exec_queue
+   queue
       The queue where the routine should be executed.
 
 
    upper_lower
-      Specifies whether ``A`` is upper or lower triangular. See
-      :ref:`onemkl_datatypes` for more
-      details.
+      Specifies whether ``A`` is upper or lower triangular. See :ref:`onemkl_datatypes` for more details.
 
 
    trans
-      Specifies op(``A``), the transposition operation applied to ``A``.
-      See
-      :ref:`onemkl_datatypes` for more
-      details.
+      Specifies op(``A``), the transposition operation applied to ``A``. See :ref:`onemkl_datatypes` for more details.
 
 
    unit_nonunit
-      Specifies whether the matrix ``A`` is unit triangular or not. See
-      :ref:`onemkl_datatypes`
-      for more details.
+      Specifies whether the matrix ``A`` is unit triangular or not. See :ref:`onemkl_datatypes` for more details.
 
 
    n
@@ -131,16 +123,109 @@ trsv
 
 
 .. container:: section
-   :name: GUID-7E0AF44F-2D83-41A3-A58E-50400ECDBD9A
 
 
    .. rubric:: Output Parameters
-      :name: output-parameters
       :class: sectiontitle
 
 
    x
       Buffer holding the solution vector ``x``.
+
+
+trsv (USM Version)
+------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. container:: dlsyntaxpara
+
+
+         .. cpp:function::  sycl::event onemkl::blas::trsv(sycl::queue &queue, uplo         upper_lower, transpose trans, diag unit_nonunit, std::int64_t         n, std::int64_t k, const T *a, std::int64_t lda, T *x,         std::int64_t incx, const sycl::vector_class<sycl::event> &dependencies =         {})
+   .. container:: section
+
+
+      .. rubric:: Input Parameters
+         :class: sectiontitle
+
+
+      queue
+         The queue where the routine should be executed.
+
+
+      upper_lower
+         Specifies whether ``A`` is upper or lower triangular. See :ref:`onemkl_datatypes` for more details.
+
+      trans
+         Specifies op(``A``), the transposition operation applied to
+         ``A``. See :ref:`onemkl_datatypes` for more details.
+
+
+      unit_nonunit
+         Specifies whether the matrix ``A`` is unit triangular or not. See :ref:`onemkl_datatypes` for more details.
+
+
+      n
+         Numbers of rows and columns of ``A``. Must be at least zero.
+
+
+      a
+         Pointer to input matrix ``A``. The array holding input matrix
+         ``A`` must have size at least ``lda``\ \*\ ``n``. See `Matrix
+         and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      lda
+         Leading dimension of matrix ``A``. Must be at least ``n``, and
+         positive.
+
+
+      x
+         Pointer to the ``n``-element right-hand side vector ``b``. The
+         array holding the ``n``-element right-hand side vector ``b``
+         must be of size at least (1 + (``n`` - 1)*abs(``incx``)). See
+         `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incx
+         Stride of vector ``x``.
+
+
+      dependencies
+         List of events to wait for before starting computation, if any.
+         If omitted, defaults to no dependencies.
+
+
+   .. container:: section
+
+
+      .. rubric:: Output Parameters
+         :class: sectiontitle
+
+
+      x
+         Pointer to the solution vector ``x``.
+
+
+   .. container:: section
+
+
+      .. rubric:: Return Values
+         :class: sectiontitle
+
+
+      Output event to wait on to ensure computation is complete.
 
 
 .. container:: familylinks
@@ -150,8 +235,3 @@ trsv
 
 
       **Parent topic:** :ref:`blas-level-2-routines`
-      
-
-
-.. container::
-

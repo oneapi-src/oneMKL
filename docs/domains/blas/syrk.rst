@@ -1,4 +1,4 @@
-.. _syrk:
+.. _onemkl_blas_syrk:
 
 syrk
 ====
@@ -10,18 +10,8 @@ syrk
    Performs a symmetric rank-k update.
 
 
-   .. container:: section
-      :name: GUID-F8123F9B-A182-4BDB-A1A3-90FEC4F56231
 
-
-      .. rubric:: Syntax
-         :name: syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void syrk(queue &exec_queue, uplo upper_lower,      transpose trans, std::int64_t n, std::int64_t k, T alpha,      buffer<T,1> &a, std::int64_t lda, T beta, buffer<T,1> &c,      std::int64_t ldc)
-
-      syrk supports the following precisions.
+      ``syrk`` supports the following precisions.
 
 
       .. list-table:: 
@@ -37,15 +27,13 @@ syrk
 
 
 .. container:: section
-   :name: GUID-8E133139-EE58-44B8-A507-2263BDD1399B
 
 
    .. rubric:: Description
-      :name: description
       :class: sectiontitle
 
 
-   The syrk routines perform a rank-k update of a symmetric matrix ``C``
+   The ``syrk`` routines perform a rank-k update of a symmetric matrix ``C``
    by a general matrix ``A``. The operation is defined as:
 
 
@@ -71,31 +59,37 @@ syrk
    Here op(``A``) is ``n``-by-``k``, and ``C`` is ``n``-by-``n``.
 
 
+syrk (Buffer Version)
+---------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. cpp:function::  void onemkl::blas::syrk(sycl::queue &queue, uplo upper_lower,      transpose trans, std::int64_t n, std::int64_t k, T alpha,      sycl::buffer<T,1> &a, std::int64_t lda, T beta, sycl::buffer<T,1> &c,      std::int64_t ldc)
 .. container:: section
-   :name: GUID-96D007CC-23F0-46FA-9085-6DBFC5BB30E6
 
 
    .. rubric:: Input Parameters
-      :name: input-parameters
       :class: sectiontitle
 
 
-   exec_queue
+   queue
       The queue where the routine should be executed.
 
 
    upper_lower
       Specifies whether ``A``'s data is stored in its upper or lower
-      triangle. See
-      :ref:`onemkl_datatypes` for more
-      details.
+      triangle. See :ref:`onemkl_datatypes` for more details.
 
 
    trans
-      Specifies op(``A``), the transposition operation applied to ``A``
-      (See
-      :ref:`onemkl_datatypes` for more
-      details). Conjugation is never performed, even if ``trans`` =
+      Specifies op(``A``), the transposition operation applied to ``A`` (See :ref:`onemkl_datatypes` for more details). Conjugation is never performed, even if ``trans`` =
       ``transpose::conjtrans``.
 
 
@@ -145,17 +139,123 @@ syrk
 
 
 .. container:: section
-   :name: GUID-E14CE68E-2E28-48BB-8FD7-B84A21563BDA
 
 
    .. rubric:: Output Parameters
-      :name: output-parameters
       :class: sectiontitle
 
 
    c
       Output buffer, overwritten by
       ``alpha``\ \*op(``A``)*op(``A``)\ :sup:`T` + ``beta``\ \*\ ``C``.
+
+
+syrk (USM Version)
+------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. container:: dlsyntaxpara
+
+
+         .. cpp:function::  sycl::event onemkl::blas::syrk(sycl::queue &queue, uplo         upper_lower, transpose trans, std::int64_t n, std::int64_t k, T         alpha, const T* a, std::int64_t lda, T beta, T* c,         std::int64_t ldc, const sycl::vector_class<sycl::event> &dependencies =         {})
+   .. container:: section
+
+
+      .. rubric:: Input Parameters
+         :class: sectiontitle
+
+
+      queue
+         The queue where the routine should be executed.
+
+
+      upper_lower
+         Specifies whether ``A``'s data is stored in its upper or lower
+         triangle. See :ref:`onemkl_datatypes` for more details.
+
+
+      trans
+         Specifies op(``A``), the transposition operation applied to
+         ``A`` (See :ref:`onemkl_datatypes` for more details). Conjugation is never performed, even if
+         ``trans`` = ``transpose::conjtrans``.
+
+
+      n
+         Number of rows and columns in ``C``. The value of ``n`` must be
+         at least zero.
+
+
+      k
+         Number of columns in op(``A``). The value of ``k`` must be at
+         least zero.
+
+
+      alpha
+         Scaling factor for the rank-``k`` update.
+
+
+      a
+         Pointer to input matrix ``A``. If ``trans`` =
+         ``transpose::nontrans``, ``A`` is an ``n``-by-``k`` matrix so
+         the array ``a`` must have size at least ``lda``\ \*\ ``k``.
+         Otherwise, ``A`` is an ``k``-by-``n`` matrix so the array ``a``
+         must have size at least ``lda``\ \*\ ``n``. See `Matrix and
+         Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      lda
+         Leading dimension of ``A``. Must be at least ``n`` if ``A`` is
+         not transposed, and at least ``k`` if ``A`` is transposed. Must
+         be positive.
+
+
+      beta
+         Scaling factor for matrix ``C``.
+
+
+      c
+         Pointer to input/output matrix ``C``. Must have size at least
+         ``ldc``\ \*\ ``n``. See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      ldc
+         Leading dimension of ``C``. Must be positive and at least
+         ``n``.
+
+
+   .. container:: section
+
+
+      .. rubric:: Output Parameters
+         :class: sectiontitle
+
+
+      c
+         Pointer to the output matrix, overwritten by
+         ``alpha``\ \*op(``A``)*op(``A``)\ :sup:`T` +
+         ``beta``\ \*\ ``C``.
+
+
+   .. container:: section
+
+
+      .. rubric:: Return Values
+         :class: sectiontitle
+
+
+      Output event to wait on to ensure computation is complete.
 
 
 .. container:: familylinks
@@ -165,8 +265,3 @@ syrk
 
 
       **Parent topic:** :ref:`blas-level-3-routines`
-      
-
-
-.. container::
-

@@ -1,4 +1,4 @@
-.. _swap:
+.. _onemkl_blas_swap:
 
 swap
 ====
@@ -10,18 +10,8 @@ swap
    Swaps a vector with another vector.
 
 
-   .. container:: section
-      :name: GUID-F0DF0055-DF25-4EC7-8FF2-48D4FA91E42E
 
-
-      .. rubric:: Syntax
-         :name: syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void swap(queue &exec_queue, std::int64_t n,      buffer<T,1> &x, std::int64_t incx, buffer<T,1> &y, std::int64_t      incy)
-
-      swap supports the following precisions.
+      ``swap`` supports the following precisions.
 
 
       .. list-table:: 
@@ -37,15 +27,13 @@ swap
 
 
 .. container:: section
-   :name: GUID-FE88C4B7-4C74-41F8-94DE-E62888DD3BA4
 
 
    .. rubric:: Description
-      :name: description
       :class: sectiontitle
 
 
-   Given two vectors of ``n`` elements, ``x`` and ``y``, the swap
+   Given two vectors of ``n`` elements, ``x`` and ``y``, the ``swap``
    routines return vectors ``y`` and ``x`` swapped, each replacing the
    other.
 
@@ -56,16 +44,27 @@ swap
       y <- x, x <- y
 
 
+swap (Buffer Version)
+---------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. cpp:function::  void onemkl::blas::swap(sycl::queue &queue, std::int64_t n,      sycl::buffer<T,1> &x, std::int64_t incx, sycl::buffer<T,1> &y, std::int64_t      incy)
 .. container:: section
-   :name: GUID-A615800D-734E-4997-BB91-1C76AEEE9EC2
 
 
    .. rubric:: Input Parameters
-      :name: input-parameters
       :class: sectiontitle
 
 
-   exec_queue
+   queue
       The queue where the routine should be executed.
 
 
@@ -81,7 +80,7 @@ swap
 
 
    incx
-      Stride of vector x.
+      Stride of vector ``x``.
 
 
    y
@@ -92,15 +91,13 @@ swap
 
 
    incy
-      Stride of vector y.
+      Stride of vector ``y``.
 
 
 .. container:: section
-   :name: GUID-106AC665-DCBA-40ED-8779-0D9017064855
 
 
    .. rubric:: Output Parameters
-      :name: output-parameters
       :class: sectiontitle
 
 
@@ -114,6 +111,91 @@ swap
       ``x``.
 
 
+swap (USM Version)
+------------------
+
+.. container::
+
+   .. container:: section
+
+
+      .. rubric:: Syntax
+         :class: sectiontitle
+
+
+      .. container:: dlsyntaxpara
+
+
+         .. cpp:function::  sycl::event onemkl::blas::swap(sycl::queue &queue, std::int64_t n,         T *x, std::int64_t incx, T *y, std::int64_t incy, const         sycl::vector_class<sycl::event> &dependencies = {})
+   .. container:: section
+
+
+      .. rubric:: Input Parameters
+         :class: sectiontitle
+
+
+      queue
+         The queue where the routine should be executed.
+
+
+      n
+         Number of elements in vector ``x``.
+
+
+      x
+         Pointer to the input vector ``x``. The array must be of size at
+         least (1 + (``n`` - 1)*abs(``incx``)). See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incx
+         Stride of vector ``x``.
+
+
+      y
+         Pointer to the input vector ``y``. The array must be of size at
+         least (1 + (``n`` - 1)*abs(``incy``)). See `Matrix and Vector
+         Storage <../matrix-storage.html>`__ for
+         more details.
+
+
+      incy
+         Stride of vector ``y``.
+
+
+      dependencies
+         List of events to wait for before starting computation, if any.
+         If omitted, defaults to no dependencies.
+
+
+   .. container:: section
+
+
+      .. rubric:: Output Parameters
+         :class: sectiontitle
+
+
+      x
+         Pointer to the updated array ``x``, that is, the input vector
+         ``y``.
+
+
+      y
+         Pointer to the updated array ``y``, that is, the input vector
+         ``x``.
+
+
+   .. container:: section
+
+
+      .. rubric:: Return Values
+         :class: sectiontitle
+
+
+      Output event to wait on to ensure computation is complete.
+
+
 .. container:: familylinks
 
 
@@ -121,8 +203,3 @@ swap
 
 
       **Parent topic:** :ref:`blas-level-1-routines`
-      
-
-
-.. container::
-
