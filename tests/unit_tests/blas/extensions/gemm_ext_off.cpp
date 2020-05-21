@@ -67,7 +67,7 @@ int test(const device& dev, onemkl::transpose transa, onemkl::transpose transb,
 
     C_ref = C;
 
-    // Call Reference GEMM_EXT.
+    // Call Reference GEMM_EXT_OFF.
     const int m_ref = m, n_ref = n, k_ref = k;
     const int lda_ref = lda, ldb_ref = ldb, ldc_ref = ldc;
 
@@ -81,7 +81,7 @@ int test(const device& dev, onemkl::transpose transa, onemkl::transpose transb,
                (Ta_ref*)A.data(), &lda_ref, (Ta_ref*)&ao, (Tb_ref*)B.data(), &ldb_ref, (Tb_ref*)&bo,
                (Ts_ref*)&beta, (Tc_ref*)C_ref.data(), &ldc_ref, (Tc_ref*)co.data());
 
-    // Call DPC++ GEMM_EXT.
+    // Call DPC++ GEMM_EXT_OFF.
 
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
@@ -90,7 +90,7 @@ int test(const device& dev, onemkl::transpose transa, onemkl::transpose transb,
                 std::rethrow_exception(e);
             }
             catch (exception const& e) {
-                std::cout << "Caught asynchronous SYCL exception during GEMM_EXT:\n"
+                std::cout << "Caught asynchronous SYCL exception during GEMM_EXT_OFF:\n"
                           << e.what() << std::endl
                           << "OpenCL status: " << e.get_cl_code() << std::endl;
             }
@@ -115,7 +115,7 @@ int test(const device& dev, onemkl::transpose transa, onemkl::transpose transb,
 #endif
     }
     catch (exception const& e) {
-        std::cout << "Caught synchronous SYCL exception during GEMM_EXT:\n"
+        std::cout << "Caught synchronous SYCL exception during GEMM_EXT_OFF:\n"
                   << e.what() << std::endl
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
