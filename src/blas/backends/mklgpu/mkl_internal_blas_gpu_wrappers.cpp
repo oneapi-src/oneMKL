@@ -2369,8 +2369,8 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
     }
 #ifdef _WIN64
     for (int64_t j = 0; j < group_count; j++)
-        *coalesced_events[j]->wait();
-    return new cl::sycl::event();
+        (*coalesced_events[j]).wait();
+    return cl::sycl::event();
 #else
     cl::sycl::event *return_event = new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
         for (int64_t j = 0; j < group_count; j++)
@@ -2400,8 +2400,8 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
     }
 #ifdef _WIN64
     for (int64_t j = 0; j < group_count; j++)
-        *coalesced_events[j]->wait();
-    return new cl::sycl::event();
+        (*coalesced_events[j]).wait();
+    return cl::sycl::event();
 #else
     cl::sycl::event *return_event = new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
         for (int64_t j = 0; j < group_count; j++)
@@ -2433,8 +2433,8 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
     }
 #ifdef _WIN64
     for (int64_t j = 0; j < group_count; j++)
-        *coalesced_events[j]->wait();
-    return new cl::sycl::event();
+        (*coalesced_events[j]).wait();
+    return cl::sycl::event();
 #else
     cl::sycl::event *return_event = new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
         for (int64_t j = 0; j < group_count; j++)
@@ -2466,8 +2466,8 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
     }
 #ifdef _WIN64
     for (int64_t j = 0; j < group_count; j++)
-        *coalesced_events[j]->wait();
-    return new cl::sycl::event();
+        (*coalesced_events[j]).wait();
+    return cl::sycl::event();
 #else
     cl::sycl::event *return_event = new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
         for (int64_t j = 0; j < group_count; j++)
