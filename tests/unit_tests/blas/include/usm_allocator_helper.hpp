@@ -42,11 +42,11 @@ public:
         other.c = c;
         other.d = d;
     }
-    template <typename U, int align2>
-    usm_allocator_helper(usm_allocator_helper<U, align2> &&other) noexcept {
-        other.c = c;
-        other.d = d;
-    }
+    //    template <typename U, int align2>
+    //    usm_allocator_helper(usm_allocator_helper<U, align2> &&other) noexcept {
+    //        other.c = c;
+    //        other.d = d;
+    //    }
 
     T *allocate(size_t n) {
         void *mem = onemkl::malloc_shared(align, n * sizeof(T), d, c);
