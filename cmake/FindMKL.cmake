@@ -75,8 +75,6 @@ else()
   list(APPEND MKL_LINK_PREFIX "-LIBPATH:\"${MKL_LIB_DIR}\"")
   set(LIB_PREFIX "")
   set(OPENCL_LIBNAME "OpenCL.lib")
-  set(SYCL_LIB_PREFIX "-f")
-  set(SYCL_LIBNAME "sycl")
 endif()
 
 if (ENABLE_MKLCPU_BACKEND OR ENABLE_MKLGPU_BACKEND)
