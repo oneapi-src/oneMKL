@@ -19,8 +19,6 @@
 
 cmake_minimum_required (VERSION 3.13)
 
-project(oneMKL VERSION 0.1.0 LANGUAGES CXX)
-
 # Set flags from Conan if Conan is used
 if(EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
   include("${CMAKE_BINARY_DIR}/conanbuildinfo.cmake" REQUIRED)

@@ -269,13 +269,15 @@ Python | 3.6 or higher | *Pre-installed* | *Pre-installed* | [PSF](https://docs.
 
 2. Clone this project to `<path to onemkl>`, where `<path to onemkl>` is the root directory of this repository.
 
-3. You can [Build with Conan](#building-with-conan) to automate the process of getting dependencies or you can download and install the required dependencies manually and [Build with CMake](#building-with-cmake) directly .
+3. You can [Build with Conan](#building-with-conan) to automate the process of getting dependencies or you can download and install the required dependencies manually and [Build with CMake](#building-with-cmake) directly.
 
 *Note: Conan package manager automates the process of getting required packages, so that you do not have to go to different web location and follow different instructions to install them.*
 
 ---
 
 ## Building with Conan
+
+** This method currently works on Linux* only **
 
 ** Make sure you have completed [Build Setup](#build-setup). **
 
