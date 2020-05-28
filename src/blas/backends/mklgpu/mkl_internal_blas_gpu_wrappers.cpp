@@ -2559,8 +2559,8 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n, float *alpha
     std::int64_t total_group_size = 0;
     for (std::int64_t i = 0; i < group_count; i++) {
         cl::sycl::event *axpy_batch_event = new cl::sycl::event(
-            mkl::gpu::saxpy_batch(queue, n[i], alpha[i], x, incx[i], y, incy[i], group_size[i],
-                                  total_group_size, dependencies));
+            mkl::gpu::saxpy_batch_sycl(&queue, n[i], alpha[i], x, incx[i], y, incy[i],
+                                       group_size[i], total_group_size, dependencies));
         coalesced_events.push_back(axpy_batch_event);
         total_group_size += group_size[i];
     }
@@ -2576,8 +2576,8 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n, double *alph
     std::int64_t total_group_size = 0;
     for (std::int64_t i = 0; i < group_count; i++) {
         cl::sycl::event *axpy_batch_event = new cl::sycl::event(
-            mkl::gpu::daxpy_batch(queue, n[i], alpha[i], x, incx[i], y, incy[i], group_size[i],
-                                  total_group_size, dependencies));
+            mkl::gpu::daxpy_batch_sycl(&queue, n[i], alpha[i], x, incx[i], y, incy[i],
+                                       group_size[i], total_group_size, dependencies));
         coalesced_events.push_back(axpy_batch_event);
         total_group_size += group_size[i];
     }
@@ -2594,8 +2594,8 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n, std::complex
     std::int64_t total_group_size = 0;
     for (std::int64_t i = 0; i < group_count; i++) {
         cl::sycl::event *axpy_batch_event = new cl::sycl::event(
-            mkl::gpu::caxpy_batch(queue, n[i], alpha[i], x, incx[i], y, incy[i], group_size[i],
-                                  total_group_size, dependencies));
+            mkl::gpu::caxpy_batch_sycl(&queue, n[i], alpha[i], x, incx[i], y, incy[i],
+                                       group_size[i], total_group_size, dependencies));
         coalesced_events.push_back(axpy_batch_event);
         total_group_size += group_size[i];
     }
@@ -2612,8 +2612,8 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n, std::complex
     std::int64_t total_group_size = 0;
     for (std::int64_t i = 0; i < group_count; i++) {
         cl::sycl::event *axpy_batch_event = new cl::sycl::event(
-            mkl::gpu::zaxpy_batch(queue, n[i], alpha[i], x, incx[i], y, incy[i], group_size[i],
-                                  total_group_size, dependencies));
+            mkl::gpu::zaxpy_batch_sycl(&queue, n[i], alpha[i], x, incx[i], y, incy[i],
+                                       group_size[i], total_group_size, dependencies));
         coalesced_events.push_back(axpy_batch_event);
         total_group_size += group_size[i];
     }
