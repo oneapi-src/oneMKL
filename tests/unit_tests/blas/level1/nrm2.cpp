@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp, typename fp_res>
-bool test(const device& dev, int N, int incx) {
+int test(const device& dev, int N, int incx) {
     // Prepare data.
     vector<fp> x;
     fp_res result = fp_res(-1), result_ref = fp_res(-1);
@@ -89,6 +89,14 @@ bool test(const device& dev, int N, int incx) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const onemkl::backend_unsupported_exception& e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error& error) {
+        std::cout << "Error raised during execution of NRM2:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -96,30 +104,30 @@ bool test(const device& dev, int N, int incx) {
         good                 = check_equal(result_accessor[0], result_ref, N, std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class Nrm2Tests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(Nrm2Tests, RealSinglePrecision) {
-    EXPECT_TRUE((test<float, float>(GetParam(), 1357, 2)));
-    EXPECT_TRUE((test<float, float>(GetParam(), 1357, 1)));
-    EXPECT_TRUE((test<float, float>(GetParam(), 1357, -3)));
+    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, 2)));
+    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, 1)));
+    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, -3)));
 }
 TEST_P(Nrm2Tests, RealDoublePrecision) {
-    EXPECT_TRUE((test<double, double>(GetParam(), 1357, 2)));
-    EXPECT_TRUE((test<double, double>(GetParam(), 1357, 1)));
-    EXPECT_TRUE((test<double, double>(GetParam(), 1357, -3)));
+    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, 2)));
+    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, 1)));
+    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, -3)));
 }
 TEST_P(Nrm2Tests, ComplexSinglePrecision) {
-    EXPECT_TRUE((test<std::complex<float>, float>(GetParam(), 1357, 2)));
-    EXPECT_TRUE((test<std::complex<float>, float>(GetParam(), 1357, 1)));
-    EXPECT_TRUE((test<std::complex<float>, float>(GetParam(), 1357, -3)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), 1357, 2)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), 1357, 1)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), 1357, -3)));
 }
 TEST_P(Nrm2Tests, ComplexDoublePrecision) {
-    EXPECT_TRUE((test<std::complex<double>, double>(GetParam(), 1357, 2)));
-    EXPECT_TRUE((test<std::complex<double>, double>(GetParam(), 1357, 1)));
-    EXPECT_TRUE((test<std::complex<double>, double>(GetParam(), 1357, -3)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), 1357, 2)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), 1357, 1)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), 1357, -3)));
 }
 
 INSTANTIATE_TEST_SUITE_P(Nrm2TestSuite, Nrm2Tests, ::testing::ValuesIn(devices),

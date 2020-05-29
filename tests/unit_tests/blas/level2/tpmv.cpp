@@ -43,8 +43,8 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device& dev, onemkl::uplo upper_lower, onemkl::transpose transa,
-          onemkl::diag unit_nonunit, int n, int incx) {
+int test(const device& dev, onemkl::uplo upper_lower, onemkl::transpose transa,
+         onemkl::diag unit_nonunit, int n, int incx) {
     // Prepare data.
     vector<fp> x, x_ref, A;
     rand_vector(x, n, incx);
@@ -95,6 +95,14 @@ bool test(const device& dev, onemkl::uplo upper_lower, onemkl::transpose transa,
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const onemkl::backend_unsupported_exception& e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error& error) {
+        std::cout << "Error raised during execution of TPMV:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -102,106 +110,106 @@ bool test(const device& dev, onemkl::uplo upper_lower, onemkl::transpose transa,
         good            = check_equal_vector(x_accessor, x_ref, n, incx, n, std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class TpmvTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(TpmvTests, RealSinglePrecision) {
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::lower, onemkl::transpose::nontrans,
-                            onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::upper, onemkl::transpose::nontrans,
-                            onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::lower, onemkl::transpose::trans,
-                            onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::upper, onemkl::transpose::trans,
-                            onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::lower, onemkl::transpose::nontrans,
-                            onemkl::diag::nonunit, 30, 2));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::upper, onemkl::transpose::nontrans,
-                            onemkl::diag::nonunit, 30, 2));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::lower, onemkl::transpose::trans,
-                            onemkl::diag::nonunit, 30, 2));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::upper, onemkl::transpose::trans,
-                            onemkl::diag::nonunit, 30, 2));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, onemkl::transpose::nontrans,
+                                  onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, onemkl::transpose::nontrans,
+                                  onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, onemkl::transpose::trans,
+                                  onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, onemkl::transpose::trans,
+                                  onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, onemkl::transpose::nontrans,
+                                  onemkl::diag::nonunit, 30, 2));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, onemkl::transpose::nontrans,
+                                  onemkl::diag::nonunit, 30, 2));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, onemkl::transpose::trans,
+                                  onemkl::diag::nonunit, 30, 2));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, onemkl::transpose::trans,
+                                  onemkl::diag::nonunit, 30, 2));
 }
 TEST_P(TpmvTests, RealDoublePrecision) {
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::lower, onemkl::transpose::nontrans,
-                             onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::upper, onemkl::transpose::nontrans,
-                             onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::lower, onemkl::transpose::trans,
-                             onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::upper, onemkl::transpose::trans,
-                             onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::lower, onemkl::transpose::nontrans,
-                             onemkl::diag::nonunit, 30, 2));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::upper, onemkl::transpose::nontrans,
-                             onemkl::diag::nonunit, 30, 2));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::lower, onemkl::transpose::trans,
-                             onemkl::diag::nonunit, 30, 2));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::upper, onemkl::transpose::trans,
-                             onemkl::diag::nonunit, 30, 2));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, onemkl::transpose::nontrans,
+                                   onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, onemkl::transpose::nontrans,
+                                   onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, onemkl::transpose::trans,
+                                   onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, onemkl::transpose::trans,
+                                   onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, onemkl::transpose::nontrans,
+                                   onemkl::diag::nonunit, 30, 2));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, onemkl::transpose::nontrans,
+                                   onemkl::diag::nonunit, 30, 2));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, onemkl::transpose::trans,
+                                   onemkl::diag::nonunit, 30, 2));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, onemkl::transpose::trans,
+                                   onemkl::diag::nonunit, 30, 2));
 }
 TEST_P(TpmvTests, ComplexSinglePrecision) {
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::uplo::lower,
-                                          onemkl::transpose::nontrans, onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::uplo::upper,
-                                          onemkl::transpose::nontrans, onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::uplo::lower, onemkl::transpose::trans,
-                                          onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::uplo::upper, onemkl::transpose::trans,
-                                          onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::uplo::lower,
-                                          onemkl::transpose::conjtrans, onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::uplo::upper,
-                                          onemkl::transpose::conjtrans, onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::uplo::lower,
-                                          onemkl::transpose::nontrans, onemkl::diag::nonunit, 30,
-                                          2));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::uplo::upper,
-                                          onemkl::transpose::nontrans, onemkl::diag::nonunit, 30,
-                                          2));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::uplo::lower, onemkl::transpose::trans,
-                                          onemkl::diag::nonunit, 30, 2));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::uplo::upper, onemkl::transpose::trans,
-                                          onemkl::diag::nonunit, 30, 2));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::uplo::lower,
-                                          onemkl::transpose::conjtrans, onemkl::diag::nonunit, 30,
-                                          2));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), onemkl::uplo::upper,
-                                          onemkl::transpose::conjtrans, onemkl::diag::nonunit, 30,
-                                          2));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(
+        GetParam(), onemkl::uplo::lower, onemkl::transpose::nontrans, onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(
+        GetParam(), onemkl::uplo::upper, onemkl::transpose::nontrans, onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(
+        GetParam(), onemkl::uplo::lower, onemkl::transpose::trans, onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(
+        GetParam(), onemkl::uplo::upper, onemkl::transpose::trans, onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(
+        GetParam(), onemkl::uplo::lower, onemkl::transpose::conjtrans, onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(
+        GetParam(), onemkl::uplo::upper, onemkl::transpose::conjtrans, onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::uplo::lower,
+                                                onemkl::transpose::nontrans, onemkl::diag::nonunit,
+                                                30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::uplo::upper,
+                                                onemkl::transpose::nontrans, onemkl::diag::nonunit,
+                                                30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(
+        GetParam(), onemkl::uplo::lower, onemkl::transpose::trans, onemkl::diag::nonunit, 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(
+        GetParam(), onemkl::uplo::upper, onemkl::transpose::trans, onemkl::diag::nonunit, 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::uplo::lower,
+                                                onemkl::transpose::conjtrans, onemkl::diag::nonunit,
+                                                30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::uplo::upper,
+                                                onemkl::transpose::conjtrans, onemkl::diag::nonunit,
+                                                30, 2));
 }
 TEST_P(TpmvTests, ComplexDoublePrecision) {
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::uplo::lower,
-                                           onemkl::transpose::nontrans, onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::uplo::upper,
-                                           onemkl::transpose::nontrans, onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::uplo::lower,
-                                           onemkl::transpose::trans, onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::uplo::upper,
-                                           onemkl::transpose::trans, onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<std::complex<double>>(
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(
+        GetParam(), onemkl::uplo::lower, onemkl::transpose::nontrans, onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(
+        GetParam(), onemkl::uplo::upper, onemkl::transpose::nontrans, onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(
+        GetParam(), onemkl::uplo::lower, onemkl::transpose::trans, onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(
+        GetParam(), onemkl::uplo::upper, onemkl::transpose::trans, onemkl::diag::unit, 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(
         GetParam(), onemkl::uplo::lower, onemkl::transpose::conjtrans, onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<std::complex<double>>(
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(
         GetParam(), onemkl::uplo::upper, onemkl::transpose::conjtrans, onemkl::diag::unit, 30, 2));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::uplo::lower,
-                                           onemkl::transpose::nontrans, onemkl::diag::nonunit, 30,
-                                           2));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::uplo::upper,
-                                           onemkl::transpose::nontrans, onemkl::diag::nonunit, 30,
-                                           2));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::uplo::lower,
-                                           onemkl::transpose::trans, onemkl::diag::nonunit, 30, 2));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::uplo::upper,
-                                           onemkl::transpose::trans, onemkl::diag::nonunit, 30, 2));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::uplo::lower,
-                                           onemkl::transpose::conjtrans, onemkl::diag::nonunit, 30,
-                                           2));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), onemkl::uplo::upper,
-                                           onemkl::transpose::conjtrans, onemkl::diag::nonunit, 30,
-                                           2));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::uplo::lower,
+                                                 onemkl::transpose::nontrans, onemkl::diag::nonunit,
+                                                 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::uplo::upper,
+                                                 onemkl::transpose::nontrans, onemkl::diag::nonunit,
+                                                 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(
+        GetParam(), onemkl::uplo::lower, onemkl::transpose::trans, onemkl::diag::nonunit, 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(
+        GetParam(), onemkl::uplo::upper, onemkl::transpose::trans, onemkl::diag::nonunit, 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::uplo::lower,
+                                                 onemkl::transpose::conjtrans,
+                                                 onemkl::diag::nonunit, 30, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::uplo::upper,
+                                                 onemkl::transpose::conjtrans,
+                                                 onemkl::diag::nonunit, 30, 2));
 }
 
 INSTANTIATE_TEST_SUITE_P(TpmvTestSuite, TpmvTests, ::testing::ValuesIn(devices),

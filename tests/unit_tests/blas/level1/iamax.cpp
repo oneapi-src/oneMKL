@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device& dev, int N, int incx) {
+int test(const device& dev, int N, int incx) {
     // Prepare data.
     vector<fp> x;
     int64_t result = -1, result_ref = -1;
@@ -89,6 +89,14 @@ bool test(const device& dev, int N, int incx) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const onemkl::backend_unsupported_exception& e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error& error) {
+        std::cout << "Error raised during execution of IAMAX:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -96,30 +104,30 @@ bool test(const device& dev, int N, int incx) {
         good                 = check_equal(result_accessor[0], result_ref, 0, std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class IamaxTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(IamaxTests, RealSinglePrecision) {
-    EXPECT_TRUE(test<float>(GetParam(), 1357, 2));
-    EXPECT_TRUE(test<float>(GetParam(), 1357, 1));
-    EXPECT_TRUE(test<float>(GetParam(), 1357, -3));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -3));
 }
 TEST_P(IamaxTests, RealDoublePrecision) {
-    EXPECT_TRUE(test<double>(GetParam(), 1357, 2));
-    EXPECT_TRUE(test<double>(GetParam(), 1357, 1));
-    EXPECT_TRUE(test<double>(GetParam(), 1357, -3));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -3));
 }
 TEST_P(IamaxTests, ComplexSinglePrecision) {
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 1357, 2));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 1357, 1));
-    EXPECT_TRUE(test<std::complex<float>>(GetParam(), 1357, -3));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, 1));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, -3));
 }
 TEST_P(IamaxTests, ComplexDoublePrecision) {
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 1357, 2));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 1357, 1));
-    EXPECT_TRUE(test<std::complex<double>>(GetParam(), 1357, -3));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, 2));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, 1));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, -3));
 }
 
 INSTANTIATE_TEST_SUITE_P(IamaxTestSuite, IamaxTests, ::testing::ValuesIn(devices),

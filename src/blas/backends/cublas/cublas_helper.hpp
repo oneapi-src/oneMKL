@@ -26,8 +26,8 @@
 #include <cublas_v2.h>
 #include <cuda.h>
 #include <complex>
-#include <stdexcept>
 #include "onemkl/types.hpp"
+
 namespace onemkl {
 namespace cublas {
 

@@ -45,6 +45,8 @@
 namespace onemkl {
 namespace blas {
 
+// Buffer APIs
+
 static inline void asum(cl::sycl::queue &queue, std::int64_t n,
                         cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                         cl::sycl::buffer<float, 1> &result) {
@@ -296,76 +298,6 @@ static inline void gemm(cl::sycl::queue &queue, transpose transa, transpose tran
     detail::gemm(select_backend(queue), queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
                  c, ldc);
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
-}
-
-static inline void gemm_batch(cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-                              cl::sycl::buffer<transpose, 1> &transb,
-                              cl::sycl::buffer<std::int64_t, 1> &m,
-                              cl::sycl::buffer<std::int64_t, 1> &n,
-                              cl::sycl::buffer<std::int64_t, 1> &k,
-                              cl::sycl::buffer<float, 1> &alpha, cl::sycl::buffer<float, 1> &a,
-                              cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<float, 1> &b,
-                              cl::sycl::buffer<std::int64_t, 1> &ldb,
-                              cl::sycl::buffer<float, 1> &beta, cl::sycl::buffer<float, 1> &c,
-                              cl::sycl::buffer<std::int64_t, 1> &ldc, std::int64_t group_count,
-                              cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                            group_count, group_size);
-    detail::gemm_batch(select_backend(queue), queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
-                       beta, c, ldc, group_count, group_size);
-    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                             group_count, group_size);
-}
-
-static inline void gemm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
-    cl::sycl::buffer<double, 1> &alpha, cl::sycl::buffer<double, 1> &a,
-    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<double, 1> &b,
-    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<double, 1> &beta,
-    cl::sycl::buffer<double, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                            group_count, group_size);
-    detail::gemm_batch(select_backend(queue), queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
-                       beta, c, ldc, group_count, group_size);
-    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                             group_count, group_size);
-}
-
-static inline void gemm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
-    cl::sycl::buffer<std::complex<float>, 1> &alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<std::complex<float>, 1> &b,
-    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<std::complex<float>, 1> &beta,
-    cl::sycl::buffer<std::complex<float>, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                            group_count, group_size);
-    detail::gemm_batch(select_backend(queue), queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
-                       beta, c, ldc, group_count, group_size);
-    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                             group_count, group_size);
-}
-
-static inline void gemm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<transpose, 1> &transa,
-    cl::sycl::buffer<transpose, 1> &transb, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::int64_t, 1> &k,
-    cl::sycl::buffer<std::complex<double>, 1> &alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-    cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<std::complex<double>, 1> &b,
-    cl::sycl::buffer<std::int64_t, 1> &ldb, cl::sycl::buffer<std::complex<double>, 1> &beta,
-    cl::sycl::buffer<std::complex<double>, 1> &c, cl::sycl::buffer<std::int64_t, 1> &ldc,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                            group_count, group_size);
-    detail::gemm_batch(select_backend(queue), queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
-                       beta, c, ldc, group_count, group_size);
-    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
-                             group_count, group_size);
 }
 
 static inline void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
@@ -1660,72 +1592,6 @@ static inline void trsm(cl::sycl::queue &queue, side left_right, uplo upper_lowe
                        ldb);
 }
 
-static inline void trsm_batch(cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-                              cl::sycl::buffer<uplo, 1> &upper_lower,
-                              cl::sycl::buffer<transpose, 1> &trans,
-                              cl::sycl::buffer<diag, 1> &unit_diag,
-                              cl::sycl::buffer<std::int64_t, 1> &m,
-                              cl::sycl::buffer<std::int64_t, 1> &n,
-                              cl::sycl::buffer<float, 1> &alpha, cl::sycl::buffer<float, 1> &a,
-                              cl::sycl::buffer<std::int64_t, 1> &lda, cl::sycl::buffer<float, 1> &b,
-                              cl::sycl::buffer<std::int64_t, 1> &ldb, std::int64_t group_count,
-                              cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
-                            b, ldb, group_count, group_size);
-    detail::trsm_batch(select_backend(queue), queue, left_right, upper_lower, trans, unit_diag, m,
-                       n, alpha, a, lda, b, ldb, group_count, group_size);
-    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
-                             b, ldb, group_count, group_size);
-}
-
-static inline void trsm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<double, 1> &alpha,
-    cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-    cl::sycl::buffer<double, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
-                            b, ldb, group_count, group_size);
-    detail::trsm_batch(select_backend(queue), queue, left_right, upper_lower, trans, unit_diag, m,
-                       n, alpha, a, lda, b, ldb, group_count, group_size);
-    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
-                             b, ldb, group_count, group_size);
-}
-
-static inline void trsm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::complex<float>, 1> &alpha,
-    cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-    cl::sycl::buffer<std::complex<float>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
-                            b, ldb, group_count, group_size);
-    detail::trsm_batch(select_backend(queue), queue, left_right, upper_lower, trans, unit_diag, m,
-                       n, alpha, a, lda, b, ldb, group_count, group_size);
-    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
-                             b, ldb, group_count, group_size);
-}
-
-static inline void trsm_batch(
-    cl::sycl::queue &queue, cl::sycl::buffer<side, 1> &left_right,
-    cl::sycl::buffer<uplo, 1> &upper_lower, cl::sycl::buffer<transpose, 1> &trans,
-    cl::sycl::buffer<diag, 1> &unit_diag, cl::sycl::buffer<std::int64_t, 1> &m,
-    cl::sycl::buffer<std::int64_t, 1> &n, cl::sycl::buffer<std::complex<double>, 1> &alpha,
-    cl::sycl::buffer<std::complex<double>, 1> &a, cl::sycl::buffer<std::int64_t, 1> &lda,
-    cl::sycl::buffer<std::complex<double>, 1> &b, cl::sycl::buffer<std::int64_t, 1> &ldb,
-    std::int64_t group_count, cl::sycl::buffer<std::int64_t, 1> &group_size) {
-    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
-                            b, ldb, group_count, group_size);
-    detail::trsm_batch(select_backend(queue), queue, left_right, upper_lower, trans, unit_diag, m,
-                       n, alpha, a, lda, b, ldb, group_count, group_size);
-    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
-                             b, ldb, group_count, group_size);
-}
-
 static inline void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
                               transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
                               float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
@@ -1812,6 +1678,1939 @@ static inline void trsv(cl::sycl::queue &queue, uplo upper_lower, transpose tran
     trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
     detail::trsv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
     trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
+}
+
+// USM APIs
+
+static inline cl::sycl::event asum(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+    float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    asum_precondition(queue, n, x, incx, result, dependencies);
+    auto done = detail::asum(select_backend(queue), queue, n, x, incx, result, dependencies);
+    asum_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event asum(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+    double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    asum_precondition(queue, n, x, incx, result, dependencies);
+    auto done = detail::asum(select_backend(queue), queue, n, x, incx, result, dependencies);
+    asum_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event asum(
+    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, float *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    asum_precondition(queue, n, x, incx, result, dependencies);
+    auto done = detail::asum(select_backend(queue), queue, n, x, incx, result, dependencies);
+    asum_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event asum(
+    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, double *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    asum_precondition(queue, n, x, incx, result, dependencies);
+    auto done = detail::asum(select_backend(queue), queue, n, x, incx, result, dependencies);
+    asum_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event axpy(
+    cl::sycl::queue &queue, std::int64_t n, float alpha, const float *x, std::int64_t incx,
+    float *y, std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    auto done =
+        detail::axpy(select_backend(queue), queue, n, alpha, x, incx, y, incy, dependencies);
+    axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event axpy(
+    cl::sycl::queue &queue, std::int64_t n, double alpha, const double *x, std::int64_t incx,
+    double *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    auto done =
+        detail::axpy(select_backend(queue), queue, n, alpha, x, incx, y, incy, dependencies);
+    axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event axpy(
+    cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha, const std::complex<float> *x,
+    std::int64_t incx, std::complex<float> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    auto done =
+        detail::axpy(select_backend(queue), queue, n, alpha, x, incx, y, incy, dependencies);
+    axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event axpy(
+    cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
+    const std::complex<double> *x, std::int64_t incx, std::complex<double> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    auto done =
+        detail::axpy(select_backend(queue), queue, n, alpha, x, incx, y, incy, dependencies);
+    axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event axpy_batch(
+    cl::sycl::queue &queue, std::int64_t *n, float *alpha, const float **x, std::int64_t *incx,
+    float **y, std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    axpy_batch_precondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
+                            dependencies);
+    auto done = detail::axpy_batch(select_backend(queue), queue, n, alpha, x, incx, y, incy,
+                                   group_count, group_size, dependencies);
+    axpy_batch_postcondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
+                             dependencies);
+    return done;
+}
+
+static inline cl::sycl::event axpy_batch(
+    cl::sycl::queue &queue, std::int64_t *n, double *alpha, const double **x, std::int64_t *incx,
+    double **y, std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    axpy_batch_precondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
+                            dependencies);
+    auto done = detail::axpy_batch(select_backend(queue), queue, n, alpha, x, incx, y, incy,
+                                   group_count, group_size, dependencies);
+    axpy_batch_postcondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
+                             dependencies);
+    return done;
+}
+
+static inline cl::sycl::event axpy_batch(
+    cl::sycl::queue &queue, std::int64_t *n, std::complex<float> *alpha,
+    const std::complex<float> **x, std::int64_t *incx, std::complex<float> **y, std::int64_t *incy,
+    std::int64_t group_count, std::int64_t *group_size,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    axpy_batch_precondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
+                            dependencies);
+    auto done = detail::axpy_batch(select_backend(queue), queue, n, alpha, x, incx, y, incy,
+                                   group_count, group_size, dependencies);
+    axpy_batch_postcondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
+                             dependencies);
+    return done;
+}
+
+static inline cl::sycl::event axpy_batch(
+    cl::sycl::queue &queue, std::int64_t *n, std::complex<double> *alpha,
+    const std::complex<double> **x, std::int64_t *incx, std::complex<double> **y,
+    std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    axpy_batch_precondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
+                            dependencies);
+    auto done = detail::axpy_batch(select_backend(queue), queue, n, alpha, x, incx, y, incy,
+                                   group_count, group_size, dependencies);
+    axpy_batch_postcondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
+                             dependencies);
+    return done;
+}
+
+static inline cl::sycl::event copy(
+    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, float *y,
+    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    copy_precondition(queue, n, x, incx, y, incy, dependencies);
+    auto done = detail::copy(select_backend(queue), queue, n, x, incx, y, incy, dependencies);
+    copy_postcondition(queue, n, x, incx, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event copy(
+    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, double *y,
+    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    copy_precondition(queue, n, x, incx, y, incy, dependencies);
+    auto done = detail::copy(select_backend(queue), queue, n, x, incx, y, incy, dependencies);
+    copy_postcondition(queue, n, x, incx, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event copy(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+    std::complex<float> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    copy_precondition(queue, n, x, incx, y, incy, dependencies);
+    auto done = detail::copy(select_backend(queue), queue, n, x, incx, y, incy, dependencies);
+    copy_postcondition(queue, n, x, incx, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event copy(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+    std::complex<double> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    copy_precondition(queue, n, x, incx, y, incy, dependencies);
+    auto done = detail::copy(select_backend(queue), queue, n, x, incx, y, incy, dependencies);
+    copy_postcondition(queue, n, x, incx, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event dot(
+    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, const float *y,
+    std::int64_t incy, float *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    dot_precondition(queue, n, x, incx, y, incy, result, dependencies);
+    auto done =
+        detail::dot(select_backend(queue), queue, n, x, incx, y, incy, result, dependencies);
+    dot_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event dot(
+    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, const double *y,
+    std::int64_t incy, double *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    dot_precondition(queue, n, x, incx, y, incy, result, dependencies);
+    auto done =
+        detail::dot(select_backend(queue), queue, n, x, incx, y, incy, result, dependencies);
+    dot_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event dot(
+    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, const float *y,
+    std::int64_t incy, double *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    dot_precondition(queue, n, x, incx, y, incy, result, dependencies);
+    auto done =
+        detail::dot(select_backend(queue), queue, n, x, incx, y, incy, result, dependencies);
+    dot_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event dotc(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+    const std::complex<float> *y, std::int64_t incy, std::complex<float> *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    dotc_precondition(queue, n, x, incx, y, incy, result, dependencies);
+    auto done =
+        detail::dotc(select_backend(queue), queue, n, x, incx, y, incy, result, dependencies);
+    dotc_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event dotc(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+    const std::complex<double> *y, std::int64_t incy, std::complex<double> *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    dotc_precondition(queue, n, x, incx, y, incy, result, dependencies);
+    auto done =
+        detail::dotc(select_backend(queue), queue, n, x, incx, y, incy, result, dependencies);
+    dotc_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event dotu(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+    const std::complex<float> *y, std::int64_t incy, std::complex<float> *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    dotu_precondition(queue, n, x, incx, y, incy, result, dependencies);
+    auto done =
+        detail::dotu(select_backend(queue), queue, n, x, incx, y, incy, result, dependencies);
+    dotu_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event dotu(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+    const std::complex<double> *y, std::int64_t incy, std::complex<double> *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    dotu_precondition(queue, n, x, incx, y, incy, result, dependencies);
+    auto done =
+        detail::dotu(select_backend(queue), queue, n, x, incx, y, incy, result, dependencies);
+    dotu_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gbmv(
+    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
+    std::int64_t ku, float alpha, const float *a, std::int64_t lda, const float *x,
+    std::int64_t incx, float beta, float *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gbmv_precondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
+                      dependencies);
+    auto done = detail::gbmv(select_backend(queue), queue, trans, m, n, kl, ku, alpha, a, lda, x,
+                             incx, beta, y, incy, dependencies);
+    gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gbmv(
+    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
+    std::int64_t ku, double alpha, const double *a, std::int64_t lda, const double *x,
+    std::int64_t incx, double beta, double *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gbmv_precondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
+                      dependencies);
+    auto done = detail::gbmv(select_backend(queue), queue, trans, m, n, kl, ku, alpha, a, lda, x,
+                             incx, beta, y, incy, dependencies);
+    gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gbmv(
+    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
+    std::int64_t ku, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
+    std::complex<float> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gbmv_precondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
+                      dependencies);
+    auto done = detail::gbmv(select_backend(queue), queue, trans, m, n, kl, ku, alpha, a, lda, x,
+                             incx, beta, y, incy, dependencies);
+    gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gbmv(
+    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
+    std::int64_t ku, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
+    std::complex<double> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gbmv_precondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
+                      dependencies);
+    auto done = detail::gbmv(select_backend(queue), queue, trans, m, n, kl, ku, alpha, a, lda, x,
+                             incx, beta, y, incy, dependencies);
+    gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, float alpha, const float *a, std::int64_t lda, const float *b, std::int64_t ldb,
+    float beta, float *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = detail::gemm(select_backend(queue), queue, transa, transb, m, n, k, alpha, a, lda,
+                             b, ldb, beta, c, ldc, dependencies);
+    gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, double alpha, const double *a, std::int64_t lda, const double *b,
+    std::int64_t ldb, double beta, double *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = detail::gemm(select_backend(queue), queue, transa, transb, m, n, k, alpha, a, lda,
+                             b, ldb, beta, c, ldc, dependencies);
+    gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
+    std::complex<float> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = detail::gemm(select_backend(queue), queue, transa, transb, m, n, k, alpha, a, lda,
+                             b, ldb, beta, c, ldc, dependencies);
+    gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
+    std::complex<double> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = detail::gemm(select_backend(queue), queue, transa, transb, m, n, k, alpha, a, lda,
+                             b, ldb, beta, c, ldc, dependencies);
+    gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm_batch(
+    cl::sycl::queue &queue, transpose *transa, transpose *transb, std::int64_t *m, std::int64_t *n,
+    std::int64_t *k, float *alpha, const float **a, std::int64_t *lda, const float **b,
+    std::int64_t *ldb, float *beta, float **c, std::int64_t *ldc, std::int64_t group_count,
+    std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                            group_count, group_size, dependencies);
+    auto done =
+        detail::gemm_batch(select_backend(queue), queue, transa, transb, m, n, k, alpha, a, lda, b,
+                           ldb, beta, c, ldc, group_count, group_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                             group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm_batch(
+    cl::sycl::queue &queue, transpose *transa, transpose *transb, std::int64_t *m, std::int64_t *n,
+    std::int64_t *k, double *alpha, const double **a, std::int64_t *lda, const double **b,
+    std::int64_t *ldb, double *beta, double **c, std::int64_t *ldc, std::int64_t group_count,
+    std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                            group_count, group_size, dependencies);
+    auto done =
+        detail::gemm_batch(select_backend(queue), queue, transa, transb, m, n, k, alpha, a, lda, b,
+                           ldb, beta, c, ldc, group_count, group_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                             group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm_batch(
+    cl::sycl::queue &queue, transpose *transa, transpose *transb, std::int64_t *m, std::int64_t *n,
+    std::int64_t *k, std::complex<float> *alpha, const std::complex<float> **a, std::int64_t *lda,
+    const std::complex<float> **b, std::int64_t *ldb, std::complex<float> *beta,
+    std::complex<float> **c, std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                            group_count, group_size, dependencies);
+    auto done =
+        detail::gemm_batch(select_backend(queue), queue, transa, transb, m, n, k, alpha, a, lda, b,
+                           ldb, beta, c, ldc, group_count, group_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                             group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm_batch(
+    cl::sycl::queue &queue, transpose *transa, transpose *transb, std::int64_t *m, std::int64_t *n,
+    std::int64_t *k, std::complex<double> *alpha, const std::complex<double> **a, std::int64_t *lda,
+    const std::complex<double> **b, std::int64_t *ldb, std::complex<double> *beta,
+    std::complex<double> **c, std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                            group_count, group_size, dependencies);
+    auto done =
+        detail::gemm_batch(select_backend(queue), queue, transa, transb, m, n, k, alpha, a, lda, b,
+                           ldb, beta, c, ldc, group_count, group_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                             group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm_batch(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, float alpha, const float *a, std::int64_t lda, std::int64_t stride_a,
+    const float *b, std::int64_t ldb, std::int64_t stride_b, float beta, float *c, std::int64_t ldc,
+    std::int64_t stride_c, std::int64_t batch_size,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                            stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    auto done = detail::gemm_batch(select_backend(queue), queue, transa, transb, m, n, k, alpha, a,
+                                   lda, stride_a, b, ldb, stride_b, beta, c, ldc, stride_c,
+                                   batch_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm_batch(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, double alpha, const double *a, std::int64_t lda, std::int64_t stride_a,
+    const double *b, std::int64_t ldb, std::int64_t stride_b, double beta, double *c,
+    std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                            stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    auto done = detail::gemm_batch(select_backend(queue), queue, transa, transb, m, n, k, alpha, a,
+                                   lda, stride_a, b, ldb, stride_b, beta, c, ldc, stride_c,
+                                   batch_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm_batch(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    std::int64_t stride_a, const std::complex<float> *b, std::int64_t ldb, std::int64_t stride_b,
+    std::complex<float> beta, std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
+    std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                            stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    auto done = detail::gemm_batch(select_backend(queue), queue, transa, transb, m, n, k, alpha, a,
+                                   lda, stride_a, b, ldb, stride_b, beta, c, ldc, stride_c,
+                                   batch_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm_batch(
+    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
+    std::int64_t k, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    std::int64_t stride_a, const std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
+    std::complex<double> beta, std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
+    std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                            stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    auto done = detail::gemm_batch(select_backend(queue), queue, transa, transb, m, n, k, alpha, a,
+                                   lda, stride_a, b, ldb, stride_b, beta, c, ldc, stride_c,
+                                   batch_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemmt(
+    cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
+    std::int64_t k, float alpha, const float *a, std::int64_t lda, const float *b, std::int64_t ldb,
+    float beta, float *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                       ldc, dependencies);
+    auto done = detail::gemmt(select_backend(queue), queue, upper_lower, transa, transb, n, k,
+                              alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+    gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                        ldc, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemmt(
+    cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
+    std::int64_t k, double alpha, const double *a, std::int64_t lda, const double *b,
+    std::int64_t ldb, double beta, double *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                       ldc, dependencies);
+    auto done = detail::gemmt(select_backend(queue), queue, upper_lower, transa, transb, n, k,
+                              alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+    gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                        ldc, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemmt(
+    cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
+    std::int64_t k, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
+    std::complex<float> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                       ldc, dependencies);
+    auto done = detail::gemmt(select_backend(queue), queue, upper_lower, transa, transb, n, k,
+                              alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+    gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                        ldc, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemmt(
+    cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
+    std::int64_t k, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
+    std::complex<double> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                       ldc, dependencies);
+    auto done = detail::gemmt(select_backend(queue), queue, upper_lower, transa, transb, n, k,
+                              alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+    gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
+                        ldc, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemv(
+    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, float alpha,
+    const float *a, std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y,
+    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = detail::gemv(select_backend(queue), queue, trans, m, n, alpha, a, lda, x, incx,
+                             beta, y, incy, dependencies);
+    gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemv(
+    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, double alpha,
+    const double *a, std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y,
+    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = detail::gemv(select_backend(queue), queue, trans, m, n, alpha, a, lda, x, incx,
+                             beta, y, incy, dependencies);
+    gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemv(
+    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
+    std::complex<float> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = detail::gemv(select_backend(queue), queue, trans, m, n, alpha, a, lda, x, incx,
+                             beta, y, incy, dependencies);
+    gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemv(
+    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
+    std::complex<double> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = detail::gemv(select_backend(queue), queue, trans, m, n, alpha, a, lda, x, incx,
+                             beta, y, incy, dependencies);
+    gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event ger(
+    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, float alpha, const float *x,
+    std::int64_t incx, const float *y, std::int64_t incy, float *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    ger_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = detail::ger(select_backend(queue), queue, m, n, alpha, x, incx, y, incy, a, lda,
+                            dependencies);
+    ger_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event ger(
+    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, double alpha, const double *x,
+    std::int64_t incx, const double *y, std::int64_t incy, double *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    ger_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = detail::ger(select_backend(queue), queue, m, n, alpha, x, incx, y, incy, a, lda,
+                            dependencies);
+    ger_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gerc(
+    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<float> alpha,
+    const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
+    std::int64_t incy, std::complex<float> *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gerc_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = detail::gerc(select_backend(queue), queue, m, n, alpha, x, incx, y, incy, a, lda,
+                             dependencies);
+    gerc_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gerc(
+    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<double> alpha,
+    const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
+    std::int64_t incy, std::complex<double> *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    gerc_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = detail::gerc(select_backend(queue), queue, m, n, alpha, x, incx, y, incy, a, lda,
+                             dependencies);
+    gerc_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event geru(
+    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<float> alpha,
+    const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
+    std::int64_t incy, std::complex<float> *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    geru_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = detail::geru(select_backend(queue), queue, m, n, alpha, x, incx, y, incy, a, lda,
+                             dependencies);
+    geru_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event geru(
+    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<double> alpha,
+    const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
+    std::int64_t incy, std::complex<double> *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    geru_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = detail::geru(select_backend(queue), queue, m, n, alpha, x, incx, y, incy, a, lda,
+                             dependencies);
+    geru_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event hbmv(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
+    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
+    std::complex<float> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    hbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
+                      dependencies);
+    auto done = detail::hbmv(select_backend(queue), queue, upper_lower, n, k, alpha, a, lda, x,
+                             incx, beta, y, incy, dependencies);
+    hbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event hbmv(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
+    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
+    std::complex<double> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    hbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
+                      dependencies);
+    auto done = detail::hbmv(select_backend(queue), queue, upper_lower, n, k, alpha, a, lda, x,
+                             incx, beta, y, incy, dependencies);
+    hbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event hemm(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
+    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
+    std::complex<float> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    hemm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = detail::hemm(select_backend(queue), queue, left_right, upper_lower, m, n, alpha, a,
+                             lda, b, ldb, beta, c, ldc, dependencies);
+    hemm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event hemm(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
+    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
+    std::complex<double> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    hemm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = detail::hemm(select_backend(queue), queue, left_right, upper_lower, m, n, alpha, a,
+                             lda, b, ldb, beta, c, ldc, dependencies);
+    hemm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event hemv(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+    const std::complex<float> *a, std::int64_t lda, const std::complex<float> *x, std::int64_t incx,
+    std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    hemv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = detail::hemv(select_backend(queue), queue, upper_lower, n, alpha, a, lda, x, incx,
+                             beta, y, incy, dependencies);
+    hemv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event hemv(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+    const std::complex<double> *a, std::int64_t lda, const std::complex<double> *x,
+    std::int64_t incx, std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    hemv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = detail::hemv(select_backend(queue), queue, upper_lower, n, alpha, a, lda, x, incx,
+                             beta, y, incy, dependencies);
+    hemv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event her(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
+    const std::complex<float> *x, std::int64_t incx, std::complex<float> *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    her_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    auto done = detail::her(select_backend(queue), queue, upper_lower, n, alpha, x, incx, a, lda,
+                            dependencies);
+    her_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event her(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+    const std::complex<double> *x, std::int64_t incx, std::complex<double> *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    her_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    auto done = detail::her(select_backend(queue), queue, upper_lower, n, alpha, x, incx, a, lda,
+                            dependencies);
+    her_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event her2(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+    const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
+    std::int64_t incy, std::complex<float> *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    her2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = detail::her2(select_backend(queue), queue, upper_lower, n, alpha, x, incx, y, incy,
+                             a, lda, dependencies);
+    her2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event her2(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+    const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
+    std::int64_t incy, std::complex<double> *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    her2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = detail::her2(select_backend(queue), queue, upper_lower, n, alpha, x, incx, y, incy,
+                             a, lda, dependencies);
+    her2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event her2k(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *b, std::int64_t ldb, float beta, std::complex<float> *c,
+    std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    her2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    auto done = detail::her2k(select_backend(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
+                              b, ldb, beta, c, ldc, dependencies);
+    her2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                        dependencies);
+    return done;
+}
+
+static inline cl::sycl::event her2k(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *b, std::int64_t ldb, double beta, std::complex<double> *c,
+    std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    her2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    auto done = detail::her2k(select_backend(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
+                              b, ldb, beta, c, ldc, dependencies);
+    her2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                        dependencies);
+    return done;
+}
+
+static inline cl::sycl::event herk(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    float alpha, const std::complex<float> *a, std::int64_t lda, float beta, std::complex<float> *c,
+    std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    herk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    auto done = detail::herk(select_backend(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
+                             beta, c, ldc, dependencies);
+    herk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event herk(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    double alpha, const std::complex<double> *a, std::int64_t lda, double beta,
+    std::complex<double> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    herk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    auto done = detail::herk(select_backend(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
+                             beta, c, ldc, dependencies);
+    herk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event hpmv(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+    const std::complex<float> *a, const std::complex<float> *x, std::int64_t incx,
+    std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    hpmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    auto done = detail::hpmv(select_backend(queue), queue, upper_lower, n, alpha, a, x, incx, beta,
+                             y, incy, dependencies);
+    hpmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event hpmv(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+    const std::complex<double> *a, const std::complex<double> *x, std::int64_t incx,
+    std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    hpmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    auto done = detail::hpmv(select_backend(queue), queue, upper_lower, n, alpha, a, x, incx, beta,
+                             y, incy, dependencies);
+    hpmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event hpr(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
+    const std::complex<float> *x, std::int64_t incx, std::complex<float> *a,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    hpr_precondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    auto done =
+        detail::hpr(select_backend(queue), queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    hpr_postcondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event hpr(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+    const std::complex<double> *x, std::int64_t incx, std::complex<double> *a,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    hpr_precondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    auto done =
+        detail::hpr(select_backend(queue), queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    hpr_postcondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event hpr2(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+    const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
+    std::int64_t incy, std::complex<float> *a,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    hpr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    auto done = detail::hpr2(select_backend(queue), queue, upper_lower, n, alpha, x, incx, y, incy,
+                             a, dependencies);
+    hpr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event hpr2(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+    const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
+    std::int64_t incy, std::complex<double> *a,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    hpr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    auto done = detail::hpr2(select_backend(queue), queue, upper_lower, n, alpha, x, incx, y, incy,
+                             a, dependencies);
+    hpr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event iamax(
+    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, std::int64_t *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    iamax_precondition(queue, n, x, incx, result, dependencies);
+    auto done = detail::iamax(select_backend(queue), queue, n, x, incx, result, dependencies);
+    iamax_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event iamax(
+    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx,
+    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    iamax_precondition(queue, n, x, incx, result, dependencies);
+    auto done = detail::iamax(select_backend(queue), queue, n, x, incx, result, dependencies);
+    iamax_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event iamax(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    iamax_precondition(queue, n, x, incx, result, dependencies);
+    auto done = detail::iamax(select_backend(queue), queue, n, x, incx, result, dependencies);
+    iamax_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event iamax(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    iamax_precondition(queue, n, x, incx, result, dependencies);
+    auto done = detail::iamax(select_backend(queue), queue, n, x, incx, result, dependencies);
+    iamax_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event iamin(
+    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, std::int64_t *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    iamin_precondition(queue, n, x, incx, result, dependencies);
+    auto done = detail::iamin(select_backend(queue), queue, n, x, incx, result, dependencies);
+    iamin_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event iamin(
+    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx,
+    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    iamin_precondition(queue, n, x, incx, result, dependencies);
+    auto done = detail::iamin(select_backend(queue), queue, n, x, incx, result, dependencies);
+    iamin_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event iamin(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    iamin_precondition(queue, n, x, incx, result, dependencies);
+    auto done = detail::iamin(select_backend(queue), queue, n, x, incx, result, dependencies);
+    iamin_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event iamin(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    iamin_precondition(queue, n, x, incx, result, dependencies);
+    auto done = detail::iamin(select_backend(queue), queue, n, x, incx, result, dependencies);
+    iamin_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event nrm2(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+    float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    nrm2_precondition(queue, n, x, incx, result, dependencies);
+    auto done = detail::nrm2(select_backend(queue), queue, n, x, incx, result, dependencies);
+    nrm2_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event nrm2(
+    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+    double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    nrm2_precondition(queue, n, x, incx, result, dependencies);
+    auto done = detail::nrm2(select_backend(queue), queue, n, x, incx, result, dependencies);
+    nrm2_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event nrm2(
+    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, float *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    nrm2_precondition(queue, n, x, incx, result, dependencies);
+    auto done = detail::nrm2(select_backend(queue), queue, n, x, incx, result, dependencies);
+    nrm2_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event nrm2(
+    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, double *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    nrm2_precondition(queue, n, x, incx, result, dependencies);
+    auto done = detail::nrm2(select_backend(queue), queue, n, x, incx, result, dependencies);
+    nrm2_postcondition(queue, n, x, incx, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event rot(
+    cl::sycl::queue &queue, std::int64_t n, std::complex<float> *x, std::int64_t incx,
+    std::complex<float> *y, std::int64_t incy, float c, float s,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    rot_precondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    auto done = detail::rot(select_backend(queue), queue, n, x, incx, y, incy, c, s, dependencies);
+    rot_postcondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event rot(
+    cl::sycl::queue &queue, std::int64_t n, std::complex<double> *x, std::int64_t incx,
+    std::complex<double> *y, std::int64_t incy, double c, double s,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    rot_precondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    auto done = detail::rot(select_backend(queue), queue, n, x, incx, y, incy, c, s, dependencies);
+    rot_postcondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event rot(
+    cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
+    std::int64_t incy, float c, float s,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    rot_precondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    auto done = detail::rot(select_backend(queue), queue, n, x, incx, y, incy, c, s, dependencies);
+    rot_postcondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event rot(
+    cl::sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
+    std::int64_t incy, double c, double s,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    rot_precondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    auto done = detail::rot(select_backend(queue), queue, n, x, incx, y, incy, c, s, dependencies);
+    rot_postcondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event rotg(
+    cl::sycl::queue &queue, float *a, float *b, float *c, float *s,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    rotg_precondition(queue, a, b, c, s, dependencies);
+    auto done = detail::rotg(select_backend(queue), queue, a, b, c, s, dependencies);
+    rotg_postcondition(queue, a, b, c, s, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event rotg(
+    cl::sycl::queue &queue, double *a, double *b, double *c, double *s,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    rotg_precondition(queue, a, b, c, s, dependencies);
+    auto done = detail::rotg(select_backend(queue), queue, a, b, c, s, dependencies);
+    rotg_postcondition(queue, a, b, c, s, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event rotg(
+    cl::sycl::queue &queue, std::complex<float> *a, std::complex<float> *b, float *c,
+    std::complex<float> *s, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    rotg_precondition(queue, a, b, c, s, dependencies);
+    auto done = detail::rotg(select_backend(queue), queue, a, b, c, s, dependencies);
+    rotg_postcondition(queue, a, b, c, s, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event rotg(
+    cl::sycl::queue &queue, std::complex<double> *a, std::complex<double> *b, double *c,
+    std::complex<double> *s, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    rotg_precondition(queue, a, b, c, s, dependencies);
+    auto done = detail::rotg(select_backend(queue), queue, a, b, c, s, dependencies);
+    rotg_postcondition(queue, a, b, c, s, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event rotm(
+    cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
+    std::int64_t incy, float *param,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    rotm_precondition(queue, n, x, incx, y, incy, param, dependencies);
+    auto done =
+        detail::rotm(select_backend(queue), queue, n, x, incx, y, incy, param, dependencies);
+    rotm_postcondition(queue, n, x, incx, y, incy, param, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event rotm(
+    cl::sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
+    std::int64_t incy, double *param,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    rotm_precondition(queue, n, x, incx, y, incy, param, dependencies);
+    auto done =
+        detail::rotm(select_backend(queue), queue, n, x, incx, y, incy, param, dependencies);
+    rotm_postcondition(queue, n, x, incx, y, incy, param, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event rotmg(
+    cl::sycl::queue &queue, float *d1, float *d2, float *x1, float y1, float *param,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    rotmg_precondition(queue, d1, d2, x1, y1, param, dependencies);
+    auto done = detail::rotmg(select_backend(queue), queue, d1, d2, x1, y1, param, dependencies);
+    rotmg_postcondition(queue, d1, d2, x1, y1, param, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event rotmg(
+    cl::sycl::queue &queue, double *d1, double *d2, double *x1, double y1, double *param,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    rotmg_precondition(queue, d1, d2, x1, y1, param, dependencies);
+    auto done = detail::rotmg(select_backend(queue), queue, d1, d2, x1, y1, param, dependencies);
+    rotmg_postcondition(queue, d1, d2, x1, y1, param, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event sbmv(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k, float alpha,
+    const float *a, std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y,
+    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    sbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
+                      dependencies);
+    auto done = detail::sbmv(select_backend(queue), queue, upper_lower, n, k, alpha, a, lda, x,
+                             incx, beta, y, incy, dependencies);
+    sbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event sbmv(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k, double alpha,
+    const double *a, std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y,
+    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    sbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
+                      dependencies);
+    auto done = detail::sbmv(select_backend(queue), queue, upper_lower, n, k, alpha, a, lda, x,
+                             incx, beta, y, incy, dependencies);
+    sbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event scal(
+    cl::sycl::queue &queue, std::int64_t n, float alpha, float *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    scal_precondition(queue, n, alpha, x, incx, dependencies);
+    auto done = detail::scal(select_backend(queue), queue, n, alpha, x, incx, dependencies);
+    scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event scal(
+    cl::sycl::queue &queue, std::int64_t n, double alpha, double *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    scal_precondition(queue, n, alpha, x, incx, dependencies);
+    auto done = detail::scal(select_backend(queue), queue, n, alpha, x, incx, dependencies);
+    scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event scal(
+    cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha, std::complex<float> *x,
+    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    scal_precondition(queue, n, alpha, x, incx, dependencies);
+    auto done = detail::scal(select_backend(queue), queue, n, alpha, x, incx, dependencies);
+    scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event scal(
+    cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha, std::complex<double> *x,
+    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    scal_precondition(queue, n, alpha, x, incx, dependencies);
+    auto done = detail::scal(select_backend(queue), queue, n, alpha, x, incx, dependencies);
+    scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event scal(
+    cl::sycl::queue &queue, std::int64_t n, float alpha, std::complex<float> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    scal_precondition(queue, n, alpha, x, incx, dependencies);
+    auto done = detail::scal(select_backend(queue), queue, n, alpha, x, incx, dependencies);
+    scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event scal(
+    cl::sycl::queue &queue, std::int64_t n, double alpha, std::complex<double> *x,
+    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    scal_precondition(queue, n, alpha, x, incx, dependencies);
+    auto done = detail::scal(select_backend(queue), queue, n, alpha, x, incx, dependencies);
+    scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event sdsdot(
+    cl::sycl::queue &queue, std::int64_t n, float sb, const float *x, std::int64_t incx,
+    const float *y, std::int64_t incy, float *result,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    sdsdot_precondition(queue, n, sb, x, incx, y, incy, result, dependencies);
+    auto done =
+        detail::sdsdot(select_backend(queue), queue, n, sb, x, incx, y, incy, result, dependencies);
+    sdsdot_postcondition(queue, n, sb, x, incx, y, incy, result, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event spmv(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *a,
+    const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    spmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    auto done = detail::spmv(select_backend(queue), queue, upper_lower, n, alpha, a, x, incx, beta,
+                             y, incy, dependencies);
+    spmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event spmv(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *a,
+    const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    spmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    auto done = detail::spmv(select_backend(queue), queue, upper_lower, n, alpha, a, x, incx, beta,
+                             y, incy, dependencies);
+    spmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event spr(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *x,
+    std::int64_t incx, float *a, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    spr_precondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    auto done =
+        detail::spr(select_backend(queue), queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    spr_postcondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event spr(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *x,
+    std::int64_t incx, double *a,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    spr_precondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    auto done =
+        detail::spr(select_backend(queue), queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    spr_postcondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event spr2(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *x,
+    std::int64_t incx, const float *y, std::int64_t incy, float *a,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    spr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    auto done = detail::spr2(select_backend(queue), queue, upper_lower, n, alpha, x, incx, y, incy,
+                             a, dependencies);
+    spr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event spr2(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *x,
+    std::int64_t incx, const double *y, std::int64_t incy, double *a,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    spr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    auto done = detail::spr2(select_backend(queue), queue, upper_lower, n, alpha, x, incx, y, incy,
+                             a, dependencies);
+    spr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event swap(
+    cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
+    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    swap_precondition(queue, n, x, incx, y, incy, dependencies);
+    auto done = detail::swap(select_backend(queue), queue, n, x, incx, y, incy, dependencies);
+    swap_postcondition(queue, n, x, incx, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event swap(
+    cl::sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
+    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    swap_precondition(queue, n, x, incx, y, incy, dependencies);
+    auto done = detail::swap(select_backend(queue), queue, n, x, incx, y, incy, dependencies);
+    swap_postcondition(queue, n, x, incx, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event swap(
+    cl::sycl::queue &queue, std::int64_t n, std::complex<float> *x, std::int64_t incx,
+    std::complex<float> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    swap_precondition(queue, n, x, incx, y, incy, dependencies);
+    auto done = detail::swap(select_backend(queue), queue, n, x, incx, y, incy, dependencies);
+    swap_postcondition(queue, n, x, incx, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event swap(
+    cl::sycl::queue &queue, std::int64_t n, std::complex<double> *x, std::int64_t incx,
+    std::complex<double> *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    swap_precondition(queue, n, x, incx, y, incy, dependencies);
+    auto done = detail::swap(select_backend(queue), queue, n, x, incx, y, incy, dependencies);
+    swap_postcondition(queue, n, x, incx, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event symm(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
+    float alpha, const float *a, std::int64_t lda, const float *b, std::int64_t ldb, float beta,
+    float *c, std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = detail::symm(select_backend(queue), queue, left_right, upper_lower, m, n, alpha, a,
+                             lda, b, ldb, beta, c, ldc, dependencies);
+    symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event symm(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
+    double alpha, const double *a, std::int64_t lda, const double *b, std::int64_t ldb, double beta,
+    double *c, std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = detail::symm(select_backend(queue), queue, left_right, upper_lower, m, n, alpha, a,
+                             lda, b, ldb, beta, c, ldc, dependencies);
+    symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event symm(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
+    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
+    std::complex<float> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = detail::symm(select_backend(queue), queue, left_right, upper_lower, m, n, alpha, a,
+                             lda, b, ldb, beta, c, ldc, dependencies);
+    symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event symm(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
+    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
+    std::complex<double> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = detail::symm(select_backend(queue), queue, left_right, upper_lower, m, n, alpha, a,
+                             lda, b, ldb, beta, c, ldc, dependencies);
+    symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event symv(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *a,
+    std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    symv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = detail::symv(select_backend(queue), queue, upper_lower, n, alpha, a, lda, x, incx,
+                             beta, y, incy, dependencies);
+    symv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event symv(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *a,
+    std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    symv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = detail::symv(select_backend(queue), queue, upper_lower, n, alpha, a, lda, x, incx,
+                             beta, y, incy, dependencies);
+    symv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syr(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *x,
+    std::int64_t incx, float *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    syr_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    auto done = detail::syr(select_backend(queue), queue, upper_lower, n, alpha, x, incx, a, lda,
+                            dependencies);
+    syr_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syr(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *x,
+    std::int64_t incx, double *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    syr_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    auto done = detail::syr(select_backend(queue), queue, upper_lower, n, alpha, x, incx, a, lda,
+                            dependencies);
+    syr_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syr2(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *x,
+    std::int64_t incx, const float *y, std::int64_t incy, float *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    syr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = detail::syr2(select_backend(queue), queue, upper_lower, n, alpha, x, incx, y, incy,
+                             a, lda, dependencies);
+    syr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syr2(
+    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *x,
+    std::int64_t incx, const double *y, std::int64_t incy, double *a, std::int64_t lda,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    syr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = detail::syr2(select_backend(queue), queue, upper_lower, n, alpha, x, incx, y, incy,
+                             a, lda, dependencies);
+    syr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syr2k(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    float alpha, const float *a, std::int64_t lda, const float *b, std::int64_t ldb, float beta,
+    float *c, std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    auto done = detail::syr2k(select_backend(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
+                              b, ldb, beta, c, ldc, dependencies);
+    syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                        dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syr2k(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    double alpha, const double *a, std::int64_t lda, const double *b, std::int64_t ldb, double beta,
+    double *c, std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    auto done = detail::syr2k(select_backend(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
+                              b, ldb, beta, c, ldc, dependencies);
+    syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                        dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syr2k(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
+    std::complex<float> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    auto done = detail::syr2k(select_backend(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
+                              b, ldb, beta, c, ldc, dependencies);
+    syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                        dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syr2k(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
+    std::complex<double> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    auto done = detail::syr2k(select_backend(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
+                              b, ldb, beta, c, ldc, dependencies);
+    syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                        dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syrk(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    float alpha, const float *a, std::int64_t lda, float beta, float *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    syrk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    auto done = detail::syrk(select_backend(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
+                             beta, c, ldc, dependencies);
+    syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syrk(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    double alpha, const double *a, std::int64_t lda, double beta, double *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    syrk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    auto done = detail::syrk(select_backend(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
+                             beta, c, ldc, dependencies);
+    syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syrk(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+    std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    syrk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    auto done = detail::syrk(select_backend(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
+                             beta, c, ldc, dependencies);
+    syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syrk(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
+    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+    std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    syrk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    auto done = detail::syrk(select_backend(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
+                             beta, c, ldc, dependencies);
+    syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tbmv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    std::int64_t k, const float *a, std::int64_t lda, float *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    auto done = detail::tbmv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, k, a,
+                             lda, x, incx, dependencies);
+    tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tbmv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    std::int64_t k, const double *a, std::int64_t lda, double *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    auto done = detail::tbmv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, k, a,
+                             lda, x, incx, dependencies);
+    tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tbmv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    std::int64_t k, const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
+    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    auto done = detail::tbmv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, k, a,
+                             lda, x, incx, dependencies);
+    tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tbmv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    std::int64_t k, const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
+    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    auto done = detail::tbmv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, k, a,
+                             lda, x, incx, dependencies);
+    tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tbsv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    std::int64_t k, const float *a, std::int64_t lda, float *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    auto done = detail::tbsv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, k, a,
+                             lda, x, incx, dependencies);
+    tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tbsv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    std::int64_t k, const double *a, std::int64_t lda, double *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    auto done = detail::tbsv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, k, a,
+                             lda, x, incx, dependencies);
+    tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tbsv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    std::int64_t k, const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
+    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    auto done = detail::tbsv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, k, a,
+                             lda, x, incx, dependencies);
+    tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tbsv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    std::int64_t k, const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
+    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    auto done = detail::tbsv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, k, a,
+                             lda, x, incx, dependencies);
+    tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tpmv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const float *a, float *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    tpmv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done = detail::tpmv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, x,
+                             incx, dependencies);
+    tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tpmv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const double *a, double *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    tpmv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done = detail::tpmv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, x,
+                             incx, dependencies);
+    tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tpmv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const std::complex<float> *a, std::complex<float> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    tpmv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done = detail::tpmv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, x,
+                             incx, dependencies);
+    tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tpmv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const std::complex<double> *a, std::complex<double> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    tpmv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done = detail::tpmv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, x,
+                             incx, dependencies);
+    tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tpsv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const float *a, float *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    tpsv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done = detail::tpsv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, x,
+                             incx, dependencies);
+    tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tpsv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const double *a, double *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    tpsv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done = detail::tpsv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, x,
+                             incx, dependencies);
+    tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tpsv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const std::complex<float> *a, std::complex<float> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    tpsv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done = detail::tpsv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, x,
+                             incx, dependencies);
+    tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tpsv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const std::complex<double> *a, std::complex<double> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    tpsv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done = detail::tpsv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, x,
+                             incx, dependencies);
+    tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trmm(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda, float *b,
+    std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
+                      dependencies);
+    auto done = detail::trmm(select_backend(queue), queue, left_right, upper_lower, trans,
+                             unit_diag, m, n, alpha, a, lda, b, ldb, dependencies);
+    trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
+                       ldb, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trmm(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, double alpha, const double *a, std::int64_t lda, double *b,
+    std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
+                      dependencies);
+    auto done = detail::trmm(select_backend(queue), queue, left_right, upper_lower, trans,
+                             unit_diag, m, n, alpha, a, lda, b, ldb, dependencies);
+    trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
+                       ldb, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trmm(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
+    std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
+                      dependencies);
+    auto done = detail::trmm(select_backend(queue), queue, left_right, upper_lower, trans,
+                             unit_diag, m, n, alpha, a, lda, b, ldb, dependencies);
+    trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
+                       ldb, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trmm(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
+    std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
+                      dependencies);
+    auto done = detail::trmm(select_backend(queue), queue, left_right, upper_lower, trans,
+                             unit_diag, m, n, alpha, a, lda, b, ldb, dependencies);
+    trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
+                       ldb, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trmv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const float *a, std::int64_t lda, float *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    trmv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    auto done = detail::trmv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, lda,
+                             x, incx, dependencies);
+    trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trmv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const double *a, std::int64_t lda, double *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    trmv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    auto done = detail::trmv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, lda,
+                             x, incx, dependencies);
+    trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trmv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const std::complex<float> *a, std::int64_t lda, std::complex<float> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    trmv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    auto done = detail::trmv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, lda,
+                             x, incx, dependencies);
+    trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trmv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const std::complex<double> *a, std::int64_t lda, std::complex<double> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    trmv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    auto done = detail::trmv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, lda,
+                             x, incx, dependencies);
+    trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trsm(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda, float *b,
+    std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
+                      dependencies);
+    auto done = detail::trsm(select_backend(queue), queue, left_right, upper_lower, trans,
+                             unit_diag, m, n, alpha, a, lda, b, ldb, dependencies);
+    trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
+                       ldb, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trsm(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, double alpha, const double *a, std::int64_t lda, double *b,
+    std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
+                      dependencies);
+    auto done = detail::trsm(select_backend(queue), queue, left_right, upper_lower, trans,
+                             unit_diag, m, n, alpha, a, lda, b, ldb, dependencies);
+    trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
+                       ldb, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trsm(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
+    std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
+                      dependencies);
+    auto done = detail::trsm(select_backend(queue), queue, left_right, upper_lower, trans,
+                             unit_diag, m, n, alpha, a, lda, b, ldb, dependencies);
+    trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
+                       ldb, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trsm(
+    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
+    std::int64_t m, std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
+    std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
+                      dependencies);
+    auto done = detail::trsm(select_backend(queue), queue, left_right, upper_lower, trans,
+                             unit_diag, m, n, alpha, a, lda, b, ldb, dependencies);
+    trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
+                       ldb, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trsv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const float *a, std::int64_t lda, float *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    auto done = detail::trsv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, lda,
+                             x, incx, dependencies);
+    trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trsv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const double *a, std::int64_t lda, double *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    auto done = detail::trsv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, lda,
+                             x, incx, dependencies);
+    trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trsv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const std::complex<float> *a, std::int64_t lda, std::complex<float> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    auto done = detail::trsv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, lda,
+                             x, incx, dependencies);
+    trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trsv(
+    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+    const std::complex<double> *a, std::int64_t lda, std::complex<double> *x, std::int64_t incx,
+    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    auto done = detail::trsv(select_backend(queue), queue, upper_lower, trans, unit_diag, n, a, lda,
+                             x, incx, dependencies);
+    trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    return done;
 }
 
 } //namespace blas

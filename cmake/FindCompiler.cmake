@@ -34,7 +34,15 @@ if(SYCL_FOUND AND is_dpcpp)
   find_library(SYCL_LIBRARY NAMES sycl PATHS "${SYCL_BINARY_DIR}/../lib")
 
   add_library(ONEMKL::SYCL::SYCL INTERFACE IMPORTED)
-  set_target_properties(ONEMKL::SYCL::SYCL PROPERTIES
+  if(UNIX)
+    set_target_properties(ONEMKL::SYCL::SYCL PROPERTIES
+      INTERFACE_COMPILE_OPTIONS "-fsycl"
+      INTERFACE_LINK_OPTIONS "-fsycl"
+      INTERFACE_LINK_LIBRARIES ${SYCL_LIBRARY})
+  else()
+    set_target_properties(ONEMKL::SYCL::SYCL PROPERTIES
       INTERFACE_COMPILE_OPTIONS "-fsycl"
       INTERFACE_LINK_LIBRARIES ${SYCL_LIBRARY})
+  endif()
+
 endif()

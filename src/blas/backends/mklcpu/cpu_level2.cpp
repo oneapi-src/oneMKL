@@ -25,6 +25,8 @@
 namespace onemkl {
 namespace mklcpu {
 
+// Buffer APIs
+
 void gbmv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n, int64_t kl, int64_t ku,
           float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda, cl::sycl::buffer<float, 1> &x,
           int64_t incx, float beta, cl::sycl::buffer<float, 1> &y, int64_t incy) {
@@ -1173,6 +1175,1303 @@ void trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
                     accessor_x.get_pointer(), (const MKL_INT *)&incx);
         });
     });
+}
+
+// USM APIs
+
+cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n, int64_t kl,
+                     int64_t ku, float alpha, const float *a, int64_t lda, const float *x,
+                     int64_t incx, float beta, float *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char trans_ = *fortran_char(trans);
+        host_task<class mkl_kernel_sgbmv_usm>(cgh, [=]() {
+            ::sgbmv((const char *)&trans_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                    (const MKL_INT *)&kl, (const MKL_INT *)&ku, (const float *)&alpha, a,
+                    (const MKL_INT *)&lda, x, (const MKL_INT *)&incx, (const float *)&beta, y,
+                    (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n, int64_t kl,
+                     int64_t ku, double alpha, const double *a, int64_t lda, const double *x,
+                     int64_t incx, double beta, double *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char trans_ = *fortran_char(trans);
+        host_task<class mkl_kernel_dgbmv_usm>(cgh, [=]() {
+            ::dgbmv((const char *)&trans_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                    (const MKL_INT *)&kl, (const MKL_INT *)&ku, (const double *)&alpha, a,
+                    (const MKL_INT *)&lda, x, (const MKL_INT *)&incx, (const double *)&beta, y,
+                    (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n, int64_t kl,
+                     int64_t ku, std::complex<float> alpha, const std::complex<float> *a,
+                     int64_t lda, const std::complex<float> *x, int64_t incx,
+                     std::complex<float> beta, std::complex<float> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char trans_ = *fortran_char(trans);
+        float alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        float beta_real = beta.real(), beta_imag = beta.imag();
+        host_task<class mkl_kernel_cgbmv_usm>(cgh, [=]() {
+            MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
+            MKL_Complex8 beta_  = { beta_real, beta_imag };
+            ::cgbmv((const char *)&trans_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                    (const MKL_INT *)&kl, (const MKL_INT *)&ku, (const MKL_Complex8 *)&alpha_, a,
+                    (const MKL_INT *)&lda, x, (const MKL_INT *)&incx, (const MKL_Complex8 *)&beta_,
+                    y, (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n, int64_t kl,
+                     int64_t ku, std::complex<double> alpha, const std::complex<double> *a,
+                     int64_t lda, const std::complex<double> *x, int64_t incx,
+                     std::complex<double> beta, std::complex<double> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char trans_ = *fortran_char(trans);
+        double alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        double beta_real = beta.real(), beta_imag = beta.imag();
+        host_task<class mkl_kernel_zgbmv_usm>(cgh, [=]() {
+            MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
+            MKL_Complex16 beta_  = { beta_real, beta_imag };
+            ::zgbmv((const char *)&trans_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                    (const MKL_INT *)&kl, (const MKL_INT *)&ku, (const MKL_Complex16 *)&alpha_, a,
+                    (const MKL_INT *)&lda, x, (const MKL_INT *)&incx, (const MKL_Complex16 *)&beta_,
+                    y, (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                     const float *a, int64_t lda, const float *x, int64_t incx, float beta,
+                     float *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char trans_ = *fortran_char(trans);
+        host_task<class mkl_kernel_sgemv_usm>(cgh, [=]() {
+            ::sgemv((const char *)&trans_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                    (const float *)&alpha, a, (const MKL_INT *)&lda, x, (const MKL_INT *)&incx,
+                    (const float *)&beta, y, (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                     const double *a, int64_t lda, const double *x, int64_t incx, double beta,
+                     double *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char trans_ = *fortran_char(trans);
+        host_task<class mkl_kernel_dgemv_usm>(cgh, [=]() {
+            ::dgemv((const char *)&trans_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                    (const double *)&alpha, a, (const MKL_INT *)&lda, x, (const MKL_INT *)&incx,
+                    (const double *)&beta, y, (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                     std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                     const std::complex<float> *x, int64_t incx, std::complex<float> beta,
+                     std::complex<float> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char trans_ = *fortran_char(trans);
+        float alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        float beta_real = beta.real(), beta_imag = beta.imag();
+        host_task<class mkl_kernel_cgemv_usm>(cgh, [=]() {
+            MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
+            MKL_Complex8 beta_  = { beta_real, beta_imag };
+            ::cgemv((const char *)&trans_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                    (const MKL_Complex8 *)&alpha_, a, (const MKL_INT *)&lda, x,
+                    (const MKL_INT *)&incx, (const MKL_Complex8 *)&beta_, y,
+                    (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                     std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                     const std::complex<double> *x, int64_t incx, std::complex<double> beta,
+                     std::complex<double> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char trans_ = *fortran_char(trans);
+        double alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        double beta_real = beta.real(), beta_imag = beta.imag();
+        host_task<class mkl_kernel_zgemv_usm>(cgh, [=]() {
+            MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
+            MKL_Complex16 beta_  = { beta_real, beta_imag };
+            ::zgemv((const char *)&trans_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                    (const MKL_Complex16 *)&alpha_, a, (const MKL_INT *)&lda, x,
+                    (const MKL_INT *)&incx, (const MKL_Complex16 *)&beta_, y,
+                    (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event ger(cl::sycl::queue &queue, int64_t m, int64_t n, float alpha, const float *x,
+                    int64_t incx, const float *y, int64_t incy, float *a, int64_t lda,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        host_task<class mkl_kernel_sger_usm>(cgh, [=]() {
+            ::sger((const MKL_INT *)&m, (const MKL_INT *)&n, (const float *)&alpha, x,
+                   (const MKL_INT *)&incx, y, (const MKL_INT *)&incy, a, (const MKL_INT *)&lda);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event ger(cl::sycl::queue &queue, int64_t m, int64_t n, double alpha, const double *x,
+                    int64_t incx, const double *y, int64_t incy, double *a, int64_t lda,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        host_task<class mkl_kernel_dger_usm>(cgh, [=]() {
+            ::dger((const MKL_INT *)&m, (const MKL_INT *)&n, (const double *)&alpha, x,
+                   (const MKL_INT *)&incx, y, (const MKL_INT *)&incy, a, (const MKL_INT *)&lda);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gerc(cl::sycl::queue &queue, int64_t m, int64_t n, std::complex<float> alpha,
+                     const std::complex<float> *x, int64_t incx, const std::complex<float> *y,
+                     int64_t incy, std::complex<float> *a, int64_t lda,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        float alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        host_task<class mkl_kernel_cgerc_usm>(cgh, [=]() {
+            MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
+            ::cgerc((const MKL_INT *)&m, (const MKL_INT *)&n, (const MKL_Complex8 *)&alpha_, x,
+                    (const MKL_INT *)&incx, y, (const MKL_INT *)&incy, a, (const MKL_INT *)&lda);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gerc(cl::sycl::queue &queue, int64_t m, int64_t n, std::complex<double> alpha,
+                     const std::complex<double> *x, int64_t incx, const std::complex<double> *y,
+                     int64_t incy, std::complex<double> *a, int64_t lda,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        double alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        host_task<class mkl_kernel_zgerc_usm>(cgh, [=]() {
+            MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
+            ::zgerc((const MKL_INT *)&m, (const MKL_INT *)&n, (const MKL_Complex16 *)&alpha_, x,
+                    (const MKL_INT *)&incx, y, (const MKL_INT *)&incy, a, (const MKL_INT *)&lda);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event geru(cl::sycl::queue &queue, int64_t m, int64_t n, std::complex<float> alpha,
+                     const std::complex<float> *x, int64_t incx, const std::complex<float> *y,
+                     int64_t incy, std::complex<float> *a, int64_t lda,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        float alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        host_task<class mkl_kernel_cgeru_usm>(cgh, [=]() {
+            MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
+            ::cgeru((const MKL_INT *)&m, (const MKL_INT *)&n, (const MKL_Complex8 *)&alpha_, x,
+                    (const MKL_INT *)&incx, y, (const MKL_INT *)&incy, a, (const MKL_INT *)&lda);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event geru(cl::sycl::queue &queue, int64_t m, int64_t n, std::complex<double> alpha,
+                     const std::complex<double> *x, int64_t incx, const std::complex<double> *y,
+                     int64_t incy, std::complex<double> *a, int64_t lda,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        double alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        host_task<class mkl_kernel_zgeru_usm>(cgh, [=]() {
+            MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
+            ::zgeru((const MKL_INT *)&m, (const MKL_INT *)&n, (const MKL_Complex16 *)&alpha_, x,
+                    (const MKL_INT *)&incx, y, (const MKL_INT *)&incy, a, (const MKL_INT *)&lda);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event hbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k,
+                     std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                     const std::complex<float> *x, int64_t incx, std::complex<float> beta,
+                     std::complex<float> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        float alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        float beta_real = beta.real(), beta_imag = beta.imag();
+        host_task<class mkl_kernel_chbmv_usm>(cgh, [=]() {
+            MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
+            MKL_Complex8 beta_  = { beta_real, beta_imag };
+            ::chbmv((const char *)&upper_lower_, (const MKL_INT *)&n, (const MKL_INT *)&k,
+                    (const MKL_Complex8 *)&alpha_, a, (const MKL_INT *)&lda, x,
+                    (const MKL_INT *)&incx, (const MKL_Complex8 *)&beta_, y,
+                    (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event hbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k,
+                     std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                     const std::complex<double> *x, int64_t incx, std::complex<double> beta,
+                     std::complex<double> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        double alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        double beta_real = beta.real(), beta_imag = beta.imag();
+        host_task<class mkl_kernel_zhbmv_usm>(cgh, [=]() {
+            MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
+            MKL_Complex16 beta_  = { beta_real, beta_imag };
+            ::zhbmv((const char *)&upper_lower_, (const MKL_INT *)&n, (const MKL_INT *)&k,
+                    (const MKL_Complex16 *)&alpha_, a, (const MKL_INT *)&lda, x,
+                    (const MKL_INT *)&incx, (const MKL_Complex16 *)&beta_, y,
+                    (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event hemv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, std::complex<float> alpha,
+                     const std::complex<float> *a, int64_t lda, const std::complex<float> *x,
+                     int64_t incx, std::complex<float> beta, std::complex<float> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        float alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        float beta_real = beta.real(), beta_imag = beta.imag();
+        host_task<class mkl_kernel_chemv_usm>(cgh, [=]() {
+            MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
+            MKL_Complex8 beta_  = { beta_real, beta_imag };
+            ::chemv((const char *)&upper_lower_, (const MKL_INT *)&n, (const MKL_Complex8 *)&alpha_,
+                    a, (const MKL_INT *)&lda, x, (const MKL_INT *)&incx,
+                    (const MKL_Complex8 *)&beta_, y, (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event hemv(cl::sycl::queue &queue, uplo upper_lower, int64_t n,
+                     std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                     const std::complex<double> *x, int64_t incx, std::complex<double> beta,
+                     std::complex<double> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        double alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        double beta_real = beta.real(), beta_imag = beta.imag();
+        host_task<class mkl_kernel_zhemv_usm>(cgh, [=]() {
+            MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
+            MKL_Complex16 beta_  = { beta_real, beta_imag };
+            ::zhemv((const char *)&upper_lower_, (const MKL_INT *)&n,
+                    (const MKL_Complex16 *)&alpha_, a, (const MKL_INT *)&lda, x,
+                    (const MKL_INT *)&incx, (const MKL_Complex16 *)&beta_, y,
+                    (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event her(cl::sycl::queue &queue, uplo upper_lower, int64_t n, float alpha,
+                    const std::complex<float> *x, int64_t incx, std::complex<float> *a, int64_t lda,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_cher_usm>(cgh, [=]() {
+            ::cher((const char *)&upper_lower_, (const MKL_INT *)&n, (const float *)&alpha, x,
+                   (const MKL_INT *)&incx, a, (const MKL_INT *)&lda);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event her(cl::sycl::queue &queue, uplo upper_lower, int64_t n, double alpha,
+                    const std::complex<double> *x, int64_t incx, std::complex<double> *a,
+                    int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_zher_usm>(cgh, [=]() {
+            ::zher((const char *)&upper_lower_, (const MKL_INT *)&n, (const double *)&alpha, x,
+                   (const MKL_INT *)&incx, a, (const MKL_INT *)&lda);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event her2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, std::complex<float> alpha,
+                     const std::complex<float> *x, int64_t incx, const std::complex<float> *y,
+                     int64_t incy, std::complex<float> *a, int64_t lda,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        float alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        host_task<class mkl_kernel_cher2_usm>(cgh, [=]() {
+            MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
+            ::cher2((const char *)&upper_lower_, (const MKL_INT *)&n, (const MKL_Complex8 *)&alpha_,
+                    x, (const MKL_INT *)&incx, y, (const MKL_INT *)&incy, a, (const MKL_INT *)&lda);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event her2(cl::sycl::queue &queue, uplo upper_lower, int64_t n,
+                     std::complex<double> alpha, const std::complex<double> *x, int64_t incx,
+                     const std::complex<double> *y, int64_t incy, std::complex<double> *a,
+                     int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        double alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        host_task<class mkl_kernel_zher2_usm>(cgh, [=]() {
+            MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
+            ::zher2((const char *)&upper_lower_, (const MKL_INT *)&n,
+                    (const MKL_Complex16 *)&alpha_, x, (const MKL_INT *)&incx, y,
+                    (const MKL_INT *)&incy, a, (const MKL_INT *)&lda);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event hpmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, std::complex<float> alpha,
+                     const std::complex<float> *ap, const std::complex<float> *x, int64_t incx,
+                     std::complex<float> beta, std::complex<float> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        float alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        float beta_real = beta.real(), beta_imag = beta.imag();
+        host_task<class mkl_kernel_chpmv_usm>(cgh, [=]() {
+            MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
+            MKL_Complex8 beta_  = { beta_real, beta_imag };
+            ::chpmv((const char *)&upper_lower_, (const MKL_INT *)&n, (const MKL_Complex8 *)&alpha_,
+                    ap, x, (const MKL_INT *)&incx, (const MKL_Complex8 *)&beta_, y,
+                    (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event hpmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n,
+                     std::complex<double> alpha, const std::complex<double> *ap,
+                     const std::complex<double> *x, int64_t incx, std::complex<double> beta,
+                     std::complex<double> *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        double alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        double beta_real = beta.real(), beta_imag = beta.imag();
+        host_task<class mkl_kernel_zhpmv_usm>(cgh, [=]() {
+            MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
+            MKL_Complex16 beta_  = { beta_real, beta_imag };
+            ::zhpmv((const char *)&upper_lower_, (const MKL_INT *)&n,
+                    (const MKL_Complex16 *)&alpha_, ap, x, (const MKL_INT *)&incx,
+                    (const MKL_Complex16 *)&beta_, y, (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event hpr(cl::sycl::queue &queue, uplo upper_lower, int64_t n, float alpha,
+                    const std::complex<float> *x, int64_t incx, std::complex<float> *ap,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_chpr_usm>(cgh, [=]() {
+            ::chpr((const char *)&upper_lower_, (const MKL_INT *)&n, (const float *)&alpha, x,
+                   (const MKL_INT *)&incx, ap);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event hpr(cl::sycl::queue &queue, uplo upper_lower, int64_t n, double alpha,
+                    const std::complex<double> *x, int64_t incx, std::complex<double> *ap,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_zhpr_usm>(cgh, [=]() {
+            ::zhpr((const char *)&upper_lower_, (const MKL_INT *)&n, (const double *)&alpha, x,
+                   (const MKL_INT *)&incx, ap);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event hpr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, std::complex<float> alpha,
+                     const std::complex<float> *x, int64_t incx, const std::complex<float> *y,
+                     int64_t incy, std::complex<float> *ap,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        float alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        host_task<class mkl_kernel_chpr2_usm>(cgh, [=]() {
+            MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
+            ::chpr2((const char *)&upper_lower_, (const MKL_INT *)&n, (const MKL_Complex8 *)&alpha_,
+                    x, (const MKL_INT *)&incx, y, (const MKL_INT *)&incy, ap);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event hpr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n,
+                     std::complex<double> alpha, const std::complex<double> *x, int64_t incx,
+                     const std::complex<double> *y, int64_t incy, std::complex<double> *ap,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        double alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        host_task<class mkl_kernel_zhpr2_usm>(cgh, [=]() {
+            MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
+            ::zhpr2((const char *)&upper_lower_, (const MKL_INT *)&n,
+                    (const MKL_Complex16 *)&alpha_, x, (const MKL_INT *)&incx, y,
+                    (const MKL_INT *)&incy, ap);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event sbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k, float alpha,
+                     const float *a, int64_t lda, const float *x, int64_t incx, float beta,
+                     float *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_ssbmv_usm>(cgh, [=]() {
+            ::ssbmv((const char *)&upper_lower_, (const MKL_INT *)&n, (const MKL_INT *)&k,
+                    (const float *)&alpha, a, (const MKL_INT *)&lda, x, (const MKL_INT *)&incx,
+                    (const float *)&beta, y, (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event sbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k, double alpha,
+                     const double *a, int64_t lda, const double *x, int64_t incx, double beta,
+                     double *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_dsbmv_usm>(cgh, [=]() {
+            ::dsbmv((const char *)&upper_lower_, (const MKL_INT *)&n, (const MKL_INT *)&k,
+                    (const double *)&alpha, a, (const MKL_INT *)&lda, x, (const MKL_INT *)&incx,
+                    (const double *)&beta, y, (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event spmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, float alpha,
+                     const float *ap, const float *x, int64_t incx, float beta, float *y,
+                     int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_sspmv_usm>(cgh, [=]() {
+            ::sspmv((const char *)&upper_lower_, (const MKL_INT *)&n, (const float *)&alpha, ap, x,
+                    (const MKL_INT *)&incx, (const float *)&beta, y, (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event spmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, double alpha,
+                     const double *ap, const double *x, int64_t incx, double beta, double *y,
+                     int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_dspmv_usm>(cgh, [=]() {
+            ::dspmv((const char *)&upper_lower_, (const MKL_INT *)&n, (const double *)&alpha, ap, x,
+                    (const MKL_INT *)&incx, (const double *)&beta, y, (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event spr(cl::sycl::queue &queue, uplo upper_lower, int64_t n, float alpha,
+                    const float *x, int64_t incx, float *ap,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_sspr_usm>(cgh, [=]() {
+            ::sspr((const char *)&upper_lower_, (const MKL_INT *)&n, (const float *)&alpha, x,
+                   (const MKL_INT *)&incx, ap);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event spr(cl::sycl::queue &queue, uplo upper_lower, int64_t n, double alpha,
+                    const double *x, int64_t incx, double *ap,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_dspr_usm>(cgh, [=]() {
+            ::dspr((const char *)&upper_lower_, (const MKL_INT *)&n, (const double *)&alpha, x,
+                   (const MKL_INT *)&incx, ap);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event spr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, float alpha,
+                     const float *x, int64_t incx, const float *y, int64_t incy, float *ap,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_sspr2_usm>(cgh, [=]() {
+            ::sspr2((const char *)&upper_lower_, (const MKL_INT *)&n, (const float *)&alpha, x,
+                    (const MKL_INT *)&incx, y, (const MKL_INT *)&incy, ap);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event spr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, double alpha,
+                     const double *x, int64_t incx, const double *y, int64_t incy, double *ap,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_dspr2_usm>(cgh, [=]() {
+            ::dspr2((const char *)&upper_lower_, (const MKL_INT *)&n, (const double *)&alpha, x,
+                    (const MKL_INT *)&incx, y, (const MKL_INT *)&incy, ap);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event symv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, float alpha,
+                     const float *a, int64_t lda, const float *x, int64_t incx, float beta,
+                     float *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_ssymv_usm>(cgh, [=]() {
+            ::ssymv((const char *)&upper_lower_, (const MKL_INT *)&n, (const float *)&alpha, a,
+                    (const MKL_INT *)&lda, x, (const MKL_INT *)&incx, (const float *)&beta, y,
+                    (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event symv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, double alpha,
+                     const double *a, int64_t lda, const double *x, int64_t incx, double beta,
+                     double *y, int64_t incy,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_dsymv_usm>(cgh, [=]() {
+            ::dsymv((const char *)&upper_lower_, (const MKL_INT *)&n, (const double *)&alpha, a,
+                    (const MKL_INT *)&lda, x, (const MKL_INT *)&incx, (const double *)&beta, y,
+                    (const MKL_INT *)&incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event syr(cl::sycl::queue &queue, uplo upper_lower, int64_t n, float alpha,
+                    const float *x, int64_t incx, float *a, int64_t lda,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_ssyr_usm>(cgh, [=]() {
+            ::ssyr((const char *)&upper_lower_, (const MKL_INT *)&n, (const float *)&alpha, x,
+                   (const MKL_INT *)&incx, a, (const MKL_INT *)&lda);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event syr(cl::sycl::queue &queue, uplo upper_lower, int64_t n, double alpha,
+                    const double *x, int64_t incx, double *a, int64_t lda,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_dsyr_usm>(cgh, [=]() {
+            ::dsyr((const char *)&upper_lower_, (const MKL_INT *)&n, (const double *)&alpha, x,
+                   (const MKL_INT *)&incx, a, (const MKL_INT *)&lda);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event syr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, float alpha,
+                     const float *x, int64_t incx, const float *y, int64_t incy, float *a,
+                     int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_ssyr2_usm>(cgh, [=]() {
+            ::ssyr2((const char *)&upper_lower_, (const MKL_INT *)&n, (const float *)&alpha, x,
+                    (const MKL_INT *)&incx, y, (const MKL_INT *)&incy, a, (const MKL_INT *)&lda);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event syr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, double alpha,
+                     const double *x, int64_t incx, const double *y, int64_t incy, double *a,
+                     int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        host_task<class mkl_kernel_dsyr2_usm>(cgh, [=]() {
+            ::dsyr2((const char *)&upper_lower_, (const MKL_INT *)&n, (const double *)&alpha, x,
+                    (const MKL_INT *)&incx, y, (const MKL_INT *)&incy, a, (const MKL_INT *)&lda);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, int64_t k, const float *a, int64_t lda, float *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_stbmv_usm>(cgh, [=]() {
+            ::stbmv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, (const MKL_INT *)&k, a, (const MKL_INT *)&lda, x,
+                    (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, int64_t k, const double *a, int64_t lda, double *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_dtbmv_usm>(cgh, [=]() {
+            ::dtbmv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, (const MKL_INT *)&k, a, (const MKL_INT *)&lda, x,
+                    (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, int64_t k, const std::complex<float> *a, int64_t lda,
+                     std::complex<float> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_ctbmv_usm>(cgh, [=]() {
+            ::ctbmv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, (const MKL_INT *)&k, a, (const MKL_INT *)&lda, x,
+                    (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, int64_t k, const std::complex<double> *a, int64_t lda,
+                     std::complex<double> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_ztbmv_usm>(cgh, [=]() {
+            ::ztbmv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, (const MKL_INT *)&k, a, (const MKL_INT *)&lda, x,
+                    (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, int64_t k, const float *a, int64_t lda, float *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_stbsv_usm>(cgh, [=]() {
+            ::stbsv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, (const MKL_INT *)&k, a, (const MKL_INT *)&lda, x,
+                    (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, int64_t k, const double *a, int64_t lda, double *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_dtbsv_usm>(cgh, [=]() {
+            ::dtbsv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, (const MKL_INT *)&k, a, (const MKL_INT *)&lda, x,
+                    (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, int64_t k, const std::complex<float> *a, int64_t lda,
+                     std::complex<float> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_ctbsv_usm>(cgh, [=]() {
+            ::ctbsv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, (const MKL_INT *)&k, a, (const MKL_INT *)&lda, x,
+                    (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, int64_t k, const std::complex<double> *a, int64_t lda,
+                     std::complex<double> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_ztbsv_usm>(cgh, [=]() {
+            ::ztbsv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, (const MKL_INT *)&k, a, (const MKL_INT *)&lda, x,
+                    (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, const float *ap, float *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_stpmv_usm>(cgh, [=]() {
+            ::stpmv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, ap, x, (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, const double *ap, double *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_dtpmv_usm>(cgh, [=]() {
+            ::dtpmv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, ap, x, (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, const std::complex<float> *ap, std::complex<float> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_ctpmv_usm>(cgh, [=]() {
+            ::ctpmv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, ap, x, (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, const std::complex<double> *ap, std::complex<double> *x,
+                     int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_ztpmv_usm>(cgh, [=]() {
+            ::ztpmv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, ap, x, (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, const float *ap, float *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_stpsv_usm>(cgh, [=]() {
+            ::stpsv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, ap, x, (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, const double *ap, double *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_dtpsv_usm>(cgh, [=]() {
+            ::dtpsv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, ap, x, (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, const std::complex<float> *ap, std::complex<float> *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_ctpsv_usm>(cgh, [=]() {
+            ::ctpsv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, ap, x, (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, const std::complex<double> *ap, std::complex<double> *x,
+                     int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_ztpsv_usm>(cgh, [=]() {
+            ::ztpsv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, ap, x, (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose transa, diag unit_diag,
+                     int64_t n, const float *a, int64_t lda, float *b, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char transa_      = *fortran_char(transa);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_strmv_usm>(cgh, [=]() {
+            ::strmv((const char *)&upper_lower_, (const char *)&transa_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, a, (const MKL_INT *)&lda, b, (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose transa, diag unit_diag,
+                     int64_t n, const double *a, int64_t lda, double *b, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char transa_      = *fortran_char(transa);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_dtrmv_usm>(cgh, [=]() {
+            ::dtrmv((const char *)&upper_lower_, (const char *)&transa_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, a, (const MKL_INT *)&lda, b, (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose transa, diag unit_diag,
+                     int64_t n, const std::complex<float> *a, int64_t lda, std::complex<float> *b,
+                     int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char transa_      = *fortran_char(transa);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_ctrmv_usm>(cgh, [=]() {
+            ::ctrmv((const char *)&upper_lower_, (const char *)&transa_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, a, (const MKL_INT *)&lda, b, (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose transa, diag unit_diag,
+                     int64_t n, const std::complex<double> *a, int64_t lda, std::complex<double> *b,
+                     int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char transa_      = *fortran_char(transa);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_ztrmv_usm>(cgh, [=]() {
+            ::ztrmv((const char *)&upper_lower_, (const char *)&transa_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, a, (const MKL_INT *)&lda, b, (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, const float *a, int64_t lda, float *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_strsv_usm>(cgh, [=]() {
+            ::strsv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, a, (const MKL_INT *)&lda, x, (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, const double *a, int64_t lda, double *x, int64_t incx,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_dtrsv_usm>(cgh, [=]() {
+            ::dtrsv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, a, (const MKL_INT *)&lda, x, (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, const std::complex<float> *a, int64_t lda, std::complex<float> *x,
+                     int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_ctrsv_usm>(cgh, [=]() {
+            ::ctrsv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, a, (const MKL_INT *)&lda, x, (const MKL_INT *)&incx);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                     int64_t n, const std::complex<double> *a, int64_t lda, std::complex<double> *x,
+                     int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        const char upper_lower_ = *fortran_char(upper_lower);
+        const char trans_       = *fortran_char(trans);
+        const char unit_diag_   = *fortran_char(unit_diag);
+        host_task<class mkl_kernel_ztrsv_usm>(cgh, [=]() {
+            ::ztrsv((const char *)&upper_lower_, (const char *)&trans_, (const char *)&unit_diag_,
+                    (const MKL_INT *)&n, a, (const MKL_INT *)&lda, x, (const MKL_INT *)&incx);
+        });
+    });
+    return done;
 }
 
 } // namespace mklcpu

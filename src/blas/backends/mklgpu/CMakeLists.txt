@@ -25,6 +25,7 @@ add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
   mkl_internal_blas_gpu_wrappers.cpp
   mkl_blas_sycl_buffer.cpp
+  mkl_blas_sycl_usm.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_blas_gpu_wrappers.cpp>
 )
 
@@ -44,7 +45,7 @@ set_target_properties(${LIB_OBJ} PROPERTIES
 )
 target_link_libraries(${LIB_NAME} PUBLIC ${LIB_OBJ})
 
-#Set MKL libraries as not transitive for dynamic
+#Set libraries as not transitive for dynamic
 if(BUILD_SHARED_LIBS)
   set_target_properties(${LIB_NAME} PROPERTIES
     INTERFACE_LINK_LIBRARIES ONEMKL::SYCL::SYCL

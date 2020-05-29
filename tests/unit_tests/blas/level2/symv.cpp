@@ -43,8 +43,8 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, fp beta, int incx, int incy,
-          int lda) {
+int test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, fp beta, int incx, int incy,
+         int lda) {
     // Prepare data.
     vector<fp> x, y, y_ref, A;
     rand_vector(x, n, incx);
@@ -98,6 +98,14 @@ bool test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, fp beta,
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const onemkl::backend_unsupported_exception &e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error &error) {
+        std::cout << "Error raised during execution of SYMV:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -105,7 +113,7 @@ bool test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, fp beta,
         good            = check_equal_vector(y_accessor, y_ref, n, incy, n, std::cout);
     }
 
-    return good;
+    return (int)good;
 }
 
 class SymvTests : public ::testing::TestWithParam<cl::sycl::device> {};
@@ -113,22 +121,22 @@ class SymvTests : public ::testing::TestWithParam<cl::sycl::device> {};
 TEST_P(SymvTests, RealSinglePrecision) {
     float alpha(2.0);
     float beta(3.0);
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 2, 3, 42));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 2, 3, 42));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, -2, -3, 42));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, -2, -3, 42));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 1, 1, 42));
-    EXPECT_TRUE(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 1, 1, 42));
 }
 TEST_P(SymvTests, RealDoublePrecision) {
     double alpha(2.0);
     double beta(3.0);
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 2, 3, 42));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 2, 3, 42));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, -2, -3, 42));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, -2, -3, 42));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 1, 1, 42));
-    EXPECT_TRUE(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 1, 1, 42));
 }
 
 INSTANTIATE_TEST_SUITE_P(SymvTestSuite, SymvTests, ::testing::ValuesIn(devices),

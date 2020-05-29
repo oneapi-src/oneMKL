@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-bool test(const device &dev, int N, int incx, int incy, fp flag) {
+int test(const device &dev, int N, int incx, int incy, fp flag) {
     // Prepare data.
     vector<fp> x, x_ref, y, y_ref;
     vector<fp> param;
@@ -96,6 +96,14 @@ bool test(const device &dev, int N, int incx, int incy, fp flag) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
+    catch (const onemkl::backend_unsupported_exception &e) {
+        return test_skipped;
+    }
+
+    catch (const std::runtime_error &error) {
+        std::cout << "Error raised during execution of ROTM:\n" << error.what() << std::endl;
+    }
+
     // Compare the results of reference implementation and DPC++ implementation.
     bool good;
     {
@@ -106,46 +114,46 @@ bool test(const device &dev, int N, int incx, int incy, fp flag) {
         good            = good_x && good_y;
     }
 
-    return good;
+    return (int)good;
 }
 
 class RotmTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(RotmTests, RealSinglePrecision) {
     float flag(-1.0);
-    EXPECT_TRUE(test<float>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUE(test<float>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUE(test<float>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1, 1, flag));
     flag = 0.0;
-    EXPECT_TRUE(test<float>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUE(test<float>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUE(test<float>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1, 1, flag));
     flag = 1.0;
-    EXPECT_TRUE(test<float>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUE(test<float>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUE(test<float>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1, 1, flag));
     flag = -2.0;
-    EXPECT_TRUE(test<float>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUE(test<float>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUE(test<float>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1, 1, flag));
 }
 TEST_P(RotmTests, RealDoublePrecision) {
     double flag(-1.0);
-    EXPECT_TRUE(test<double>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUE(test<double>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUE(test<double>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1, 1, flag));
     flag = 0.0;
-    EXPECT_TRUE(test<double>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUE(test<double>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUE(test<double>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1, 1, flag));
     flag = 1.0;
-    EXPECT_TRUE(test<double>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUE(test<double>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUE(test<double>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1, 1, flag));
     flag = -2.0;
-    EXPECT_TRUE(test<double>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUE(test<double>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUE(test<double>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1, 1, flag));
 }
 
 INSTANTIATE_TEST_SUITE_P(RotmTestSuite, RotmTests, ::testing::ValuesIn(devices),

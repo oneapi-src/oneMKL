@@ -29,6 +29,19 @@
     #include <stdlib.h>
 #endif
 
+#define test_failed  0
+#define test_passed  1
+#define test_skipped 2
+
+#define EXPECT_TRUEORSKIP(a)             \
+    do {                                 \
+        int res = a;                     \
+        if (res == test_skipped)         \
+            GTEST_SKIP();                \
+        else                             \
+            EXPECT_EQ(res, test_passed); \
+    } while (0);
+
 #ifdef ENABLE_MKLCPU_BACKEND
     #define TEST_RUN_INTELCPU(q, func, args) \
         func<onemkl::library::intelmkl, onemkl::backend::intelcpu> args
@@ -95,6 +108,33 @@ static inline void aligned_free(void *p) {
     ::free(p);
 #endif
 }
+
+/* Support for Unified Shared Memory allocations for different backends */
+static inline void *malloc_shared(size_t align, size_t size, cl::sycl::device dev,
+                                  cl::sycl::context ctx) {
+#ifdef _WIN64
+    return cl::sycl::malloc_shared(size, dev, ctx);
+#else
+    #ifdef ENABLE_CUBLAS_BACKEND
+    return ::aligned_alloc(align, size);
+    #else
+    return cl::sycl::malloc_shared(size, dev, ctx);
+    #endif
+#endif
+}
+
+static inline void free_shared(void *p, cl::sycl::context ctx) {
+#ifdef _WIN64
+    cl::sycl::free(p, ctx);
+#else
+    #ifdef ENABLE_CUBLAS_BACKEND
+    ::free(p);
+    #else
+    cl::sycl::free(p, ctx);
+    #endif
+#endif
+}
+
 } // namespace onemkl
 
 #endif // _TEST_HELPER_HPP_
