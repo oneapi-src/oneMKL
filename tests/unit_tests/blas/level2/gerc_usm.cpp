@@ -91,7 +91,9 @@ int test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda)
         TEST_RUN_CT(
             main_queue, onemkl::blas::gerc,
             (main_queue, m, n, alpha, x.data(), incx, y.data(), incy, A.data(), lda, dependencies));
+    #ifndef ENABLE_CUBLAS_BACKEND
         main_queue.wait();
+    #endif
 #endif
     }
     catch (exception const &e) {

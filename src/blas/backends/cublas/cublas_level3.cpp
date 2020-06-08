@@ -387,7 +387,26 @@ inline cl::sycl::event gemm(Func func, cl::sycl::queue &queue, transpose transa,
                             int64_t m, int64_t n, int64_t k, T alpha, const T *a, int64_t lda,
                             const T *b, int64_t ldb, T beta, T *c, int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    using cuDataType = typename CudaEquivalentType<T>::Type;
+    overflow_check(m, n, k, lda, ldb, ldc);
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        cgh.interop_task([=](cl::sycl::interop_handler ih) {
+            auto sc     = CublasScopedContextHandler(queue);
+            auto handle = sc.get_handle(queue);
+            auto a_     = reinterpret_cast<const cuDataType *>(a);
+            auto b_     = reinterpret_cast<const cuDataType *>(b);
+            auto c_     = reinterpret_cast<cuDataType *>(c);
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_operation(transa),
+                              get_cublas_operation(transb), m, n, k, (cuDataType *)&alpha, a_, lda,
+                              b_, ldb, (cuDataType *)&beta, c_, ldc);
+        });
+    });
+    return done;
 }
 
 #define GEMM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                  \
@@ -406,12 +425,38 @@ GEMM_LAUNCHER_USM(std::complex<double>, cublasZgemm)
 
 #undef GEMM_LAUNCHER_USM
 
+cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                     std::int64_t n, std::int64_t k, half alpha, const half *a, std::int64_t lda,
+                     const half *b, std::int64_t ldb, half beta, half *c, std::int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw std::runtime_error("Not implemented for cublas");
+}
+
 template <typename Func, typename T>
 inline cl::sycl::event symm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             int64_t m, int64_t n, T alpha, const T *a, int64_t lda, const T *b,
                             int64_t ldb, T beta, T *c, int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    using cuDataType = typename CudaEquivalentType<T>::Type;
+    overflow_check(m, n, lda, ldb, ldc);
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        cgh.interop_task([=](cl::sycl::interop_handler ih) {
+            auto sc     = CublasScopedContextHandler(queue);
+            auto handle = sc.get_handle(queue);
+            auto a_     = reinterpret_cast<const cuDataType *>(a);
+            auto b_     = reinterpret_cast<const cuDataType *>(b);
+            auto c_     = reinterpret_cast<cuDataType *>(c);
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_side_mode(left_right),
+                              get_cublas_fill_mode(upper_lower), m, n, (cuDataType *)&alpha, a_,
+                              lda, b_, ldb, (cuDataType *)&beta, c_, ldc);
+        });
+    });
+    return done;
 }
 
 #define SYMM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                  \
@@ -435,7 +480,26 @@ inline cl::sycl::event hemm(Func func, cl::sycl::queue &queue, side left_right, 
                             int64_t m, int64_t n, T alpha, const T *a, int64_t lda, const T *b,
                             int64_t ldb, T beta, T *c, int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    using cuDataType = typename CudaEquivalentType<T>::Type;
+    overflow_check(m, n, lda, ldb, ldc);
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        cgh.interop_task([=](cl::sycl::interop_handler ih) {
+            auto sc     = CublasScopedContextHandler(queue);
+            auto handle = sc.get_handle(queue);
+            auto a_     = reinterpret_cast<const cuDataType *>(a);
+            auto b_     = reinterpret_cast<const cuDataType *>(b);
+            auto c_     = reinterpret_cast<cuDataType *>(c);
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_side_mode(left_right),
+                              get_cublas_fill_mode(upper_lower), m, n, (cuDataType *)&alpha, a_,
+                              lda, b_, ldb, (cuDataType *)&beta, c_, ldc);
+        });
+    });
+    return done;
 }
 
 #define HEMM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                  \
@@ -456,7 +520,25 @@ inline cl::sycl::event syrk(Func func, cl::sycl::queue &queue, uplo upper_lower,
                             int64_t n, int64_t k, T alpha, const T *a, int64_t lda, T beta, T *c,
                             int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    using cuDataType = typename CudaEquivalentType<T>::Type;
+    overflow_check(n, k, lda, ldc);
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        cgh.interop_task([=](cl::sycl::interop_handler ih) {
+            auto sc     = CublasScopedContextHandler(queue);
+            auto handle = sc.get_handle(queue);
+            auto a_     = reinterpret_cast<const cuDataType *>(a);
+            auto c_     = reinterpret_cast<cuDataType *>(c);
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_fill_mode(upper_lower),
+                              get_cublas_operation(trans), n, k, (cuDataType *)&alpha, a_, lda,
+                              (cuDataType *)&beta, c_, ldc);
+        });
+    });
+    return done;
 }
 
 #define SYRK_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
@@ -477,16 +559,35 @@ SYRK_LAUNCHER_USM(std::complex<double>, cublasZsyrk)
 
 template <typename Func, typename DataType, typename ScalarType>
 inline cl::sycl::event herk(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-                            int64_t n, int64_t k, ScalarType alpha, const DataType *a, int64_t lda,
-                            ScalarType beta, DataType *c, int64_t ldc,
+                            int64_t n, int64_t k, const ScalarType alpha, const DataType *a,
+                            int64_t lda, const ScalarType beta, DataType *c, int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    using cuDataType   = typename CudaEquivalentType<DataType>::Type;
+    using cuScalarType = typename CudaEquivalentType<ScalarType>::Type;
+    overflow_check(n, k, lda, ldc);
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        cgh.interop_task([=](cl::sycl::interop_handler ih) {
+            auto sc     = CublasScopedContextHandler(queue);
+            auto handle = sc.get_handle(queue);
+            auto a_     = reinterpret_cast<const cuDataType *>(a);
+            auto c_     = reinterpret_cast<cuDataType *>(c);
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_fill_mode(upper_lower),
+                              get_cublas_operation(trans), n, k, (cuScalarType *)&alpha, a_, lda,
+                              (cuScalarType *)&beta, c_, ldc);
+        });
+    });
+    return done;
 }
 
 #define HERK_LAUNCHER_USM(DATA_TYPE, SCALAR_TYPE, CUBLAS_ROUTINE)                                 \
     cl::sycl::event herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
-                         int64_t k, SCALAR_TYPE alpha, const DATA_TYPE *a, int64_t lda,           \
-                         SCALAR_TYPE beta, DATA_TYPE *c, int64_t ldc,                             \
+                         int64_t k, const SCALAR_TYPE alpha, const DATA_TYPE *a, int64_t lda,     \
+                         const SCALAR_TYPE beta, DATA_TYPE *c, int64_t ldc,                       \
                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
         return herk(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, \
                     dependencies);                                                                \
@@ -502,7 +603,26 @@ inline cl::sycl::event syr2k(Func func, cl::sycl::queue &queue, uplo upper_lower
                              int64_t n, int64_t k, T alpha, const T *a, int64_t lda, const T *b,
                              int64_t ldb, T beta, T *c, int64_t ldc,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    using cuDataType = typename CudaEquivalentType<T>::Type;
+    overflow_check(n, k, lda, ldb, ldc);
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        cgh.interop_task([=](cl::sycl::interop_handler ih) {
+            auto sc     = CublasScopedContextHandler(queue);
+            auto handle = sc.get_handle(queue);
+            auto a_     = reinterpret_cast<const cuDataType *>(a);
+            auto b_     = reinterpret_cast<const cuDataType *>(b);
+            auto c_     = reinterpret_cast<cuDataType *>(c);
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_fill_mode(upper_lower),
+                              get_cublas_operation(trans), n, k, (cuDataType *)&alpha, a_, lda, b_,
+                              ldb, (cuDataType *)&beta, c_, ldc);
+        });
+    });
+    return done;
 }
 
 #define SYR2K_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
@@ -522,17 +642,37 @@ SYR2K_LAUNCHER_USM(std::complex<double>, cublasZsyr2k)
 
 template <typename Func, typename DataType, typename ScalarType>
 inline cl::sycl::event her2k(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-                             int64_t n, int64_t k, DataType alpha, const DataType *a, int64_t lda,
-                             const DataType *b, int64_t ldb, ScalarType beta, DataType *c,
-                             int64_t ldc,
+                             int64_t n, int64_t k, const DataType alpha, const DataType *a,
+                             int64_t lda, const DataType *b, int64_t ldb, const ScalarType beta,
+                             DataType *c, int64_t ldc,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    using cuDataType   = typename CudaEquivalentType<DataType>::Type;
+    using cuScalarType = typename CudaEquivalentType<ScalarType>::Type;
+    overflow_check(n, k, lda, ldb, ldc);
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        cgh.interop_task([=](cl::sycl::interop_handler ih) {
+            auto sc     = CublasScopedContextHandler(queue);
+            auto handle = sc.get_handle(queue);
+            auto a_     = reinterpret_cast<const cuDataType *>(a);
+            auto b_     = reinterpret_cast<const cuDataType *>(b);
+            auto c_     = reinterpret_cast<cuDataType *>(c);
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_fill_mode(upper_lower),
+                              get_cublas_operation(trans), n, k, (cuDataType *)&alpha, a_, lda, b_,
+                              ldb, (cuScalarType *)&beta, c_, ldc);
+        });
+    });
+    return done;
 }
 
 #define HER2K_LAUNCHER_USM(DATA_TYPE, SCALAR_TYPE, CUBLAS_ROUTINE)                                 \
     cl::sycl::event her2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
-                          int64_t k, DATA_TYPE alpha, const DATA_TYPE *a, int64_t lda,             \
-                          const DATA_TYPE *b, int64_t ldb, SCALAR_TYPE beta, DATA_TYPE *c,         \
+                          int64_t k, const DATA_TYPE alpha, const DATA_TYPE *a, int64_t lda,       \
+                          const DATA_TYPE *b, int64_t ldb, const SCALAR_TYPE beta, DATA_TYPE *c,   \
                           int64_t ldc,                                                             \
                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
         return her2k(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, \
@@ -553,7 +693,26 @@ inline cl::sycl::event trmm(Func func, cl::sycl::queue &queue, side left_right, 
                             transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha,
                             const T *a, int64_t lda, T *b, int64_t ldb,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    using cuDataType = typename CudaEquivalentType<T>::Type;
+    overflow_check(m, n, lda, ldb);
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        cgh.interop_task([=](cl::sycl::interop_handler ih) {
+            auto sc     = CublasScopedContextHandler(queue);
+            auto handle = sc.get_handle(queue);
+            auto a_     = reinterpret_cast<const cuDataType *>(a);
+            auto b_     = reinterpret_cast<cuDataType *>(b);
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_side_mode(left_right),
+                              get_cublas_fill_mode(upper_lower), get_cublas_operation(trans),
+                              get_cublas_diag_type(unit_diag), m, n, (cuDataType *)&alpha, a_, lda,
+                              b_, ldb, b_, ldb);
+        });
+    });
+    return done;
 }
 
 #define TRMM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                    \
@@ -576,7 +735,26 @@ inline cl::sycl::event trsm(Func func, cl::sycl::queue &queue, side left_right, 
                             transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha,
                             const T *a, int64_t lda, T *b, int64_t ldb,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    using cuDataType = typename CudaEquivalentType<T>::Type;
+    overflow_check(m, n, lda, ldb);
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        cgh.interop_task([=](cl::sycl::interop_handler ih) {
+            auto sc     = CublasScopedContextHandler(queue);
+            auto handle = sc.get_handle(queue);
+            auto a_     = reinterpret_cast<const cuDataType *>(a);
+            auto b_     = reinterpret_cast<cuDataType *>(b);
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_side_mode(left_right),
+                              get_cublas_fill_mode(upper_lower), get_cublas_operation(trans),
+                              get_cublas_diag_type(unit_diag), m, n, (cuDataType *)&alpha, a_, lda,
+                              b_, ldb);
+        });
+    });
+    return done;
 }
 
 #define TRSM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                    \

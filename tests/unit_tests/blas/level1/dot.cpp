@@ -103,7 +103,17 @@ int test(const device& dev, int N, int incx, int incy) {
     bool good;
     {
         auto result_accessor = result_buffer.template get_access<access::mode::read>();
-        good                 = check_equal(result_accessor[0], result_ref, N, std::cout);
+#ifndef ENABLE_CUBLAS_BACKEND
+        good = check_equal(result_accessor[0], result_ref, N, std::cout);
+#else
+        if (std::is_same<fp, fp_res>::value) {
+            good = check_equal(result_accessor[0], result_ref, N, std::cout);
+        }
+        else {
+            // Increase error margin for cuBLAS since computation is done in float instead of double.
+            good = check_equal(result_accessor[0], result_ref, N * 10e5, std::cout);
+        }
+#endif
     }
 
     return (int)good;
@@ -121,11 +131,11 @@ TEST_P(DotTests, RealDoublePrecision) {
     EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, 1, 1)));
     EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, -3, -2)));
 }
-//TEST_P(DotTests, RealDoubleSinglePrecision) {
-//    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, 2, 3)));
-//    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, 1, 1)));
-//    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, -3, -2)));
-//}
+TEST_P(DotTests, RealDoubleSinglePrecision) {
+    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, 2, 3)));
+    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, 1, 1)));
+    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, -3, -2)));
+}
 
 INSTANTIATE_TEST_SUITE_P(DotTestSuite, DotTests, ::testing::ValuesIn(devices), ::DeviceNamePrint());
 

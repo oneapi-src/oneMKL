@@ -1970,6 +1970,7 @@ cl::sycl::event syr2<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::syr2(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
     syr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    done.wait();
     return done;
 }
 
@@ -1982,6 +1983,7 @@ cl::sycl::event syr2<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::syr2(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
     syr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    done.wait();
     return done;
 }
 
@@ -1992,6 +1994,7 @@ cl::sycl::event scal<library::cublas, backend::nvidiagpu>(
     scal_precondition(queue, n, alpha, x, incx, dependencies);
     auto done = onemkl::cublas::scal(queue, n, alpha, x, incx, dependencies);
     scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2002,6 +2005,7 @@ cl::sycl::event scal<library::cublas, backend::nvidiagpu>(
     scal_precondition(queue, n, alpha, x, incx, dependencies);
     auto done = onemkl::cublas::scal(queue, n, alpha, x, incx, dependencies);
     scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2012,6 +2016,7 @@ cl::sycl::event scal<library::cublas, backend::nvidiagpu>(
     scal_precondition(queue, n, alpha, x, incx, dependencies);
     auto done = onemkl::cublas::scal(queue, n, alpha, x, incx, dependencies);
     scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2022,6 +2027,7 @@ cl::sycl::event scal<library::cublas, backend::nvidiagpu>(
     scal_precondition(queue, n, alpha, x, incx, dependencies);
     auto done = onemkl::cublas::scal(queue, n, alpha, x, incx, dependencies);
     scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2032,6 +2038,7 @@ cl::sycl::event scal<library::cublas, backend::nvidiagpu>(
     scal_precondition(queue, n, alpha, x, incx, dependencies);
     auto done = onemkl::cublas::scal(queue, n, alpha, x, incx, dependencies);
     scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2042,6 +2049,7 @@ cl::sycl::event scal<library::cublas, backend::nvidiagpu>(
     scal_precondition(queue, n, alpha, x, incx, dependencies);
     auto done = onemkl::cublas::scal(queue, n, alpha, x, incx, dependencies);
     scal_postcondition(queue, n, alpha, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2054,6 +2062,7 @@ cl::sycl::event trmv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::trmv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
                                      dependencies);
     trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2066,6 +2075,7 @@ cl::sycl::event trmv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::trmv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
                                      dependencies);
     trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2078,6 +2088,7 @@ cl::sycl::event trmv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::trmv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
                                      dependencies);
     trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2090,6 +2101,7 @@ cl::sycl::event trmv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::trmv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
                                      dependencies);
     trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2102,6 +2114,7 @@ cl::sycl::event tpmv<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::tpmv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2114,6 +2127,7 @@ cl::sycl::event tpmv<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::tpmv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2126,6 +2140,7 @@ cl::sycl::event tpmv<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::tpmv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2138,6 +2153,7 @@ cl::sycl::event tpmv<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::tpmv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2148,6 +2164,7 @@ cl::sycl::event spr<library::cublas, backend::nvidiagpu>(
     spr_precondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
     auto done = onemkl::cublas::spr(queue, upper_lower, n, alpha, x, incx, a, dependencies);
     spr_postcondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2158,6 +2175,7 @@ cl::sycl::event spr<library::cublas, backend::nvidiagpu>(
     spr_precondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
     auto done = onemkl::cublas::spr(queue, upper_lower, n, alpha, x, incx, a, dependencies);
     spr_postcondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2171,6 +2189,7 @@ cl::sycl::event hpmv<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::hpmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
     hpmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2184,6 +2203,7 @@ cl::sycl::event hpmv<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::hpmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
     hpmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2196,6 +2216,7 @@ cl::sycl::event syrk<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
                                      dependencies);
     syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2208,6 +2229,7 @@ cl::sycl::event syrk<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
                                      dependencies);
     syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2221,6 +2243,7 @@ cl::sycl::event syrk<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
                                      dependencies);
     syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2234,6 +2257,7 @@ cl::sycl::event syrk<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
                                      dependencies);
     syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2247,6 +2271,7 @@ cl::sycl::event her2<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::her2(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
     her2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2260,6 +2285,7 @@ cl::sycl::event her2<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::her2(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
     her2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2276,6 +2302,7 @@ cl::sycl::event hbmv<library::cublas, backend::nvidiagpu>(
                                      incy, dependencies);
     hbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -2292,6 +2319,7 @@ cl::sycl::event hbmv<library::cublas, backend::nvidiagpu>(
                                      incy, dependencies);
     hbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -2303,6 +2331,7 @@ cl::sycl::event rot<library::cublas, backend::nvidiagpu>(
     rot_precondition(queue, n, x, incx, y, incy, c, s, dependencies);
     auto done = onemkl::cublas::rot(queue, n, x, incx, y, incy, c, s, dependencies);
     rot_postcondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2314,6 +2343,7 @@ cl::sycl::event rot<library::cublas, backend::nvidiagpu>(
     rot_precondition(queue, n, x, incx, y, incy, c, s, dependencies);
     auto done = onemkl::cublas::rot(queue, n, x, incx, y, incy, c, s, dependencies);
     rot_postcondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2325,6 +2355,7 @@ cl::sycl::event rot<library::cublas, backend::nvidiagpu>(
     rot_precondition(queue, n, x, incx, y, incy, c, s, dependencies);
     auto done = onemkl::cublas::rot(queue, n, x, incx, y, incy, c, s, dependencies);
     rot_postcondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2336,6 +2367,7 @@ cl::sycl::event rot<library::cublas, backend::nvidiagpu>(
     rot_precondition(queue, n, x, incx, y, incy, c, s, dependencies);
     auto done = onemkl::cublas::rot(queue, n, x, incx, y, incy, c, s, dependencies);
     rot_postcondition(queue, n, x, incx, y, incy, c, s, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2346,6 +2378,7 @@ cl::sycl::event axpy<library::cublas, backend::nvidiagpu>(
     axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
     auto done = onemkl::cublas::axpy(queue, n, alpha, x, incx, y, incy, dependencies);
     axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2356,6 +2389,7 @@ cl::sycl::event axpy<library::cublas, backend::nvidiagpu>(
     axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
     auto done = onemkl::cublas::axpy(queue, n, alpha, x, incx, y, incy, dependencies);
     axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2367,6 +2401,7 @@ cl::sycl::event axpy<library::cublas, backend::nvidiagpu>(
     axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
     auto done = onemkl::cublas::axpy(queue, n, alpha, x, incx, y, incy, dependencies);
     axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2378,6 +2413,7 @@ cl::sycl::event axpy<library::cublas, backend::nvidiagpu>(
     axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
     auto done = onemkl::cublas::axpy(queue, n, alpha, x, incx, y, incy, dependencies);
     axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2392,6 +2428,7 @@ cl::sycl::event axpy_batch<library::cublas, backend::nvidiagpu>(
                                            group_size, dependencies);
     axpy_batch_postcondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
                              dependencies);
+    done.wait();
     return done;
 }
 
@@ -2406,6 +2443,7 @@ cl::sycl::event axpy_batch<library::cublas, backend::nvidiagpu>(
                                            group_size, dependencies);
     axpy_batch_postcondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
                              dependencies);
+    done.wait();
     return done;
 }
 
@@ -2421,6 +2459,7 @@ cl::sycl::event axpy_batch<library::cublas, backend::nvidiagpu>(
                                            group_size, dependencies);
     axpy_batch_postcondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
                              dependencies);
+    done.wait();
     return done;
 }
 
@@ -2436,6 +2475,7 @@ cl::sycl::event axpy_batch<library::cublas, backend::nvidiagpu>(
                                            group_size, dependencies);
     axpy_batch_postcondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
                              dependencies);
+    done.wait();
     return done;
 }
 
@@ -2448,6 +2488,7 @@ cl::sycl::event gerc<library::cublas, backend::nvidiagpu>(
     gerc_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = onemkl::cublas::gerc(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     gerc_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2460,6 +2501,7 @@ cl::sycl::event gerc<library::cublas, backend::nvidiagpu>(
     gerc_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = onemkl::cublas::gerc(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     gerc_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2474,6 +2516,7 @@ cl::sycl::event syr2k<library::cublas, backend::nvidiagpu>(
                                       c, ldc, dependencies);
     syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                         dependencies);
+    done.wait();
     return done;
 }
 
@@ -2488,6 +2531,7 @@ cl::sycl::event syr2k<library::cublas, backend::nvidiagpu>(
                                       c, ldc, dependencies);
     syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                         dependencies);
+    done.wait();
     return done;
 }
 
@@ -2504,6 +2548,7 @@ cl::sycl::event syr2k<library::cublas, backend::nvidiagpu>(
                                       c, ldc, dependencies);
     syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                         dependencies);
+    done.wait();
     return done;
 }
 
@@ -2520,6 +2565,7 @@ cl::sycl::event syr2k<library::cublas, backend::nvidiagpu>(
                                       c, ldc, dependencies);
     syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                         dependencies);
+    done.wait();
     return done;
 }
 
@@ -2532,6 +2578,7 @@ cl::sycl::event gemv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::gemv(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
                                      dependencies);
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2544,6 +2591,7 @@ cl::sycl::event gemv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::gemv(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
                                      dependencies);
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2558,6 +2606,7 @@ cl::sycl::event gemv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::gemv(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
                                      dependencies);
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2572,6 +2621,7 @@ cl::sycl::event gemv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::gemv(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
                                      dependencies);
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2583,6 +2633,7 @@ cl::sycl::event her<library::cublas, backend::nvidiagpu>(
     her_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     auto done = onemkl::cublas::her(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     her_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2594,6 +2645,7 @@ cl::sycl::event her<library::cublas, backend::nvidiagpu>(
     her_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     auto done = onemkl::cublas::her(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     her_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2605,6 +2657,7 @@ cl::sycl::event hpr<library::cublas, backend::nvidiagpu>(
     hpr_precondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
     auto done = onemkl::cublas::hpr(queue, upper_lower, n, alpha, x, incx, a, dependencies);
     hpr_postcondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2616,6 +2669,7 @@ cl::sycl::event hpr<library::cublas, backend::nvidiagpu>(
     hpr_precondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
     auto done = onemkl::cublas::hpr(queue, upper_lower, n, alpha, x, incx, a, dependencies);
     hpr_postcondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2626,6 +2680,7 @@ cl::sycl::event iamin<library::cublas, backend::nvidiagpu>(
     iamin_precondition(queue, n, x, incx, result, dependencies);
     auto done = onemkl::cublas::iamin(queue, n, x, incx, result, dependencies);
     iamin_postcondition(queue, n, x, incx, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2636,6 +2691,7 @@ cl::sycl::event iamin<library::cublas, backend::nvidiagpu>(
     iamin_precondition(queue, n, x, incx, result, dependencies);
     auto done = onemkl::cublas::iamin(queue, n, x, incx, result, dependencies);
     iamin_postcondition(queue, n, x, incx, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2646,6 +2702,7 @@ cl::sycl::event iamin<library::cublas, backend::nvidiagpu>(
     iamin_precondition(queue, n, x, incx, result, dependencies);
     auto done = onemkl::cublas::iamin(queue, n, x, incx, result, dependencies);
     iamin_postcondition(queue, n, x, incx, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2656,6 +2713,7 @@ cl::sycl::event iamin<library::cublas, backend::nvidiagpu>(
     iamin_precondition(queue, n, x, incx, result, dependencies);
     auto done = onemkl::cublas::iamin(queue, n, x, incx, result, dependencies);
     iamin_postcondition(queue, n, x, incx, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2671,6 +2729,7 @@ cl::sycl::event gemm_batch<library::cublas, backend::nvidiagpu>(
                                            beta, c, ldc, group_count, group_size, dependencies);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                              group_count, group_size, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2686,6 +2745,7 @@ cl::sycl::event gemm_batch<library::cublas, backend::nvidiagpu>(
                                            beta, c, ldc, group_count, group_size, dependencies);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                              group_count, group_size, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2702,6 +2762,7 @@ cl::sycl::event gemm_batch<library::cublas, backend::nvidiagpu>(
                                            beta, c, ldc, group_count, group_size, dependencies);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                              group_count, group_size, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2718,6 +2779,7 @@ cl::sycl::event gemm_batch<library::cublas, backend::nvidiagpu>(
                                            beta, c, ldc, group_count, group_size, dependencies);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                              group_count, group_size, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2735,6 +2797,7 @@ cl::sycl::event gemm_batch<library::cublas, backend::nvidiagpu>(
                                    stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                              stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2752,6 +2815,7 @@ cl::sycl::event gemm_batch<library::cublas, backend::nvidiagpu>(
                                    stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                              stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2769,6 +2833,7 @@ cl::sycl::event gemm_batch<library::cublas, backend::nvidiagpu>(
                                    stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                              stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2786,6 +2851,7 @@ cl::sycl::event gemm_batch<library::cublas, backend::nvidiagpu>(
                                    stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                              stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2798,6 +2864,7 @@ cl::sycl::event spmv<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::spmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
     spmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2810,6 +2877,7 @@ cl::sycl::event spmv<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::spmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
     spmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2820,6 +2888,7 @@ cl::sycl::event swap<library::cublas, backend::nvidiagpu>(
     swap_precondition(queue, n, x, incx, y, incy, dependencies);
     auto done = onemkl::cublas::swap(queue, n, x, incx, y, incy, dependencies);
     swap_postcondition(queue, n, x, incx, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2830,6 +2899,7 @@ cl::sycl::event swap<library::cublas, backend::nvidiagpu>(
     swap_precondition(queue, n, x, incx, y, incy, dependencies);
     auto done = onemkl::cublas::swap(queue, n, x, incx, y, incy, dependencies);
     swap_postcondition(queue, n, x, incx, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2841,6 +2911,7 @@ cl::sycl::event swap<library::cublas, backend::nvidiagpu>(
     swap_precondition(queue, n, x, incx, y, incy, dependencies);
     auto done = onemkl::cublas::swap(queue, n, x, incx, y, incy, dependencies);
     swap_postcondition(queue, n, x, incx, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2852,6 +2923,7 @@ cl::sycl::event swap<library::cublas, backend::nvidiagpu>(
     swap_precondition(queue, n, x, incx, y, incy, dependencies);
     auto done = onemkl::cublas::swap(queue, n, x, incx, y, incy, dependencies);
     swap_postcondition(queue, n, x, incx, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2864,6 +2936,7 @@ cl::sycl::event geru<library::cublas, backend::nvidiagpu>(
     geru_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = onemkl::cublas::geru(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     geru_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2876,6 +2949,7 @@ cl::sycl::event geru<library::cublas, backend::nvidiagpu>(
     geru_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = onemkl::cublas::geru(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     geru_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2886,6 +2960,7 @@ cl::sycl::event nrm2<library::cublas, backend::nvidiagpu>(
     nrm2_precondition(queue, n, x, incx, result, dependencies);
     auto done = onemkl::cublas::nrm2(queue, n, x, incx, result, dependencies);
     nrm2_postcondition(queue, n, x, incx, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2896,6 +2971,7 @@ cl::sycl::event nrm2<library::cublas, backend::nvidiagpu>(
     nrm2_precondition(queue, n, x, incx, result, dependencies);
     auto done = onemkl::cublas::nrm2(queue, n, x, incx, result, dependencies);
     nrm2_postcondition(queue, n, x, incx, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2906,6 +2982,7 @@ cl::sycl::event nrm2<library::cublas, backend::nvidiagpu>(
     nrm2_precondition(queue, n, x, incx, result, dependencies);
     auto done = onemkl::cublas::nrm2(queue, n, x, incx, result, dependencies);
     nrm2_postcondition(queue, n, x, incx, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2916,6 +2993,7 @@ cl::sycl::event nrm2<library::cublas, backend::nvidiagpu>(
     nrm2_precondition(queue, n, x, incx, result, dependencies);
     auto done = onemkl::cublas::nrm2(queue, n, x, incx, result, dependencies);
     nrm2_postcondition(queue, n, x, incx, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -2931,6 +3009,7 @@ cl::sycl::event gemm<library::cublas, backend::nvidiagpu>(
                                      ldc, dependencies);
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -2946,6 +3025,7 @@ cl::sycl::event gemm<library::cublas, backend::nvidiagpu>(
                                      ldc, dependencies);
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -2962,6 +3042,7 @@ cl::sycl::event gemm<library::cublas, backend::nvidiagpu>(
                                      ldc, dependencies);
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -2978,6 +3059,7 @@ cl::sycl::event gemm<library::cublas, backend::nvidiagpu>(
                                      ldc, dependencies);
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -2990,6 +3072,7 @@ cl::sycl::event herk<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::herk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
                                      dependencies);
     herk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3003,6 +3086,7 @@ cl::sycl::event herk<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::herk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
                                      dependencies);
     herk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3014,6 +3098,7 @@ cl::sycl::event ger<library::cublas, backend::nvidiagpu>(
     ger_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = onemkl::cublas::ger(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     ger_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3025,6 +3110,7 @@ cl::sycl::event ger<library::cublas, backend::nvidiagpu>(
     ger_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = onemkl::cublas::ger(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     ger_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3039,6 +3125,7 @@ cl::sycl::event trsm<library::cublas, backend::nvidiagpu>(
                                      a, lda, b, ldb, dependencies);
     trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3053,6 +3140,7 @@ cl::sycl::event trsm<library::cublas, backend::nvidiagpu>(
                                      a, lda, b, ldb, dependencies);
     trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3068,6 +3156,7 @@ cl::sycl::event trsm<library::cublas, backend::nvidiagpu>(
                                      a, lda, b, ldb, dependencies);
     trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3083,6 +3172,7 @@ cl::sycl::event trsm<library::cublas, backend::nvidiagpu>(
                                      a, lda, b, ldb, dependencies);
     trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3094,6 +3184,7 @@ cl::sycl::event dotu<library::cublas, backend::nvidiagpu>(
     dotu_precondition(queue, n, x, incx, y, incy, result, dependencies);
     auto done = onemkl::cublas::dotu(queue, n, x, incx, y, incy, result, dependencies);
     dotu_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3105,6 +3196,7 @@ cl::sycl::event dotu<library::cublas, backend::nvidiagpu>(
     dotu_precondition(queue, n, x, incx, y, incy, result, dependencies);
     auto done = onemkl::cublas::dotu(queue, n, x, incx, y, incy, result, dependencies);
     dotu_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3121,6 +3213,7 @@ cl::sycl::event hemm<library::cublas, backend::nvidiagpu>(
                                      beta, c, ldc, dependencies);
     hemm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -3137,6 +3230,7 @@ cl::sycl::event hemm<library::cublas, backend::nvidiagpu>(
                                      beta, c, ldc, dependencies);
     hemm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -3150,6 +3244,7 @@ cl::sycl::event hpr2<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::hpr2(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
     hpr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3163,6 +3258,7 @@ cl::sycl::event hpr2<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::hpr2(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
     hpr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3178,6 +3274,7 @@ cl::sycl::event gbmv<library::cublas, backend::nvidiagpu>(
                                      incy, dependencies);
     gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -3193,6 +3290,7 @@ cl::sycl::event gbmv<library::cublas, backend::nvidiagpu>(
                                      incy, dependencies);
     gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -3209,6 +3307,7 @@ cl::sycl::event gbmv<library::cublas, backend::nvidiagpu>(
                                      incy, dependencies);
     gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -3225,6 +3324,7 @@ cl::sycl::event gbmv<library::cublas, backend::nvidiagpu>(
                                      incy, dependencies);
     gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -3237,6 +3337,7 @@ cl::sycl::event tbmv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
                                      dependencies);
     tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3249,6 +3350,7 @@ cl::sycl::event tbmv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
                                      dependencies);
     tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3261,6 +3363,7 @@ cl::sycl::event tbmv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
                                      dependencies);
     tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3273,6 +3376,7 @@ cl::sycl::event tbmv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
                                      dependencies);
     tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3287,6 +3391,7 @@ cl::sycl::event symm<library::cublas, backend::nvidiagpu>(
                                      beta, c, ldc, dependencies);
     symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -3301,6 +3406,7 @@ cl::sycl::event symm<library::cublas, backend::nvidiagpu>(
                                      beta, c, ldc, dependencies);
     symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -3317,6 +3423,7 @@ cl::sycl::event symm<library::cublas, backend::nvidiagpu>(
                                      beta, c, ldc, dependencies);
     symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -3333,6 +3440,7 @@ cl::sycl::event symm<library::cublas, backend::nvidiagpu>(
                                      beta, c, ldc, dependencies);
     symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -3344,6 +3452,7 @@ cl::sycl::event dotc<library::cublas, backend::nvidiagpu>(
     dotc_precondition(queue, n, x, incx, y, incy, result, dependencies);
     auto done = onemkl::cublas::dotc(queue, n, x, incx, y, incy, result, dependencies);
     dotc_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3355,6 +3464,7 @@ cl::sycl::event dotc<library::cublas, backend::nvidiagpu>(
     dotc_precondition(queue, n, x, incx, y, incy, result, dependencies);
     auto done = onemkl::cublas::dotc(queue, n, x, incx, y, incy, result, dependencies);
     dotc_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3366,6 +3476,7 @@ cl::sycl::event syr<library::cublas, backend::nvidiagpu>(
     syr_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     auto done = onemkl::cublas::syr(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     syr_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3377,6 +3488,7 @@ cl::sycl::event syr<library::cublas, backend::nvidiagpu>(
     syr_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     auto done = onemkl::cublas::syr(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     syr_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3391,6 +3503,7 @@ cl::sycl::event trmm<library::cublas, backend::nvidiagpu>(
                                      a, lda, b, ldb, dependencies);
     trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3405,6 +3518,7 @@ cl::sycl::event trmm<library::cublas, backend::nvidiagpu>(
                                      a, lda, b, ldb, dependencies);
     trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3420,6 +3534,7 @@ cl::sycl::event trmm<library::cublas, backend::nvidiagpu>(
                                      a, lda, b, ldb, dependencies);
     trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3435,6 +3550,7 @@ cl::sycl::event trmm<library::cublas, backend::nvidiagpu>(
                                      a, lda, b, ldb, dependencies);
     trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3445,6 +3561,7 @@ cl::sycl::event rotmg<library::cublas, backend::nvidiagpu>(
     rotmg_precondition(queue, d1, d2, x1, y1, param, dependencies);
     auto done = onemkl::cublas::rotmg(queue, d1, d2, x1, y1, param, dependencies);
     rotmg_postcondition(queue, d1, d2, x1, y1, param, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3455,6 +3572,7 @@ cl::sycl::event rotmg<library::cublas, backend::nvidiagpu>(
     rotmg_precondition(queue, d1, d2, x1, y1, param, dependencies);
     auto done = onemkl::cublas::rotmg(queue, d1, d2, x1, y1, param, dependencies);
     rotmg_postcondition(queue, d1, d2, x1, y1, param, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3467,6 +3585,7 @@ cl::sycl::event tpsv<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::tpsv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3479,6 +3598,7 @@ cl::sycl::event tpsv<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::tpsv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3491,6 +3611,7 @@ cl::sycl::event tpsv<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::tpsv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3503,6 +3624,7 @@ cl::sycl::event tpsv<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::tpsv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3515,6 +3637,7 @@ cl::sycl::event trsv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::trsv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
                                      dependencies);
     trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3527,6 +3650,7 @@ cl::sycl::event trsv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::trsv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
                                      dependencies);
     trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3539,6 +3663,7 @@ cl::sycl::event trsv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::trsv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
                                      dependencies);
     trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3551,6 +3676,7 @@ cl::sycl::event trsv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::trsv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
                                      dependencies);
     trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3561,6 +3687,7 @@ cl::sycl::event copy<library::cublas, backend::nvidiagpu>(
     copy_precondition(queue, n, x, incx, y, incy, dependencies);
     auto done = onemkl::cublas::copy(queue, n, x, incx, y, incy, dependencies);
     copy_postcondition(queue, n, x, incx, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3571,6 +3698,7 @@ cl::sycl::event copy<library::cublas, backend::nvidiagpu>(
     copy_precondition(queue, n, x, incx, y, incy, dependencies);
     auto done = onemkl::cublas::copy(queue, n, x, incx, y, incy, dependencies);
     copy_postcondition(queue, n, x, incx, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3582,6 +3710,7 @@ cl::sycl::event copy<library::cublas, backend::nvidiagpu>(
     copy_precondition(queue, n, x, incx, y, incy, dependencies);
     auto done = onemkl::cublas::copy(queue, n, x, incx, y, incy, dependencies);
     copy_postcondition(queue, n, x, incx, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3593,6 +3722,7 @@ cl::sycl::event copy<library::cublas, backend::nvidiagpu>(
     copy_precondition(queue, n, x, incx, y, incy, dependencies);
     auto done = onemkl::cublas::copy(queue, n, x, incx, y, incy, dependencies);
     copy_postcondition(queue, n, x, incx, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3606,6 +3736,7 @@ cl::sycl::event hemv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::hemv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
                                      dependencies);
     hemv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3619,6 +3750,7 @@ cl::sycl::event hemv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::hemv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
                                      dependencies);
     hemv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3634,6 +3766,7 @@ cl::sycl::event gemmt<library::cublas, backend::nvidiagpu>(
                                       ldb, beta, c, ldc, dependencies);
     gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3649,6 +3782,7 @@ cl::sycl::event gemmt<library::cublas, backend::nvidiagpu>(
                                       ldb, beta, c, ldc, dependencies);
     gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3665,6 +3799,7 @@ cl::sycl::event gemmt<library::cublas, backend::nvidiagpu>(
                                       ldb, beta, c, ldc, dependencies);
     gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3681,6 +3816,7 @@ cl::sycl::event gemmt<library::cublas, backend::nvidiagpu>(
                                       ldb, beta, c, ldc, dependencies);
     gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3695,6 +3831,7 @@ cl::sycl::event sbmv<library::cublas, backend::nvidiagpu>(
                                      incy, dependencies);
     sbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -3709,6 +3846,7 @@ cl::sycl::event sbmv<library::cublas, backend::nvidiagpu>(
                                      incy, dependencies);
     sbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
+    done.wait();
     return done;
 }
 
@@ -3719,6 +3857,7 @@ cl::sycl::event asum<library::cublas, backend::nvidiagpu>(
     asum_precondition(queue, n, x, incx, result, dependencies);
     auto done = onemkl::cublas::asum(queue, n, x, incx, result, dependencies);
     asum_postcondition(queue, n, x, incx, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3729,6 +3868,7 @@ cl::sycl::event asum<library::cublas, backend::nvidiagpu>(
     asum_precondition(queue, n, x, incx, result, dependencies);
     auto done = onemkl::cublas::asum(queue, n, x, incx, result, dependencies);
     asum_postcondition(queue, n, x, incx, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3739,6 +3879,7 @@ cl::sycl::event asum<library::cublas, backend::nvidiagpu>(
     asum_precondition(queue, n, x, incx, result, dependencies);
     auto done = onemkl::cublas::asum(queue, n, x, incx, result, dependencies);
     asum_postcondition(queue, n, x, incx, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3749,6 +3890,7 @@ cl::sycl::event asum<library::cublas, backend::nvidiagpu>(
     asum_precondition(queue, n, x, incx, result, dependencies);
     auto done = onemkl::cublas::asum(queue, n, x, incx, result, dependencies);
     asum_postcondition(queue, n, x, incx, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3761,6 +3903,7 @@ cl::sycl::event tbsv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
                                      dependencies);
     tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3773,6 +3916,7 @@ cl::sycl::event tbsv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
                                      dependencies);
     tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3785,6 +3929,7 @@ cl::sycl::event tbsv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
                                      dependencies);
     tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3797,6 +3942,7 @@ cl::sycl::event tbsv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
                                      dependencies);
     tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3809,6 +3955,7 @@ cl::sycl::event spr2<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::spr2(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
     spr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3821,6 +3968,7 @@ cl::sycl::event spr2<library::cublas, backend::nvidiagpu>(
     auto done =
         onemkl::cublas::spr2(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
     spr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3831,6 +3979,7 @@ cl::sycl::event iamax<library::cublas, backend::nvidiagpu>(
     iamax_precondition(queue, n, x, incx, result, dependencies);
     auto done = onemkl::cublas::iamax(queue, n, x, incx, result, dependencies);
     iamax_postcondition(queue, n, x, incx, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3841,6 +3990,7 @@ cl::sycl::event iamax<library::cublas, backend::nvidiagpu>(
     iamax_precondition(queue, n, x, incx, result, dependencies);
     auto done = onemkl::cublas::iamax(queue, n, x, incx, result, dependencies);
     iamax_postcondition(queue, n, x, incx, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3851,6 +4001,7 @@ cl::sycl::event iamax<library::cublas, backend::nvidiagpu>(
     iamax_precondition(queue, n, x, incx, result, dependencies);
     auto done = onemkl::cublas::iamax(queue, n, x, incx, result, dependencies);
     iamax_postcondition(queue, n, x, incx, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3861,6 +4012,7 @@ cl::sycl::event iamax<library::cublas, backend::nvidiagpu>(
     iamax_precondition(queue, n, x, incx, result, dependencies);
     auto done = onemkl::cublas::iamax(queue, n, x, incx, result, dependencies);
     iamax_postcondition(queue, n, x, incx, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3871,6 +4023,7 @@ cl::sycl::event rotm<library::cublas, backend::nvidiagpu>(
     rotm_precondition(queue, n, x, incx, y, incy, param, dependencies);
     auto done = onemkl::cublas::rotm(queue, n, x, incx, y, incy, param, dependencies);
     rotm_postcondition(queue, n, x, incx, y, incy, param, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3881,6 +4034,7 @@ cl::sycl::event rotm<library::cublas, backend::nvidiagpu>(
     rotm_precondition(queue, n, x, incx, y, incy, param, dependencies);
     auto done = onemkl::cublas::rotm(queue, n, x, incx, y, incy, param, dependencies);
     rotm_postcondition(queue, n, x, incx, y, incy, param, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3891,6 +4045,7 @@ cl::sycl::event rotg<library::cublas, backend::nvidiagpu>(
     rotg_precondition(queue, a, b, c, s, dependencies);
     auto done = onemkl::cublas::rotg(queue, a, b, c, s, dependencies);
     rotg_postcondition(queue, a, b, c, s, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3901,6 +4056,7 @@ cl::sycl::event rotg<library::cublas, backend::nvidiagpu>(
     rotg_precondition(queue, a, b, c, s, dependencies);
     auto done = onemkl::cublas::rotg(queue, a, b, c, s, dependencies);
     rotg_postcondition(queue, a, b, c, s, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3911,6 +4067,7 @@ cl::sycl::event rotg<library::cublas, backend::nvidiagpu>(
     rotg_precondition(queue, a, b, c, s, dependencies);
     auto done = onemkl::cublas::rotg(queue, a, b, c, s, dependencies);
     rotg_postcondition(queue, a, b, c, s, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3921,6 +4078,7 @@ cl::sycl::event rotg<library::cublas, backend::nvidiagpu>(
     rotg_precondition(queue, a, b, c, s, dependencies);
     auto done = onemkl::cublas::rotg(queue, a, b, c, s, dependencies);
     rotg_postcondition(queue, a, b, c, s, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3932,6 +4090,7 @@ cl::sycl::event sdsdot<library::cublas, backend::nvidiagpu>(
     sdsdot_precondition(queue, n, sb, x, incx, y, incy, result, dependencies);
     auto done = onemkl::cublas::sdsdot(queue, n, sb, x, incx, y, incy, result, dependencies);
     sdsdot_postcondition(queue, n, sb, x, incx, y, incy, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3947,6 +4106,7 @@ cl::sycl::event her2k<library::cublas, backend::nvidiagpu>(
                                       c, ldc, dependencies);
     her2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                         dependencies);
+    done.wait();
     return done;
 }
 
@@ -3962,6 +4122,7 @@ cl::sycl::event her2k<library::cublas, backend::nvidiagpu>(
                                       c, ldc, dependencies);
     her2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                         dependencies);
+    done.wait();
     return done;
 }
 
@@ -3972,6 +4133,7 @@ cl::sycl::event dot<library::cublas, backend::nvidiagpu>(
     dot_precondition(queue, n, x, incx, y, incy, result, dependencies);
     auto done = onemkl::cublas::dot(queue, n, x, incx, y, incy, result, dependencies);
     dot_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3983,6 +4145,7 @@ cl::sycl::event dot<library::cublas, backend::nvidiagpu>(
     dot_precondition(queue, n, x, incx, y, incy, result, dependencies);
     auto done = onemkl::cublas::dot(queue, n, x, incx, y, incy, result, dependencies);
     dot_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -3994,6 +4157,7 @@ cl::sycl::event dot<library::cublas, backend::nvidiagpu>(
     dot_precondition(queue, n, x, incx, y, incy, result, dependencies);
     auto done = onemkl::cublas::dot(queue, n, x, incx, y, incy, result, dependencies);
     dot_postcondition(queue, n, x, incx, y, incy, result, dependencies);
+    done.wait();
     return done;
 }
 
@@ -4006,6 +4170,7 @@ cl::sycl::event symv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::symv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
                                      dependencies);
     symv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
@@ -4018,6 +4183,7 @@ cl::sycl::event symv<library::cublas, backend::nvidiagpu>(
     auto done = onemkl::cublas::symv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
                                      dependencies);
     symv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    done.wait();
     return done;
 }
 
