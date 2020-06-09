@@ -85,9 +85,7 @@ int test(const device& dev, int N, int incx) {
 #else
         TEST_RUN_CT(main_queue, onemkl::blas::iamax,
                     (main_queue, N, x.data(), incx, result_p, dependencies));
-    #ifndef ENABLE_CUBLAS_BACKEND
         main_queue.wait();
-    #endif
 #endif
     }
     catch (exception const& e) {

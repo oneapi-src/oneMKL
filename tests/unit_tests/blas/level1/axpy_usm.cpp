@@ -88,9 +88,7 @@ int test(const device &dev, int N, int incx, int incy, fp alpha) {
 #else
         TEST_RUN_CT(main_queue, onemkl::blas::axpy,
                     (main_queue, N, alpha, x.data(), incx, y.data(), incy, dependencies));
-    #ifndef ENABLE_CUBLAS_BACKEND
         main_queue.wait();
-    #endif
 #endif
     }
     catch (exception const &e) {

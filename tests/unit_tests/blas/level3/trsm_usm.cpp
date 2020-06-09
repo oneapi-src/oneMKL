@@ -98,9 +98,7 @@ int test(const device& dev, onemkl::side left_right, onemkl::uplo upper_lower,
         TEST_RUN_CT(main_queue, onemkl::blas::trsm,
                     (main_queue, left_right, upper_lower, transa, unit_nonunit, m, n, alpha,
                      A.data(), lda, B.data(), ldb, dependencies));
-    #ifndef ENABLE_CUBLAS_BACKEND
         main_queue.wait();
-    #endif
 #endif
     }
     catch (exception const& e) {

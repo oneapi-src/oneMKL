@@ -89,9 +89,7 @@ int test(const device &dev, int N, int incx, int incy) {
 #else
         TEST_RUN_CT(main_queue, onemkl::blas::dotu,
                     (main_queue, N, x.data(), incx, y.data(), incy, result_p, dependencies));
-    #ifndef ENABLE_CUBLAS_BACKEND
         main_queue.wait();
-    #endif
 #endif
     }
     catch (exception const &e) {

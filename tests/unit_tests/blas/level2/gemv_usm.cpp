@@ -95,9 +95,7 @@ int test(const device &dev, onemkl::transpose transa, int m, int n, fp alpha, fp
         TEST_RUN_CT(main_queue, onemkl::blas::gemv,
                     (main_queue, transa, m, n, alpha, A.data(), lda, x.data(), incx, beta, y.data(),
                      incy, dependencies));
-    #ifndef ENABLE_CUBLAS_BACKEND
         main_queue.wait();
-    #endif
 #endif
     }
     catch (exception const &e) {

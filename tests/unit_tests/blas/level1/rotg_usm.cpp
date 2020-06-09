@@ -98,9 +98,7 @@ int test(const device &dev) {
         done.wait();
 #else
         TEST_RUN_CT(main_queue, onemkl::blas::rotg, (main_queue, a_p, b_p, c_p, s_p, dependencies));
-    #ifndef ENABLE_CUBLAS_BACKEND
         main_queue.wait();
-    #endif
 #endif
     }
     catch (exception const &e) {
