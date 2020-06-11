@@ -121,11 +121,11 @@ TEST_P(DotTests, RealDoublePrecision) {
     EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, 1, 1)));
     EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, -3, -2)));
 }
-//TEST_P(DotTests, RealDoubleSinglePrecision) {
-//    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, 2, 3)));
-//    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, 1, 1)));
-//    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, -3, -2)));
-//}
+TEST_P(DotTests, RealDoubleSinglePrecision) {
+    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, 2, 3)));
+    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, 1, 1)));
+    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, -3, -2)));
+}
 
 INSTANTIATE_TEST_SUITE_P(DotTestSuite, DotTests, ::testing::ValuesIn(devices), ::DeviceNamePrint());
 

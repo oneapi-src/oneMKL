@@ -105,7 +105,6 @@ int test(const device& dev, int N, int incx, int incy) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-
     bool good = check_equal(*result_p, result_ref, N, std::cout);
 
     onemkl::free_shared(result_p, cxt);
@@ -124,11 +123,11 @@ TEST_P(DotUsmTests, RealDoublePrecision) {
     EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, 1, 1)));
     EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, -3, -2)));
 }
-//TEST_P(DotUsmTests, RealDoubleSinglePrecision) {
-//    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, 2, 3)));
-//    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, 1, 1)));
-//    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, -3, -2)));
-//}
+TEST_P(DotUsmTests, RealDoubleSinglePrecision) {
+    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, 2, 3)));
+    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, 1, 1)));
+    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, -3, -2)));
+}
 
 INSTANTIATE_TEST_SUITE_P(DotUsmTestSuite, DotUsmTests, ::testing::ValuesIn(devices),
                          ::DeviceNamePrint());

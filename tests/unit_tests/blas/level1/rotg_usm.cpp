@@ -73,6 +73,8 @@ int test(const device &dev) {
     c     = rand_scalar<fp_scalar>();
     a_ref = a;
     b_ref = b;
+    s_ref = s;
+    c_ref = c;
 
     // Call Reference ROTG.
     using fp_ref = typename ref_type_info<fp>::type;
@@ -83,7 +85,7 @@ int test(const device &dev) {
     fp *a_p        = (fp *)onemkl::malloc_shared(64, sizeof(fp), dev, cxt);
     fp *b_p        = (fp *)onemkl::malloc_shared(64, sizeof(fp), dev, cxt);
     fp *s_p        = (fp *)onemkl::malloc_shared(64, sizeof(fp), dev, cxt);
-    fp_scalar *c_p = (fp_scalar *)onemkl::malloc_shared(64, sizeof(fp), dev, cxt);
+    fp_scalar *c_p = (fp_scalar *)onemkl::malloc_shared(64, sizeof(fp_scalar), dev, cxt);
 
     a_p[0] = a;
     b_p[0] = b;
@@ -126,6 +128,7 @@ int test(const device &dev) {
     onemkl::free_shared(b_p, cxt);
     onemkl::free_shared(s_p, cxt);
     onemkl::free_shared(c_p, cxt);
+
     return (int)good;
 }
 
@@ -133,22 +136,14 @@ class RotgUsmTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(RotgUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP((test<float, float>(GetParam())));
-    EXPECT_TRUEORSKIP((test<float, float>(GetParam())));
-    EXPECT_TRUEORSKIP((test<float, float>(GetParam())));
 }
 TEST_P(RotgUsmTests, RealDoublePrecision) {
-    EXPECT_TRUEORSKIP((test<double, double>(GetParam())));
-    EXPECT_TRUEORSKIP((test<double, double>(GetParam())));
     EXPECT_TRUEORSKIP((test<double, double>(GetParam())));
 }
 TEST_P(RotgUsmTests, ComplexSinglePrecision) {
     EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam())));
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam())));
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam())));
 }
 TEST_P(RotgUsmTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam())));
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam())));
     EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam())));
 }
 
