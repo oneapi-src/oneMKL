@@ -357,40 +357,7 @@ void sdsdot(cl::sycl::queue &queue, int64_t n, float sb, cl::sycl::buffer<float,
 
 void dot(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int64_t incx,
          cl::sycl::buffer<float, 1> &y, int64_t incy, cl::sycl::buffer<double, 1> &result) {
-    overflow_check(n, incx, incy);
-    // CuBLAS does not support sdot so we need to mimic sdot
-    // converting float* to double * is very costly operation as sycl reinterpret
-    // does not support conversion from two types which is not the same size.
-    // So in order, to avoid loosing performance we are converting the result to be
-    // the float. This change may cause failure as the result precision reduces.
-    // Alternatively we need to write a sycl kernel to elementwise copy the
-    // data between two buffer. This will be very slow as the two x and y buffer
-    // need to be converted to double for this reason.
-    cl::sycl::buffer<float, 1> float_res_buff{ cl::sycl::range<1>(1) };
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto x_acc         = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto y_acc         = y.get_access<cl::sycl::access::mode::read>(cgh);
-        auto float_res_acc = float_res_buff.get_access<cl::sycl::access::mode::write>(cgh);
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
-            auto handle = sc.get_handle(queue);
-            // By default the pointer mode is the CUBLAS_POINTER_MODE_HOST
-            // when the data is on buffer, it must be set to
-            // CUBLAS_POINTER_MODE_DEVICE mode otherwise it causes the segmentation
-            // fault. When it is set to device it is users responsibility to
-            // synchronise as the function is completely asynchronous.
-            cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
-            auto x_         = sc.get_mem<float *>(ih, x_acc);
-            auto y_         = sc.get_mem<float *>(ih, y_acc);
-            auto float_res_ = sc.get_mem<float *>(ih, float_res_acc);
-            cublasStatus_t err;
-            CUBLAS_ERROR_FUNC(cublasSdot, err, handle, n, x_, incx, y_, incy, float_res_);
-        });
-    });
-    /// Since cuBLAS does not have sdot support, we had to do the operation in float and
-    // convert it back into double. This can result in precision issue.
-    result.get_access<cl::sycl::access::mode::discard_write>()[0] =
-        (double)float_res_buff.get_access<cl::sycl::access::mode::read>()[0];
+    throw backend_unsupported_exception();
 }
 
 template <typename Func, typename T>
@@ -930,33 +897,7 @@ cl::sycl::event sdsdot(cl::sycl::queue &queue, int64_t n, float sb, const float 
 cl::sycl::event dot(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, const float *y,
                     int64_t incy, double *result,
                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    overflow_check(n, incx, incy);
-    // CuBLAS does not support sdot so we need to mimic sdot
-    // converting float* to double * is very costly operation as sycl reinterpret
-    // does not support conversion from two types which is not the same size.
-    // So in order, to avoid loosing performance we are converting the result to be
-    // the float. This change may cause failure as the result precision reduces.
-    float float_res    = 0.0f;
-    float *float_res_p = &float_res;
-    auto done          = queue.submit([&](cl::sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc           = CublasScopedContextHandler(queue);
-            auto handle       = sc.get_handle(queue);
-            auto x_           = reinterpret_cast<const float *>(x);
-            auto y_           = reinterpret_cast<const float *>(y);
-            auto float_res_p_ = reinterpret_cast<float *>(float_res_p);
-            cublasStatus_t err;
-            CUBLAS_ERROR_FUNC(cublasSdot, err, handle, n, x_, incx, y_, incy, float_res_p_);
-        });
-    });
-    /// Since cuBLAS does not have sdot support, we had to do the operation in float and
-    // convert it back into double. This can result in precision issue.
-    result[0] = (double)float_res_p[0];
-    return done;
+    throw backend_unsupported_exception();
 }
 
 template <typename Func, typename T>

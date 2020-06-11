@@ -106,17 +106,7 @@ int test(const device& dev, int N, int incx, int incy) {
 
     // Compare the results of reference implementation and DPC++ implementation.
     bool good = false;
-#ifndef ENABLE_CUBLAS_BACKEND
-    good = check_equal(*result_p, result_ref, N, std::cout);
-#else
-    if (std::is_same<fp, fp_res>::value) {
-        good = check_equal(*result_p, result_ref, N, std::cout);
-    }
-    else {
-        // Increase error margin for cuBLAS since computation is done in float instead of double.
-        good = check_equal(*result_p, result_ref, N * 10e5, std::cout);
-    }
-#endif
+    good      = check_equal(*result_p, result_ref, N, std::cout);
 
     onemkl::free_shared(result_p, cxt);
     return (int)good;
