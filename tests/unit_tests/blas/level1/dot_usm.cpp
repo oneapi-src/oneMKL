@@ -105,7 +105,7 @@ int test(const device& dev, int N, int incx, int incy) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    good = check_equal(*result_p, result_ref, N, std::cout);
+    bool good = check_equal(*result_p, result_ref, N, std::cout);
 
     onemkl::free_shared(result_p, cxt);
     return (int)good;
