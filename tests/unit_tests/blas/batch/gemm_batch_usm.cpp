@@ -312,15 +312,15 @@ TEST_P(GemmBatchUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(GemmBatchUsmTests, RealDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), 5));
 }
 
 TEST_P(GemmBatchUsmTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 5));
 }
 
 TEST_P(GemmBatchUsmTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 5));
 }
 
 INSTANTIATE_TEST_SUITE_P(GemmBatchUsmTestSuite, GemmBatchUsmTests, ::testing::ValuesIn(devices),
