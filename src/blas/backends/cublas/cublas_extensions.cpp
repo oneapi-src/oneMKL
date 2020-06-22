@@ -16,7 +16,9 @@
 *  limitations under the License.
 *
 **************************************************************************/
+#include <CL/sycl/detail/pi.hpp>
 #include "cublas_helper.hpp"
+#include "cublas_scope_handle.hpp"
 #include "include/exceptions_helper.hpp"
 #include "onemkl/blas/detail/cublas/onemkl_blas_cublas.hpp"
 
@@ -58,13 +60,6 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
     throw backend_unsupported_exception();
 }
 
-void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-              std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<half, 1> &a,
-              std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb, float beta,
-              cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
-    throw backend_unsupported_exception();
-}
-
 void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
               std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
               cl::sycl::buffer<int8_t, 1> &a, std::int64_t lda, int8_t ao,
@@ -73,44 +68,50 @@ void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb, offset
     throw backend_unsupported_exception();
 }
 
-void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-              std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<float, 1> &a,
-              std::int64_t lda, cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
-              cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
-    throw backend_unsupported_exception();
+template <typename Func, typename T_AB, typename T_C, typename DATATYPE_AB, typename DATATYPE_C>
+inline void gemm_ext(Func func, DATATYPE_AB DT_AB, DATATYPE_C DT_C, cl::sycl::queue &queue,
+                     transpose transa, transpose transb, int64_t m, int64_t n, int64_t k, T_C alpha,
+                     cl::sycl::buffer<T_AB, 1> &a, int64_t lda, cl::sycl::buffer<T_AB, 1> &b,
+                     int64_t ldb, T_C beta, cl::sycl::buffer<T_C, 1> &c, int64_t ldc) {
+    using cuDataType_AB = typename CudaEquivalentType<T_AB>::Type;
+    using cuDataType_C  = typename CudaEquivalentType<T_C>::Type;
+    overflow_check(m, n, k, lda, ldb, ldc);
+    queue.submit([&](cl::sycl::handler &cgh) {
+        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto b_acc = b.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        cgh.interop_task([=](cl::sycl::interop_handler ih) {
+            auto sc     = CublasScopedContextHandler(queue);
+            auto handle = sc.get_handle(queue);
+            auto a_     = sc.get_mem<cuDataType_AB *>(ih, a_acc);
+            auto b_     = sc.get_mem<cuDataType_AB *>(ih, b_acc);
+            auto c_     = sc.get_mem<cuDataType_C *>(ih, c_acc);
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_operation(transa),
+                              get_cublas_operation(transb), m, n, k, (cuDataType_C *)&alpha, a_,
+                              DT_AB, lda, b_, DT_AB, ldb, (cuDataType_C *)&beta, c_, DT_C, ldc,
+                              DT_C, CUBLAS_GEMM_DEFAULT);
+        });
+    });
 }
 
-void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-              std::int64_t n, std::int64_t k, double alpha, cl::sycl::buffer<double, 1> &a,
-              std::int64_t lda, cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
-              cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
-    throw backend_unsupported_exception();
-}
+#define GEMM_EXT_LAUNCHER(TYPE_AB, TYPE_C, CUBLAS_ROUTINE, CUDADATATYPE_AB, CUDADATATYPE_C)       \
+    void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,          \
+                  int64_t n, int64_t k, TYPE_C alpha, cl::sycl::buffer<TYPE_AB, 1> &a,            \
+                  int64_t lda, cl::sycl::buffer<TYPE_AB, 1> &b, int64_t ldb, TYPE_C beta,         \
+                  cl::sycl::buffer<TYPE_C, 1> &c, int64_t ldc) {                                  \
+        gemm_ext(CUBLAS_ROUTINE, CUDADATATYPE_AB, CUDADATATYPE_C, queue, transa, transb, m, n, k, \
+                 alpha, a, lda, b, ldb, beta, c, ldc);                                            \
+    }
 
-void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-              std::int64_t n, std::int64_t k, std::complex<float> alpha,
-              cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
-              cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
-              std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c,
-              std::int64_t ldc) {
-    throw backend_unsupported_exception();
-}
+GEMM_EXT_LAUNCHER(half, float, cublasGemmEx, CUDA_R_16F, CUDA_R_32F)
+GEMM_EXT_LAUNCHER(half, half, cublasGemmEx, CUDA_R_16F, CUDA_R_16F)
+GEMM_EXT_LAUNCHER(float, float, cublasGemmEx, CUDA_R_32F, CUDA_R_32F)
+GEMM_EXT_LAUNCHER(double, double, cublasGemmEx, CUDA_R_64F, CUDA_R_64F)
+GEMM_EXT_LAUNCHER(std::complex<float>, std::complex<float>, cublasGemmEx, CUDA_C_32F, CUDA_C_32F)
+GEMM_EXT_LAUNCHER(std::complex<double>, std::complex<double>, cublasGemmEx, CUDA_C_64F, CUDA_C_64F)
 
-void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-              std::int64_t n, std::int64_t k, std::complex<double> alpha,
-              cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-              cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
-              std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
-              std::int64_t ldc) {
-    throw backend_unsupported_exception();
-}
-
-void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-              std::int64_t n, std::int64_t k, half alpha, cl::sycl::buffer<half, 1> &a,
-              std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
-              cl::sycl::buffer<half, 1> &c, std::int64_t ldc) {
-    throw backend_unsupported_exception();
-}
+#undef GEMM_EXT_LAUNCHER
 
 // USM APIs
 
