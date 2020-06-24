@@ -93,9 +93,9 @@ int test(const device &dev, int64_t group_count) {
     int64_t total_size_a      = 0;
     int64_t total_size_b      = 0;
     int64_t total_size_c      = 0;
-    int64_t stride_a          = 0;
-    int64_t stride_b          = 0;
-    int64_t stride_c          = 0;
+    int64_t offset_a          = 0;
+    int64_t offset_b          = 0;
+    int64_t offset_c          = 0;
 
     int64_t *size_a = (int64_t *)onemkl::aligned_alloc(64, sizeof(int64_t) * group_count);
     int64_t *size_b = (int64_t *)onemkl::aligned_alloc(64, sizeof(int64_t) * group_count);
@@ -169,18 +169,18 @@ int test(const device &dev, int64_t group_count) {
             rand_matrix(c_array_temp, onemkl::transpose::nontrans, m[i], n[i], ldc[i]);
             copy_matrix(c_array_temp, onemkl::transpose::nontrans, m[i], n[i], ldc[i],
                         c_ref_array_temp);
-            std::copy(a_array_temp.begin(), a_array_temp.end(), a_array_data.begin() + stride_a);
-            std::copy(b_array_temp.begin(), b_array_temp.end(), b_array_data.begin() + stride_b);
-            std::copy(c_array_temp.begin(), c_array_temp.end(), c_array_data.begin() + stride_c);
+            std::copy(a_array_temp.begin(), a_array_temp.end(), a_array_data.begin() + offset_a);
+            std::copy(b_array_temp.begin(), b_array_temp.end(), b_array_data.begin() + offset_b);
+            std::copy(c_array_temp.begin(), c_array_temp.end(), c_array_data.begin() + offset_c);
             std::copy(c_ref_array_temp.begin(), c_ref_array_temp.end(),
-                      c_ref_array_data.begin() + stride_c);
-            a_array[idx]     = &a_array_data[stride_a];
-            b_array[idx]     = &b_array_data[stride_b];
-            c_array[idx]     = &c_array_data[stride_c];
-            c_ref_array[idx] = &c_ref_array_data[stride_c];
-            stride_a += size_a[i];
-            stride_b += size_b[i];
-            stride_c += size_c[i];
+                      c_ref_array_data.begin() + offset_c);
+            a_array[idx]     = &a_array_data[offset_a];
+            b_array[idx]     = &b_array_data[offset_b];
+            c_array[idx]     = &c_array_data[offset_c];
+            c_ref_array[idx] = &c_ref_array_data[offset_c];
+            offset_a += size_a[i];
+            offset_b += size_b[i];
+            offset_c += size_c[i];
             idx++;
         }
     }
