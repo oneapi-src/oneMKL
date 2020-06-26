@@ -170,18 +170,18 @@ inline cl::sycl::event gemm_batch(Func func, cl::sycl::queue &queue, transpose *
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
             auto sc        = CublasScopedContextHandler(queue);
             auto handle    = sc.get_handle(queue);
-            int64_t stride = 0;
+            int64_t offset = 0;
             cublasStatus_t err;
             for (int64_t i = 0; i < group_count; i++) {
                 auto **a_ = reinterpret_cast<const cuDataType **>(a);
                 auto **b_ = reinterpret_cast<const cuDataType **>(b);
                 auto **c_ = reinterpret_cast<cuDataType **>(c);
-                stride    = (i == 0) ? 0 : stride + group_size[i - 1];
                 CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_operation(transa[i]),
                                   get_cublas_operation(transb[i]), (int)m[i], (int)n[i], (int)k[i],
-                                  (cuDataType *)&alpha[i], a_ + stride, (int)lda[i], b_ + stride,
-                                  (int)ldb[i], (cuDataType *)&beta[i], c_ + stride, (int)ldc[i],
+                                  (cuDataType *)&alpha[i], a_ + offset, (int)lda[i], b_ + offset,
+                                  (int)ldb[i], (cuDataType *)&beta[i], c_ + offset, (int)ldc[i],
                                   (int)group_size[i]);
+                offset += group_size[i];
             }
         });
     });
