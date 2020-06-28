@@ -116,7 +116,7 @@ static inline void *malloc_shared(size_t align, size_t size, cl::sycl::device de
     return cl::sycl::malloc_shared(size, dev, ctx);
 #else
     #ifdef ENABLE_CUBLAS_BACKEND
-    return ::aligned_alloc(align, size);
+    return cl::sycl::aligned_alloc_shared(align, size, dev, ctx);
     #else
     return cl::sycl::malloc_shared(size, dev, ctx);
     #endif
@@ -124,15 +124,7 @@ static inline void *malloc_shared(size_t align, size_t size, cl::sycl::device de
 }
 
 static inline void free_shared(void *p, cl::sycl::context ctx) {
-#ifdef _WIN64
     cl::sycl::free(p, ctx);
-#else
-    #ifdef ENABLE_CUBLAS_BACKEND
-    ::free(p);
-    #else
-    cl::sycl::free(p, ctx);
-    #endif
-#endif
 }
 
 } // namespace onemkl

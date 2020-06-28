@@ -75,6 +75,8 @@ int test(const device &dev, int64_t group_count) {
     auto uafp = usm_allocator<fp, usm::alloc::shared, 64>(cxt, dev);
     vector<fp, decltype(uafp)> alpha(uafp), beta(uafp);
 
+    vector<int64_t, decltype(uaint)> size_a(uaint), size_b(uaint), size_c(uaint);
+
     m.resize(group_count);
     n.resize(group_count);
     k.resize(group_count);
@@ -86,9 +88,13 @@ int test(const device &dev, int64_t group_count) {
     transb.resize(group_count);
     alpha.resize(group_count);
     beta.resize(group_count);
+    size_a.resize(group_count);
+    size_b.resize(group_count);
+    size_c.resize(group_count);
 
     int64_t i, tmp;
     int64_t j, idx = 0;
+    int64_t total_batch_count = 0;
 
     for (i = 0; i < group_count; i++) {
         group_size[i] = 1 + std::rand() % 20;
@@ -116,40 +122,32 @@ int test(const device &dev, int64_t group_count) {
             else
                 transb[i] = (onemkl::transpose)tmp;
         }
+        size_a[i] = lda[i] * ((transa[i] == onemkl::transpose::nontrans) ? k[i] : m[i]);
+        size_b[i] = ldb[i] * ((transb[i] == onemkl::transpose::nontrans) ? n[i] : k[i]);
+        size_c[i] = ldc[i] * n[i];
+        total_batch_count += group_size[i];
     }
 
     auto uafpp = usm_allocator<fp *, usm::alloc::shared, 64>(cxt, dev);
     vector<fp *, decltype(uafpp)> a_array(uafpp), b_array(uafpp), c_array(uafpp),
         c_ref_array(uafpp);
-
-    auto uavec = usm_allocator<vector<fp, decltype(uafp)>, usm::alloc::shared, 64>(cxt, dev);
-    vector<vector<fp, decltype(uafp)>, decltype(uavec)> a_array_data(uavec), b_array_data(uavec),
-        c_array_data(uavec), c_ref_array_data(uavec);
+    a_array.resize(total_batch_count);
+    b_array.resize(total_batch_count);
+    c_array.resize(total_batch_count);
+    c_ref_array.resize(total_batch_count);
 
     idx = 0;
     for (i = 0; i < group_count; i++) {
         for (j = 0; j < group_size[i]; j++) {
-            vector<fp, decltype(uafp)> a_array_temp(uafp), b_array_temp(uafp), c_array_temp(uafp),
-                c_ref_array_temp(uafp);
-            rand_matrix(a_array_temp, transa[i], m[i], k[i], lda[i]);
-            rand_matrix(b_array_temp, transb[i], k[i], n[i], ldb[i]);
-            rand_matrix(c_array_temp, onemkl::transpose::nontrans, m[i], n[i], ldc[i]);
-            copy_matrix(c_array_temp, onemkl::transpose::nontrans, m[i], n[i], ldc[i],
-                        c_ref_array_temp);
-            a_array_data.push_back(a_array_temp);
-            b_array_data.push_back(b_array_temp);
-            c_array_data.push_back(c_array_temp);
-            c_ref_array_data.push_back(c_ref_array_temp);
-            idx++;
-        }
-    }
-    idx = 0;
-    for (i = 0; i < group_count; i++) {
-        for (j = 0; j < group_size[i]; j++) {
-            a_array.push_back(&a_array_data[idx][0]);
-            b_array.push_back(&b_array_data[idx][0]);
-            c_array.push_back(&c_array_data[idx][0]);
-            c_ref_array.push_back(&c_ref_array_data[idx][0]);
+            a_array[idx]     = (fp *)onemkl::malloc_shared(64, sizeof(fp) * size_a[i], dev, cxt);
+            b_array[idx]     = (fp *)onemkl::malloc_shared(64, sizeof(fp) * size_b[i], dev, cxt);
+            c_array[idx]     = (fp *)onemkl::malloc_shared(64, sizeof(fp) * size_c[i], dev, cxt);
+            c_ref_array[idx] = (fp *)onemkl::malloc_shared(64, sizeof(fp) * size_c[i], dev, cxt);
+            rand_matrix(a_array[idx], transa[i], m[i], k[i], lda[i]);
+            rand_matrix(b_array[idx], transb[i], k[i], n[i], ldb[i]);
+            rand_matrix(c_array[idx], onemkl::transpose::nontrans, m[i], n[i], ldc[i]);
+            copy_matrix(c_array[idx], onemkl::transpose::nontrans, m[i], n[i], ldc[i],
+                        c_ref_array[idx]);
             idx++;
         }
     }
@@ -182,6 +180,16 @@ int test(const device &dev, int64_t group_count) {
         onemkl::aligned_free(transa_ref);
         onemkl::aligned_free(transb_ref);
         onemkl::aligned_free(group_size_ref);
+        idx = 0;
+        for (i = 0; i < group_count; i++) {
+            for (j = 0; j < group_size[i]; j++) {
+                onemkl::free_shared(a_array[idx], cxt);
+                onemkl::free_shared(b_array[idx], cxt);
+                onemkl::free_shared(c_array[idx], cxt);
+                onemkl::free_shared(c_ref_array[idx], cxt);
+                idx++;
+            }
+        }
         return false;
     }
     idx = 0;
@@ -237,6 +245,16 @@ int test(const device &dev, int64_t group_count) {
         onemkl::aligned_free(transa_ref);
         onemkl::aligned_free(transb_ref);
         onemkl::aligned_free(group_size_ref);
+        idx = 0;
+        for (i = 0; i < group_count; i++) {
+            for (j = 0; j < group_size[i]; j++) {
+                onemkl::free_shared(a_array[idx], cxt);
+                onemkl::free_shared(b_array[idx], cxt);
+                onemkl::free_shared(c_array[idx], cxt);
+                onemkl::free_shared(c_ref_array[idx], cxt);
+                idx++;
+            }
+        }
         return test_skipped;
     }
 
@@ -265,6 +283,16 @@ int test(const device &dev, int64_t group_count) {
     onemkl::aligned_free(transa_ref);
     onemkl::aligned_free(transb_ref);
     onemkl::aligned_free(group_size_ref);
+    idx = 0;
+    for (i = 0; i < group_count; i++) {
+        for (j = 0; j < group_size[i]; j++) {
+            onemkl::free_shared(a_array[idx], cxt);
+            onemkl::free_shared(b_array[idx], cxt);
+            onemkl::free_shared(c_array[idx], cxt);
+            onemkl::free_shared(c_ref_array[idx], cxt);
+            idx++;
+        }
+    }
     return (int)good;
 }
 
