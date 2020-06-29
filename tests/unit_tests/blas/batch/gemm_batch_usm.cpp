@@ -65,53 +65,32 @@ int test(const device &dev, int64_t group_count) {
     std::vector<event> dependencies;
 
     // Prepare data.
-    int64_t *m   = (int64_t *)onemkl::malloc_shared(64, sizeof(int64_t) * group_count, dev, cxt);
-    int64_t *n   = (int64_t *)onemkl::malloc_shared(64, sizeof(int64_t) * group_count, dev, cxt);
-    int64_t *k   = (int64_t *)onemkl::malloc_shared(64, sizeof(int64_t) * group_count, dev, cxt);
-    int64_t *lda = (int64_t *)onemkl::malloc_shared(64, sizeof(int64_t) * group_count, dev, cxt);
-    int64_t *ldb = (int64_t *)onemkl::malloc_shared(64, sizeof(int64_t) * group_count, dev, cxt);
-    int64_t *ldc = (int64_t *)onemkl::malloc_shared(64, sizeof(int64_t) * group_count, dev, cxt);
-    onemkl::transpose *transa = (onemkl::transpose *)onemkl::malloc_shared(
-        64, sizeof(onemkl::transpose) * group_count, dev, cxt);
-    onemkl::transpose *transb = (onemkl::transpose *)onemkl::malloc_shared(
-        64, sizeof(onemkl::transpose) * group_count, dev, cxt);
-    fp *alpha = (fp *)onemkl::malloc_shared(64, sizeof(fp) * group_count, dev, cxt);
-    fp *beta  = (fp *)onemkl::malloc_shared(64, sizeof(fp) * group_count, dev, cxt);
-    int64_t *group_size =
-        (int64_t *)onemkl::malloc_shared(64, sizeof(int64_t) * group_count, dev, cxt);
+    auto uaint = usm_allocator<int64_t, usm::alloc::shared, 64>(cxt, dev);
+    vector<int64_t, decltype(uaint)> m(uaint), n(uaint), k(uaint), lda(uaint), ldb(uaint),
+        ldc(uaint), group_size(uaint);
 
-    if ((m == NULL) || (n == NULL) || (k == NULL) || (lda == NULL) || (ldb == NULL) ||
-        (ldc == NULL) || (transa == NULL) || (transb == NULL) || (alpha == NULL) ||
-        (beta == NULL) || (group_size == NULL)) {
-        std::cout << "Error cannot allocate input arrays\n";
-        onemkl::free_shared(m, cxt);
-        onemkl::free_shared(n, cxt);
-        onemkl::free_shared(k, cxt);
-        onemkl::free_shared(lda, cxt);
-        onemkl::free_shared(ldb, cxt);
-        onemkl::free_shared(ldc, cxt);
-        onemkl::free_shared(transa, cxt);
-        onemkl::free_shared(transb, cxt);
-        onemkl::free_shared(alpha, cxt);
-        onemkl::free_shared(beta, cxt);
-        onemkl::free_shared(group_size, cxt);
-        return false;
-    }
+    auto uatranspose = usm_allocator<onemkl::transpose, usm::alloc::shared, 64>(cxt, dev);
+    vector<onemkl::transpose, decltype(uatranspose)> transa(uatranspose), transb(uatranspose);
+
+    auto uafp = usm_allocator<fp, usm::alloc::shared, 64>(cxt, dev);
+    vector<fp, decltype(uafp)> alpha(uafp), beta(uafp);
+
+    m.resize(group_count);
+    n.resize(group_count);
+    k.resize(group_count);
+    lda.resize(group_count);
+    ldb.resize(group_count);
+    ldc.resize(group_count);
+    group_size.resize(group_count);
+    transa.resize(group_count);
+    transb.resize(group_count);
+    alpha.resize(group_count);
+    beta.resize(group_count);
 
     int64_t i, tmp;
     int64_t j, idx = 0;
     int64_t total_batch_count = 0;
-
-    int64_t *total_size_a = (int64_t *)onemkl::aligned_alloc(64, sizeof(int64_t) * group_count);
-    int64_t *total_size_b = (int64_t *)onemkl::aligned_alloc(64, sizeof(int64_t) * group_count);
-    int64_t *total_size_c = (int64_t *)onemkl::aligned_alloc(64, sizeof(int64_t) * group_count);
-    if ((total_size_a == NULL) || (total_size_b == NULL) || (total_size_c == NULL)) {
-        std::cout << "Error cannot allocate input arrays\n";
-        onemkl::aligned_free(total_size_a);
-        onemkl::aligned_free(total_size_b);
-        onemkl::aligned_free(total_size_c);
-        return false;
-    }
+    int64_t size_a = 0, size_b = 0, size_c = 0;
 
     for (i = 0; i < group_count; i++) {
         group_size[i] = 1 + std::rand() % 20;
@@ -139,34 +118,27 @@ int test(const device &dev, int64_t group_count) {
             else
                 transb[i] = (onemkl::transpose)tmp;
         }
-        total_size_a[i] = lda[i] * ((transa[i] == onemkl::transpose::nontrans) ? k[i] : m[i]);
-        total_size_b[i] = ldb[i] * ((transb[i] == onemkl::transpose::nontrans) ? n[i] : k[i]);
-        total_size_c[i] = ldc[i] * n[i];
         total_batch_count += group_size[i];
     }
 
-    fp **a_array     = (fp **)onemkl::malloc_shared(64, sizeof(fp *) * total_batch_count, dev, cxt);
-    fp **b_array     = (fp **)onemkl::malloc_shared(64, sizeof(fp *) * total_batch_count, dev, cxt);
-    fp **c_array     = (fp **)onemkl::malloc_shared(64, sizeof(fp *) * total_batch_count, dev, cxt);
-    fp **c_ref_array = (fp **)onemkl::malloc_shared(64, sizeof(fp *) * total_batch_count, dev, cxt);
+    auto uafpp = usm_allocator<fp *, usm::alloc::shared, 64>(cxt, dev);
+    vector<fp *, decltype(uafpp)> a_array(uafpp), b_array(uafpp), c_array(uafpp),
+        c_ref_array(uafpp);
+    a_array.resize(total_batch_count);
+    b_array.resize(total_batch_count);
+    c_array.resize(total_batch_count);
+    c_ref_array.resize(total_batch_count);
 
-    if ((a_array == NULL) || (b_array == NULL) || (c_array == NULL) || (c_ref_array == NULL)) {
-        std::cout << "Error cannot allocate arrays of pointers\n";
-        onemkl::free_shared(a_array, cxt);
-        onemkl::free_shared(b_array, cxt);
-        onemkl::free_shared(c_array, cxt);
-        onemkl::free_shared(c_ref_array, cxt);
-        return false;
-    }
     idx = 0;
     for (i = 0; i < group_count; i++) {
+        size_a = lda[i] * ((transa[i] == onemkl::transpose::nontrans) ? k[i] : m[i]);
+        size_b = ldb[i] * ((transb[i] == onemkl::transpose::nontrans) ? n[i] : k[i]);
+        size_c = ldc[i] * n[i];
         for (j = 0; j < group_size[i]; j++) {
-            a_array[idx] = (fp *)onemkl::malloc_shared(64, sizeof(fp) * total_size_a[i], dev, cxt);
-            b_array[idx] = (fp *)onemkl::malloc_shared(64, sizeof(fp) * total_size_b[i], dev, cxt);
-            c_array[idx] = (fp *)onemkl::malloc_shared(64, sizeof(fp) * total_size_c[i], dev, cxt);
-            c_ref_array[idx] =
-                (fp *)onemkl::malloc_shared(64, sizeof(fp) * total_size_c[i], dev, cxt);
-
+            a_array[idx]     = (fp *)onemkl::malloc_shared(64, sizeof(fp) * size_a, dev, cxt);
+            b_array[idx]     = (fp *)onemkl::malloc_shared(64, sizeof(fp) * size_b, dev, cxt);
+            c_array[idx]     = (fp *)onemkl::malloc_shared(64, sizeof(fp) * size_c, dev, cxt);
+            c_ref_array[idx] = (fp *)onemkl::malloc_shared(64, sizeof(fp) * size_c, dev, cxt);
             rand_matrix(a_array[idx], transa[i], m[i], k[i], lda[i]);
             rand_matrix(b_array[idx], transb[i], k[i], n[i], ldb[i]);
             rand_matrix(c_array[idx], onemkl::transpose::nontrans, m[i], n[i], ldc[i]);
@@ -204,6 +176,16 @@ int test(const device &dev, int64_t group_count) {
         onemkl::aligned_free(transa_ref);
         onemkl::aligned_free(transb_ref);
         onemkl::aligned_free(group_size_ref);
+        idx = 0;
+        for (i = 0; i < group_count; i++) {
+            for (j = 0; j < group_size[i]; j++) {
+                onemkl::free_shared(a_array[idx], cxt);
+                onemkl::free_shared(b_array[idx], cxt);
+                onemkl::free_shared(c_array[idx], cxt);
+                onemkl::free_shared(c_ref_array[idx], cxt);
+                idx++;
+            }
+        }
         return false;
     }
     idx = 0;
@@ -230,15 +212,16 @@ int test(const device &dev, int64_t group_count) {
 
     try {
 #ifdef CALL_RT_API
-        done = onemkl::blas::gemm_batch(main_queue, transa, transb, m, n, k, alpha,
-                                        (const fp **)a_array, lda, (const fp **)b_array, ldb, beta,
-                                        c_array, ldc, group_count, group_size, dependencies);
+        done = onemkl::blas::gemm_batch(main_queue, &transa[0], &transb[0], &m[0], &n[0], &k[0],
+                                        &alpha[0], (const fp **)&a_array[0], &lda[0],
+                                        (const fp **)&b_array[0], &ldb[0], &beta[0], &c_array[0],
+                                        &ldc[0], group_count, &group_size[0], dependencies);
         done.wait();
 #else
-        TEST_RUN_CT(
-            main_queue, onemkl::blas::gemm_batch,
-            (main_queue, transa, transb, m, n, k, alpha, (const fp **)a_array, lda,
-             (const fp **)b_array, ldb, beta, c_array, ldc, group_count, group_size, dependencies));
+        TEST_RUN_CT(main_queue, onemkl::blas::gemm_batch,
+                    (main_queue, &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
+                     (const fp **)&a_array[0], &lda[0], (const fp **)&b_array[0], &ldb[0], &beta[0],
+                     &c_array[0], &ldc[0], group_count, &group_size[0], dependencies));
         main_queue.wait();
 #endif
     }
@@ -249,9 +232,6 @@ int test(const device &dev, int64_t group_count) {
     }
 
     catch (const onemkl::backend_unsupported_exception &e) {
-        onemkl::aligned_free(total_size_a);
-        onemkl::aligned_free(total_size_b);
-        onemkl::aligned_free(total_size_c);
         onemkl::aligned_free(m_ref);
         onemkl::aligned_free(n_ref);
         onemkl::aligned_free(k_ref);
@@ -271,21 +251,6 @@ int test(const device &dev, int64_t group_count) {
                 idx++;
             }
         }
-        onemkl::free_shared(m, cxt);
-        onemkl::free_shared(n, cxt);
-        onemkl::free_shared(k, cxt);
-        onemkl::free_shared(lda, cxt);
-        onemkl::free_shared(ldb, cxt);
-        onemkl::free_shared(ldc, cxt);
-        onemkl::free_shared(transa, cxt);
-        onemkl::free_shared(transb, cxt);
-        onemkl::free_shared(alpha, cxt);
-        onemkl::free_shared(beta, cxt);
-        onemkl::free_shared(group_size, cxt);
-        onemkl::free_shared(a_array, cxt);
-        onemkl::free_shared(b_array, cxt);
-        onemkl::free_shared(c_array, cxt);
-        onemkl::free_shared(c_ref_array, cxt);
         return test_skipped;
     }
 
@@ -305,10 +270,6 @@ int test(const device &dev, int64_t group_count) {
             }
         }
     }
-
-    onemkl::aligned_free(total_size_a);
-    onemkl::aligned_free(total_size_b);
-    onemkl::aligned_free(total_size_c);
     onemkl::aligned_free(m_ref);
     onemkl::aligned_free(n_ref);
     onemkl::aligned_free(k_ref);
@@ -328,21 +289,6 @@ int test(const device &dev, int64_t group_count) {
             idx++;
         }
     }
-    onemkl::free_shared(m, cxt);
-    onemkl::free_shared(n, cxt);
-    onemkl::free_shared(k, cxt);
-    onemkl::free_shared(lda, cxt);
-    onemkl::free_shared(ldb, cxt);
-    onemkl::free_shared(ldc, cxt);
-    onemkl::free_shared(transa, cxt);
-    onemkl::free_shared(transb, cxt);
-    onemkl::free_shared(alpha, cxt);
-    onemkl::free_shared(beta, cxt);
-    onemkl::free_shared(group_size, cxt);
-    onemkl::free_shared(a_array, cxt);
-    onemkl::free_shared(b_array, cxt);
-    onemkl::free_shared(c_array, cxt);
-    onemkl::free_shared(c_ref_array, cxt);
     return (int)good;
 }
 
