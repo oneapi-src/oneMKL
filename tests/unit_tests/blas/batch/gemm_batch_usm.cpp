@@ -75,8 +75,6 @@ int test(const device &dev, int64_t group_count) {
     auto uafp = usm_allocator<fp, usm::alloc::shared, 64>(cxt, dev);
     vector<fp, decltype(uafp)> alpha(uafp), beta(uafp);
 
-    vector<int64_t, decltype(uaint)> size_a(uaint), size_b(uaint), size_c(uaint);
-
     m.resize(group_count);
     n.resize(group_count);
     k.resize(group_count);
@@ -88,13 +86,11 @@ int test(const device &dev, int64_t group_count) {
     transb.resize(group_count);
     alpha.resize(group_count);
     beta.resize(group_count);
-    size_a.resize(group_count);
-    size_b.resize(group_count);
-    size_c.resize(group_count);
 
     int64_t i, tmp;
     int64_t j, idx = 0;
     int64_t total_batch_count = 0;
+    int64_t size_a = 0, size_b = 0, size_c = 0;
 
     for (i = 0; i < group_count; i++) {
         group_size[i] = 1 + std::rand() % 20;
@@ -122,9 +118,6 @@ int test(const device &dev, int64_t group_count) {
             else
                 transb[i] = (onemkl::transpose)tmp;
         }
-        size_a[i] = lda[i] * ((transa[i] == onemkl::transpose::nontrans) ? k[i] : m[i]);
-        size_b[i] = ldb[i] * ((transb[i] == onemkl::transpose::nontrans) ? n[i] : k[i]);
-        size_c[i] = ldc[i] * n[i];
         total_batch_count += group_size[i];
     }
 
@@ -138,11 +131,14 @@ int test(const device &dev, int64_t group_count) {
 
     idx = 0;
     for (i = 0; i < group_count; i++) {
+        size_a = lda[i] * ((transa[i] == onemkl::transpose::nontrans) ? k[i] : m[i]);
+        size_b = ldb[i] * ((transb[i] == onemkl::transpose::nontrans) ? n[i] : k[i]);
+        size_c = ldc[i] * n[i];
         for (j = 0; j < group_size[i]; j++) {
-            a_array[idx]     = (fp *)onemkl::malloc_shared(64, sizeof(fp) * size_a[i], dev, cxt);
-            b_array[idx]     = (fp *)onemkl::malloc_shared(64, sizeof(fp) * size_b[i], dev, cxt);
-            c_array[idx]     = (fp *)onemkl::malloc_shared(64, sizeof(fp) * size_c[i], dev, cxt);
-            c_ref_array[idx] = (fp *)onemkl::malloc_shared(64, sizeof(fp) * size_c[i], dev, cxt);
+            a_array[idx]     = (fp *)onemkl::malloc_shared(64, sizeof(fp) * size_a, dev, cxt);
+            b_array[idx]     = (fp *)onemkl::malloc_shared(64, sizeof(fp) * size_b, dev, cxt);
+            c_array[idx]     = (fp *)onemkl::malloc_shared(64, sizeof(fp) * size_c, dev, cxt);
+            c_ref_array[idx] = (fp *)onemkl::malloc_shared(64, sizeof(fp) * size_c, dev, cxt);
             rand_matrix(a_array[idx], transa[i], m[i], k[i], lda[i]);
             rand_matrix(b_array[idx], transb[i], k[i], n[i], ldb[i]);
             rand_matrix(c_array[idx], onemkl::transpose::nontrans, m[i], n[i], ldc[i]);
