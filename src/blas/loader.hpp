@@ -42,7 +42,8 @@
     #define ERROR_MSG                GetLastErrorStdStr()
 #endif
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 namespace blas {
 namespace detail {
 
@@ -116,6 +117,7 @@ static table_initializer function_tables;
 
 } //namespace detail
 } // namespace blas
-} // namespace onemkl
+} // namespace mkl
+} // namespace oneapi
 
 #endif //_LOADER_HPP_

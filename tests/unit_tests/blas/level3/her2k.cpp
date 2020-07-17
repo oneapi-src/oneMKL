@@ -27,8 +27,8 @@
 #include <CL/sycl.hpp>
 #include "allocator_helper.hpp"
 #include "cblas.h"
-#include "onemkl/detail/config.hpp"
-#include "onemkl/onemkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -44,13 +44,13 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp, typename fp_scalar>
-int test(const device& dev, onemkl::uplo upper_lower, onemkl::transpose trans, int n, int k,
+int test(const device& dev, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, int n, int k,
          int lda, int ldb, int ldc, fp alpha, fp_scalar beta) {
     // Prepare data.
     vector<fp, allocator_helper<fp, 64>> A, B, C, C_ref;
     rand_matrix(A, trans, n, k, lda);
     rand_matrix(B, trans, n, k, ldb);
-    rand_matrix(C, onemkl::transpose::nontrans, n, n, ldc);
+    rand_matrix(C, oneapi::mkl::transpose::nontrans, n, n, ldc);
     C_ref = C;
 
     // Call Reference HER2K.
@@ -88,10 +88,10 @@ int test(const device& dev, onemkl::uplo upper_lower, onemkl::transpose trans, i
 
     try {
 #ifdef CALL_RT_API
-        onemkl::blas::her2k(main_queue, upper_lower, trans, n, k, alpha, A_buffer, lda, B_buffer,
+        oneapi::mkl::blas::her2k(main_queue, upper_lower, trans, n, k, alpha, A_buffer, lda, B_buffer,
                             ldb, beta, C_buffer, ldc);
 #else
-        TEST_RUN_CT(main_queue, onemkl::blas::her2k,
+        TEST_RUN_CT(main_queue, oneapi::mkl::blas::her2k,
                     (main_queue, upper_lower, trans, n, k, alpha, A_buffer, lda, B_buffer, ldb,
                      beta, C_buffer, ldc));
 #endif
@@ -102,7 +102,7 @@ int test(const device& dev, onemkl::uplo upper_lower, onemkl::transpose trans, i
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const onemkl::backend_unsupported_exception& e) {
+    catch (const oneapi::mkl::backend_unsupported_exception& e) {
         return test_skipped;
     }
 
@@ -125,33 +125,33 @@ class Her2kTests : public ::testing::TestWithParam<cl::sycl::device> {};
 TEST_P(Her2kTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
     float beta(1.0);
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), onemkl::uplo::lower,
-                                                        onemkl::transpose::nontrans, 72, 27, 101,
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), oneapi::mkl::uplo::lower,
+                                                        oneapi::mkl::transpose::nontrans, 72, 27, 101,
                                                         102, 103, alpha, beta)));
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), onemkl::uplo::upper,
-                                                        onemkl::transpose::nontrans, 72, 27, 101,
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), oneapi::mkl::uplo::upper,
+                                                        oneapi::mkl::transpose::nontrans, 72, 27, 101,
                                                         102, 103, alpha, beta)));
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), onemkl::uplo::lower,
-                                                        onemkl::transpose::conjtrans, 72, 27, 101,
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), oneapi::mkl::uplo::lower,
+                                                        oneapi::mkl::transpose::conjtrans, 72, 27, 101,
                                                         102, 103, alpha, beta)));
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), onemkl::uplo::upper,
-                                                        onemkl::transpose::conjtrans, 72, 27, 101,
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), oneapi::mkl::uplo::upper,
+                                                        oneapi::mkl::transpose::conjtrans, 72, 27, 101,
                                                         102, 103, alpha, beta)));
 }
 TEST_P(Her2kTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
     double beta(1.0);
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), onemkl::uplo::lower,
-                                                          onemkl::transpose::nontrans, 72, 27, 101,
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::lower,
+                                                          oneapi::mkl::transpose::nontrans, 72, 27, 101,
                                                           102, 103, alpha, beta)));
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), onemkl::uplo::upper,
-                                                          onemkl::transpose::nontrans, 72, 27, 101,
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::upper,
+                                                          oneapi::mkl::transpose::nontrans, 72, 27, 101,
                                                           102, 103, alpha, beta)));
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), onemkl::uplo::lower,
-                                                          onemkl::transpose::conjtrans, 72, 27, 101,
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::lower,
+                                                          oneapi::mkl::transpose::conjtrans, 72, 27, 101,
                                                           102, 103, alpha, beta)));
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), onemkl::uplo::upper,
-                                                          onemkl::transpose::conjtrans, 72, 27, 101,
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::upper,
+                                                          oneapi::mkl::transpose::conjtrans, 72, 27, 101,
                                                           102, 103, alpha, beta)));
 }
 

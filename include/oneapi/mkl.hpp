@@ -17,23 +17,11 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_BACKENDS_HPP_
-#define _ONEMKL_BACKENDS_HPP_
+#ifndef _ONEMKL_HPP_
+#define _ONEMKL_HPP_
 
-#include <map>
-#include <string>
+#include "oneapi/mkl/types.hpp"
 
-namespace onemkl {
+#include "oneapi/mkl/blas/blas.hpp"
 
-enum class backend { intelcpu, intelgpu, nvidiagpu, unsupported };
-
-typedef std::map<backend, std::string> backendmap;
-
-static backendmap backend_map = { { backend::intelcpu, "intelcpu" },
-                                  { backend::intelgpu, "intelgpu" },
-                                  { backend::nvidiagpu, "nvidiagpu" },
-                                  { backend::unsupported, "unsupported" } };
-
-} //namespace onemkl
-
-#endif //_ONEMKL_BACKENDS_HPP_
+#endif //_ONEMKL_HPP_

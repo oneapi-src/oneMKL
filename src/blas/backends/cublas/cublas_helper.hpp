@@ -26,9 +26,10 @@
 #include <cublas_v2.h>
 #include <cuda.h>
 #include <complex>
-#include "onemkl/types.hpp"
+#include "oneapi/mkl/types.hpp"
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 namespace cublas {
 
 // The static assert to make sure that all index types used in
@@ -189,46 +190,46 @@ public:
         throw cublas_error(std::string(#name) + std::string(" : "), err); \
     }
 
-inline cublasOperation_t get_cublas_operation(onemkl::transpose trn) {
+inline cublasOperation_t get_cublas_operation(oneapi::mkl::transpose trn) {
     switch (trn) {
-        case onemkl::transpose::nontrans:
+        case oneapi::mkl::transpose::nontrans:
             return CUBLAS_OP_N;
-        case onemkl::transpose::trans:
+        case oneapi::mkl::transpose::trans:
             return CUBLAS_OP_T;
-        case onemkl::transpose::conjtrans:
+        case oneapi::mkl::transpose::conjtrans:
             return CUBLAS_OP_C;
         default:
             throw "Wrong transpose Operation.";
     }
 }
 
-inline cublasFillMode_t get_cublas_fill_mode(onemkl::uplo ul) {
+inline cublasFillMode_t get_cublas_fill_mode(oneapi::mkl::uplo ul) {
     switch (ul) {
-        case onemkl::uplo::upper:
+        case oneapi::mkl::uplo::upper:
             return CUBLAS_FILL_MODE_UPPER;
-        case onemkl::uplo::lower:
+        case oneapi::mkl::uplo::lower:
             return CUBLAS_FILL_MODE_LOWER;
         default:
             throw "Wrong fill mode.";
     }
 }
 
-inline cublasDiagType_t get_cublas_diag_type(onemkl::diag un) {
+inline cublasDiagType_t get_cublas_diag_type(oneapi::mkl::diag un) {
     switch (un) {
-        case onemkl::diag::unit:
+        case oneapi::mkl::diag::unit:
             return CUBLAS_DIAG_UNIT;
-        case onemkl::diag::nonunit:
+        case oneapi::mkl::diag::nonunit:
             return CUBLAS_DIAG_NON_UNIT;
         default:
             throw "Wrong diag type.";
     }
 }
 
-inline cublasSideMode_t get_cublas_side_mode(onemkl::side lr) {
+inline cublasSideMode_t get_cublas_side_mode(oneapi::mkl::side lr) {
     switch (lr) {
-        case onemkl::side::left:
+        case oneapi::mkl::side::left:
             return CUBLAS_SIDE_LEFT;
-        case onemkl::side::right:
+        case oneapi::mkl::side::right:
             return CUBLAS_SIDE_RIGHT;
         default:
             throw "Wrong side mode.";
@@ -251,5 +252,6 @@ struct CudaEquivalentType<std::complex<double>> {
 };
 
 } // namespace cublas
-} // namespace onemkl
+} // namespace mkl
+} // namespace oneapi
 #endif // _MKL_BLAS_CUBLAS_HELPER_HPP_

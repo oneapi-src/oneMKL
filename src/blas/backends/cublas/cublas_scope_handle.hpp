@@ -27,7 +27,8 @@
 #include <thread>
 #include <unordered_map>
 #include "cublas_helper.hpp"
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 namespace cublas {
 
 struct cublas_handle {
@@ -92,5 +93,6 @@ public:
 };
 
 } // namespace cublas
-} // namespace onemkl
+} // namespace mkl
+} // namespace oneapi
 #endif //_MKL_BLAS_CUBLAS_SCOPED_HANDLE_HPP_

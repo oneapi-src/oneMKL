@@ -20,9 +20,10 @@
 #include "cublas_helper.hpp"
 #include "cublas_scope_handle.hpp"
 #include "include/exceptions_helper.hpp"
-#include "onemkl/blas/detail/cublas/onemkl_blas_cublas.hpp"
+#include "oneapi/mkl/blas/detail/cublas/onemkl_blas_cublas.hpp"
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 namespace cublas {
 
 // Buffer APIs
@@ -234,4 +235,5 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<doub
 }
 
 } // namespace cublas
-} // namespace onemkl
+} // namespace mkl
+} // namespace oneapi

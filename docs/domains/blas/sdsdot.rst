@@ -36,7 +36,7 @@ sdsdot (Buffer Version)
          :class: sectiontitle
 
 
-      .. cpp:function::  void onemkl::blas::sdsdot(sycl::queue &queue, std::int64_t n, float sb, sycl::buffer<float,1> &x, std::int64_t incx, sycl::buffer<float,1> &y, std::int64_t incy, sycl::buffer<float,1> &result)
+      .. cpp:function::  void oneapi::mkl::blas::sdsdot(sycl::queue &queue, std::int64_t n, float sb, sycl::buffer<float,1> &x, std::int64_t incx, sycl::buffer<float,1> &y, std::int64_t incy, sycl::buffer<float,1> &result)
    .. container:: section
    
    
@@ -105,7 +105,7 @@ sdsdot (USM Version)
       .. container:: dlsyntaxpara
 
 
-         .. cpp:function::  sycl::event onemkl::blas::sdsdot(sycl::queue &queue, std::int64_t n, float sb, const float *x, std::int64_t incx, const float *y, std::int64_t incy, float *result, const sycl::vector_class<sycl::event> &dependencies = {})
+         .. cpp:function::  sycl::event oneapi::mkl::blas::sdsdot(sycl::queue &queue, std::int64_t n, float sb, const float *x, std::int64_t incx, const float *y, std::int64_t incy, float *result, const sycl::vector_class<sycl::event> &dependencies = {})
       .. container:: section
       
       

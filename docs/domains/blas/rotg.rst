@@ -61,7 +61,7 @@ rotg (Buffer Version)
          :class: sectiontitle
 
 
-      .. cpp:function::  void onemkl::blas::rotg(sycl::queue &queue, sycl::buffer<T,1> &a, sycl::buffer<T,1> &b, sycl::buffer<T_real,1> &c, sycl::buffer<T,1> &s)
+      .. cpp:function::  void oneapi::mkl::blas::rotg(sycl::queue &queue, sycl::buffer<T,1> &a, sycl::buffer<T,1> &b, sycl::buffer<T_real,1> &c, sycl::buffer<T,1> &s)
 
 .. container:: section
 
@@ -124,7 +124,7 @@ rotg (USM Version)
       .. container:: dlsyntaxpara
 
 
-         .. cpp:function::  sycl::event onemkl::blas::rotg(sycl::queue &queue, T *a, T *b, T_real *c, T *s, const sycl::vector_class<sycl::event> &dependencies = {})
+         .. cpp:function::  sycl::event oneapi::mkl::blas::rotg(sycl::queue &queue, T *a, T *b, T_real *c, T *s, const sycl::vector_class<sycl::event> &dependencies = {})
    .. container:: section
 
 

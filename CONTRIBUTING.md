@@ -141,32 +141,38 @@ files in the following order:
 
 ```c
 // Wrong! Do not indent
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 
    class table { };
 
-} // namespace onemkl
+} // namespace mkl
+} // namespace oneapi
 
 // Right
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 
 class table { };
 
-} // namespace onemkl
+} // namespace mkl
+} // namespace oneapi
 ```
 
 *  **NS4:** Put each namespace on its own line when declaring nested namespaces.
 
 ```c
-#include "onemkl/blas/path_to_some_header.hpp"
+#include "oneapi/mkl/blas/path_to_some_header.hpp"
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 namespace blas {
 
 /* ... */
 
 } // namespace blas
-} // namespace onemkl
+} // namespace mkl
+} // namespace oneapi
 ```
 
 

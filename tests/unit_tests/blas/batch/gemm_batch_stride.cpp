@@ -27,8 +27,8 @@
 #include <CL/sycl.hpp>
 #include "allocator_helper.hpp"
 #include "cblas.h"
-#include "onemkl/detail/config.hpp"
-#include "onemkl/onemkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -48,7 +48,7 @@ int test(const device &dev, int64_t batch_size) {
     // Prepare data.
     int64_t m, n, k;
     int64_t lda, ldb, ldc;
-    onemkl::transpose transa, transb;
+    oneapi::mkl::transpose transa, transb;
     fp alpha, beta;
     int64_t i, tmp;
 
@@ -63,26 +63,26 @@ int test(const device &dev, int64_t batch_size) {
     beta       = rand_scalar<fp>();
 
     if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
-        transa = (onemkl::transpose)(std::rand() % 2);
-        transb = (onemkl::transpose)(std::rand() % 2);
+        transa = (oneapi::mkl::transpose)(std::rand() % 2);
+        transb = (oneapi::mkl::transpose)(std::rand() % 2);
     }
     else {
         tmp = std::rand() % 3;
         if (tmp == 2)
-            transa = onemkl::transpose::conjtrans;
+            transa = oneapi::mkl::transpose::conjtrans;
         else
-            transa = (onemkl::transpose)tmp;
+            transa = (oneapi::mkl::transpose)tmp;
         tmp = std::rand() % 3;
         if (tmp == 2)
-            transb = onemkl::transpose::conjtrans;
+            transb = oneapi::mkl::transpose::conjtrans;
         else
-            transb = (onemkl::transpose)tmp;
+            transb = (oneapi::mkl::transpose)tmp;
     }
 
     int64_t stride_a, stride_b, stride_c;
 
-    stride_a = (transa == onemkl::transpose::nontrans) ? lda * k : lda * m;
-    stride_b = (transb == onemkl::transpose::nontrans) ? ldb * n : ldb * k;
+    stride_a = (transa == oneapi::mkl::transpose::nontrans) ? lda * k : lda * m;
+    stride_b = (transb == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * k;
     stride_c = ldc * n;
 
     vector<fp, allocator_helper<fp, 64>> A(stride_a * batch_size), B(stride_b * batch_size);
@@ -91,7 +91,7 @@ int test(const device &dev, int64_t batch_size) {
     for (i = 0; i < batch_size; i++) {
         rand_matrix(A.data() + stride_a * i, transa, m, k, lda);
         rand_matrix(B.data() + stride_b * i, transb, k, n, ldb);
-        rand_matrix(C.data() + stride_c * i, onemkl::transpose::nontrans, m, n, ldc);
+        rand_matrix(C.data() + stride_c * i, oneapi::mkl::transpose::nontrans, m, n, ldc);
     }
 
     C_ref = C;
@@ -138,11 +138,11 @@ int test(const device &dev, int64_t batch_size) {
 
     try {
 #ifdef CALL_RT_API
-        onemkl::blas::gemm_batch(main_queue, transa, transb, m, n, k, alpha, A_buffer, lda,
+        oneapi::mkl::blas::gemm_batch(main_queue, transa, transb, m, n, k, alpha, A_buffer, lda,
                                  stride_a, B_buffer, ldb, stride_b, beta, C_buffer, ldc, stride_c,
                                  batch_size);
 #else
-        TEST_RUN_CT(main_queue, onemkl::blas::gemm_batch,
+        TEST_RUN_CT(main_queue, oneapi::mkl::blas::gemm_batch,
                     (main_queue, transa, transb, m, n, k, alpha, A_buffer, lda, stride_a, B_buffer,
                      ldb, stride_b, beta, C_buffer, ldc, stride_c, batch_size));
 #endif
@@ -153,7 +153,7 @@ int test(const device &dev, int64_t batch_size) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const onemkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::backend_unsupported_exception &e) {
         return test_skipped;
     }
 

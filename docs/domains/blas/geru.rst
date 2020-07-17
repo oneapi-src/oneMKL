@@ -65,7 +65,7 @@ geru (Buffer Version)
          :class: sectiontitle
 
 
-      .. cpp:function::  void onemkl::blas::geru(sycl::queue &queue, std::int64_t m, std::int64_t n, T alpha, sycl::buffer<T,1> &x, std::int64_t incx, sycl::buffer<T,1> &y, std::int64_t incy, sycl::buffer<T,1> &a, std::int64_t lda)
+      .. cpp:function::  void oneapi::mkl::blas::geru(sycl::queue &queue, std::int64_t m, std::int64_t n, T alpha, sycl::buffer<T,1> &x, std::int64_t incx, sycl::buffer<T,1> &y, std::int64_t incy, sycl::buffer<T,1> &a, std::int64_t lda)
 .. container:: section
 
 
@@ -149,7 +149,7 @@ geru (USM Version)
       .. container:: dlsyntaxpara
 
 
-         .. cpp:function::  sycl::event onemkl::blas::geru(sycl::queue &queue, std::int64_t m, std::int64_t n, T alpha, const T *x, std::int64_t incx, const T *y, std::int64_t incy, T *a, std::int64_t lda, const sycl::vector_class<sycl::event> &dependencies = {})
+         .. cpp:function::  sycl::event oneapi::mkl::blas::geru(sycl::queue &queue, std::int64_t m, std::int64_t n, T alpha, const T *x, std::int64_t incx, const T *y, std::int64_t incy, T *a, std::int64_t lda, const sycl::vector_class<sycl::event> &dependencies = {})
    .. container:: section
 
 

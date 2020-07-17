@@ -23,209 +23,210 @@
 #include <complex>
 #include <cstdint>
 
-#include "onemkl/types.hpp"
+#include "oneapi/mkl/types.hpp"
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 namespace mklgpu {
 namespace internal {
 
 // Buffer APIs
 
-void gemm(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+void gemm(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
           std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
           cl::sycl::buffer<float, 1> &a, std::int64_t lda, cl::sycl::buffer<float, 1> &b,
           std::int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
 
-void gemm(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+void gemm(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
           std::int64_t m, std::int64_t n, std::int64_t k, double alpha,
           cl::sycl::buffer<double, 1> &a, std::int64_t lda, cl::sycl::buffer<double, 1> &b,
           std::int64_t ldb, double beta, cl::sycl::buffer<double, 1> &c, std::int64_t ldc);
 
-void gemm(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+void gemm(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
           std::int64_t m, std::int64_t n, std::int64_t k, std::complex<float> alpha,
           cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, std::complex<float> beta,
           cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc);
 
-void gemm(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+void gemm(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
           std::int64_t m, std::int64_t n, std::int64_t k, std::complex<double> alpha,
           cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb, std::complex<double> beta,
           cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc);
 
-void symm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower, std::int64_t m,
+void symm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower, std::int64_t m,
           std::int64_t n, float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
           cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
           cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
 
-void symm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower, std::int64_t m,
+void symm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower, std::int64_t m,
           std::int64_t n, double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
           cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
           cl::sycl::buffer<double, 1> &c, std::int64_t ldc);
 
-void symm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower, std::int64_t m,
+void symm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower, std::int64_t m,
           std::int64_t n, std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
           std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
           std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc);
 
-void symm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower, std::int64_t m,
+void symm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower, std::int64_t m,
           std::int64_t n, std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
           std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
           std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
           std::int64_t ldc);
 
-void hemm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower, std::int64_t m,
+void hemm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower, std::int64_t m,
           std::int64_t n, std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
           std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
           std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc);
 
-void hemm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower, std::int64_t m,
+void hemm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower, std::int64_t m,
           std::int64_t n, std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
           std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
           std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
           std::int64_t ldc);
 
-void syrk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans, std::int64_t n,
+void syrk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, std::int64_t n,
           std::int64_t k, float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda, float beta,
           cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
 
-void syrk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans, std::int64_t n,
+void syrk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, std::int64_t n,
           std::int64_t k, double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
           double beta, cl::sycl::buffer<double, 1> &c, std::int64_t ldc);
 
-void syrk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans, std::int64_t n,
+void syrk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, std::int64_t n,
           std::int64_t k, std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
           std::int64_t lda, std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c,
           std::int64_t ldc);
 
-void syrk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans, std::int64_t n,
+void syrk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, std::int64_t n,
           std::int64_t k, std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
           std::int64_t lda, std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
           std::int64_t ldc);
 
-void herk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans, std::int64_t n,
+void herk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, std::int64_t n,
           std::int64_t k, float alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
           std::int64_t lda, float beta, cl::sycl::buffer<std::complex<float>, 1> &c,
           std::int64_t ldc);
 
-void herk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans, std::int64_t n,
+void herk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, std::int64_t n,
           std::int64_t k, double alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
           std::int64_t lda, double beta, cl::sycl::buffer<std::complex<double>, 1> &c,
           std::int64_t ldc);
 
-void syr2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+void syr2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
            std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<float, 1> &a,
            std::int64_t lda, cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
            cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
 
-void syr2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+void syr2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
            std::int64_t n, std::int64_t k, double alpha, cl::sycl::buffer<double, 1> &a,
            std::int64_t lda, cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
            cl::sycl::buffer<double, 1> &c, std::int64_t ldc);
 
-void syr2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+void syr2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
            std::int64_t n, std::int64_t k, std::complex<float> alpha,
            cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
            cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, std::complex<float> beta,
            cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc);
 
-void syr2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+void syr2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
            std::int64_t n, std::int64_t k, std::complex<double> alpha,
            cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
            cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
            std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
            std::int64_t ldc);
 
-void her2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+void her2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
            std::int64_t n, std::int64_t k, std::complex<float> alpha,
            cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
            cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, float beta,
            cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc);
 
-void her2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+void her2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
            std::int64_t n, std::int64_t k, std::complex<double> alpha,
            cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
            cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb, double beta,
            cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc);
 
-void trmm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-          onemkl::transpose transa, onemkl::diag unit_diag, std::int64_t m, std::int64_t n,
+void trmm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+          oneapi::mkl::transpose transa, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
           cl::sycl::buffer<float, 1> &b, std::int64_t ldb);
 
-void trmm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-          onemkl::transpose transa, onemkl::diag unit_diag, std::int64_t m, std::int64_t n,
+void trmm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+          oneapi::mkl::transpose transa, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
           cl::sycl::buffer<double, 1> &b, std::int64_t ldb);
 
-void trmm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-          onemkl::transpose transa, onemkl::diag unit_diag, std::int64_t m, std::int64_t n,
+void trmm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+          oneapi::mkl::transpose transa, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb);
 
-void trmm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-          onemkl::transpose transa, onemkl::diag unit_diag, std::int64_t m, std::int64_t n,
+void trmm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+          oneapi::mkl::transpose transa, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
           std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb);
 
-void trsm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-          onemkl::transpose transa, onemkl::diag unit_diag, std::int64_t m, std::int64_t n,
+void trsm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+          oneapi::mkl::transpose transa, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
           cl::sycl::buffer<float, 1> &b, std::int64_t ldb);
 
-void trsm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-          onemkl::transpose transa, onemkl::diag unit_diag, std::int64_t m, std::int64_t n,
+void trsm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+          oneapi::mkl::transpose transa, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
           cl::sycl::buffer<double, 1> &b, std::int64_t ldb);
 
-void trsm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-          onemkl::transpose transa, onemkl::diag unit_diag, std::int64_t m, std::int64_t n,
+void trsm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+          oneapi::mkl::transpose transa, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb);
 
-void trsm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-          onemkl::transpose transa, onemkl::diag unit_diag, std::int64_t m, std::int64_t n,
+void trsm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+          oneapi::mkl::transpose transa, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
           std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb);
 
-void gemv(cl::sycl::queue &queue, onemkl::transpose trans, std::int64_t m, std::int64_t n,
+void gemv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
           float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
           cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
           cl::sycl::buffer<float, 1> &y, std::int64_t incy);
 
-void gemv(cl::sycl::queue &queue, onemkl::transpose trans, std::int64_t m, std::int64_t n,
+void gemv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
           double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
           cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
           cl::sycl::buffer<double, 1> &y, std::int64_t incy);
 
-void gemv(cl::sycl::queue &queue, onemkl::transpose trans, std::int64_t m, std::int64_t n,
+void gemv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx, std::complex<float> beta,
           cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy);
 
-void gemv(cl::sycl::queue &queue, onemkl::transpose trans, std::int64_t m, std::int64_t n,
+void gemv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
           std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
           std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &y,
           std::int64_t incy);
 
-void gbmv(cl::sycl::queue &queue, onemkl::transpose trans, std::int64_t m, std::int64_t n,
+void gbmv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
           std::int64_t kl, std::int64_t ku, float alpha, cl::sycl::buffer<float, 1> &a,
           std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
           cl::sycl::buffer<float, 1> &y, std::int64_t incy);
 
-void gbmv(cl::sycl::queue &queue, onemkl::transpose trans, std::int64_t m, std::int64_t n,
+void gbmv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
           std::int64_t kl, std::int64_t ku, double alpha, cl::sycl::buffer<double, 1> &a,
           std::int64_t lda, cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
           cl::sycl::buffer<double, 1> &y, std::int64_t incy);
 
-void gbmv(cl::sycl::queue &queue, onemkl::transpose trans, std::int64_t m, std::int64_t n,
+void gbmv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
           std::int64_t kl, std::int64_t ku, std::complex<float> alpha,
           cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx, std::complex<float> beta,
           cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy);
 
-void gbmv(cl::sycl::queue &queue, onemkl::transpose trans, std::int64_t m, std::int64_t n,
+void gbmv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
           std::int64_t kl, std::int64_t ku, std::complex<double> alpha,
           cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
@@ -260,222 +261,222 @@ void geru(cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<d
           cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
           cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda);
 
-void hbmv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, std::int64_t k,
+void hbmv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t k,
           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx, std::complex<float> beta,
           cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy);
 
-void hbmv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, std::int64_t k,
+void hbmv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t k,
           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
           std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
           std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &y,
           std::int64_t incy);
 
-void hemv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, std::complex<float> alpha,
+void hemv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::complex<float> alpha,
           cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx, std::complex<float> beta,
           cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy);
 
-void hemv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, std::complex<double> alpha,
+void hemv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::complex<double> alpha,
           cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
           std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &y,
           std::int64_t incy);
 
-void her(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, float alpha,
+void her(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, float alpha,
          cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
          cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda);
 
-void her(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, double alpha,
+void her(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, double alpha,
          cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
          cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda);
 
-void her2(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, std::complex<float> alpha,
+void her2(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, std::complex<float> alpha,
           cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
           cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
           cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda);
 
-void her2(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, std::complex<double> alpha,
+void her2(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, std::complex<double> alpha,
           cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
           cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
           cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda);
 
-void hpmv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, std::complex<float> alpha,
+void hpmv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::complex<float> alpha,
           cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<std::complex<float>, 1> &x,
           std::int64_t incx, std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &y,
           std::int64_t incy);
 
-void hpmv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, std::complex<double> alpha,
+void hpmv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::complex<double> alpha,
           cl::sycl::buffer<std::complex<double>, 1> &a,
           cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
           std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &y,
           std::int64_t incy);
 
-void hpr(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, float alpha,
+void hpr(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, float alpha,
          cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
          cl::sycl::buffer<std::complex<float>, 1> &a);
 
-void hpr(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, double alpha,
+void hpr(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, double alpha,
          cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
          cl::sycl::buffer<std::complex<double>, 1> &a);
 
-void hpr2(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, std::complex<float> alpha,
+void hpr2(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, std::complex<float> alpha,
           cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
           cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
           cl::sycl::buffer<std::complex<float>, 1> &a);
 
-void hpr2(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, std::complex<double> alpha,
+void hpr2(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, std::complex<double> alpha,
           cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
           cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
           cl::sycl::buffer<std::complex<double>, 1> &a);
 
-void sbmv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, std::int64_t k, float alpha,
+void sbmv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t k, float alpha,
           cl::sycl::buffer<float, 1> &a, std::int64_t lda, cl::sycl::buffer<float, 1> &x,
           std::int64_t incx, float beta, cl::sycl::buffer<float, 1> &y, std::int64_t incy);
 
-void sbmv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, std::int64_t k, double alpha,
+void sbmv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t k, double alpha,
           cl::sycl::buffer<double, 1> &a, std::int64_t lda, cl::sycl::buffer<double, 1> &x,
           std::int64_t incx, double beta, cl::sycl::buffer<double, 1> &y, std::int64_t incy);
 
-void spmv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, float alpha,
+void spmv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, float alpha,
           cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<float, 1> &x, std::int64_t incx,
           float beta, cl::sycl::buffer<float, 1> &y, std::int64_t incy);
 
-void spmv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, double alpha,
+void spmv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, double alpha,
           cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<double, 1> &x, std::int64_t incx,
           double beta, cl::sycl::buffer<double, 1> &y, std::int64_t incy);
 
-void spr(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, float alpha,
+void spr(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, float alpha,
          cl::sycl::buffer<float, 1> &x, std::int64_t incx, cl::sycl::buffer<float, 1> &a);
 
-void spr(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, double alpha,
+void spr(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, double alpha,
          cl::sycl::buffer<double, 1> &x, std::int64_t incx, cl::sycl::buffer<double, 1> &a);
 
-void spr2(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, float alpha,
+void spr2(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, float alpha,
           cl::sycl::buffer<float, 1> &x, std::int64_t incx, cl::sycl::buffer<float, 1> &y,
           std::int64_t incy, cl::sycl::buffer<float, 1> &a);
 
-void spr2(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, double alpha,
+void spr2(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, double alpha,
           cl::sycl::buffer<double, 1> &x, std::int64_t incx, cl::sycl::buffer<double, 1> &y,
           std::int64_t incy, cl::sycl::buffer<double, 1> &a);
 
-void symv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, float alpha,
+void symv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, float alpha,
           cl::sycl::buffer<float, 1> &a, std::int64_t lda, cl::sycl::buffer<float, 1> &x,
           std::int64_t incx, float beta, cl::sycl::buffer<float, 1> &y, std::int64_t incy);
 
-void symv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, double alpha,
+void symv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, double alpha,
           cl::sycl::buffer<double, 1> &a, std::int64_t lda, cl::sycl::buffer<double, 1> &x,
           std::int64_t incx, double beta, cl::sycl::buffer<double, 1> &y, std::int64_t incy);
 
-void syr(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, float alpha,
+void syr(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, float alpha,
          cl::sycl::buffer<float, 1> &x, std::int64_t incx, cl::sycl::buffer<float, 1> &a,
          std::int64_t lda);
 
-void syr(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, double alpha,
+void syr(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, double alpha,
          cl::sycl::buffer<double, 1> &x, std::int64_t incx, cl::sycl::buffer<double, 1> &a,
          std::int64_t lda);
 
-void syr2(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, float alpha,
+void syr2(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, float alpha,
           cl::sycl::buffer<float, 1> &x, std::int64_t incx, cl::sycl::buffer<float, 1> &y,
           std::int64_t incy, cl::sycl::buffer<float, 1> &a, std::int64_t lda);
 
-void syr2(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, double alpha,
+void syr2(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, double alpha,
           cl::sycl::buffer<double, 1> &x, std::int64_t incx, cl::sycl::buffer<double, 1> &y,
           std::int64_t incy, cl::sycl::buffer<double, 1> &a, std::int64_t lda);
 
-void tbmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void tbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, std::int64_t k, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
           cl::sycl::buffer<float, 1> &x, std::int64_t incx);
 
-void tbmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void tbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, std::int64_t k, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
           cl::sycl::buffer<double, 1> &x, std::int64_t incx);
 
-void tbmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void tbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, std::int64_t k, cl::sycl::buffer<std::complex<float>, 1> &a,
           std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx);
 
-void tbmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void tbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, std::int64_t k, cl::sycl::buffer<std::complex<double>, 1> &a,
           std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx);
 
-void tbsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void tbsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, std::int64_t k, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
           cl::sycl::buffer<float, 1> &x, std::int64_t incx);
 
-void tbsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void tbsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, std::int64_t k, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
           cl::sycl::buffer<double, 1> &x, std::int64_t incx);
 
-void tbsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void tbsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, std::int64_t k, cl::sycl::buffer<std::complex<float>, 1> &a,
           std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx);
 
-void tbsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void tbsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, std::int64_t k, cl::sycl::buffer<std::complex<double>, 1> &a,
           std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx);
 
-void tpmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void tpmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<float, 1> &x,
           std::int64_t incx);
 
-void tpmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void tpmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<double, 1> &x,
           std::int64_t incx);
 
-void tpmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void tpmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, cl::sycl::buffer<std::complex<float>, 1> &a,
           cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx);
 
-void tpmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void tpmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, cl::sycl::buffer<std::complex<double>, 1> &a,
           cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx);
 
-void tpsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void tpsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<float, 1> &x,
           std::int64_t incx);
 
-void tpsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void tpsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<double, 1> &x,
           std::int64_t incx);
 
-void tpsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void tpsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, cl::sycl::buffer<std::complex<float>, 1> &a,
           cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx);
 
-void tpsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void tpsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, cl::sycl::buffer<std::complex<double>, 1> &a,
           cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx);
 
-void trmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void trmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
           cl::sycl::buffer<float, 1> &x, std::int64_t incx);
 
-void trmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void trmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
           cl::sycl::buffer<double, 1> &x, std::int64_t incx);
 
-void trmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void trmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx);
 
-void trmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void trmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx);
 
-void trsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void trsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
           cl::sycl::buffer<float, 1> &x, std::int64_t incx);
 
-void trsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void trsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
           cl::sycl::buffer<double, 1> &x, std::int64_t incx);
 
-void trsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void trsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx);
 
-void trsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans, onemkl::diag diag,
+void trsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
           std::int64_t n, cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx);
 
@@ -652,21 +653,21 @@ void iamin(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<std::complex
 void iamin(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<std::complex<double>, 1> &x,
            std::int64_t incx, cl::sycl::buffer<std::int64_t, 1> &result);
 
-void gemm_batch(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+void gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
                 std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
                 cl::sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a,
                 cl::sycl::buffer<float, 1> &b, std::int64_t ldb, std::int64_t stride_b, float beta,
                 cl::sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
                 std::int64_t batch_size);
 
-void gemm_batch(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+void gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
                 std::int64_t m, std::int64_t n, std::int64_t k, double alpha,
                 cl::sycl::buffer<double, 1> &a, std::int64_t lda, std::int64_t stride_a,
                 cl::sycl::buffer<double, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 double beta, cl::sycl::buffer<double, 1> &c, std::int64_t ldc,
                 std::int64_t stride_c, std::int64_t batch_size);
 
-void gemm_batch(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+void gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
                 std::int64_t m, std::int64_t n, std::int64_t k, std::complex<float> alpha,
                 cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
                 std::int64_t stride_a, cl::sycl::buffer<std::complex<float>, 1> &b,
@@ -674,7 +675,7 @@ void gemm_batch(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transp
                 cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc,
                 std::int64_t stride_c, std::int64_t batch_size);
 
-void gemm_batch(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+void gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
                 std::int64_t m, std::int64_t n, std::int64_t k, std::complex<double> alpha,
                 cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                 std::int64_t stride_a, cl::sycl::buffer<std::complex<double>, 1> &b,
@@ -682,298 +683,298 @@ void gemm_batch(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transp
                 cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc,
                 std::int64_t stride_c, std::int64_t batch_size);
 
-void trsm_batch(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-                onemkl::transpose trans, onemkl::diag unit_diag, std::int64_t m, std::int64_t n,
+void trsm_batch(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+                oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
                 float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a,
                 cl::sycl::buffer<float, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 std::int64_t batch_size);
 
-void trsm_batch(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-                onemkl::transpose trans, onemkl::diag unit_diag, std::int64_t m, std::int64_t n,
+void trsm_batch(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+                oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
                 double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
                 std::int64_t stride_a, cl::sycl::buffer<double, 1> &b, std::int64_t ldb,
                 std::int64_t stride_b, std::int64_t batch_size);
 
-void trsm_batch(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-                onemkl::transpose trans, onemkl::diag unit_diag, std::int64_t m, std::int64_t n,
+void trsm_batch(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+                oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
                 std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
                 std::int64_t lda, std::int64_t stride_a,
                 cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
                 std::int64_t stride_b, std::int64_t batch_size);
 
-void trsm_batch(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-                onemkl::transpose trans, onemkl::diag unit_diag, std::int64_t m, std::int64_t n,
+void trsm_batch(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+                oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
                 std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
                 std::int64_t lda, std::int64_t stride_a,
                 cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
                 std::int64_t stride_b, std::int64_t batch_size);
 
-void gemmt(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose transa,
-           onemkl::transpose transb, std::int64_t n, std::int64_t k, float alpha,
+void gemmt(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose transa,
+           oneapi::mkl::transpose transb, std::int64_t n, std::int64_t k, float alpha,
            cl::sycl::buffer<float, 1> &a, std::int64_t lda, cl::sycl::buffer<float, 1> &b,
            std::int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
 
-void gemmt(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose transa,
-           onemkl::transpose transb, std::int64_t n, std::int64_t k, double alpha,
+void gemmt(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose transa,
+           oneapi::mkl::transpose transb, std::int64_t n, std::int64_t k, double alpha,
            cl::sycl::buffer<double, 1> &a, std::int64_t lda, cl::sycl::buffer<double, 1> &b,
            std::int64_t ldb, double beta, cl::sycl::buffer<double, 1> &c, std::int64_t ldc);
 
-void gemmt(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose transa,
-           onemkl::transpose transb, std::int64_t n, std::int64_t k, std::complex<double> alpha,
+void gemmt(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose transa,
+           oneapi::mkl::transpose transb, std::int64_t n, std::int64_t k, std::complex<double> alpha,
            cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
            cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
            std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
            std::int64_t ldc);
 
-void gemmt(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose transa,
-           onemkl::transpose transb, std::int64_t n, std::int64_t k, std::complex<float> alpha,
+void gemmt(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose transa,
+           oneapi::mkl::transpose transb, std::int64_t n, std::int64_t k, std::complex<float> alpha,
            cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
            cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, std::complex<float> beta,
            cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc);
 
-void gemm(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+void gemm(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
           std::int64_t m, std::int64_t n, std::int64_t k, half alpha, cl::sycl::buffer<half, 1> &a,
           std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
           cl::sycl::buffer<half, 1> &c, std::int64_t ldc);
 
-void gemm_ext(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+void gemm_ext(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
               std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
               cl::sycl::buffer<half, 1> &a, std::int64_t lda, cl::sycl::buffer<half, 1> &b,
               std::int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
 
-void gemm_ext(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
-              onemkl::offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+void gemm_ext(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
+              oneapi::mkl::offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
               cl::sycl::buffer<int8_t, 1> &a, std::int64_t lda, int8_t ao,
               cl::sycl::buffer<uint8_t, 1> &b, std::int64_t ldb, uint8_t bo, float beta,
               cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc, cl::sycl::buffer<int32_t, 1> &co);
 
 // USM APIs
 
-cl::sycl::event gemm(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+cl::sycl::event gemm(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
                      std::int64_t m, std::int64_t n, std::int64_t k, float alpha, const float *a,
                      std::int64_t lda, const float *b, std::int64_t ldb, float beta, float *c,
                      std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemm(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+cl::sycl::event gemm(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
                      std::int64_t m, std::int64_t n, std::int64_t k, double alpha, const double *a,
                      std::int64_t lda, const double *b, std::int64_t ldb, double beta, double *c,
                      std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemm(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+cl::sycl::event gemm(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
                      std::int64_t m, std::int64_t n, std::int64_t k, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                      std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
                      std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemm(cl::sycl::queue &queue, onemkl::transpose transa, onemkl::transpose transb,
+cl::sycl::event gemm(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
                      std::int64_t m, std::int64_t n, std::int64_t k, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *b,
                      std::int64_t ldb, std::complex<double> beta, std::complex<double> *c,
                      std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event symm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+cl::sycl::event symm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
                      std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda,
                      const float *b, std::int64_t ldb, float beta, float *c, std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event symm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+cl::sycl::event symm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
                      std::int64_t m, std::int64_t n, double alpha, const double *a,
                      std::int64_t lda, const double *b, std::int64_t ldb, double beta, double *c,
                      std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event symm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+cl::sycl::event symm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
                      std::int64_t m, std::int64_t n, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                      std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
                      std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event symm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+cl::sycl::event symm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
                      std::int64_t m, std::int64_t n, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *b,
                      std::int64_t ldb, std::complex<double> beta, std::complex<double> *c,
                      std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event hemm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+cl::sycl::event hemm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
                      std::int64_t m, std::int64_t n, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                      std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
                      std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event hemm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
+cl::sycl::event hemm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
                      std::int64_t m, std::int64_t n, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *b,
                      std::int64_t ldb, std::complex<double> beta, std::complex<double> *c,
                      std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event syrk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+cl::sycl::event syrk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                      std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda,
                      float beta, float *c, std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event syrk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+cl::sycl::event syrk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                      std::int64_t n, std::int64_t k, double alpha, const double *a,
                      std::int64_t lda, double beta, double *c, std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event syrk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+cl::sycl::event syrk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                      std::int64_t n, std::int64_t k, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, std::complex<float> beta,
                      std::complex<float> *c, std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event syrk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+cl::sycl::event syrk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                      std::int64_t n, std::int64_t k, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, std::complex<double> beta,
                      std::complex<double> *c, std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event herk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+cl::sycl::event herk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                      std::int64_t n, std::int64_t k, float alpha, const std::complex<float> *a,
                      std::int64_t lda, float beta, std::complex<float> *c, std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event herk(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+cl::sycl::event herk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                      std::int64_t n, std::int64_t k, double alpha, const std::complex<double> *a,
                      std::int64_t lda, double beta, std::complex<double> *c, std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event syr2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+cl::sycl::event syr2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                       std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda,
                       const float *b, std::int64_t ldb, float beta, float *c, std::int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event syr2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+cl::sycl::event syr2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                       std::int64_t n, std::int64_t k, double alpha, const double *a,
                       std::int64_t lda, const double *b, std::int64_t ldb, double beta, double *c,
                       std::int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event syr2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+cl::sycl::event syr2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                       std::int64_t n, std::int64_t k, std::complex<float> alpha,
                       const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                       std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
                       std::int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event syr2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+cl::sycl::event syr2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                       std::int64_t n, std::int64_t k, std::complex<double> alpha,
                       const std::complex<double> *a, std::int64_t lda,
                       const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
                       std::complex<double> *c, std::int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event her2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+cl::sycl::event her2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                       std::int64_t n, std::int64_t k, std::complex<float> alpha,
                       const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                       std::int64_t ldb, float beta, std::complex<float> *c, std::int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event her2k(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose trans,
+cl::sycl::event her2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                       std::int64_t n, std::int64_t k, std::complex<double> alpha,
                       const std::complex<double> *a, std::int64_t lda,
                       const std::complex<double> *b, std::int64_t ldb, double beta,
                       std::complex<double> *c, std::int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event trmm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-                     onemkl::transpose transa, onemkl::diag unit_diag, std::int64_t m,
+cl::sycl::event trmm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+                     oneapi::mkl::transpose transa, oneapi::mkl::diag unit_diag, std::int64_t m,
                      std::int64_t n, float alpha, const float *a, std::int64_t lda, float *b,
                      std::int64_t ldb,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event trmm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-                     onemkl::transpose transa, onemkl::diag unit_diag, std::int64_t m,
+cl::sycl::event trmm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+                     oneapi::mkl::transpose transa, oneapi::mkl::diag unit_diag, std::int64_t m,
                      std::int64_t n, double alpha, const double *a, std::int64_t lda, double *b,
                      std::int64_t ldb,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event trmm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-                     onemkl::transpose transa, onemkl::diag unit_diag, std::int64_t m,
+cl::sycl::event trmm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+                     oneapi::mkl::transpose transa, oneapi::mkl::diag unit_diag, std::int64_t m,
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                      std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event trmm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-                     onemkl::transpose transa, onemkl::diag unit_diag, std::int64_t m,
+cl::sycl::event trmm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+                     oneapi::mkl::transpose transa, oneapi::mkl::diag unit_diag, std::int64_t m,
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event trsm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-                     onemkl::transpose transa, onemkl::diag unit_diag, std::int64_t m,
+cl::sycl::event trsm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+                     oneapi::mkl::transpose transa, oneapi::mkl::diag unit_diag, std::int64_t m,
                      std::int64_t n, float alpha, const float *a, std::int64_t lda, float *b,
                      std::int64_t ldb,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event trsm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-                     onemkl::transpose transa, onemkl::diag unit_diag, std::int64_t m,
+cl::sycl::event trsm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+                     oneapi::mkl::transpose transa, oneapi::mkl::diag unit_diag, std::int64_t m,
                      std::int64_t n, double alpha, const double *a, std::int64_t lda, double *b,
                      std::int64_t ldb,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event trsm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-                     onemkl::transpose transa, onemkl::diag unit_diag, std::int64_t m,
+cl::sycl::event trsm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+                     oneapi::mkl::transpose transa, oneapi::mkl::diag unit_diag, std::int64_t m,
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                      std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event trsm(cl::sycl::queue &queue, onemkl::side left_right, onemkl::uplo upper_lower,
-                     onemkl::transpose transa, onemkl::diag unit_diag, std::int64_t m,
+cl::sycl::event trsm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+                     oneapi::mkl::transpose transa, oneapi::mkl::diag unit_diag, std::int64_t m,
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemv(cl::sycl::queue &queue, onemkl::transpose trans, std::int64_t m,
+cl::sycl::event gemv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
                      std::int64_t n, float alpha, const float *a, std::int64_t lda, const float *x,
                      std::int64_t incx, float beta, float *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemv(cl::sycl::queue &queue, onemkl::transpose trans, std::int64_t m,
+cl::sycl::event gemv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
                      std::int64_t n, double alpha, const double *a, std::int64_t lda,
                      const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemv(cl::sycl::queue &queue, onemkl::transpose trans, std::int64_t m,
+cl::sycl::event gemv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                      std::int64_t lda, const std::complex<float> *x, std::int64_t incx,
                      std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemv(cl::sycl::queue &queue, onemkl::transpose trans, std::int64_t m,
+cl::sycl::event gemv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
                      std::int64_t lda, const std::complex<double> *x, std::int64_t incx,
                      std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gbmv(cl::sycl::queue &queue, onemkl::transpose trans, std::int64_t m,
+cl::sycl::event gbmv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
                      std::int64_t n, std::int64_t kl, std::int64_t ku, float alpha, const float *a,
                      std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y,
                      std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gbmv(cl::sycl::queue &queue, onemkl::transpose trans, std::int64_t m,
+cl::sycl::event gbmv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
                      std::int64_t n, std::int64_t kl, std::int64_t ku, double alpha,
                      const double *a, std::int64_t lda, const double *x, std::int64_t incx,
                      double beta, double *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gbmv(cl::sycl::queue &queue, onemkl::transpose trans, std::int64_t m,
+cl::sycl::event gbmv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
                      std::int64_t n, std::int64_t kl, std::int64_t ku, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *x,
                      std::int64_t incx, std::complex<float> beta, std::complex<float> *y,
                      std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gbmv(cl::sycl::queue &queue, onemkl::transpose trans, std::int64_t m,
+cl::sycl::event gbmv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
                      std::int64_t n, std::int64_t kl, std::int64_t ku, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *x,
                      std::int64_t incx, std::complex<double> beta, std::complex<double> *y,
@@ -1014,265 +1015,265 @@ cl::sycl::event geru(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
                      std::int64_t lda,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event hbmv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, std::int64_t k,
+cl::sycl::event hbmv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t k,
                      std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
                      const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
                      std::complex<float> *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event hbmv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, std::int64_t k,
+cl::sycl::event hbmv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t k,
                      std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
                      const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
                      std::complex<double> *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event hemv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n,
+cl::sycl::event hemv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
                      const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
                      std::complex<float> *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event hemv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n,
+cl::sycl::event hemv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
                      const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
                      std::complex<double> *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event her(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, float alpha,
+cl::sycl::event her(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, float alpha,
                     const std::complex<float> *x, std::int64_t incx, std::complex<float> *a,
                     std::int64_t lda,
                     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event her(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, double alpha,
+cl::sycl::event her(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, double alpha,
                     const std::complex<double> *x, std::int64_t incx, std::complex<double> *a,
                     std::int64_t lda,
                     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event her2(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n,
+cl::sycl::event her2(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                      const std::complex<float> *y, std::int64_t incy, std::complex<float> *a,
                      std::int64_t lda,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event her2(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n,
+cl::sycl::event her2(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *a,
                      std::int64_t lda,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event hpmv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n,
+cl::sycl::event hpmv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *a,
                      const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
                      std::complex<float> *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event hpmv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n,
+cl::sycl::event hpmv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *a,
                      const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
                      std::complex<double> *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event hpr(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, float alpha,
+cl::sycl::event hpr(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, float alpha,
                     const std::complex<float> *x, std::int64_t incx, std::complex<float> *a,
                     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event hpr(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, double alpha,
+cl::sycl::event hpr(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, double alpha,
                     const std::complex<double> *x, std::int64_t incx, std::complex<double> *a,
                     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event hpr2(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n,
+cl::sycl::event hpr2(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                      const std::complex<float> *y, std::int64_t incy, std::complex<float> *a,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event hpr2(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n,
+cl::sycl::event hpr2(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *a,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event sbmv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, std::int64_t k,
+cl::sycl::event sbmv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t k,
                      float alpha, const float *a, std::int64_t lda, const float *x,
                      std::int64_t incx, float beta, float *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event sbmv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, std::int64_t k,
+cl::sycl::event sbmv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t k,
                      double alpha, const double *a, std::int64_t lda, const double *x,
                      std::int64_t incx, double beta, double *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event spmv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, float alpha,
+cl::sycl::event spmv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, float alpha,
                      const float *a, const float *x, std::int64_t incx, float beta, float *y,
                      std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event spmv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, double alpha,
+cl::sycl::event spmv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, double alpha,
                      const double *a, const double *x, std::int64_t incx, double beta, double *y,
                      std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event spr(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, float alpha,
+cl::sycl::event spr(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, float alpha,
                     const float *x, std::int64_t incx, float *a,
                     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event spr(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, double alpha,
+cl::sycl::event spr(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, double alpha,
                     const double *x, std::int64_t incx, double *a,
                     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event spr2(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, float alpha,
+cl::sycl::event spr2(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, float alpha,
                      const float *x, std::int64_t incx, const float *y, std::int64_t incy, float *a,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event spr2(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, double alpha,
+cl::sycl::event spr2(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, double alpha,
                      const double *x, std::int64_t incx, const double *y, std::int64_t incy,
                      double *a, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event symv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, float alpha,
+cl::sycl::event symv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, float alpha,
                      const float *a, std::int64_t lda, const float *x, std::int64_t incx,
                      float beta, float *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event symv(cl::sycl::queue &queue, onemkl::uplo uplo, std::int64_t n, double alpha,
+cl::sycl::event symv(cl::sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, double alpha,
                      const double *a, std::int64_t lda, const double *x, std::int64_t incx,
                      double beta, double *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event syr(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, float alpha,
+cl::sycl::event syr(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, float alpha,
                     const float *x, std::int64_t incx, float *a, std::int64_t lda,
                     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event syr(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, double alpha,
+cl::sycl::event syr(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, double alpha,
                     const double *x, std::int64_t incx, double *a, std::int64_t lda,
                     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event syr2(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, float alpha,
+cl::sycl::event syr2(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, float alpha,
                      const float *x, std::int64_t incx, const float *y, std::int64_t incy, float *a,
                      std::int64_t lda,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event syr2(cl::sycl::queue &queue, onemkl::uplo upplo, std::int64_t n, double alpha,
+cl::sycl::event syr2(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, std::int64_t n, double alpha,
                      const double *x, std::int64_t incx, const double *y, std::int64_t incy,
                      double *a, std::int64_t lda,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event tbmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, std::int64_t k, const float *a,
+cl::sycl::event tbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, std::int64_t k, const float *a,
                      std::int64_t lda, float *x, std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event tbmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, std::int64_t k, const double *a,
+cl::sycl::event tbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, std::int64_t k, const double *a,
                      std::int64_t lda, double *x, std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event tbmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, std::int64_t k,
+cl::sycl::event tbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, std::int64_t k,
                      const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
                      std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event tbmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, std::int64_t k,
+cl::sycl::event tbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, std::int64_t k,
                      const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
                      std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event tbsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, std::int64_t k, const float *a,
+cl::sycl::event tbsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, std::int64_t k, const float *a,
                      std::int64_t lda, float *x, std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event tbsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, std::int64_t k, const double *a,
+cl::sycl::event tbsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, std::int64_t k, const double *a,
                      std::int64_t lda, double *x, std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event tbsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, std::int64_t k,
+cl::sycl::event tbsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, std::int64_t k,
                      const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
                      std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event tbsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, std::int64_t k,
+cl::sycl::event tbsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, std::int64_t k,
                      const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
                      std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event tpmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, const float *a, float *x, std::int64_t incx,
+cl::sycl::event tpmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, const float *a, float *x, std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event tpmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, const double *a, double *x,
+cl::sycl::event tpmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, const double *a, double *x,
                      std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event tpmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, const std::complex<float> *a,
+cl::sycl::event tpmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, const std::complex<float> *a,
                      std::complex<float> *x, std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event tpmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, const std::complex<double> *a,
+cl::sycl::event tpmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, const std::complex<double> *a,
                      std::complex<double> *x, std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event tpsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, const float *a, float *x, std::int64_t incx,
+cl::sycl::event tpsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, const float *a, float *x, std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event tpsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, const double *a, double *x,
+cl::sycl::event tpsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, const double *a, double *x,
                      std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event tpsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, const std::complex<float> *a,
+cl::sycl::event tpsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, const std::complex<float> *a,
                      std::complex<float> *x, std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event tpsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, const std::complex<double> *a,
+cl::sycl::event tpsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, const std::complex<double> *a,
                      std::complex<double> *x, std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event trmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, const float *a, std::int64_t lda, float *x,
+cl::sycl::event trmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, const float *a, std::int64_t lda, float *x,
                      std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event trmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, const double *a, std::int64_t lda,
+cl::sycl::event trmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, const double *a, std::int64_t lda,
                      double *x, std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event trmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, const std::complex<float> *a,
+cl::sycl::event trmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, const std::complex<float> *a,
                      std::int64_t lda, std::complex<float> *x, std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event trmv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, const std::complex<double> *a,
+cl::sycl::event trmv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *x, std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event trsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, const float *a, std::int64_t lda, float *x,
+cl::sycl::event trsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, const float *a, std::int64_t lda, float *x,
                      std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event trsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, const double *a, std::int64_t lda,
+cl::sycl::event trsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, const double *a, std::int64_t lda,
                      double *x, std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event trsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, const std::complex<float> *a,
+cl::sycl::event trsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, const std::complex<float> *a,
                      std::int64_t lda, std::complex<float> *x, std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event trsv(cl::sycl::queue &queue, onemkl::uplo upplo, onemkl::transpose trans,
-                     onemkl::diag diag, std::int64_t n, const std::complex<double> *a,
+cl::sycl::event trsv(cl::sycl::queue &queue, oneapi::mkl::uplo upplo, oneapi::mkl::transpose trans,
+                     oneapi::mkl::diag diag, std::int64_t n, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *x, std::int64_t incx,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
@@ -1496,22 +1497,22 @@ cl::sycl::event iamin(cl::sycl::queue &queue, std::int64_t n, const std::complex
                       std::int64_t incx, std::int64_t *result,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, onemkl::transpose *transa,
-                           onemkl::transpose *transb, std::int64_t *m, std::int64_t *n,
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose *transa,
+                           oneapi::mkl::transpose *transb, std::int64_t *m, std::int64_t *n,
                            std::int64_t *k, float *alpha, const float **a, std::int64_t *lda,
                            const float **b, std::int64_t *ldb, float *beta, float **c,
                            std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, onemkl::transpose *transa,
-                           onemkl::transpose *transb, std::int64_t *m, std::int64_t *n,
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose *transa,
+                           oneapi::mkl::transpose *transb, std::int64_t *m, std::int64_t *n,
                            std::int64_t *k, double *alpha, const double **a, std::int64_t *lda,
                            const double **b, std::int64_t *ldb, double *beta, double **c,
                            std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, onemkl::transpose *transa,
-                           onemkl::transpose *transb, std::int64_t *m, std::int64_t *n,
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose *transa,
+                           oneapi::mkl::transpose *transb, std::int64_t *m, std::int64_t *n,
                            std::int64_t *k, std::complex<float> *alpha,
                            const std::complex<float> **a, std::int64_t *lda,
                            const std::complex<float> **b, std::int64_t *ldb,
@@ -1519,8 +1520,8 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, onemkl::transpose *transa,
                            std::int64_t group_count, std::int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, onemkl::transpose *transa,
-                           onemkl::transpose *transb, std::int64_t *m, std::int64_t *n,
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose *transa,
+                           oneapi::mkl::transpose *transb, std::int64_t *m, std::int64_t *n,
                            std::int64_t *k, std::complex<double> *alpha,
                            const std::complex<double> **a, std::int64_t *lda,
                            const std::complex<double> **b, std::int64_t *ldb,
@@ -1528,24 +1529,24 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, onemkl::transpose *transa,
                            std::int64_t group_count, std::int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, onemkl::transpose transa,
-                           onemkl::transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose transa,
+                           oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
                            float alpha, const float *a, std::int64_t lda, std::int64_t stride_a,
                            const float *b, std::int64_t ldb, std::int64_t stride_b, float beta,
                            float *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, onemkl::transpose transa,
-                           onemkl::transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose transa,
+                           oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
                            double alpha, const double *a, std::int64_t lda, std::int64_t stride_a,
                            const double *b, std::int64_t ldb, std::int64_t stride_b, double beta,
                            double *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, onemkl::transpose transa,
-                           onemkl::transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose transa,
+                           oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
                            std::complex<float> alpha, const std::complex<float> *a,
                            std::int64_t lda, std::int64_t stride_a, const std::complex<float> *b,
                            std::int64_t ldb, std::int64_t stride_b, std::complex<float> beta,
@@ -1553,8 +1554,8 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, onemkl::transpose transa,
                            std::int64_t batch_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, onemkl::transpose transa,
-                           onemkl::transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+cl::sycl::event gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose transa,
+                           oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
                            std::complex<double> alpha, const std::complex<double> *a,
                            std::int64_t lda, std::int64_t stride_a, const std::complex<double> *b,
                            std::int64_t ldb, std::int64_t stride_b, std::complex<double> beta,
@@ -1584,27 +1585,27 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n, std::complex
                            std::int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemmt(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose transa,
-                      onemkl::transpose transb, std::int64_t n, std::int64_t k, float alpha,
+cl::sycl::event gemmt(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose transa,
+                      oneapi::mkl::transpose transb, std::int64_t n, std::int64_t k, float alpha,
                       const float *a, std::int64_t lda, const float *b, std::int64_t ldb,
                       float beta, float *c, std::int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemmt(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose transa,
-                      onemkl::transpose transb, std::int64_t n, std::int64_t k, double alpha,
+cl::sycl::event gemmt(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose transa,
+                      oneapi::mkl::transpose transb, std::int64_t n, std::int64_t k, double alpha,
                       const double *a, std::int64_t lda, const double *b, std::int64_t ldb,
                       double beta, double *c, std::int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemmt(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose transa,
-                      onemkl::transpose transb, std::int64_t n, std::int64_t k,
+cl::sycl::event gemmt(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose transa,
+                      oneapi::mkl::transpose transb, std::int64_t n, std::int64_t k,
                       std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
                       const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
                       std::complex<double> *c, std::int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
-cl::sycl::event gemmt(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::transpose transa,
-                      onemkl::transpose transb, std::int64_t n, std::int64_t k,
+cl::sycl::event gemmt(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose transa,
+                      oneapi::mkl::transpose transb, std::int64_t n, std::int64_t k,
                       std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
                       const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
                       std::complex<float> *c, std::int64_t ldc,
@@ -1612,5 +1613,6 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, onemkl::uplo upper_lower, onemkl::
 
 } //namespace internal
 } //namespace mklgpu
-} //namespace onemkl
+} //namespace mkl
+} //namespace oneapi
 #endif //_MKL_INTERNAL_BLAS_GPU_WRAPPERS_HPP_

@@ -27,8 +27,8 @@
 #include <CL/sycl.hpp>
 #include "allocator_helper.hpp"
 #include "cblas.h"
-#include "onemkl/detail/config.hpp"
-#include "onemkl/onemkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -67,7 +67,7 @@ int test(const device &dev, int64_t batch_size) {
     // Prepare data.
     int64_t m, n, k;
     int64_t lda, ldb, ldc;
-    onemkl::transpose transa, transb;
+    oneapi::mkl::transpose transa, transb;
     fp alpha, beta;
 
     int64_t i, tmp;
@@ -82,26 +82,26 @@ int test(const device &dev, int64_t batch_size) {
     alpha      = rand_scalar<fp>();
     beta       = rand_scalar<fp>();
     if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
-        transa = (onemkl::transpose)(std::rand() % 2);
-        transb = (onemkl::transpose)(std::rand() % 2);
+        transa = (oneapi::mkl::transpose)(std::rand() % 2);
+        transb = (oneapi::mkl::transpose)(std::rand() % 2);
     }
     else {
         tmp = std::rand() % 3;
         if (tmp == 2)
-            transa = onemkl::transpose::conjtrans;
+            transa = oneapi::mkl::transpose::conjtrans;
         else
-            transa = (onemkl::transpose)tmp;
+            transa = (oneapi::mkl::transpose)tmp;
         tmp = std::rand() % 3;
         if (tmp == 2)
-            transb = onemkl::transpose::conjtrans;
+            transb = oneapi::mkl::transpose::conjtrans;
         else
-            transb = (onemkl::transpose)tmp;
+            transb = (oneapi::mkl::transpose)tmp;
     }
 
     int64_t stride_a, stride_b, stride_c;
 
-    stride_a = (transa == onemkl::transpose::nontrans) ? lda * k : lda * m;
-    stride_b = (transb == onemkl::transpose::nontrans) ? ldb * n : ldb * k;
+    stride_a = (transa == oneapi::mkl::transpose::nontrans) ? lda * k : lda * m;
+    stride_b = (transb == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * k;
     stride_c = ldc * n;
 
     auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, dev);
@@ -112,17 +112,17 @@ int test(const device &dev, int64_t batch_size) {
     C.resize(stride_c * batch_size);
     C_ref.resize(stride_c * batch_size);
 
-    fp **a_array     = (fp **)onemkl::malloc_shared(64, sizeof(fp *) * batch_size, dev, cxt);
-    fp **b_array     = (fp **)onemkl::malloc_shared(64, sizeof(fp *) * batch_size, dev, cxt);
-    fp **c_array     = (fp **)onemkl::malloc_shared(64, sizeof(fp *) * batch_size, dev, cxt);
-    fp **c_ref_array = (fp **)onemkl::malloc_shared(64, sizeof(fp *) * batch_size, dev, cxt);
+    fp **a_array     = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, dev, cxt);
+    fp **b_array     = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, dev, cxt);
+    fp **c_array     = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, dev, cxt);
+    fp **c_ref_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, dev, cxt);
 
     if ((a_array == NULL) || (b_array == NULL) || (c_array == NULL) || (c_ref_array == NULL)) {
         std::cout << "Error cannot allocate arrays of pointers\n";
-        onemkl::free_shared(a_array, cxt);
-        onemkl::free_shared(b_array, cxt);
-        onemkl::free_shared(c_array, cxt);
-        onemkl::free_shared(c_ref_array, cxt);
+        oneapi::mkl::free_shared(a_array, cxt);
+        oneapi::mkl::free_shared(b_array, cxt);
+        oneapi::mkl::free_shared(c_array, cxt);
+        oneapi::mkl::free_shared(c_ref_array, cxt);
         return false;
     }
 
@@ -133,10 +133,10 @@ int test(const device &dev, int64_t batch_size) {
         c_ref_array[i] = &C_ref[i * stride_c];
     }
 
-    rand_matrix(A, onemkl::transpose::nontrans, stride_a * batch_size, 1, stride_a * batch_size);
-    rand_matrix(B, onemkl::transpose::nontrans, stride_b * batch_size, 1, stride_b * batch_size);
-    rand_matrix(C, onemkl::transpose::nontrans, stride_c * batch_size, 1, stride_c * batch_size);
-    copy_matrix(C, onemkl::transpose::nontrans, stride_c * batch_size, 1, stride_c * batch_size,
+    rand_matrix(A, oneapi::mkl::transpose::nontrans, stride_a * batch_size, 1, stride_a * batch_size);
+    rand_matrix(B, oneapi::mkl::transpose::nontrans, stride_b * batch_size, 1, stride_b * batch_size);
+    rand_matrix(C, oneapi::mkl::transpose::nontrans, stride_c * batch_size, 1, stride_c * batch_size);
+    copy_matrix(C, oneapi::mkl::transpose::nontrans, stride_c * batch_size, 1, stride_c * batch_size,
                 C_ref);
 
     // Call reference GEMM_BATCH_STRIDE.
@@ -160,12 +160,12 @@ int test(const device &dev, int64_t batch_size) {
 
     try {
 #ifdef CALL_RT_API
-        done = onemkl::blas::gemm_batch(main_queue, transa, transb, m, n, k, alpha, &A[0], lda,
+        done = oneapi::mkl::blas::gemm_batch(main_queue, transa, transb, m, n, k, alpha, &A[0], lda,
                                         stride_a, &B[0], ldb, stride_b, beta, &C[0], ldc, stride_c,
                                         batch_size, dependencies);
         done.wait();
 #else
-        TEST_RUN_CT(main_queue, onemkl::blas::gemm_batch,
+        TEST_RUN_CT(main_queue, oneapi::mkl::blas::gemm_batch,
                     (main_queue, transa, transb, m, n, k, alpha, &A[0], lda, stride_a, &B[0], ldb,
                      stride_b, beta, &C[0], ldc, stride_c, batch_size, dependencies));
         main_queue.wait();
@@ -177,11 +177,11 @@ int test(const device &dev, int64_t batch_size) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const onemkl::backend_unsupported_exception &e) {
-        onemkl::free_shared(a_array, cxt);
-        onemkl::free_shared(b_array, cxt);
-        onemkl::free_shared(c_array, cxt);
-        onemkl::free_shared(c_ref_array, cxt);
+    catch (const oneapi::mkl::backend_unsupported_exception &e) {
+        oneapi::mkl::free_shared(a_array, cxt);
+        oneapi::mkl::free_shared(b_array, cxt);
+        oneapi::mkl::free_shared(c_array, cxt);
+        oneapi::mkl::free_shared(c_ref_array, cxt);
         return test_skipped;
     }
 
@@ -197,10 +197,10 @@ int test(const device &dev, int64_t batch_size) {
                                   std::cout);
     }
 
-    onemkl::free_shared(a_array, cxt);
-    onemkl::free_shared(b_array, cxt);
-    onemkl::free_shared(c_array, cxt);
-    onemkl::free_shared(c_ref_array, cxt);
+    oneapi::mkl::free_shared(a_array, cxt);
+    oneapi::mkl::free_shared(b_array, cxt);
+    oneapi::mkl::free_shared(c_array, cxt);
+    oneapi::mkl::free_shared(c_ref_array, cxt);
     return (int)good;
 }
 

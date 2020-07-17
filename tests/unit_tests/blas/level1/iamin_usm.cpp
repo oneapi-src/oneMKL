@@ -25,8 +25,8 @@
 
 #include <CL/sycl.hpp>
 #include "cblas.h"
-#include "onemkl/detail/config.hpp"
-#include "onemkl/onemkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -76,14 +76,14 @@ int test(const device& dev, int N, int incx) {
 
     // Call DPC++ IAMIN.
 
-    auto result_p = (int64_t*)onemkl::malloc_shared(64, sizeof(int64_t), dev, cxt);
+    auto result_p = (int64_t*)oneapi::mkl::malloc_shared(64, sizeof(int64_t), dev, cxt);
 
     try {
 #ifdef CALL_RT_API
-        done = onemkl::blas::iamin(main_queue, N, x.data(), incx, result_p, dependencies);
+        done = oneapi::mkl::blas::iamin(main_queue, N, x.data(), incx, result_p, dependencies);
         done.wait();
 #else
-        TEST_RUN_CT(main_queue, onemkl::blas::iamin,
+        TEST_RUN_CT(main_queue, oneapi::mkl::blas::iamin,
                     (main_queue, N, x.data(), incx, result_p, dependencies));
         main_queue.wait();
 #endif
@@ -94,7 +94,7 @@ int test(const device& dev, int N, int incx) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const onemkl::backend_unsupported_exception& e) {
+    catch (const oneapi::mkl::backend_unsupported_exception& e) {
         return test_skipped;
     }
 
@@ -106,7 +106,7 @@ int test(const device& dev, int N, int incx) {
 
     bool good = check_equal(*result_p, result_ref, 0, std::cout);
 
-    onemkl::free_shared(result_p, cxt);
+    oneapi::mkl::free_shared(result_p, cxt);
     return (int)good;
 }
 

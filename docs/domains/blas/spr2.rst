@@ -65,7 +65,7 @@ spr2 (Buffer Version)
          :class: sectiontitle
 
 
-      .. cpp:function::  void onemkl::blas::spr2(sycl::queue &queue, uplo upper_lower,      std::int64_t n, T alpha, sycl::buffer<T,1> &x, std::int64_t incx,      sycl::buffer<T,1> &y, std::int64_t incy, sycl::buffer<T,1> &a)
+      .. cpp:function::  void oneapi::mkl::blas::spr2(sycl::queue &queue, uplo upper_lower,      std::int64_t n, T alpha, sycl::buffer<T,1> &x, std::int64_t incx,      sycl::buffer<T,1> &y, std::int64_t incy, sycl::buffer<T,1> &a)
 .. container:: section
 
 
@@ -147,7 +147,7 @@ spr2 (USM Version)
       .. container:: dlsyntaxpara
 
 
-         .. cpp:function::  sycl::event onemkl::blas::spr2(sycl::queue &queue, uplo         upper_lower, std::int64_t n, T alpha, const T *x, std::int64_t         incx, const T *y, std::int64_t incy, T *a)
+         .. cpp:function::  sycl::event oneapi::mkl::blas::spr2(sycl::queue &queue, uplo         upper_lower, std::int64_t n, T alpha, const T *x, std::int64_t         incx, const T *y, std::int64_t incy, T *a)
    .. container:: section
 
 

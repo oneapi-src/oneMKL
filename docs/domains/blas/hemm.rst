@@ -74,7 +74,7 @@ hemm (Buffer Version)
          :class: sectiontitle
 
 
-      .. cpp:function::  void onemkl::blas::hemm(sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n, T alpha, sycl::buffer<T,1> &a, std::int64_t lda, sycl::buffer<T,1> &b, std::int64_t ldb, T beta, sycl::buffer<T,1> &c, std::int64_t ldc)
+      .. cpp:function::  void oneapi::mkl::blas::hemm(sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n, T alpha, sycl::buffer<T,1> &a, std::int64_t lda, sycl::buffer<T,1> &b, std::int64_t ldb, T beta, sycl::buffer<T,1> &c, std::int64_t ldc)
 .. container:: section
 
 
@@ -195,7 +195,7 @@ hemm (USM Version)
       .. container:: dlsyntaxpara
 
 
-         .. cpp:function::  sycl::event onemkl::blas::hemm(sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n, T alpha, const T* a, std::int64_t lda, const T* b, std::int64_t ldb, T beta, T* c, std::int64_t ldc, const sycl::vector_class<sycl::event> &dependencies = {})
+         .. cpp:function::  sycl::event oneapi::mkl::blas::hemm(sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n, T alpha, const T* a, std::int64_t lda, const T* b, std::int64_t ldb, T beta, T* c, std::int64_t ldc, const sycl::vector_class<sycl::event> &dependencies = {})
    .. container:: section
 
 

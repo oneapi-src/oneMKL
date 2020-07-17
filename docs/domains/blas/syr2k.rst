@@ -77,7 +77,7 @@ syr2k (Buffer Version)
          :class: sectiontitle
 
 
-      .. cpp:function::  void onemkl::blas::syr2k(sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k, T alpha, sycl::buffer<T,1> &a, std::int64_t lda, sycl::buffer<T,1> &b, std::int64_t ldb, T beta, sycl::buffer<T,1> &c, std::int64_t ldc)
+      .. cpp:function::  void oneapi::mkl::blas::syr2k(sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k, T alpha, sycl::buffer<T,1> &a, std::int64_t lda, sycl::buffer<T,1> &b, std::int64_t ldb, T beta, sycl::buffer<T,1> &c, std::int64_t ldc)
 
 .. container:: section
 
@@ -187,7 +187,7 @@ syr2k (USM Version)
       .. container:: dlsyntaxpara
 
 
-         .. cpp:function::  sycl::event onemkl::blas::syr2k(sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k, T alpha, const T* a, std::int64_t lda, const T* b, std::int64_t ldb, T beta, T* c, std::int64_t ldc, const sycl::vector_class<sycl::event> &dependencies = {})
+         .. cpp:function::  sycl::event oneapi::mkl::blas::syr2k(sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k, T alpha, const T* a, std::int64_t lda, const T* b, std::int64_t ldb, T beta, T* c, std::int64_t ldc, const sycl::vector_class<sycl::event> &dependencies = {})
    .. container:: section
 
 

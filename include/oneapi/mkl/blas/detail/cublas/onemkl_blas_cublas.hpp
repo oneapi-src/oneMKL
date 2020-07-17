@@ -22,14 +22,15 @@
 #include <complex>
 #include <cstdint>
 #include <string>
-#include "onemkl/types.hpp"
+#include "oneapi/mkl/types.hpp"
 
-namespace onemkl {
-using onemkl::diag;
-using onemkl::offset;
-using onemkl::side;
-using onemkl::transpose;
-using onemkl::uplo;
+namespace oneapi {
+namespace mkl {
+using oneapi::mkl::diag;
+using oneapi::mkl::offset;
+using oneapi::mkl::side;
+using oneapi::mkl::transpose;
+using oneapi::mkl::uplo;
 namespace cublas {
 
 // Buffer APIs
@@ -1673,6 +1674,7 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
 } // namespace cublas
-} // namespace onemkl
+} // namespace mkl
+} // namespace oneapi
 
 #endif //_ONEMKL_BLAS_CUBLAS_HPP_

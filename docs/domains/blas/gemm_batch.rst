@@ -75,7 +75,7 @@ gemm_batch (Buffer Version)
       :class: sectiontitle
 
 
-   .. cpp:function::  void onemkl::blas::gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, T alpha, sycl::buffer<T,1> &a, std::int64_t lda, std::int64_t stridea, sycl::buffer<T,1> &b, std::int64_t ldb, std::int64_t strideb, T beta, sycl::buffer<T,1> &c, std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size)
+   .. cpp:function::  void oneapi::mkl::blas::gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, T alpha, sycl::buffer<T,1> &a, std::int64_t lda, std::int64_t stridea, sycl::buffer<T,1> &b, std::int64_t ldb, std::int64_t strideb, T beta, sycl::buffer<T,1> &c, std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size)
 
 
 .. container:: section
@@ -259,7 +259,7 @@ gemm_batch (USM Version)
 
    .. container:: dlsyntaxpara
    
-      .. cpp:function::  sycl::event onemkl::blas::gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, std::int64_t *m, std::int64_t *n, std::int64_t *k, T *alpha, const T **a, std::int64_t *lda, const T **b, std::int64_t *ldb, T *beta, T **c, std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size, const sycl::vector_class<sycl::event> &dependencies = {})
+      .. cpp:function::  sycl::event oneapi::mkl::blas::gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, std::int64_t *m, std::int64_t *n, std::int64_t *k, T *alpha, const T **a, std::int64_t *lda, const T **b, std::int64_t *ldb, T *beta, T **c, std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size, const sycl::vector_class<sycl::event> &dependencies = {})
 
 
 .. container:: section
@@ -274,12 +274,12 @@ gemm_batch (USM Version)
 
 
    transa
-      Array of ``group_count`` ``onemkl::transpose`` values. ``transa[i]`` specifies the form of ``op(A)`` used in
+      Array of ``group_count`` ``oneapi::mkl::transpose`` values. ``transa[i]`` specifies the form of ``op(A)`` used in
       the matrix multiplication in group ``i``. See :ref:`onemkl_datatypes` for more details.
 
 
    transb
-      Array of ``group_count`` ``onemkl::transpose`` values. ``transb[i]`` specifies the form of ``op(B)`` used in
+      Array of ``group_count`` ``oneapi::mkl::transpose`` values. ``transb[i]`` specifies the form of ``op(B)`` used in
       the matrix multiplication in group ``i``. See :ref:`onemkl_datatypes` for more details.
 
 
@@ -406,7 +406,7 @@ gemm_batch (USM Version)
 
    .. container:: dlsyntaxpara
 
-      .. cpp:function::  sycl::event onemkl::blas::gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, T alpha, const T *a, std::int64_t lda, std::int64_t stridea, const T *b, std::int64_t ldb, std::int64_t strideb, T beta, T *c, std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size, const sycl::vector_class<sycl::event> &dependencies = {})
+      .. cpp:function::  sycl::event oneapi::mkl::blas::gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, T alpha, const T *a, std::int64_t lda, std::int64_t stridea, const T *b, std::int64_t ldb, std::int64_t strideb, T beta, T *c, std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size, const sycl::vector_class<sycl::event> &dependencies = {})
 
 
 .. container:: section

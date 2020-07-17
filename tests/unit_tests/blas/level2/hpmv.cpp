@@ -26,8 +26,8 @@
 
 #include <CL/sycl.hpp>
 #include "cblas.h"
-#include "onemkl/detail/config.hpp"
-#include "onemkl/onemkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -43,14 +43,14 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, fp beta, int incx,
+int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp alpha, fp beta, int incx,
          int incy) {
     // Prepare data.
     vector<fp> x, y, y_ref, A;
     rand_vector(x, n, incx);
     rand_vector(y, n, incy);
     y_ref = y;
-    rand_matrix(A, onemkl::transpose::nontrans, n, n, n);
+    rand_matrix(A, oneapi::mkl::transpose::nontrans, n, n, n);
 
     // Call Reference HPMV.
     const int n_ref = n, incx_ref = incx, incy_ref = incy;
@@ -83,11 +83,11 @@ int test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, fp beta, 
 
     try {
 #ifdef CALL_RT_API
-        onemkl::blas::hpmv(main_queue, upper_lower, n, alpha, A_buffer, x_buffer, incx, beta,
+        oneapi::mkl::blas::hpmv(main_queue, upper_lower, n, alpha, A_buffer, x_buffer, incx, beta,
                            y_buffer, incy);
 #else
         TEST_RUN_CT(
-            main_queue, onemkl::blas::hpmv,
+            main_queue, oneapi::mkl::blas::hpmv,
             (main_queue, upper_lower, n, alpha, A_buffer, x_buffer, incx, beta, y_buffer, incy));
 #endif
     }
@@ -97,7 +97,7 @@ int test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, fp beta, 
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const onemkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::backend_unsupported_exception &e) {
         return test_skipped;
     }
 
@@ -121,33 +121,33 @@ TEST_P(HpmvTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
     std::complex<float> beta(3.0, -1.5);
     EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 2, 3));
+        test<std::complex<float>>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, beta, 2, 3));
     EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 2, 3));
+        test<std::complex<float>>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, beta, 2, 3));
     EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, -2, -3));
+        test<std::complex<float>>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, beta, -2, -3));
     EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, -2, -3));
+        test<std::complex<float>>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, beta, -2, -3));
     EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 1, 1));
+        test<std::complex<float>>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, beta, 1, 1));
     EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 1, 1));
+        test<std::complex<float>>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, beta, 1, 1));
 }
 TEST_P(HpmvTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
     EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 2, 3));
+        test<std::complex<double>>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, beta, 2, 3));
     EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 2, 3));
+        test<std::complex<double>>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, beta, 2, 3));
     EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, -2, -3));
+        test<std::complex<double>>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, beta, -2, -3));
     EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, -2, -3));
+        test<std::complex<double>>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, beta, -2, -3));
     EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(GetParam(), onemkl::uplo::lower, 30, alpha, beta, 1, 1));
+        test<std::complex<double>>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, beta, 1, 1));
     EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(GetParam(), onemkl::uplo::upper, 30, alpha, beta, 1, 1));
+        test<std::complex<double>>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, beta, 1, 1));
 }
 
 INSTANTIATE_TEST_SUITE_P(HpmvTestSuite, HpmvTests, ::testing::ValuesIn(devices),

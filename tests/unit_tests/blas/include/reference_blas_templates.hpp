@@ -213,18 +213,18 @@ void gemm(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const in
     sizea              = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
     sizeb              = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
     sizec              = *ldc * *n;
-    float *af          = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizea);
-    float *bf          = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizeb);
-    float *cf          = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizec);
+    float *af          = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizea);
+    float *bf          = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizeb);
+    float *cf          = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizec);
     copy_mat(a, transa, *m, *k, *lda, af);
     copy_mat(b, transb, *k, *n, *ldb, bf);
     copy_mat(c, CblasNoTrans, *m, *n, *ldc, cf);
     cblas_sgemm(CblasColMajor, transa, transb, *m, *n, *k, alphaf, af, *lda, bf, *ldb, betaf, cf,
                 *ldc);
     copy_mat(cf, CblasNoTrans, *m, *n, *ldc, c);
-    onemkl::aligned_free(af);
-    onemkl::aligned_free(bf);
-    onemkl::aligned_free(cf);
+    oneapi::mkl::aligned_free(af);
+    oneapi::mkl::aligned_free(bf);
+    oneapi::mkl::aligned_free(cf);
 }
 
 template <>
@@ -1451,18 +1451,18 @@ void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, cons
     sizea              = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
     sizeb              = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
     sizec              = *ldc * *n;
-    float *af          = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizea);
-    float *bf          = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizeb);
-    float *cf          = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizec);
+    float *af          = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizea);
+    float *bf          = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizeb);
+    float *cf          = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizec);
     copy_mat(a, transa, *m, *k, *lda, af);
     copy_mat(b, transb, *k, *n, *ldb, bf);
     copy_mat(c, CblasNoTrans, *m, *n, *ldc, cf);
     cblas_sgemm(CblasColMajor, transa, transb, *m, *n, *k, alphaf, af, *lda, bf, *ldb, betaf, cf,
                 *ldc);
     copy_mat(cf, CblasNoTrans, *m, *n, *ldc, c);
-    onemkl::aligned_free(af);
-    onemkl::aligned_free(bf);
-    onemkl::aligned_free(cf);
+    oneapi::mkl::aligned_free(af);
+    oneapi::mkl::aligned_free(bf);
+    oneapi::mkl::aligned_free(cf);
 }
 
 template <>
@@ -1510,14 +1510,14 @@ void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, cons
     int sizea, sizeb;
     sizea     = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
     sizeb     = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
-    float *af = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizea);
-    float *bf = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizeb);
+    float *af = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizea);
+    float *bf = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizeb);
     copy_mat(a, transa, *m, *k, *lda, af);
     copy_mat(b, transb, *k, *n, *ldb, bf);
     cblas_sgemm(CblasColMajor, transa, transb, *m, *n, *k, *alpha, af, *lda, bf, *ldb, *beta, c,
                 *ldc);
-    onemkl::aligned_free(af);
-    onemkl::aligned_free(bf);
+    oneapi::mkl::aligned_free(af);
+    oneapi::mkl::aligned_free(bf);
 }
 
 template <typename fps, typename fpa, typename fpb, typename fpc>
@@ -1536,9 +1536,9 @@ void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, CBLAS_OFFSET offse
     sizea         = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
     sizeb         = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
     sizec         = *ldc * *n;
-    double *ad    = (double *)onemkl::aligned_alloc(64, sizeof(double) * sizea);
-    double *bd    = (double *)onemkl::aligned_alloc(64, sizeof(double) * sizeb);
-    double *cd    = (double *)onemkl::aligned_alloc(64, sizeof(double) * sizec);
+    double *ad    = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizea);
+    double *bd    = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizeb);
+    double *cd    = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizec);
     double alphad = *alpha;
     double betad  = *beta;
     double aod    = *ao;
@@ -1549,9 +1549,9 @@ void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, CBLAS_OFFSET offse
     cblas_dgemm(CblasColMajor, transa, transb, *m, *n, *k, alphad, ad, *lda, bd, *ldb, betad, cd,
                 *ldc);
     copy_mat(cd, *m, *n, *ldc, offsetc, co, c);
-    onemkl::aligned_free(ad);
-    onemkl::aligned_free(bd);
-    onemkl::aligned_free(cd);
+    oneapi::mkl::aligned_free(ad);
+    oneapi::mkl::aligned_free(bd);
+    oneapi::mkl::aligned_free(cd);
 }
 
 template <typename fp>
@@ -1566,12 +1566,12 @@ void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE trans
     // Not supported in NETLIB. SGEMM is used as reference.
     int sizec;
     sizec     = *ldc * *n;
-    float *cf = (float *)onemkl::aligned_alloc(64, sizeof(float) * sizec);
+    float *cf = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizec);
     update_c(c, upper_lower, *n, *n, *ldc, cf);
     cblas_sgemm(CblasColMajor, transa, transb, *n, *n, *k, *alpha, a, *lda, b, *ldb, *beta, cf,
                 *ldc);
     update_c(cf, upper_lower, *n, *n, *ldc, c);
-    onemkl::aligned_free(cf);
+    oneapi::mkl::aligned_free(cf);
 }
 
 template <>
@@ -1581,12 +1581,12 @@ void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE trans
     // Not supported in NETLIB. DGEMM is used as reference.
     int sizec;
     sizec      = *ldc * *n;
-    double *cf = (double *)onemkl::aligned_alloc(64, sizeof(double) * sizec);
+    double *cf = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizec);
     update_c(c, upper_lower, *n, *n, *ldc, cf);
     cblas_dgemm(CblasColMajor, transa, transb, *n, *n, *k, *alpha, a, *lda, b, *ldb, *beta, cf,
                 *ldc);
     update_c(cf, upper_lower, *n, *n, *ldc, c);
-    onemkl::aligned_free(cf);
+    oneapi::mkl::aligned_free(cf);
 }
 
 template <>
@@ -1598,11 +1598,11 @@ void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE trans
     int sizec;
     sizec = *ldc * *n;
     std::complex<float> *cf =
-        (std::complex<float> *)onemkl::aligned_alloc(64, sizeof(std::complex<float>) * sizec);
+        (std::complex<float> *)oneapi::mkl::aligned_alloc(64, sizeof(std::complex<float>) * sizec);
     update_c(c, upper_lower, *n, *n, *ldc, cf);
     cblas_cgemm(CblasColMajor, transa, transb, *n, *n, *k, alpha, a, *lda, b, *ldb, beta, cf, *ldc);
     update_c(cf, upper_lower, *n, *n, *ldc, c);
-    onemkl::aligned_free(cf);
+    oneapi::mkl::aligned_free(cf);
 }
 
 template <>
@@ -1614,11 +1614,11 @@ void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE trans
     int sizec;
     sizec = *ldc * *n;
     std::complex<double> *cf =
-        (std::complex<double> *)onemkl::aligned_alloc(64, sizeof(std::complex<double>) * sizec);
+        (std::complex<double> *)oneapi::mkl::aligned_alloc(64, sizeof(std::complex<double>) * sizec);
     update_c(c, upper_lower, *n, *n, *ldc, cf);
     cblas_zgemm(CblasColMajor, transa, transb, *n, *n, *k, alpha, a, *lda, b, *ldb, beta, cf, *ldc);
     update_c(cf, upper_lower, *n, *n, *ldc, c);
-    onemkl::aligned_free(cf);
+    oneapi::mkl::aligned_free(cf);
 }
 
 #endif /* header guard */

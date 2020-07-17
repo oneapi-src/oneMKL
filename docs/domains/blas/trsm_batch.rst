@@ -42,7 +42,7 @@ trsm_batch (Buffer Version)
 
       for i = 0 … batch_size – 1
           A and B are matrices at offset i * stridea and i * strideb in a and b.
-          if (left_right == onemkl::side::left) then
+          if (left_right == oneapi::mkl::side::left) then
               compute X such that op(A) * X = alpha * B
           else
               compute X such that X * op(A) = alpha * B
@@ -85,7 +85,7 @@ trsm_batch (Buffer Version)
       .. rubric:: Syntax
          :class: sectiontitle
 
-      .. cpp:function::  void onemkl::blas::trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m, std::int64_t n, T alpha, sycl::buffer<T,1> &a, std::int64_t lda, std::int64_t stridea, sycl::buffer<T,1> &b, std::int64_t ldb, std::int64_t strideb, std::int64_t batch_size)
+      .. cpp:function::  void oneapi::mkl::blas::trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m, std::int64_t n, T alpha, sycl::buffer<T,1> &a, std::int64_t lda, std::int64_t stridea, sycl::buffer<T,1> &b, std::int64_t ldb, std::int64_t strideb, std::int64_t batch_size)
 
 
 .. container:: section

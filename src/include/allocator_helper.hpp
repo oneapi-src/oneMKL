@@ -26,7 +26,8 @@
     #include <stdlib.h>
 #endif
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 
 static inline void *aligned_alloc(size_t align, size_t size) {
 #ifdef _WIN64
@@ -43,6 +44,7 @@ static inline void aligned_free(void *p) {
     ::free(p);
 #endif
 }
-} // namespace onemkl
+} // namespace mkl
+} // namespace oneapi
 
 #endif // __ALLOCATOR_HELPER_HPP

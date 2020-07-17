@@ -24,10 +24,11 @@
 #include <complex>
 #include <cstdint>
 
-#include <onemkl/types.hpp>
-#include "onemkl/detail/export.hpp"
+#include "oneapi/mkl/types.hpp"
+#include "oneapi/mkl/detail/export.hpp"
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 namespace blas {
 namespace detail {
 
@@ -1595,6 +1596,7 @@ ONEMKL_EXPORT cl::sycl::event rotg(
 
 } //namespace detail
 } //namespace blas
-} //namespace onemkl
+} //namespace mkl
+} //namespace oneapi
 
 #endif //_ONEMKL_BLAS_LOADER_HPP_

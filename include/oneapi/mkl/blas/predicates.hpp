@@ -24,10 +24,11 @@
 #include <complex>
 #include <cstdint>
 
-#include "onemkl/detail/exceptions.hpp"
-#include "onemkl/types.hpp"
+#include "oneapi/mkl/detail/exceptions.hpp"
+#include "oneapi/mkl/types.hpp"
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 namespace blas {
 
 // Buffer APIs
@@ -6330,6 +6331,7 @@ inline void rotg_postcondition(cl::sycl::queue &queue, std::complex<double> *a,
 }
 
 } //namespace blas
-} //namespace onemkl
+} //namespace mkl
+} //namespace oneapi
 
 #endif //_ONEMKL_BLAS_PREDICATES_HPP_

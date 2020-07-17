@@ -24,25 +24,26 @@
 #include <complex>
 #include <cstdint>
 
-#include "onemkl/detail/config.hpp"
-#include "onemkl/types.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl/types.hpp"
 
-#include "onemkl/detail/backends_selector.hpp"
+#include "oneapi/mkl/detail/backends_selector.hpp"
 
-#include "onemkl/blas/predicates.hpp"
+#include "oneapi/mkl/blas/predicates.hpp"
 
-#include "onemkl/blas/detail/blas_loader.hpp"
+#include "oneapi/mkl/blas/detail/blas_loader.hpp"
 #ifdef ENABLE_CUBLAS_BACKEND
-    #include "onemkl/blas/detail/cublas/blas_ct.hpp"
+    #include "oneapi/mkl/blas/detail/cublas/blas_ct.hpp"
 #endif
 #ifdef ENABLE_MKLCPU_BACKEND
-    #include "onemkl/blas/detail/mklcpu/blas_ct.hpp"
+    #include "oneapi/mkl/blas/detail/mklcpu/blas_ct.hpp"
 #endif
 #ifdef ENABLE_MKLGPU_BACKEND
-    #include "onemkl/blas/detail/mklgpu/blas_ct.hpp"
+    #include "oneapi/mkl/blas/detail/mklgpu/blas_ct.hpp"
 #endif
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 namespace blas {
 
 // Buffer APIs
@@ -3614,6 +3615,7 @@ static inline cl::sycl::event trsv(
 }
 
 } //namespace blas
-} //namespace onemkl
+} //namespace mkl
+} //namespace oneapi
 
 #endif //_ONEMKL_BLAS_LOADER_HPP_

@@ -29,10 +29,11 @@
 #include "mkl_blas.h"
 #include "mkl_cblas.h"
 
-#include "onemkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
-#include "onemkl/types.hpp"
+#include "oneapi/mkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
+#include "oneapi/mkl/types.hpp"
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 namespace mklcpu {
 
 // host_task automatically uses run_on_host_intel if it is supported by the
@@ -98,6 +99,7 @@ inline const char *fortran_char(side s) {
 }
 
 } // namespace mklcpu
-} // namespace onemkl
+} // namespace mkl
+} // namespace oneapi
 
 #endif //_MKL_CPU_COMMON_HPP_

@@ -135,7 +135,7 @@ gemm_ext (Buffer Version)
       .. container:: dlsyntaxpara
       
       
-        .. cpp:function::  void onemkl::blas::gemm_ext(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, Ts alpha, sycl::buffer<Ta,1> &a, std::int64_t lda, sycl::buffer<Tb,1> &b, std::int64_t ldb, Ts beta, sycl::buffer<Tc,1> &c, std::int64_t ldc)
+        .. cpp:function::  void oneapi::mkl::blas::gemm_ext(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, Ts alpha, sycl::buffer<Ta,1> &a, std::int64_t lda, sycl::buffer<Tb,1> &b, std::int64_t ldb, Ts beta, sycl::buffer<Tc,1> &c, std::int64_t ldc)
       
       
       **Offset API**
@@ -144,7 +144,7 @@ gemm_ext (Buffer Version)
       .. container:: dlsyntaxpara
       
       
-        .. cpp:function::  void onemkl::blas::gemm_ext(sycl::queue &queue, transpose transa, transpose transb, offset offset_type, std::int64_t m, std::int64_t n, std::int64_t k, Ts alpha, sycl::buffer<Ta,1> &a, std::int64_t lda, Ta ao, sycl::buffer<Tb,1> &b, std::int64_t ldb, Tb bo, Ts beta, sycl::buffer<Tc,1> &c, std::int64_t ldc, sycl::buffer<Tc,1> &co)
+        .. cpp:function::  void oneapi::mkl::blas::gemm_ext(sycl::queue &queue, transpose transa, transpose transb, offset offset_type, std::int64_t m, std::int64_t n, std::int64_t k, Ts alpha, sycl::buffer<Ta,1> &a, std::int64_t lda, Ta ao, sycl::buffer<Tb,1> &b, std::int64_t ldb, Tb bo, Ts beta, sycl::buffer<Tc,1> &c, std::int64_t ldc, sycl::buffer<Tc,1> &co)
       
       
    .. container:: section

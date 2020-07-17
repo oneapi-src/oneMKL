@@ -25,16 +25,18 @@
 #include <complex>
 #include <cstdint>
 
-#include <onemkl/types.hpp>
-#include "onemkl/detail/export.hpp"
+#include "oneapi/mkl/types.hpp"
 
-namespace onemkl {
+#include "oneapi/mkl/detail/export.hpp"
 
-using onemkl::transpose;
-using onemkl::uplo;
-using onemkl::side;
-using onemkl::diag;
-using onemkl::offset;
+namespace oneapi {
+namespace mkl {
+
+using oneapi::mkl::transpose;
+using oneapi::mkl::uplo;
+using oneapi::mkl::side;
+using oneapi::mkl::diag;
+using oneapi::mkl::offset;
 
 namespace mklcpu {
 
@@ -1752,6 +1754,7 @@ ONEMKL_EXPORT cl::sycl::event gemmt(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
 
 } //namespace mklcpu
-} //namespace onemkl
+} //namespace mkl
+} //namespace oneapi
 
 #endif //_ONEMKL_BLAS_MKLCPU_HPP_

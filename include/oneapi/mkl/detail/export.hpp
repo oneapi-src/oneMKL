@@ -20,7 +20,7 @@
 #ifndef ONEMKL_EXPORT_H
 #define ONEMKL_EXPORT_H
 
-#include "onemkl/detail/config.hpp"
+#include "oneapi/mkl/detail/config.hpp"
 
 #if !defined(BUILD_SHARED_LIBS) || !defined(_WIN64)
     #define ONEMKL_EXPORT

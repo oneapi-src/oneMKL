@@ -27,8 +27,8 @@
 #include <CL/sycl.hpp>
 #include "allocator_helper.hpp"
 #include "cblas.h"
-#include "onemkl/detail/config.hpp"
-#include "onemkl/onemkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -44,12 +44,12 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device& dev, onemkl::uplo upper_lower, onemkl::transpose trans, int n, int k,
+int test(const device& dev, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, int n, int k,
          int lda, int ldc, fp alpha, fp beta) {
     // Prepare data.
     vector<fp, allocator_helper<fp, 64>> A, C, C_ref;
     rand_matrix(A, trans, n, k, lda);
-    rand_matrix(C, onemkl::transpose::nontrans, n, n, ldc);
+    rand_matrix(C, oneapi::mkl::transpose::nontrans, n, n, ldc);
     C_ref = C;
 
     // Call Reference SYRK.
@@ -85,11 +85,11 @@ int test(const device& dev, onemkl::uplo upper_lower, onemkl::transpose trans, i
 
     try {
 #ifdef CALL_RT_API
-        onemkl::blas::syrk(main_queue, upper_lower, trans, n, k, alpha, A_buffer, lda, beta,
+        oneapi::mkl::blas::syrk(main_queue, upper_lower, trans, n, k, alpha, A_buffer, lda, beta,
                            C_buffer, ldc);
 #else
         TEST_RUN_CT(
-            main_queue, onemkl::blas::syrk,
+            main_queue, oneapi::mkl::blas::syrk,
             (main_queue, upper_lower, trans, n, k, alpha, A_buffer, lda, beta, C_buffer, ldc));
 #endif
     }
@@ -99,7 +99,7 @@ int test(const device& dev, onemkl::uplo upper_lower, onemkl::transpose trans, i
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const onemkl::backend_unsupported_exception& e) {
+    catch (const oneapi::mkl::backend_unsupported_exception& e) {
         return test_skipped;
     }
 
@@ -122,54 +122,54 @@ class SyrkTests : public ::testing::TestWithParam<cl::sycl::device> {};
 TEST_P(SyrkTests, RealSinglePrecision) {
     float alpha(3.0);
     float beta(3.0);
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, onemkl::transpose::nontrans, 73,
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), oneapi::mkl::uplo::lower, oneapi::mkl::transpose::nontrans, 73,
                                   27, 101, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, onemkl::transpose::nontrans, 73,
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), oneapi::mkl::uplo::upper, oneapi::mkl::transpose::nontrans, 73,
                                   27, 101, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, onemkl::transpose::trans, 73, 27,
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), oneapi::mkl::uplo::lower, oneapi::mkl::transpose::trans, 73, 27,
                                   101, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, onemkl::transpose::trans, 73, 27,
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), oneapi::mkl::uplo::upper, oneapi::mkl::transpose::trans, 73, 27,
                                   101, 103, alpha, beta));
 }
 TEST_P(SyrkTests, RealDoublePrecision) {
     double alpha(3.0);
     double beta(3.0);
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, onemkl::transpose::nontrans, 73,
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), oneapi::mkl::uplo::lower, oneapi::mkl::transpose::nontrans, 73,
                                    27, 101, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, onemkl::transpose::nontrans, 73,
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), oneapi::mkl::uplo::upper, oneapi::mkl::transpose::nontrans, 73,
                                    27, 101, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, onemkl::transpose::trans, 73,
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), oneapi::mkl::uplo::lower, oneapi::mkl::transpose::trans, 73,
                                    27, 101, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, onemkl::transpose::trans, 73,
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), oneapi::mkl::uplo::upper, oneapi::mkl::transpose::trans, 73,
                                    27, 101, 103, alpha, beta));
 }
 TEST_P(SyrkTests, ComplexSinglePrecision) {
     std::complex<float> alpha(3.0, -0.5);
     std::complex<float> beta(3.0, -1.5);
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::uplo::lower,
-                                                onemkl::transpose::nontrans, 73, 27, 101, 103,
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::uplo::lower,
+                                                oneapi::mkl::transpose::nontrans, 73, 27, 101, 103,
                                                 alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::uplo::upper,
-                                                onemkl::transpose::nontrans, 73, 27, 101, 103,
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::uplo::upper,
+                                                oneapi::mkl::transpose::nontrans, 73, 27, 101, 103,
                                                 alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
-        GetParam(), onemkl::uplo::lower, onemkl::transpose::trans, 73, 27, 101, 103, alpha, beta));
+        GetParam(), oneapi::mkl::uplo::lower, oneapi::mkl::transpose::trans, 73, 27, 101, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
-        GetParam(), onemkl::uplo::upper, onemkl::transpose::trans, 73, 27, 101, 103, alpha, beta));
+        GetParam(), oneapi::mkl::uplo::upper, oneapi::mkl::transpose::trans, 73, 27, 101, 103, alpha, beta));
 }
 TEST_P(SyrkTests, ComplexDoublePrecision) {
     std::complex<double> alpha(3.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::uplo::lower,
-                                                 onemkl::transpose::nontrans, 73, 27, 101, 103,
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), oneapi::mkl::uplo::lower,
+                                                 oneapi::mkl::transpose::nontrans, 73, 27, 101, 103,
                                                  alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::uplo::upper,
-                                                 onemkl::transpose::nontrans, 73, 27, 101, 103,
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), oneapi::mkl::uplo::upper,
+                                                 oneapi::mkl::transpose::nontrans, 73, 27, 101, 103,
                                                  alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
-        GetParam(), onemkl::uplo::lower, onemkl::transpose::trans, 73, 27, 101, 103, alpha, beta));
+        GetParam(), oneapi::mkl::uplo::lower, oneapi::mkl::transpose::trans, 73, 27, 101, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
-        GetParam(), onemkl::uplo::upper, onemkl::transpose::trans, 73, 27, 101, 103, alpha, beta));
+        GetParam(), oneapi::mkl::uplo::upper, oneapi::mkl::transpose::trans, 73, 27, 101, 103, alpha, beta));
 }
 
 INSTANTIATE_TEST_SUITE_P(SyrkTestSuite, SyrkTests, ::testing::ValuesIn(devices),

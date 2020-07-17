@@ -17,11 +17,24 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_HPP_
-#define _ONEMKL_HPP_
+#ifndef _ONEMKL_LIBRARIES_HPP_
+#define _ONEMKL_LIBRARIES_HPP_
 
-#include <onemkl/types.hpp>
+#include <CL/sycl.hpp>
+#include <map>
+#include <string>
 
-#include <onemkl/blas/blas.hpp>
+namespace oneapi {
+namespace mkl {
 
-#endif //_ONEMKL_HPP_
+enum class library { intelmkl, cublas };
+
+typedef std::map<library, std::string> librarymap;
+
+static librarymap library_map = { { library::intelmkl, "intelmkl" },
+                                  { library::cublas, "cublas" } };
+
+} //namespace mkl
+} //namespace oneapi
+
+#endif //_ONEMKL_LIBRARIES_HPP_

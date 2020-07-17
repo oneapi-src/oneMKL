@@ -29,12 +29,14 @@
 #include <CL/sycl.hpp>
 
 // Exceptions
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 class backend_unsupported_exception : public std::runtime_error {
 public:
     backend_unsupported_exception() : std::runtime_error("Not yet supported for this backend") {}
 };
-} // namespace onemkl
+} // namespace mkl
+} // namespace oneapi
 
 namespace std {
 static cl::sycl::half abs(cl::sycl::half v) {
@@ -69,15 +71,15 @@ constexpr int num_components() {
 
 // Matrix helpers.
 template <typename T>
-constexpr T inner_dimension(onemkl::transpose trans, T m, T n) {
-    return (trans == onemkl::transpose::nontrans) ? m : n;
+constexpr T inner_dimension(oneapi::mkl::transpose trans, T m, T n) {
+    return (trans == oneapi::mkl::transpose::nontrans) ? m : n;
 }
 template <typename T>
-constexpr T outer_dimension(onemkl::transpose trans, T m, T n) {
-    return (trans == onemkl::transpose::nontrans) ? n : m;
+constexpr T outer_dimension(oneapi::mkl::transpose trans, T m, T n) {
+    return (trans == oneapi::mkl::transpose::nontrans) ? n : m;
 }
 template <typename T>
-constexpr T matrix_size(onemkl::transpose trans, T m, T n, T ldm) {
+constexpr T matrix_size(oneapi::mkl::transpose trans, T m, T n, T ldm) {
     return outer_dimension(trans, m, n) * ldm;
 }
 
@@ -189,11 +191,11 @@ void rand_vector(vec &v, int n, int inc) {
 }
 
 template <typename vec>
-void print_matrix(vec &M, onemkl::transpose trans, int m, int n, int ld, char *name) {
+void print_matrix(vec &M, oneapi::mkl::transpose trans, int m, int n, int ld, char *name) {
     std::cout << "Matrix " << name << ":\n";
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < n; j++) {
-            if (trans == onemkl::transpose::nontrans)
+            if (trans == oneapi::mkl::transpose::nontrans)
                 std::cout << (double)M[i + j * ld] << " ";
             else
                 std::cout << (double)M[j + i * ld] << " ";
@@ -210,10 +212,10 @@ void copy_vector(fp *src, int n, int inc, fp *dest) {
 }
 
 template <typename vec_src, typename vec_dest>
-void copy_matrix(vec_src &src, onemkl::transpose trans, int m, int n, int ld, vec_dest &dest) {
+void copy_matrix(vec_src &src, oneapi::mkl::transpose trans, int m, int n, int ld, vec_dest &dest) {
     using T_data = typename vec_dest::value_type;
     dest.resize(matrix_size(trans, m, n, ld));
-    if (trans == onemkl::transpose::nontrans) {
+    if (trans == oneapi::mkl::transpose::nontrans) {
         for (int j = 0; j < n; j++)
             for (int i = 0; i < m; i++)
                 dest[i + j * ld] = (T_data)src[i + j * ld];
@@ -226,8 +228,8 @@ void copy_matrix(vec_src &src, onemkl::transpose trans, int m, int n, int ld, ve
 }
 
 template <typename fp>
-void copy_matrix(fp *src, onemkl::transpose trans, int m, int n, int ld, fp *dest) {
-    if (trans == onemkl::transpose::nontrans) {
+void copy_matrix(fp *src, oneapi::mkl::transpose trans, int m, int n, int ld, fp *dest) {
+    if (trans == oneapi::mkl::transpose::nontrans) {
         for (int j = 0; j < n; j++)
             for (int i = 0; i < m; i++)
                 dest[i + j * ld] = (fp)src[i + j * ld];
@@ -240,12 +242,12 @@ void copy_matrix(fp *src, onemkl::transpose trans, int m, int n, int ld, fp *des
 }
 
 template <typename vec>
-void rand_matrix(vec &M, onemkl::transpose trans, int m, int n, int ld) {
+void rand_matrix(vec &M, oneapi::mkl::transpose trans, int m, int n, int ld) {
     using fp = typename vec::value_type;
 
     M.resize(matrix_size(trans, m, n, ld));
 
-    if (trans == onemkl::transpose::nontrans) {
+    if (trans == oneapi::mkl::transpose::nontrans) {
         for (int j = 0; j < n; j++)
             for (int i = 0; i < m; i++)
                 M[i + j * ld] = rand_scalar<fp>();
@@ -258,8 +260,8 @@ void rand_matrix(vec &M, onemkl::transpose trans, int m, int n, int ld) {
 }
 
 template <typename fp>
-void rand_matrix(fp *M, onemkl::transpose trans, int m, int n, int ld) {
-    if (trans == onemkl::transpose::nontrans) {
+void rand_matrix(fp *M, oneapi::mkl::transpose trans, int m, int n, int ld) {
+    if (trans == oneapi::mkl::transpose::nontrans) {
         for (int j = 0; j < n; j++)
             for (int i = 0; i < m; i++)
                 M[i + j * ld] = rand_scalar<fp>();
@@ -272,12 +274,12 @@ void rand_matrix(fp *M, onemkl::transpose trans, int m, int n, int ld) {
 }
 
 template <typename vec>
-void rand_trsm_matrix(vec &M, onemkl::transpose trans, int m, int n, int ld) {
+void rand_trsm_matrix(vec &M, oneapi::mkl::transpose trans, int m, int n, int ld) {
     using fp = typename vec::value_type;
 
     M.resize(matrix_size(trans, m, n, ld));
 
-    if (trans == onemkl::transpose::nontrans) {
+    if (trans == oneapi::mkl::transpose::nontrans) {
         for (int j = 0; j < n; j++)
             for (int i = 0; i < m; i++) {
                 if (i == j)
@@ -298,8 +300,8 @@ void rand_trsm_matrix(vec &M, onemkl::transpose trans, int m, int n, int ld) {
 }
 
 template <typename fp>
-void rand_trsm_matrix(fp *M, onemkl::transpose trans, int m, int n, int ld) {
-    if (trans == onemkl::transpose::nontrans) {
+void rand_trsm_matrix(fp *M, oneapi::mkl::transpose trans, int m, int n, int ld) {
+    if (trans == oneapi::mkl::transpose::nontrans) {
         for (int j = 0; j < n; j++)
             for (int i = 0; i < m; i++) {
                 if (i == j)
@@ -440,14 +442,14 @@ bool check_equal_matrix(fp *M, fp *M_ref, int m, int n, int ld, int error_mag, s
 }
 
 template <typename acc1, typename acc2>
-bool check_equal_matrix(acc1 &M, acc2 &M_ref, onemkl::uplo upper_lower, int m, int n, int ld,
+bool check_equal_matrix(acc1 &M, acc2 &M_ref, oneapi::mkl::uplo upper_lower, int m, int n, int ld,
                         int error_mag, std::ostream &out) {
     bool good = true;
 
     for (int j = 0; j < n; j++) {
         for (int i = 0; i < m; i++) {
-            if (((upper_lower == onemkl::uplo::upper) && (j >= i)) ||
-                ((upper_lower == onemkl::uplo::lower) && (j <= i))) {
+            if (((upper_lower == oneapi::mkl::uplo::upper) && (j >= i)) ||
+                ((upper_lower == oneapi::mkl::uplo::lower) && (j <= i))) {
                 if (!check_equal(M[i + j * ld], M_ref[i + j * ld], error_mag)) {
                     out << "Difference in entry (" << i << ',' << j << "): DPC++ " << M[i + j * ld]
                         << " vs. Reference " << M_ref[i + j * ld] << std::endl;

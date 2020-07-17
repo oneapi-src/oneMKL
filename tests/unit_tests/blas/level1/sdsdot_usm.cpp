@@ -25,8 +25,8 @@
 
 #include <CL/sycl.hpp>
 #include "cblas.h"
-#include "onemkl/detail/config.hpp"
-#include "onemkl/onemkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -77,15 +77,15 @@ int test(const device &dev, int N, int incx, int incy, float alpha) {
 
     // Call DPC++ SDSDOT.
 
-    auto result_p = (float *)onemkl::malloc_shared(64, sizeof(float), dev, cxt);
+    auto result_p = (float *)oneapi::mkl::malloc_shared(64, sizeof(float), dev, cxt);
 
     try {
 #ifdef CALL_RT_API
-        done = onemkl::blas::sdsdot(main_queue, N, alpha, x.data(), incx, y.data(), incy, result_p,
+        done = oneapi::mkl::blas::sdsdot(main_queue, N, alpha, x.data(), incx, y.data(), incy, result_p,
                                     dependencies);
         done.wait();
 #else
-        TEST_RUN_CT(main_queue, onemkl::blas::sdsdot,
+        TEST_RUN_CT(main_queue, oneapi::mkl::blas::sdsdot,
                     (main_queue, N, alpha, x.data(), incx, y.data(), incy, result_p, dependencies));
         main_queue.wait();
 #endif
@@ -96,7 +96,7 @@ int test(const device &dev, int N, int incx, int incy, float alpha) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const onemkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::backend_unsupported_exception &e) {
         return test_skipped;
     }
 
@@ -108,7 +108,7 @@ int test(const device &dev, int N, int incx, int incy, float alpha) {
 
     bool good = check_equal(*result_p, result_ref, N, std::cout);
 
-    onemkl::free_shared(result_p, cxt);
+    oneapi::mkl::free_shared(result_p, cxt);
     return (int)good;
 }
 
