@@ -245,9 +245,9 @@ Software Package indicates your acceptance of the Agreements.**
 Product | Supported Version | Installed by Conan | Conan Package Source | Package Install Location on Linux* | License
 :--- | :--- | :--- | :--- | :--- | :---
 Python | 3.6 or higher | No | *N/A* | *Pre-installed or Installed by user* | [PSF](https://docs.python.org/3.6/license.html)
-[Conan C++ Package Manager](https://conan.io/downloads.html) | 1.23 or higher | No | *N/A* | *Installed by user* | [MIT](https://github.com/conan-io/conan/blob/develop/LICENSE.md)
-[CMake](https://cmake.org/download/) | 3.13 or higher | Yes | conan-center | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [The OSI-approved BSD 3-clause License](https://gitlab.kitware.com/cmake/cmake/raw/master/Copyright.txt)
-[Ninja](https://ninja-build.org/) | 1.9.0 | Yes | conan-center | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [Apache License v2.0](https://github.com/ninja-build/ninja/blob/master/COPYING)
+[Conan C++ Package Manager](https://conan.io/downloads.html) | 1.24 or higher | No | *N/A* | *Installed by user* | [MIT](https://github.com/conan-io/conan/blob/develop/LICENSE.md)
+[CMake](https://cmake.org/download/) | 3.13 or higher | Yes<br>(3.15 or higher) | conan-center | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [The OSI-approved BSD 3-clause License](https://gitlab.kitware.com/cmake/cmake/raw/master/Copyright.txt)
+[Ninja](https://ninja-build.org/) | 1.10.0 | Yes | conan-center | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [Apache License v2.0](https://github.com/ninja-build/ninja/blob/master/COPYING)
 [GNU* FORTRAN Compiler](https://gcc.gnu.org/wiki/GFortran) | 7.4.0 or higher | Yes | apt | /usr/bin | [GNU General Public License, version 3](https://gcc.gnu.org/onlinedocs/gcc-7.5.0/gfortran/Copying.html)
 [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) | latest | No | *N/A* | *Installed by user* | [End User License Agreement for the Intel(R) Software Development Products](https://software.intel.com/en-us/license/eula-for-intel-software-development-products)
 [Intel project for LLVM* technology binary for Intel CPU](https://github.com/intel/llvm/releases) | Daily builds (experimental) tested with [20200331](https://github.com/intel/llvm/releases/download/20200331/dpcpp-compiler.tar.gz) | No | *N/A* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
@@ -463,6 +463,21 @@ ninja -t clean
 ---
 
 ## FAQs
+
+### oneMKL
+
+1. What is the difference between the following oneMKL items?
+   - The [oneAPI Specification for oneMKL](https://spec.oneapi.com/versions/latest/index.html)
+   - The [oneAPI Math Kernel Library (oneMKL) Interfaces](https://github.com/oneapi-src/oneMKL) Project
+   - The [Intel(R) oneAPI Math Kernel Library (oneMKL)](https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/onemkl.html) Product
+
+Answer:
+
+- The [oneAPI Specification for oneMKL](https://spec.oneapi.com/versions/latest/index.html) defines the DPC++ interfaces for performance math library functions. The oneMKL specification can evolve faster and more frequently than implementations of the specification.
+
+- The [oneAPI Math Kernel Library (oneMKL) Interfaces](https://github.com/oneapi-src/oneMKL) Project is an open source implementation of a subset of the specification. The project goal is to demonstrate how the DPC++ interfaces documented in the oneMKL specification can be implemented for any math library and work for any target hardware. We encourage the community to contribute to this project and help to extend support to multiple hardware targets and other math libraries.
+
+- The [Intel(R) oneAPI Math Kernel Library (oneMKL)](https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/onemkl.html) product is the Intel product implementation of the specification (with DPC++ interfaces) as well as similar functionality with C and Fortran interfaces, and is provided as part of Intel® oneAPI Base Toolkit. It is highly optimized for Intel CPU and Intel GPU hardware.
 
 ### Conan
 
