@@ -133,6 +133,8 @@ THIRD-PARTY-PROGRAMS file and in the README.md file included with the Software P
             "BUILD_DOC"                : self.options.build_doc,
 
             # Paramaters
+            # Conan does not officially support the DPC++ compiler, hence disable the compiler_id check
+            "CONAN_DISABLE_CHECK_COMPILER" : True,
             "MKL_ROOT"                 : f"/opt/intel/inteloneapi/mkl/{self.oneapi_version}",
         })
         cmake.configure()
