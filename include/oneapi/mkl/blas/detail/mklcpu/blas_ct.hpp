@@ -31,7 +31,7 @@
 #include "oneapi/mkl/detail/libraries.hpp"
 #include "oneapi/mkl/types.hpp"
 
-#include "oneapi/mkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
+#include "onemkl_blas_mklcpu.hpp"
 
 #include "oneapi/mkl/blas/detail/blas_ct_templates.hpp"
 
