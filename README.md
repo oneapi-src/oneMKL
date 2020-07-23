@@ -484,6 +484,17 @@ Answer:
 1. I am behind a proxy. How can Conan download dependencies from external network?
    - `~/.conan/conan.conf` has a `[proxies]` section where you can add the list of proxies. For details refer to [Conan proxy settings](https://docs.conan.io/en/latest/reference/config_files/conan.conf.html#proxies).
 
+2. I get an error while installing packages via APT through Conan.
+    ```
+    dpkg: warning: failed to open configuration file '~/.dpkg.cfg' for reading: Permission denied
+    Setting up intel-oneapi-mkl-devel (2021.1-408.beta07) ...
+    E: Sub-process /usr/bin/dpkg returned an error code (1)
+    ```
+    - Although your user session has permissions to install packages via `sudo apt`, it does not have permissions to update debian package configuration, which throws an error code 1, causing a failure in `conan install` command.
+    - The package is most likely installed correctly and can be verified by:
+      1. Running the `conan install` command again.
+      2. Checking `/opt/intel/inteloneapi` for `mkl` and/or `tbb` directories.
+
 ---
 
 #### [Legal information](legal_information.md)
