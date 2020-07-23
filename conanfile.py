@@ -38,7 +38,6 @@ THIRD-PARTY-PROGRAMS file and in the README.md file included with the Software P
     "
 
     # Dependencies
-    oneapi_version = "2021.1-beta06"
     netlib_version = "3.7.1"
     sphinx_version = "2.4.4"
 
@@ -86,9 +85,9 @@ THIRD-PARTY-PROGRAMS file and in the README.md file included with the Software P
         installer = tools.SystemPackageTool()
         if self.options.enable_mklcpu_backend or self.options.enable_mklgpu_backend:
             installer.add_repository("\"deb https://apt.repos.intel.com/oneapi all main\"")
-            installer.install(f"intel-oneapi-mkl-devel-{self.oneapi_version}")  # User must apt-key add GPG key before they can download oneMKL
+            installer.install("intel-oneapi-mkl-devel")  # User must apt-key add GPG key before they can download oneMKL
             if self.options.enable_mklcpu_thread_tbb:
-                installer.install(f"intel-oneapi-tbb-devel-{self.oneapi_version}")  # For libtbb.so used during link-time
+                installer.install("intel-oneapi-tbb-devel")  # For libtbb.so used during link-time
 
 
     def get_python_exe(self):
@@ -135,7 +134,7 @@ THIRD-PARTY-PROGRAMS file and in the README.md file included with the Software P
             # Paramaters
             # Conan does not officially support the DPC++ compiler, hence disable the compiler_id check
             "CONAN_DISABLE_CHECK_COMPILER" : True,
-            "MKL_ROOT"                 : f"/opt/intel/inteloneapi/mkl/{self.oneapi_version}",
+            "MKL_ROOT"                 : "/opt/intel/inteloneapi/mkl/latest",
         })
         cmake.configure()
         cmake.build()
