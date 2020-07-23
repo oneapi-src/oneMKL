@@ -1612,9 +1612,9 @@ void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE trans
            const std::complex<double> *beta, std::complex<double> *c, const int *ldc) {
     // Not supported in NETLIB. ZGEMM is used as reference.
     int sizec;
-    sizec = *ldc * *n;
-    std::complex<double> *cf =
-        (std::complex<double> *)oneapi::mkl::aligned_alloc(64, sizeof(std::complex<double>) * sizec);
+    sizec                    = *ldc * *n;
+    std::complex<double> *cf = (std::complex<double> *)oneapi::mkl::aligned_alloc(
+        64, sizeof(std::complex<double>) * sizec);
     update_c(c, upper_lower, *n, *n, *ldc, cf);
     cblas_zgemm(CblasColMajor, transa, transb, *n, *n, *k, alpha, a, *lda, b, *ldb, beta, cf, *ldc);
     update_c(cf, upper_lower, *n, *n, *ldc, c);

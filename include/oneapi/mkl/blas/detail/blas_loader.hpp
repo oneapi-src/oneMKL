@@ -25,6 +25,7 @@
 #include <cstdint>
 
 #include "oneapi/mkl/types.hpp"
+
 #include "oneapi/mkl/detail/export.hpp"
 
 namespace oneapi {

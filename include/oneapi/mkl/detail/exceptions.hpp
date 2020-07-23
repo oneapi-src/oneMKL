@@ -76,9 +76,10 @@ public:
     BackendNotAvailableForApiException(cl::sycl::queue& queue, oneapi::mkl::backend& backend,
                                        const std::string& api_description)
             : error_message(std::string("oneMKL BackendNotAvailableForApiException: \n") +
-                            std::string("  The oneapi::mkl::backend = ") + oneapi::mkl::backend_map[backend] +
-                            std::string("\n") + std::string("  is not available for ") +
-                            api_description + std::string("\n")) {}
+                            std::string("  The oneapi::mkl::backend = ") +
+                            oneapi::mkl::backend_map[backend] + std::string("\n") +
+                            std::string("  is not available for ") + api_description +
+                            std::string("\n")) {}
 
     const char* what() const noexcept override {
         return error_message.c_str();

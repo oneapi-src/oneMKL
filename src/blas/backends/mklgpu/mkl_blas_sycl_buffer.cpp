@@ -31,16 +31,16 @@ void gemm(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::tr
           std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
           cl::sycl::buffer<float, 1> &a, std::int64_t lda, cl::sycl::buffer<float, 1> &b,
           std::int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-                                   ldc);
+    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                                        c, ldc);
 }
 
 void gemm(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
           std::int64_t m, std::int64_t n, std::int64_t k, double alpha,
           cl::sycl::buffer<double, 1> &a, std::int64_t lda, cl::sycl::buffer<double, 1> &b,
           std::int64_t ldb, double beta, cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-                                   ldc);
+    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                                        c, ldc);
 }
 
 void gemm(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
@@ -48,8 +48,8 @@ void gemm(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::tr
           cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, std::complex<float> beta,
           cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-                                   ldc);
+    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                                        c, ldc);
 }
 
 void gemm(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
@@ -57,122 +57,130 @@ void gemm(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::tr
           cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb, std::complex<double> beta,
           cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-                                   ldc);
+    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                                        c, ldc);
 }
 
 void gemm(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
           std::int64_t m, std::int64_t n, std::int64_t k, half alpha, cl::sycl::buffer<half, 1> &a,
           std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
           cl::sycl::buffer<half, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-                                   ldc);
+    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                                        c, ldc);
 }
 
-void symm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower, std::int64_t m,
-          std::int64_t n, float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
-          cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
+void symm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+          std::int64_t m, std::int64_t n, float alpha, cl::sycl::buffer<float, 1> &a,
+          std::int64_t lda, cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
           cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
     oneapi::mkl::mklgpu::internal::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
-                                   beta, c, ldc);
+                                        beta, c, ldc);
 }
 
-void symm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower, std::int64_t m,
-          std::int64_t n, double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-          cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
+void symm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+          std::int64_t m, std::int64_t n, double alpha, cl::sycl::buffer<double, 1> &a,
+          std::int64_t lda, cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
           cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
     oneapi::mkl::mklgpu::internal::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
-                                   beta, c, ldc);
+                                        beta, c, ldc);
 }
 
-void symm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower, std::int64_t m,
-          std::int64_t n, std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-          std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
-          std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
+void symm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+          std::int64_t m, std::int64_t n, std::complex<float> alpha,
+          cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+          cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, std::complex<float> beta,
+          cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
     oneapi::mkl::mklgpu::internal::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
-                                   beta, c, ldc);
+                                        beta, c, ldc);
 }
 
-void symm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower, std::int64_t m,
-          std::int64_t n, std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-          std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
-          std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
-          std::int64_t ldc) {
+void symm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+          std::int64_t m, std::int64_t n, std::complex<double> alpha,
+          cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+          cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb, std::complex<double> beta,
+          cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
     oneapi::mkl::mklgpu::internal::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
-                                   beta, c, ldc);
+                                        beta, c, ldc);
 }
 
-void hemm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower, std::int64_t m,
-          std::int64_t n, std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-          std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
-          std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
+void hemm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+          std::int64_t m, std::int64_t n, std::complex<float> alpha,
+          cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+          cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, std::complex<float> beta,
+          cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
     oneapi::mkl::mklgpu::internal::hemm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
-                                   beta, c, ldc);
+                                        beta, c, ldc);
 }
 
-void hemm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower, std::int64_t m,
-          std::int64_t n, std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-          std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
-          std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
-          std::int64_t ldc) {
+void hemm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+          std::int64_t m, std::int64_t n, std::complex<double> alpha,
+          cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+          cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb, std::complex<double> beta,
+          cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
     oneapi::mkl::mklgpu::internal::hemm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
-                                   beta, c, ldc);
+                                        beta, c, ldc);
 }
 
-void syrk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, std::int64_t n,
-          std::int64_t k, float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda, float beta,
-          cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc);
+void syrk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
+          std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<float, 1> &a,
+          std::int64_t lda, float beta, cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
+    oneapi::mkl::mklgpu::internal::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c,
+                                        ldc);
 }
 
-void syrk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, std::int64_t n,
-          std::int64_t k, double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-          double beta, cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc);
+void syrk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
+          std::int64_t n, std::int64_t k, double alpha, cl::sycl::buffer<double, 1> &a,
+          std::int64_t lda, double beta, cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
+    oneapi::mkl::mklgpu::internal::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c,
+                                        ldc);
 }
 
-void syrk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, std::int64_t n,
-          std::int64_t k, std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-          std::int64_t lda, std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c,
-          std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc);
+void syrk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
+          std::int64_t n, std::int64_t k, std::complex<float> alpha,
+          cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda, std::complex<float> beta,
+          cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
+    oneapi::mkl::mklgpu::internal::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c,
+                                        ldc);
 }
 
-void syrk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, std::int64_t n,
-          std::int64_t k, std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-          std::int64_t lda, std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
-          std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc);
+void syrk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
+          std::int64_t n, std::int64_t k, std::complex<double> alpha,
+          cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda, std::complex<double> beta,
+          cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
+    oneapi::mkl::mklgpu::internal::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c,
+                                        ldc);
 }
 
-void herk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, std::int64_t n,
-          std::int64_t k, float alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
+void herk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
+          std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
           std::int64_t lda, float beta, cl::sycl::buffer<std::complex<float>, 1> &c,
           std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::herk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc);
+    oneapi::mkl::mklgpu::internal::herk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c,
+                                        ldc);
 }
 
-void herk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, std::int64_t n,
-          std::int64_t k, double alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-          std::int64_t lda, double beta, cl::sycl::buffer<std::complex<double>, 1> &c,
-          std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::herk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc);
+void herk(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
+          std::int64_t n, std::int64_t k, double alpha,
+          cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda, double beta,
+          cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
+    oneapi::mkl::mklgpu::internal::herk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c,
+                                        ldc);
 }
 
 void syr2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
            std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<float, 1> &a,
            std::int64_t lda, cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
            cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c,
-                                    ldc);
+    oneapi::mkl::mklgpu::internal::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb,
+                                         beta, c, ldc);
 }
 
 void syr2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
            std::int64_t n, std::int64_t k, double alpha, cl::sycl::buffer<double, 1> &a,
            std::int64_t lda, cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
            cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c,
-                                    ldc);
+    oneapi::mkl::mklgpu::internal::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb,
+                                         beta, c, ldc);
 }
 
 void syr2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
@@ -180,8 +188,8 @@ void syr2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::t
            cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
            cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, std::complex<float> beta,
            cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c,
-                                    ldc);
+    oneapi::mkl::mklgpu::internal::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb,
+                                         beta, c, ldc);
 }
 
 void syr2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
@@ -190,8 +198,8 @@ void syr2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::t
            cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
            std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
            std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c,
-                                    ldc);
+    oneapi::mkl::mklgpu::internal::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb,
+                                         beta, c, ldc);
 }
 
 void her2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
@@ -199,8 +207,8 @@ void her2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::t
            cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
            cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, float beta,
            cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::her2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c,
-                                    ldc);
+    oneapi::mkl::mklgpu::internal::her2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb,
+                                         beta, c, ldc);
 }
 
 void her2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
@@ -208,72 +216,72 @@ void her2k(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::t
            cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
            cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb, double beta,
            cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::her2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c,
-                                    ldc);
+    oneapi::mkl::mklgpu::internal::her2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb,
+                                         beta, c, ldc);
 }
 
 void trmm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
           oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
           cl::sycl::buffer<float, 1> &b, std::int64_t ldb) {
-    oneapi::mkl::mklgpu::internal::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
-                                   lda, b, ldb);
+    oneapi::mkl::mklgpu::internal::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                        alpha, a, lda, b, ldb);
 }
 
 void trmm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
           oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
           cl::sycl::buffer<double, 1> &b, std::int64_t ldb) {
-    oneapi::mkl::mklgpu::internal::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
-                                   lda, b, ldb);
+    oneapi::mkl::mklgpu::internal::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                        alpha, a, lda, b, ldb);
 }
 
 void trmm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
           oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb) {
-    oneapi::mkl::mklgpu::internal::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
-                                   lda, b, ldb);
+    oneapi::mkl::mklgpu::internal::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                        alpha, a, lda, b, ldb);
 }
 
 void trmm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
           oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
           std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb) {
-    oneapi::mkl::mklgpu::internal::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
-                                   lda, b, ldb);
+    oneapi::mkl::mklgpu::internal::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                        alpha, a, lda, b, ldb);
 }
 
 void trsm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
           oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
           cl::sycl::buffer<float, 1> &b, std::int64_t ldb) {
-    oneapi::mkl::mklgpu::internal::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
-                                   lda, b, ldb);
+    oneapi::mkl::mklgpu::internal::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                        alpha, a, lda, b, ldb);
 }
 
 void trsm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
           oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
           cl::sycl::buffer<double, 1> &b, std::int64_t ldb) {
-    oneapi::mkl::mklgpu::internal::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
-                                   lda, b, ldb);
+    oneapi::mkl::mklgpu::internal::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                        alpha, a, lda, b, ldb);
 }
 
 void trsm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
           oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb) {
-    oneapi::mkl::mklgpu::internal::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
-                                   lda, b, ldb);
+    oneapi::mkl::mklgpu::internal::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                        alpha, a, lda, b, ldb);
 }
 
 void trsm(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
           oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
           std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb) {
-    oneapi::mkl::mklgpu::internal::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
-                                   lda, b, ldb);
+    oneapi::mkl::mklgpu::internal::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                        alpha, a, lda, b, ldb);
 }
 
 void gemv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
@@ -310,7 +318,7 @@ void gbmv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, 
           std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
           cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
     oneapi::mkl::mklgpu::internal::gbmv(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
-                                   incy);
+                                        incy);
 }
 
 void gbmv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
@@ -318,7 +326,7 @@ void gbmv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, 
           std::int64_t lda, cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
           cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
     oneapi::mkl::mklgpu::internal::gbmv(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
-                                   incy);
+                                        incy);
 }
 
 void gbmv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
@@ -327,7 +335,7 @@ void gbmv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, 
           cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx, std::complex<float> beta,
           cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy) {
     oneapi::mkl::mklgpu::internal::gbmv(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
-                                   incy);
+                                        incy);
 }
 
 void gbmv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
@@ -337,7 +345,7 @@ void gbmv(cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, 
           std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &y,
           std::int64_t incy) {
     oneapi::mkl::mklgpu::internal::gbmv(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
-                                   incy);
+                                        incy);
 }
 
 void ger(cl::sycl::queue &queue, std::int64_t m, std::int64_t n, float alpha,
@@ -384,7 +392,8 @@ void hbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx, std::complex<float> beta,
           cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy) {
-    oneapi::mkl::mklgpu::internal::hbmv(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy);
+    oneapi::mkl::mklgpu::internal::hbmv(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
+                                        incy);
 }
 
 void hbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, std::int64_t k,
@@ -392,14 +401,16 @@ void hbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
           std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
           std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &y,
           std::int64_t incy) {
-    oneapi::mkl::mklgpu::internal::hbmv(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy);
+    oneapi::mkl::mklgpu::internal::hbmv(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
+                                        incy);
 }
 
 void hemv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx, std::complex<float> beta,
           cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy) {
-    oneapi::mkl::mklgpu::internal::hemv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy);
+    oneapi::mkl::mklgpu::internal::hemv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y,
+                                        incy);
 }
 
 void hemv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
@@ -407,7 +418,8 @@ void hemv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
           std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
           std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &y,
           std::int64_t incy) {
-    oneapi::mkl::mklgpu::internal::hemv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy);
+    oneapi::mkl::mklgpu::internal::hemv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y,
+                                        incy);
 }
 
 void her(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
@@ -481,26 +493,30 @@ void sbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
           float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
           cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
           cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
-    oneapi::mkl::mklgpu::internal::sbmv(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy);
+    oneapi::mkl::mklgpu::internal::sbmv(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
+                                        incy);
 }
 
 void sbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, std::int64_t k,
           double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
           cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
           cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
-    oneapi::mkl::mklgpu::internal::sbmv(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy);
+    oneapi::mkl::mklgpu::internal::sbmv(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
+                                        incy);
 }
 
 void symv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
           cl::sycl::buffer<float, 1> &a, std::int64_t lda, cl::sycl::buffer<float, 1> &x,
           std::int64_t incx, float beta, cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
-    oneapi::mkl::mklgpu::internal::symv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy);
+    oneapi::mkl::mklgpu::internal::symv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y,
+                                        incy);
 }
 
 void symv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, double alpha,
           cl::sycl::buffer<double, 1> &a, std::int64_t lda, cl::sycl::buffer<double, 1> &x,
           std::int64_t incx, double beta, cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
-    oneapi::mkl::mklgpu::internal::symv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy);
+    oneapi::mkl::mklgpu::internal::symv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y,
+                                        incy);
 }
 
 void syr(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
@@ -562,55 +578,67 @@ void spr2(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
 }
 
 void tbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-          oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k, cl::sycl::buffer<float, 1> &a,
-          std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
-    oneapi::mkl::mklgpu::internal::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
+          oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k,
+          cl::sycl::buffer<float, 1> &a, std::int64_t lda, cl::sycl::buffer<float, 1> &x,
+          std::int64_t incx) {
+    oneapi::mkl::mklgpu::internal::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
+                                        incx);
 }
 
 void tbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-          oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k, cl::sycl::buffer<double, 1> &a,
-          std::int64_t lda, cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
-    oneapi::mkl::mklgpu::internal::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
+          oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k,
+          cl::sycl::buffer<double, 1> &a, std::int64_t lda, cl::sycl::buffer<double, 1> &x,
+          std::int64_t incx) {
+    oneapi::mkl::mklgpu::internal::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
+                                        incx);
 }
 
 void tbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
           oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k,
           cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
-    oneapi::mkl::mklgpu::internal::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
+    oneapi::mkl::mklgpu::internal::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
+                                        incx);
 }
 
 void tbmv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
           oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k,
           cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
-    oneapi::mkl::mklgpu::internal::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
+    oneapi::mkl::mklgpu::internal::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
+                                        incx);
 }
 
 void tbsv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-          oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k, cl::sycl::buffer<float, 1> &a,
-          std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
-    oneapi::mkl::mklgpu::internal::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
+          oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k,
+          cl::sycl::buffer<float, 1> &a, std::int64_t lda, cl::sycl::buffer<float, 1> &x,
+          std::int64_t incx) {
+    oneapi::mkl::mklgpu::internal::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
+                                        incx);
 }
 
 void tbsv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-          oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k, cl::sycl::buffer<double, 1> &a,
-          std::int64_t lda, cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
-    oneapi::mkl::mklgpu::internal::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
+          oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k,
+          cl::sycl::buffer<double, 1> &a, std::int64_t lda, cl::sycl::buffer<double, 1> &x,
+          std::int64_t incx) {
+    oneapi::mkl::mklgpu::internal::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
+                                        incx);
 }
 
 void tbsv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
           oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k,
           cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
-    oneapi::mkl::mklgpu::internal::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
+    oneapi::mkl::mklgpu::internal::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
+                                        incx);
 }
 
 void tbsv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
           oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k,
           cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
           cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
-    oneapi::mkl::mklgpu::internal::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
+    oneapi::mkl::mklgpu::internal::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
+                                        incx);
 }
 
 void tpmv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
@@ -662,14 +690,14 @@ void tpsv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::tr
 }
 
 void trmv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-          oneapi::mkl::diag unit_diag, std::int64_t n, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
-          cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
+          oneapi::mkl::diag unit_diag, std::int64_t n, cl::sycl::buffer<float, 1> &a,
+          std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
     oneapi::mkl::mklgpu::internal::trmv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
 }
 
 void trmv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-          oneapi::mkl::diag unit_diag, std::int64_t n, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-          cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
+          oneapi::mkl::diag unit_diag, std::int64_t n, cl::sycl::buffer<double, 1> &a,
+          std::int64_t lda, cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
     oneapi::mkl::mklgpu::internal::trmv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
 }
 
@@ -686,14 +714,14 @@ void trmv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::tr
 }
 
 void trsv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-          oneapi::mkl::diag unit_diag, std::int64_t n, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
-          cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
+          oneapi::mkl::diag unit_diag, std::int64_t n, cl::sycl::buffer<float, 1> &a,
+          std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
     oneapi::mkl::mklgpu::internal::trsv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
 }
 
 void trsv(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-          oneapi::mkl::diag unit_diag, std::int64_t n, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
-          cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
+          oneapi::mkl::diag unit_diag, std::int64_t n, cl::sycl::buffer<double, 1> &a,
+          std::int64_t lda, cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
     oneapi::mkl::mklgpu::internal::trsv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
 }
 
@@ -990,100 +1018,110 @@ void swap(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<std::complex<
     oneapi::mkl::mklgpu::internal::swap(queue, n, x, incx, y, incy);
 }
 
-void gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
-                std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-                cl::sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a,
+void gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose transa,
+                oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+                float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a,
                 cl::sycl::buffer<float, 1> &b, std::int64_t ldb, std::int64_t stride_b, float beta,
                 cl::sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
                 std::int64_t batch_size) {
-    oneapi::mkl::mklgpu::internal::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b,
-                                         ldb, stride_b, beta, c, ldc, stride_c, batch_size);
+    oneapi::mkl::mklgpu::internal::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda,
+                                              stride_a, b, ldb, stride_b, beta, c, ldc, stride_c,
+                                              batch_size);
 }
 
-void gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
-                std::int64_t m, std::int64_t n, std::int64_t k, double alpha,
-                cl::sycl::buffer<double, 1> &a, std::int64_t lda, std::int64_t stride_a,
-                cl::sycl::buffer<double, 1> &b, std::int64_t ldb, std::int64_t stride_b,
-                double beta, cl::sycl::buffer<double, 1> &c, std::int64_t ldc,
-                std::int64_t stride_c, std::int64_t batch_size) {
-    oneapi::mkl::mklgpu::internal::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b,
-                                         ldb, stride_b, beta, c, ldc, stride_c, batch_size);
-}
-
-void gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
-                std::int64_t m, std::int64_t n, std::int64_t k, std::complex<float> alpha,
-                cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
-                std::int64_t stride_a, cl::sycl::buffer<std::complex<float>, 1> &b,
-                std::int64_t ldb, std::int64_t stride_b, std::complex<float> beta,
-                cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc,
-                std::int64_t stride_c, std::int64_t batch_size) {
-    oneapi::mkl::mklgpu::internal::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b,
-                                         ldb, stride_b, beta, c, ldc, stride_c, batch_size);
-}
-
-void gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
-                std::int64_t m, std::int64_t n, std::int64_t k, std::complex<double> alpha,
-                cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-                std::int64_t stride_a, cl::sycl::buffer<std::complex<double>, 1> &b,
-                std::int64_t ldb, std::int64_t stride_b, std::complex<double> beta,
-                cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc,
-                std::int64_t stride_c, std::int64_t batch_size) {
-    oneapi::mkl::mklgpu::internal::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b,
-                                         ldb, stride_b, beta, c, ldc, stride_c, batch_size);
-}
-
-void trsm_batch(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
-                oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
-                float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a,
-                cl::sycl::buffer<float, 1> &b, std::int64_t ldb, std::int64_t stride_b,
-                std::int64_t batch_size) {
-    oneapi::mkl::mklgpu::internal::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n,
-                                         alpha, a, lda, stride_a, b, ldb, stride_b, batch_size);
-}
-
-void trsm_batch(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
-                oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
+void gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose transa,
+                oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
                 double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
                 std::int64_t stride_a, cl::sycl::buffer<double, 1> &b, std::int64_t ldb,
-                std::int64_t stride_b, std::int64_t batch_size) {
-    oneapi::mkl::mklgpu::internal::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n,
-                                         alpha, a, lda, stride_a, b, ldb, stride_b, batch_size);
+                std::int64_t stride_b, double beta, cl::sycl::buffer<double, 1> &c,
+                std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size) {
+    oneapi::mkl::mklgpu::internal::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda,
+                                              stride_a, b, ldb, stride_b, beta, c, ldc, stride_c,
+                                              batch_size);
 }
 
-void trsm_batch(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
-                oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
+void gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose transa,
+                oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
                 std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
                 std::int64_t lda, std::int64_t stride_a,
                 cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
-                std::int64_t stride_b, std::int64_t batch_size) {
-    oneapi::mkl::mklgpu::internal::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n,
-                                         alpha, a, lda, stride_a, b, ldb, stride_b, batch_size);
+                std::int64_t stride_b, std::complex<float> beta,
+                cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc,
+                std::int64_t stride_c, std::int64_t batch_size) {
+    oneapi::mkl::mklgpu::internal::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda,
+                                              stride_a, b, ldb, stride_b, beta, c, ldc, stride_c,
+                                              batch_size);
 }
 
-void trsm_batch(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
-                oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
+void gemm_batch(cl::sycl::queue &queue, oneapi::mkl::transpose transa,
+                oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
                 std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
                 std::int64_t lda, std::int64_t stride_a,
                 cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
+                std::int64_t stride_b, std::complex<double> beta,
+                cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc,
+                std::int64_t stride_c, std::int64_t batch_size) {
+    oneapi::mkl::mklgpu::internal::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda,
+                                              stride_a, b, ldb, stride_b, beta, c, ldc, stride_c,
+                                              batch_size);
+}
+
+void trsm_batch(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+                oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m,
+                std::int64_t n, float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
+                std::int64_t stride_a, cl::sycl::buffer<float, 1> &b, std::int64_t ldb,
                 std::int64_t stride_b, std::int64_t batch_size) {
-    oneapi::mkl::mklgpu::internal::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n,
-                                         alpha, a, lda, stride_a, b, ldb, stride_b, batch_size);
+    oneapi::mkl::mklgpu::internal::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m,
+                                              n, alpha, a, lda, stride_a, b, ldb, stride_b,
+                                              batch_size);
+}
+
+void trsm_batch(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+                oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m,
+                std::int64_t n, double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
+                std::int64_t stride_a, cl::sycl::buffer<double, 1> &b, std::int64_t ldb,
+                std::int64_t stride_b, std::int64_t batch_size) {
+    oneapi::mkl::mklgpu::internal::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m,
+                                              n, alpha, a, lda, stride_a, b, ldb, stride_b,
+                                              batch_size);
+}
+
+void trsm_batch(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+                oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m,
+                std::int64_t n, std::complex<float> alpha,
+                cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+                std::int64_t stride_a, cl::sycl::buffer<std::complex<float>, 1> &b,
+                std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
+    oneapi::mkl::mklgpu::internal::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m,
+                                              n, alpha, a, lda, stride_a, b, ldb, stride_b,
+                                              batch_size);
+}
+
+void trsm_batch(cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
+                oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m,
+                std::int64_t n, std::complex<double> alpha,
+                cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+                std::int64_t stride_a, cl::sycl::buffer<std::complex<double>, 1> &b,
+                std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
+    oneapi::mkl::mklgpu::internal::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m,
+                                              n, alpha, a, lda, stride_a, b, ldb, stride_b,
+                                              batch_size);
 }
 
 void gemmt(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose transa,
            oneapi::mkl::transpose transb, std::int64_t n, std::int64_t k, float alpha,
            cl::sycl::buffer<float, 1> &a, std::int64_t lda, cl::sycl::buffer<float, 1> &b,
            std::int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb,
-                                    beta, c, ldc);
+    oneapi::mkl::mklgpu::internal::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b,
+                                         ldb, beta, c, ldc);
 }
 
 void gemmt(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose transa,
            oneapi::mkl::transpose transb, std::int64_t n, std::int64_t k, double alpha,
            cl::sycl::buffer<double, 1> &a, std::int64_t lda, cl::sycl::buffer<double, 1> &b,
            std::int64_t ldb, double beta, cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb,
-                                    beta, c, ldc);
+    oneapi::mkl::mklgpu::internal::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b,
+                                         ldb, beta, c, ldc);
 }
 
 void gemmt(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose transa,
@@ -1091,51 +1129,51 @@ void gemmt(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::t
            cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
            cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, std::complex<float> beta,
            cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb,
-                                    beta, c, ldc);
+    oneapi::mkl::mklgpu::internal::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b,
+                                         ldb, beta, c, ldc);
 }
 
 void gemmt(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose transa,
-           oneapi::mkl::transpose transb, std::int64_t n, std::int64_t k, std::complex<double> alpha,
-           cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
-           cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
+           oneapi::mkl::transpose transb, std::int64_t n, std::int64_t k,
+           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
+           std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
            std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
            std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb,
-                                    beta, c, ldc);
+    oneapi::mkl::mklgpu::internal::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b,
+                                         ldb, beta, c, ldc);
 }
 
 void gemm_ext(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
               std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
               cl::sycl::buffer<half, 1> &a, std::int64_t lda, cl::sycl::buffer<half, 1> &b,
               std::int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
-                                       c, ldc);
+    oneapi::mkl::mklgpu::internal::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
+                                            beta, c, ldc);
 }
 
 void gemm_ext(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
-              oneapi::mkl::offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-              cl::sycl::buffer<int8_t, 1> &a, std::int64_t lda, int8_t ao,
+              oneapi::mkl::offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
+              float alpha, cl::sycl::buffer<int8_t, 1> &a, std::int64_t lda, int8_t ao,
               cl::sycl::buffer<uint8_t, 1> &b, std::int64_t ldb, uint8_t bo, float beta,
               cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc, cl::sycl::buffer<int32_t, 1> &co) {
-    oneapi::mkl::mklgpu::internal::gemm_ext(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao,
-                                       b, ldb, bo, beta, c, ldc, co);
+    oneapi::mkl::mklgpu::internal::gemm_ext(queue, transa, transb, offsetc, m, n, k, alpha, a, lda,
+                                            ao, b, ldb, bo, beta, c, ldc, co);
 }
 
 void gemm_ext(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
               std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
               cl::sycl::buffer<float, 1> &a, std::int64_t lda, cl::sycl::buffer<float, 1> &b,
               std::int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-                                   ldc);
+    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                                        c, ldc);
 }
 
 void gemm_ext(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
               std::int64_t m, std::int64_t n, std::int64_t k, double alpha,
               cl::sycl::buffer<double, 1> &a, std::int64_t lda, cl::sycl::buffer<double, 1> &b,
               std::int64_t ldb, double beta, cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-                                   ldc);
+    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                                        c, ldc);
 }
 
 void gemm_ext(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
@@ -1144,8 +1182,8 @@ void gemm_ext(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl
               cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
               std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c,
               std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-                                   ldc);
+    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                                        c, ldc);
 }
 
 void gemm_ext(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
@@ -1154,16 +1192,16 @@ void gemm_ext(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl
               cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
               std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
               std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-                                   ldc);
+    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                                        c, ldc);
 }
 
 void gemm_ext(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
               std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
               cl::sycl::buffer<half, 1> &a, std::int64_t lda, cl::sycl::buffer<half, 1> &b,
               std::int64_t ldb, half beta, cl::sycl::buffer<half, 1> &c, std::int64_t ldc) {
-    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-                                   ldc);
+    oneapi::mkl::mklgpu::internal::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                                        c, ldc);
 }
 
 } // namespace mklgpu

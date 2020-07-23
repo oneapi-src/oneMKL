@@ -452,7 +452,8 @@ void syr2k<library::intelmkl, backend::intelgpu>(cl::sycl::queue &queue, uplo up
                                                  std::int64_t ldb, float beta,
                                                  cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
     syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c,
+                               ldc);
     syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -464,7 +465,8 @@ void syr2k<library::intelmkl, backend::intelgpu>(cl::sycl::queue &queue, uplo up
                                                  std::int64_t ldb, double beta,
                                                  cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
     syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c,
+                               ldc);
     syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -475,7 +477,8 @@ void syr2k<library::intelmkl, backend::intelgpu>(
     cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, std::complex<float> beta,
     cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
     syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c,
+                               ldc);
     syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -486,7 +489,8 @@ void syr2k<library::intelmkl, backend::intelgpu>(
     cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb, std::complex<double> beta,
     cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
     syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c,
+                               ldc);
     syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -630,7 +634,7 @@ void gemm_batch<library::intelmkl, backend::intelgpu>(
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                             stride_b, beta, c, ldc, stride_c, batch_size);
     oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
-                               stride_b, beta, c, ldc, stride_c, batch_size);
+                                    stride_b, beta, c, ldc, stride_c, batch_size);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                              stride_b, beta, c, ldc, stride_c, batch_size);
 }
@@ -645,7 +649,7 @@ void gemm_batch<library::intelmkl, backend::intelgpu>(
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                             stride_b, beta, c, ldc, stride_c, batch_size);
     oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
-                               stride_b, beta, c, ldc, stride_c, batch_size);
+                                    stride_b, beta, c, ldc, stride_c, batch_size);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                              stride_b, beta, c, ldc, stride_c, batch_size);
 }
@@ -661,7 +665,7 @@ void gemm_batch<library::intelmkl, backend::intelgpu>(
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                             stride_b, beta, c, ldc, stride_c, batch_size);
     oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
-                               stride_b, beta, c, ldc, stride_c, batch_size);
+                                    stride_b, beta, c, ldc, stride_c, batch_size);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                              stride_b, beta, c, ldc, stride_c, batch_size);
 }
@@ -677,7 +681,7 @@ void gemm_batch<library::intelmkl, backend::intelgpu>(
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                             stride_b, beta, c, ldc, stride_c, batch_size);
     oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
-                               stride_b, beta, c, ldc, stride_c, batch_size);
+                                    stride_b, beta, c, ldc, stride_c, batch_size);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                              stride_b, beta, c, ldc, stride_c, batch_size);
 }
@@ -715,7 +719,8 @@ void gemm_ext<library::intelmkl, backend::intelgpu>(cl::sycl::queue &queue, tran
                                                     float beta, cl::sycl::buffer<float, 1> &c,
                                                     std::int64_t ldc) {
     gemm_ext_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
+                                  ldc);
     gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -727,8 +732,8 @@ void gemm_ext<library::intelmkl, backend::intelgpu>(
     cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc, cl::sycl::buffer<int32_t, 1> &co) {
     gemm_ext_precondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
                           beta, c, ldc, co);
-    oneapi::mkl::mklgpu::gemm_ext(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
-                             beta, c, ldc, co);
+    oneapi::mkl::mklgpu::gemm_ext(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b,
+                                  ldb, bo, beta, c, ldc, co);
     gemm_ext_postcondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
                            beta, c, ldc, co);
 }
@@ -742,7 +747,8 @@ void gemm_ext<library::intelmkl, backend::intelgpu>(cl::sycl::queue &queue, tran
                                                     float beta, cl::sycl::buffer<float, 1> &c,
                                                     std::int64_t ldc) {
     gemm_ext_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
+                                  ldc);
     gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -753,7 +759,8 @@ void gemm_ext<library::intelmkl, backend::intelgpu>(
     cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta, cl::sycl::buffer<double, 1> &c,
     std::int64_t ldc) {
     gemm_ext_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
+                                  ldc);
     gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -764,7 +771,8 @@ void gemm_ext<library::intelmkl, backend::intelgpu>(
     std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
     std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
     gemm_ext_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
+                                  ldc);
     gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -775,7 +783,8 @@ void gemm_ext<library::intelmkl, backend::intelgpu>(
     std::int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
     std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
     gemm_ext_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
+                                  ldc);
     gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -788,7 +797,8 @@ void gemm_ext<library::intelmkl, backend::intelgpu>(cl::sycl::queue &queue, tran
                                                     half beta, cl::sycl::buffer<half, 1> &c,
                                                     std::int64_t ldc) {
     gemm_ext_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::gemm_ext(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
+                                  ldc);
     gemm_ext_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -1003,8 +1013,8 @@ void trsm<library::intelmkl, backend::intelgpu>(cl::sycl::queue &queue, side lef
                                                 cl::sycl::buffer<float, 1> &b, std::int64_t ldb) {
     trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                       ldb);
-    oneapi::mkl::mklgpu::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
-                         ldb);
+    oneapi::mkl::mklgpu::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                              b, ldb);
     trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb);
 }
@@ -1017,8 +1027,8 @@ void trsm<library::intelmkl, backend::intelgpu>(cl::sycl::queue &queue, side lef
                                                 cl::sycl::buffer<double, 1> &b, std::int64_t ldb) {
     trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                       ldb);
-    oneapi::mkl::mklgpu::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
-                         ldb);
+    oneapi::mkl::mklgpu::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                              b, ldb);
     trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb);
 }
@@ -1031,8 +1041,8 @@ void trsm<library::intelmkl, backend::intelgpu>(
     cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb) {
     trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                       ldb);
-    oneapi::mkl::mklgpu::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
-                         ldb);
+    oneapi::mkl::mklgpu::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                              b, ldb);
     trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb);
 }
@@ -1045,8 +1055,8 @@ void trsm<library::intelmkl, backend::intelgpu>(
     cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb) {
     trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                       ldb);
-    oneapi::mkl::mklgpu::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
-                         ldb);
+    oneapi::mkl::mklgpu::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                              b, ldb);
     trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb);
 }
@@ -1082,7 +1092,8 @@ void hemm<library::intelmkl, backend::intelgpu>(
     cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, std::complex<float> beta,
     cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
     hemm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::hemm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::hemm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c,
+                              ldc);
     hemm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -1093,7 +1104,8 @@ void hemm<library::intelmkl, backend::intelgpu>(
     cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb, std::complex<double> beta,
     cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
     hemm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::hemm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::hemm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c,
+                              ldc);
     hemm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -1221,7 +1233,8 @@ void symm<library::intelmkl, backend::intelgpu>(cl::sycl::queue &queue, side lef
                                                 std::int64_t ldb, float beta,
                                                 cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
     symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c,
+                              ldc);
     symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -1233,7 +1246,8 @@ void symm<library::intelmkl, backend::intelgpu>(cl::sycl::queue &queue, side lef
                                                 std::int64_t ldb, double beta,
                                                 cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
     symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c,
+                              ldc);
     symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -1244,7 +1258,8 @@ void symm<library::intelmkl, backend::intelgpu>(
     cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, std::complex<float> beta,
     cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
     symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c,
+                              ldc);
     symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -1255,7 +1270,8 @@ void symm<library::intelmkl, backend::intelgpu>(
     cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb, std::complex<double> beta,
     cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
     symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c,
+                              ldc);
     symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -1311,8 +1327,8 @@ void trmm<library::intelmkl, backend::intelgpu>(cl::sycl::queue &queue, side lef
                                                 cl::sycl::buffer<float, 1> &b, std::int64_t ldb) {
     trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                       ldb);
-    oneapi::mkl::mklgpu::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
-                         ldb);
+    oneapi::mkl::mklgpu::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                              b, ldb);
     trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb);
 }
@@ -1325,8 +1341,8 @@ void trmm<library::intelmkl, backend::intelgpu>(cl::sycl::queue &queue, side lef
                                                 cl::sycl::buffer<double, 1> &b, std::int64_t ldb) {
     trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                       ldb);
-    oneapi::mkl::mklgpu::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
-                         ldb);
+    oneapi::mkl::mklgpu::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                              b, ldb);
     trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb);
 }
@@ -1339,8 +1355,8 @@ void trmm<library::intelmkl, backend::intelgpu>(
     cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb) {
     trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                       ldb);
-    oneapi::mkl::mklgpu::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
-                         ldb);
+    oneapi::mkl::mklgpu::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                              b, ldb);
     trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb);
 }
@@ -1353,8 +1369,8 @@ void trmm<library::intelmkl, backend::intelgpu>(
     cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb) {
     trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                       ldb);
-    oneapi::mkl::mklgpu::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
-                         ldb);
+    oneapi::mkl::mklgpu::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                              b, ldb);
     trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb);
 }
@@ -1539,8 +1555,8 @@ void gemmt<library::intelmkl, backend::intelgpu>(cl::sycl::queue &queue, uplo up
                                                  std::int64_t ldc) {
     gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                        ldc);
-    oneapi::mkl::mklgpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
-                          ldc);
+    oneapi::mkl::mklgpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb,
+                               beta, c, ldc);
     gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc);
 }
@@ -1555,8 +1571,8 @@ void gemmt<library::intelmkl, backend::intelgpu>(cl::sycl::queue &queue, uplo up
                                                  std::int64_t ldc) {
     gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                        ldc);
-    oneapi::mkl::mklgpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
-                          ldc);
+    oneapi::mkl::mklgpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb,
+                               beta, c, ldc);
     gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc);
 }
@@ -1569,8 +1585,8 @@ void gemmt<library::intelmkl, backend::intelgpu>(
     std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
     gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                        ldc);
-    oneapi::mkl::mklgpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
-                          ldc);
+    oneapi::mkl::mklgpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb,
+                               beta, c, ldc);
     gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc);
 }
@@ -1583,8 +1599,8 @@ void gemmt<library::intelmkl, backend::intelgpu>(
     std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
     gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                        ldc);
-    oneapi::mkl::mklgpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
-                          ldc);
+    oneapi::mkl::mklgpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb,
+                               beta, c, ldc);
     gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc);
 }
@@ -1761,8 +1777,8 @@ void trsm_batch<library::intelmkl, backend::intelgpu>(
     std::int64_t batch_size) {
     trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
                             stride_a, b, ldb, stride_b, batch_size);
-    oneapi::mkl::mklgpu::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
-                               lda, stride_a, b, ldb, stride_b, batch_size);
+    oneapi::mkl::mklgpu::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
+                                    a, lda, stride_a, b, ldb, stride_b, batch_size);
     trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
                              stride_a, b, ldb, stride_b, batch_size);
 }
@@ -1775,8 +1791,8 @@ void trsm_batch<library::intelmkl, backend::intelgpu>(
     std::int64_t batch_size) {
     trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
                             stride_a, b, ldb, stride_b, batch_size);
-    oneapi::mkl::mklgpu::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
-                               lda, stride_a, b, ldb, stride_b, batch_size);
+    oneapi::mkl::mklgpu::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
+                                    a, lda, stride_a, b, ldb, stride_b, batch_size);
     trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
                              stride_a, b, ldb, stride_b, batch_size);
 }
@@ -1790,8 +1806,8 @@ void trsm_batch<library::intelmkl, backend::intelgpu>(
     std::int64_t batch_size) {
     trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
                             stride_a, b, ldb, stride_b, batch_size);
-    oneapi::mkl::mklgpu::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
-                               lda, stride_a, b, ldb, stride_b, batch_size);
+    oneapi::mkl::mklgpu::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
+                                    a, lda, stride_a, b, ldb, stride_b, batch_size);
     trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
                              stride_a, b, ldb, stride_b, batch_size);
 }
@@ -1805,8 +1821,8 @@ void trsm_batch<library::intelmkl, backend::intelgpu>(
     std::int64_t batch_size) {
     trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
                             stride_a, b, ldb, stride_b, batch_size);
-    oneapi::mkl::mklgpu::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a,
-                               lda, stride_a, b, ldb, stride_b, batch_size);
+    oneapi::mkl::mklgpu::trsm_batch(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
+                                    a, lda, stride_a, b, ldb, stride_b, batch_size);
     trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
                              stride_a, b, ldb, stride_b, batch_size);
 }
@@ -1892,7 +1908,8 @@ void her2k<library::intelmkl, backend::intelgpu>(
     cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, float beta,
     cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
     her2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::her2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::her2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c,
+                               ldc);
     her2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -1903,7 +1920,8 @@ void her2k<library::intelmkl, backend::intelgpu>(
     cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb, double beta,
     cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
     her2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
-    oneapi::mkl::mklgpu::her2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    oneapi::mkl::mklgpu::her2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c,
+                               ldc);
     her2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
@@ -1969,8 +1987,8 @@ cl::sycl::event syr2<library::intelmkl, backend::intelgpu>(
     std::int64_t incx, const float *y, std::int64_t incy, float *a, std::int64_t lda,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     syr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::syr2(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = oneapi::mkl::mklgpu::syr2(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda,
+                                          dependencies);
     syr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
     return done;
 }
@@ -1981,8 +1999,8 @@ cl::sycl::event syr2<library::intelmkl, backend::intelgpu>(
     std::int64_t incx, const double *y, std::int64_t incy, double *a, std::int64_t lda,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     syr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::syr2(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = oneapi::mkl::mklgpu::syr2(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda,
+                                          dependencies);
     syr2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
     return done;
 }
@@ -2054,7 +2072,7 @@ cl::sycl::event trmv<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     trmv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     auto done = oneapi::mkl::mklgpu::trmv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
-                                     dependencies);
+                                          dependencies);
     trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     return done;
 }
@@ -2066,7 +2084,7 @@ cl::sycl::event trmv<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     trmv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     auto done = oneapi::mkl::mklgpu::trmv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
-                                     dependencies);
+                                          dependencies);
     trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     return done;
 }
@@ -2078,7 +2096,7 @@ cl::sycl::event trmv<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     trmv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     auto done = oneapi::mkl::mklgpu::trmv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
-                                     dependencies);
+                                          dependencies);
     trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     return done;
 }
@@ -2090,7 +2108,7 @@ cl::sycl::event trmv<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     trmv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     auto done = oneapi::mkl::mklgpu::trmv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
-                                     dependencies);
+                                          dependencies);
     trmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     return done;
 }
@@ -2101,8 +2119,8 @@ cl::sycl::event tpmv<library::intelmkl, backend::intelgpu>(
     const float *a, float *x, std::int64_t incx,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     tpmv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::tpmv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done = oneapi::mkl::mklgpu::tpmv(queue, upper_lower, trans, unit_diag, n, a, x, incx,
+                                          dependencies);
     tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     return done;
 }
@@ -2113,8 +2131,8 @@ cl::sycl::event tpmv<library::intelmkl, backend::intelgpu>(
     const double *a, double *x, std::int64_t incx,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     tpmv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::tpmv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done = oneapi::mkl::mklgpu::tpmv(queue, upper_lower, trans, unit_diag, n, a, x, incx,
+                                          dependencies);
     tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     return done;
 }
@@ -2125,8 +2143,8 @@ cl::sycl::event tpmv<library::intelmkl, backend::intelgpu>(
     const std::complex<float> *a, std::complex<float> *x, std::int64_t incx,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     tpmv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::tpmv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done = oneapi::mkl::mklgpu::tpmv(queue, upper_lower, trans, unit_diag, n, a, x, incx,
+                                          dependencies);
     tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     return done;
 }
@@ -2137,8 +2155,8 @@ cl::sycl::event tpmv<library::intelmkl, backend::intelgpu>(
     const std::complex<double> *a, std::complex<double> *x, std::int64_t incx,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     tpmv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::tpmv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done = oneapi::mkl::mklgpu::tpmv(queue, upper_lower, trans, unit_diag, n, a, x, incx,
+                                          dependencies);
     tpmv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     return done;
 }
@@ -2170,8 +2188,8 @@ cl::sycl::event hpmv<library::intelmkl, backend::intelgpu>(
     std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     hpmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::hpmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    auto done = oneapi::mkl::mklgpu::hpmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy,
+                                          dependencies);
     hpmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
     return done;
 }
@@ -2183,8 +2201,8 @@ cl::sycl::event hpmv<library::intelmkl, backend::intelgpu>(
     std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     hpmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::hpmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    auto done = oneapi::mkl::mklgpu::hpmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy,
+                                          dependencies);
     hpmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
     return done;
 }
@@ -2195,8 +2213,8 @@ cl::sycl::event syrk<library::intelmkl, backend::intelgpu>(
     float alpha, const float *a, std::int64_t lda, float beta, float *c, std::int64_t ldc,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     syrk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
-    auto done = oneapi::mkl::mklgpu::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c,
+                                          ldc, dependencies);
     syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
     return done;
 }
@@ -2207,8 +2225,8 @@ cl::sycl::event syrk<library::intelmkl, backend::intelgpu>(
     double alpha, const double *a, std::int64_t lda, double beta, double *c, std::int64_t ldc,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     syrk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
-    auto done = oneapi::mkl::mklgpu::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c,
+                                          ldc, dependencies);
     syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
     return done;
 }
@@ -2220,8 +2238,8 @@ cl::sycl::event syrk<library::intelmkl, backend::intelgpu>(
     std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     syrk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
-    auto done = oneapi::mkl::mklgpu::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c,
+                                          ldc, dependencies);
     syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
     return done;
 }
@@ -2233,8 +2251,8 @@ cl::sycl::event syrk<library::intelmkl, backend::intelgpu>(
     std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     syrk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
-    auto done = oneapi::mkl::mklgpu::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::syrk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c,
+                                          ldc, dependencies);
     syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
     return done;
 }
@@ -2246,8 +2264,8 @@ cl::sycl::event her2<library::intelmkl, backend::intelgpu>(
     std::int64_t incy, std::complex<float> *a, std::int64_t lda,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     her2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::her2(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = oneapi::mkl::mklgpu::her2(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda,
+                                          dependencies);
     her2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
     return done;
 }
@@ -2259,8 +2277,8 @@ cl::sycl::event her2<library::intelmkl, backend::intelgpu>(
     std::int64_t incy, std::complex<double> *a, std::int64_t lda,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     her2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::her2(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done = oneapi::mkl::mklgpu::her2(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda,
+                                          dependencies);
     her2_postcondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
     return done;
 }
@@ -2275,7 +2293,7 @@ cl::sycl::event hbmv<library::intelmkl, backend::intelgpu>(
     hbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = oneapi::mkl::mklgpu::hbmv(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
-                                     incy, dependencies);
+                                          incy, dependencies);
     hbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
     return done;
@@ -2291,7 +2309,7 @@ cl::sycl::event hbmv<library::intelmkl, backend::intelgpu>(
     hbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = oneapi::mkl::mklgpu::hbmv(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
-                                     incy, dependencies);
+                                          incy, dependencies);
     hbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
     return done;
@@ -2391,7 +2409,7 @@ cl::sycl::event axpy_batch<library::intelmkl, backend::intelgpu>(
     axpy_batch_precondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
                             dependencies);
     auto done = oneapi::mkl::mklgpu::axpy_batch(queue, n, alpha, x, incx, y, incy, group_count,
-                                           group_size, dependencies);
+                                                group_size, dependencies);
     axpy_batch_postcondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
                              dependencies);
     return done;
@@ -2405,7 +2423,7 @@ cl::sycl::event axpy_batch<library::intelmkl, backend::intelgpu>(
     axpy_batch_precondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
                             dependencies);
     auto done = oneapi::mkl::mklgpu::axpy_batch(queue, n, alpha, x, incx, y, incy, group_count,
-                                           group_size, dependencies);
+                                                group_size, dependencies);
     axpy_batch_postcondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
                              dependencies);
     return done;
@@ -2420,7 +2438,7 @@ cl::sycl::event axpy_batch<library::intelmkl, backend::intelgpu>(
     axpy_batch_precondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
                             dependencies);
     auto done = oneapi::mkl::mklgpu::axpy_batch(queue, n, alpha, x, incx, y, incy, group_count,
-                                           group_size, dependencies);
+                                                group_size, dependencies);
     axpy_batch_postcondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
                              dependencies);
     return done;
@@ -2435,7 +2453,7 @@ cl::sycl::event axpy_batch<library::intelmkl, backend::intelgpu>(
     axpy_batch_precondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
                             dependencies);
     auto done = oneapi::mkl::mklgpu::axpy_batch(queue, n, alpha, x, incx, y, incy, group_count,
-                                           group_size, dependencies);
+                                                group_size, dependencies);
     axpy_batch_postcondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
                              dependencies);
     return done;
@@ -2448,7 +2466,8 @@ cl::sycl::event gerc<library::intelmkl, backend::intelgpu>(
     std::int64_t incy, std::complex<float> *a, std::int64_t lda,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gerc_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
-    auto done = oneapi::mkl::mklgpu::gerc(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done =
+        oneapi::mkl::mklgpu::gerc(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     gerc_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     return done;
 }
@@ -2460,7 +2479,8 @@ cl::sycl::event gerc<library::intelmkl, backend::intelgpu>(
     std::int64_t incy, std::complex<double> *a, std::int64_t lda,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gerc_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
-    auto done = oneapi::mkl::mklgpu::gerc(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done =
+        oneapi::mkl::mklgpu::gerc(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     gerc_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     return done;
 }
@@ -2472,8 +2492,8 @@ cl::sycl::event syr2k<library::intelmkl, backend::intelgpu>(
     float *c, std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
-    auto done = oneapi::mkl::mklgpu::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
-                                      c, ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb,
+                                           beta, c, ldc, dependencies);
     syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                         dependencies);
     return done;
@@ -2486,8 +2506,8 @@ cl::sycl::event syr2k<library::intelmkl, backend::intelgpu>(
     double *c, std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
-    auto done = oneapi::mkl::mklgpu::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
-                                      c, ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb,
+                                           beta, c, ldc, dependencies);
     syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                         dependencies);
     return done;
@@ -2502,8 +2522,8 @@ cl::sycl::event syr2k<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
-    auto done = oneapi::mkl::mklgpu::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
-                                      c, ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb,
+                                           beta, c, ldc, dependencies);
     syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                         dependencies);
     return done;
@@ -2518,8 +2538,8 @@ cl::sycl::event syr2k<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
-    auto done = oneapi::mkl::mklgpu::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
-                                      c, ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::syr2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb,
+                                           beta, c, ldc, dependencies);
     syr2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                         dependencies);
     return done;
@@ -2532,7 +2552,7 @@ cl::sycl::event gemv<library::intelmkl, backend::intelgpu>(
     std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     auto done = oneapi::mkl::mklgpu::gemv(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
-                                     dependencies);
+                                          dependencies);
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     return done;
 }
@@ -2544,7 +2564,7 @@ cl::sycl::event gemv<library::intelmkl, backend::intelgpu>(
     std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     auto done = oneapi::mkl::mklgpu::gemv(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
-                                     dependencies);
+                                          dependencies);
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     return done;
 }
@@ -2558,7 +2578,7 @@ cl::sycl::event gemv<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     auto done = oneapi::mkl::mklgpu::gemv(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
-                                     dependencies);
+                                          dependencies);
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     return done;
 }
@@ -2572,7 +2592,7 @@ cl::sycl::event gemv<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     auto done = oneapi::mkl::mklgpu::gemv(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
-                                     dependencies);
+                                          dependencies);
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     return done;
 }
@@ -2583,7 +2603,8 @@ cl::sycl::event her<library::intelmkl, backend::intelgpu>(
     const std::complex<float> *x, std::int64_t incx, std::complex<float> *a, std::int64_t lda,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     her_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
-    auto done = oneapi::mkl::mklgpu::her(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    auto done =
+        oneapi::mkl::mklgpu::her(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     her_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     return done;
 }
@@ -2594,7 +2615,8 @@ cl::sycl::event her<library::intelmkl, backend::intelgpu>(
     const std::complex<double> *x, std::int64_t incx, std::complex<double> *a, std::int64_t lda,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     her_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
-    auto done = oneapi::mkl::mklgpu::her(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    auto done =
+        oneapi::mkl::mklgpu::her(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     her_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     return done;
 }
@@ -2668,8 +2690,9 @@ cl::sycl::event gemm_batch<library::intelmkl, backend::intelgpu>(
     std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                             group_count, group_size, dependencies);
-    auto done = oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
-                                           beta, c, ldc, group_count, group_size, dependencies);
+    auto done =
+        oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                                        c, ldc, group_count, group_size, dependencies);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                              group_count, group_size, dependencies);
     return done;
@@ -2683,8 +2706,9 @@ cl::sycl::event gemm_batch<library::intelmkl, backend::intelgpu>(
     std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                             group_count, group_size, dependencies);
-    auto done = oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
-                                           beta, c, ldc, group_count, group_size, dependencies);
+    auto done =
+        oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                                        c, ldc, group_count, group_size, dependencies);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                              group_count, group_size, dependencies);
     return done;
@@ -2699,8 +2723,9 @@ cl::sycl::event gemm_batch<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                             group_count, group_size, dependencies);
-    auto done = oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
-                                           beta, c, ldc, group_count, group_size, dependencies);
+    auto done =
+        oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                                        c, ldc, group_count, group_size, dependencies);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                              group_count, group_size, dependencies);
     return done;
@@ -2715,8 +2740,9 @@ cl::sycl::event gemm_batch<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                             group_count, group_size, dependencies);
-    auto done = oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
-                                           beta, c, ldc, group_count, group_size, dependencies);
+    auto done =
+        oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                                        c, ldc, group_count, group_size, dependencies);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                              group_count, group_size, dependencies);
     return done;
@@ -2731,9 +2757,9 @@ cl::sycl::event gemm_batch<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
-                                   stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    auto done = oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda,
+                                                stride_a, b, ldb, stride_b, beta, c, ldc, stride_c,
+                                                batch_size, dependencies);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                              stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     return done;
@@ -2748,9 +2774,9 @@ cl::sycl::event gemm_batch<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
-                                   stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    auto done = oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda,
+                                                stride_a, b, ldb, stride_b, beta, c, ldc, stride_c,
+                                                batch_size, dependencies);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                              stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     return done;
@@ -2765,9 +2791,9 @@ cl::sycl::event gemm_batch<library::intelmkl, backend::intelgpu>(
     std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
-                                   stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    auto done = oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda,
+                                                stride_a, b, ldb, stride_b, beta, c, ldc, stride_c,
+                                                batch_size, dependencies);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                              stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     return done;
@@ -2782,9 +2808,9 @@ cl::sycl::event gemm_batch<library::intelmkl, backend::intelgpu>(
     std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
-                                   stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    auto done = oneapi::mkl::mklgpu::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda,
+                                                stride_a, b, ldb, stride_b, beta, c, ldc, stride_c,
+                                                batch_size, dependencies);
     gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                              stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     return done;
@@ -2796,8 +2822,8 @@ cl::sycl::event spmv<library::intelmkl, backend::intelgpu>(
     const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     spmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::spmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    auto done = oneapi::mkl::mklgpu::spmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy,
+                                          dependencies);
     spmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
     return done;
 }
@@ -2808,8 +2834,8 @@ cl::sycl::event spmv<library::intelmkl, backend::intelgpu>(
     const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     spmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::spmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
+    auto done = oneapi::mkl::mklgpu::spmv(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy,
+                                          dependencies);
     spmv_postcondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
     return done;
 }
@@ -2863,7 +2889,8 @@ cl::sycl::event geru<library::intelmkl, backend::intelgpu>(
     std::int64_t incy, std::complex<float> *a, std::int64_t lda,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     geru_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
-    auto done = oneapi::mkl::mklgpu::geru(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done =
+        oneapi::mkl::mklgpu::geru(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     geru_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     return done;
 }
@@ -2875,7 +2902,8 @@ cl::sycl::event geru<library::intelmkl, backend::intelgpu>(
     std::int64_t incy, std::complex<double> *a, std::int64_t lda,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     geru_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
-    auto done = oneapi::mkl::mklgpu::geru(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done =
+        oneapi::mkl::mklgpu::geru(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     geru_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     return done;
 }
@@ -2928,8 +2956,8 @@ cl::sycl::event gemm<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-                                     ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
+                                          beta, c, ldc, dependencies);
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     return done;
@@ -2943,8 +2971,8 @@ cl::sycl::event gemm<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-                                     ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
+                                          beta, c, ldc, dependencies);
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     return done;
@@ -2959,8 +2987,8 @@ cl::sycl::event gemm<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-                                     ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
+                                          beta, c, ldc, dependencies);
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     return done;
@@ -2975,8 +3003,8 @@ cl::sycl::event gemm<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-                                     ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
+                                          beta, c, ldc, dependencies);
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     return done;
@@ -2988,8 +3016,8 @@ cl::sycl::event herk<library::intelmkl, backend::intelgpu>(
     float alpha, const std::complex<float> *a, std::int64_t lda, float beta, std::complex<float> *c,
     std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     herk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
-    auto done = oneapi::mkl::mklgpu::herk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::herk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c,
+                                          ldc, dependencies);
     herk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
     return done;
 }
@@ -3001,8 +3029,8 @@ cl::sycl::event herk<library::intelmkl, backend::intelgpu>(
     std::complex<double> *c, std::int64_t ldc,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     herk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
-    auto done = oneapi::mkl::mklgpu::herk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::herk(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c,
+                                          ldc, dependencies);
     herk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
     return done;
 }
@@ -3013,7 +3041,8 @@ cl::sycl::event ger<library::intelmkl, backend::intelgpu>(
     std::int64_t incx, const float *y, std::int64_t incy, float *a, std::int64_t lda,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     ger_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
-    auto done = oneapi::mkl::mklgpu::ger(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done =
+        oneapi::mkl::mklgpu::ger(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     ger_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     return done;
 }
@@ -3024,7 +3053,8 @@ cl::sycl::event ger<library::intelmkl, backend::intelgpu>(
     std::int64_t incx, const double *y, std::int64_t incy, double *a, std::int64_t lda,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     ger_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
-    auto done = oneapi::mkl::mklgpu::ger(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
+    auto done =
+        oneapi::mkl::mklgpu::ger(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     ger_postcondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     return done;
 }
@@ -3036,8 +3066,8 @@ cl::sycl::event trsm<library::intelmkl, backend::intelgpu>(
     std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
-                                     a, lda, b, ldb, dependencies);
+    auto done = oneapi::mkl::mklgpu::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                          alpha, a, lda, b, ldb, dependencies);
     trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
     return done;
@@ -3050,8 +3080,8 @@ cl::sycl::event trsm<library::intelmkl, backend::intelgpu>(
     std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
-                                     a, lda, b, ldb, dependencies);
+    auto done = oneapi::mkl::mklgpu::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                          alpha, a, lda, b, ldb, dependencies);
     trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
     return done;
@@ -3065,8 +3095,8 @@ cl::sycl::event trsm<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
-                                     a, lda, b, ldb, dependencies);
+    auto done = oneapi::mkl::mklgpu::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                          alpha, a, lda, b, ldb, dependencies);
     trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
     return done;
@@ -3080,8 +3110,8 @@ cl::sycl::event trsm<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
-                                     a, lda, b, ldb, dependencies);
+    auto done = oneapi::mkl::mklgpu::trsm(queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                          alpha, a, lda, b, ldb, dependencies);
     trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
     return done;
@@ -3118,8 +3148,8 @@ cl::sycl::event hemm<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     hemm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::hemm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
-                                     beta, c, ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::hemm(queue, left_right, upper_lower, m, n, alpha, a, lda, b,
+                                          ldb, beta, c, ldc, dependencies);
     hemm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     return done;
@@ -3134,8 +3164,8 @@ cl::sycl::event hemm<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     hemm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::hemm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
-                                     beta, c, ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::hemm(queue, left_right, upper_lower, m, n, alpha, a, lda, b,
+                                          ldb, beta, c, ldc, dependencies);
     hemm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     return done;
@@ -3175,8 +3205,8 @@ cl::sycl::event gbmv<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gbmv_precondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::gbmv(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
-                                     incy, dependencies);
+    auto done = oneapi::mkl::mklgpu::gbmv(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta,
+                                          y, incy, dependencies);
     gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
     return done;
@@ -3190,8 +3220,8 @@ cl::sycl::event gbmv<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gbmv_precondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::gbmv(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
-                                     incy, dependencies);
+    auto done = oneapi::mkl::mklgpu::gbmv(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta,
+                                          y, incy, dependencies);
     gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
     return done;
@@ -3206,8 +3236,8 @@ cl::sycl::event gbmv<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gbmv_precondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::gbmv(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
-                                     incy, dependencies);
+    auto done = oneapi::mkl::mklgpu::gbmv(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta,
+                                          y, incy, dependencies);
     gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
     return done;
@@ -3222,8 +3252,8 @@ cl::sycl::event gbmv<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gbmv_precondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::gbmv(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
-                                     incy, dependencies);
+    auto done = oneapi::mkl::mklgpu::gbmv(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta,
+                                          y, incy, dependencies);
     gbmv_postcondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
     return done;
@@ -3235,8 +3265,8 @@ cl::sycl::event tbmv<library::intelmkl, backend::intelgpu>(
     std::int64_t k, const float *a, std::int64_t lda, float *x, std::int64_t incx,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
-    auto done = oneapi::mkl::mklgpu::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
+                                          incx, dependencies);
     tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
     return done;
 }
@@ -3247,8 +3277,8 @@ cl::sycl::event tbmv<library::intelmkl, backend::intelgpu>(
     std::int64_t k, const double *a, std::int64_t lda, double *x, std::int64_t incx,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
-    auto done = oneapi::mkl::mklgpu::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
+                                          incx, dependencies);
     tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
     return done;
 }
@@ -3259,8 +3289,8 @@ cl::sycl::event tbmv<library::intelmkl, backend::intelgpu>(
     std::int64_t k, const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
     std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
-    auto done = oneapi::mkl::mklgpu::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
+                                          incx, dependencies);
     tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
     return done;
 }
@@ -3271,8 +3301,8 @@ cl::sycl::event tbmv<library::intelmkl, backend::intelgpu>(
     std::int64_t k, const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
     std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
-    auto done = oneapi::mkl::mklgpu::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::tbmv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
+                                          incx, dependencies);
     tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
     return done;
 }
@@ -3284,8 +3314,8 @@ cl::sycl::event symm<library::intelmkl, backend::intelgpu>(
     float *c, std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
-                                     beta, c, ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b,
+                                          ldb, beta, c, ldc, dependencies);
     symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     return done;
@@ -3298,8 +3328,8 @@ cl::sycl::event symm<library::intelmkl, backend::intelgpu>(
     double *c, std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
-                                     beta, c, ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b,
+                                          ldb, beta, c, ldc, dependencies);
     symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     return done;
@@ -3314,8 +3344,8 @@ cl::sycl::event symm<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
-                                     beta, c, ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b,
+                                          ldb, beta, c, ldc, dependencies);
     symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     return done;
@@ -3330,8 +3360,8 @@ cl::sycl::event symm<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
-                                     beta, c, ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::symm(queue, left_right, upper_lower, m, n, alpha, a, lda, b,
+                                          ldb, beta, c, ldc, dependencies);
     symm_postcondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     return done;
@@ -3365,7 +3395,8 @@ cl::sycl::event syr<library::intelmkl, backend::intelgpu>(
     std::int64_t incx, float *a, std::int64_t lda,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     syr_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
-    auto done = oneapi::mkl::mklgpu::syr(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    auto done =
+        oneapi::mkl::mklgpu::syr(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     syr_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     return done;
 }
@@ -3376,7 +3407,8 @@ cl::sycl::event syr<library::intelmkl, backend::intelgpu>(
     std::int64_t incx, double *a, std::int64_t lda,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     syr_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
-    auto done = oneapi::mkl::mklgpu::syr(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
+    auto done =
+        oneapi::mkl::mklgpu::syr(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     syr_postcondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     return done;
 }
@@ -3388,8 +3420,8 @@ cl::sycl::event trmm<library::intelmkl, backend::intelgpu>(
     std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
-                                     a, lda, b, ldb, dependencies);
+    auto done = oneapi::mkl::mklgpu::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                          alpha, a, lda, b, ldb, dependencies);
     trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
     return done;
@@ -3402,8 +3434,8 @@ cl::sycl::event trmm<library::intelmkl, backend::intelgpu>(
     std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
-                                     a, lda, b, ldb, dependencies);
+    auto done = oneapi::mkl::mklgpu::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                          alpha, a, lda, b, ldb, dependencies);
     trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
     return done;
@@ -3417,8 +3449,8 @@ cl::sycl::event trmm<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
-                                     a, lda, b, ldb, dependencies);
+    auto done = oneapi::mkl::mklgpu::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                          alpha, a, lda, b, ldb, dependencies);
     trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
     return done;
@@ -3432,8 +3464,8 @@ cl::sycl::event trmm<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
-    auto done = oneapi::mkl::mklgpu::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
-                                     a, lda, b, ldb, dependencies);
+    auto done = oneapi::mkl::mklgpu::trmm(queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                          alpha, a, lda, b, ldb, dependencies);
     trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
     return done;
@@ -3465,8 +3497,8 @@ cl::sycl::event tpsv<library::intelmkl, backend::intelgpu>(
     const float *a, float *x, std::int64_t incx,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     tpsv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::tpsv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done = oneapi::mkl::mklgpu::tpsv(queue, upper_lower, trans, unit_diag, n, a, x, incx,
+                                          dependencies);
     tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     return done;
 }
@@ -3477,8 +3509,8 @@ cl::sycl::event tpsv<library::intelmkl, backend::intelgpu>(
     const double *a, double *x, std::int64_t incx,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     tpsv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::tpsv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done = oneapi::mkl::mklgpu::tpsv(queue, upper_lower, trans, unit_diag, n, a, x, incx,
+                                          dependencies);
     tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     return done;
 }
@@ -3489,8 +3521,8 @@ cl::sycl::event tpsv<library::intelmkl, backend::intelgpu>(
     const std::complex<float> *a, std::complex<float> *x, std::int64_t incx,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     tpsv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::tpsv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done = oneapi::mkl::mklgpu::tpsv(queue, upper_lower, trans, unit_diag, n, a, x, incx,
+                                          dependencies);
     tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     return done;
 }
@@ -3501,8 +3533,8 @@ cl::sycl::event tpsv<library::intelmkl, backend::intelgpu>(
     const std::complex<double> *a, std::complex<double> *x, std::int64_t incx,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     tpsv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
-    auto done =
-        oneapi::mkl::mklgpu::tpsv(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
+    auto done = oneapi::mkl::mklgpu::tpsv(queue, upper_lower, trans, unit_diag, n, a, x, incx,
+                                          dependencies);
     tpsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     return done;
 }
@@ -3514,7 +3546,7 @@ cl::sycl::event trsv<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     auto done = oneapi::mkl::mklgpu::trsv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
-                                     dependencies);
+                                          dependencies);
     trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     return done;
 }
@@ -3526,7 +3558,7 @@ cl::sycl::event trsv<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     auto done = oneapi::mkl::mklgpu::trsv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
-                                     dependencies);
+                                          dependencies);
     trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     return done;
 }
@@ -3538,7 +3570,7 @@ cl::sycl::event trsv<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     auto done = oneapi::mkl::mklgpu::trsv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
-                                     dependencies);
+                                          dependencies);
     trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     return done;
 }
@@ -3550,7 +3582,7 @@ cl::sycl::event trsv<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     auto done = oneapi::mkl::mklgpu::trsv(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
-                                     dependencies);
+                                          dependencies);
     trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     return done;
 }
@@ -3604,8 +3636,8 @@ cl::sycl::event hemv<library::intelmkl, backend::intelgpu>(
     std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     hemv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
-    auto done = oneapi::mkl::mklgpu::hemv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::hemv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y,
+                                          incy, dependencies);
     hemv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     return done;
 }
@@ -3617,8 +3649,8 @@ cl::sycl::event hemv<library::intelmkl, backend::intelgpu>(
     std::int64_t incx, std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     hemv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
-    auto done = oneapi::mkl::mklgpu::hemv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::hemv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y,
+                                          incy, dependencies);
     hemv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     return done;
 }
@@ -3631,8 +3663,8 @@ cl::sycl::event gemmt<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                        ldc, dependencies);
-    auto done = oneapi::mkl::mklgpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b,
-                                      ldb, beta, c, ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda,
+                                           b, ldb, beta, c, ldc, dependencies);
     gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc, dependencies);
     return done;
@@ -3646,8 +3678,8 @@ cl::sycl::event gemmt<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                        ldc, dependencies);
-    auto done = oneapi::mkl::mklgpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b,
-                                      ldb, beta, c, ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda,
+                                           b, ldb, beta, c, ldc, dependencies);
     gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc, dependencies);
     return done;
@@ -3662,8 +3694,8 @@ cl::sycl::event gemmt<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                        ldc, dependencies);
-    auto done = oneapi::mkl::mklgpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b,
-                                      ldb, beta, c, ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda,
+                                           b, ldb, beta, c, ldc, dependencies);
     gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc, dependencies);
     return done;
@@ -3678,8 +3710,8 @@ cl::sycl::event gemmt<library::intelmkl, backend::intelgpu>(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                        ldc, dependencies);
-    auto done = oneapi::mkl::mklgpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b,
-                                      ldb, beta, c, ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::gemmt(queue, upper_lower, transa, transb, n, k, alpha, a, lda,
+                                           b, ldb, beta, c, ldc, dependencies);
     gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc, dependencies);
     return done;
@@ -3693,7 +3725,7 @@ cl::sycl::event sbmv<library::intelmkl, backend::intelgpu>(
     sbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = oneapi::mkl::mklgpu::sbmv(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
-                                     incy, dependencies);
+                                          incy, dependencies);
     sbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
     return done;
@@ -3707,7 +3739,7 @@ cl::sycl::event sbmv<library::intelmkl, backend::intelgpu>(
     sbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = oneapi::mkl::mklgpu::sbmv(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
-                                     incy, dependencies);
+                                          incy, dependencies);
     sbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
     return done;
@@ -3759,8 +3791,8 @@ cl::sycl::event tbsv<library::intelmkl, backend::intelgpu>(
     std::int64_t k, const float *a, std::int64_t lda, float *x, std::int64_t incx,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
-    auto done = oneapi::mkl::mklgpu::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
+                                          incx, dependencies);
     tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
     return done;
 }
@@ -3771,8 +3803,8 @@ cl::sycl::event tbsv<library::intelmkl, backend::intelgpu>(
     std::int64_t k, const double *a, std::int64_t lda, double *x, std::int64_t incx,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
-    auto done = oneapi::mkl::mklgpu::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
+                                          incx, dependencies);
     tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
     return done;
 }
@@ -3783,8 +3815,8 @@ cl::sycl::event tbsv<library::intelmkl, backend::intelgpu>(
     std::int64_t k, const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
     std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
-    auto done = oneapi::mkl::mklgpu::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
+                                          incx, dependencies);
     tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
     return done;
 }
@@ -3795,8 +3827,8 @@ cl::sycl::event tbsv<library::intelmkl, backend::intelgpu>(
     std::int64_t k, const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
     std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
-    auto done = oneapi::mkl::mklgpu::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::tbsv(queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
+                                          incx, dependencies);
     tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
     return done;
 }
@@ -3944,8 +3976,8 @@ cl::sycl::event her2k<library::intelmkl, backend::intelgpu>(
     std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     her2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
-    auto done = oneapi::mkl::mklgpu::her2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
-                                      c, ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::her2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb,
+                                           beta, c, ldc, dependencies);
     her2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                         dependencies);
     return done;
@@ -3959,8 +3991,8 @@ cl::sycl::event her2k<library::intelmkl, backend::intelgpu>(
     std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     her2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
-    auto done = oneapi::mkl::mklgpu::her2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
-                                      c, ldc, dependencies);
+    auto done = oneapi::mkl::mklgpu::her2k(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb,
+                                           beta, c, ldc, dependencies);
     her2k_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                         dependencies);
     return done;
@@ -4004,8 +4036,8 @@ cl::sycl::event symv<library::intelmkl, backend::intelgpu>(
     std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     symv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
-    auto done = oneapi::mkl::mklgpu::symv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::symv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y,
+                                          incy, dependencies);
     symv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     return done;
 }
@@ -4016,8 +4048,8 @@ cl::sycl::event symv<library::intelmkl, backend::intelgpu>(
     std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     symv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
-    auto done = oneapi::mkl::mklgpu::symv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
-                                     dependencies);
+    auto done = oneapi::mkl::mklgpu::symv(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y,
+                                          incy, dependencies);
     symv_postcondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     return done;
 }
