@@ -73,7 +73,7 @@ iamin (Buffer Version)
          :class: sectiontitle
 
 
-      .. cpp:function::  void onemkl::blas::iamin(sycl::queue &queue, std::int64_t n, sycl::buffer<T,1> &x, std::int64_t incx, sycl::buffer<std::int64_t,1> &result)
+      .. cpp:function::  void oneapi::mkl::blas::iamin(sycl::queue &queue, std::int64_t n, sycl::buffer<T,1> &x, std::int64_t incx, sycl::buffer<std::int64_t,1> &result)
 
 .. container:: section
 
@@ -128,7 +128,7 @@ iamin (USM Version)
       .. container:: dlsyntaxpara
 
 
-         .. cpp:function::  sycl::event onemkl::blas::iamin(sycl::queue &queue, std::int64_t n, const T *x, std::int64_t incx, T_res *result, const sycl::vector_class<sycl::event> &dependencies = {})
+         .. cpp:function::  sycl::event oneapi::mkl::blas::iamin(sycl::queue &queue, std::int64_t n, const T *x, std::int64_t incx, T_res *result, const sycl::vector_class<sycl::event> &dependencies = {})
    .. container:: section
 
 

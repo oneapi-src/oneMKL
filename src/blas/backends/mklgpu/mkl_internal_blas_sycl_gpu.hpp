@@ -38,44 +38,44 @@ typedef enum CBLAS_OFFSET CBLAS_OFFSET;
 
 namespace mkl {
 
-inline MKL_TRANSPOSE cblas_convert(onemkl::transpose t) {
-    if (t == onemkl::transpose::nontrans)
+inline MKL_TRANSPOSE cblas_convert(oneapi::mkl::transpose t) {
+    if (t == oneapi::mkl::transpose::nontrans)
         return MKL_NOTRANS;
-    if (t == onemkl::transpose::trans)
+    if (t == oneapi::mkl::transpose::trans)
         return MKL_TRANS;
-    if (t == onemkl::transpose::conjtrans)
+    if (t == oneapi::mkl::transpose::conjtrans)
         return MKL_CONJTRANS;
     return MKL_NOTRANS;
 }
 
-inline MKL_UPLO cblas_convert(onemkl::uplo u) {
-    if (u == onemkl::uplo::upper)
+inline MKL_UPLO cblas_convert(oneapi::mkl::uplo u) {
+    if (u == oneapi::mkl::uplo::upper)
         return MKL_UPPER;
-    if (u == onemkl::uplo::lower)
+    if (u == oneapi::mkl::uplo::lower)
         return MKL_LOWER;
     return MKL_UPPER;
 }
 
-inline MKL_DIAG cblas_convert(onemkl::diag d) {
-    if (d == onemkl::diag::nonunit)
+inline MKL_DIAG cblas_convert(oneapi::mkl::diag d) {
+    if (d == oneapi::mkl::diag::nonunit)
         return MKL_NONUNIT;
-    if (d == onemkl::diag::unit)
+    if (d == oneapi::mkl::diag::unit)
         return MKL_UNIT;
     return MKL_NONUNIT;
 }
 
-inline MKL_SIDE cblas_convert(onemkl::side s) {
-    if (s == onemkl::side::left)
+inline MKL_SIDE cblas_convert(oneapi::mkl::side s) {
+    if (s == oneapi::mkl::side::left)
         return MKL_LEFT;
-    if (s == onemkl::side::right)
+    if (s == oneapi::mkl::side::right)
         return MKL_RIGHT;
     return MKL_LEFT;
 }
 
-inline CBLAS_OFFSET cblas_convert(onemkl::offset o) {
-    if (o == onemkl::offset::fix)
+inline CBLAS_OFFSET cblas_convert(oneapi::mkl::offset o) {
+    if (o == oneapi::mkl::offset::fix)
         return CblasFixOffset;
-    if (o == onemkl::offset::column)
+    if (o == oneapi::mkl::offset::column)
         return CblasColOffset;
     return CblasRowOffset;
 }

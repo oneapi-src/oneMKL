@@ -26,8 +26,8 @@
 
 #include <CL/sycl.hpp>
 #include "cblas.h"
-#include "onemkl/detail/config.hpp"
-#include "onemkl/onemkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -69,7 +69,7 @@ int test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda)
 
     rand_vector(x, m, incx);
     rand_vector(y, n, incy);
-    rand_matrix(A, onemkl::transpose::nontrans, m, n, lda);
+    rand_matrix(A, oneapi::mkl::transpose::nontrans, m, n, lda);
 
     auto A_ref = A;
 
@@ -84,12 +84,12 @@ int test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda)
 
     try {
 #ifdef CALL_RT_API
-        done = onemkl::blas::geru(main_queue, m, n, alpha, x.data(), incx, y.data(), incy, A.data(),
+        done = oneapi::mkl::blas::geru(main_queue, m, n, alpha, x.data(), incx, y.data(), incy, A.data(),
                                   lda, dependencies);
         done.wait();
 #else
         TEST_RUN_CT(
-            main_queue, onemkl::blas::geru,
+            main_queue, oneapi::mkl::blas::geru,
             (main_queue, m, n, alpha, x.data(), incx, y.data(), incy, A.data(), lda, dependencies));
         main_queue.wait();
 #endif
@@ -100,7 +100,7 @@ int test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda)
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const onemkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::backend_unsupported_exception &e) {
         return test_skipped;
     }
 

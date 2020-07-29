@@ -19,7 +19,8 @@
 #include "cublas_scope_handle.hpp"
 #include <CL/sycl/detail/common.hpp>
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 namespace cublas {
 
 cublas_handle::~cublas_handle() noexcept(false) {
@@ -142,4 +143,5 @@ cl::sycl::context CublasScopedContextHandler::get_context(const cl::sycl::queue 
 }
 
 } // namespace cublas
-} // namespace onemkl
+} // namespace mkl
+} // namespace oneapi

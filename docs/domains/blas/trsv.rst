@@ -68,7 +68,7 @@ trsv (Buffer Version)
          :class: sectiontitle
 
 
-      .. cpp:function::  void onemkl::blas::trsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_nonunit, std::int64_t n, std::int64_t k, sycl::buffer<T,1> &a, std::int64_t lda, sycl::buffer<T,1> &x, std::int64_t      incx)
+      .. cpp:function::  void oneapi::mkl::blas::trsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_nonunit, std::int64_t n, std::int64_t k, sycl::buffer<T,1> &a, std::int64_t lda, sycl::buffer<T,1> &x, std::int64_t      incx)
 
 .. container:: section
 
@@ -147,7 +147,7 @@ trsv (USM Version)
       .. container:: dlsyntaxpara
 
 
-         .. cpp:function::  sycl::event onemkl::blas::trsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_nonunit, std::int64_t n, std::int64_t k, const T *a, std::int64_t lda, T *x, std::int64_t incx, const sycl::vector_class<sycl::event> &dependencies = {})
+         .. cpp:function::  sycl::event oneapi::mkl::blas::trsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_nonunit, std::int64_t n, std::int64_t k, const T *a, std::int64_t lda, T *x, std::int64_t incx, const sycl::vector_class<sycl::event> &dependencies = {})
    .. container:: section
 
 

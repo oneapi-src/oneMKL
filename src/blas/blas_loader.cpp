@@ -17,10 +17,11 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#include "onemkl/blas/detail/blas_loader.hpp"
+#include "oneapi/mkl/blas/detail/blas_loader.hpp"
 #include "loader.hpp"
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 namespace blas {
 namespace detail {
 
@@ -2532,4 +2533,5 @@ cl::sycl::event gemmt(char *libname, cl::sycl::queue &queue, uplo upper_lower, t
 
 } /*namespace detail */
 } /* namespace blas */
-} /* namespace onemkl */
+} /* namespace mkl */
+} /* namespace oneapi */

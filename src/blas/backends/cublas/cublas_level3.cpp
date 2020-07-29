@@ -20,9 +20,10 @@
 #include "cublas_helper.hpp"
 #include "cublas_scope_handle.hpp"
 #include "include/exceptions_helper.hpp"
-#include "onemkl/blas/detail/cublas/onemkl_blas_cublas.hpp"
+#include "oneapi/mkl/blas/detail/cublas/onemkl_blas_cublas.hpp"
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 namespace cublas {
 
 // Buffer APIs
@@ -773,4 +774,5 @@ TRSM_LAUNCHER_USM(std::complex<double>, cublasZtrsm)
 #undef TRSM_LAUNCHER_USM
 
 } // namespace cublas
-} // namespace onemkl
+} // namespace mkl
+} // namespace oneapi

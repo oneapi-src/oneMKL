@@ -23,7 +23,7 @@
 #include <CL/sycl.hpp>
 #include <map>
 #include <string>
-#include "onemkl/detail/backends.hpp"
+#include "oneapi/mkl/detail/backends.hpp"
 
 #ifdef __linux__
     #define LIB_NAME(a) "lib" a ".so"
@@ -34,7 +34,8 @@
 #define INTEL_ID  32902
 #define NVIDIA_ID 4318
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 inline char *select_backend(cl::sycl::queue &queue) {
     if (queue.is_host()) {
         return (char *)LIB_NAME("onemkl_blas_mklcpu");
@@ -57,6 +58,7 @@ inline char *select_backend(cl::sycl::queue &queue) {
     }
 }
 
-} //namespace onemkl
+} //namespace mkl
+} //namespace oneapi
 
 #endif //_ONEMKL_BACKENDS_SELECTOR_HPP_

@@ -25,8 +25,8 @@
 
 #include <CL/sycl.hpp>
 #include "cblas.h"
-#include "onemkl/detail/config.hpp"
-#include "onemkl/onemkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -82,10 +82,10 @@ int test(const device &dev) {
     ::rotg((fp_ref *)&a_ref, (fp_ref *)&b_ref, (fp_scalar *)&c_ref, (fp_ref *)&s_ref);
 
     // Call DPC++ ROTG.
-    fp *a_p        = (fp *)onemkl::malloc_shared(64, sizeof(fp), dev, cxt);
-    fp *b_p        = (fp *)onemkl::malloc_shared(64, sizeof(fp), dev, cxt);
-    fp *s_p        = (fp *)onemkl::malloc_shared(64, sizeof(fp), dev, cxt);
-    fp_scalar *c_p = (fp_scalar *)onemkl::malloc_shared(64, sizeof(fp_scalar), dev, cxt);
+    fp *a_p        = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), dev, cxt);
+    fp *b_p        = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), dev, cxt);
+    fp *s_p        = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), dev, cxt);
+    fp_scalar *c_p = (fp_scalar *)oneapi::mkl::malloc_shared(64, sizeof(fp_scalar), dev, cxt);
 
     a_p[0] = a;
     b_p[0] = b;
@@ -94,10 +94,10 @@ int test(const device &dev) {
 
     try {
 #ifdef CALL_RT_API
-        done = onemkl::blas::rotg(main_queue, a_p, b_p, c_p, s_p, dependencies);
+        done = oneapi::mkl::blas::rotg(main_queue, a_p, b_p, c_p, s_p, dependencies);
         done.wait();
 #else
-        TEST_RUN_CT(main_queue, onemkl::blas::rotg, (main_queue, a_p, b_p, c_p, s_p, dependencies));
+        TEST_RUN_CT(main_queue, oneapi::mkl::blas::rotg, (main_queue, a_p, b_p, c_p, s_p, dependencies));
         main_queue.wait();
 #endif
     }
@@ -107,7 +107,7 @@ int test(const device &dev) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const onemkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::backend_unsupported_exception &e) {
         return test_skipped;
     }
 
@@ -124,10 +124,10 @@ int test(const device &dev) {
 
     bool good = good_a && good_b && good_c && good_s;
 
-    onemkl::free_shared(a_p, cxt);
-    onemkl::free_shared(b_p, cxt);
-    onemkl::free_shared(s_p, cxt);
-    onemkl::free_shared(c_p, cxt);
+    oneapi::mkl::free_shared(a_p, cxt);
+    oneapi::mkl::free_shared(b_p, cxt);
+    oneapi::mkl::free_shared(s_p, cxt);
+    oneapi::mkl::free_shared(c_p, cxt);
 
     return (int)good;
 }

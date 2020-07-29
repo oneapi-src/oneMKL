@@ -25,8 +25,8 @@
 
 #include <CL/sycl.hpp>
 #include "cblas.h"
-#include "onemkl/detail/config.hpp"
-#include "onemkl/onemkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -81,19 +81,19 @@ int test(const device &dev) {
     ::rotmg(&d1_ref, &d2_ref, &x1_ref, &y1, (fp *)param_ref.data());
 
     // Call DPC++ ROTMG.
-    fp *d1_p = (fp *)onemkl::malloc_shared(64, sizeof(fp), dev, cxt);
-    fp *d2_p = (fp *)onemkl::malloc_shared(64, sizeof(fp), dev, cxt);
-    fp *x1_p = (fp *)onemkl::malloc_shared(64, sizeof(fp), dev, cxt);
+    fp *d1_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), dev, cxt);
+    fp *d2_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), dev, cxt);
+    fp *x1_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), dev, cxt);
     d1_p[0]  = d1;
     d2_p[0]  = d2;
     x1_p[0]  = x1;
 
     try {
 #ifdef CALL_RT_API
-        done = onemkl::blas::rotmg(main_queue, d1_p, d2_p, x1_p, y1, param.data(), dependencies);
+        done = oneapi::mkl::blas::rotmg(main_queue, d1_p, d2_p, x1_p, y1, param.data(), dependencies);
         done.wait();
 #else
-        TEST_RUN_CT(main_queue, onemkl::blas::rotmg,
+        TEST_RUN_CT(main_queue, oneapi::mkl::blas::rotmg,
                     (main_queue, d1_p, d2_p, x1_p, y1, param.data(), dependencies));
         main_queue.wait();
 #endif
@@ -104,7 +104,7 @@ int test(const device &dev) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const onemkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::backend_unsupported_exception &e) {
         return test_skipped;
     }
 
@@ -120,9 +120,9 @@ int test(const device &dev) {
     bool good_param = check_equal_vector(param, param_ref, 5, 1, 1, std::cout);
     bool good       = good_d1 && good_d2 && good_x1 && good_param;
 
-    onemkl::free_shared(d1_p, cxt);
-    onemkl::free_shared(d2_p, cxt);
-    onemkl::free_shared(x1_p, cxt);
+    oneapi::mkl::free_shared(d1_p, cxt);
+    oneapi::mkl::free_shared(d2_p, cxt);
+    oneapi::mkl::free_shared(x1_p, cxt);
     return (int)good;
 }
 

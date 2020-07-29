@@ -20,10 +20,11 @@
 #ifndef _ONEMKL_EXCEPTIONS_HPP_
 #define _ONEMKL_EXCEPTIONS_HPP_
 
-#include "onemkl/detail/backends.hpp"
-#include "onemkl/types.hpp"
+#include "oneapi/mkl/detail/backends.hpp"
+#include "oneapi/mkl/types.hpp"
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 
 class InvalidArgumentsException : virtual public std::exception {
 private:
@@ -59,7 +60,7 @@ public:
     UnsupportedBackendException(cl::sycl::queue& queue, const std::string& msg)
             : error_message(
                   std::string("oneMKL UnsupportedBackendException: \n") +
-                  std::string("  There is currently no onemkl::backend available for the \n") +
+                  std::string("  There is currently no oneapi::mkl::backend available for the \n") +
                   std::string("  provided queue, device and sycl::backend. \n")) {}
 
     const char* what() const noexcept override {
@@ -72,18 +73,20 @@ private:
     std::string error_message = "";
 
 public:
-    BackendNotAvailableForApiException(cl::sycl::queue& queue, onemkl::backend& backend,
+    BackendNotAvailableForApiException(cl::sycl::queue& queue, oneapi::mkl::backend& backend,
                                        const std::string& api_description)
             : error_message(std::string("oneMKL BackendNotAvailableForApiException: \n") +
-                            std::string("  The onemkl::backend = ") + onemkl::backend_map[backend] +
-                            std::string("\n") + std::string("  is not available for ") +
-                            api_description + std::string("\n")) {}
+                            std::string("  The oneapi::mkl::backend = ") +
+                            oneapi::mkl::backend_map[backend] + std::string("\n") +
+                            std::string("  is not available for ") + api_description +
+                            std::string("\n")) {}
 
     const char* what() const noexcept override {
         return error_message.c_str();
     };
 };
 
-} //namespace onemkl
+} //namespace mkl
+} //namespace oneapi
 
 #endif //_ONEMKL_EXCEPTIONS_HPP_

@@ -27,8 +27,8 @@
 #include <CL/sycl.hpp>
 #include "allocator_helper.hpp"
 #include "cblas.h"
-#include "onemkl/detail/config.hpp"
-#include "onemkl/onemkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -44,16 +44,16 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device& dev, onemkl::side left_right, onemkl::uplo upper_lower, int m, int n,
+int test(const device& dev, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower, int m, int n,
          int lda, int ldb, int ldc, fp alpha, fp beta) {
     // Prepare data.
     vector<fp, allocator_helper<fp, 64>> A, B, C, C_ref;
-    if (left_right == onemkl::side::left)
-        rand_matrix(A, onemkl::transpose::nontrans, m, m, lda);
+    if (left_right == oneapi::mkl::side::left)
+        rand_matrix(A, oneapi::mkl::transpose::nontrans, m, m, lda);
     else
-        rand_matrix(A, onemkl::transpose::nontrans, n, n, lda);
-    rand_matrix(B, onemkl::transpose::nontrans, m, n, ldb);
-    rand_matrix(C, onemkl::transpose::nontrans, m, n, ldc);
+        rand_matrix(A, oneapi::mkl::transpose::nontrans, n, n, lda);
+    rand_matrix(B, oneapi::mkl::transpose::nontrans, m, n, ldb);
+    rand_matrix(C, oneapi::mkl::transpose::nontrans, m, n, ldc);
     C_ref = C;
 
     // Call Reference HEMM.
@@ -90,10 +90,10 @@ int test(const device& dev, onemkl::side left_right, onemkl::uplo upper_lower, i
 
     try {
 #ifdef CALL_RT_API
-        onemkl::blas::hemm(main_queue, left_right, upper_lower, m, n, alpha, A_buffer, lda,
+        oneapi::mkl::blas::hemm(main_queue, left_right, upper_lower, m, n, alpha, A_buffer, lda,
                            B_buffer, ldb, beta, C_buffer, ldc);
 #else
-        TEST_RUN_CT(main_queue, onemkl::blas::hemm,
+        TEST_RUN_CT(main_queue, oneapi::mkl::blas::hemm,
                     (main_queue, left_right, upper_lower, m, n, alpha, A_buffer, lda, B_buffer, ldb,
                      beta, C_buffer, ldc));
 #endif
@@ -104,7 +104,7 @@ int test(const device& dev, onemkl::side left_right, onemkl::uplo upper_lower, i
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const onemkl::backend_unsupported_exception& e) {
+    catch (const oneapi::mkl::backend_unsupported_exception& e) {
         return test_skipped;
     }
 
@@ -126,26 +126,26 @@ class HemmTests : public ::testing::TestWithParam<cl::sycl::device> {};
 TEST_P(HemmTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
     std::complex<float> beta(3.0, -1.5);
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::side::left, onemkl::uplo::lower,
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::side::left, oneapi::mkl::uplo::lower,
                                                 72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::side::left, onemkl::uplo::upper,
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::side::left, oneapi::mkl::uplo::upper,
                                                 72, 27, 101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
-        GetParam(), onemkl::side::right, onemkl::uplo::lower, 72, 27, 101, 102, 103, alpha, beta));
+        GetParam(), oneapi::mkl::side::right, oneapi::mkl::uplo::lower, 72, 27, 101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
-        GetParam(), onemkl::side::right, onemkl::uplo::upper, 72, 27, 101, 102, 103, alpha, beta));
+        GetParam(), oneapi::mkl::side::right, oneapi::mkl::uplo::upper, 72, 27, 101, 102, 103, alpha, beta));
 }
 TEST_P(HemmTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
-        GetParam(), onemkl::side::left, onemkl::uplo::lower, 72, 27, 101, 102, 103, alpha, beta));
+        GetParam(), oneapi::mkl::side::left, oneapi::mkl::uplo::lower, 72, 27, 101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
-        GetParam(), onemkl::side::left, onemkl::uplo::upper, 72, 27, 101, 102, 103, alpha, beta));
+        GetParam(), oneapi::mkl::side::left, oneapi::mkl::uplo::upper, 72, 27, 101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
-        GetParam(), onemkl::side::right, onemkl::uplo::lower, 72, 27, 101, 102, 103, alpha, beta));
+        GetParam(), oneapi::mkl::side::right, oneapi::mkl::uplo::lower, 72, 27, 101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
-        GetParam(), onemkl::side::right, onemkl::uplo::upper, 72, 27, 101, 102, 103, alpha, beta));
+        GetParam(), oneapi::mkl::side::right, oneapi::mkl::uplo::upper, 72, 27, 101, 102, 103, alpha, beta));
 }
 
 INSTANTIATE_TEST_SUITE_P(HemmTestSuite, HemmTests, ::testing::ValuesIn(devices),

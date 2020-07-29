@@ -21,13 +21,13 @@
 add_subdirectory(blas)
 
 # generate header with enabled backends for testing
-configure_file(config.hpp.in "${CMAKE_CURRENT_BINARY_DIR}/onemkl/config.hpp.configured")
+configure_file(config.hpp.in "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/config.hpp.configured")
 file(GENERATE
-  OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/onemkl/detail/config.hpp"
-  INPUT "${CMAKE_CURRENT_BINARY_DIR}/onemkl/config.hpp.configured"
+  OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/detail/config.hpp"
+  INPUT "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/config.hpp.configured"
 )
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/onemkl/detail/config.hpp"
-  DESTINATION include/onemkl/detail
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/detail/config.hpp"
+  DESTINATION include/oneapi/mkl/detail
   COMPONENT Devel
 )
 

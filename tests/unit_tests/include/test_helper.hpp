@@ -21,7 +21,7 @@
 #define _TEST_HELPER_HPP_
 
 #include <gtest/gtest.h>
-#include "onemkl/detail/config.hpp"
+#include "oneapi/mkl/detail/config.hpp"
 
 #ifdef _WIN64
     #include <malloc.h>
@@ -44,21 +44,21 @@
 
 #ifdef ENABLE_MKLCPU_BACKEND
     #define TEST_RUN_INTELCPU(q, func, args) \
-        func<onemkl::library::intelmkl, onemkl::backend::intelcpu> args
+        func<oneapi::mkl::library::intelmkl, oneapi::mkl::backend::intelcpu> args
 #else
     #define TEST_RUN_INTELCPU(q, func, args)
 #endif
 
 #ifdef ENABLE_MKLGPU_BACKEND
     #define TEST_RUN_INTELGPU(q, func, args) \
-        func<onemkl::library::intelmkl, onemkl::backend::intelgpu> args
+        func<oneapi::mkl::library::intelmkl, oneapi::mkl::backend::intelgpu> args
 #else
     #define TEST_RUN_INTELGPU(q, func, args)
 #endif
 
 #ifdef ENABLE_CUBLAS_BACKEND
     #define TEST_RUN_NVIDIAGPU(q, func, args) \
-        func<onemkl::library::cublas, onemkl::backend::nvidiagpu> args
+        func<oneapi::mkl::library::cublas, oneapi::mkl::backend::nvidiagpu> args
 #else
     #define TEST_RUN_NVIDIAGPU(q, func, args)
 #endif
@@ -90,8 +90,9 @@ public:
 };
 
 /* to accomodate Windows and Linux differences between alligned_alloc and
-   _aligned_malloc calls use onemkl::aligned_alloc and onemkl::aligned_free instead */
-namespace onemkl {
+   _aligned_malloc calls use oneapi::mkl::aligned_alloc and oneapi::mkl::aligned_free instead */
+namespace oneapi {
+namespace mkl {
 
 static inline void *aligned_alloc(size_t align, size_t size) {
 #ifdef _WIN64
@@ -127,6 +128,7 @@ static inline void free_shared(void *p, cl::sycl::context ctx) {
     cl::sycl::free(p, ctx);
 }
 
-} // namespace onemkl
+} // namespace mkl
+} // namespace oneapi
 
 #endif // _TEST_HELPER_HPP_

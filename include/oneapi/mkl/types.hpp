@@ -20,7 +20,8 @@
 #ifndef _ONEMKL_TYPES_HPP_
 #define _ONEMKL_TYPES_HPP_
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 
 // BLAS flag types.
 enum class transpose : char { nontrans = 0, trans = 1, conjtrans = 3, N = 0, T = 1, C = 3 };
@@ -56,6 +57,7 @@ enum class index_base : char {
     one  = 1,
 };
 
-} //namespace onemkl
+} //namespace mkl
+} //namespace oneapi
 
 #endif //_ONEMKL_TYPES_HPP_

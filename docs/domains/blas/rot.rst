@@ -61,7 +61,7 @@ rot (Buffer Version)
          :class: sectiontitle
 
 
-      .. cpp:function::  void onemkl::blas::rot(sycl::queue &queue, std::int64_t n, sycl::buffer<T,1> &x, std::int64_t incx, sycl::buffer<T,1> &y, std::int64_t incy, T_scalar c, T_scalar s)
+      .. cpp:function::  void oneapi::mkl::blas::rot(sycl::queue &queue, std::int64_t n, sycl::buffer<T,1> &x, std::int64_t incx, sycl::buffer<T,1> &y, std::int64_t incy, T_scalar c, T_scalar s)
 
 .. container:: section
 
@@ -138,7 +138,7 @@ rot (USM Version)
       .. container:: dlsyntaxpara
 
 
-         .. cpp:function::  sycl::event onemkl::blas::rot(sycl::queue &queue, std::int64_t n, T *x, std::int64_t incx, T *y, std::int64_t incy, T_scalar c, T_scalar s, const sycl::vector_class<sycl::event> &dependencies = {})
+         .. cpp:function::  sycl::event oneapi::mkl::blas::rot(sycl::queue &queue, std::int64_t n, T *x, std::int64_t incx, T *y, std::int64_t incy, T_scalar c, T_scalar s, const sycl::vector_class<sycl::event> &dependencies = {})
    .. container:: section
 
 

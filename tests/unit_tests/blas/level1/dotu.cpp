@@ -25,8 +25,8 @@
 
 #include <CL/sycl.hpp>
 #include "cblas.h"
-#include "onemkl/detail/config.hpp"
-#include "onemkl/onemkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -81,9 +81,9 @@ int test(const device &dev, int N, int incx, int incy) {
 
     try {
 #ifdef CALL_RT_API
-        onemkl::blas::dotu(main_queue, N, x_buffer, incx, y_buffer, incy, result_buffer);
+        oneapi::mkl::blas::dotu(main_queue, N, x_buffer, incx, y_buffer, incy, result_buffer);
 #else
-        TEST_RUN_CT(main_queue, onemkl::blas::dotu,
+        TEST_RUN_CT(main_queue, oneapi::mkl::blas::dotu,
                     (main_queue, N, x_buffer, incx, y_buffer, incy, result_buffer));
 #endif
     }
@@ -93,7 +93,7 @@ int test(const device &dev, int N, int incx, int incy) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const onemkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::backend_unsupported_exception &e) {
         return test_skipped;
     }
 

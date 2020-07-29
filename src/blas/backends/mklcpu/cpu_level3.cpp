@@ -20,9 +20,10 @@
 #include <CL/sycl.hpp>
 
 #include "cpu_common.hpp"
-#include "onemkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
+#include "oneapi/mkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 namespace mklcpu {
 
 // Buffer APIs
@@ -1334,4 +1335,5 @@ cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
 }
 
 } // namespace mklcpu
-} // namespace onemkl
+} // namespace mkl
+} // namespace oneapi

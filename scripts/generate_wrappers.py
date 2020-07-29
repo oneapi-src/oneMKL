@@ -89,7 +89,7 @@ out_file.write("""//
 
 #include <CL/sycl.hpp>
 
-#include "onemkl/types.hpp"
+#include "oneapi/mkl/types.hpp"
 
 #include "{header}"
 

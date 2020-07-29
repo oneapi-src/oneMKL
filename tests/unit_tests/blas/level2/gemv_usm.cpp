@@ -26,8 +26,8 @@
 
 #include <CL/sycl.hpp>
 #include "cblas.h"
-#include "onemkl/detail/config.hpp"
-#include "onemkl/onemkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -43,7 +43,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev, onemkl::transpose transa, int m, int n, fp alpha, fp beta, int incx,
+int test(const device &dev, oneapi::mkl::transpose transa, int m, int n, fp alpha, fp beta, int incx,
          int incy, int lda) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
@@ -72,7 +72,7 @@ int test(const device &dev, onemkl::transpose transa, int m, int n, fp alpha, fp
 
     rand_vector(x, x_len, incx);
     rand_vector(y, y_len, incy);
-    rand_matrix(A, onemkl::transpose::nontrans, m, n, lda);
+    rand_matrix(A, oneapi::mkl::transpose::nontrans, m, n, lda);
 
     auto y_ref = y;
 
@@ -88,11 +88,11 @@ int test(const device &dev, onemkl::transpose transa, int m, int n, fp alpha, fp
 
     try {
 #ifdef CALL_RT_API
-        done = onemkl::blas::gemv(main_queue, transa, m, n, alpha, A.data(), lda, x.data(), incx,
+        done = oneapi::mkl::blas::gemv(main_queue, transa, m, n, alpha, A.data(), lda, x.data(), incx,
                                   beta, y.data(), incy, dependencies);
         done.wait();
 #else
-        TEST_RUN_CT(main_queue, onemkl::blas::gemv,
+        TEST_RUN_CT(main_queue, oneapi::mkl::blas::gemv,
                     (main_queue, transa, m, n, alpha, A.data(), lda, x.data(), incx, beta, y.data(),
                      incy, dependencies));
         main_queue.wait();
@@ -104,7 +104,7 @@ int test(const device &dev, onemkl::transpose transa, int m, int n, fp alpha, fp
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const onemkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::backend_unsupported_exception &e) {
         return test_skipped;
     }
 
@@ -125,76 +125,76 @@ TEST_P(GemvUsmTests, RealSinglePrecision) {
     float alpha(2.0);
     float beta(3.0);
     EXPECT_TRUEORSKIP(
-        test<float>(GetParam(), onemkl::transpose::nontrans, 25, 30, alpha, beta, 2, 3, 42));
+        test<float>(GetParam(), oneapi::mkl::transpose::nontrans, 25, 30, alpha, beta, 2, 3, 42));
     EXPECT_TRUEORSKIP(
-        test<float>(GetParam(), onemkl::transpose::nontrans, 25, 30, alpha, beta, -2, -3, 42));
+        test<float>(GetParam(), oneapi::mkl::transpose::nontrans, 25, 30, alpha, beta, -2, -3, 42));
     EXPECT_TRUEORSKIP(
-        test<float>(GetParam(), onemkl::transpose::nontrans, 25, 30, alpha, beta, 1, 1, 42));
+        test<float>(GetParam(), oneapi::mkl::transpose::nontrans, 25, 30, alpha, beta, 1, 1, 42));
     EXPECT_TRUEORSKIP(
-        test<float>(GetParam(), onemkl::transpose::trans, 25, 30, alpha, beta, 2, 3, 42));
+        test<float>(GetParam(), oneapi::mkl::transpose::trans, 25, 30, alpha, beta, 2, 3, 42));
     EXPECT_TRUEORSKIP(
-        test<float>(GetParam(), onemkl::transpose::trans, 25, 30, alpha, beta, -2, -3, 42));
+        test<float>(GetParam(), oneapi::mkl::transpose::trans, 25, 30, alpha, beta, -2, -3, 42));
     EXPECT_TRUEORSKIP(
-        test<float>(GetParam(), onemkl::transpose::trans, 25, 30, alpha, beta, 1, 1, 42));
+        test<float>(GetParam(), oneapi::mkl::transpose::trans, 25, 30, alpha, beta, 1, 1, 42));
 }
 TEST_P(GemvUsmTests, RealDoublePrecision) {
     double alpha(2.0);
     double beta(3.0);
     EXPECT_TRUEORSKIP(
-        test<double>(GetParam(), onemkl::transpose::nontrans, 25, 30, alpha, beta, 2, 3, 42));
+        test<double>(GetParam(), oneapi::mkl::transpose::nontrans, 25, 30, alpha, beta, 2, 3, 42));
     EXPECT_TRUEORSKIP(
-        test<double>(GetParam(), onemkl::transpose::nontrans, 25, 30, alpha, beta, -2, -3, 42));
+        test<double>(GetParam(), oneapi::mkl::transpose::nontrans, 25, 30, alpha, beta, -2, -3, 42));
     EXPECT_TRUEORSKIP(
-        test<double>(GetParam(), onemkl::transpose::nontrans, 25, 30, alpha, beta, 1, 1, 42));
+        test<double>(GetParam(), oneapi::mkl::transpose::nontrans, 25, 30, alpha, beta, 1, 1, 42));
     EXPECT_TRUEORSKIP(
-        test<double>(GetParam(), onemkl::transpose::trans, 25, 30, alpha, beta, 2, 3, 42));
+        test<double>(GetParam(), oneapi::mkl::transpose::trans, 25, 30, alpha, beta, 2, 3, 42));
     EXPECT_TRUEORSKIP(
-        test<double>(GetParam(), onemkl::transpose::trans, 25, 30, alpha, beta, -2, -3, 42));
+        test<double>(GetParam(), oneapi::mkl::transpose::trans, 25, 30, alpha, beta, -2, -3, 42));
     EXPECT_TRUEORSKIP(
-        test<double>(GetParam(), onemkl::transpose::trans, 25, 30, alpha, beta, 1, 1, 42));
+        test<double>(GetParam(), oneapi::mkl::transpose::trans, 25, 30, alpha, beta, 1, 1, 42));
 }
 TEST_P(GemvUsmTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
     std::complex<float> beta(3.0, -1.5);
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::nontrans, 25, 30,
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::transpose::nontrans, 25, 30,
                                                 alpha, beta, 2, 3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::nontrans, 25, 30,
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::transpose::nontrans, 25, 30,
                                                 alpha, beta, -2, -3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::nontrans, 25, 30,
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::transpose::nontrans, 25, 30,
                                                 alpha, beta, 1, 1, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::trans, 25, 30, alpha,
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::transpose::trans, 25, 30, alpha,
                                                 beta, 2, 3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::trans, 25, 30, alpha,
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::transpose::trans, 25, 30, alpha,
                                                 beta, -2, -3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::trans, 25, 30, alpha,
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::transpose::trans, 25, 30, alpha,
                                                 beta, 1, 1, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::conjtrans, 25, 30,
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::transpose::conjtrans, 25, 30,
                                                 alpha, beta, 2, 3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::conjtrans, 25, 30,
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::transpose::conjtrans, 25, 30,
                                                 alpha, beta, -2, -3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), onemkl::transpose::conjtrans, 25, 30,
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::transpose::conjtrans, 25, 30,
                                                 alpha, beta, 1, 1, 42));
 }
 TEST_P(GemvUsmTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::nontrans, 25, 30,
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), oneapi::mkl::transpose::nontrans, 25, 30,
                                                  alpha, beta, 2, 3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::nontrans, 25, 30,
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), oneapi::mkl::transpose::nontrans, 25, 30,
                                                  alpha, beta, -2, -3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::nontrans, 25, 30,
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), oneapi::mkl::transpose::nontrans, 25, 30,
                                                  alpha, beta, 1, 1, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::trans, 25, 30,
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), oneapi::mkl::transpose::trans, 25, 30,
                                                  alpha, beta, 2, 3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::trans, 25, 30,
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), oneapi::mkl::transpose::trans, 25, 30,
                                                  alpha, beta, -2, -3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::trans, 25, 30,
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), oneapi::mkl::transpose::trans, 25, 30,
                                                  alpha, beta, 1, 1, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::conjtrans, 25, 30,
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), oneapi::mkl::transpose::conjtrans, 25, 30,
                                                  alpha, beta, 2, 3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::conjtrans, 25, 30,
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), oneapi::mkl::transpose::conjtrans, 25, 30,
                                                  alpha, beta, -2, -3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), onemkl::transpose::conjtrans, 25, 30,
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), oneapi::mkl::transpose::conjtrans, 25, 30,
                                                  alpha, beta, 1, 1, 42));
 }
 

@@ -53,7 +53,7 @@ rotmg (Buffer Version)
          :class: sectiontitle
 
 
-      .. cpp:function::  void onemkl::blas::rotmg(sycl::queue &queue, sycl::buffer<T,1> &d1, sycl::buffer<T,1> &d2, sycl::buffer<T,1> &x1, sycl::buffer<T,1> &y1, sycl::buffer<T,1> &param)
+      .. cpp:function::  void oneapi::mkl::blas::rotmg(sycl::queue &queue, sycl::buffer<T,1> &d1, sycl::buffer<T,1> &d2, sycl::buffer<T,1> &x1, sycl::buffer<T,1> &y1, sycl::buffer<T,1> &param)
 
 .. container:: section
 
@@ -157,7 +157,7 @@ rotmg (USM Version)
       .. container:: dlsyntaxpara
 
 
-         .. cpp:function::  sycl::event onemkl::blas::rotmg(sycl::queue &queue, T *d1, T *d2, T *x1, T *y1, T *param, const sycl::vector_class<sycl::event> &dependencies = {})
+         .. cpp:function::  sycl::event oneapi::mkl::blas::rotmg(sycl::queue &queue, T *d1, T *d2, T *x1, T *y1, T *param, const sycl::vector_class<sycl::event> &dependencies = {})
    .. container:: section
 
 

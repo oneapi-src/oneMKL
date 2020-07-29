@@ -21,9 +21,10 @@
 
 #include "cpu_common.hpp"
 #include "fp16.hpp"
-#include "onemkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
+#include "oneapi/mkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 namespace mklcpu {
 
 template <typename T_src, typename T_dest>
@@ -412,4 +413,5 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
 }
 
 } // namespace mklcpu
-} // namespace onemkl
+} // namespace mkl
+} // namespace oneapi

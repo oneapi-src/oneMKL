@@ -32,7 +32,7 @@ def usage(err = None):
 usage: {script} <in_header.h> <out_header.h> <library> <backend> <include> <namespace>
 
 usage example:
-{script}  blas.hpp new_blas.hpp intelmkl intelcpu mkl_sycl_blas.hpp onemkl::intelmkl::blas
+{script}  blas.hpp new_blas.hpp intelmkl intelcpu mkl_sycl_blas.hpp oneapi::mkl::intelmkl::blas
 '''.format(script = argv[0])
 
 if len(argv) <= 1:
@@ -56,7 +56,7 @@ def print_funcs(func_list):
     code=""
     for data in func_list:
         code +="""
-template <onemkl::library lib, onemkl::backend backend> static inline {ret_type} {name}{par_str};
+template <oneapi::mkl::library lib, oneapi::mkl::backend backend> static inline {ret_type} {name}{par_str};
 template<>
 {ret_type} {name}<library::{lib}, backend::{backend}>{par_str} {{
     {name}_precondition{call_str};
@@ -78,9 +78,9 @@ out_file.write("""//
 #include <CL/sycl.hpp>
 #include <cstdint>
 
-#include "onemkl/types.hpp"
-#include "onemkl/detail/backends.hpp"
-#include "onemkl/detail/libraries.hpp"
+#include "oneapi/mkl/types.hpp"
+#include "oneapi/mkl/detail/backends.hpp"
+#include "oneapi/mkl/detail/libraries.hpp"
 
 #include "{include}"
 
@@ -89,7 +89,8 @@ out_file.write("""//
 
 out_file.write("""
 
-namespace onemkl {
+namespace oneapi {
+namespace mkl {
 namespace blas {""")
 
 for func_name, func_list in header_db.iteritems():
@@ -98,7 +99,8 @@ for func_name, func_list in header_db.iteritems():
 
 out_file.write("""
 }} //namespace blas
-}} //namespace onemkl
+}} //namespace mkl
+} //namespace oneapi
 
 #endif //_{gard}_HPP_""".format(gard=(out_filename.split('.', 1)[0].upper()).replace('/','_')))
 out_file.close()

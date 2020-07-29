@@ -30,19 +30,20 @@ For each new backend library, you should create the following two header files:
 * Header file with a declaration of entry points to the new third-party library wrappers
 * Compiler-time dispatching interface (see `oneMKL Usage Models <../README.md#supported-usage-models>`_) for new third-party libraries
 
-**Header File Example**: command to generate the header file with a declaration of BLAS entry points in the onemkl::newlib namespace 
+**Header File Example**: command to generate the header file with a declaration of BLAS entry points in the oneapi::mkl::newlib namespace 
 
 .. code-block:: bash
 
     python scripts/generate_backend_api.py include/onemkl/blas/blas.hpp \                             # Base header file
                                            include/onemkl/blas/detail/newlib/onemkl_blas_newlib.hpp \ # Output header file
-                                           onemkl::newlib                                             # Wrappers namespace
+                                           oneapi::mkl::newlib                                        # Wrappers namespace
 
 Code snippet of the generated header file ``include/onemkl/blas/detail/newlib/onemkl_blas_newlib.hpp``
 
 .. code-block:: cpp
 
-    namespace onemkl {
+    namespace oneapi {
+    namespace mkl {
     namespace newlib {
     
     void asum(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x, std::int64_t incx,
@@ -59,13 +60,14 @@ Code snippet of the generated header file ``include/onemkl/blas/detail/newlib/on
                                             include/onemkl/blas/detail/newlib/onemkl_blas_newlib.hpp \ # Header file with declaration of entry points to wrappers
                                             newlib \                                                   # Library name
                                             newdevice \                                                # Backend name
-                                            onemkl::newlib                                             # Wrappers namespace
+                                            oneapi::mkl::newlib                                        # Wrappers namespace
 
 Code snippet of the generated header file ``include/onemkl/blas/detail/newlib/blas_ct.hpp``
 
 .. code-block:: cpp
 
-    namespace onemkl {
+    namespace oneapi {
+    namespace mkl {
     namespace blas {
     
     template <>
@@ -73,7 +75,7 @@ Code snippet of the generated header file ``include/onemkl/blas/detail/newlib/bl
                                                    cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                                                    cl::sycl::buffer<float, 1> &result) {
         asum_precondition(queue, n, x, incx, result);
-        onemkl::newlib::asum(queue, n, x, incx, result);
+        oneapi::mkl::newlib::asum(queue, n, x, incx, result);
         asum_postcondition(queue, n, x, incx, result);
     }
 
@@ -162,9 +164,9 @@ To integrate the new third-party library to a oneMKL header-based part, followin
     
   .. code-block:: diff
     
-        #include "onemkl/blas/detail/mklcpu/blas_ct.hpp"
-        #include "onemkl/blas/detail/mklgpu/blas_ct.hpp"
-     +  #include "onemkl/blas/detail/newlib/blas_ct.hpp"
+        #include "oneapi/mkl/blas/detail/mklcpu/blas_ct.hpp"
+        #include "oneapi/mkl/blas/detail/mklgpu/blas_ct.hpp"
+     +  #include "oneapi/mkl/blas/detail/newlib/blas_ct.hpp"
 
 
 The new files generated at the `1. Create Header Files`_ step result in the following updated structure of the BLAS domain header files.
@@ -247,13 +249,14 @@ The following code snippet is updated for ``src/blas/backends/newlib/newlib_wrap
 
         #include <CL/sycl.hpp>
         
-        #include "onemkl/types.hpp"
+        #include "oneapi/mkl/types.hpp"
         
-        #include "onemkl/blas/detail/newlib/onemkl_blas_newlib.hpp"
+        #include "oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp"
     +    
     +    #include "newlib.h"
         
-        namespace onemkl {
+        namespace oneapi {
+        namespace mkl {
         namespace newlib {
         
         void asum(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x, std::int64_t incx,
@@ -436,14 +439,14 @@ Update the following files to enable the new third-party library for unit tests:
     
         #ifdef ENABLE_MKLGPU_BACKEND
             #define TEST_RUN_INTELGPU(q, func, args) \
-                func<onemkl::library::intelmkl, onemkl::backend::intelgpu> args
+                func<oneapi::mkl::library::intelmkl, oneapi::mkl::backend::intelgpu> args
         #else
             #define TEST_RUN_INTELGPU(q, func, args)
         #endif
      +    
      +  #ifdef ENABLE_NEWLIB_BACKEND
      +     #define TEST_RUN_NEWDEVICE(q, func, args) \
-     +         func<onemkl::library::newlib, onemkl::backend::newdevice> args
+     +         func<oneapi::mkl::library::newlib, oneapi::mkl::backend::newdevice> args
      +  #else
      +      #define TEST_RUN_NEWDEVICE(q, func, args)
      +  #endif

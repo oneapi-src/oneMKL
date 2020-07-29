@@ -76,7 +76,7 @@ axpy_batch (USM Version)
    .. container:: dlsyntaxpara
 
 
-      .. cpp:function::  sycl::event onemkl::blas::axpy_batch(sycl::queue &queue, std::int64_t *n, T *alpha, const T **x, std::int64_t *incx, T **y, std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size, const sycl::vector_class<sycl::event> &dependencies = {})
+      .. cpp:function::  sycl::event oneapi::mkl::blas::axpy_batch(sycl::queue &queue, std::int64_t *n, T *alpha, const T **x, std::int64_t *incx, T **y, std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size, const sycl::vector_class<sycl::event> &dependencies = {})
 
     
 .. container:: section

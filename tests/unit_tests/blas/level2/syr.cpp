@@ -26,8 +26,8 @@
 
 #include <CL/sycl.hpp>
 #include "cblas.h"
-#include "onemkl/detail/config.hpp"
-#include "onemkl/onemkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -43,11 +43,11 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, int incx, int lda) {
+int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp alpha, int incx, int lda) {
     // Prepare data.
     vector<fp> x, A_ref, A;
     rand_vector(x, n, incx);
-    rand_matrix(A, onemkl::transpose::nontrans, n, n, lda);
+    rand_matrix(A, oneapi::mkl::transpose::nontrans, n, n, lda);
     A_ref = A;
 
     // Call Reference SYR.
@@ -80,9 +80,9 @@ int test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, int incx,
 
     try {
 #ifdef CALL_RT_API
-        onemkl::blas::syr(main_queue, upper_lower, n, alpha, x_buffer, incx, A_buffer, lda);
+        oneapi::mkl::blas::syr(main_queue, upper_lower, n, alpha, x_buffer, incx, A_buffer, lda);
 #else
-        TEST_RUN_CT(main_queue, onemkl::blas::syr,
+        TEST_RUN_CT(main_queue, oneapi::mkl::blas::syr,
                     (main_queue, upper_lower, n, alpha, x_buffer, incx, A_buffer, lda));
 #endif
     }
@@ -92,7 +92,7 @@ int test(const device &dev, onemkl::uplo upper_lower, int n, fp alpha, int incx,
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const onemkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::backend_unsupported_exception &e) {
         return test_skipped;
     }
 
@@ -114,21 +114,21 @@ class SyrTests : public ::testing::TestWithParam<cl::sycl::device> {};
 
 TEST_P(SyrTests, RealSinglePrecision) {
     float alpha(2.0);
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, 2, 42));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, 2, 42));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, -2, 42));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, -2, 42));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::lower, 30, alpha, 1, 42));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), onemkl::uplo::upper, 30, alpha, 1, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, 2, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, 2, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, -2, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, -2, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, 1, 42));
+    EXPECT_TRUEORSKIP(test<float>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, 1, 42));
 }
 TEST_P(SyrTests, RealDoublePrecision) {
     double alpha(2.0);
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, 2, 42));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, 2, 42));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, -2, 42));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, -2, 42));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::lower, 30, alpha, 1, 42));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), onemkl::uplo::upper, 30, alpha, 1, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, 2, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, 2, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, -2, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, -2, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, 1, 42));
+    EXPECT_TRUEORSKIP(test<double>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, 1, 42));
 }
 
 INSTANTIATE_TEST_SUITE_P(SyrTestSuite, SyrTests, ::testing::ValuesIn(devices), ::DeviceNamePrint());

@@ -51,7 +51,7 @@ dotc (Buffer Version)
          :class: sectiontitle
 
 
-      .. cpp:function::  void onemkl::blas::dotc(sycl::queue &queue, std::int64_t n, sycl::buffer<T,1> &x, std::int64_t incx, sycl::buffer<T,1> &y, std::int64_t incy, sycl::buffer<T,1> &result)
+      .. cpp:function::  void oneapi::mkl::blas::dotc(sycl::queue &queue, std::int64_t n, sycl::buffer<T,1> &x, std::int64_t incx, sycl::buffer<T,1> &y, std::int64_t incy, sycl::buffer<T,1> &result)
 .. container:: section
 
 
@@ -115,7 +115,7 @@ dotc (USM Version)
       .. container:: dlsyntaxpara
 
 
-         .. cpp:function::  void onemkl::blas::dotc(sycl::queue &queue, std::int64_t n, const T *x, std::int64_t incx, const T *y, std::int64_t incy, T *result, const sycl::vector_class<sycl::event> &dependencies = {})
+         .. cpp:function::  void oneapi::mkl::blas::dotc(sycl::queue &queue, std::int64_t n, const T *x, std::int64_t incx, const T *y, std::int64_t incy, T *result, const sycl::vector_class<sycl::event> &dependencies = {})
    .. container:: section
 
 

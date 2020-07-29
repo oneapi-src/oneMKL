@@ -64,7 +64,7 @@ def print_funcs(func_list):
     code=""
     for data in func_list:
         code +="""
-template <onemkl::library lib, onemkl::backend backend> static inline {ret_type} {name}{par_str};
+template <oneapi::mkl::library lib, oneapi::mkl::backend backend> static inline {ret_type} {name}{par_str};
 """.format(**data)
     return code
 
@@ -85,9 +85,9 @@ out_file.write("""//
 #include <complex>
 #include <cstdint>
 
-#include "onemkl/types.hpp"
-#include "onemkl/detail/backends.hpp"
-#include "onemkl/detail/libraries.hpp"
+#include "oneapi/mkl/types.hpp"
+#include "oneapi/mkl/detail/backends.hpp"
+#include "oneapi/mkl/detail/libraries.hpp"
 
 """.format(in_header=in_filename))
 

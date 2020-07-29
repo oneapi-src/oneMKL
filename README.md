@@ -53,7 +53,7 @@ There are two oneMKL selector layer implementations:
 Example of app.cpp with run-time dispatching:
 
 ```cpp
-include "onemkl/onemkl.hpp"
+include "oneapi/mkl.hpp"
 
 ...
 cpu_dev = cl::sycl::device(cl::sycl::cpu_selector());
@@ -62,8 +62,8 @@ gpu_dev = cl::sycl::device(cl::sycl::gpu_selector());
 cl::sycl::queue cpu_queue(cpu_dev);
 cl::sycl::queue gpu_queue(gpu_dev);
 
-onemkl::blas::gemm(cpu_queue, transA, transB, m, ...);
-onemkl::blas::gemm(gpu_queue, transA, transB, m, ...);
+oneapi::mkl::blas::gemm(cpu_queue, transA, transB, m, ...);
+oneapi::mkl::blas::gemm(gpu_queue, transA, transB, m, ...);
 ```
 How to build an application with run-time dispatching:
 
@@ -77,7 +77,7 @@ $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl
 Example of app.cpp with compile-time dispatching:
 
 ```cpp
-include "onemkl/onemkl.hpp"
+include "oneapi/mkl.hpp"
 
 ...
 cpu_dev = cl::sycl::device(cl::sycl::cpu_selector());
@@ -86,8 +86,8 @@ gpu_dev = cl::sycl::device(cl::sycl::gpu_selector());
 cl::sycl::queue cpu_queue(cpu_dev);
 cl::sycl::queue gpu_queue(gpu_dev);
 
-onemkl::blas::gemm<intelcpu,intelmkl>(cpu_queue, transA, transB, m, ...);
-onemkl::blas::gemm<nvidiagpu,cublas>(gpu_queue, transA, transB, m, ...);
+oneapi::mkl::blas::gemm<intelcpu,intelmkl>(cpu_queue, transA, transB, m, ...);
+oneapi::mkl::blas::gemm<nvidiagpu,cublas>(gpu_queue, transA, transB, m, ...);
 ```
 How to build an application with run-time dispatching:
 
