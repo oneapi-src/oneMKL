@@ -36,7 +36,7 @@ For each new backend library, you should create the following two header files:
 
     python scripts/generate_backend_api.py include/onemkl/blas/blas.hpp \                             # Base header file
                                            include/onemkl/blas/detail/newlib/onemkl_blas_newlib.hpp \ # Output header file
-                                           oneapi::mkl::newlib                                             # Wrappers namespace
+                                           oneapi::mkl::newlib                                        # Wrappers namespace
 
 Code snippet of the generated header file ``include/onemkl/blas/detail/newlib/onemkl_blas_newlib.hpp``
 
@@ -60,7 +60,7 @@ Code snippet of the generated header file ``include/onemkl/blas/detail/newlib/on
                                             include/onemkl/blas/detail/newlib/onemkl_blas_newlib.hpp \ # Header file with declaration of entry points to wrappers
                                             newlib \                                                   # Library name
                                             newdevice \                                                # Backend name
-                                            oneapi::mkl::newlib                                             # Wrappers namespace
+                                            oneapi::mkl::newlib                                        # Wrappers namespace
 
 Code snippet of the generated header file ``include/onemkl/blas/detail/newlib/blas_ct.hpp``
 
