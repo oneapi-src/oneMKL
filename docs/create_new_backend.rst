@@ -34,11 +34,11 @@ For each new backend library, you should create the following two header files:
 
 .. code-block:: bash
 
-    python scripts/generate_backend_api.py include/onemkl/blas/blas.hpp \                             # Base header file
-                                           include/onemkl/blas/detail/newlib/onemkl_blas_newlib.hpp \ # Output header file
-                                           oneapi::mkl::newlib                                        # Wrappers namespace
+    python scripts/generate_backend_api.py include/oneapi/mkl/blas/blas.hpp \                             # Base header file
+                                           include/oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp \ # Output header file
+                                           oneapi::mkl::newlib                                            # Wrappers namespace
 
-Code snippet of the generated header file ``include/onemkl/blas/detail/newlib/onemkl_blas_newlib.hpp``
+Code snippet of the generated header file ``include/oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp``
 
 .. code-block:: cpp
 
@@ -55,14 +55,14 @@ Code snippet of the generated header file ``include/onemkl/blas/detail/newlib/on
 
 .. code-block:: bash
 
-    python scripts/generate_ct_instant.py   include/onemkl/blas/detail/blas_ct_templates.hpp \         # Base header file
-                                            include/onemkl/blas/detail/newlib/blas_ct.hpp \            # Output header file
-                                            include/onemkl/blas/detail/newlib/onemkl_blas_newlib.hpp \ # Header file with declaration of entry points to wrappers
+    python scripts/generate_ct_instant.py   include/oneapi/mkl/blas/detail/blas_ct_templates.hpp \         # Base header file
+                                            include/oneapi/mkl/blas/detail/newlib/blas_ct.hpp \            # Output header file
+                                            include/oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp \ # Header file with declaration of entry points to wrappers
                                             newlib \                                                   # Library name
                                             newdevice \                                                # Backend name
                                             oneapi::mkl::newlib                                        # Wrappers namespace
 
-Code snippet of the generated header file ``include/onemkl/blas/detail/newlib/blas_ct.hpp``
+Code snippet of the generated header file ``include/oneapi/mkl/blas/detail/newlib/blas_ct.hpp``
 
 .. code-block:: cpp
 
@@ -90,33 +90,34 @@ Below you can see structure of oneMKL top-level include directory:
 ::
 
     include/
-        onemkl/
-            onemkl.hpp -> oneMKL spec APIs
-            types.hpp  -> oneMKL spec types
-            detail/    -> implementation specific header files
-                exceptions.hpp        -> oneMKL exception classes
-                libraries.hpp         -> list of oneMKL libraries
-                backends.hpp          -> list of oneMKL backends
-                backends_selector.hpp -> oneMKL runtime dispatcher based on queue
-            blas/
-                predicates.hpp -> oneMKL BLAS pre-check post-check
-                blas.hpp       -> oneMKL BLAS APIs w/ pre-check/dispatching/post-check
-                detail/        -> BLAS domain specific implementation details
-                    blas_loader.hpp       -> oneMKL Run-time BLAS API
-                    blas_ct_templates.hpp -> oneMKL Compile-time BLAS API general templates
-                    cublas/
-                        blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <cublas,nvidiagpu>
-                        onemkl_blas_cublas.hpp -> backend wrappers library API
-                    mklcpu/
-                        blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <intelmkl,intelcpu>
-                        onemkl_blas_mklcpu.hpp -> backend wrappers library API
-                    <other backends>/
-            <other domains>/
+        oneapi/
+            mkl/
+                mkl.hpp -> oneMKL spec APIs
+                types.hpp  -> oneMKL spec types
+                detail/    -> implementation specific header files
+                    exceptions.hpp        -> oneMKL exception classes
+                    libraries.hpp         -> list of oneMKL libraries
+                    backends.hpp          -> list of oneMKL backends
+                    backends_selector.hpp -> oneMKL runtime dispatcher based on queue
+                blas/
+                    predicates.hpp -> oneMKL BLAS pre-check post-check
+                    blas.hpp       -> oneMKL BLAS APIs w/ pre-check/dispatching/post-check
+                    detail/        -> BLAS domain specific implementation details
+                        blas_loader.hpp       -> oneMKL Run-time BLAS API
+                        blas_ct_templates.hpp -> oneMKL Compile-time BLAS API general templates
+                        cublas/
+                            blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <cublas,nvidiagpu>
+                            onemkl_blas_cublas.hpp -> backend wrappers library API
+                        mklcpu/
+                            blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <intelmkl,intelcpu>
+                            onemkl_blas_mklcpu.hpp -> backend wrappers library API
+                        <other backends>/
+                <other domains>/
 
 
 To integrate the new third-party library to a oneMKL header-based part, following files from this structure should be updated:
 
-* ``include/onemkl/detail/libraries.hpp``: add the new library
+* ``include/oneapi/mkl/detail/libraries.hpp``: add the new library
  
   **Example**: add the ``newlib`` library
     
@@ -132,7 +133,7 @@ To integrate the new third-party library to a oneMKL header-based part, followin
          +                                     { library::newlib, "newlib"},
 
  
-* ``include/onemkl/detail/backends.hpp``: add the new device
+* ``include/oneapi/mkl/detail/backends.hpp``: add the new device
 
   **Example**: add the ``newdevice`` device
 
@@ -148,7 +149,7 @@ To integrate the new third-party library to a oneMKL header-based part, followin
      +                                    { backend::newdevice, "newdevice" },
 
 
-* ``include/onemkl/detail/backends_selector.hpp``: add the new library to the run-time dispatcher and add the new device detection mechanism
+* ``include/oneapi/mkl/detail/backends_selector.hpp``: add the new library to the run-time dispatcher and add the new device detection mechanism
 
   **Example**: enable ``newlib`` if the queue is targeted for the Host
 
@@ -158,9 +159,9 @@ To integrate the new third-party library to a oneMKL header-based part, followin
      +      if (queue.is_host())
      +          return (char *)LIB_NAME("onemkl_blas_newlib");
 
-* ``include/onemkl/blas/blas.hpp``: include the generated header file for the compile-time dispatching interface (see `oneMKL Usage Models <../README.md#supported-usage-models>`_)
+* ``include/oneapi/mkl/blas/blas.hpp``: include the generated header file for the compile-time dispatching interface (see `oneMKL Usage Models <../README.md#supported-usage-models>`_)
 
-  **Example**: add ``include/onemkl/blas/detail/newlib/blas_ct.hpp`` generated at the `1. Create Header Files`_ step
+  **Example**: add ``include/oneapi/mkl/blas/detail/newlib/blas_ct.hpp`` generated at the `1. Create Header Files`_ step
     
   .. code-block:: diff
     
@@ -174,24 +175,25 @@ The new files generated at the `1. Create Header Files`_ step result in the foll
 .. code-block:: diff
 
     include/
-        onemkl/
-            blas/
-                predicates.hpp -> oneMKL BLAS pre-check post-check
-                blas.hpp       -> oneMKL BLAS APIs w/ pre-check/dispatching/post-check
-                detail/        -> BLAS domain specific implementation details
-                    blas_loader.hpp       -> oneMKL Run-time BLAS API
-                    blas_ct_templates.hpp -> oneMKL Compile-time BLAS API general templates
-                    cublas/
-                        blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <cublas,nvidiagpu>
-                        onemkl_blas_cublas.hpp -> backend wrappers library API
-                    mklcpu/
-                        blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <intelmkl,intelcpu>
-                        onemkl_blas_mklcpu.hpp -> backend wrappers library API
-     +              newlib/
-     +                  blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <newlib,intelcpu>
-     +                  onemkl_blas_newlib.hpp -> backend wrappers library API
-                    <other backends>/
-            <other domains>/
+        oneapi/
+            mkl/
+                blas/
+                    predicates.hpp -> oneMKL BLAS pre-check post-check
+                    blas.hpp       -> oneMKL BLAS APIs w/ pre-check/dispatching/post-check
+                    detail/        -> BLAS domain specific implementation details
+                        blas_loader.hpp       -> oneMKL Run-time BLAS API
+                        blas_ct_templates.hpp -> oneMKL Compile-time BLAS API general templates
+                        cublas/
+                            blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <cublas,nvidiagpu>
+                            onemkl_blas_cublas.hpp -> backend wrappers library API
+                        mklcpu/
+                            blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <intelmkl,intelcpu>
+                            onemkl_blas_mklcpu.hpp -> backend wrappers library API
+        +              newlib/
+        +                  blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <newlib,intelcpu>
+        +                  onemkl_blas_newlib.hpp -> backend wrappers library API
+                        <other backends>/
+                <other domains>/
 
 .. _generate_wrappers_and_cmake:
 
@@ -225,15 +227,15 @@ You can modify wrappers generated with this script to enable third-party library
 
 The command below generates two new files:
 
-* ``src/blas/backends/newlib/newlib_wrappers.cpp`` - DPC++ wrappers for all functions from ``include/onemkl/blas/detail/newlib/onemkl_blas_newlib.hpp``
+* ``src/blas/backends/newlib/newlib_wrappers.cpp`` - DPC++ wrappers for all functions from ``include/oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp``
 * ``src/blas/backends/newlib/newlib_wrappers_table_dyn.cpp`` - structure of symbols for run-time dispatcher (in the same location as wrappers), suffix ``_dyn`` indicates that this file is required for dynamic library only.
 
 .. code-block:: bash
 
-    python scripts/generate_wrappers.py include/onemkl/blas/detail/newlib/onemkl_blas_newlib.hpp \ # Base header file
-                                        src/blas/function_table.hpp \                              # Declaration for structure of symbols
-                                        src/blas/backends/newlib/newlib_wrappers.cpp \             # Output wrappers
-                                        newlib                                                     # Library name
+    python scripts/generate_wrappers.py include/oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp \ # Base header file
+                                        src/blas/function_table.hpp \                                  # Declaration for structure of symbols
+                                        src/blas/backends/newlib/newlib_wrappers.cpp \                 # Output wrappers
+                                        newlib                                                         # Library name
 
 You can then modify ``src/blas/backends/newlib/newlib_wrappers.cpp`` to enable the C function ``newlib_sasum`` from the third-party library ``libnewlib.so``.
 

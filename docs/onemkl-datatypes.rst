@@ -11,9 +11,9 @@ oneMKL defined datatypes
    several new enumeration data types, which are type-safe versions of
    the traditional Fortran characters in BLAS and LAPACK. They are
    declared in ``types.hpp``, which is included automatically when
-   you include ``onemkl.hpp``. Like
+   you include ``mkl.hpp``. Like
    all oneMKL DPC++ functionality, they belong to the
-   namespace ``onemkl``.
+   namespace ``oneapi::mkl``.
 
 
    Each enumeration value comes with two names: A single-character name
