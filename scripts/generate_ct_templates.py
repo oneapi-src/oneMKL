@@ -41,7 +41,7 @@ Example:
 The command below will generate:
 "blas_ct_templates.hpp" header with general templates for compile-time BLAS API based on "blas.hpp".
 
-    {script}  include/onemkl/blas/blas.hpp include/onemkl/blas/detail/blas_ct_templates.hpp
+    {script}  include/oneapi/mkl/blas/blas.hpp include/oneapi/mkl/blas/detail/blas_ct_templates.hpp
 '''.format(script = argv[0]))
 
 if len(argv) < 2:
