@@ -20,9 +20,9 @@
 #ifndef _BLAS_FUNCTION_TABLE_HPP_
 #define _BLAS_FUNCTION_TABLE_HPP_
 
-#include <CL/sycl.hpp>
 #include <complex>
 #include <cstdint>
+#include <CL/sycl.hpp>
 #include "oneapi/mkl/types.hpp"
 
 typedef struct {

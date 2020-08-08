@@ -27,6 +27,7 @@ target_sources(onemkl_blas PRIVATE blas_loader.cpp)
 target_include_directories(onemkl_blas
   PRIVATE ${PROJECT_SOURCE_DIR}/include
           ${PROJECT_SOURCE_DIR}/src
+          ${PROJECT_SOURCE_DIR}/src/include
           ${CMAKE_BINARY_DIR}/bin
           $<TARGET_FILE_DIR:onemkl>
 )
