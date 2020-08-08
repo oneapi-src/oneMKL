@@ -22,7 +22,8 @@
 
 #include <cstdint>
 #include <map>
-#include "blas/function_table.hpp"
+
+#include "oneapi/mkl/detail/backends_table.hpp"
 
 #define SPEC_VERSION 1
 
@@ -44,9 +45,9 @@
 
 namespace oneapi {
 namespace mkl {
-namespace blas {
 namespace detail {
 
+template <oneapi::mkl::domain domain_id, typename function_table_t>
 class table_initializer {
     struct handle_deleter {
         using pointer = LIB_TYPE;
@@ -57,11 +58,11 @@ class table_initializer {
     using dlhandle = std::unique_ptr<LIB_TYPE, handle_deleter>;
 
 public:
-    function_table_t &operator[](const char *libname) {
-        auto lib = tables.find(libname);
+    function_table_t &operator[](oneapi::mkl::device key) {
+        auto lib = tables.find(key);
         if (lib != tables.end())
             return lib->second;
-        return add_table(libname);
+        return add_table(key);
     }
 
 private:
@@ -88,8 +89,14 @@ private:
     }
 #endif
 
-    function_table_t &add_table(const char *libname) {
-        auto handle = dlhandle{ ::GET_LIB_HANDLE(libname) };
+    function_table_t &add_table(oneapi::mkl::device key) {
+        dlhandle handle;
+        // check all available libraries for the key(device)
+        for (const char* libname : libraries[domain_id][key]) {
+            handle = dlhandle{ ::GET_LIB_HANDLE(libname) };
+            if (handle)
+                break;
+        }
         if (!handle) {
             std::cerr << ERROR_MSG << '\n';
             throw std::runtime_error{ "Couldn't load selected backend" };
@@ -104,19 +111,16 @@ private:
         if (t->version != SPEC_VERSION)
             throw std::runtime_error{ "Loaded oneMKL specification version mismatch" };
 
-        handles[libname] = std::move(handle);
-        tables[libname]  = *t;
+        handles[key] = std::move(handle);
+        tables[key]  = *t;
         return *t;
     }
 
-    std::map<const char *, function_table_t> tables;
-    std::map<const char *, dlhandle> handles;
+    std::map<oneapi::mkl::device, function_table_t> tables;
+    std::map<oneapi::mkl::device, dlhandle> handles;
 };
 
-static table_initializer function_tables;
-
 } //namespace detail
-} // namespace blas
 } // namespace mkl
 } // namespace oneapi
 

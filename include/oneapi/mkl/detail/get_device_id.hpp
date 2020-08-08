@@ -17,48 +17,44 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_BACKENDS_SELECTOR_HPP_
-#define _ONEMKL_BACKENDS_SELECTOR_HPP_
+#ifndef _ONEMKL_GET_DEVICE_ID_HPP_
+#define _ONEMKL_GET_DEVICE_ID_HPP_
 
 #include <CL/sycl.hpp>
-#include <map>
-#include <string>
-#include "oneapi/mkl/detail/backends.hpp"
 
-#ifdef __linux__
-    #define LIB_NAME(a) "lib" a ".so"
-#elif defined(_WIN64)
-    #define LIB_NAME(a) a ".dll"
-#endif
+#include "oneapi/mkl/detail/backends_table.hpp"
 
 #define INTEL_ID  32902
 #define NVIDIA_ID 4318
 
 namespace oneapi {
 namespace mkl {
-inline char *select_backend(cl::sycl::queue &queue) {
-    if (queue.is_host()) {
-        return (char *)LIB_NAME("onemkl_blas_mklcpu");
-    }
-    else if (queue.get_device().is_cpu()) {
-        return (char *)LIB_NAME("onemkl_blas_mklcpu");
-    }
+
+inline oneapi::mkl::device get_device_id(cl::sycl::queue &queue) {
+    oneapi::mkl::device device_id;
+    if (queue.is_host())
+        device_id = device::x86cpu;
+    else if (queue.get_device().is_cpu())
+        device_id = device::x86cpu;
     else if (queue.get_device().is_gpu()) {
         unsigned int vendor_id = static_cast<unsigned int>(
             queue.get_device().get_info<cl::sycl::info::device::vendor_id>());
 
         if (vendor_id == INTEL_ID)
-            return (char *)LIB_NAME("onemkl_blas_mklgpu");
+            device_id = device::intelgpu;
         else if (vendor_id == NVIDIA_ID)
-            return (char *)LIB_NAME("onemkl_blas_cublas");
-        return (char *)"unsupported";
+            device_id = device::nvidiagpu;
+        else {
+            throw std::runtime_error{ "Unsupported device" };
+        }
     }
     else {
-        return (char *)"unsupported";
+        throw std::runtime_error{ "Unsupported device" };
     }
+    return device_id;
 }
 
 } //namespace mkl
 } //namespace oneapi
 
-#endif //_ONEMKL_BACKENDS_SELECTOR_HPP_
+#endif //_ONEMKL_GET_DEVICE_ID_HPP_
