@@ -98,7 +98,8 @@ Below you can see structure of oneMKL top-level include directory:
                     exceptions.hpp        -> oneMKL exception classes
                     libraries.hpp         -> list of oneMKL libraries
                     backends.hpp          -> list of oneMKL backends
-                    backends_selector.hpp -> oneMKL runtime dispatcher based on queue
+                    backends_table.hpp    -> table of backend libraries for each domain and device
+                    get_device_id.hpp     -> function to query device information from queue for Run-time dispatching
                 blas/
                     predicates.hpp -> oneMKL BLAS pre-check post-check
                     blas.hpp       -> oneMKL BLAS APIs w/ pre-check/dispatching/post-check
@@ -148,16 +149,42 @@ To integrate the new third-party library to a oneMKL header-based part, followin
         static backendmap backend_map = { { backend::intelcpu, "intelcpu" },
      +                                    { backend::newdevice, "newdevice" },
 
+* ``include/oneapi/mkl/detail/backends_table.hpp``: add new backend library for supported domain(s) and device(s)
 
-* ``include/oneapi/mkl/detail/backends_selector.hpp``: add the new library to the run-time dispatcher and add the new device detection mechanism
-
-  **Example**: enable ``newlib`` if the queue is targeted for the Host
+  **Example**: enable ``newlib`` for ``blas`` domain and ``newdevice`` device
 
   .. code-block:: diff
     
-        inline char *select_backend(cl::sycl::queue &queue) {
+        enum class device : uint16_t { x86cpu,
+                                       ...
+     +                                 newdevice
+                                     };
+        
+        static std::map<domain, std::map<device, std::vector<const char*>>> libraries = {
+            { domain::blas,
+              { { device::x86cpu,
+                  {
+        #ifdef ENABLE_MKLCPU_BACKEND
+                      LIB_NAME("blas_mklcpu")
+        #endif
+                   } },
+     +          { device::newdevice,
+     +            {
+     +  #ifdef ENABLE_NEWLIB_BACKEND
+     +                 LIB_NAME("blas_newlib")
+     +  #endif
+     +             } },
+
+* ``include/oneapi/mkl/detail/get_device_id.hpp``: add new device detection mechanism for Run-time dispatching
+
+  **Example**: enable ``newdevice`` if the queue is targeted for the Host
+
+  .. code-block:: diff
+    
+        inline oneapi::mkl::device get_device_id(cl::sycl::queue &queue) {
+            oneapi::mkl::device device_id;
      +      if (queue.is_host())
-     +          return (char *)LIB_NAME("onemkl_blas_newlib");
+     +          device_id=device::newdevice;
 
 * ``include/oneapi/mkl/blas/blas.hpp``: include the generated header file for the compile-time dispatching interface (see `oneMKL Usage Models <../README.md#supported-usage-models>`_)
 
@@ -206,8 +233,9 @@ All wrappers and dispatcher library implementations are in the ``src`` directory
 ::
 
     src/
+        include/
+            function_table_initializer.hpp -> general loader implementation w/ global libraries table
         blas/
-            loader.hpp -> general loader implementation w/ global libraries table
             function_table.hpp -> loaded BLAS functions declaration
             blas_loader.cpp -> BLAS wrappers for loader
             backends/
