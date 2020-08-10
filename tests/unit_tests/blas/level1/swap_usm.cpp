@@ -72,7 +72,7 @@ int test(const device& dev, int N, int incx, int incy) {
     auto y_ref = y;
 
     // Call Reference SWAP.
-    using fp_ref    = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<fp>::type;
     const int N_ref = N, incx_ref = incx, incy_ref = incy;
 
     ::swap(&N_ref, (fp_ref*)x_ref.data(), &incx_ref, (fp_ref*)y_ref.data(), &incy_ref);
@@ -107,7 +107,7 @@ int test(const device& dev, int N, int incx, int incy) {
 
     bool good_y = check_equal_vector(y, y_ref, N, incy, N, std::cout);
     bool good_x = check_equal_vector(x, x_ref, N, incx, N, std::cout);
-    bool good   = good_x && good_y;
+    bool good = good_x && good_y;
 
     return (int)good;
 }

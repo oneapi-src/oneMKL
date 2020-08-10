@@ -44,8 +44,8 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp, typename fp_scalar>
-int test(const device& dev, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, int n, int k,
-         int lda, int ldb, int ldc, fp alpha, fp_scalar beta) {
+int test(const device& dev, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, int n,
+         int k, int lda, int ldb, int ldc, fp alpha, fp_scalar beta) {
     // Prepare data.
     vector<fp, allocator_helper<fp, 64>> A, B, C, C_ref;
     rand_matrix(A, trans, n, k, lda);
@@ -57,7 +57,7 @@ int test(const device& dev, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpos
     const int n_ref = n, k_ref = k;
     const int lda_ref = lda, ldb_ref = ldb, ldc_ref = ldc;
 
-    using fp_ref        = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<fp>::type;
     using fp_scalar_mkl = typename ref_type_info<fp_scalar>::type;
 
     ::her2k(convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans), &n_ref, &k_ref,
@@ -88,8 +88,8 @@ int test(const device& dev, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpos
 
     try {
 #ifdef CALL_RT_API
-        oneapi::mkl::blas::her2k(main_queue, upper_lower, trans, n, k, alpha, A_buffer, lda, B_buffer,
-                            ldb, beta, C_buffer, ldc);
+        oneapi::mkl::blas::her2k(main_queue, upper_lower, trans, n, k, alpha, A_buffer, lda,
+                                 B_buffer, ldb, beta, C_buffer, ldc);
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::her2k,
                     (main_queue, upper_lower, trans, n, k, alpha, A_buffer, lda, B_buffer, ldb,
@@ -126,33 +126,33 @@ TEST_P(Her2kTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
     float beta(1.0);
     EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), oneapi::mkl::uplo::lower,
-                                                        oneapi::mkl::transpose::nontrans, 72, 27, 101,
-                                                        102, 103, alpha, beta)));
+                                                        oneapi::mkl::transpose::nontrans, 72, 27,
+                                                        101, 102, 103, alpha, beta)));
     EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), oneapi::mkl::uplo::upper,
-                                                        oneapi::mkl::transpose::nontrans, 72, 27, 101,
-                                                        102, 103, alpha, beta)));
+                                                        oneapi::mkl::transpose::nontrans, 72, 27,
+                                                        101, 102, 103, alpha, beta)));
     EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), oneapi::mkl::uplo::lower,
-                                                        oneapi::mkl::transpose::conjtrans, 72, 27, 101,
-                                                        102, 103, alpha, beta)));
+                                                        oneapi::mkl::transpose::conjtrans, 72, 27,
+                                                        101, 102, 103, alpha, beta)));
     EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), oneapi::mkl::uplo::upper,
-                                                        oneapi::mkl::transpose::conjtrans, 72, 27, 101,
-                                                        102, 103, alpha, beta)));
+                                                        oneapi::mkl::transpose::conjtrans, 72, 27,
+                                                        101, 102, 103, alpha, beta)));
 }
 TEST_P(Her2kTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
     double beta(1.0);
     EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::lower,
-                                                          oneapi::mkl::transpose::nontrans, 72, 27, 101,
-                                                          102, 103, alpha, beta)));
+                                                          oneapi::mkl::transpose::nontrans, 72, 27,
+                                                          101, 102, 103, alpha, beta)));
     EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::upper,
-                                                          oneapi::mkl::transpose::nontrans, 72, 27, 101,
-                                                          102, 103, alpha, beta)));
+                                                          oneapi::mkl::transpose::nontrans, 72, 27,
+                                                          101, 102, 103, alpha, beta)));
     EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::lower,
-                                                          oneapi::mkl::transpose::conjtrans, 72, 27, 101,
-                                                          102, 103, alpha, beta)));
+                                                          oneapi::mkl::transpose::conjtrans, 72, 27,
+                                                          101, 102, 103, alpha, beta)));
     EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::upper,
-                                                          oneapi::mkl::transpose::conjtrans, 72, 27, 101,
-                                                          102, 103, alpha, beta)));
+                                                          oneapi::mkl::transpose::conjtrans, 72, 27,
+                                                          101, 102, 103, alpha, beta)));
 }
 
 INSTANTIATE_TEST_SUITE_P(Her2kTestSuite, Her2kTests, ::testing::ValuesIn(devices),

@@ -73,38 +73,27 @@ class cublas_error : virtual public std::runtime_error {
 protected:
     inline const char *cublas_error_map(cublasStatus_t error) {
         switch (error) {
-            case CUBLAS_STATUS_SUCCESS:
-                return "CUBLAS_STATUS_SUCCESS";
+            case CUBLAS_STATUS_SUCCESS: return "CUBLAS_STATUS_SUCCESS";
 
-            case CUBLAS_STATUS_NOT_INITIALIZED:
-                return "CUBLAS_STATUS_NOT_INITIALIZED";
+            case CUBLAS_STATUS_NOT_INITIALIZED: return "CUBLAS_STATUS_NOT_INITIALIZED";
 
-            case CUBLAS_STATUS_ALLOC_FAILED:
-                return "CUBLAS_STATUS_ALLOC_FAILED";
+            case CUBLAS_STATUS_ALLOC_FAILED: return "CUBLAS_STATUS_ALLOC_FAILED";
 
-            case CUBLAS_STATUS_INVALID_VALUE:
-                return "CUBLAS_STATUS_INVALID_VALUE";
+            case CUBLAS_STATUS_INVALID_VALUE: return "CUBLAS_STATUS_INVALID_VALUE";
 
-            case CUBLAS_STATUS_ARCH_MISMATCH:
-                return "CUBLAS_STATUS_ARCH_MISMATCH";
+            case CUBLAS_STATUS_ARCH_MISMATCH: return "CUBLAS_STATUS_ARCH_MISMATCH";
 
-            case CUBLAS_STATUS_MAPPING_ERROR:
-                return "CUBLAS_STATUS_MAPPING_ERROR";
+            case CUBLAS_STATUS_MAPPING_ERROR: return "CUBLAS_STATUS_MAPPING_ERROR";
 
-            case CUBLAS_STATUS_EXECUTION_FAILED:
-                return "CUBLAS_STATUS_EXECUTION_FAILED";
+            case CUBLAS_STATUS_EXECUTION_FAILED: return "CUBLAS_STATUS_EXECUTION_FAILED";
 
-            case CUBLAS_STATUS_INTERNAL_ERROR:
-                return "CUBLAS_STATUS_INTERNAL_ERROR";
+            case CUBLAS_STATUS_INTERNAL_ERROR: return "CUBLAS_STATUS_INTERNAL_ERROR";
 
-            case CUBLAS_STATUS_NOT_SUPPORTED:
-                return "CUBLAS_STATUS_NOT_SUPPORTED";
+            case CUBLAS_STATUS_NOT_SUPPORTED: return "CUBLAS_STATUS_NOT_SUPPORTED";
 
-            case CUBLAS_STATUS_LICENSE_ERROR:
-                return "CUBLAS_STATUS_LICENSE_ERROR";
+            case CUBLAS_STATUS_LICENSE_ERROR: return "CUBLAS_STATUS_LICENSE_ERROR";
 
-            default:
-                return "<unknown>";
+            default: return "<unknown>";
         }
     }
 
@@ -136,22 +125,14 @@ class cuda_error : virtual public std::runtime_error {
 protected:
     inline const char *cuda_error_map(CUresult result) {
         switch (result) {
-            case CUDA_SUCCESS:
-                return "CUDA_SUCCESS";
-            case CUDA_ERROR_NOT_PERMITTED:
-                return "CUDA_ERROR_NOT_PERMITTED";
-            case CUDA_ERROR_INVALID_CONTEXT:
-                return "CUDA_ERROR_INVALID_CONTEXT";
-            case CUDA_ERROR_INVALID_DEVICE:
-                return "CUDA_ERROR_INVALID_DEVICE";
-            case CUDA_ERROR_INVALID_VALUE:
-                return "CUDA_ERROR_INVALID_VALUE";
-            case CUDA_ERROR_OUT_OF_MEMORY:
-                return "CUDA_ERROR_OUT_OF_MEMORY";
-            case CUDA_ERROR_LAUNCH_OUT_OF_RESOURCES:
-                return "CUDA_ERROR_LAUNCH_OUT_OF_RESOURCES";
-            default:
-                return "<unknown>";
+            case CUDA_SUCCESS: return "CUDA_SUCCESS";
+            case CUDA_ERROR_NOT_PERMITTED: return "CUDA_ERROR_NOT_PERMITTED";
+            case CUDA_ERROR_INVALID_CONTEXT: return "CUDA_ERROR_INVALID_CONTEXT";
+            case CUDA_ERROR_INVALID_DEVICE: return "CUDA_ERROR_INVALID_DEVICE";
+            case CUDA_ERROR_INVALID_VALUE: return "CUDA_ERROR_INVALID_VALUE";
+            case CUDA_ERROR_OUT_OF_MEMORY: return "CUDA_ERROR_OUT_OF_MEMORY";
+            case CUDA_ERROR_LAUNCH_OUT_OF_RESOURCES: return "CUDA_ERROR_LAUNCH_OUT_OF_RESOURCES";
+            default: return "<unknown>";
         }
     }
     int error_number; ///< error number
@@ -192,47 +173,34 @@ public:
 
 inline cublasOperation_t get_cublas_operation(oneapi::mkl::transpose trn) {
     switch (trn) {
-        case oneapi::mkl::transpose::nontrans:
-            return CUBLAS_OP_N;
-        case oneapi::mkl::transpose::trans:
-            return CUBLAS_OP_T;
-        case oneapi::mkl::transpose::conjtrans:
-            return CUBLAS_OP_C;
-        default:
-            throw "Wrong transpose Operation.";
+        case oneapi::mkl::transpose::nontrans: return CUBLAS_OP_N;
+        case oneapi::mkl::transpose::trans: return CUBLAS_OP_T;
+        case oneapi::mkl::transpose::conjtrans: return CUBLAS_OP_C;
+        default: throw "Wrong transpose Operation.";
     }
 }
 
 inline cublasFillMode_t get_cublas_fill_mode(oneapi::mkl::uplo ul) {
     switch (ul) {
-        case oneapi::mkl::uplo::upper:
-            return CUBLAS_FILL_MODE_UPPER;
-        case oneapi::mkl::uplo::lower:
-            return CUBLAS_FILL_MODE_LOWER;
-        default:
-            throw "Wrong fill mode.";
+        case oneapi::mkl::uplo::upper: return CUBLAS_FILL_MODE_UPPER;
+        case oneapi::mkl::uplo::lower: return CUBLAS_FILL_MODE_LOWER;
+        default: throw "Wrong fill mode.";
     }
 }
 
 inline cublasDiagType_t get_cublas_diag_type(oneapi::mkl::diag un) {
     switch (un) {
-        case oneapi::mkl::diag::unit:
-            return CUBLAS_DIAG_UNIT;
-        case oneapi::mkl::diag::nonunit:
-            return CUBLAS_DIAG_NON_UNIT;
-        default:
-            throw "Wrong diag type.";
+        case oneapi::mkl::diag::unit: return CUBLAS_DIAG_UNIT;
+        case oneapi::mkl::diag::nonunit: return CUBLAS_DIAG_NON_UNIT;
+        default: throw "Wrong diag type.";
     }
 }
 
 inline cublasSideMode_t get_cublas_side_mode(oneapi::mkl::side lr) {
     switch (lr) {
-        case oneapi::mkl::side::left:
-            return CUBLAS_SIDE_LEFT;
-        case oneapi::mkl::side::right:
-            return CUBLAS_SIDE_RIGHT;
-        default:
-            throw "Wrong side mode.";
+        case oneapi::mkl::side::left: return CUBLAS_SIDE_LEFT;
+        case oneapi::mkl::side::right: return CUBLAS_SIDE_RIGHT;
+        default: throw "Wrong side mode.";
     }
 }
 

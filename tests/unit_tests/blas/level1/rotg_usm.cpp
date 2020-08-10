@@ -67,10 +67,10 @@ int test(const device &dev) {
     fp a, b, s, a_ref, b_ref, s_ref;
     fp_scalar c, c_ref;
 
-    a     = rand_scalar<fp>();
-    b     = rand_scalar<fp>();
-    s     = rand_scalar<fp>();
-    c     = rand_scalar<fp_scalar>();
+    a = rand_scalar<fp>();
+    b = rand_scalar<fp>();
+    s = rand_scalar<fp>();
+    c = rand_scalar<fp_scalar>();
     a_ref = a;
     b_ref = b;
     s_ref = s;
@@ -82,9 +82,9 @@ int test(const device &dev) {
     ::rotg((fp_ref *)&a_ref, (fp_ref *)&b_ref, (fp_scalar *)&c_ref, (fp_ref *)&s_ref);
 
     // Call DPC++ ROTG.
-    fp *a_p        = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), dev, cxt);
-    fp *b_p        = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), dev, cxt);
-    fp *s_p        = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), dev, cxt);
+    fp *a_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), dev, cxt);
+    fp *b_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), dev, cxt);
+    fp *s_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), dev, cxt);
     fp_scalar *c_p = (fp_scalar *)oneapi::mkl::malloc_shared(64, sizeof(fp_scalar), dev, cxt);
 
     a_p[0] = a;
@@ -97,7 +97,8 @@ int test(const device &dev) {
         done = oneapi::mkl::blas::rotg(main_queue, a_p, b_p, c_p, s_p, dependencies);
         done.wait();
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::rotg, (main_queue, a_p, b_p, c_p, s_p, dependencies));
+        TEST_RUN_CT(main_queue, oneapi::mkl::blas::rotg,
+                    (main_queue, a_p, b_p, c_p, s_p, dependencies));
         main_queue.wait();
 #endif
     }

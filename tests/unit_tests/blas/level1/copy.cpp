@@ -51,7 +51,7 @@ int test(const device& dev, int N, int incx, int incy) {
     y_ref = y;
 
     // Call Reference COPY.
-    using fp_ref    = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<fp>::type;
     const int N_ref = N, incx_ref = incx, incy_ref = incy;
 
     ::copy(&N_ref, (fp_ref*)x.data(), &incx_ref, (fp_ref*)y_ref.data(), &incy_ref);
@@ -103,7 +103,7 @@ int test(const device& dev, int N, int incx, int incy) {
     bool good;
     {
         auto y_accessor = y_buffer.template get_access<access::mode::read>();
-        good            = check_equal_vector(y_accessor, y_ref, N, incy, N, std::cout);
+        good = check_equal_vector(y_accessor, y_ref, N, incy, N, std::cout);
     }
 
     return (int)good;

@@ -57,11 +57,11 @@ int test(const device &dev) {
     int64_t i, tmp;
 
     batch_size = 1 + std::rand() % 20;
-    m          = 1 + std::rand() % 50;
-    n          = 1 + std::rand() % 50;
-    lda        = std::max(m, n);
-    ldb        = std::max(n, m);
-    alpha      = rand_scalar<fp>();
+    m = 1 + std::rand() % 50;
+    n = 1 + std::rand() % 50;
+    lda = std::max(m, n);
+    ldb = std::max(n, m);
+    alpha = rand_scalar<fp>();
 
     if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
         trans = (oneapi::mkl::transpose)(std::rand() % 2);
@@ -73,15 +73,15 @@ int test(const device &dev) {
         else
             trans = (oneapi::mkl::transpose)tmp;
     }
-    left_right  = (oneapi::mkl::side)(std::rand() % 2);
+    left_right = (oneapi::mkl::side)(std::rand() % 2);
     upper_lower = (oneapi::mkl::uplo)(std::rand() % 2);
-    unit_diag   = (oneapi::mkl::diag)(std::rand() % 2);
+    unit_diag = (oneapi::mkl::diag)(std::rand() % 2);
 
     int64_t stride_a, stride_b;
     int64_t total_size_b;
 
-    stride_a     = (left_right == oneapi::mkl::side::left) ? lda * m : lda * n;
-    stride_b     = ldb * n;
+    stride_a = (left_right == oneapi::mkl::side::left) ? lda * m : lda * n;
+    stride_b = ldb * n;
     total_size_b = batch_size * stride_b;
 
     vector<fp, allocator_helper<fp, 64>> A(batch_size * stride_a), B(total_size_b),
@@ -100,10 +100,10 @@ int test(const device &dev) {
     // Call reference TRSM_BATCH_STRIDE.
     using fp_ref = typename ref_type_info<fp>::type;
     int m_ref, n_ref, lda_ref, ldb_ref, batch_size_ref;
-    m_ref          = (int)m;
-    n_ref          = (int)n;
-    lda_ref        = (int)lda;
-    ldb_ref        = (int)ldb;
+    m_ref = (int)m;
+    n_ref = (int)n;
+    lda_ref = (int)lda;
+    ldb_ref = (int)ldb;
     batch_size_ref = (int)batch_size;
     for (i = 0; i < batch_size_ref; i++) {
         ::trsm(convert_to_cblas_side(left_right), convert_to_cblas_uplo(upper_lower),
@@ -136,8 +136,9 @@ int test(const device &dev) {
 
     try {
 #ifdef CALL_RT_API
-        oneapi::mkl::blas::trsm_batch(main_queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
-                                 A_buffer, lda, stride_a, B_buffer, ldb, stride_b, batch_size);
+        oneapi::mkl::blas::trsm_batch(main_queue, left_right, upper_lower, trans, unit_diag, m, n,
+                                      alpha, A_buffer, lda, stride_a, B_buffer, ldb, stride_b,
+                                      batch_size);
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::trsm_batch,
                     (main_queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, A_buffer,
@@ -164,7 +165,7 @@ int test(const device &dev) {
     bool good;
     {
         auto B_accessor = B_buffer.template get_access<access::mode::read>();
-        good            = check_equal_trsm_matrix(B_accessor, B_ref, total_size_b, 1, total_size_b,
+        good = check_equal_trsm_matrix(B_accessor, B_ref, total_size_b, 1, total_size_b,
                                        10 * std::max(m, n), std::cout);
     }
 

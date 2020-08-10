@@ -85,11 +85,11 @@ inline void gemm_ext(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_
         auto b_acc = b.template get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto a_     = sc.get_mem<cuDataType_A *>(ih, a_acc);
-            auto b_     = sc.get_mem<cuDataType_B *>(ih, b_acc);
-            auto c_     = sc.get_mem<cuDataType_C *>(ih, c_acc);
+            auto a_ = sc.get_mem<cuDataType_A *>(ih, a_acc);
+            auto b_ = sc.get_mem<cuDataType_B *>(ih, b_acc);
+            auto c_ = sc.get_mem<cuDataType_C *>(ih, c_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_operation(transa),
                               get_cublas_operation(transb), m, n, k, (cuDataType_C *)&alpha, a_,

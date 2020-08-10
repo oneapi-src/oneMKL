@@ -43,8 +43,8 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device& dev, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower, int m, int n,
-         int lda, int ldb, int ldc, fp alpha, fp beta) {
+int test(const device& dev, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower, int m,
+         int n, int lda, int ldb, int ldc, fp alpha, fp beta) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const& e : exceptions) {
@@ -90,8 +90,8 @@ int test(const device& dev, oneapi::mkl::side left_right, oneapi::mkl::uplo uppe
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::hemm(main_queue, left_right, upper_lower, m, n, alpha, A.data(), lda,
-                                  B.data(), ldb, beta, C.data(), ldc, dependencies);
+        done = oneapi::mkl::blas::hemm(main_queue, left_right, upper_lower, m, n, alpha, A.data(),
+                                       lda, B.data(), ldb, beta, C.data(), ldc, dependencies);
         done.wait();
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::hemm,
@@ -126,26 +126,34 @@ class HemmUsmTests : public ::testing::TestWithParam<cl::sycl::device> {};
 TEST_P(HemmUsmTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
     std::complex<float> beta(3.0, -1.5);
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::side::left, oneapi::mkl::uplo::lower,
-                                                72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::side::left, oneapi::mkl::uplo::upper,
-                                                72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(
-        GetParam(), oneapi::mkl::side::right, oneapi::mkl::uplo::lower, 72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(
-        GetParam(), oneapi::mkl::side::right, oneapi::mkl::uplo::upper, 72, 27, 101, 102, 103, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::side::left,
+                                                oneapi::mkl::uplo::lower, 72, 27, 101, 102, 103,
+                                                alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::side::left,
+                                                oneapi::mkl::uplo::upper, 72, 27, 101, 102, 103,
+                                                alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::side::right,
+                                                oneapi::mkl::uplo::lower, 72, 27, 101, 102, 103,
+                                                alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), oneapi::mkl::side::right,
+                                                oneapi::mkl::uplo::upper, 72, 27, 101, 102, 103,
+                                                alpha, beta));
 }
 TEST_P(HemmUsmTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(
-        GetParam(), oneapi::mkl::side::left, oneapi::mkl::uplo::lower, 72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(
-        GetParam(), oneapi::mkl::side::left, oneapi::mkl::uplo::upper, 72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(
-        GetParam(), oneapi::mkl::side::right, oneapi::mkl::uplo::lower, 72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(
-        GetParam(), oneapi::mkl::side::right, oneapi::mkl::uplo::upper, 72, 27, 101, 102, 103, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), oneapi::mkl::side::left,
+                                                 oneapi::mkl::uplo::lower, 72, 27, 101, 102, 103,
+                                                 alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), oneapi::mkl::side::left,
+                                                 oneapi::mkl::uplo::upper, 72, 27, 101, 102, 103,
+                                                 alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), oneapi::mkl::side::right,
+                                                 oneapi::mkl::uplo::lower, 72, 27, 101, 102, 103,
+                                                 alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), oneapi::mkl::side::right,
+                                                 oneapi::mkl::uplo::upper, 72, 27, 101, 102, 103,
+                                                 alpha, beta));
 }
 
 INSTANTIATE_TEST_SUITE_P(HemmUsmTestSuite, HemmUsmTests, ::testing::ValuesIn(devices),

@@ -71,7 +71,7 @@ int test(const device &dev, int N, int incx, int incy) {
     rand_vector(y, N, incy);
 
     // Call Reference DOTU.
-    using fp_ref    = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<fp>::type;
     const int N_ref = N, incx_ref = incx, incy_ref = incy;
 
     ::dotu((fp_ref *)&result_reference, &N_ref, (fp_ref *)x.data(), &incx_ref, (fp_ref *)y.data(),
@@ -84,7 +84,7 @@ int test(const device &dev, int N, int incx, int incy) {
     try {
 #ifdef CALL_RT_API
         done = oneapi::mkl::blas::dotu(main_queue, N, x.data(), incx, y.data(), incy, result_p,
-                                  dependencies);
+                                       dependencies);
         done.wait();
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::dotu,

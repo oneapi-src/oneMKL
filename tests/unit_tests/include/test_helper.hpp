@@ -24,9 +24,9 @@
 #include "oneapi/mkl/detail/config.hpp"
 
 #ifdef _WIN64
-    #include <malloc.h>
+#include <malloc.h>
 #else
-    #include <stdlib.h>
+#include <stdlib.h>
 #endif
 
 #define test_failed  0
@@ -43,24 +43,24 @@
     } while (0);
 
 #ifdef ENABLE_MKLCPU_BACKEND
-    #define TEST_RUN_INTELCPU(q, func, args) \
-        func<oneapi::mkl::library::intelmkl, oneapi::mkl::backend::intelcpu> args
+#define TEST_RUN_INTELCPU(q, func, args) \
+    func<oneapi::mkl::library::intelmkl, oneapi::mkl::backend::intelcpu> args
 #else
-    #define TEST_RUN_INTELCPU(q, func, args)
+#define TEST_RUN_INTELCPU(q, func, args)
 #endif
 
 #ifdef ENABLE_MKLGPU_BACKEND
-    #define TEST_RUN_INTELGPU(q, func, args) \
-        func<oneapi::mkl::library::intelmkl, oneapi::mkl::backend::intelgpu> args
+#define TEST_RUN_INTELGPU(q, func, args) \
+    func<oneapi::mkl::library::intelmkl, oneapi::mkl::backend::intelgpu> args
 #else
-    #define TEST_RUN_INTELGPU(q, func, args)
+#define TEST_RUN_INTELGPU(q, func, args)
 #endif
 
 #ifdef ENABLE_CUBLAS_BACKEND
-    #define TEST_RUN_NVIDIAGPU(q, func, args) \
-        func<oneapi::mkl::library::cublas, oneapi::mkl::backend::nvidiagpu> args
+#define TEST_RUN_NVIDIAGPU(q, func, args) \
+    func<oneapi::mkl::library::cublas, oneapi::mkl::backend::nvidiagpu> args
 #else
-    #define TEST_RUN_NVIDIAGPU(q, func, args)
+#define TEST_RUN_NVIDIAGPU(q, func, args)
 #endif
 
 #define TEST_RUN_CT(q, func, args)                                             \
@@ -116,11 +116,11 @@ static inline void *malloc_shared(size_t align, size_t size, cl::sycl::device de
 #ifdef _WIN64
     return cl::sycl::malloc_shared(size, dev, ctx);
 #else
-    #ifdef ENABLE_CUBLAS_BACKEND
+#ifdef ENABLE_CUBLAS_BACKEND
     return cl::sycl::aligned_alloc_shared(align, size, dev, ctx);
-    #else
+#else
     return cl::sycl::malloc_shared(size, dev, ctx);
-    #endif
+#endif
 #endif
 }
 

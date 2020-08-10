@@ -43,7 +43,8 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp, typename fp_scalar>
-int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp_scalar alpha, int incx, int lda) {
+int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp_scalar alpha, int incx,
+         int lda) {
     // Prepare data.
     vector<fp> x, A_ref, A;
     rand_vector(x, n, incx);
@@ -52,7 +53,7 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp_scalar alph
 
     // Call Reference HER.
     const int n_ref = n, incx_ref = incx, lda_ref = lda;
-    using fp_ref        = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<fp>::type;
     using fp_scalar_mkl = typename ref_type_info<fp_scalar>::type;
 
     ::her(convert_to_cblas_uplo(upper_lower), &n_ref, (fp_scalar_mkl *)&alpha, (fp_ref *)x.data(),
@@ -105,7 +106,7 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp_scalar alph
     bool good;
     {
         auto A_accessor = A_buffer.template get_access<access::mode::read>();
-        good            = check_equal_matrix(A_accessor, A_ref, n, n, lda, n, std::cout);
+        good = check_equal_matrix(A_accessor, A_ref, n, n, lda, n, std::cout);
     }
 
     return (int)good;
@@ -119,10 +120,10 @@ TEST_P(HerTests, ComplexSinglePrecision) {
         (test<std::complex<float>, float>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, 2, 42)));
     EXPECT_TRUEORSKIP(
         (test<std::complex<float>, float>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, 2, 42)));
-    EXPECT_TRUEORSKIP(
-        (test<std::complex<float>, float>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, -2, 42)));
-    EXPECT_TRUEORSKIP(
-        (test<std::complex<float>, float>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, -2, 42)));
+    EXPECT_TRUEORSKIP((
+        test<std::complex<float>, float>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, -2, 42)));
+    EXPECT_TRUEORSKIP((
+        test<std::complex<float>, float>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, -2, 42)));
     EXPECT_TRUEORSKIP(
         (test<std::complex<float>, float>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, 1, 42)));
     EXPECT_TRUEORSKIP(
@@ -130,18 +131,18 @@ TEST_P(HerTests, ComplexSinglePrecision) {
 }
 TEST_P(HerTests, ComplexDoublePrecision) {
     double alpha(2.0);
-    EXPECT_TRUEORSKIP(
-        (test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, 2, 42)));
-    EXPECT_TRUEORSKIP(
-        (test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, 2, 42)));
-    EXPECT_TRUEORSKIP(
-        (test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, -2, 42)));
-    EXPECT_TRUEORSKIP(
-        (test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, -2, 42)));
-    EXPECT_TRUEORSKIP(
-        (test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, 1, 42)));
-    EXPECT_TRUEORSKIP(
-        (test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, 1, 42)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::lower, 30,
+                                                          alpha, 2, 42)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::upper, 30,
+                                                          alpha, 2, 42)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::lower, 30,
+                                                          alpha, -2, 42)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::upper, 30,
+                                                          alpha, -2, 42)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::lower, 30,
+                                                          alpha, 1, 42)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), oneapi::mkl::uplo::upper, 30,
+                                                          alpha, 1, 42)));
 }
 
 INSTANTIATE_TEST_SUITE_P(HerTestSuite, HerTests, ::testing::ValuesIn(devices), ::DeviceNamePrint());

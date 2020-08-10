@@ -209,7 +209,7 @@ fp16::fp16(float f) {
 
     uint32_t ss = s;
     uint32_t mm = m >> 13;
-    uint32_t r  = m & 0x1FFF;
+    uint32_t r = m & 0x1FFF;
     uint32_t ee = 0;
     int32_t eee = (e - 127) + 15;
 
@@ -245,7 +245,7 @@ fp16::fp16(float f) {
     else {
         // Underflow. Scale the input float, converting it
         //  into an equivalent denormal.
-        float ff    = f * raw_to_float(0x01000000);
+        float ff = f * raw_to_float(0x01000000);
         uint32_t ii = float_to_raw(ff);
         ;
         ee = 0;
@@ -260,9 +260,9 @@ inline fp16::operator float() const {
     uint32_t ee = (raw >> 10) & 0x1F;
     uint32_t mm = raw & 0x3FF;
 
-    uint32_t s   = ss;
+    uint32_t s = ss;
     uint32_t eee = ee - 15 + 127;
-    uint32_t m   = mm << 13;
+    uint32_t m = mm << 13;
     uint32_t e;
 
     if (ee == 0) {

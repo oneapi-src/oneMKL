@@ -70,7 +70,7 @@ int test(const device& dev, int N, int incx) {
     rand_vector(x, N, incx);
 
     // Call Reference NRM2.
-    using fp_ref    = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<fp>::type;
     const int N_ref = N, incx_ref = std::abs(incx);
 
     result_ref = ::nrm2<fp_ref, fp_res>(&N_ref, (fp_ref*)x.data(), &incx_ref);

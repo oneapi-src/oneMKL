@@ -84,7 +84,8 @@ int test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda)
 
     try {
 #ifdef CALL_RT_API
-        oneapi::mkl::blas::ger(main_queue, m, n, alpha, x_buffer, incx, y_buffer, incy, A_buffer, lda);
+        oneapi::mkl::blas::ger(main_queue, m, n, alpha, x_buffer, incx, y_buffer, incy, A_buffer,
+                               lda);
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::ger,
                     (main_queue, m, n, alpha, x_buffer, incx, y_buffer, incy, A_buffer, lda));

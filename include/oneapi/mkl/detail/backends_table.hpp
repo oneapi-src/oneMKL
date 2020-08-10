@@ -28,36 +28,38 @@
 #include "oneapi/mkl/detail/config.hpp"
 
 #ifdef __linux__
-    #define LIB_NAME(a) "libonemkl_" a ".so"
+#define LIB_NAME(a) "libonemkl_" a ".so"
 #elif defined(_WIN64)
-    #define LIB_NAME(a) "onemkl_" a ".dll"
+#define LIB_NAME(a) "onemkl_" a ".dll"
 #endif
 
 namespace oneapi {
 namespace mkl {
 
-enum class device: uint16_t { x86cpu, intelgpu, nvidiagpu };
-enum class domain: uint16_t { blas };
+enum class device : uint16_t { x86cpu, intelgpu, nvidiagpu };
+enum class domain : uint16_t { blas };
 
-static std::map<domain, std::map<device, std::vector<const char*>>>
-    libraries = { {domain::blas,
-                      {{device::x86cpu, {
+static std::map<domain, std::map<device, std::vector<const char*>>> libraries = {
+    { domain::blas,
+      { { device::x86cpu,
+          {
 #ifdef ENABLE_MKLCPU_BACKEND
-                           LIB_NAME("blas_mklcpu")
+              LIB_NAME("blas_mklcpu")
 #endif
-                       }},
-                       {device::intelgpu, {
+          } },
+        { device::intelgpu,
+          {
 #ifdef ENABLE_MKLGPU_BACKEND
-                           LIB_NAME("blas_mklgpu")
+              LIB_NAME("blas_mklgpu")
 #endif
-                       }},
-                       {device::nvidiagpu, {
+          } },
+        { device::nvidiagpu,
+          {
 #ifdef ENABLE_CUBLAS_BACKEND
-                           LIB_NAME("blas_cublas")
+              LIB_NAME("blas_cublas")
 #endif
-                       }}
-                      }}
-                };
+          } } } }
+};
 
 } //namespace mkl
 } //namespace oneapi

@@ -94,14 +94,14 @@ int test(const device &dev, int64_t group_count) {
 
     for (i = 0; i < group_count; i++) {
         group_size[i] = 1 + std::rand() % 20;
-        m[i]          = 1 + std::rand() % 500;
-        n[i]          = 1 + std::rand() % 500;
-        k[i]          = 1 + std::rand() % 500;
-        lda[i]        = std::max(m[i], k[i]);
-        ldb[i]        = std::max(n[i], k[i]);
-        ldc[i]        = std::max(m[i], n[i]);
-        alpha[i]      = rand_scalar<fp>();
-        beta[i]       = rand_scalar<fp>();
+        m[i] = 1 + std::rand() % 500;
+        n[i] = 1 + std::rand() % 500;
+        k[i] = 1 + std::rand() % 500;
+        lda[i] = std::max(m[i], k[i]);
+        ldb[i] = std::max(n[i], k[i]);
+        ldc[i] = std::max(m[i], n[i]);
+        alpha[i] = rand_scalar<fp>();
+        beta[i] = rand_scalar<fp>();
         if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
             transa[i] = (oneapi::mkl::transpose)(std::rand() % 2);
             transb[i] = (oneapi::mkl::transpose)(std::rand() % 2);
@@ -135,9 +135,9 @@ int test(const device &dev, int64_t group_count) {
         size_b = ldb[i] * ((transb[i] == oneapi::mkl::transpose::nontrans) ? n[i] : k[i]);
         size_c = ldc[i] * n[i];
         for (j = 0; j < group_size[i]; j++) {
-            a_array[idx]     = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_a, dev, cxt);
-            b_array[idx]     = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_b, dev, cxt);
-            c_array[idx]     = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_c, dev, cxt);
+            a_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_a, dev, cxt);
+            b_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_b, dev, cxt);
+            c_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_c, dev, cxt);
             c_ref_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_c, dev, cxt);
             rand_matrix(a_array[idx], transa[i], m[i], k[i], lda[i]);
             rand_matrix(b_array[idx], transb[i], k[i], n[i], ldb[i]);
@@ -149,13 +149,13 @@ int test(const device &dev, int64_t group_count) {
     }
 
     // Call reference GEMM_BATCH.
-    using fp_ref        = typename ref_type_info<fp>::type;
-    int *m_ref          = (int *)oneapi::mkl::aligned_alloc(64, sizeof(int) * group_count);
-    int *n_ref          = (int *)oneapi::mkl::aligned_alloc(64, sizeof(int) * group_count);
-    int *k_ref          = (int *)oneapi::mkl::aligned_alloc(64, sizeof(int) * group_count);
-    int *lda_ref        = (int *)oneapi::mkl::aligned_alloc(64, sizeof(int) * group_count);
-    int *ldb_ref        = (int *)oneapi::mkl::aligned_alloc(64, sizeof(int) * group_count);
-    int *ldc_ref        = (int *)oneapi::mkl::aligned_alloc(64, sizeof(int) * group_count);
+    using fp_ref = typename ref_type_info<fp>::type;
+    int *m_ref = (int *)oneapi::mkl::aligned_alloc(64, sizeof(int) * group_count);
+    int *n_ref = (int *)oneapi::mkl::aligned_alloc(64, sizeof(int) * group_count);
+    int *k_ref = (int *)oneapi::mkl::aligned_alloc(64, sizeof(int) * group_count);
+    int *lda_ref = (int *)oneapi::mkl::aligned_alloc(64, sizeof(int) * group_count);
+    int *ldb_ref = (int *)oneapi::mkl::aligned_alloc(64, sizeof(int) * group_count);
+    int *ldc_ref = (int *)oneapi::mkl::aligned_alloc(64, sizeof(int) * group_count);
     int *group_size_ref = (int *)oneapi::mkl::aligned_alloc(64, sizeof(int) * group_count);
 
     CBLAS_TRANSPOSE *transa_ref =
@@ -190,14 +190,14 @@ int test(const device &dev, int64_t group_count) {
     }
     idx = 0;
     for (i = 0; i < group_count; i++) {
-        transa_ref[i]     = convert_to_cblas_trans(transa[i]);
-        transb_ref[i]     = convert_to_cblas_trans(transb[i]);
-        m_ref[i]          = (int)m[i];
-        n_ref[i]          = (int)n[i];
-        k_ref[i]          = (int)k[i];
-        lda_ref[i]        = (int)lda[i];
-        ldb_ref[i]        = (int)ldb[i];
-        ldc_ref[i]        = (int)ldc[i];
+        transa_ref[i] = convert_to_cblas_trans(transa[i]);
+        transb_ref[i] = convert_to_cblas_trans(transb[i]);
+        m_ref[i] = (int)m[i];
+        n_ref[i] = (int)n[i];
+        k_ref[i] = (int)k[i];
+        lda_ref[i] = (int)lda[i];
+        ldb_ref[i] = (int)ldb[i];
+        ldc_ref[i] = (int)ldc[i];
         group_size_ref[i] = (int)group_size[i];
         for (j = 0; j < group_size_ref[i]; j++) {
             ::gemm(transa_ref[i], transb_ref[i], (const int *)&m_ref[i], (const int *)&n_ref[i],
@@ -212,10 +212,10 @@ int test(const device &dev, int64_t group_count) {
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::gemm_batch(main_queue, &transa[0], &transb[0], &m[0], &n[0], &k[0],
-                                        &alpha[0], (const fp **)&a_array[0], &lda[0],
-                                        (const fp **)&b_array[0], &ldb[0], &beta[0], &c_array[0],
-                                        &ldc[0], group_count, &group_size[0], dependencies);
+        done = oneapi::mkl::blas::gemm_batch(
+            main_queue, &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
+            (const fp **)&a_array[0], &lda[0], (const fp **)&b_array[0], &ldb[0], &beta[0],
+            &c_array[0], &ldc[0], group_count, &group_size[0], dependencies);
         done.wait();
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::gemm_batch,

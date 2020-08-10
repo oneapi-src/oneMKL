@@ -21,9 +21,9 @@
 #define __ALLOCATOR_HELPER_HPP
 
 #ifdef _WIN64
-    #include <malloc.h>
+#include <malloc.h>
 #else
-    #include <stdlib.h>
+#include <stdlib.h>
 #endif
 
 namespace oneapi {

@@ -84,8 +84,8 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp alpha, fp b
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::spmv(main_queue, upper_lower, n, alpha, A.data(), x.data(), incx, beta,
-                                  y.data(), incy, dependencies);
+        done = oneapi::mkl::blas::spmv(main_queue, upper_lower, n, alpha, A.data(), x.data(), incx,
+                                       beta, y.data(), incy, dependencies);
         done.wait();
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::spmv,

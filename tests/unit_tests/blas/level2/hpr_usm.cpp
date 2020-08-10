@@ -73,7 +73,7 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp_scalar alph
 
     // Call Reference HPR.
     const int n_ref = n, incx_ref = incx;
-    using fp_ref        = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<fp>::type;
     using fp_scalar_mkl = typename ref_type_info<fp_scalar>::type;
 
     ::hpr(convert_to_cblas_uplo(upper_lower), &n_ref, (fp_scalar_mkl *)&alpha, (fp_ref *)x.data(),
@@ -84,7 +84,7 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp_scalar alph
     try {
 #ifdef CALL_RT_API
         done = oneapi::mkl::blas::hpr(main_queue, upper_lower, n, alpha, x.data(), incx, A.data(),
-                                 dependencies);
+                                      dependencies);
         done.wait();
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::hpr,

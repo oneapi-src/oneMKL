@@ -43,8 +43,8 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, int k, fp alpha, fp beta, int incx,
-         int incy, int lda) {
+int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, int k, fp alpha, fp beta,
+         int incx, int incy, int lda) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -76,7 +76,7 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, int k, fp alph
     // Call Reference SBMV.
     const int n_ref = n, incx_ref = incx, incy_ref = incy, lda_ref = lda;
     const int k_ref = k;
-    using fp_ref    = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<fp>::type;
 
     ::sbmv(convert_to_cblas_uplo(upper_lower), &n_ref, &k_ref, (fp_ref *)&alpha, (fp_ref *)A.data(),
            &lda_ref, (fp_ref *)x.data(), &incx_ref, (fp_ref *)&beta, (fp_ref *)y_ref.data(),
@@ -86,8 +86,8 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, int k, fp alph
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::sbmv(main_queue, upper_lower, n, k, alpha, A.data(), lda, x.data(),
-                                  incx, beta, y.data(), incy, dependencies);
+        done = oneapi::mkl::blas::sbmv(main_queue, upper_lower, n, k, alpha, A.data(), lda,
+                                       x.data(), incx, beta, y.data(), incy, dependencies);
         done.wait();
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::sbmv,
@@ -122,24 +122,34 @@ class SbmvUsmTests : public ::testing::TestWithParam<cl::sycl::device> {};
 TEST_P(SbmvUsmTests, RealSinglePrecision) {
     float alpha(2.0);
     float beta(3.0);
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, 2, 3, 42));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 2, 3, 42));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, -2, -3, 42));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, -2, -3, 42));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, 1, 1, 42));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 1, 1, 42));
+    EXPECT_TRUEORSKIP(
+        test<float>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, 2, 3, 42));
+    EXPECT_TRUEORSKIP(
+        test<float>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 2, 3, 42));
+    EXPECT_TRUEORSKIP(
+        test<float>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, -2, -3, 42));
+    EXPECT_TRUEORSKIP(
+        test<float>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, -2, -3, 42));
+    EXPECT_TRUEORSKIP(
+        test<float>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, 1, 1, 42));
+    EXPECT_TRUEORSKIP(
+        test<float>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 1, 1, 42));
 }
 TEST_P(SbmvUsmTests, RealDoublePrecision) {
     double alpha(2.0);
     double beta(3.0);
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, 2, 3, 42));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 2, 3, 42));
+    EXPECT_TRUEORSKIP(
+        test<double>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, 2, 3, 42));
+    EXPECT_TRUEORSKIP(
+        test<double>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 2, 3, 42));
     EXPECT_TRUEORSKIP(
         test<double>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, -2, -3, 42));
     EXPECT_TRUEORSKIP(
         test<double>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, -2, -3, 42));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, 1, 1, 42));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 1, 1, 42));
+    EXPECT_TRUEORSKIP(
+        test<double>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, 1, 1, 42));
+    EXPECT_TRUEORSKIP(
+        test<double>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 1, 1, 42));
 }
 
 INSTANTIATE_TEST_SUITE_P(SbmvUsmTestSuite, SbmvUsmTests, ::testing::ValuesIn(devices),

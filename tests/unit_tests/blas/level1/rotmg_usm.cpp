@@ -67,11 +67,11 @@ int test(const device &dev) {
     vector<fp, decltype(ua)> param(5, fp(0), ua), param_ref(5, fp(0), ua);
     fp d1, d2, x1, y1, d1_ref, d2_ref, x1_ref;
 
-    d1     = rand_scalar<fp>();
-    d1     = abs(d1);
-    d2     = rand_scalar<fp>();
-    x1     = rand_scalar<fp>();
-    y1     = rand_scalar<fp>();
+    d1 = rand_scalar<fp>();
+    d1 = abs(d1);
+    d2 = rand_scalar<fp>();
+    x1 = rand_scalar<fp>();
+    y1 = rand_scalar<fp>();
     d1_ref = d1;
     d2_ref = d2;
     x1_ref = x1;
@@ -84,13 +84,14 @@ int test(const device &dev) {
     fp *d1_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), dev, cxt);
     fp *d2_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), dev, cxt);
     fp *x1_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), dev, cxt);
-    d1_p[0]  = d1;
-    d2_p[0]  = d2;
-    x1_p[0]  = x1;
+    d1_p[0] = d1;
+    d2_p[0] = d2;
+    x1_p[0] = x1;
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::rotmg(main_queue, d1_p, d2_p, x1_p, y1, param.data(), dependencies);
+        done =
+            oneapi::mkl::blas::rotmg(main_queue, d1_p, d2_p, x1_p, y1, param.data(), dependencies);
         done.wait();
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::rotmg,
@@ -114,11 +115,11 @@ int test(const device &dev) {
 
     // Compare the results of reference implementation and DPC++ implementation.
 
-    bool good_d1    = check_equal(d1_p[0], d1_ref, 1, std::cout);
-    bool good_d2    = check_equal(d2_p[0], d2_ref, 1, std::cout);
-    bool good_x1    = check_equal(x1_p[0], x1_ref, 1, std::cout);
+    bool good_d1 = check_equal(d1_p[0], d1_ref, 1, std::cout);
+    bool good_d2 = check_equal(d2_p[0], d2_ref, 1, std::cout);
+    bool good_x1 = check_equal(x1_p[0], x1_ref, 1, std::cout);
     bool good_param = check_equal_vector(param, param_ref, 5, 1, 1, std::cout);
-    bool good       = good_d1 && good_d2 && good_x1 && good_param;
+    bool good = good_d1 && good_d2 && good_x1 && good_param;
 
     oneapi::mkl::free_shared(d1_p, cxt);
     oneapi::mkl::free_shared(d2_p, cxt);

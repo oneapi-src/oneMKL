@@ -72,7 +72,7 @@ int test(const device &dev, int N, int incx, int incy, fp_scalar c, fp_scalar s)
     auto y_ref = y;
 
     // Call Reference ROT.
-    using fp_ref    = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<fp>::type;
     const int N_ref = N, incx_ref = incx, incy_ref = incy;
 
     ::rot(&N_ref, (fp_ref *)x_ref.data(), &incx_ref, (fp_ref *)y_ref.data(), &incy_ref,
@@ -82,7 +82,8 @@ int test(const device &dev, int N, int incx, int incy, fp_scalar c, fp_scalar s)
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::rot(main_queue, N, x.data(), incx, y.data(), incy, c, s, dependencies);
+        done = oneapi::mkl::blas::rot(main_queue, N, x.data(), incx, y.data(), incy, c, s,
+                                      dependencies);
         done.wait();
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::rot,
@@ -108,7 +109,7 @@ int test(const device &dev, int N, int incx, int incy, fp_scalar c, fp_scalar s)
 
     bool good_x = check_equal_vector(x, x_ref, N, incx, N, std::cout);
     bool good_y = check_equal_vector(y, y_ref, N, incy, N, std::cout);
-    bool good   = good_x && good_y;
+    bool good = good_x && good_y;
 
     return (int)good;
 }

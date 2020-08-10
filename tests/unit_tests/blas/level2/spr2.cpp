@@ -83,7 +83,7 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp alpha, int 
     try {
 #ifdef CALL_RT_API
         oneapi::mkl::blas::spr2(main_queue, upper_lower, n, alpha, x_buffer, incx, y_buffer, incy,
-                           A_buffer);
+                                A_buffer);
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::spr2,
                     (main_queue, upper_lower, n, alpha, x_buffer, incx, y_buffer, incy, A_buffer));
@@ -107,7 +107,7 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp alpha, int 
     bool good;
     {
         auto A_accessor = A_buffer.template get_access<access::mode::read>();
-        good            = check_equal_matrix(A_accessor, A_ref, n, n, n, n, std::cout);
+        good = check_equal_matrix(A_accessor, A_ref, n, n, n, n, std::cout);
     }
 
     return (int)good;

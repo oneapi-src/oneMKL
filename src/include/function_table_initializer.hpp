@@ -28,19 +28,19 @@
 #define SPEC_VERSION 1
 
 #ifdef __linux__
-    #include <dlfcn.h>
-    #define LIB_TYPE                 void *
-    #define GET_LIB_HANDLE(libname)  dlopen((libname), RTLD_LAZY | RTLD_GLOBAL)
-    #define GET_FUNC(lib, fn)        dlsym(lib, (fn))
-    #define FREE_LIB_HANDLE(libname) dlclose(libname)
-    #define ERROR_MSG                dlerror()
+#include <dlfcn.h>
+#define LIB_TYPE                 void *
+#define GET_LIB_HANDLE(libname)  dlopen((libname), RTLD_LAZY | RTLD_GLOBAL)
+#define GET_FUNC(lib, fn)        dlsym(lib, (fn))
+#define FREE_LIB_HANDLE(libname) dlclose(libname)
+#define ERROR_MSG                dlerror()
 #elif defined(_WIN64)
-    #include <windows.h>
-    #define LIB_TYPE                 HINSTANCE
-    #define GET_LIB_HANDLE(libname)  LoadLibrary(libname)
-    #define GET_FUNC(lib, fn)        GetProcAddress((lib), (fn))
-    #define FREE_LIB_HANDLE(libname) FreeLibrary(libname)
-    #define ERROR_MSG                GetLastErrorStdStr()
+#include <windows.h>
+#define LIB_TYPE                 HINSTANCE
+#define GET_LIB_HANDLE(libname)  LoadLibrary(libname)
+#define GET_FUNC(lib, fn)        GetProcAddress((lib), (fn))
+#define FREE_LIB_HANDLE(libname) FreeLibrary(libname)
+#define ERROR_MSG                GetLastErrorStdStr()
 #endif
 
 namespace oneapi {
@@ -92,7 +92,7 @@ private:
     function_table_t &add_table(oneapi::mkl::device key) {
         dlhandle handle;
         // check all available libraries for the key(device)
-        for (const char* libname : libraries[domain_id][key]) {
+        for (const char *libname : libraries[domain_id][key]) {
             handle = dlhandle{ ::GET_LIB_HANDLE(libname) };
             if (handle)
                 break;
@@ -112,7 +112,7 @@ private:
             throw std::runtime_error{ "Loaded oneMKL specification version mismatch" };
 
         handles[key] = std::move(handle);
-        tables[key]  = *t;
+        tables[key] = *t;
         return *t;
     }
 

@@ -36,25 +36,25 @@ enum class offset : char { row = 0, column = 1, fix = 2, R = 0, C = 1, F = 2 };
 
 // LAPACK flag types.
 enum class job : char {
-    novec        = 0,
-    vec          = 1,
-    updatevec    = 2,
-    allvec       = 3,
-    somevec      = 4,
+    novec = 0,
+    vec = 1,
+    updatevec = 2,
+    allvec = 3,
+    somevec = 4,
     overwritevec = 5,
-    N            = 0,
-    V            = 1,
-    U            = 2,
-    A            = 3,
-    S            = 4,
-    O            = 5
+    N = 0,
+    V = 1,
+    U = 2,
+    A = 3,
+    S = 4,
+    O = 5
 };
 
 enum class generate : char { q = 0, p = 1, none = 2, both = 3, Q = 0, P = 1, N = 2, V = 3 };
 
 enum class index_base : char {
     zero = 0,
-    one  = 1,
+    one = 1,
 };
 
 } //namespace mkl

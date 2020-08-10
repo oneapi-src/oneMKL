@@ -34,12 +34,12 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
                 float beta, cl::sycl::buffer<float, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc   = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc   = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc   = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<cl::sycl::access::mode::read>(cgh);
+        auto c_acc = c.get_access<cl::sycl::access::mode::read_write>(cgh);
         char transa_ = *fortran_char(transa);
         char transb_ = *fortran_char(transb);
-        MKL_INT one  = 1;
+        MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_sgemm_batch_stride>(cgh, [=]() {
             float **a_array = (float **)::malloc(sizeof(float *) * batch_size);
@@ -85,12 +85,12 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
                 double beta, cl::sycl::buffer<double, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc   = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc   = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc   = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<cl::sycl::access::mode::read>(cgh);
+        auto c_acc = c.get_access<cl::sycl::access::mode::read_write>(cgh);
         char transa_ = *fortran_char(transa);
         char transb_ = *fortran_char(transb);
-        MKL_INT one  = 1;
+        MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_dgemm_batch_stride>(cgh, [=]() {
             double **a_array = (double **)::malloc(sizeof(double *) * batch_size);
@@ -137,12 +137,12 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
                 cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc   = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc   = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc   = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<cl::sycl::access::mode::read>(cgh);
+        auto c_acc = c.get_access<cl::sycl::access::mode::read_write>(cgh);
         char transa_ = *fortran_char(transa);
         char transb_ = *fortran_char(transb);
-        MKL_INT one  = 1;
+        MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_cgemm_batch_stride>(cgh, [=]() {
             MKL_Complex8 **a_array = (MKL_Complex8 **)::malloc(sizeof(MKL_Complex8 *) * batch_size);
@@ -189,12 +189,12 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
                 cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc   = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc   = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc   = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<cl::sycl::access::mode::read>(cgh);
+        auto c_acc = c.get_access<cl::sycl::access::mode::read_write>(cgh);
         char transa_ = *fortran_char(transa);
         char transb_ = *fortran_char(transb);
-        MKL_INT one  = 1;
+        MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_zgemm_batch_stride>(cgh, [=]() {
             MKL_Complex16 **a_array =
@@ -242,12 +242,12 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 int64_t lda, int64_t stride_a, cl::sycl::buffer<float, 1> &b, int64_t ldb,
                 int64_t stride_b, int64_t batch_size) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc  = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc  = b.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<cl::sycl::access::mode::read_write>(cgh);
         char trans_ = *fortran_char(trans);
-        char side_  = *fortran_char(left_right);
-        char uplo_  = *fortran_char(upper_lower);
-        char diag_  = *fortran_char(unit_diag);
+        char side_ = *fortran_char(left_right);
+        char uplo_ = *fortran_char(upper_lower);
+        char diag_ = *fortran_char(unit_diag);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_strsm_batch_stride>(cgh, [=]() {
@@ -287,12 +287,12 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 int64_t lda, int64_t stride_a, cl::sycl::buffer<double, 1> &b, int64_t ldb,
                 int64_t stride_b, int64_t batch_size) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc  = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc  = b.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<cl::sycl::access::mode::read_write>(cgh);
         char trans_ = *fortran_char(trans);
-        char side_  = *fortran_char(left_right);
-        char uplo_  = *fortran_char(upper_lower);
-        char diag_  = *fortran_char(unit_diag);
+        char side_ = *fortran_char(left_right);
+        char uplo_ = *fortran_char(upper_lower);
+        char diag_ = *fortran_char(unit_diag);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_dtrsm_batch_stride>(cgh, [=]() {
@@ -333,12 +333,12 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, int64_t stride_b,
                 int64_t batch_size) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc  = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc  = b.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<cl::sycl::access::mode::read_write>(cgh);
         char trans_ = *fortran_char(trans);
-        char side_  = *fortran_char(left_right);
-        char uplo_  = *fortran_char(upper_lower);
-        char diag_  = *fortran_char(unit_diag);
+        char side_ = *fortran_char(left_right);
+        char uplo_ = *fortran_char(upper_lower);
+        char diag_ = *fortran_char(unit_diag);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_ctrsm_batch_stride>(cgh, [=]() {
@@ -379,12 +379,12 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, int64_t stride_b,
                 int64_t batch_size) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc  = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc  = b.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<cl::sycl::access::mode::read_write>(cgh);
         char trans_ = *fortran_char(trans);
-        char side_  = *fortran_char(left_right);
-        char uplo_  = *fortran_char(upper_lower);
-        char diag_  = *fortran_char(unit_diag);
+        char side_ = *fortran_char(left_right);
+        char uplo_ = *fortran_char(upper_lower);
+        char diag_ = *fortran_char(unit_diag);
         MKL_INT one = 1;
         host_task<class mkl_kernel_init_ztrsm_batch_stride>(cgh, [=]() {
             MKL_Complex16 **a_array =
@@ -576,7 +576,7 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
         }
         const char transa_ = *fortran_char(transa);
         const char transb_ = *fortran_char(transb);
-        MKL_INT one        = 1;
+        MKL_INT one = 1;
         host_task<class mkl_kernel_sgemm_batch_usm>(cgh, [=]() {
             float **a_array = (float **)::malloc(sizeof(float *) * batch_size);
             float **b_array = (float **)::malloc(sizeof(float *) * batch_size);
@@ -627,7 +627,7 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
         }
         const char transa_ = *fortran_char(transa);
         const char transb_ = *fortran_char(transb);
-        MKL_INT one        = 1;
+        MKL_INT one = 1;
         host_task<class mkl_kernel_dgemm_batch_usm>(cgh, [=]() {
             double **a_array = (double **)::malloc(sizeof(double *) * batch_size);
             double **b_array = (double **)::malloc(sizeof(double *) * batch_size);
@@ -679,7 +679,7 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
         }
         const char transa_ = *fortran_char(transa);
         const char transb_ = *fortran_char(transb);
-        MKL_INT one        = 1;
+        MKL_INT one = 1;
         host_task<class mkl_kernel_cgemm_batch_usm>(cgh, [=]() {
             std::complex<float> **a_array =
                 (std::complex<float> **)::malloc(sizeof(std::complex<float> *) * batch_size);
@@ -734,7 +734,7 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
         }
         const char transa_ = *fortran_char(transa);
         const char transb_ = *fortran_char(transb);
-        MKL_INT one        = 1;
+        MKL_INT one = 1;
         host_task<class mkl_kernel_zgemm_batch_usm>(cgh, [=]() {
             std::complex<double> **a_array =
                 (std::complex<double> **)::malloc(sizeof(std::complex<double> *) * batch_size);

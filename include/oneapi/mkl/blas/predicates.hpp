@@ -39,7 +39,7 @@ inline void herk_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               float beta, cl::sycl::buffer<std::complex<float>, 1> &c,
                               std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -49,7 +49,7 @@ inline void herk_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                float beta, cl::sycl::buffer<std::complex<float>, 1> &c,
                                std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -59,7 +59,7 @@ inline void herk_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               double beta, cl::sycl::buffer<std::complex<double>, 1> &c,
                               std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -69,91 +69,91 @@ inline void herk_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                double beta, cl::sycl::buffer<std::complex<double>, 1> &c,
                                std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
 inline void scal_precondition(cl::sycl::queue &queue, std::int64_t n, float alpha,
                               cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
 inline void scal_postcondition(cl::sycl::queue &queue, std::int64_t n, float alpha,
                                cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
 inline void scal_precondition(cl::sycl::queue &queue, std::int64_t n, double alpha,
                               cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
 inline void scal_postcondition(cl::sycl::queue &queue, std::int64_t n, double alpha,
                                cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
 inline void scal_precondition(cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
                               cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
 inline void scal_postcondition(cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
                                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
 inline void scal_precondition(cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
                               cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
 inline void scal_postcondition(cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
                                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
 inline void scal_precondition(cl::sycl::queue &queue, std::int64_t n, float alpha,
                               cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
 inline void scal_postcondition(cl::sycl::queue &queue, std::int64_t n, float alpha,
                                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
 inline void scal_precondition(cl::sycl::queue &queue, std::int64_t n, double alpha,
                               cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
 inline void scal_postcondition(cl::sycl::queue &queue, std::int64_t n, double alpha,
                                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -161,7 +161,7 @@ inline void trmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               diag unit_diag, std::int64_t n, cl::sycl::buffer<float, 1> &a,
                               std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -169,7 +169,7 @@ inline void trmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                diag unit_diag, std::int64_t n, cl::sycl::buffer<float, 1> &a,
                                std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -177,7 +177,7 @@ inline void trmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               diag unit_diag, std::int64_t n, cl::sycl::buffer<double, 1> &a,
                               std::int64_t lda, cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -186,7 +186,7 @@ inline void trmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::int64_t lda, cl::sycl::buffer<double, 1> &x,
                                std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -195,7 +195,7 @@ inline void trmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -204,7 +204,7 @@ inline void trmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -213,7 +213,7 @@ inline void trmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -222,7 +222,7 @@ inline void trmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -230,7 +230,7 @@ inline void tpmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               diag unit_diag, std::int64_t n, cl::sycl::buffer<float, 1> &a,
                               cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -238,7 +238,7 @@ inline void tpmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                diag unit_diag, std::int64_t n, cl::sycl::buffer<float, 1> &a,
                                cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -246,7 +246,7 @@ inline void tpmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               diag unit_diag, std::int64_t n, cl::sycl::buffer<double, 1> &a,
                               cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -254,7 +254,7 @@ inline void tpmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                diag unit_diag, std::int64_t n, cl::sycl::buffer<double, 1> &a,
                                cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -263,7 +263,7 @@ inline void tpmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<std::complex<float>, 1> &a,
                               cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -272,7 +272,7 @@ inline void tpmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<std::complex<float>, 1> &a,
                                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -281,7 +281,7 @@ inline void tpmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<std::complex<double>, 1> &a,
                               cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -290,7 +290,7 @@ inline void tpmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<std::complex<double>, 1> &a,
                                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -298,7 +298,7 @@ inline void spr_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int6
                              cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                              cl::sycl::buffer<float, 1> &a) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -306,7 +306,7 @@ inline void spr_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<float, 1> &a) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -314,7 +314,7 @@ inline void spr_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int6
                              cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                              cl::sycl::buffer<double, 1> &a) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -322,7 +322,7 @@ inline void spr_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               double alpha, cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<double, 1> &a) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -334,7 +334,7 @@ inline void gemm_batch_precondition(cl::sycl::queue &queue, transpose transa, tr
                                     cl::sycl::buffer<float, 1> &c, std::int64_t ldc,
                                     std::int64_t stride_c, std::int64_t batch_size) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -346,7 +346,7 @@ inline void gemm_batch_postcondition(cl::sycl::queue &queue, transpose transa, t
                                      cl::sycl::buffer<float, 1> &c, std::int64_t ldc,
                                      std::int64_t stride_c, std::int64_t batch_size) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -358,7 +358,7 @@ inline void gemm_batch_precondition(cl::sycl::queue &queue, transpose transa, tr
                                     cl::sycl::buffer<double, 1> &c, std::int64_t ldc,
                                     std::int64_t stride_c, std::int64_t batch_size) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -370,7 +370,7 @@ inline void gemm_batch_postcondition(cl::sycl::queue &queue, transpose transa, t
                                      cl::sycl::buffer<double, 1> &c, std::int64_t ldc,
                                      std::int64_t stride_c, std::int64_t batch_size) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -384,7 +384,7 @@ inline void gemm_batch_precondition(cl::sycl::queue &queue, transpose transa, tr
                                     cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc,
                                     std::int64_t stride_c, std::int64_t batch_size) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -398,7 +398,7 @@ inline void gemm_batch_postcondition(cl::sycl::queue &queue, transpose transa, t
                                      cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc,
                                      std::int64_t stride_c, std::int64_t batch_size) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -412,7 +412,7 @@ inline void gemm_batch_precondition(cl::sycl::queue &queue, transpose transa, tr
                                     cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc,
                                     std::int64_t stride_c, std::int64_t batch_size) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -426,7 +426,7 @@ inline void gemm_batch_postcondition(cl::sycl::queue &queue, transpose transa, t
                                      cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc,
                                      std::int64_t stride_c, std::int64_t batch_size) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -435,7 +435,7 @@ inline void syrk_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<float, 1> &a, std::int64_t lda, float beta,
                               cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -444,7 +444,7 @@ inline void syrk_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<float, 1> &a, std::int64_t lda, float beta,
                                cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -453,7 +453,7 @@ inline void syrk_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<double, 1> &a, std::int64_t lda, double beta,
                               cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -462,7 +462,7 @@ inline void syrk_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<double, 1> &a, std::int64_t lda, double beta,
                                cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -472,7 +472,7 @@ inline void syrk_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c,
                               std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -482,7 +482,7 @@ inline void syrk_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<float> beta,
                                cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -492,7 +492,7 @@ inline void syrk_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::complex<double> beta,
                               cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -502,7 +502,7 @@ inline void syrk_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<double> beta,
                                cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -512,7 +512,7 @@ inline void her2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -522,7 +522,7 @@ inline void her2_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -532,7 +532,7 @@ inline void her2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -542,7 +542,7 @@ inline void her2_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -553,7 +553,7 @@ inline void hbmv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &y,
                               std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -564,7 +564,7 @@ inline void hbmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::complex<float> beta,
                                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -575,7 +575,7 @@ inline void hbmv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<double> beta,
                               cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -586,7 +586,7 @@ inline void hbmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::complex<double> beta,
                                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -595,7 +595,7 @@ inline void rot_precondition(cl::sycl::queue &queue, std::int64_t n,
                              cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
                              float c, float s) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -604,7 +604,7 @@ inline void rot_postcondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
                               float c, float s) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -613,7 +613,7 @@ inline void rot_precondition(cl::sycl::queue &queue, std::int64_t n,
                              cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
                              double c, double s) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -622,7 +622,7 @@ inline void rot_postcondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
                               double c, double s) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -630,7 +630,7 @@ inline void rot_precondition(cl::sycl::queue &queue, std::int64_t n, cl::sycl::b
                              std::int64_t incx, cl::sycl::buffer<float, 1> &y, std::int64_t incy,
                              float c, float s) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -638,7 +638,7 @@ inline void rot_postcondition(cl::sycl::queue &queue, std::int64_t n, cl::sycl::
                               std::int64_t incx, cl::sycl::buffer<float, 1> &y, std::int64_t incy,
                               float c, float s) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -646,7 +646,7 @@ inline void rot_precondition(cl::sycl::queue &queue, std::int64_t n, cl::sycl::b
                              std::int64_t incx, cl::sycl::buffer<double, 1> &y, std::int64_t incy,
                              double c, double s) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -655,7 +655,7 @@ inline void rot_postcondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<double, 1> &y, std::int64_t incy, double c,
                               double s) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -663,7 +663,7 @@ inline void axpy_precondition(cl::sycl::queue &queue, std::int64_t n, float alph
                               cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -671,7 +671,7 @@ inline void axpy_postcondition(cl::sycl::queue &queue, std::int64_t n, float alp
                                cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -679,7 +679,7 @@ inline void axpy_precondition(cl::sycl::queue &queue, std::int64_t n, double alp
                               cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -687,7 +687,7 @@ inline void axpy_postcondition(cl::sycl::queue &queue, std::int64_t n, double al
                                cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -695,7 +695,7 @@ inline void axpy_precondition(cl::sycl::queue &queue, std::int64_t n, std::compl
                               cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -703,7 +703,7 @@ inline void axpy_postcondition(cl::sycl::queue &queue, std::int64_t n, std::comp
                                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -711,7 +711,7 @@ inline void axpy_precondition(cl::sycl::queue &queue, std::int64_t n, std::compl
                               cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -719,7 +719,7 @@ inline void axpy_postcondition(cl::sycl::queue &queue, std::int64_t n, std::comp
                                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -729,7 +729,7 @@ inline void gerc_precondition(cl::sycl::queue &queue, std::int64_t m, std::int64
                               cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -739,7 +739,7 @@ inline void gerc_postcondition(cl::sycl::queue &queue, std::int64_t m, std::int6
                                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -749,7 +749,7 @@ inline void gerc_precondition(cl::sycl::queue &queue, std::int64_t m, std::int64
                               cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -759,7 +759,7 @@ inline void gerc_postcondition(cl::sycl::queue &queue, std::int64_t m, std::int6
                                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -769,7 +769,7 @@ inline void syr2k_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
                                cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -779,7 +779,7 @@ inline void syr2k_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
                                 cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -789,7 +789,7 @@ inline void syr2k_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
                                cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -799,7 +799,7 @@ inline void syr2k_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
                                 cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -810,7 +810,7 @@ inline void syr2k_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<float> beta,
                                cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -821,7 +821,7 @@ inline void syr2k_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 std::complex<float> beta,
                                 cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -832,7 +832,7 @@ inline void syr2k_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<double> beta,
                                cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -843,7 +843,7 @@ inline void syr2k_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 std::complex<double> beta,
                                 cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -852,7 +852,7 @@ inline void gemv_precondition(cl::sycl::queue &queue, transpose trans, std::int6
                               std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                               float beta, cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -861,7 +861,7 @@ inline void gemv_postcondition(cl::sycl::queue &queue, transpose trans, std::int
                                std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                                float beta, cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -870,7 +870,7 @@ inline void gemv_precondition(cl::sycl::queue &queue, transpose trans, std::int6
                               std::int64_t lda, cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                               double beta, cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -879,7 +879,7 @@ inline void gemv_postcondition(cl::sycl::queue &queue, transpose trans, std::int
                                std::int64_t lda, cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                                double beta, cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -890,7 +890,7 @@ inline void gemv_precondition(cl::sycl::queue &queue, transpose trans, std::int6
                               std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &y,
                               std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -901,7 +901,7 @@ inline void gemv_postcondition(cl::sycl::queue &queue, transpose trans, std::int
                                std::complex<float> beta,
                                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -912,7 +912,7 @@ inline void gemv_precondition(cl::sycl::queue &queue, transpose trans, std::int6
                               std::complex<double> beta,
                               cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -923,7 +923,7 @@ inline void gemv_postcondition(cl::sycl::queue &queue, transpose trans, std::int
                                std::complex<double> beta,
                                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -931,7 +931,7 @@ inline void her_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int6
                              cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                              cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -939,7 +939,7 @@ inline void her_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -947,7 +947,7 @@ inline void her_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int6
                              cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
                              cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -956,7 +956,7 @@ inline void her_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::int64_t incx, cl::sycl::buffer<std::complex<double>, 1> &a,
                               std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -964,7 +964,7 @@ inline void hpr_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int6
                              cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                              cl::sycl::buffer<std::complex<float>, 1> &a) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -972,7 +972,7 @@ inline void hpr_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<std::complex<float>, 1> &a) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -980,7 +980,7 @@ inline void hpr_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int6
                              cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
                              cl::sycl::buffer<std::complex<double>, 1> &a) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -988,7 +988,7 @@ inline void hpr_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               double alpha, cl::sycl::buffer<std::complex<double>, 1> &x,
                               std::int64_t incx, cl::sycl::buffer<std::complex<double>, 1> &a) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -998,7 +998,7 @@ inline void gemm_ext_precondition(cl::sycl::queue &queue, transpose transa, tran
                                   cl::sycl::buffer<half, 1> &b, std::int64_t ldb, float beta,
                                   cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1008,7 +1008,7 @@ inline void gemm_ext_postcondition(cl::sycl::queue &queue, transpose transa, tra
                                    cl::sycl::buffer<half, 1> &b, std::int64_t ldb, float beta,
                                    cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1019,7 +1019,7 @@ inline void gemm_ext_precondition(cl::sycl::queue &queue, transpose transa, tran
                                   uint8_t bo, float beta, cl::sycl::buffer<int32_t, 1> &c,
                                   std::int64_t ldc, cl::sycl::buffer<int32_t, 1> &co) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1030,7 +1030,7 @@ inline void gemm_ext_postcondition(cl::sycl::queue &queue, transpose transa, tra
                                    uint8_t bo, float beta, cl::sycl::buffer<int32_t, 1> &c,
                                    std::int64_t ldc, cl::sycl::buffer<int32_t, 1> &co) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1040,7 +1040,7 @@ inline void gemm_ext_precondition(cl::sycl::queue &queue, transpose transa, tran
                                   cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
                                   cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1050,7 +1050,7 @@ inline void gemm_ext_postcondition(cl::sycl::queue &queue, transpose transa, tra
                                    cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
                                    cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1060,7 +1060,7 @@ inline void gemm_ext_precondition(cl::sycl::queue &queue, transpose transa, tran
                                   cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
                                   cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1070,7 +1070,7 @@ inline void gemm_ext_postcondition(cl::sycl::queue &queue, transpose transa, tra
                                    cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
                                    cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1082,7 +1082,7 @@ inline void gemm_ext_precondition(cl::sycl::queue &queue, transpose transa, tran
                                   std::complex<float> beta,
                                   cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1094,7 +1094,7 @@ inline void gemm_ext_postcondition(cl::sycl::queue &queue, transpose transa, tra
                                    std::complex<float> beta,
                                    cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1106,7 +1106,7 @@ inline void gemm_ext_precondition(cl::sycl::queue &queue, transpose transa, tran
                                   std::complex<double> beta,
                                   cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1118,7 +1118,7 @@ inline void gemm_ext_postcondition(cl::sycl::queue &queue, transpose transa, tra
                                    std::complex<double> beta,
                                    cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1128,7 +1128,7 @@ inline void gemm_ext_precondition(cl::sycl::queue &queue, transpose transa, tran
                                   cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
                                   cl::sycl::buffer<half, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1138,7 +1138,7 @@ inline void gemm_ext_postcondition(cl::sycl::queue &queue, transpose transa, tra
                                    cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
                                    cl::sycl::buffer<half, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1146,7 +1146,7 @@ inline void iamin_precondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<std::int64_t, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1154,7 +1154,7 @@ inline void iamin_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                 cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                                 cl::sycl::buffer<std::int64_t, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1162,7 +1162,7 @@ inline void iamin_precondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<std::int64_t, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1170,7 +1170,7 @@ inline void iamin_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                 cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                                 cl::sycl::buffer<std::int64_t, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1178,7 +1178,7 @@ inline void iamin_precondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<std::int64_t, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1186,7 +1186,7 @@ inline void iamin_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                 cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                                 cl::sycl::buffer<std::int64_t, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1194,7 +1194,7 @@ inline void iamin_precondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<std::int64_t, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1202,7 +1202,7 @@ inline void iamin_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                 cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
                                 cl::sycl::buffer<std::int64_t, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1213,7 +1213,7 @@ inline void hpmv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &y,
                               std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1224,7 +1224,7 @@ inline void hpmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::complex<float> beta,
                                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1235,7 +1235,7 @@ inline void hpmv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<double> beta,
                               cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1246,7 +1246,7 @@ inline void hpmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::complex<double> beta,
                                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1255,7 +1255,7 @@ inline void spmv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::int64_t incx, float beta, cl::sycl::buffer<float, 1> &y,
                               std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1264,7 +1264,7 @@ inline void spmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
                                cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1273,7 +1273,7 @@ inline void spmv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
                               cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1282,7 +1282,7 @@ inline void spmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
                                cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1290,7 +1290,7 @@ inline void rotmg_precondition(cl::sycl::queue &queue, cl::sycl::buffer<float, 1
                                cl::sycl::buffer<float, 1> &d2, cl::sycl::buffer<float, 1> &x1,
                                float y1, cl::sycl::buffer<float, 1> &param) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1298,7 +1298,7 @@ inline void rotmg_postcondition(cl::sycl::queue &queue, cl::sycl::buffer<float, 
                                 cl::sycl::buffer<float, 1> &d2, cl::sycl::buffer<float, 1> &x1,
                                 float y1, cl::sycl::buffer<float, 1> &param) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1306,7 +1306,7 @@ inline void rotmg_precondition(cl::sycl::queue &queue, cl::sycl::buffer<double, 
                                cl::sycl::buffer<double, 1> &d2, cl::sycl::buffer<double, 1> &x1,
                                double y1, cl::sycl::buffer<double, 1> &param) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1314,14 +1314,14 @@ inline void rotmg_postcondition(cl::sycl::queue &queue, cl::sycl::buffer<double,
                                 cl::sycl::buffer<double, 1> &d2, cl::sycl::buffer<double, 1> &x1,
                                 double y1, cl::sycl::buffer<double, 1> &param) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
 inline void swap_precondition(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
                               std::int64_t incx, cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1329,7 +1329,7 @@ inline void swap_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1337,7 +1337,7 @@ inline void swap_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1345,7 +1345,7 @@ inline void swap_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1353,7 +1353,7 @@ inline void swap_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1361,7 +1361,7 @@ inline void swap_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1369,7 +1369,7 @@ inline void swap_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1377,7 +1377,7 @@ inline void swap_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1387,7 +1387,7 @@ inline void geru_precondition(cl::sycl::queue &queue, std::int64_t m, std::int64
                               cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1397,7 +1397,7 @@ inline void geru_postcondition(cl::sycl::queue &queue, std::int64_t m, std::int6
                                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1407,7 +1407,7 @@ inline void geru_precondition(cl::sycl::queue &queue, std::int64_t m, std::int64
                               cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1417,7 +1417,7 @@ inline void geru_postcondition(cl::sycl::queue &queue, std::int64_t m, std::int6
                                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1425,7 +1425,7 @@ inline void nrm2_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<float, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1433,7 +1433,7 @@ inline void nrm2_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<float, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1441,7 +1441,7 @@ inline void nrm2_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<double, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1449,14 +1449,14 @@ inline void nrm2_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<double, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
 inline void nrm2_precondition(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
                               std::int64_t incx, cl::sycl::buffer<float, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1464,7 +1464,7 @@ inline void nrm2_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<float, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1472,7 +1472,7 @@ inline void nrm2_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<double, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1480,7 +1480,7 @@ inline void nrm2_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<double, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1490,7 +1490,7 @@ inline void gemmt_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
                                cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1500,7 +1500,7 @@ inline void gemmt_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
                                 cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1510,7 +1510,7 @@ inline void gemmt_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
                                cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1520,7 +1520,7 @@ inline void gemmt_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
                                 cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1532,7 +1532,7 @@ inline void gemmt_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<float> beta,
                                cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1544,7 +1544,7 @@ inline void gemmt_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 std::complex<float> beta,
                                 cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1556,7 +1556,7 @@ inline void gemmt_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<double> beta,
                                cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1568,7 +1568,7 @@ inline void gemmt_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 std::complex<double> beta,
                                 cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1578,7 +1578,7 @@ inline void gemm_precondition(cl::sycl::queue &queue, transpose transa, transpos
                               cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
                               cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1588,7 +1588,7 @@ inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpo
                                cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
                                cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1598,7 +1598,7 @@ inline void gemm_precondition(cl::sycl::queue &queue, transpose transa, transpos
                               cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
                               cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1608,7 +1608,7 @@ inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpo
                                cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
                                cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1620,7 +1620,7 @@ inline void gemm_precondition(cl::sycl::queue &queue, transpose transa, transpos
                               std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c,
                               std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1632,7 +1632,7 @@ inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpo
                                std::complex<float> beta,
                                cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1644,7 +1644,7 @@ inline void gemm_precondition(cl::sycl::queue &queue, transpose transa, transpos
                               std::complex<double> beta,
                               cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1656,7 +1656,7 @@ inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpo
                                std::complex<double> beta,
                                cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1666,7 +1666,7 @@ inline void gemm_precondition(cl::sycl::queue &queue, transpose transa, transpos
                               cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
                               cl::sycl::buffer<half, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1676,7 +1676,7 @@ inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpo
                                cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
                                cl::sycl::buffer<half, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1685,7 +1685,7 @@ inline void syr2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               cl::sycl::buffer<float, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<float, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1694,7 +1694,7 @@ inline void syr2_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                cl::sycl::buffer<float, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<float, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1703,7 +1703,7 @@ inline void syr2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               cl::sycl::buffer<double, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<double, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1712,7 +1712,7 @@ inline void syr2_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                cl::sycl::buffer<double, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<double, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1721,7 +1721,7 @@ inline void ger_precondition(cl::sycl::queue &queue, std::int64_t m, std::int64_
                              cl::sycl::buffer<float, 1> &y, std::int64_t incy,
                              cl::sycl::buffer<float, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1730,7 +1730,7 @@ inline void ger_postcondition(cl::sycl::queue &queue, std::int64_t m, std::int64
                               cl::sycl::buffer<float, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<float, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1739,7 +1739,7 @@ inline void ger_precondition(cl::sycl::queue &queue, std::int64_t m, std::int64_
                              cl::sycl::buffer<double, 1> &y, std::int64_t incy,
                              cl::sycl::buffer<double, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1748,7 +1748,7 @@ inline void ger_postcondition(cl::sycl::queue &queue, std::int64_t m, std::int64
                               cl::sycl::buffer<double, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<double, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1757,7 +1757,7 @@ inline void trsm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<float, 1> &b, std::int64_t ldb) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1766,7 +1766,7 @@ inline void trsm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<float, 1> &b, std::int64_t ldb) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1775,7 +1775,7 @@ inline void trsm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<double, 1> &b, std::int64_t ldb) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1784,7 +1784,7 @@ inline void trsm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<double, 1> &b, std::int64_t ldb) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1794,7 +1794,7 @@ inline void trsm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1804,7 +1804,7 @@ inline void trsm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1814,7 +1814,7 @@ inline void trsm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1824,7 +1824,7 @@ inline void trsm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1833,7 +1833,7 @@ inline void dotu_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<std::complex<float>, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1842,7 +1842,7 @@ inline void dotu_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<std::complex<float>, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1851,7 +1851,7 @@ inline void dotu_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<std::complex<double>, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1860,7 +1860,7 @@ inline void dotu_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<std::complex<double>, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1871,7 +1871,7 @@ inline void hemm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c,
                               std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1882,7 +1882,7 @@ inline void hemm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                std::complex<float> beta,
                                cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1893,7 +1893,7 @@ inline void hemm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::complex<double> beta,
                               cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1904,7 +1904,7 @@ inline void hemm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                std::complex<double> beta,
                                cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1914,7 +1914,7 @@ inline void hpr2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<std::complex<float>, 1> &a) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1924,7 +1924,7 @@ inline void hpr2_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<std::complex<float>, 1> &a) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1934,7 +1934,7 @@ inline void hpr2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<std::complex<double>, 1> &a) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1944,7 +1944,7 @@ inline void hpr2_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<std::complex<double>, 1> &a) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1954,7 +1954,7 @@ inline void gbmv_precondition(cl::sycl::queue &queue, transpose trans, std::int6
                               cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
                               cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1964,7 +1964,7 @@ inline void gbmv_postcondition(cl::sycl::queue &queue, transpose trans, std::int
                                cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
                                cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1974,7 +1974,7 @@ inline void gbmv_precondition(cl::sycl::queue &queue, transpose trans, std::int6
                               cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
                               cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -1984,7 +1984,7 @@ inline void gbmv_postcondition(cl::sycl::queue &queue, transpose trans, std::int
                                cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
                                cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -1996,7 +1996,7 @@ inline void gbmv_precondition(cl::sycl::queue &queue, transpose trans, std::int6
                               std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &y,
                               std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2008,7 +2008,7 @@ inline void gbmv_postcondition(cl::sycl::queue &queue, transpose trans, std::int
                                std::complex<float> beta,
                                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2020,7 +2020,7 @@ inline void gbmv_precondition(cl::sycl::queue &queue, transpose trans, std::int6
                               std::complex<double> beta,
                               cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2032,7 +2032,7 @@ inline void gbmv_postcondition(cl::sycl::queue &queue, transpose trans, std::int
                                std::complex<double> beta,
                                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2041,7 +2041,7 @@ inline void tbmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<float, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2050,7 +2050,7 @@ inline void tbmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<float, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2059,7 +2059,7 @@ inline void tbmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<double, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2068,7 +2068,7 @@ inline void tbmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<double, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2077,7 +2077,7 @@ inline void tbmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2086,7 +2086,7 @@ inline void tbmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2095,7 +2095,7 @@ inline void tbmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2104,7 +2104,7 @@ inline void tbmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2114,7 +2114,7 @@ inline void symm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
                               cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2124,7 +2124,7 @@ inline void symm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
                                cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2134,7 +2134,7 @@ inline void symm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
                               cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2144,7 +2144,7 @@ inline void symm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
                                cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2155,7 +2155,7 @@ inline void symm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c,
                               std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2166,7 +2166,7 @@ inline void symm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                std::complex<float> beta,
                                cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2177,7 +2177,7 @@ inline void symm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::complex<double> beta,
                               cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2188,7 +2188,7 @@ inline void symm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                std::complex<double> beta,
                                cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2197,7 +2197,7 @@ inline void dotc_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<std::complex<float>, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2206,7 +2206,7 @@ inline void dotc_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<std::complex<float>, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2215,7 +2215,7 @@ inline void dotc_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<std::complex<double>, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2224,7 +2224,7 @@ inline void dotc_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<std::complex<double>, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2232,7 +2232,7 @@ inline void syr_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int6
                              cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                              cl::sycl::buffer<float, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2240,7 +2240,7 @@ inline void syr_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<float, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2248,7 +2248,7 @@ inline void syr_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int6
                              cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                              cl::sycl::buffer<double, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2256,7 +2256,7 @@ inline void syr_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               double alpha, cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<double, 1> &a, std::int64_t lda) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2265,7 +2265,7 @@ inline void trmm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<float, 1> &b, std::int64_t ldb) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2274,7 +2274,7 @@ inline void trmm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<float, 1> &b, std::int64_t ldb) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2283,7 +2283,7 @@ inline void trmm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<double, 1> &b, std::int64_t ldb) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2292,7 +2292,7 @@ inline void trmm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<double, 1> &b, std::int64_t ldb) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2302,7 +2302,7 @@ inline void trmm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2312,7 +2312,7 @@ inline void trmm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2322,7 +2322,7 @@ inline void trmm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2332,7 +2332,7 @@ inline void trmm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2341,7 +2341,7 @@ inline void symv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
                               cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2350,7 +2350,7 @@ inline void symv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
                                cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2359,7 +2359,7 @@ inline void symv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
                               cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2368,7 +2368,7 @@ inline void symv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
                                cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2376,7 +2376,7 @@ inline void tpsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               diag unit_diag, std::int64_t n, cl::sycl::buffer<float, 1> &a,
                               cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2384,7 +2384,7 @@ inline void tpsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                diag unit_diag, std::int64_t n, cl::sycl::buffer<float, 1> &a,
                                cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2392,7 +2392,7 @@ inline void tpsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               diag unit_diag, std::int64_t n, cl::sycl::buffer<double, 1> &a,
                               cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2400,7 +2400,7 @@ inline void tpsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                diag unit_diag, std::int64_t n, cl::sycl::buffer<double, 1> &a,
                                cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2409,7 +2409,7 @@ inline void tpsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<std::complex<float>, 1> &a,
                               cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2418,7 +2418,7 @@ inline void tpsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<std::complex<float>, 1> &a,
                                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2427,7 +2427,7 @@ inline void tpsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<std::complex<double>, 1> &a,
                               cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2436,7 +2436,7 @@ inline void tpsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<std::complex<double>, 1> &a,
                                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2444,7 +2444,7 @@ inline void trsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               diag unit_diag, std::int64_t n, cl::sycl::buffer<float, 1> &a,
                               std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2452,7 +2452,7 @@ inline void trsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                diag unit_diag, std::int64_t n, cl::sycl::buffer<float, 1> &a,
                                std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2460,7 +2460,7 @@ inline void trsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               diag unit_diag, std::int64_t n, cl::sycl::buffer<double, 1> &a,
                               std::int64_t lda, cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2469,7 +2469,7 @@ inline void trsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::int64_t lda, cl::sycl::buffer<double, 1> &x,
                                std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2478,7 +2478,7 @@ inline void trsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2487,7 +2487,7 @@ inline void trsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2496,7 +2496,7 @@ inline void trsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2505,14 +2505,14 @@ inline void trsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
 inline void copy_precondition(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
                               std::int64_t incx, cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2520,7 +2520,7 @@ inline void copy_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2528,7 +2528,7 @@ inline void copy_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2536,7 +2536,7 @@ inline void copy_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2544,7 +2544,7 @@ inline void copy_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2552,7 +2552,7 @@ inline void copy_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2560,7 +2560,7 @@ inline void copy_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2568,7 +2568,7 @@ inline void copy_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2579,7 +2579,7 @@ inline void hemv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &y,
                               std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2590,7 +2590,7 @@ inline void hemv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::complex<float> beta,
                                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2601,7 +2601,7 @@ inline void hemv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<double> beta,
                               cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2612,7 +2612,7 @@ inline void hemv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::complex<double> beta,
                                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2620,7 +2620,7 @@ inline void iamax_precondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<std::int64_t, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2628,7 +2628,7 @@ inline void iamax_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                 cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                                 cl::sycl::buffer<std::int64_t, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2636,7 +2636,7 @@ inline void iamax_precondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<std::int64_t, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2644,7 +2644,7 @@ inline void iamax_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                 cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                                 cl::sycl::buffer<std::int64_t, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2652,7 +2652,7 @@ inline void iamax_precondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<std::int64_t, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2660,7 +2660,7 @@ inline void iamax_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                 cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                                 cl::sycl::buffer<std::int64_t, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2668,7 +2668,7 @@ inline void iamax_precondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<std::int64_t, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2676,7 +2676,7 @@ inline void iamax_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                 cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
                                 cl::sycl::buffer<std::int64_t, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2685,7 +2685,7 @@ inline void sbmv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                               float beta, cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2694,7 +2694,7 @@ inline void sbmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                                float beta, cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2703,7 +2703,7 @@ inline void sbmv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::int64_t lda, cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                               double beta, cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2712,7 +2712,7 @@ inline void sbmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::int64_t lda, cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                                double beta, cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2720,7 +2720,7 @@ inline void asum_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<float, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2728,7 +2728,7 @@ inline void asum_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<float, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2736,7 +2736,7 @@ inline void asum_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<double, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2744,14 +2744,14 @@ inline void asum_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<double, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
 inline void asum_precondition(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
                               std::int64_t incx, cl::sycl::buffer<float, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2759,7 +2759,7 @@ inline void asum_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<float, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2767,7 +2767,7 @@ inline void asum_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<double, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2775,7 +2775,7 @@ inline void asum_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<double, 1> &x, std::int64_t incx,
                                cl::sycl::buffer<double, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2784,7 +2784,7 @@ inline void tbsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<float, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2793,7 +2793,7 @@ inline void tbsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<float, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2802,7 +2802,7 @@ inline void tbsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<double, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2811,7 +2811,7 @@ inline void tbsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<double, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2820,7 +2820,7 @@ inline void tbsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2829,7 +2829,7 @@ inline void tbsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2838,7 +2838,7 @@ inline void tbsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                               cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2847,7 +2847,7 @@ inline void tbsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2856,7 +2856,7 @@ inline void spr2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               cl::sycl::buffer<float, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<float, 1> &a) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2865,7 +2865,7 @@ inline void spr2_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                cl::sycl::buffer<float, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<float, 1> &a) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2874,7 +2874,7 @@ inline void spr2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               cl::sycl::buffer<double, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<double, 1> &a) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2883,7 +2883,7 @@ inline void spr2_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                cl::sycl::buffer<double, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<double, 1> &a) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2894,7 +2894,7 @@ inline void trsm_batch_precondition(cl::sycl::queue &queue, side left_right, upl
                                     std::int64_t ldb, std::int64_t stride_b,
                                     std::int64_t batch_size) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2905,7 +2905,7 @@ inline void trsm_batch_postcondition(cl::sycl::queue &queue, side left_right, up
                                      cl::sycl::buffer<float, 1> &b, std::int64_t ldb,
                                      std::int64_t stride_b, std::int64_t batch_size) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2916,7 +2916,7 @@ inline void trsm_batch_precondition(cl::sycl::queue &queue, side left_right, upl
                                     std::int64_t ldb, std::int64_t stride_b,
                                     std::int64_t batch_size) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2927,7 +2927,7 @@ inline void trsm_batch_postcondition(cl::sycl::queue &queue, side left_right, up
                                      cl::sycl::buffer<double, 1> &b, std::int64_t ldb,
                                      std::int64_t stride_b, std::int64_t batch_size) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2939,7 +2939,7 @@ inline void trsm_batch_precondition(cl::sycl::queue &queue, side left_right, upl
                                     cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
                                     std::int64_t stride_b, std::int64_t batch_size) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2951,7 +2951,7 @@ inline void trsm_batch_postcondition(cl::sycl::queue &queue, side left_right, up
                                      cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
                                      std::int64_t stride_b, std::int64_t batch_size) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2963,7 +2963,7 @@ inline void trsm_batch_precondition(cl::sycl::queue &queue, side left_right, upl
                                     cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
                                     std::int64_t stride_b, std::int64_t batch_size) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2975,7 +2975,7 @@ inline void trsm_batch_postcondition(cl::sycl::queue &queue, side left_right, up
                                      cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
                                      std::int64_t stride_b, std::int64_t batch_size) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -2983,7 +2983,7 @@ inline void rotm_precondition(cl::sycl::queue &queue, std::int64_t n, cl::sycl::
                               std::int64_t incx, cl::sycl::buffer<float, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<float, 1> &param) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -2992,7 +2992,7 @@ inline void rotm_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<float, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<float, 1> &param) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3001,7 +3001,7 @@ inline void rotm_precondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<double, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<double, 1> &param) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3010,7 +3010,7 @@ inline void rotm_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                cl::sycl::buffer<double, 1> &y, std::int64_t incy,
                                cl::sycl::buffer<double, 1> &param) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3018,7 +3018,7 @@ inline void dot_precondition(cl::sycl::queue &queue, std::int64_t n, cl::sycl::b
                              std::int64_t incx, cl::sycl::buffer<float, 1> &y, std::int64_t incy,
                              cl::sycl::buffer<float, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3026,7 +3026,7 @@ inline void dot_postcondition(cl::sycl::queue &queue, std::int64_t n, cl::sycl::
                               std::int64_t incx, cl::sycl::buffer<float, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<float, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3034,7 +3034,7 @@ inline void dot_precondition(cl::sycl::queue &queue, std::int64_t n, cl::sycl::b
                              std::int64_t incx, cl::sycl::buffer<double, 1> &y, std::int64_t incy,
                              cl::sycl::buffer<double, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3043,7 +3043,7 @@ inline void dot_postcondition(cl::sycl::queue &queue, std::int64_t n,
                               cl::sycl::buffer<double, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<double, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3051,7 +3051,7 @@ inline void dot_precondition(cl::sycl::queue &queue, std::int64_t n, cl::sycl::b
                              std::int64_t incx, cl::sycl::buffer<float, 1> &y, std::int64_t incy,
                              cl::sycl::buffer<double, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3059,7 +3059,7 @@ inline void dot_postcondition(cl::sycl::queue &queue, std::int64_t n, cl::sycl::
                               std::int64_t incx, cl::sycl::buffer<float, 1> &y, std::int64_t incy,
                               cl::sycl::buffer<double, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3068,7 +3068,7 @@ inline void sdsdot_precondition(cl::sycl::queue &queue, std::int64_t n, float sb
                                 cl::sycl::buffer<float, 1> &y, std::int64_t incy,
                                 cl::sycl::buffer<float, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3077,7 +3077,7 @@ inline void sdsdot_postcondition(cl::sycl::queue &queue, std::int64_t n, float s
                                  cl::sycl::buffer<float, 1> &y, std::int64_t incy,
                                  cl::sycl::buffer<float, 1> &result) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3088,7 +3088,7 @@ inline void her2k_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                float beta, cl::sycl::buffer<std::complex<float>, 1> &c,
                                std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3099,7 +3099,7 @@ inline void her2k_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 float beta, cl::sycl::buffer<std::complex<float>, 1> &c,
                                 std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3110,7 +3110,7 @@ inline void her2k_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                double beta, cl::sycl::buffer<std::complex<double>, 1> &c,
                                std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3121,7 +3121,7 @@ inline void her2k_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 double beta, cl::sycl::buffer<std::complex<double>, 1> &c,
                                 std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3129,7 +3129,7 @@ inline void rotg_precondition(cl::sycl::queue &queue, cl::sycl::buffer<float, 1>
                               cl::sycl::buffer<float, 1> &b, cl::sycl::buffer<float, 1> &c,
                               cl::sycl::buffer<float, 1> &s) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3137,7 +3137,7 @@ inline void rotg_postcondition(cl::sycl::queue &queue, cl::sycl::buffer<float, 1
                                cl::sycl::buffer<float, 1> &b, cl::sycl::buffer<float, 1> &c,
                                cl::sycl::buffer<float, 1> &s) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3145,7 +3145,7 @@ inline void rotg_precondition(cl::sycl::queue &queue, cl::sycl::buffer<double, 1
                               cl::sycl::buffer<double, 1> &b, cl::sycl::buffer<double, 1> &c,
                               cl::sycl::buffer<double, 1> &s) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3153,7 +3153,7 @@ inline void rotg_postcondition(cl::sycl::queue &queue, cl::sycl::buffer<double, 
                                cl::sycl::buffer<double, 1> &b, cl::sycl::buffer<double, 1> &c,
                                cl::sycl::buffer<double, 1> &s) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3162,7 +3162,7 @@ inline void rotg_precondition(cl::sycl::queue &queue, cl::sycl::buffer<std::comp
                               cl::sycl::buffer<float, 1> &c,
                               cl::sycl::buffer<std::complex<float>, 1> &s) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3171,7 +3171,7 @@ inline void rotg_postcondition(cl::sycl::queue &queue, cl::sycl::buffer<std::com
                                cl::sycl::buffer<float, 1> &c,
                                cl::sycl::buffer<std::complex<float>, 1> &s) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3180,7 +3180,7 @@ inline void rotg_precondition(cl::sycl::queue &queue, cl::sycl::buffer<std::comp
                               cl::sycl::buffer<double, 1> &c,
                               cl::sycl::buffer<std::complex<double>, 1> &s) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3189,7 +3189,7 @@ inline void rotg_postcondition(cl::sycl::queue &queue, cl::sycl::buffer<std::com
                                cl::sycl::buffer<double, 1> &c,
                                cl::sycl::buffer<std::complex<double>, 1> &s) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3201,7 +3201,7 @@ inline void herk_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::complex<float> *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3211,7 +3211,7 @@ inline void herk_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<float> *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3221,7 +3221,7 @@ inline void herk_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::complex<double> *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3231,7 +3231,7 @@ inline void herk_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<double> *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3239,7 +3239,7 @@ inline void scal_precondition(cl::sycl::queue &queue, std::int64_t n, float alph
                               std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3247,7 +3247,7 @@ inline void scal_postcondition(cl::sycl::queue &queue, std::int64_t n, float alp
                                std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3255,7 +3255,7 @@ inline void scal_precondition(cl::sycl::queue &queue, std::int64_t n, double alp
                               std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3263,7 +3263,7 @@ inline void scal_postcondition(cl::sycl::queue &queue, std::int64_t n, double al
                                std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3271,7 +3271,7 @@ inline void scal_precondition(cl::sycl::queue &queue, std::int64_t n, std::compl
                               std::complex<float> *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3279,7 +3279,7 @@ inline void scal_postcondition(cl::sycl::queue &queue, std::int64_t n, std::comp
                                std::complex<float> *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3287,7 +3287,7 @@ inline void scal_precondition(cl::sycl::queue &queue, std::int64_t n, std::compl
                               std::complex<double> *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3295,7 +3295,7 @@ inline void scal_postcondition(cl::sycl::queue &queue, std::int64_t n, std::comp
                                std::complex<double> *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3303,7 +3303,7 @@ inline void scal_precondition(cl::sycl::queue &queue, std::int64_t n, float alph
                               std::complex<float> *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3311,7 +3311,7 @@ inline void scal_postcondition(cl::sycl::queue &queue, std::int64_t n, float alp
                                std::complex<float> *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3319,7 +3319,7 @@ inline void scal_precondition(cl::sycl::queue &queue, std::int64_t n, double alp
                               std::complex<double> *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3327,7 +3327,7 @@ inline void scal_postcondition(cl::sycl::queue &queue, std::int64_t n, double al
                                std::complex<double> *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3336,7 +3336,7 @@ inline void trmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               float *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3345,7 +3345,7 @@ inline void trmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                float *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3354,7 +3354,7 @@ inline void trmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               double *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3363,7 +3363,7 @@ inline void trmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                double *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3372,7 +3372,7 @@ inline void trmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::int64_t lda, std::complex<float> *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3381,7 +3381,7 @@ inline void trmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::int64_t lda, std::complex<float> *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3390,7 +3390,7 @@ inline void trmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::int64_t lda, std::complex<double> *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3399,7 +3399,7 @@ inline void trmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::int64_t lda, std::complex<double> *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3408,7 +3408,7 @@ inline void tpmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3417,7 +3417,7 @@ inline void tpmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3426,7 +3426,7 @@ inline void tpmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3435,7 +3435,7 @@ inline void tpmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3444,7 +3444,7 @@ inline void tpmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::complex<float> *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3453,7 +3453,7 @@ inline void tpmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<float> *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3462,7 +3462,7 @@ inline void tpmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::complex<double> *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3471,7 +3471,7 @@ inline void tpmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<double> *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3479,7 +3479,7 @@ inline void spr_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int6
                              const float *x, std::int64_t incx, float *a,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3487,7 +3487,7 @@ inline void spr_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               const float *x, std::int64_t incx, float *a,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3495,7 +3495,7 @@ inline void spr_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int6
                              const double *x, std::int64_t incx, double *a,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3503,7 +3503,7 @@ inline void spr_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               double alpha, const double *x, std::int64_t incx, double *a,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3514,7 +3514,7 @@ inline void gemm_batch_precondition(cl::sycl::queue &queue, transpose *transa, t
                                     std::int64_t group_count, std::int64_t *group_size,
                                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3526,7 +3526,7 @@ inline void gemm_batch_postcondition(cl::sycl::queue &queue, transpose *transa, 
                                      std::int64_t *group_size,
                                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3538,7 +3538,7 @@ inline void gemm_batch_precondition(cl::sycl::queue &queue, transpose *transa, t
                                     std::int64_t *group_size,
                                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3550,7 +3550,7 @@ inline void gemm_batch_postcondition(cl::sycl::queue &queue, transpose *transa, 
                                      std::int64_t *group_size,
                                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3563,7 +3563,7 @@ inline void gemm_batch_precondition(cl::sycl::queue &queue, transpose *transa, t
                                     std::int64_t group_count, std::int64_t *group_size,
                                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3576,7 +3576,7 @@ inline void gemm_batch_postcondition(cl::sycl::queue &queue, transpose *transa, 
                                      std::int64_t group_count, std::int64_t *group_size,
                                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3589,7 +3589,7 @@ inline void gemm_batch_precondition(cl::sycl::queue &queue, transpose *transa, t
                                     std::int64_t group_count, std::int64_t *group_size,
                                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3602,7 +3602,7 @@ inline void gemm_batch_postcondition(cl::sycl::queue &queue, transpose *transa, 
                                      std::int64_t group_count, std::int64_t *group_size,
                                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3614,7 +3614,7 @@ inline void gemm_batch_precondition(cl::sycl::queue &queue, transpose transa, tr
                                     std::int64_t batch_size,
                                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3626,7 +3626,7 @@ inline void gemm_batch_postcondition(cl::sycl::queue &queue, transpose transa, t
                                      std::int64_t batch_size,
                                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3638,7 +3638,7 @@ inline void gemm_batch_precondition(cl::sycl::queue &queue, transpose transa, tr
                                     std::int64_t batch_size,
                                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3650,7 +3650,7 @@ inline void gemm_batch_postcondition(cl::sycl::queue &queue, transpose transa, t
                                      std::int64_t stride_c, std::int64_t batch_size,
                                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3661,7 +3661,7 @@ inline void gemm_batch_precondition(
     std::complex<float> beta, std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
     std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3672,7 +3672,7 @@ inline void gemm_batch_postcondition(
     std::complex<float> beta, std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
     std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3683,7 +3683,7 @@ inline void gemm_batch_precondition(
     std::complex<double> beta, std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
     std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3694,7 +3694,7 @@ inline void gemm_batch_postcondition(
     std::complex<double> beta, std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
     std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3703,7 +3703,7 @@ inline void syrk_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::int64_t lda, float beta, float *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3712,7 +3712,7 @@ inline void syrk_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::int64_t lda, float beta, float *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3721,7 +3721,7 @@ inline void syrk_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::int64_t lda, double beta, double *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3730,7 +3730,7 @@ inline void syrk_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::int64_t lda, double beta, double *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3740,7 +3740,7 @@ inline void syrk_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3750,7 +3750,7 @@ inline void syrk_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3760,7 +3760,7 @@ inline void syrk_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3770,7 +3770,7 @@ inline void syrk_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3780,7 +3780,7 @@ inline void her2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<float> *a, std::int64_t lda,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3790,7 +3790,7 @@ inline void her2_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::complex<float> *a, std::int64_t lda,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3800,7 +3800,7 @@ inline void her2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<double> *a, std::int64_t lda,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3810,7 +3810,7 @@ inline void her2_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::complex<double> *a, std::int64_t lda,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3821,7 +3821,7 @@ inline void hbmv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3832,7 +3832,7 @@ inline void hbmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3843,7 +3843,7 @@ inline void hbmv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3855,7 +3855,7 @@ inline void hbmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3863,7 +3863,7 @@ inline void rot_precondition(cl::sycl::queue &queue, std::int64_t n, std::comple
                              std::int64_t incx, std::complex<float> *y, std::int64_t incy, float c,
                              float s, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3872,7 +3872,7 @@ inline void rot_postcondition(cl::sycl::queue &queue, std::int64_t n, std::compl
                               float s,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3881,7 +3881,7 @@ inline void rot_precondition(cl::sycl::queue &queue, std::int64_t n, std::comple
                              double c, double s,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3890,7 +3890,7 @@ inline void rot_postcondition(cl::sycl::queue &queue, std::int64_t n, std::compl
                               double c, double s,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3898,7 +3898,7 @@ inline void rot_precondition(cl::sycl::queue &queue, std::int64_t n, float *x, s
                              float *y, std::int64_t incy, float c, float s,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3906,7 +3906,7 @@ inline void rot_postcondition(cl::sycl::queue &queue, std::int64_t n, float *x, 
                               float *y, std::int64_t incy, float c, float s,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3914,7 +3914,7 @@ inline void rot_precondition(cl::sycl::queue &queue, std::int64_t n, double *x, 
                              double *y, std::int64_t incy, double c, double s,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3922,7 +3922,7 @@ inline void rot_postcondition(cl::sycl::queue &queue, std::int64_t n, double *x,
                               double *y, std::int64_t incy, double c, double s,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3930,7 +3930,7 @@ inline void axpy_precondition(cl::sycl::queue &queue, std::int64_t n, float alph
                               std::int64_t incx, float *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3938,7 +3938,7 @@ inline void axpy_postcondition(cl::sycl::queue &queue, std::int64_t n, float alp
                                std::int64_t incx, float *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3946,7 +3946,7 @@ inline void axpy_precondition(cl::sycl::queue &queue, std::int64_t n, double alp
                               std::int64_t incx, double *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3954,7 +3954,7 @@ inline void axpy_postcondition(cl::sycl::queue &queue, std::int64_t n, double al
                                const double *x, std::int64_t incx, double *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3963,7 +3963,7 @@ inline void axpy_precondition(cl::sycl::queue &queue, std::int64_t n, std::compl
                               std::complex<float> *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3972,7 +3972,7 @@ inline void axpy_postcondition(cl::sycl::queue &queue, std::int64_t n, std::comp
                                std::complex<float> *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -3981,7 +3981,7 @@ inline void axpy_precondition(cl::sycl::queue &queue, std::int64_t n, std::compl
                               std::complex<double> *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -3990,7 +3990,7 @@ inline void axpy_postcondition(cl::sycl::queue &queue, std::int64_t n, std::comp
                                std::complex<double> *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4000,7 +4000,7 @@ inline void axpy_batch_precondition(cl::sycl::queue &queue, std::int64_t *n, flo
                                     std::int64_t *group_size,
                                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4010,7 +4010,7 @@ inline void axpy_batch_postcondition(cl::sycl::queue &queue, std::int64_t *n, fl
                                      std::int64_t *group_size,
                                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4020,7 +4020,7 @@ inline void axpy_batch_precondition(cl::sycl::queue &queue, std::int64_t *n, dou
                                     std::int64_t *group_size,
                                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4030,7 +4030,7 @@ inline void axpy_batch_postcondition(cl::sycl::queue &queue, std::int64_t *n, do
                                      std::int64_t *group_size,
                                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4040,7 +4040,7 @@ inline void axpy_batch_precondition(cl::sycl::queue &queue, std::int64_t *n,
                                     std::int64_t group_count, std::int64_t *group_size,
                                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4051,7 +4051,7 @@ inline void axpy_batch_postcondition(cl::sycl::queue &queue, std::int64_t *n,
                                      std::int64_t *group_size,
                                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4062,7 +4062,7 @@ inline void axpy_batch_precondition(cl::sycl::queue &queue, std::int64_t *n,
                                     std::int64_t *group_size,
                                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4073,7 +4073,7 @@ inline void axpy_batch_postcondition(cl::sycl::queue &queue, std::int64_t *n,
                                      std::int64_t *group_size,
                                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4083,7 +4083,7 @@ inline void gerc_precondition(cl::sycl::queue &queue, std::int64_t m, std::int64
                               std::complex<float> *a, std::int64_t lda,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4093,7 +4093,7 @@ inline void gerc_postcondition(cl::sycl::queue &queue, std::int64_t m, std::int6
                                std::complex<float> *a, std::int64_t lda,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4103,7 +4103,7 @@ inline void gerc_precondition(cl::sycl::queue &queue, std::int64_t m, std::int64
                               std::complex<double> *a, std::int64_t lda,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4113,7 +4113,7 @@ inline void gerc_postcondition(cl::sycl::queue &queue, std::int64_t m, std::int6
                                std::complex<double> *a, std::int64_t lda,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4123,7 +4123,7 @@ inline void syr2k_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                float *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4133,7 +4133,7 @@ inline void syr2k_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 float *c, std::int64_t ldc,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4143,7 +4143,7 @@ inline void syr2k_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                double *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4153,7 +4153,7 @@ inline void syr2k_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 double *c, std::int64_t ldc,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4164,7 +4164,7 @@ inline void syr2k_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4175,7 +4175,7 @@ inline void syr2k_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4186,7 +4186,7 @@ inline void syr2k_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4198,7 +4198,7 @@ inline void syr2k_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 std::int64_t ldc,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4208,7 +4208,7 @@ inline void gemv_precondition(cl::sycl::queue &queue, transpose trans, std::int6
                               std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4218,7 +4218,7 @@ inline void gemv_postcondition(cl::sycl::queue &queue, transpose trans, std::int
                                std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4228,7 +4228,7 @@ inline void gemv_precondition(cl::sycl::queue &queue, transpose trans, std::int6
                               std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4238,7 +4238,7 @@ inline void gemv_postcondition(cl::sycl::queue &queue, transpose trans, std::int
                                std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4249,7 +4249,7 @@ inline void gemv_precondition(cl::sycl::queue &queue, transpose trans, std::int6
                               std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4260,7 +4260,7 @@ inline void gemv_postcondition(cl::sycl::queue &queue, transpose trans, std::int
                                std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4271,7 +4271,7 @@ inline void gemv_precondition(cl::sycl::queue &queue, transpose trans, std::int6
                               std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4283,7 +4283,7 @@ inline void gemv_postcondition(cl::sycl::queue &queue, transpose trans, std::int
                                std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4292,7 +4292,7 @@ inline void her_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int6
                              std::complex<float> *a, std::int64_t lda,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4301,7 +4301,7 @@ inline void her_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<float> *a, std::int64_t lda,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4310,7 +4310,7 @@ inline void her_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int6
                              std::complex<double> *a, std::int64_t lda,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4319,7 +4319,7 @@ inline void her_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<double> *a, std::int64_t lda,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4328,7 +4328,7 @@ inline void hpr_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int6
                              std::complex<float> *a,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4337,7 +4337,7 @@ inline void hpr_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<float> *a,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4346,7 +4346,7 @@ inline void hpr_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int6
                              std::complex<double> *a,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4355,7 +4355,7 @@ inline void hpr_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<double> *a,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4363,7 +4363,7 @@ inline void iamin_precondition(cl::sycl::queue &queue, std::int64_t n, const flo
                                std::int64_t incx, std::int64_t *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4371,7 +4371,7 @@ inline void iamin_postcondition(cl::sycl::queue &queue, std::int64_t n, const fl
                                 std::int64_t incx, std::int64_t *result,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4379,7 +4379,7 @@ inline void iamin_precondition(cl::sycl::queue &queue, std::int64_t n, const dou
                                std::int64_t incx, std::int64_t *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4387,7 +4387,7 @@ inline void iamin_postcondition(cl::sycl::queue &queue, std::int64_t n, const do
                                 std::int64_t incx, std::int64_t *result,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4395,7 +4395,7 @@ inline void iamin_precondition(cl::sycl::queue &queue, std::int64_t n, const std
                                std::int64_t incx, std::int64_t *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4404,7 +4404,7 @@ inline void iamin_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                 std::int64_t *result,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4413,7 +4413,7 @@ inline void iamin_precondition(cl::sycl::queue &queue, std::int64_t n,
                                std::int64_t *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4422,7 +4422,7 @@ inline void iamin_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                 std::int64_t *result,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4432,7 +4432,7 @@ inline void hpmv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4442,7 +4442,7 @@ inline void hpmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4452,7 +4452,7 @@ inline void hpmv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4463,7 +4463,7 @@ inline void hpmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4472,7 +4472,7 @@ inline void spmv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               float *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4481,7 +4481,7 @@ inline void spmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                float beta, float *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4490,7 +4490,7 @@ inline void spmv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               double beta, double *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4499,7 +4499,7 @@ inline void spmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                double beta, double *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4507,7 +4507,7 @@ inline void rotmg_precondition(cl::sycl::queue &queue, float *d1, float *d2, flo
                                float *param,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4515,7 +4515,7 @@ inline void rotmg_postcondition(cl::sycl::queue &queue, float *d1, float *d2, fl
                                 float *param,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4523,7 +4523,7 @@ inline void rotmg_precondition(cl::sycl::queue &queue, double *d1, double *d2, d
                                double y1, double *param,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4531,7 +4531,7 @@ inline void rotmg_postcondition(cl::sycl::queue &queue, double *d1, double *d2, 
                                 double y1, double *param,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4539,7 +4539,7 @@ inline void swap_precondition(cl::sycl::queue &queue, std::int64_t n, float *x, 
                               float *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4547,7 +4547,7 @@ inline void swap_postcondition(cl::sycl::queue &queue, std::int64_t n, float *x,
                                float *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4555,7 +4555,7 @@ inline void swap_precondition(cl::sycl::queue &queue, std::int64_t n, double *x,
                               double *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4563,7 +4563,7 @@ inline void swap_postcondition(cl::sycl::queue &queue, std::int64_t n, double *x
                                double *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4571,7 +4571,7 @@ inline void swap_precondition(cl::sycl::queue &queue, std::int64_t n, std::compl
                               std::int64_t incx, std::complex<float> *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4579,7 +4579,7 @@ inline void swap_postcondition(cl::sycl::queue &queue, std::int64_t n, std::comp
                                std::int64_t incx, std::complex<float> *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4587,7 +4587,7 @@ inline void swap_precondition(cl::sycl::queue &queue, std::int64_t n, std::compl
                               std::int64_t incx, std::complex<double> *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4595,7 +4595,7 @@ inline void swap_postcondition(cl::sycl::queue &queue, std::int64_t n, std::comp
                                std::int64_t incx, std::complex<double> *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4605,7 +4605,7 @@ inline void geru_precondition(cl::sycl::queue &queue, std::int64_t m, std::int64
                               std::complex<float> *a, std::int64_t lda,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4615,7 +4615,7 @@ inline void geru_postcondition(cl::sycl::queue &queue, std::int64_t m, std::int6
                                std::complex<float> *a, std::int64_t lda,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4625,7 +4625,7 @@ inline void geru_precondition(cl::sycl::queue &queue, std::int64_t m, std::int64
                               std::complex<double> *a, std::int64_t lda,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4635,7 +4635,7 @@ inline void geru_postcondition(cl::sycl::queue &queue, std::int64_t m, std::int6
                                std::complex<double> *a, std::int64_t lda,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4643,7 +4643,7 @@ inline void nrm2_precondition(cl::sycl::queue &queue, std::int64_t n, const std:
                               std::int64_t incx, float *result,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4651,7 +4651,7 @@ inline void nrm2_postcondition(cl::sycl::queue &queue, std::int64_t n, const std
                                std::int64_t incx, float *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4659,7 +4659,7 @@ inline void nrm2_precondition(cl::sycl::queue &queue, std::int64_t n, const std:
                               std::int64_t incx, double *result,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4667,7 +4667,7 @@ inline void nrm2_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                const std::complex<double> *x, std::int64_t incx, double *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4675,7 +4675,7 @@ inline void nrm2_precondition(cl::sycl::queue &queue, std::int64_t n, const floa
                               std::int64_t incx, float *result,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4683,7 +4683,7 @@ inline void nrm2_postcondition(cl::sycl::queue &queue, std::int64_t n, const flo
                                std::int64_t incx, float *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4691,7 +4691,7 @@ inline void nrm2_precondition(cl::sycl::queue &queue, std::int64_t n, const doub
                               std::int64_t incx, double *result,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4699,7 +4699,7 @@ inline void nrm2_postcondition(cl::sycl::queue &queue, std::int64_t n, const dou
                                std::int64_t incx, double *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4709,7 +4709,7 @@ inline void gemmt_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                float beta, float *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4719,7 +4719,7 @@ inline void gemmt_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 float beta, float *c, std::int64_t ldc,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4729,7 +4729,7 @@ inline void gemmt_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                double beta, double *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4739,7 +4739,7 @@ inline void gemmt_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 std::int64_t ldb, double beta, double *c, std::int64_t ldc,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4750,7 +4750,7 @@ inline void gemmt_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4761,7 +4761,7 @@ inline void gemmt_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4772,7 +4772,7 @@ inline void gemmt_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4784,7 +4784,7 @@ inline void gemmt_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 std::int64_t ldc,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4794,7 +4794,7 @@ inline void gemm_precondition(cl::sycl::queue &queue, transpose transa, transpos
                               float beta, float *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4804,7 +4804,7 @@ inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpo
                                float beta, float *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4814,7 +4814,7 @@ inline void gemm_precondition(cl::sycl::queue &queue, transpose transa, transpos
                               double beta, double *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4824,7 +4824,7 @@ inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpo
                                double beta, double *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4835,7 +4835,7 @@ inline void gemm_precondition(cl::sycl::queue &queue, transpose transa, transpos
                               std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4846,7 +4846,7 @@ inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpo
                                std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4857,7 +4857,7 @@ inline void gemm_precondition(cl::sycl::queue &queue, transpose transa, transpos
                               std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4868,7 +4868,7 @@ inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpo
                                std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4878,7 +4878,7 @@ inline void gemm_precondition(cl::sycl::queue &queue, transpose transa, transpos
                               half beta, half *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4888,7 +4888,7 @@ inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpo
                                half beta, half *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4897,7 +4897,7 @@ inline void syr2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               float *a, std::int64_t lda,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4906,7 +4906,7 @@ inline void syr2_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::int64_t incy, float *a, std::int64_t lda,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4915,7 +4915,7 @@ inline void syr2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::int64_t incy, double *a, std::int64_t lda,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4924,7 +4924,7 @@ inline void syr2_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::int64_t incy, double *a, std::int64_t lda,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4933,7 +4933,7 @@ inline void ger_precondition(cl::sycl::queue &queue, std::int64_t m, std::int64_
                              float *a, std::int64_t lda,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4942,7 +4942,7 @@ inline void ger_postcondition(cl::sycl::queue &queue, std::int64_t m, std::int64
                               float *a, std::int64_t lda,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4951,7 +4951,7 @@ inline void ger_precondition(cl::sycl::queue &queue, std::int64_t m, std::int64_
                              double *a, std::int64_t lda,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4960,7 +4960,7 @@ inline void ger_postcondition(cl::sycl::queue &queue, std::int64_t m, std::int64
                               std::int64_t incy, double *a, std::int64_t lda,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4970,7 +4970,7 @@ inline void trsm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::int64_t ldb,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -4980,7 +4980,7 @@ inline void trsm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                std::int64_t ldb,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -4990,7 +4990,7 @@ inline void trsm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::int64_t ldb,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5000,7 +5000,7 @@ inline void trsm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                std::int64_t ldb,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5010,7 +5010,7 @@ inline void trsm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5020,7 +5020,7 @@ inline void trsm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5030,7 +5030,7 @@ inline void trsm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5040,7 +5040,7 @@ inline void trsm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5049,7 +5049,7 @@ inline void dotu_precondition(cl::sycl::queue &queue, std::int64_t n, const std:
                               std::complex<float> *result,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5058,7 +5058,7 @@ inline void dotu_postcondition(cl::sycl::queue &queue, std::int64_t n, const std
                                std::complex<float> *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5067,7 +5067,7 @@ inline void dotu_precondition(cl::sycl::queue &queue, std::int64_t n, const std:
                               std::complex<double> *result,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5077,7 +5077,7 @@ inline void dotu_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                std::complex<double> *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5088,7 +5088,7 @@ inline void hemm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5099,7 +5099,7 @@ inline void hemm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5110,7 +5110,7 @@ inline void hemm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5121,7 +5121,7 @@ inline void hemm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5131,7 +5131,7 @@ inline void hpr2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<float> *a,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5141,7 +5141,7 @@ inline void hpr2_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::complex<float> *a,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5151,7 +5151,7 @@ inline void hpr2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<double> *a,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5161,7 +5161,7 @@ inline void hpr2_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::complex<double> *a,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5171,7 +5171,7 @@ inline void gbmv_precondition(cl::sycl::queue &queue, transpose trans, std::int6
                               float beta, float *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5181,7 +5181,7 @@ inline void gbmv_postcondition(cl::sycl::queue &queue, transpose trans, std::int
                                float beta, float *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5191,7 +5191,7 @@ inline void gbmv_precondition(cl::sycl::queue &queue, transpose trans, std::int6
                               double beta, double *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5201,7 +5201,7 @@ inline void gbmv_postcondition(cl::sycl::queue &queue, transpose trans, std::int
                                std::int64_t incx, double beta, double *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5212,7 +5212,7 @@ inline void gbmv_precondition(cl::sycl::queue &queue, transpose trans, std::int6
                               std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5223,7 +5223,7 @@ inline void gbmv_postcondition(cl::sycl::queue &queue, transpose trans, std::int
                                std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5234,7 +5234,7 @@ inline void gbmv_precondition(cl::sycl::queue &queue, transpose trans, std::int6
                               std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5246,7 +5246,7 @@ inline void gbmv_postcondition(cl::sycl::queue &queue, transpose trans, std::int
                                std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5255,7 +5255,7 @@ inline void tbmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::int64_t lda, float *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5264,7 +5264,7 @@ inline void tbmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::int64_t lda, float *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5273,7 +5273,7 @@ inline void tbmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::int64_t lda, double *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5282,7 +5282,7 @@ inline void tbmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::int64_t lda, double *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5292,7 +5292,7 @@ inline void tbmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::complex<float> *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5302,7 +5302,7 @@ inline void tbmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<float> *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5312,7 +5312,7 @@ inline void tbmv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::complex<double> *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5322,7 +5322,7 @@ inline void tbmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<double> *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5332,7 +5332,7 @@ inline void symm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               float *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5342,7 +5342,7 @@ inline void symm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                float *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5352,7 +5352,7 @@ inline void symm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               double *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5362,7 +5362,7 @@ inline void symm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                double *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5373,7 +5373,7 @@ inline void symm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5384,7 +5384,7 @@ inline void symm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5395,7 +5395,7 @@ inline void symm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5406,7 +5406,7 @@ inline void symm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5415,7 +5415,7 @@ inline void dotc_precondition(cl::sycl::queue &queue, std::int64_t n, const std:
                               std::complex<float> *result,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5424,7 +5424,7 @@ inline void dotc_postcondition(cl::sycl::queue &queue, std::int64_t n, const std
                                std::complex<float> *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5433,7 +5433,7 @@ inline void dotc_precondition(cl::sycl::queue &queue, std::int64_t n, const std:
                               std::complex<double> *result,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5443,7 +5443,7 @@ inline void dotc_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                std::complex<double> *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5451,7 +5451,7 @@ inline void syr_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int6
                              const float *x, std::int64_t incx, float *a, std::int64_t lda,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5459,7 +5459,7 @@ inline void syr_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               const float *x, std::int64_t incx, float *a, std::int64_t lda,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5467,7 +5467,7 @@ inline void syr_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int6
                              const double *x, std::int64_t incx, double *a, std::int64_t lda,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5476,7 +5476,7 @@ inline void syr_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::int64_t lda,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5486,7 +5486,7 @@ inline void trmm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::int64_t ldb,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5496,7 +5496,7 @@ inline void trmm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                std::int64_t ldb,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5506,7 +5506,7 @@ inline void trmm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::int64_t ldb,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5516,7 +5516,7 @@ inline void trmm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                std::int64_t ldb,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5526,7 +5526,7 @@ inline void trmm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5536,7 +5536,7 @@ inline void trmm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5546,7 +5546,7 @@ inline void trmm_precondition(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5556,7 +5556,7 @@ inline void trmm_postcondition(cl::sycl::queue &queue, side left_right, uplo upp
                                std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5565,7 +5565,7 @@ inline void symv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               float beta, float *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5574,7 +5574,7 @@ inline void symv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::int64_t incx, float beta, float *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5583,7 +5583,7 @@ inline void symv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::int64_t incx, double beta, double *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5592,7 +5592,7 @@ inline void symv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::int64_t incx, double beta, double *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5601,7 +5601,7 @@ inline void tpsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5610,7 +5610,7 @@ inline void tpsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5619,7 +5619,7 @@ inline void tpsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5628,7 +5628,7 @@ inline void tpsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5637,7 +5637,7 @@ inline void tpsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::complex<float> *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5646,7 +5646,7 @@ inline void tpsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<float> *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5655,7 +5655,7 @@ inline void tpsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::complex<double> *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5664,7 +5664,7 @@ inline void tpsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<double> *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5673,7 +5673,7 @@ inline void trsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               float *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5682,7 +5682,7 @@ inline void trsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                float *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5691,7 +5691,7 @@ inline void trsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               double *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5700,7 +5700,7 @@ inline void trsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                double *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5709,7 +5709,7 @@ inline void trsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::int64_t lda, std::complex<float> *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5718,7 +5718,7 @@ inline void trsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::int64_t lda, std::complex<float> *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5727,7 +5727,7 @@ inline void trsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::int64_t lda, std::complex<double> *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5736,7 +5736,7 @@ inline void trsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::int64_t lda, std::complex<double> *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5744,7 +5744,7 @@ inline void copy_precondition(cl::sycl::queue &queue, std::int64_t n, const floa
                               std::int64_t incx, float *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5752,7 +5752,7 @@ inline void copy_postcondition(cl::sycl::queue &queue, std::int64_t n, const flo
                                std::int64_t incx, float *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5760,7 +5760,7 @@ inline void copy_precondition(cl::sycl::queue &queue, std::int64_t n, const doub
                               std::int64_t incx, double *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5768,7 +5768,7 @@ inline void copy_postcondition(cl::sycl::queue &queue, std::int64_t n, const dou
                                std::int64_t incx, double *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5776,7 +5776,7 @@ inline void copy_precondition(cl::sycl::queue &queue, std::int64_t n, const std:
                               std::int64_t incx, std::complex<float> *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5784,7 +5784,7 @@ inline void copy_postcondition(cl::sycl::queue &queue, std::int64_t n, const std
                                std::int64_t incx, std::complex<float> *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5792,7 +5792,7 @@ inline void copy_precondition(cl::sycl::queue &queue, std::int64_t n, const std:
                               std::int64_t incx, std::complex<double> *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5801,7 +5801,7 @@ inline void copy_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                std::complex<double> *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5811,7 +5811,7 @@ inline void hemv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5821,7 +5821,7 @@ inline void hemv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5831,7 +5831,7 @@ inline void hemv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5842,7 +5842,7 @@ inline void hemv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5850,7 +5850,7 @@ inline void iamax_precondition(cl::sycl::queue &queue, std::int64_t n, const flo
                                std::int64_t incx, std::int64_t *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5858,7 +5858,7 @@ inline void iamax_postcondition(cl::sycl::queue &queue, std::int64_t n, const fl
                                 std::int64_t incx, std::int64_t *result,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5866,7 +5866,7 @@ inline void iamax_precondition(cl::sycl::queue &queue, std::int64_t n, const dou
                                std::int64_t incx, std::int64_t *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5874,7 +5874,7 @@ inline void iamax_postcondition(cl::sycl::queue &queue, std::int64_t n, const do
                                 std::int64_t incx, std::int64_t *result,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5882,7 +5882,7 @@ inline void iamax_precondition(cl::sycl::queue &queue, std::int64_t n, const std
                                std::int64_t incx, std::int64_t *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5891,7 +5891,7 @@ inline void iamax_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                 std::int64_t *result,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5900,7 +5900,7 @@ inline void iamax_precondition(cl::sycl::queue &queue, std::int64_t n,
                                std::int64_t *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5909,7 +5909,7 @@ inline void iamax_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                 std::int64_t *result,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5919,7 +5919,7 @@ inline void sbmv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5929,7 +5929,7 @@ inline void sbmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5939,7 +5939,7 @@ inline void sbmv_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::int64_t incy,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5949,7 +5949,7 @@ inline void sbmv_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::int64_t incy,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5957,7 +5957,7 @@ inline void asum_precondition(cl::sycl::queue &queue, std::int64_t n, const std:
                               std::int64_t incx, float *result,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5965,7 +5965,7 @@ inline void asum_postcondition(cl::sycl::queue &queue, std::int64_t n, const std
                                std::int64_t incx, float *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5973,7 +5973,7 @@ inline void asum_precondition(cl::sycl::queue &queue, std::int64_t n, const std:
                               std::int64_t incx, double *result,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5981,7 +5981,7 @@ inline void asum_postcondition(cl::sycl::queue &queue, std::int64_t n,
                                const std::complex<double> *x, std::int64_t incx, double *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -5989,7 +5989,7 @@ inline void asum_precondition(cl::sycl::queue &queue, std::int64_t n, const floa
                               std::int64_t incx, float *result,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -5997,7 +5997,7 @@ inline void asum_postcondition(cl::sycl::queue &queue, std::int64_t n, const flo
                                std::int64_t incx, float *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6005,7 +6005,7 @@ inline void asum_precondition(cl::sycl::queue &queue, std::int64_t n, const doub
                               std::int64_t incx, double *result,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6013,7 +6013,7 @@ inline void asum_postcondition(cl::sycl::queue &queue, std::int64_t n, const dou
                                std::int64_t incx, double *result,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6022,7 +6022,7 @@ inline void tbsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::int64_t lda, float *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6031,7 +6031,7 @@ inline void tbsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::int64_t lda, float *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6040,7 +6040,7 @@ inline void tbsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::int64_t lda, double *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6049,7 +6049,7 @@ inline void tbsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::int64_t lda, double *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6059,7 +6059,7 @@ inline void tbsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::complex<float> *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6069,7 +6069,7 @@ inline void tbsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<float> *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6079,7 +6079,7 @@ inline void tbsv_precondition(cl::sycl::queue &queue, uplo upper_lower, transpos
                               std::complex<double> *x, std::int64_t incx,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6089,7 +6089,7 @@ inline void tbsv_postcondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<double> *x, std::int64_t incx,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6098,7 +6098,7 @@ inline void spr2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               float *a,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6107,7 +6107,7 @@ inline void spr2_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::int64_t incy, float *a,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6116,7 +6116,7 @@ inline void spr2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int
                               std::int64_t incy, double *a,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6125,7 +6125,7 @@ inline void spr2_postcondition(cl::sycl::queue &queue, uplo upper_lower, std::in
                                std::int64_t incy, double *a,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6133,7 +6133,7 @@ inline void rotm_precondition(cl::sycl::queue &queue, std::int64_t n, float *x, 
                               float *y, std::int64_t incy, float *param,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6141,7 +6141,7 @@ inline void rotm_postcondition(cl::sycl::queue &queue, std::int64_t n, float *x,
                                float *y, std::int64_t incy, float *param,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6149,7 +6149,7 @@ inline void rotm_precondition(cl::sycl::queue &queue, std::int64_t n, double *x,
                               double *y, std::int64_t incy, double *param,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6157,7 +6157,7 @@ inline void rotm_postcondition(cl::sycl::queue &queue, std::int64_t n, double *x
                                double *y, std::int64_t incy, double *param,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6165,7 +6165,7 @@ inline void dot_precondition(cl::sycl::queue &queue, std::int64_t n, const float
                              std::int64_t incx, const float *y, std::int64_t incy, float *result,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6173,7 +6173,7 @@ inline void dot_postcondition(cl::sycl::queue &queue, std::int64_t n, const floa
                               std::int64_t incx, const float *y, std::int64_t incy, float *result,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6181,7 +6181,7 @@ inline void dot_precondition(cl::sycl::queue &queue, std::int64_t n, const doubl
                              std::int64_t incx, const double *y, std::int64_t incy, double *result,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6189,7 +6189,7 @@ inline void dot_postcondition(cl::sycl::queue &queue, std::int64_t n, const doub
                               std::int64_t incx, const double *y, std::int64_t incy, double *result,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6197,7 +6197,7 @@ inline void dot_precondition(cl::sycl::queue &queue, std::int64_t n, const float
                              std::int64_t incx, const float *y, std::int64_t incy, double *result,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6205,7 +6205,7 @@ inline void dot_postcondition(cl::sycl::queue &queue, std::int64_t n, const floa
                               std::int64_t incx, const float *y, std::int64_t incy, double *result,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6213,7 +6213,7 @@ inline void sdsdot_precondition(cl::sycl::queue &queue, std::int64_t n, float sb
                                 std::int64_t incx, const float *y, std::int64_t incy, float *result,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6222,7 +6222,7 @@ inline void sdsdot_postcondition(cl::sycl::queue &queue, std::int64_t n, float s
                                  float *result,
                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6233,7 +6233,7 @@ inline void her2k_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<float> *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6244,7 +6244,7 @@ inline void her2k_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 std::complex<float> *c, std::int64_t ldc,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6255,7 +6255,7 @@ inline void her2k_precondition(cl::sycl::queue &queue, uplo upper_lower, transpo
                                std::complex<double> *c, std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6266,35 +6266,35 @@ inline void her2k_postcondition(cl::sycl::queue &queue, uplo upper_lower, transp
                                 std::complex<double> *c, std::int64_t ldc,
                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
 inline void rotg_precondition(cl::sycl::queue &queue, float *a, float *b, float *c, float *s,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
 inline void rotg_postcondition(cl::sycl::queue &queue, float *a, float *b, float *c, float *s,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
 inline void rotg_precondition(cl::sycl::queue &queue, double *a, double *b, double *c, double *s,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
 inline void rotg_postcondition(cl::sycl::queue &queue, double *a, double *b, double *c, double *s,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6302,7 +6302,7 @@ inline void rotg_precondition(cl::sycl::queue &queue, std::complex<float> *a,
                               std::complex<float> *b, float *c, std::complex<float> *s,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6310,7 +6310,7 @@ inline void rotg_postcondition(cl::sycl::queue &queue, std::complex<float> *a,
                                std::complex<float> *b, float *c, std::complex<float> *s,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
@@ -6318,7 +6318,7 @@ inline void rotg_precondition(cl::sycl::queue &queue, std::complex<double> *a,
                               std::complex<double> *b, double *c, std::complex<double> *s,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add prechecks to queue here for input args.  */
+    /* add prechecks to queue here for input args.  */
 #endif
 }
 
@@ -6326,7 +6326,7 @@ inline void rotg_postcondition(cl::sycl::queue &queue, std::complex<double> *a,
                                std::complex<double> *b, double *c, std::complex<double> *s,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-        /* add postchecks to queue here for input args.  */
+    /* add postchecks to queue here for input args.  */
 #endif
 }
 
