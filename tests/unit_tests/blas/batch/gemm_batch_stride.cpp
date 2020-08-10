@@ -53,14 +53,14 @@ int test(const device &dev, int64_t batch_size) {
     int64_t i, tmp;
 
     batch_size = 1 + std::rand() % 20;
-    m          = 1 + std::rand() % 500;
-    n          = 1 + std::rand() % 500;
-    k          = 1 + std::rand() % 500;
-    lda        = std::max(m, k);
-    ldb        = std::max(n, k);
-    ldc        = std::max(m, n);
-    alpha      = rand_scalar<fp>();
-    beta       = rand_scalar<fp>();
+    m = 1 + std::rand() % 500;
+    n = 1 + std::rand() % 500;
+    k = 1 + std::rand() % 500;
+    lda = std::max(m, k);
+    ldb = std::max(n, k);
+    ldc = std::max(m, n);
+    alpha = rand_scalar<fp>();
+    beta = rand_scalar<fp>();
 
     if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
         transa = (oneapi::mkl::transpose)(std::rand() % 2);
@@ -97,13 +97,13 @@ int test(const device &dev, int64_t batch_size) {
     C_ref = C;
 
     // Call reference GEMM_BATCH_STRIDE.
-    using fp_ref       = typename ref_type_info<fp>::type;
-    int m_ref          = (int)m;
-    int n_ref          = (int)n;
-    int k_ref          = (int)k;
-    int lda_ref        = (int)lda;
-    int ldb_ref        = (int)ldb;
-    int ldc_ref        = (int)ldc;
+    using fp_ref = typename ref_type_info<fp>::type;
+    int m_ref = (int)m;
+    int n_ref = (int)n;
+    int k_ref = (int)k;
+    int lda_ref = (int)lda;
+    int ldb_ref = (int)ldb;
+    int ldc_ref = (int)ldc;
     int batch_size_ref = (int)batch_size;
     for (i = 0; i < batch_size_ref; i++) {
         ::gemm(convert_to_cblas_trans(transa), convert_to_cblas_trans(transb), (const int *)&m_ref,
@@ -139,8 +139,8 @@ int test(const device &dev, int64_t batch_size) {
     try {
 #ifdef CALL_RT_API
         oneapi::mkl::blas::gemm_batch(main_queue, transa, transb, m, n, k, alpha, A_buffer, lda,
-                                 stride_a, B_buffer, ldb, stride_b, beta, C_buffer, ldc, stride_c,
-                                 batch_size);
+                                      stride_a, B_buffer, ldb, stride_b, beta, C_buffer, ldc,
+                                      stride_c, batch_size);
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::gemm_batch,
                     (main_queue, transa, transb, m, n, k, alpha, A_buffer, lda, stride_a, B_buffer,
@@ -166,7 +166,7 @@ int test(const device &dev, int64_t batch_size) {
     bool good;
     {
         auto C_accessor = C_buffer.template get_access<access::mode::read>();
-        good            = check_equal_matrix(C_accessor, C_ref, stride_c * batch_size, 1,
+        good = check_equal_matrix(C_accessor, C_ref, stride_c * batch_size, 1,
                                   stride_c * batch_size, 10 * k, std::cout);
     }
 

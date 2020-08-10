@@ -65,7 +65,7 @@ static inline void copy_mat(T_src &src, int64_t row, int64_t col, int64_t ld, of
     else if (off_kind == offset::C) {
         for (j = 0; j < col; j++) {
             for (i = 0; i < row; i++) {
-                tmp              = off[i];
+                tmp = off[i];
                 dest[i + ld * j] = tmp + (T_data)src[i + ld * j];
             }
         }
@@ -93,11 +93,11 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
     queue.submit([&](cl::sycl::handler &cgh) {
         const char transa_ = *fortran_char(transa);
         const char transb_ = *fortran_char(transb);
-        float f32_alpha    = (float)alpha;
-        float f32_beta     = (float)beta;
-        auto accessor_a    = a_fp16.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b    = b_fp16.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c    = c_fp16.get_access<cl::sycl::access::mode::read_write>(cgh);
+        float f32_alpha = (float)alpha;
+        float f32_beta = (float)beta;
+        auto accessor_a = a_fp16.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_b = b_fp16.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_c = c_fp16.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_hgemm>(cgh, [=]() {
             int64_t sizea, sizeb, sizec;
             sizea = (transa == transpose::N) ? lda * k : lda * m;
@@ -169,9 +169,9 @@ void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb, int64_
     queue.submit([&](cl::sycl::handler &cgh) {
         const char transa_ = *fortran_char(transa);
         const char transb_ = *fortran_char(transb);
-        auto accessor_a    = a_fp16.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b    = b_fp16.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c    = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a_fp16.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_b = b_fp16.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_gemm_f16f16f32>(cgh, [=]() {
             int64_t sizea, sizeb;
             sizea = (transa == transpose::N) ? lda * k : lda * m;
@@ -196,13 +196,13 @@ void gemm_ext(cl::sycl::queue &queue, transpose transa, transpose transb, offset
               int8_t ao, cl::sycl::buffer<uint8_t, 1> &b, int64_t ldb, uint8_t bo, float beta,
               cl::sycl::buffer<int32_t, 1> &c, int64_t ldc, cl::sycl::buffer<int32_t, 1> &co) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        const char transa_  = *fortran_char(transa);
-        const char transb_  = *fortran_char(transb);
+        const char transa_ = *fortran_char(transa);
+        const char transb_ = *fortran_char(transb);
         const char offsetc_ = *fortran_char(offsetc);
-        auto accessor_a     = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b     = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c     = c.get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto accessor_co    = co.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_co = co.get_access<cl::sycl::access::mode::read>(cgh);
         host_task<class mkl_kernel_gemm_s8u8s32>(cgh, [=]() {
             MKL_INT8 *a_mat =
                 static_cast<MKL_INT8 *>(static_cast<void *>(accessor_a.get_pointer()));
@@ -226,11 +226,11 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
            int64_t ldc) {
     queue.submit([&](cl::sycl::handler &cgh) {
         const char upper_lower_ = *fortran_char(upper_lower);
-        const char transa_      = *fortran_char(transa);
-        const char transb_      = *fortran_char(transb);
-        auto accessor_a         = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b         = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c         = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        const char transa_ = *fortran_char(transa);
+        const char transb_ = *fortran_char(transb);
+        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_sgemmt>(cgh, [=]() {
             ::sgemmt((const char *)&upper_lower_, (const char *)&transa_, (const char *)&transb_,
                      (const MKL_INT *)&n, (const MKL_INT *)&k, (const float *)&alpha,
@@ -247,11 +247,11 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
            int64_t ldc) {
     queue.submit([&](cl::sycl::handler &cgh) {
         const char upper_lower_ = *fortran_char(upper_lower);
-        const char transa_      = *fortran_char(transa);
-        const char transb_      = *fortran_char(transb);
-        auto accessor_a         = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b         = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c         = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        const char transa_ = *fortran_char(transa);
+        const char transb_ = *fortran_char(transb);
+        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_dgemmt>(cgh, [=]() {
             ::dgemmt((const char *)&upper_lower_, (const char *)&transa_, (const char *)&transb_,
                      (const MKL_INT *)&n, (const MKL_INT *)&k, (const double *)&alpha,
@@ -268,8 +268,8 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
            std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
     queue.submit([&](cl::sycl::handler &cgh) {
         const char upper_lower_ = *fortran_char(upper_lower);
-        const char transa_      = *fortran_char(transa);
-        const char transb_      = *fortran_char(transb);
+        const char transa_ = *fortran_char(transa);
+        const char transb_ = *fortran_char(transb);
         float alpha_real = alpha.real(), alpha_imag = alpha.imag();
         float beta_real = beta.real(), beta_imag = beta.imag();
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
@@ -277,7 +277,7 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
         auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_cgemmt>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
-            MKL_Complex8 beta_  = { beta_real, beta_imag };
+            MKL_Complex8 beta_ = { beta_real, beta_imag };
             ::cgemmt((const char *)&upper_lower_, (const char *)&transa_, (const char *)&transb_,
                      (const MKL_INT *)&n, (const MKL_INT *)&k, (const MKL_Complex8 *)&alpha_,
                      accessor_a.get_pointer(), (const MKL_INT *)&lda, accessor_b.get_pointer(),
@@ -293,8 +293,8 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
            std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
     queue.submit([&](cl::sycl::handler &cgh) {
         const char upper_lower_ = *fortran_char(upper_lower);
-        const char transa_      = *fortran_char(transa);
-        const char transb_      = *fortran_char(transb);
+        const char transa_ = *fortran_char(transa);
+        const char transb_ = *fortran_char(transb);
         double alpha_real = alpha.real(), alpha_imag = alpha.imag();
         double beta_real = beta.real(), beta_imag = beta.imag();
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
@@ -302,7 +302,7 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
         auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_zgemmt>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
-            MKL_Complex16 beta_  = { beta_real, beta_imag };
+            MKL_Complex16 beta_ = { beta_real, beta_imag };
             ::zgemmt((const char *)&upper_lower_, (const char *)&transa_, (const char *)&transb_,
                      (const MKL_INT *)&n, (const MKL_INT *)&k, (const MKL_Complex16 *)&alpha_,
                      accessor_a.get_pointer(), (const MKL_INT *)&lda, accessor_b.get_pointer(),
@@ -324,8 +324,8 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
             cgh.depends_on(dependencies[i]);
         }
         const char upper_lower_ = *fortran_char(upper_lower);
-        const char transa_      = *fortran_char(transa);
-        const char transb_      = *fortran_char(transb);
+        const char transa_ = *fortran_char(transa);
+        const char transb_ = *fortran_char(transb);
         host_task<class mkl_kernel_sgemmt_usm>(cgh, [=]() {
             ::sgemmt((const char *)&upper_lower_, (const char *)&transa_, (const char *)&transb_,
                      (const MKL_INT *)&n, (const MKL_INT *)&k, (const float *)&alpha, a,
@@ -346,8 +346,8 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
             cgh.depends_on(dependencies[i]);
         }
         const char upper_lower_ = *fortran_char(upper_lower);
-        const char transa_      = *fortran_char(transa);
-        const char transb_      = *fortran_char(transb);
+        const char transa_ = *fortran_char(transa);
+        const char transb_ = *fortran_char(transb);
         host_task<class mkl_kernel_dgemmt_usm>(cgh, [=]() {
             ::dgemmt((const char *)&upper_lower_, (const char *)&transa_, (const char *)&transb_,
                      (const MKL_INT *)&n, (const MKL_INT *)&k, (const double *)&alpha, a,
@@ -369,13 +369,13 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
             cgh.depends_on(dependencies[i]);
         }
         const char upper_lower_ = *fortran_char(upper_lower);
-        const char transa_      = *fortran_char(transa);
-        const char transb_      = *fortran_char(transb);
+        const char transa_ = *fortran_char(transa);
+        const char transb_ = *fortran_char(transb);
         float alpha_real = alpha.real(), alpha_imag = alpha.imag();
         float beta_real = beta.real(), beta_imag = beta.imag();
         host_task<class mkl_kernel_cgemmt_usm>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
-            MKL_Complex8 beta_  = { beta_real, beta_imag };
+            MKL_Complex8 beta_ = { beta_real, beta_imag };
             ::cgemmt((const char *)&upper_lower_, (const char *)&transa_, (const char *)&transb_,
                      (const MKL_INT *)&n, (const MKL_INT *)&k, (const MKL_Complex8 *)&alpha_, a,
                      (const MKL_INT *)&lda, b, (const MKL_INT *)&ldb, (const MKL_Complex8 *)&beta_,
@@ -396,13 +396,13 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
             cgh.depends_on(dependencies[i]);
         }
         const char upper_lower_ = *fortran_char(upper_lower);
-        const char transa_      = *fortran_char(transa);
-        const char transb_      = *fortran_char(transb);
+        const char transa_ = *fortran_char(transa);
+        const char transb_ = *fortran_char(transb);
         double alpha_real = alpha.real(), alpha_imag = alpha.imag();
         double beta_real = beta.real(), beta_imag = beta.imag();
         host_task<class mkl_kernel_zgemmt_usm>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
-            MKL_Complex16 beta_  = { beta_real, beta_imag };
+            MKL_Complex16 beta_ = { beta_real, beta_imag };
             ::zgemmt((const char *)&upper_lower_, (const char *)&transa_, (const char *)&transb_,
                      (const MKL_INT *)&n, (const MKL_INT *)&k, (const MKL_Complex16 *)&alpha_, a,
                      (const MKL_INT *)&lda, b, (const MKL_INT *)&ldb, (const MKL_Complex16 *)&beta_,

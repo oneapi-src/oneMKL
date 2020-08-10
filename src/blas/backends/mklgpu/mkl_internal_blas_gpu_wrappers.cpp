@@ -1217,7 +1217,7 @@ static inline void copy_mat(T_src &src, int row, int col, int ld, oneapi::mkl::o
     else if (off_kind == oneapi::mkl::offset::column) {
         for (j = 0; j < col; j++) {
             for (i = 0; i < row; i++) {
-                tmp              = off[i];
+                tmp = off[i];
                 dest[i + ld * j] = tmp + (T_data)src[i + ld * j];
             }
         }
@@ -1240,21 +1240,21 @@ void gemm_ext(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl
     // DGEMM is used for reference implementation to maximize accuracy.
     // Optimized implementation for specific architectures will be added in future releases.
     std::int64_t sizea, sizeb, sizec;
-    sizea      = (transa == oneapi::mkl::transpose::nontrans) ? lda * k : lda * m;
-    sizeb      = (transb == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * k;
-    sizec      = ldc * n;
+    sizea = (transa == oneapi::mkl::transpose::nontrans) ? lda * k : lda * m;
+    sizeb = (transb == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * k;
+    sizec = ldc * n;
     double *ad = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizea);
     double *bd = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizeb);
     double *cd = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizec);
     {
         double alphad = alpha;
-        double betad  = beta;
-        double aod    = ao;
-        double bod    = bo;
-        auto acc_a    = a.template get_access<cl::sycl::access::mode::read>();
-        auto acc_b    = b.template get_access<cl::sycl::access::mode::read>();
-        auto acc_c    = c.template get_access<cl::sycl::access::mode::read_write>();
-        auto acc_co   = co.template get_access<cl::sycl::access::mode::read_write>();
+        double betad = beta;
+        double aod = ao;
+        double bod = bo;
+        auto acc_a = a.template get_access<cl::sycl::access::mode::read>();
+        auto acc_b = b.template get_access<cl::sycl::access::mode::read>();
+        auto acc_c = c.template get_access<cl::sycl::access::mode::read_write>();
+        auto acc_co = co.template get_access<cl::sycl::access::mode::read_write>();
         copy_mat(acc_a, transa, m, k, lda, aod, ad);
         copy_mat(acc_b, transb, k, n, ldb, bod, bd);
         copy_mat(acc_c, oneapi::mkl::transpose::nontrans, m, n, ldc, 0.0, cd);
@@ -2509,8 +2509,7 @@ cl::sycl::event *coalesce_events(cl::sycl::queue &queue, std::vector<cl::sycl::e
         return new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
             for (std::int64_t i = 0; i < prereqs.size(); i++)
                 cgh.depends_on(*prereqs[i]);
-            cgh.single_task<class coalesce_events_kernel>([]() {
-            });
+            cgh.single_task<class coalesce_events_kernel>([]() {});
         }));
     }
     else

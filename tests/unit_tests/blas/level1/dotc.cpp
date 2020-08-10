@@ -51,7 +51,7 @@ int test(const device &dev, int N, int incx, int incy) {
     rand_vector(y, N, incy);
 
     // Call Reference DOTC.
-    using fp_ref    = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<fp>::type;
     const int N_ref = N, incx_ref = incx, incy_ref = incy;
 
     ::dotc((fp_ref *)&result_reference, &N_ref, (fp_ref *)x.data(), &incx_ref, (fp_ref *)y.data(),
@@ -105,7 +105,7 @@ int test(const device &dev, int N, int incx, int incy) {
     bool good;
     {
         auto result_accessor = result_buffer.template get_access<access::mode::read>();
-        good                 = check_equal(result_accessor[0], result_reference, N, std::cout);
+        good = check_equal(result_accessor[0], result_reference, N, std::cout);
     }
 
     return (int)good;

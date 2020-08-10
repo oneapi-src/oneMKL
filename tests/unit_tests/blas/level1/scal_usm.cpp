@@ -71,7 +71,7 @@ int test(const device& dev, int N, int incx, fp_scalar alpha) {
     auto x_ref = x;
 
     // Call Reference SCAL.
-    using fp_ref        = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<fp>::type;
     using fp_scalar_mkl = typename ref_type_info<fp_scalar>::type;
 
     const int N_ref = N, incx_ref = std::abs(incx);

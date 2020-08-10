@@ -65,10 +65,12 @@ int test(const device &dev, int64_t group_count) {
     std::vector<event> dependencies;
 
     // Prepare data.
-    int64_t *n    = (int64_t *)oneapi::mkl::malloc_shared(64, sizeof(int64_t) * group_count, dev, cxt);
-    int64_t *incx = (int64_t *)oneapi::mkl::malloc_shared(64, sizeof(int64_t) * group_count, dev, cxt);
-    int64_t *incy = (int64_t *)oneapi::mkl::malloc_shared(64, sizeof(int64_t) * group_count, dev, cxt);
-    fp *alpha     = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * group_count, dev, cxt);
+    int64_t *n = (int64_t *)oneapi::mkl::malloc_shared(64, sizeof(int64_t) * group_count, dev, cxt);
+    int64_t *incx =
+        (int64_t *)oneapi::mkl::malloc_shared(64, sizeof(int64_t) * group_count, dev, cxt);
+    int64_t *incy =
+        (int64_t *)oneapi::mkl::malloc_shared(64, sizeof(int64_t) * group_count, dev, cxt);
+    fp *alpha = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * group_count, dev, cxt);
     int64_t *group_size =
         (int64_t *)oneapi::mkl::malloc_shared(64, sizeof(int64_t) * group_count, dev, cxt);
 
@@ -90,16 +92,19 @@ int test(const device &dev, int64_t group_count) {
 
     for (i = 0; i < group_count; i++) {
         group_size[i] = 1 + std::rand() % 100;
-        n[i]          = 1 + std::rand() % 500;
-        incx[i]       = ((std::rand() % 2) == 0) ? 1 + std::rand() % 2 : -1 - std::rand() % 2;
-        incy[i]       = ((std::rand() % 2) == 0) ? 1 + std::rand() % 2 : -1 - std::rand() % 2;
-        alpha[i]      = rand_scalar<fp>();
+        n[i] = 1 + std::rand() % 500;
+        incx[i] = ((std::rand() % 2) == 0) ? 1 + std::rand() % 2 : -1 - std::rand() % 2;
+        incy[i] = ((std::rand() % 2) == 0) ? 1 + std::rand() % 2 : -1 - std::rand() % 2;
+        alpha[i] = rand_scalar<fp>();
         total_batch_count += group_size[i];
     }
 
-    fp **x_array     = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * total_batch_count, dev, cxt);
-    fp **y_array     = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * total_batch_count, dev, cxt);
-    fp **y_ref_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * total_batch_count, dev, cxt);
+    fp **x_array =
+        (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * total_batch_count, dev, cxt);
+    fp **y_array =
+        (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * total_batch_count, dev, cxt);
+    fp **y_ref_array =
+        (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * total_batch_count, dev, cxt);
 
     if ((x_array == NULL) || (y_array == NULL) || (y_ref_array == NULL)) {
         std::cout << "Error cannot allocate arrays of pointers\n";
@@ -111,11 +116,14 @@ int test(const device &dev, int64_t group_count) {
     idx = 0;
     for (i = 0; i < group_count; i++) {
         for (j = 0; j < group_size[i]; j++) {
-            total_size_x     = (1 + (n[i] - 1) * std::abs(incx[i]));
-            total_size_y     = (1 + (n[i] - 1) * std::abs(incy[i]));
-            x_array[idx]     = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * total_size_x, dev, cxt);
-            y_array[idx]     = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * total_size_y, dev, cxt);
-            y_ref_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * total_size_y, dev, cxt);
+            total_size_x = (1 + (n[i] - 1) * std::abs(incx[i]));
+            total_size_y = (1 + (n[i] - 1) * std::abs(incy[i]));
+            x_array[idx] =
+                (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * total_size_x, dev, cxt);
+            y_array[idx] =
+                (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * total_size_y, dev, cxt);
+            y_ref_array[idx] =
+                (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * total_size_y, dev, cxt);
             rand_vector(x_array[idx], n[i], incx[i]);
             rand_vector(y_array[idx], n[i], incy[i]);
             copy_vector(y_array[idx], n[i], incy[i], y_ref_array[idx]);
@@ -130,7 +138,7 @@ int test(const device &dev, int64_t group_count) {
     idx = 0;
     for (i = 0; i < group_count; i++) {
         for (j = 0; j < group_size[i]; j++) {
-            n_ref    = (int)n[i];
+            n_ref = (int)n[i];
             incx_ref = (int)incx[i];
             incy_ref = (int)incy[i];
             ::axpy((const int *)&n_ref, (const fp_ref *)&alpha[i], (const fp_ref *)x_array[idx],
@@ -143,8 +151,8 @@ int test(const device &dev, int64_t group_count) {
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::axpy_batch(main_queue, n, alpha, (const fp **)x_array, incx, y_array,
-                                        incy, group_count, group_size, dependencies);
+        done = oneapi::mkl::blas::axpy_batch(main_queue, n, alpha, (const fp **)x_array, incx,
+                                             y_array, incy, group_count, group_size, dependencies);
         done.wait();
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::axpy_batch,
@@ -186,7 +194,7 @@ int test(const device &dev, int64_t group_count) {
 
     // Compare the results of reference implementation and DPC++ implementation.
     bool good = true;
-    idx       = 0;
+    idx = 0;
     for (i = 0; i < group_count; i++) {
         for (j = 0; j < group_size[i]; j++) {
             good = good && check_equal_vector(y_array[idx], y_ref_array[idx], n[i], incy[i], n[i],

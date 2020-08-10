@@ -50,11 +50,11 @@ int test(const device &dev, int N, int incx, int incy, fp flag) {
     rand_vector(y, N, incy);
     rand_vector(param, 5, 1);
     param[0] = flag;
-    y_ref    = y;
-    x_ref    = x;
+    y_ref = y;
+    x_ref = x;
 
     // Call Reference ROTM.
-    using fp_ref    = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<fp>::type;
     const int N_ref = N, incx_ref = incx, incy_ref = incy;
 
     ::rotm(&N_ref, (fp_ref *)x_ref.data(), &incx_ref, (fp_ref *)y_ref.data(), &incy_ref,
@@ -78,8 +78,8 @@ int test(const device &dev, int N, int incx, int incy, fp flag) {
 
     queue main_queue(dev, exception_handler);
 
-    buffer<fp, 1> x_buffer     = make_buffer(x);
-    buffer<fp, 1> y_buffer     = make_buffer(y);
+    buffer<fp, 1> x_buffer = make_buffer(x);
+    buffer<fp, 1> y_buffer = make_buffer(y);
     buffer<fp, 1> param_buffer = make_buffer(param);
 
     try {
@@ -108,10 +108,10 @@ int test(const device &dev, int N, int incx, int incy, fp flag) {
     bool good;
     {
         auto x_accessor = x_buffer.template get_access<access::mode::read>();
-        bool good_x     = check_equal_vector(x_accessor, x_ref, N, incx, N, std::cout);
+        bool good_x = check_equal_vector(x_accessor, x_ref, N, incx, N, std::cout);
         auto y_accessor = y_buffer.template get_access<access::mode::read>();
-        bool good_y     = check_equal_vector(y_accessor, y_ref, N, incy, N, std::cout);
-        good            = good_x && good_y;
+        bool good_y = check_equal_vector(y_accessor, y_ref, N, incy, N, std::cout);
+        good = good_x && good_y;
     }
 
     return (int)good;

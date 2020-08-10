@@ -50,7 +50,7 @@ int test(const device& dev, int64_t N, int64_t incx) {
     rand_vector(x, N, incx);
 
     // Call Reference ASUM.
-    using fp_ref    = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<fp>::type;
     const int N_ref = N, incx_ref = std::abs(incx);
 
     result_ref = ::asum<fp_ref, fp_res>(&N_ref, (fp_ref*)x.data(), &incx_ref);
@@ -79,7 +79,8 @@ int test(const device& dev, int64_t N, int64_t incx) {
 #ifdef CALL_RT_API
         oneapi::mkl::blas::asum(main_queue, N, x_buffer, incx, result_buffer);
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::asum, (main_queue, N, x_buffer, incx, result_buffer));
+        TEST_RUN_CT(main_queue, oneapi::mkl::blas::asum,
+                    (main_queue, N, x_buffer, incx, result_buffer));
 #endif
     }
     catch (exception const& e) {
@@ -100,7 +101,7 @@ int test(const device& dev, int64_t N, int64_t incx) {
     bool good;
     {
         auto result_accessor = result_buffer.template get_access<access::mode::read>();
-        good                 = check_equal(result_accessor[0], result_ref, N, std::cout);
+        good = check_equal(result_accessor[0], result_ref, N, std::cout);
     }
 
     return (int)good;

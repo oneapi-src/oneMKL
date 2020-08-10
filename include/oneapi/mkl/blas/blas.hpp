@@ -33,13 +33,13 @@
 
 #include "oneapi/mkl/blas/detail/blas_loader.hpp"
 #ifdef ENABLE_CUBLAS_BACKEND
-    #include "oneapi/mkl/blas/detail/cublas/blas_ct.hpp"
+#include "oneapi/mkl/blas/detail/cublas/blas_ct.hpp"
 #endif
 #ifdef ENABLE_MKLCPU_BACKEND
-    #include "oneapi/mkl/blas/detail/mklcpu/blas_ct.hpp"
+#include "oneapi/mkl/blas/detail/mklcpu/blas_ct.hpp"
 #endif
 #ifdef ENABLE_MKLGPU_BACKEND
-    #include "oneapi/mkl/blas/detail/mklgpu/blas_ct.hpp"
+#include "oneapi/mkl/blas/detail/mklgpu/blas_ct.hpp"
 #endif
 
 namespace oneapi {
@@ -1327,8 +1327,7 @@ static inline void tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose tran
                         std::int64_t n, std::int64_t k, cl::sycl::buffer<float, 1> &a,
                         std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
     tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
-    detail::tbmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
-                 incx);
+    detail::tbmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
     tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
@@ -1336,8 +1335,7 @@ static inline void tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose tran
                         std::int64_t n, std::int64_t k, cl::sycl::buffer<double, 1> &a,
                         std::int64_t lda, cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
     tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
-    detail::tbmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
-                 incx);
+    detail::tbmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
     tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
@@ -1346,8 +1344,7 @@ static inline void tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose tran
                         std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &x,
                         std::int64_t incx) {
     tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
-    detail::tbmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
-                 incx);
+    detail::tbmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
     tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
@@ -1356,8 +1353,7 @@ static inline void tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose tran
                         cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                         cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
     tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
-    detail::tbmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
-                 incx);
+    detail::tbmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
     tbmv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
@@ -1365,8 +1361,7 @@ static inline void tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose tran
                         std::int64_t n, std::int64_t k, cl::sycl::buffer<float, 1> &a,
                         std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
     tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
-    detail::tbsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
-                 incx);
+    detail::tbsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
     tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
@@ -1374,8 +1369,7 @@ static inline void tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose tran
                         std::int64_t n, std::int64_t k, cl::sycl::buffer<double, 1> &a,
                         std::int64_t lda, cl::sycl::buffer<double, 1> &x, std::int64_t incx) {
     tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
-    detail::tbsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
-                 incx);
+    detail::tbsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
     tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
@@ -1384,8 +1378,7 @@ static inline void tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose tran
                         std::int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &x,
                         std::int64_t incx) {
     tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
-    detail::tbsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
-                 incx);
+    detail::tbsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
     tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
@@ -1394,8 +1387,7 @@ static inline void tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose tran
                         cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                         cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx) {
     tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
-    detail::tbsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a, lda, x,
-                 incx);
+    detail::tbsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
     tbsv_postcondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
@@ -1600,8 +1592,8 @@ static inline void trsm_batch(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
     trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
                             stride_a, b, ldb, stride_b, batch_size);
-    detail::trsm_batch(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag, m,
-                       n, alpha, a, lda, stride_a, b, ldb, stride_b, batch_size);
+    detail::trsm_batch(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag, m, n,
+                       alpha, a, lda, stride_a, b, ldb, stride_b, batch_size);
     trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
                              stride_a, b, ldb, stride_b, batch_size);
 }
@@ -1613,8 +1605,8 @@ static inline void trsm_batch(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
     trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
                             stride_a, b, ldb, stride_b, batch_size);
-    detail::trsm_batch(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag, m,
-                       n, alpha, a, lda, stride_a, b, ldb, stride_b, batch_size);
+    detail::trsm_batch(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag, m, n,
+                       alpha, a, lda, stride_a, b, ldb, stride_b, batch_size);
     trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
                              stride_a, b, ldb, stride_b, batch_size);
 }
@@ -1627,8 +1619,8 @@ static inline void trsm_batch(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
     trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
                             stride_a, b, ldb, stride_b, batch_size);
-    detail::trsm_batch(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag, m,
-                       n, alpha, a, lda, stride_a, b, ldb, stride_b, batch_size);
+    detail::trsm_batch(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag, m, n,
+                       alpha, a, lda, stride_a, b, ldb, stride_b, batch_size);
     trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
                              stride_a, b, ldb, stride_b, batch_size);
 }
@@ -1641,8 +1633,8 @@ static inline void trsm_batch(cl::sycl::queue &queue, side left_right, uplo uppe
                               std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
     trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
                             stride_a, b, ldb, stride_b, batch_size);
-    detail::trsm_batch(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag, m,
-                       n, alpha, a, lda, stride_a, b, ldb, stride_b, batch_size);
+    detail::trsm_batch(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag, m, n,
+                       alpha, a, lda, stride_a, b, ldb, stride_b, batch_size);
     trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
                              stride_a, b, ldb, stride_b, batch_size);
 }
@@ -1723,8 +1715,7 @@ static inline cl::sycl::event axpy(
     cl::sycl::queue &queue, std::int64_t n, float alpha, const float *x, std::int64_t incx,
     float *y, std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
-    auto done =
-        detail::axpy(get_device_id(queue), queue, n, alpha, x, incx, y, incy, dependencies);
+    auto done = detail::axpy(get_device_id(queue), queue, n, alpha, x, incx, y, incy, dependencies);
     axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
     return done;
 }
@@ -1734,8 +1725,7 @@ static inline cl::sycl::event axpy(
     double *y, std::int64_t incy,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
-    auto done =
-        detail::axpy(get_device_id(queue), queue, n, alpha, x, incx, y, incy, dependencies);
+    auto done = detail::axpy(get_device_id(queue), queue, n, alpha, x, incx, y, incy, dependencies);
     axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
     return done;
 }
@@ -1745,8 +1735,7 @@ static inline cl::sycl::event axpy(
     std::int64_t incx, std::complex<float> *y, std::int64_t incy,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
-    auto done =
-        detail::axpy(get_device_id(queue), queue, n, alpha, x, incx, y, incy, dependencies);
+    auto done = detail::axpy(get_device_id(queue), queue, n, alpha, x, incx, y, incy, dependencies);
     axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
     return done;
 }
@@ -1756,8 +1745,7 @@ static inline cl::sycl::event axpy(
     const std::complex<double> *x, std::int64_t incx, std::complex<double> *y, std::int64_t incy,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
-    auto done =
-        detail::axpy(get_device_id(queue), queue, n, alpha, x, incx, y, incy, dependencies);
+    auto done = detail::axpy(get_device_id(queue), queue, n, alpha, x, incx, y, incy, dependencies);
     axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
     return done;
 }
@@ -1859,8 +1847,7 @@ static inline cl::sycl::event dot(
     std::int64_t incy, float *result,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     dot_precondition(queue, n, x, incx, y, incy, result, dependencies);
-    auto done =
-        detail::dot(get_device_id(queue), queue, n, x, incx, y, incy, result, dependencies);
+    auto done = detail::dot(get_device_id(queue), queue, n, x, incx, y, incy, result, dependencies);
     dot_postcondition(queue, n, x, incx, y, incy, result, dependencies);
     return done;
 }
@@ -1870,8 +1857,7 @@ static inline cl::sycl::event dot(
     std::int64_t incy, double *result,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     dot_precondition(queue, n, x, incx, y, incy, result, dependencies);
-    auto done =
-        detail::dot(get_device_id(queue), queue, n, x, incx, y, incy, result, dependencies);
+    auto done = detail::dot(get_device_id(queue), queue, n, x, incx, y, incy, result, dependencies);
     dot_postcondition(queue, n, x, incx, y, incy, result, dependencies);
     return done;
 }
@@ -1881,8 +1867,7 @@ static inline cl::sycl::event dot(
     std::int64_t incy, double *result,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     dot_precondition(queue, n, x, incx, y, incy, result, dependencies);
-    auto done =
-        detail::dot(get_device_id(queue), queue, n, x, incx, y, incy, result, dependencies);
+    auto done = detail::dot(get_device_id(queue), queue, n, x, incx, y, incy, result, dependencies);
     dot_postcondition(queue, n, x, incx, y, incy, result, dependencies);
     return done;
 }
@@ -1996,8 +1981,8 @@ static inline cl::sycl::event gemm(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
-    auto done = detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda,
-                             b, ldb, beta, c, ldc, dependencies);
+    auto done = detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b,
+                             ldb, beta, c, ldc, dependencies);
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     return done;
@@ -2010,8 +1995,8 @@ static inline cl::sycl::event gemm(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
-    auto done = detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda,
-                             b, ldb, beta, c, ldc, dependencies);
+    auto done = detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b,
+                             ldb, beta, c, ldc, dependencies);
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     return done;
@@ -2025,8 +2010,8 @@ static inline cl::sycl::event gemm(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
-    auto done = detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda,
-                             b, ldb, beta, c, ldc, dependencies);
+    auto done = detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b,
+                             ldb, beta, c, ldc, dependencies);
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     return done;
@@ -2040,8 +2025,8 @@ static inline cl::sycl::event gemm(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
-    auto done = detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda,
-                             b, ldb, beta, c, ldc, dependencies);
+    auto done = detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b,
+                             ldb, beta, c, ldc, dependencies);
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     return done;
@@ -2180,8 +2165,8 @@ static inline cl::sycl::event gemmt(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                        ldc, dependencies);
-    auto done = detail::gemmt(get_device_id(queue), queue, upper_lower, transa, transb, n, k,
-                              alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+    auto done = detail::gemmt(get_device_id(queue), queue, upper_lower, transa, transb, n, k, alpha,
+                              a, lda, b, ldb, beta, c, ldc, dependencies);
     gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc, dependencies);
     return done;
@@ -2194,8 +2179,8 @@ static inline cl::sycl::event gemmt(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                        ldc, dependencies);
-    auto done = detail::gemmt(get_device_id(queue), queue, upper_lower, transa, transb, n, k,
-                              alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+    auto done = detail::gemmt(get_device_id(queue), queue, upper_lower, transa, transb, n, k, alpha,
+                              a, lda, b, ldb, beta, c, ldc, dependencies);
     gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc, dependencies);
     return done;
@@ -2209,8 +2194,8 @@ static inline cl::sycl::event gemmt(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                        ldc, dependencies);
-    auto done = detail::gemmt(get_device_id(queue), queue, upper_lower, transa, transb, n, k,
-                              alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+    auto done = detail::gemmt(get_device_id(queue), queue, upper_lower, transa, transb, n, k, alpha,
+                              a, lda, b, ldb, beta, c, ldc, dependencies);
     gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc, dependencies);
     return done;
@@ -2224,8 +2209,8 @@ static inline cl::sycl::event gemmt(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                        ldc, dependencies);
-    auto done = detail::gemmt(get_device_id(queue), queue, upper_lower, transa, transb, n, k,
-                              alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+    auto done = detail::gemmt(get_device_id(queue), queue, upper_lower, transa, transb, n, k, alpha,
+                              a, lda, b, ldb, beta, c, ldc, dependencies);
     gemmt_postcondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc, dependencies);
     return done;
@@ -2236,8 +2221,8 @@ static inline cl::sycl::event gemv(
     const float *a, std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y,
     std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
-    auto done = detail::gemv(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx,
-                             beta, y, incy, dependencies);
+    auto done = detail::gemv(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx, beta,
+                             y, incy, dependencies);
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     return done;
 }
@@ -2247,8 +2232,8 @@ static inline cl::sycl::event gemv(
     const double *a, std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y,
     std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
-    auto done = detail::gemv(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx,
-                             beta, y, incy, dependencies);
+    auto done = detail::gemv(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx, beta,
+                             y, incy, dependencies);
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     return done;
 }
@@ -2260,8 +2245,8 @@ static inline cl::sycl::event gemv(
     std::complex<float> *y, std::int64_t incy,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
-    auto done = detail::gemv(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx,
-                             beta, y, incy, dependencies);
+    auto done = detail::gemv(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx, beta,
+                             y, incy, dependencies);
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     return done;
 }
@@ -2273,8 +2258,8 @@ static inline cl::sycl::event gemv(
     std::complex<double> *y, std::int64_t incy,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
-    auto done = detail::gemv(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx,
-                             beta, y, incy, dependencies);
+    auto done = detail::gemv(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx, beta,
+                             y, incy, dependencies);
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     return done;
 }
@@ -2357,8 +2342,8 @@ static inline cl::sycl::event hbmv(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     hbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
-    auto done = detail::hbmv(get_device_id(queue), queue, upper_lower, n, k, alpha, a, lda, x,
-                             incx, beta, y, incy, dependencies);
+    auto done = detail::hbmv(get_device_id(queue), queue, upper_lower, n, k, alpha, a, lda, x, incx,
+                             beta, y, incy, dependencies);
     hbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
     return done;
@@ -2372,8 +2357,8 @@ static inline cl::sycl::event hbmv(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     hbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
-    auto done = detail::hbmv(get_device_id(queue), queue, upper_lower, n, k, alpha, a, lda, x,
-                             incx, beta, y, incy, dependencies);
+    auto done = detail::hbmv(get_device_id(queue), queue, upper_lower, n, k, alpha, a, lda, x, incx,
+                             beta, y, incy, dependencies);
     hbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
     return done;
@@ -2789,8 +2774,7 @@ static inline cl::sycl::event rotm(
     std::int64_t incy, float *param,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     rotm_precondition(queue, n, x, incx, y, incy, param, dependencies);
-    auto done =
-        detail::rotm(get_device_id(queue), queue, n, x, incx, y, incy, param, dependencies);
+    auto done = detail::rotm(get_device_id(queue), queue, n, x, incx, y, incy, param, dependencies);
     rotm_postcondition(queue, n, x, incx, y, incy, param, dependencies);
     return done;
 }
@@ -2800,8 +2784,7 @@ static inline cl::sycl::event rotm(
     std::int64_t incy, double *param,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     rotm_precondition(queue, n, x, incx, y, incy, param, dependencies);
-    auto done =
-        detail::rotm(get_device_id(queue), queue, n, x, incx, y, incy, param, dependencies);
+    auto done = detail::rotm(get_device_id(queue), queue, n, x, incx, y, incy, param, dependencies);
     rotm_postcondition(queue, n, x, incx, y, incy, param, dependencies);
     return done;
 }
@@ -2830,8 +2813,8 @@ static inline cl::sycl::event sbmv(
     std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     sbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
-    auto done = detail::sbmv(get_device_id(queue), queue, upper_lower, n, k, alpha, a, lda, x,
-                             incx, beta, y, incy, dependencies);
+    auto done = detail::sbmv(get_device_id(queue), queue, upper_lower, n, k, alpha, a, lda, x, incx,
+                             beta, y, incy, dependencies);
     sbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
     return done;
@@ -2843,8 +2826,8 @@ static inline cl::sycl::event sbmv(
     std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     sbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
-    auto done = detail::sbmv(get_device_id(queue), queue, upper_lower, n, k, alpha, a, lda, x,
-                             incx, beta, y, incy, dependencies);
+    auto done = detail::sbmv(get_device_id(queue), queue, upper_lower, n, k, alpha, a, lda, x, incx,
+                             beta, y, incy, dependencies);
     sbmv_postcondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
     return done;
@@ -3424,8 +3407,8 @@ static inline cl::sycl::event trmm(
     std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
-    auto done = detail::trmm(get_device_id(queue), queue, left_right, upper_lower, trans,
-                             unit_diag, m, n, alpha, a, lda, b, ldb, dependencies);
+    auto done = detail::trmm(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
+                             m, n, alpha, a, lda, b, ldb, dependencies);
     trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
     return done;
@@ -3437,8 +3420,8 @@ static inline cl::sycl::event trmm(
     std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
-    auto done = detail::trmm(get_device_id(queue), queue, left_right, upper_lower, trans,
-                             unit_diag, m, n, alpha, a, lda, b, ldb, dependencies);
+    auto done = detail::trmm(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
+                             m, n, alpha, a, lda, b, ldb, dependencies);
     trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
     return done;
@@ -3451,8 +3434,8 @@ static inline cl::sycl::event trmm(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
-    auto done = detail::trmm(get_device_id(queue), queue, left_right, upper_lower, trans,
-                             unit_diag, m, n, alpha, a, lda, b, ldb, dependencies);
+    auto done = detail::trmm(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
+                             m, n, alpha, a, lda, b, ldb, dependencies);
     trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
     return done;
@@ -3465,8 +3448,8 @@ static inline cl::sycl::event trmm(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
-    auto done = detail::trmm(get_device_id(queue), queue, left_right, upper_lower, trans,
-                             unit_diag, m, n, alpha, a, lda, b, ldb, dependencies);
+    auto done = detail::trmm(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
+                             m, n, alpha, a, lda, b, ldb, dependencies);
     trmm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
     return done;
@@ -3522,8 +3505,8 @@ static inline cl::sycl::event trsm(
     std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
-    auto done = detail::trsm(get_device_id(queue), queue, left_right, upper_lower, trans,
-                             unit_diag, m, n, alpha, a, lda, b, ldb, dependencies);
+    auto done = detail::trsm(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
+                             m, n, alpha, a, lda, b, ldb, dependencies);
     trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
     return done;
@@ -3535,8 +3518,8 @@ static inline cl::sycl::event trsm(
     std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
-    auto done = detail::trsm(get_device_id(queue), queue, left_right, upper_lower, trans,
-                             unit_diag, m, n, alpha, a, lda, b, ldb, dependencies);
+    auto done = detail::trsm(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
+                             m, n, alpha, a, lda, b, ldb, dependencies);
     trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
     return done;
@@ -3549,8 +3532,8 @@ static inline cl::sycl::event trsm(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
-    auto done = detail::trsm(get_device_id(queue), queue, left_right, upper_lower, trans,
-                             unit_diag, m, n, alpha, a, lda, b, ldb, dependencies);
+    auto done = detail::trsm(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
+                             m, n, alpha, a, lda, b, ldb, dependencies);
     trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
     return done;
@@ -3563,8 +3546,8 @@ static inline cl::sycl::event trsm(
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
     trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
-    auto done = detail::trsm(get_device_id(queue), queue, left_right, upper_lower, trans,
-                             unit_diag, m, n, alpha, a, lda, b, ldb, dependencies);
+    auto done = detail::trsm(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
+                             m, n, alpha, a, lda, b, ldb, dependencies);
     trsm_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b,
                        ldb, dependencies);
     return done;

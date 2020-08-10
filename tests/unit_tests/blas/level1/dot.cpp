@@ -103,7 +103,7 @@ int test(const device& dev, int N, int incx, int incy) {
     bool good;
     {
         auto result_accessor = result_buffer.template get_access<access::mode::read>();
-        good                 = check_equal(result_accessor[0], result_ref, N, std::cout);
+        good = check_equal(result_accessor[0], result_ref, N, std::cout);
     }
 
     return (int)good;

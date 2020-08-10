@@ -84,7 +84,7 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp alpha, fp b
     try {
 #ifdef CALL_RT_API
         oneapi::mkl::blas::hpmv(main_queue, upper_lower, n, alpha, A_buffer, x_buffer, incx, beta,
-                           y_buffer, incy);
+                                y_buffer, incy);
 #else
         TEST_RUN_CT(
             main_queue, oneapi::mkl::blas::hpmv,
@@ -109,7 +109,7 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp alpha, fp b
     bool good;
     {
         auto y_accessor = y_buffer.template get_access<access::mode::read>();
-        good            = check_equal_vector(y_accessor, y_ref, n, incy, n, std::cout);
+        good = check_equal_vector(y_accessor, y_ref, n, incy, n, std::cout);
     }
 
     return (int)good;

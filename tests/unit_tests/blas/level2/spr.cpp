@@ -104,7 +104,7 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp alpha, int 
     bool good;
     {
         auto A_accessor = A_buffer.template get_access<access::mode::read>();
-        good            = check_equal_matrix(A_accessor, A_ref, n, n, n, n, std::cout);
+        good = check_equal_matrix(A_accessor, A_ref, n, n, n, n, std::cout);
     }
 
     return (int)good;

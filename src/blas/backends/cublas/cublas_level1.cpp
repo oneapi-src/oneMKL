@@ -38,10 +38,10 @@ inline void asum(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<
     overflow_check(n, incx);
 
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto x_acc   = x.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto x_acc = x.template get_access<cl::sycl::access::mode::read>(cgh);
         auto res_acc = result.template get_access<cl::sycl::access::mode::write>(cgh);
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
             // By default the pointer mode is the CUBLAS_POINTER_MODE_HOST
             // when the data is on buffer, it must be set to
@@ -49,7 +49,7 @@ inline void asum(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<
             // fault. When it is set to device it is users responsibility to
             // synchronise as the function is completely asynchronous.
             cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
-            auto x_   = sc.get_mem<cuDataType1 *>(ih, x_acc);
+            auto x_ = sc.get_mem<cuDataType1 *>(ih, x_acc);
             auto res_ = sc.get_mem<cuDataType2 *>(ih, res_acc);
             cublasStatus_t err;
             // ASUM does not support negative index
@@ -78,9 +78,9 @@ inline void scal(Func func, cl::sycl::queue &queue, int64_t n, T1 a, cl::sycl::b
     queue.submit([&](cl::sycl::handler &cgh) {
         auto x_acc = x.template get_access<cl::sycl::access::mode::read_write>(cgh);
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto x_     = sc.get_mem<cuDataType2 *>(ih, x_acc);
+            auto x_ = sc.get_mem<cuDataType2 *>(ih, x_acc);
             cublasStatus_t err;
             // SCAL does not support negative incx
             CUBLAS_ERROR_FUNC(func, err, handle, n, (cuDataType1 *)&a, x_, std::abs(incx));
@@ -110,10 +110,10 @@ inline void axpy(Func func, cl::sycl::queue &queue, int64_t n, T alpha, cl::sycl
         auto x_acc = x.template get_access<cl::sycl::access::mode::read>(cgh);
         auto y_acc = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto x_     = sc.get_mem<cuDataType *>(ih, x_acc);
-            auto y_     = sc.get_mem<cuDataType *>(ih, y_acc);
+            auto x_ = sc.get_mem<cuDataType *>(ih, x_acc);
+            auto y_ = sc.get_mem<cuDataType *>(ih, y_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, n, (cuDataType *)&alpha, x_, incx, y_, incy);
         });
@@ -144,7 +144,7 @@ inline void rotg(Func func, cl::sycl::queue &queue, cl::sycl::buffer<T1, 1> &a,
         auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
         auto s_acc = s.template get_access<cl::sycl::access::mode::read_write>(cgh);
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
             // By default the pointer mode is the CUBLAS_POINTER_MODE_HOST
             // when the data is on buffer, it must be set to
@@ -182,11 +182,11 @@ inline void rotm(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, incx, incy);
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto x_acc     = x.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto y_acc     = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto x_acc = x.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto y_acc = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
         auto param_acc = param.template get_access<cl::sycl::access::mode::read>(cgh);
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
             // By default the pointer mode is the CUBLAS_POINTER_MODE_HOST
             // when the data is on buffer, it must be set to
@@ -194,8 +194,8 @@ inline void rotm(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<
             // fault. When it is set to device it is users responsibility to
             // synchronise as the function is completely asynchronous.
             cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
-            auto x_     = sc.get_mem<cuDataType *>(ih, x_acc);
-            auto y_     = sc.get_mem<cuDataType *>(ih, y_acc);
+            auto x_ = sc.get_mem<cuDataType *>(ih, x_acc);
+            auto y_ = sc.get_mem<cuDataType *>(ih, y_acc);
             auto param_ = sc.get_mem<cuDataType *>(ih, param_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, incx, y_, incy, param_);
@@ -222,10 +222,10 @@ inline void copy(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<
         auto x_acc = x.template get_access<cl::sycl::access::mode::read>(cgh);
         auto y_acc = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto x_     = sc.get_mem<cuDataType *>(ih, x_acc);
-            auto y_     = sc.get_mem<cuDataType *>(ih, y_acc);
+            auto x_ = sc.get_mem<cuDataType *>(ih, x_acc);
+            auto y_ = sc.get_mem<cuDataType *>(ih, y_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, incx, y_, incy);
         });
@@ -251,11 +251,11 @@ inline void dot(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, incx, incy);
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto x_acc   = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto y_acc   = y.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto x_acc = x.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto y_acc = y.template get_access<cl::sycl::access::mode::read>(cgh);
         auto res_acc = result.template get_access<cl::sycl::access::mode::write>(cgh);
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
             // By default the pointer mode is the CUBLAS_POINTER_MODE_HOST
             // when the data is on buffer, it must be set to
@@ -263,8 +263,8 @@ inline void dot(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T
             // fault. When it is set to device it is users responsibility to
             // synchronise as the function is completely asynchronous.
             cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
-            auto x_   = sc.get_mem<cuDataType *>(ih, x_acc);
-            auto y_   = sc.get_mem<cuDataType *>(ih, y_acc);
+            auto x_ = sc.get_mem<cuDataType *>(ih, x_acc);
+            auto y_ = sc.get_mem<cuDataType *>(ih, y_acc);
             auto res_ = sc.get_mem<cuDataType *>(ih, res_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, incx, y_, incy, res_);
@@ -297,7 +297,7 @@ inline void rot(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T
         auto x_acc = x.template get_access<cl::sycl::access::mode::read_write>(cgh);
         auto y_acc = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
             // By default the pointer mode is the CUBLAS_POINTER_MODE_HOST
             // when the data is on buffer, it must be set to
@@ -332,11 +332,11 @@ void sdsdot(cl::sycl::queue &queue, int64_t n, float sb, cl::sycl::buffer<float,
     overflow_check(n, incx, incy);
     // cuBLAS does not support sdot so we need to mimic sdot.
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto x_acc   = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto y_acc   = y.get_access<cl::sycl::access::mode::read>(cgh);
+        auto x_acc = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto y_acc = y.get_access<cl::sycl::access::mode::read>(cgh);
         auto res_acc = result.get_access<cl::sycl::access::mode::write>(cgh);
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
             // By default the pointer mode is the CUBLAS_POINTER_MODE_HOST
             // when the data is on buffer, it must be set to
@@ -344,8 +344,8 @@ void sdsdot(cl::sycl::queue &queue, int64_t n, float sb, cl::sycl::buffer<float,
             // fault. When it is set to device it is users responsibility to
             // synchronise as the function is completely asynchronous.
             cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
-            auto x_   = sc.get_mem<float *>(ih, x_acc);
-            auto y_   = sc.get_mem<float *>(ih, y_acc);
+            auto x_ = sc.get_mem<float *>(ih, x_acc);
+            auto y_ = sc.get_mem<float *>(ih, y_acc);
             auto res_ = sc.get_mem<float *>(ih, res_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(cublasSdot, err, handle, n, x_, incx, y_, incy, res_);
@@ -368,13 +368,13 @@ inline void rotmg(Func func, cl::sycl::queue &queue, cl::sycl::buffer<T, 1> &d1,
     using cuDataType = typename CudaEquivalentType<T>::Type;
     cl::sycl::buffer<T, 1> y1_buff(&y1, cl::sycl::range<1>(1));
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto d1_acc    = d1.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto d2_acc    = d2.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto x1_acc    = x1.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto y1_acc    = y1_buff.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto d1_acc = d1.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto d2_acc = d2.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto x1_acc = x1.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto y1_acc = y1_buff.template get_access<cl::sycl::access::mode::read>(cgh);
         auto param_acc = param.template get_access<cl::sycl::access::mode::read_write>(cgh);
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
             // By default the pointer mode is the CUBLAS_POINTER_MODE_HOST
             // when the data is on buffer, it must be set to
@@ -382,10 +382,10 @@ inline void rotmg(Func func, cl::sycl::queue &queue, cl::sycl::buffer<T, 1> &d1,
             // fault. When it is set to device it is users responsibility to
             // synchronise as the function is completely asynchronous.
             cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
-            auto d1_    = sc.get_mem<cuDataType *>(ih, d1_acc);
-            auto d2_    = sc.get_mem<cuDataType *>(ih, d2_acc);
-            auto x1_    = sc.get_mem<cuDataType *>(ih, x1_acc);
-            auto y1_    = sc.get_mem<cuDataType *>(ih, y1_acc);
+            auto d1_ = sc.get_mem<cuDataType *>(ih, d1_acc);
+            auto d2_ = sc.get_mem<cuDataType *>(ih, d2_acc);
+            auto x1_ = sc.get_mem<cuDataType *>(ih, x1_acc);
+            auto y1_ = sc.get_mem<cuDataType *>(ih, y1_acc);
             auto param_ = sc.get_mem<cuDataType *>(ih, param_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, d1_, d2_, x1_, y1_, param_);
@@ -418,10 +418,10 @@ inline void iamax(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer
     // to convert to different type with different typesize size.
     cl::sycl::buffer<int, 1> int_res_buff{ cl::sycl::range<1>(1) };
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto x_acc       = x.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto x_acc = x.template get_access<cl::sycl::access::mode::read>(cgh);
         auto int_res_acc = int_res_buff.template get_access<cl::sycl::access::mode::write>(cgh);
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
             // By default the pointer mode is the CUBLAS_POINTER_MODE_HOST
             // when the data is on buffer, it must be set to
@@ -429,7 +429,7 @@ inline void iamax(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer
             // fault. When it is set to device it is users responsibility to
             // synchronise as the function is completely asynchronous.
             cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
-            auto x_       = sc.get_mem<cuDataType *>(ih, x_acc);
+            auto x_ = sc.get_mem<cuDataType *>(ih, x_acc);
             auto int_res_ = sc.get_mem<int *>(ih, int_res_acc);
             cublasStatus_t err;
             // For negative incx, iamax returns 0. This behaviour is similar to that of
@@ -464,10 +464,10 @@ inline void swap(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<
         auto x_acc = x.template get_access<cl::sycl::access::mode::read_write>(cgh);
         auto y_acc = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto x_     = sc.get_mem<cuDataType *>(ih, x_acc);
-            auto y_     = sc.get_mem<cuDataType *>(ih, y_acc);
+            auto x_ = sc.get_mem<cuDataType *>(ih, x_acc);
+            auto y_ = sc.get_mem<cuDataType *>(ih, y_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, incx, y_, incy);
         });
@@ -500,10 +500,10 @@ inline void iamin(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer
     // to convert to different type with different typesize size.
     cl::sycl::buffer<int, 1> int_res_buff{ cl::sycl::range<1>(1) };
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto x_acc       = x.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto x_acc = x.template get_access<cl::sycl::access::mode::read>(cgh);
         auto int_res_acc = int_res_buff.template get_access<cl::sycl::access::mode::write>(cgh);
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
             // By default the pointer mode is the CUBLAS_POINTER_MODE_HOST
             // when the data is on buffer, it must be set to
@@ -511,7 +511,7 @@ inline void iamin(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer
             // fault. When it is set to device it is users responsibility to
             // synchronise as the function is completely asynchronous.
             cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
-            auto x_       = sc.get_mem<cuDataType *>(ih, x_acc);
+            auto x_ = sc.get_mem<cuDataType *>(ih, x_acc);
             auto int_res_ = sc.get_mem<int *>(ih, int_res_acc);
             cublasStatus_t err;
             // For negative incx, iamin returns 0. This behaviour is similar to that of
@@ -543,10 +543,10 @@ inline void nrm2(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<
     overflow_check(n, incx);
 
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto x_acc   = x.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto x_acc = x.template get_access<cl::sycl::access::mode::read>(cgh);
         auto res_acc = result.template get_access<cl::sycl::access::mode::write>(cgh);
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
             // By default the pointer mode is the CUBLAS_POINTER_MODE_HOST
             // when the data is on buffer, it must be set to
@@ -554,7 +554,7 @@ inline void nrm2(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<
             // fault. When it is set to device it is users responsibility to
             // synchronise as the function is completely asynchronous.
             cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
-            auto x_   = sc.get_mem<cuDataType1 *>(ih, x_acc);
+            auto x_ = sc.get_mem<cuDataType1 *>(ih, x_acc);
             auto res_ = sc.get_mem<cuDataType2 *>(ih, res_acc);
             cublasStatus_t err;
             // NRM2 does not support negative index
@@ -591,10 +591,10 @@ inline cl::sycl::event asum(Func func, cl::sycl::queue &queue, int64_t n, const 
             cgh.depends_on(dependencies[i]);
         }
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto x_     = reinterpret_cast<const cuDataType1 *>(x);
-            auto res_   = reinterpret_cast<cuDataType2 *>(result);
+            auto x_ = reinterpret_cast<const cuDataType1 *>(x);
+            auto res_ = reinterpret_cast<cuDataType2 *>(result);
             cublasStatus_t err;
             // ASUM does not support negative index
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, std::abs(incx), res_);
@@ -627,9 +627,9 @@ inline cl::sycl::event scal(Func func, cl::sycl::queue &queue, int64_t n, T1 a, 
             cgh.depends_on(dependencies[i]);
         }
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto x_     = reinterpret_cast<cuDataType2 *>(x);
+            auto x_ = reinterpret_cast<cuDataType2 *>(x);
             cublasStatus_t err;
             // SCAL does not support negative incx
             CUBLAS_ERROR_FUNC(func, err, handle, n, (cuDataType1 *)&a, x_, std::abs(incx));
@@ -663,10 +663,10 @@ inline cl::sycl::event axpy(Func func, cl::sycl::queue &queue, int64_t n, T alph
             cgh.depends_on(dependencies[i]);
         }
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto x_     = reinterpret_cast<const cuDataType *>(x);
-            auto y_     = reinterpret_cast<cuDataType *>(y);
+            auto x_ = reinterpret_cast<const cuDataType *>(x);
+            auto y_ = reinterpret_cast<cuDataType *>(y);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, n, (cuDataType *)&alpha, x_, incx, y_, incy);
         });
@@ -692,18 +692,18 @@ inline cl::sycl::event rotg(Func func, cl::sycl::queue &queue, T1 *a, T1 *b, T2 
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     using cuDataType1 = typename CudaEquivalentType<T1>::Type;
     using cuDataType2 = typename CudaEquivalentType<T2>::Type;
-    auto done         = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto a_     = reinterpret_cast<cuDataType1 *>(a);
-            auto b_     = reinterpret_cast<cuDataType1 *>(b);
-            auto c_     = reinterpret_cast<cuDataType2 *>(c);
-            auto s_     = reinterpret_cast<cuDataType1 *>(s);
+            auto a_ = reinterpret_cast<cuDataType1 *>(a);
+            auto b_ = reinterpret_cast<cuDataType1 *>(b);
+            auto c_ = reinterpret_cast<cuDataType2 *>(c);
+            auto s_ = reinterpret_cast<cuDataType1 *>(s);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, a_, b_, c_, s_);
         });
@@ -735,10 +735,10 @@ inline cl::sycl::event rotm(Func func, cl::sycl::queue &queue, int64_t n, T *x, 
             cgh.depends_on(dependencies[i]);
         }
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto x_     = reinterpret_cast<cuDataType *>(x);
-            auto y_     = reinterpret_cast<cuDataType *>(y);
+            auto x_ = reinterpret_cast<cuDataType *>(x);
+            auto y_ = reinterpret_cast<cuDataType *>(y);
             auto param_ = reinterpret_cast<cuDataType *>(param);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, incx, y_, incy, param_);
@@ -770,10 +770,10 @@ inline cl::sycl::event copy(Func func, cl::sycl::queue &queue, int64_t n, const 
             cgh.depends_on(dependencies[i]);
         }
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto x_     = reinterpret_cast<const cuDataType *>(x);
-            auto y_     = reinterpret_cast<cuDataType *>(y);
+            auto x_ = reinterpret_cast<const cuDataType *>(x);
+            auto y_ = reinterpret_cast<cuDataType *>(y);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, incx, y_, incy);
         });
@@ -806,11 +806,11 @@ inline cl::sycl::event dot(Func func, cl::sycl::queue &queue, int64_t n, const T
             cgh.depends_on(dependencies[i]);
         }
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto x_     = reinterpret_cast<const cuDataType *>(x);
-            auto y_     = reinterpret_cast<const cuDataType *>(y);
-            auto res_   = reinterpret_cast<cuDataType *>(result);
+            auto x_ = reinterpret_cast<const cuDataType *>(x);
+            auto y_ = reinterpret_cast<const cuDataType *>(y);
+            auto res_ = reinterpret_cast<cuDataType *>(result);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, incx, y_, incy, res_);
         });
@@ -846,10 +846,10 @@ inline cl::sycl::event rot(Func func, cl::sycl::queue &queue, int64_t n, T1 *x, 
             cgh.depends_on(dependencies[i]);
         }
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto x_     = reinterpret_cast<cuDataType1 *>(x);
-            auto y_     = reinterpret_cast<cuDataType1 *>(y);
+            auto x_ = reinterpret_cast<cuDataType1 *>(x);
+            auto y_ = reinterpret_cast<cuDataType1 *>(y);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, incx, y_, incy, (cuDataType2 *)&c,
                               (cuDataType3 *)&s);
@@ -882,11 +882,11 @@ cl::sycl::event sdsdot(cl::sycl::queue &queue, int64_t n, float sb, const float 
             cgh.depends_on(dependencies[i]);
         }
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto x_     = reinterpret_cast<const float *>(x);
-            auto y_     = reinterpret_cast<const float *>(y);
-            auto res_   = reinterpret_cast<float *>(result);
+            auto x_ = reinterpret_cast<const float *>(x);
+            auto y_ = reinterpret_cast<const float *>(y);
+            auto res_ = reinterpret_cast<float *>(result);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(cublasSdot, err, handle, n, x_, incx, y_, incy, res_);
         });
@@ -905,18 +905,18 @@ template <typename Func, typename T>
 inline cl::sycl::event rotmg(Func func, cl::sycl::queue &queue, T *d1, T *d2, T *x1, T y1, T *param,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
-    auto done        = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto d1_    = reinterpret_cast<cuDataType *>(d1);
-            auto d2_    = reinterpret_cast<cuDataType *>(d2);
-            auto x1_    = reinterpret_cast<cuDataType *>(x1);
-            auto y1_    = reinterpret_cast<const cuDataType *>(&y1);
+            auto d1_ = reinterpret_cast<cuDataType *>(d1);
+            auto d2_ = reinterpret_cast<cuDataType *>(d2);
+            auto x1_ = reinterpret_cast<cuDataType *>(x1);
+            auto y1_ = reinterpret_cast<const cuDataType *>(&y1);
             auto param_ = reinterpret_cast<cuDataType *>(param);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, d1_, d2_, x1_, y1_, param_);
@@ -947,17 +947,17 @@ inline cl::sycl::event iamax(Func func, cl::sycl::queue &queue, int64_t n, const
     // it back to the actual data on the host.
     // This change may cause failure as the result of integer overflow
     // based on the size.
-    int int_res    = 0;
+    int int_res = 0;
     int *int_res_p = &int_res;
-    auto done      = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc         = CublasScopedContextHandler(queue);
-            auto handle     = sc.get_handle(queue);
-            auto x_         = reinterpret_cast<const cuDataType *>(x);
+            auto sc = CublasScopedContextHandler(queue);
+            auto handle = sc.get_handle(queue);
+            auto x_ = reinterpret_cast<const cuDataType *>(x);
             auto int_res_p_ = reinterpret_cast<int *>(int_res_p);
             cublasStatus_t err;
             // For negative incx, iamax returns 0. This behaviour is similar to that of
@@ -994,10 +994,10 @@ inline cl::sycl::event swap(Func func, cl::sycl::queue &queue, int64_t n, T *x, 
             cgh.depends_on(dependencies[i]);
         }
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto x_     = reinterpret_cast<cuDataType *>(x);
-            auto y_     = reinterpret_cast<cuDataType *>(y);
+            auto x_ = reinterpret_cast<cuDataType *>(x);
+            auto y_ = reinterpret_cast<cuDataType *>(y);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, incx, y_, incy);
         });
@@ -1029,17 +1029,17 @@ inline cl::sycl::event iamin(Func func, cl::sycl::queue &queue, int64_t n, const
     // it back to the actual data on the host.
     // This change may cause failure as the result of integer overflow
     // based on the size.
-    int int_res    = 0;
+    int int_res = 0;
     int *int_res_p = &int_res;
-    auto done      = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc         = CublasScopedContextHandler(queue);
-            auto handle     = sc.get_handle(queue);
-            auto x_         = reinterpret_cast<const cuDataType *>(x);
+            auto sc = CublasScopedContextHandler(queue);
+            auto handle = sc.get_handle(queue);
+            auto x_ = reinterpret_cast<const cuDataType *>(x);
             auto int_res_p_ = reinterpret_cast<int *>(int_res_p);
             cublasStatus_t err;
             // For negative incx, iamin returns 0. This behaviour is similar to that of
@@ -1047,7 +1047,7 @@ inline cl::sycl::event iamin(Func func, cl::sycl::queue &queue, int64_t n, const
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, incx, int_res_p_);
         });
     });
-    result[0]      = std::max((int64_t)(*int_res_p - 1), int64_t{ 0 });
+    result[0] = std::max((int64_t)(*int_res_p - 1), int64_t{ 0 });
     return done;
 }
 
@@ -1077,10 +1077,10 @@ inline cl::sycl::event nrm2(Func func, cl::sycl::queue &queue, int64_t n, const 
             cgh.depends_on(dependencies[i]);
         }
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto x_     = reinterpret_cast<const cuDataType1 *>(x);
-            auto res_   = reinterpret_cast<cuDataType2 *>(result);
+            auto x_ = reinterpret_cast<const cuDataType1 *>(x);
+            auto res_ = reinterpret_cast<cuDataType2 *>(result);
             cublasStatus_t err;
             // NRM2 does not support negative index
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, std::abs(incx), res_);

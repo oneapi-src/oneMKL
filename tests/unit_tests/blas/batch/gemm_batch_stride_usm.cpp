@@ -73,14 +73,14 @@ int test(const device &dev, int64_t batch_size) {
     int64_t i, tmp;
 
     batch_size = 1 + std::rand() % 20;
-    m          = 1 + std::rand() % 500;
-    n          = 1 + std::rand() % 500;
-    k          = 1 + std::rand() % 500;
-    lda        = std::max(m, k);
-    ldb        = std::max(n, k);
-    ldc        = std::max(m, n);
-    alpha      = rand_scalar<fp>();
-    beta       = rand_scalar<fp>();
+    m = 1 + std::rand() % 500;
+    n = 1 + std::rand() % 500;
+    k = 1 + std::rand() % 500;
+    lda = std::max(m, k);
+    ldb = std::max(n, k);
+    ldc = std::max(m, n);
+    alpha = rand_scalar<fp>();
+    beta = rand_scalar<fp>();
     if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
         transa = (oneapi::mkl::transpose)(std::rand() % 2);
         transb = (oneapi::mkl::transpose)(std::rand() % 2);
@@ -112,9 +112,9 @@ int test(const device &dev, int64_t batch_size) {
     C.resize(stride_c * batch_size);
     C_ref.resize(stride_c * batch_size);
 
-    fp **a_array     = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, dev, cxt);
-    fp **b_array     = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, dev, cxt);
-    fp **c_array     = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, dev, cxt);
+    fp **a_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, dev, cxt);
+    fp **b_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, dev, cxt);
+    fp **c_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, dev, cxt);
     fp **c_ref_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, dev, cxt);
 
     if ((a_array == NULL) || (b_array == NULL) || (c_array == NULL) || (c_ref_array == NULL)) {
@@ -127,26 +127,29 @@ int test(const device &dev, int64_t batch_size) {
     }
 
     for (i = 0; i < batch_size; i++) {
-        a_array[i]     = &A[i * stride_a];
-        b_array[i]     = &B[i * stride_b];
-        c_array[i]     = &C[i * stride_c];
+        a_array[i] = &A[i * stride_a];
+        b_array[i] = &B[i * stride_b];
+        c_array[i] = &C[i * stride_c];
         c_ref_array[i] = &C_ref[i * stride_c];
     }
 
-    rand_matrix(A, oneapi::mkl::transpose::nontrans, stride_a * batch_size, 1, stride_a * batch_size);
-    rand_matrix(B, oneapi::mkl::transpose::nontrans, stride_b * batch_size, 1, stride_b * batch_size);
-    rand_matrix(C, oneapi::mkl::transpose::nontrans, stride_c * batch_size, 1, stride_c * batch_size);
-    copy_matrix(C, oneapi::mkl::transpose::nontrans, stride_c * batch_size, 1, stride_c * batch_size,
-                C_ref);
+    rand_matrix(A, oneapi::mkl::transpose::nontrans, stride_a * batch_size, 1,
+                stride_a * batch_size);
+    rand_matrix(B, oneapi::mkl::transpose::nontrans, stride_b * batch_size, 1,
+                stride_b * batch_size);
+    rand_matrix(C, oneapi::mkl::transpose::nontrans, stride_c * batch_size, 1,
+                stride_c * batch_size);
+    copy_matrix(C, oneapi::mkl::transpose::nontrans, stride_c * batch_size, 1,
+                stride_c * batch_size, C_ref);
 
     // Call reference GEMM_BATCH_STRIDE.
-    using fp_ref       = typename ref_type_info<fp>::type;
-    int m_ref          = (int)m;
-    int n_ref          = (int)n;
-    int k_ref          = (int)k;
-    int lda_ref        = (int)lda;
-    int ldb_ref        = (int)ldb;
-    int ldc_ref        = (int)ldc;
+    using fp_ref = typename ref_type_info<fp>::type;
+    int m_ref = (int)m;
+    int n_ref = (int)n;
+    int k_ref = (int)k;
+    int lda_ref = (int)lda;
+    int ldb_ref = (int)ldb;
+    int ldc_ref = (int)ldc;
     int batch_size_ref = (int)batch_size;
     for (i = 0; i < batch_size_ref; i++) {
         ::gemm(convert_to_cblas_trans(transa), convert_to_cblas_trans(transb), (const int *)&m_ref,
@@ -161,8 +164,8 @@ int test(const device &dev, int64_t batch_size) {
     try {
 #ifdef CALL_RT_API
         done = oneapi::mkl::blas::gemm_batch(main_queue, transa, transb, m, n, k, alpha, &A[0], lda,
-                                        stride_a, &B[0], ldb, stride_b, beta, &C[0], ldc, stride_c,
-                                        batch_size, dependencies);
+                                             stride_a, &B[0], ldb, stride_b, beta, &C[0], ldc,
+                                             stride_c, batch_size, dependencies);
         done.wait();
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::gemm_batch,

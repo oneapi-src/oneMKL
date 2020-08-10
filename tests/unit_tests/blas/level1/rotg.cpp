@@ -111,13 +111,13 @@ int test(const device &dev) {
     bool good;
     {
         auto a_accessor = a_buffer.template get_access<access::mode::read>();
-        bool good_a     = check_equal(a_accessor[0], a_ref, 4, std::cout);
+        bool good_a = check_equal(a_accessor[0], a_ref, 4, std::cout);
         auto b_accessor = b_buffer.template get_access<access::mode::read>();
-        bool good_b     = check_equal(b_accessor[0], b_ref, 4, std::cout);
+        bool good_b = check_equal(b_accessor[0], b_ref, 4, std::cout);
         auto s_accessor = s_buffer.template get_access<access::mode::read>();
-        bool good_s     = check_equal(s_accessor[0], s_ref, 4, std::cout);
+        bool good_s = check_equal(s_accessor[0], s_ref, 4, std::cout);
         auto c_accessor = c_buffer.template get_access<access::mode::read>();
-        bool good_c     = check_equal(c_accessor[0], c_ref, 4, std::cout);
+        bool good_c = check_equal(c_accessor[0], c_ref, 4, std::cout);
 
         good = good_a && good_b && good_c && good_s;
     }

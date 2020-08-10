@@ -82,8 +82,8 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp alpha, int 
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::syr(main_queue, upper_lower, n, alpha, x.data(), incx, A.data(), lda,
-                                 dependencies);
+        done = oneapi::mkl::blas::syr(main_queue, upper_lower, n, alpha, x.data(), incx, A.data(),
+                                      lda, dependencies);
         done.wait();
 #else
         TEST_RUN_CT(

@@ -79,7 +79,8 @@ int test(const device &dev, int N, int incx, int incy, float alpha) {
 
     try {
 #ifdef CALL_RT_API
-        oneapi::mkl::blas::sdsdot(main_queue, N, alpha, x_buffer, incx, y_buffer, incy, result_buffer);
+        oneapi::mkl::blas::sdsdot(main_queue, N, alpha, x_buffer, incx, y_buffer, incy,
+                                  result_buffer);
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::sdsdot,
                     (main_queue, N, alpha, x_buffer, incx, y_buffer, incy, result_buffer));
@@ -103,7 +104,7 @@ int test(const device &dev, int N, int incx, int incy, float alpha) {
     bool good;
     {
         auto result_accessor = result_buffer.template get_access<access::mode::read>();
-        good                 = check_equal(result_accessor[0], result_ref, N, std::cout);
+        good = check_equal(result_accessor[0], result_ref, N, std::cout);
     }
 
     return (int)good;

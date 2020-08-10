@@ -41,11 +41,11 @@ inline void gemm_batch(Func func, cl::sycl::queue &queue, transpose transa, tran
         auto b_acc = b.template get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto a_     = sc.get_mem<cuDataType *>(ih, a_acc);
-            auto b_     = sc.get_mem<cuDataType *>(ih, b_acc);
-            auto c_     = sc.get_mem<cuDataType *>(ih, c_acc);
+            auto a_ = sc.get_mem<cuDataType *>(ih, a_acc);
+            auto b_ = sc.get_mem<cuDataType *>(ih, b_acc);
+            auto c_ = sc.get_mem<cuDataType *>(ih, c_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_operation(transa),
                               get_cublas_operation(transb), m, n, k, (cuDataType *)&alpha, a_, lda,
@@ -121,11 +121,11 @@ inline cl::sycl::event gemm_batch(Func func, cl::sycl::queue &queue, transpose t
             cgh.depends_on(dependencies[i]);
         }
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc     = CublasScopedContextHandler(queue);
+            auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            auto a_     = reinterpret_cast<const cuDataType *>(a);
-            auto b_     = reinterpret_cast<const cuDataType *>(b);
-            auto c_     = reinterpret_cast<cuDataType *>(c);
+            auto a_ = reinterpret_cast<const cuDataType *>(a);
+            auto b_ = reinterpret_cast<const cuDataType *>(b);
+            auto c_ = reinterpret_cast<cuDataType *>(c);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_operation(transa),
                               get_cublas_operation(transb), m, n, k, (cuDataType *)&alpha, a_, lda,
@@ -169,8 +169,8 @@ inline cl::sycl::event gemm_batch(Func func, cl::sycl::queue &queue, transpose *
             cgh.depends_on(dependencies[i]);
         }
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc        = CublasScopedContextHandler(queue);
-            auto handle    = sc.get_handle(queue);
+            auto sc = CublasScopedContextHandler(queue);
+            auto handle = sc.get_handle(queue);
             int64_t offset = 0;
             cublasStatus_t err;
             for (int64_t i = 0; i < group_count; i++) {

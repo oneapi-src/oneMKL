@@ -69,7 +69,7 @@ int test(const device& dev, int N, int incx) {
     rand_vector(x, N, incx);
 
     // Call Reference IAMAX.
-    using fp_ref    = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<fp>::type;
     const int N_ref = N, incx_ref = incx;
 
     result_ref = ::iamax(&N_ref, (fp_ref*)x.data(), &incx_ref);

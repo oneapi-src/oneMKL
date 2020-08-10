@@ -26,15 +26,15 @@
 #include "test_helper.hpp"
 
 #ifdef __linux__
-    #include <dlfcn.h>
-    #define LIB_TYPE                void *
-    #define GET_LIB_HANDLE(libname) dlopen((libname), RTLD_LAZY | RTLD_GLOBAL)
-    #define GET_FUNC(lib, fn)       dlsym(lib, (fn))
+#include <dlfcn.h>
+#define LIB_TYPE                void *
+#define GET_LIB_HANDLE(libname) dlopen((libname), RTLD_LAZY | RTLD_GLOBAL)
+#define GET_FUNC(lib, fn)       dlsym(lib, (fn))
 #elif defined(_WIN64)
-    #include <windows.h>
-    #define LIB_TYPE                HINSTANCE
-    #define GET_LIB_HANDLE(libname) LoadLibrary(libname)
-    #define GET_FUNC(lib, fn)       GetProcAddress((lib), (fn))
+#include <windows.h>
+#define LIB_TYPE                HINSTANCE
+#define GET_LIB_HANDLE(libname) LoadLibrary(libname)
+#define GET_FUNC(lib, fn)       GetProcAddress((lib), (fn))
 #endif
 
 extern "C" {
@@ -158,7 +158,7 @@ static inline void copy_mat(T_src &src, int row, int col, int ld, CBLAS_OFFSET o
     else if (off_kind == CblasColOffset) {
         for (j = 0; j < col; j++) {
             for (i = 0; i < row; i++) {
-                tmp              = off[i];
+                tmp = off[i];
                 dest[i + ld * j] = tmp + (T_data)src[i + ld * j];
             }
         }
@@ -209,13 +209,13 @@ void gemm(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const in
     // Not supported in NETLIB. SGEMM is used as reference.
     int sizea, sizeb, sizec;
     const float alphaf = *alpha;
-    const float betaf  = *beta;
-    sizea              = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
-    sizeb              = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
-    sizec              = *ldc * *n;
-    float *af          = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizea);
-    float *bf          = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizeb);
-    float *cf          = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizec);
+    const float betaf = *beta;
+    sizea = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
+    sizeb = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
+    sizec = *ldc * *n;
+    float *af = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizea);
+    float *bf = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizeb);
+    float *cf = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizec);
     copy_mat(a, transa, *m, *k, *lda, af);
     copy_mat(b, transb, *k, *n, *ldb, bf);
     copy_mat(c, CblasNoTrans, *m, *n, *ldc, cf);
@@ -1358,12 +1358,12 @@ int iamin(const int *n, const float *x, const int *incx) {
     if (*n < 1 || *incx < 1) {
         return 0;
     }
-    int min_idx  = 0;
+    int min_idx = 0;
     auto min_val = abs_val(x[0]);
 
     for (int logical_i = 0; logical_i < *n; ++logical_i) {
-        int i             = logical_i * std::abs(*incx);
-        auto curr_val     = abs_val(x[i]);
+        int i = logical_i * std::abs(*incx);
+        auto curr_val = abs_val(x[i]);
         bool is_first_nan = std::isnan(curr_val) && !std::isnan(min_val);
         if (is_first_nan || curr_val < min_val) {
             min_idx = logical_i;
@@ -1378,12 +1378,12 @@ int iamin(const int *n, const double *x, const int *incx) {
     if (*n < 1 || *incx < 1) {
         return 0;
     }
-    int min_idx  = 0;
+    int min_idx = 0;
     auto min_val = abs_val(x[0]);
 
     for (int logical_i = 0; logical_i < *n; ++logical_i) {
-        int i             = logical_i * std::abs(*incx);
-        auto curr_val     = abs_val(x[i]);
+        int i = logical_i * std::abs(*incx);
+        auto curr_val = abs_val(x[i]);
         bool is_first_nan = std::isnan(curr_val) && !std::isnan(min_val);
         if (is_first_nan || curr_val < min_val) {
             min_idx = logical_i;
@@ -1398,12 +1398,12 @@ int iamin(const int *n, const std::complex<float> *x, const int *incx) {
     if (*n < 1 || *incx < 1) {
         return 0;
     }
-    int min_idx  = 0;
+    int min_idx = 0;
     auto min_val = abs_val(x[0]);
 
     for (int logical_i = 0; logical_i < *n; ++logical_i) {
-        int i             = logical_i * std::abs(*incx);
-        auto curr_val     = abs_val(x[i]);
+        int i = logical_i * std::abs(*incx);
+        auto curr_val = abs_val(x[i]);
         bool is_first_nan = std::isnan(curr_val) && !std::isnan(min_val);
         if (is_first_nan || curr_val < min_val) {
             min_idx = logical_i;
@@ -1418,12 +1418,12 @@ int iamin(const int *n, const std::complex<double> *x, const int *incx) {
     if (*n < 1 || *incx < 1) {
         return 0;
     }
-    int min_idx  = 0;
+    int min_idx = 0;
     auto min_val = abs_val(x[0]);
 
     for (int logical_i = 0; logical_i < *n; ++logical_i) {
-        int i             = logical_i * std::abs(*incx);
-        auto curr_val     = abs_val(x[i]);
+        int i = logical_i * std::abs(*incx);
+        auto curr_val = abs_val(x[i]);
         bool is_first_nan = std::isnan(curr_val) && !std::isnan(min_val);
         if (is_first_nan || curr_val < min_val) {
             min_idx = logical_i;
@@ -1447,13 +1447,13 @@ void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, cons
     // Not supported in NETLIB. SGEMM is used as reference.
     int sizea, sizeb, sizec;
     const float alphaf = *alpha;
-    const float betaf  = *beta;
-    sizea              = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
-    sizeb              = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
-    sizec              = *ldc * *n;
-    float *af          = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizea);
-    float *bf          = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizeb);
-    float *cf          = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizec);
+    const float betaf = *beta;
+    sizea = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
+    sizeb = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
+    sizec = *ldc * *n;
+    float *af = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizea);
+    float *bf = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizeb);
+    float *cf = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizec);
     copy_mat(a, transa, *m, *k, *lda, af);
     copy_mat(b, transb, *k, *n, *ldb, bf);
     copy_mat(c, CblasNoTrans, *m, *n, *ldc, cf);
@@ -1508,8 +1508,8 @@ void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, cons
               const int *ldb, const float *beta, float *c, const int *ldc) {
     // Not supported in NETLIB. SGEMM is used as reference.
     int sizea, sizeb;
-    sizea     = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
-    sizeb     = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
+    sizea = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
+    sizeb = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
     float *af = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizea);
     float *bf = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizeb);
     copy_mat(a, transa, *m, *k, *lda, af);
@@ -1533,16 +1533,16 @@ void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, CBLAS_OFFSET offse
               const float *beta, int32_t *c, const int *ldc, const int32_t *co) {
     // Not supported in NETLIB. DGEMM is used as reference.
     int sizea, sizeb, sizec;
-    sizea         = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
-    sizeb         = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
-    sizec         = *ldc * *n;
-    double *ad    = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizea);
-    double *bd    = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizeb);
-    double *cd    = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizec);
+    sizea = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
+    sizeb = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
+    sizec = *ldc * *n;
+    double *ad = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizea);
+    double *bd = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizeb);
+    double *cd = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizec);
     double alphad = *alpha;
-    double betad  = *beta;
-    double aod    = *ao;
-    double bod    = *bo;
+    double betad = *beta;
+    double aod = *ao;
+    double bod = *bo;
     copy_mat(a, transa, *m, *k, *lda, aod, ad);
     copy_mat(b, transb, *k, *n, *ldb, bod, bd);
     copy_mat(c, CblasNoTrans, *m, *n, *ldc, 0.0, cd);
@@ -1565,7 +1565,7 @@ void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE trans
            const int *ldb, const float *beta, float *c, const int *ldc) {
     // Not supported in NETLIB. SGEMM is used as reference.
     int sizec;
-    sizec     = *ldc * *n;
+    sizec = *ldc * *n;
     float *cf = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizec);
     update_c(c, upper_lower, *n, *n, *ldc, cf);
     cblas_sgemm(CblasColMajor, transa, transb, *n, *n, *k, *alpha, a, *lda, b, *ldb, *beta, cf,
@@ -1580,7 +1580,7 @@ void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE trans
            const int *ldb, const double *beta, double *c, const int *ldc) {
     // Not supported in NETLIB. DGEMM is used as reference.
     int sizec;
-    sizec      = *ldc * *n;
+    sizec = *ldc * *n;
     double *cf = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizec);
     update_c(c, upper_lower, *n, *n, *ldc, cf);
     cblas_dgemm(CblasColMajor, transa, transb, *n, *n, *k, *alpha, a, *lda, b, *ldb, *beta, cf,
@@ -1612,7 +1612,7 @@ void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE trans
            const std::complex<double> *beta, std::complex<double> *c, const int *ldc) {
     // Not supported in NETLIB. ZGEMM is used as reference.
     int sizec;
-    sizec                    = *ldc * *n;
+    sizec = *ldc * *n;
     std::complex<double> *cf = (std::complex<double> *)oneapi::mkl::aligned_alloc(
         64, sizeof(std::complex<double>) * sizec);
     update_c(c, upper_lower, *n, *n, *ldc, cf);

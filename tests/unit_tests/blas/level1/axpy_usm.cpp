@@ -72,7 +72,7 @@ int test(const device &dev, int N, int incx, int incy, fp alpha) {
     auto y_ref = y;
 
     // Call Reference AXPY.
-    using fp_ref    = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<fp>::type;
     const int N_ref = N, incx_ref = incx, incy_ref = incy;
 
     ::axpy(&N_ref, (fp_ref *)&alpha, (fp_ref *)x.data(), &incx_ref, (fp_ref *)y_ref.data(),
@@ -82,8 +82,8 @@ int test(const device &dev, int N, int incx, int incy, fp alpha) {
 
     try {
 #ifdef CALL_RT_API
-        done =
-            oneapi::mkl::blas::axpy(main_queue, N, alpha, x.data(), incx, y.data(), incy, dependencies);
+        done = oneapi::mkl::blas::axpy(main_queue, N, alpha, x.data(), incx, y.data(), incy,
+                                       dependencies);
         done.wait();
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::axpy,

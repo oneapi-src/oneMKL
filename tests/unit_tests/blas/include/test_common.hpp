@@ -50,13 +50,13 @@ static cl::sycl::half abs(cl::sycl::half v) {
 // Complex helpers.
 template <typename T>
 struct complex_info {
-    using real_type              = T;
+    using real_type = T;
     static const bool is_complex = false;
 };
 
 template <typename T>
 struct complex_info<std::complex<T>> {
-    using real_type              = T;
+    using real_type = T;
     static const bool is_complex = true;
 };
 
@@ -181,7 +181,7 @@ void rand_vector(fp *v, int n, int inc) {
 
 template <typename vec>
 void rand_vector(vec &v, int n, int inc) {
-    using fp    = typename vec::value_type;
+    using fp = typename vec::value_type;
     int abs_inc = std::abs(inc);
 
     v.resize(n * abs_inc);
@@ -332,7 +332,7 @@ typename std::enable_if<!std::is_integral<fp>::value, bool>::type check_equal(fp
 
     fp_real aerr = std::abs(x - x_ref);
     fp_real rerr = aerr / std::abs(x_ref);
-    ok           = (rerr <= bound) || (aerr <= bound);
+    ok = (rerr <= bound) || (aerr <= bound);
     if (!ok)
         std::cout << "relative error = " << rerr << " absolute error = " << aerr
                   << " limit = " << bound << std::endl;
@@ -354,7 +354,7 @@ bool check_equal_trsm(fp x, fp x_ref, int error_mag) {
 
     fp_real aerr = std::abs(x - x_ref);
     fp_real rerr = aerr / std::abs(x_ref);
-    ok           = (rerr <= bound) || (aerr <= bound);
+    ok = (rerr <= bound) || (aerr <= bound);
     if (!ok)
         std::cout << "relative error = " << rerr << " absolute error = " << aerr
                   << " limit = " << bound << std::endl;
@@ -374,7 +374,7 @@ bool check_equal(fp x, fp x_ref, int error_mag, std::ostream &out) {
 template <typename vec1, typename vec2>
 bool check_equal_vector(vec1 &v, vec2 &v_ref, int n, int inc, int error_mag, std::ostream &out) {
     int abs_inc = std::abs(inc);
-    bool good   = true;
+    bool good = true;
 
     for (int i = 0; i < n; i++) {
         if (!check_equal(v[i * abs_inc], v_ref[i * abs_inc], error_mag)) {
@@ -392,7 +392,7 @@ template <typename vec1, typename vec2>
 bool check_equal_trsv_vector(vec1 &v, vec2 &v_ref, int n, int inc, int error_mag,
                              std::ostream &out) {
     int abs_inc = std::abs(inc);
-    bool good   = true;
+    bool good = true;
 
     for (int i = 0; i < n; i++) {
         if (!check_equal_trsm(v[i * abs_inc], v_ref[i * abs_inc], error_mag)) {

@@ -81,8 +81,8 @@ int test(const device &dev, int N, int incx, int incy, float alpha) {
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::sdsdot(main_queue, N, alpha, x.data(), incx, y.data(), incy, result_p,
-                                    dependencies);
+        done = oneapi::mkl::blas::sdsdot(main_queue, N, alpha, x.data(), incx, y.data(), incy,
+                                         result_p, dependencies);
         done.wait();
 #else
         TEST_RUN_CT(main_queue, oneapi::mkl::blas::sdsdot,

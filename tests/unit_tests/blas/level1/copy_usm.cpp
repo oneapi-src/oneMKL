@@ -72,7 +72,7 @@ int test(const device& dev, int N, int incx, int incy) {
     auto y_ref = y;
 
     // Call Reference COPY.
-    using fp_ref    = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<fp>::type;
     const int N_ref = N, incx_ref = incx, incy_ref = incy;
 
     ::copy(&N_ref, (fp_ref*)x.data(), &incx_ref, (fp_ref*)y_ref.data(), &incy_ref);
