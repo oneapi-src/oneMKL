@@ -31,21 +31,21 @@ def usage(err = None):
     if err:
         print('error: %s' % err)
     print('''\
-Script to generate CT API instantiations for backend and library based on general_ct_templates.hpp
+Script to generate CT API instantiations for backend based on general_ct_templates.hpp
 Note: requires clang-format 9.0.0 tool to be installed
 Usage:
 
-    {script} <path/to/general_ct_templates.hpp> <path/to/out_ct_header.hpp> <path/to/backend_include.hpp> <library> <backend> <namespace>
+    {script} <path/to/general_ct_templates.hpp> <path/to/out_ct_header.hpp> <path/to/backend_include.hpp> <backend> <namespace>
 
 Example:
 The command below will generate:
-"blas_ct.hpp" header with compile-time BLAS API based on "blas_ct_templates.hpp" for "intelmkl" library and "intelgpu" backend.
-API from backend library will be called from "oneapi::mkl::mklgpu::blas" namespace.
+"blas_ct.hpp" header with compile-time BLAS API based on "blas_ct_templates.hpp" for "mklgpu" backend.
+API from the backend library will be called from "oneapi::mkl::mklgpu::blas" namespace.
 
-{script}  include/oneapi/mkl/blas/detail/blas_ct_templates.hpp include/oneapi/mkl/blas/detail/mklgpu/blas_ct.hpp include/oneapi/mkl/blas/detail/mklgpu/onemkl_blas_mklgpu.hpp intelmkl intelgpu oneapi::mkl::mklgpu::blas
+{script}  include/oneapi/mkl/blas/detail/blas_ct_templates.hpp include/oneapi/mkl/blas/detail/mklgpu/blas_ct.hpp include/oneapi/mkl/blas/detail/mklgpu/onemkl_blas_mklgpu.hpp mklgpu oneapi::mkl::mklgpu::blas
 '''.format(script = argv[0]))
 
-if len(argv) < 7:
+if len(argv) < 6:
     usage()
     exit(0)
 
@@ -56,9 +56,8 @@ if re.search(r'[-]*\b[h]([e][l][p])?\b' ,argv[1]):
 in_filename = argv[1]
 out_filename = argv[2]
 include = argv[3]
-lib = argv[4]
-backend = argv[5]
-namespace = argv[6]
+backend = argv[4]
+namespace = argv[5]
 
 namespace_list=namespace.split("::")
 
@@ -72,12 +71,12 @@ def print_funcs(func_list):
     for data in func_list:
         code +="""
 template<>
-{ret_type} {name}<library::{lib}, backend::{backend}>{par_str} {{
+{ret_type} {name}<backend::{backend}>{par_str} {{
     {name}_precondition{call_str};
     {namespace}::{name}{call_str};
     {name}_postcondition{call_str};
 }}
-""".format(lib=lib, namespace=namespace, backend=backend, **data)
+""".format(namespace=namespace, backend=backend, **data)
     return code
 
 try:
@@ -99,10 +98,8 @@ out_file.write("""//
 
 #include "oneapi/mkl/types.hpp"
 #include "oneapi/mkl/detail/backends.hpp"
-#include "oneapi/mkl/detail/libraries.hpp"
-
-#include "{ct_teplates}"
 #include "{internal_api}"
+#include "{ct_teplates}"
 
 """.format(in_header=in_filename, ct_teplates=in_filename.strip("include/"), internal_api=include.strip("include/")))
 
