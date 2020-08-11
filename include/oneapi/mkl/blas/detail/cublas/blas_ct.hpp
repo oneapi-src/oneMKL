@@ -32,7 +32,6 @@
 #include "oneapi/mkl/detail/backends.hpp"
 
 #include "oneapi/mkl/blas/detail/blas_ct_templates.hpp"
-#include "oneapi/mkl/blas/detail/cublas/onemkl_blas_mklcpu.hpp"
 
 namespace oneapi {
 namespace mkl {
