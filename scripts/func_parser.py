@@ -61,7 +61,7 @@ def parse_item(item):
                      for idx, x in enumerate(par_list)]
 
             """Extract names to call_list"""
-            call_list = [x.rsplit(' ', 1)[1].strip(' *').strip('\[\]').strip('&') \
+            call_list = [x.split('=', 1)[0].strip().rsplit(' ', 1)[1].strip(' *').strip('\[\]').strip('&') \
                             for x in par_list]
 
             """Extract types to sig_list"""
@@ -122,8 +122,9 @@ def strip_line(l):
         else:
             return ""
 
-    if re.search(r'[)]\s*\n*\s*[{]', l):
-        l = l.split('{', 1)[0].strip() + ";"
+    m = re.search(r'[)]\s*\n*\s*[{]', l)
+    if m is not None:
+        l = l[:m.end()].strip('{').strip() + ";"
         is_wrapperbody = 1
 
     global is_comment
@@ -161,7 +162,7 @@ def create_func_db(filename):
         """ Check if function contains 1 line """
         whole_line += stripped + ' '
         """ Check if there is function """
-        if re.search('[(][\w\s\*/\&,_\[\]():<>]*[)]\s*[;]', whole_line) is None:
+        if re.search('[(][\w\s\*/\&,_\[\]():<>={}]*[)]\s*[;]', whole_line) is None:
             """ Check if there is some other staff before the function """
             if re.search('[;{}]\s*$', whole_line) is not None:
                 whole_line = ""
