@@ -21,7 +21,8 @@
 // Generated based on include/oneapi/mkl/blas/detail/blas_ct_templates.hpp
 //
 
-#pragma once
+#ifndef _DETAIL_CUBLAS_BLAS_HPP_
+#define _DETAIL_CUBLAS_BLAS_HPP_
 
 #include <CL/sycl.hpp>
 #include <complex>
@@ -3971,3 +3972,5 @@ cl::sycl::event symv<backend::cublas>(cl::sycl::queue &queue, uplo upper_lower, 
 } // namespace blas
 } // namespace mkl
 } // namespace oneapi
+
+#endif //_DETAIL_CUBLAS_BLAS_HPP_
