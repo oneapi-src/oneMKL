@@ -30,7 +30,7 @@
 
 #include "oneapi/mkl/types.hpp"
 #include "oneapi/mkl/detail/backends.hpp"
-
+#include "oneapi/mkl/blas/detail/cublas/onemkl_blas_cublas.hpp"
 #include "oneapi/mkl/blas/detail/blas_ct_templates.hpp"
 
 namespace oneapi {
