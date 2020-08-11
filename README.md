@@ -86,8 +86,8 @@ gpu_dev = cl::sycl::device(cl::sycl::gpu_selector());
 cl::sycl::queue cpu_queue(cpu_dev);
 cl::sycl::queue gpu_queue(gpu_dev);
 
-oneapi::mkl::blas::gemm<intelcpu,intelmkl>(cpu_queue, transA, transB, m, ...);
-oneapi::mkl::blas::gemm<nvidiagpu,cublas>(gpu_queue, transA, transB, m, ...);
+oneapi::mkl::blas::gemm<mklcpu>(cpu_queue, transA, transB, m, ...);
+oneapi::mkl::blas::gemm<cublas>(gpu_queue, transA, transB, m, ...);
 ```
 How to build an application with run-time dispatching:
 
@@ -376,8 +376,8 @@ Tells Conan where to install the package. It is similar to specifying `CMAKE_INS
 The following `options` are available to pass on `conan install` when building the oneMKL library:
 
 - `build_shared_libs=[True | False]`. Setting it to `True` enables the building of dynamic libraries. The default value is `True`.
-- `enable_mklcpu_backend=[True | False]`. Setting it to `True` enables the building of oneMKL intelmkl cpu backend. The default value is `True`.
-- `enable_mklgpu_backend=[True | False]`. Setting it to `True` enables the building of oneMKL intelmkl gpu backend. The default value is `True`.
+- `enable_mklcpu_backend=[True | False]`. Setting it to `True` enables the building of oneMKL mklcpu backend. The default value is `True`.
+- `enable_mklgpu_backend=[True | False]`. Setting it to `True` enables the building of oneMKL mklgpu backend. The default value is `True`.
 - `enable_mklcpu_thread_tbb=[True | False]`. Setting it to `True` enables oneMKL on CPU with TBB threading instead of sequential. The default value is `True`.
 
 #### Testing-related Options

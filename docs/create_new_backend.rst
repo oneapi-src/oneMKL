@@ -58,9 +58,9 @@ Code snippet of the generated header file ``include/oneapi/mkl/blas/detail/newli
     python scripts/generate_ct_instant.py   include/oneapi/mkl/blas/detail/blas_ct_templates.hpp \         # Base header file
                                             include/oneapi/mkl/blas/detail/newlib/blas_ct.hpp \            # Output header file
                                             include/oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp \ # Header file with declaration of entry points to wrappers
-                                            newlib \                                                   # Library name
-                                            newdevice \                                                # Backend name
-                                            oneapi::mkl::newlib                                        # Wrappers namespace
+                                            newlib \                                                       # Library name
+                                            newdevice \                                                    # Backend name
+                                            oneapi::mkl::newlib                                            # Wrappers namespace
 
 Code snippet of the generated header file ``include/oneapi/mkl/blas/detail/newlib/blas_ct.hpp``
 
@@ -96,7 +96,6 @@ Below you can see structure of oneMKL top-level include directory:
                 types.hpp  -> oneMKL spec types
                 detail/    -> implementation specific header files
                     exceptions.hpp        -> oneMKL exception classes
-                    libraries.hpp         -> list of oneMKL libraries
                     backends.hpp          -> list of oneMKL backends
                     backends_table.hpp    -> table of backend libraries for each domain and device
                     get_device_id.hpp     -> function to query device information from queue for Run-time dispatching
@@ -107,10 +106,10 @@ Below you can see structure of oneMKL top-level include directory:
                         blas_loader.hpp       -> oneMKL Run-time BLAS API
                         blas_ct_templates.hpp -> oneMKL Compile-time BLAS API general templates
                         cublas/
-                            blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <cublas,nvidiagpu>
+                            blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <cublas>
                             onemkl_blas_cublas.hpp -> backend wrappers library API
                         mklcpu/
-                            blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <intelmkl,intelcpu>
+                            blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <mklcpu>
                             onemkl_blas_mklcpu.hpp -> backend wrappers library API
                         <other backends>/
                 <other domains>/
@@ -118,36 +117,20 @@ Below you can see structure of oneMKL top-level include directory:
 
 To integrate the new third-party library to a oneMKL header-based part, following files from this structure should be updated:
 
-* ``include/oneapi/mkl/detail/libraries.hpp``: add the new library
- 
-  **Example**: add the ``newlib`` library
-    
-  .. code-block:: diff
+* ``include/oneapi/mkl/detail/backends.hpp``: add the new backend
 
-            enum class library {intelmkl,
-         +                       newlib,
-    
-    
-  .. code-block:: diff
-    
-            static librarymap library_map = {{ library::intelmkl, "intelmkl" },
-         +                                     { library::newlib, "newlib"},
-
- 
-* ``include/oneapi/mkl/detail/backends.hpp``: add the new device
-
-  **Example**: add the ``newdevice`` device
+  **Example**: add the ``newbackend`` backend
 
   .. code-block:: diff
 
-        enum class backend { intelcpu,
-     +                       newdevice,
+        enum class backend { mklcpu,
+     +                       newbackend,
 
 
   .. code-block:: diff
 
-        static backendmap backend_map = { { backend::intelcpu, "intelcpu" },
-     +                                    { backend::newdevice, "newdevice" },
+        static backendmap backend_map = { { backend::mklcpu, "mklcpu" },
+     +                                    { backend::newbackend, "newbackend" },
 
 * ``include/oneapi/mkl/detail/backends_table.hpp``: add new backend library for supported domain(s) and device(s)
 
@@ -211,13 +194,13 @@ The new files generated at the `1. Create Header Files`_ step result in the foll
                         blas_loader.hpp       -> oneMKL Run-time BLAS API
                         blas_ct_templates.hpp -> oneMKL Compile-time BLAS API general templates
                         cublas/
-                            blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <cublas,nvidiagpu>
+                            blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <cublas>
                             onemkl_blas_cublas.hpp -> backend wrappers library API
                         mklcpu/
-                            blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <intelmkl,intelcpu>
+                            blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <mklcpu>
                             onemkl_blas_mklcpu.hpp -> backend wrappers library API
         +              newlib/
-        +                  blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <newlib,intelcpu>
+        +                  blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <newbackend>
         +                  onemkl_blas_newlib.hpp -> backend wrappers library API
                         <other backends>/
                 <other domains>/
@@ -469,14 +452,14 @@ Update the following files to enable the new third-party library for unit tests:
     
         #ifdef ENABLE_MKLGPU_BACKEND
             #define TEST_RUN_INTELGPU(q, func, args) \
-                func<oneapi::mkl::library::intelmkl, oneapi::mkl::backend::intelgpu> args
+                func<oneapi::mkl::backend::mklgpu> args
         #else
             #define TEST_RUN_INTELGPU(q, func, args)
         #endif
      +    
      +  #ifdef ENABLE_NEWLIB_BACKEND
      +     #define TEST_RUN_NEWDEVICE(q, func, args) \
-     +         func<oneapi::mkl::library::newlib, oneapi::mkl::backend::newdevice> args
+     +         func<oneapi::mkl::backend::newbackend> args
      +  #else
      +      #define TEST_RUN_NEWDEVICE(q, func, args)
      +  #endif

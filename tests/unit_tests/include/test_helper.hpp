@@ -43,22 +43,19 @@
     } while (0);
 
 #ifdef ENABLE_MKLCPU_BACKEND
-#define TEST_RUN_INTELCPU(q, func, args) \
-    func<oneapi::mkl::library::intelmkl, oneapi::mkl::backend::intelcpu> args
+#define TEST_RUN_INTELCPU(q, func, args) func<oneapi::mkl::backend::mklcpu> args
 #else
 #define TEST_RUN_INTELCPU(q, func, args)
 #endif
 
 #ifdef ENABLE_MKLGPU_BACKEND
-#define TEST_RUN_INTELGPU(q, func, args) \
-    func<oneapi::mkl::library::intelmkl, oneapi::mkl::backend::intelgpu> args
+#define TEST_RUN_INTELGPU(q, func, args) func<oneapi::mkl::backend::mklgpu> args
 #else
 #define TEST_RUN_INTELGPU(q, func, args)
 #endif
 
 #ifdef ENABLE_CUBLAS_BACKEND
-#define TEST_RUN_NVIDIAGPU(q, func, args) \
-    func<oneapi::mkl::library::cublas, oneapi::mkl::backend::nvidiagpu> args
+#define TEST_RUN_NVIDIAGPU(q, func, args) func<oneapi::mkl::backend::cublas> args
 #else
 #define TEST_RUN_NVIDIAGPU(q, func, args)
 #endif
