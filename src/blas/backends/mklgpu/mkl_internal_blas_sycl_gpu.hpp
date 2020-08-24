@@ -38,6 +38,8 @@ typedef enum CBLAS_OFFSET CBLAS_OFFSET;
 
 namespace mkl {
 
+enum class transpose : char { nontrans = 0, trans = 1, conjtrans = 3, N = 0, T = 1, C = 3 };
+
 inline MKL_TRANSPOSE cblas_convert(oneapi::mkl::transpose t) {
     if (t == oneapi::mkl::transpose::nontrans)
         return MKL_NOTRANS;
@@ -84,417 +86,443 @@ namespace gpu {
 
 // Buffer APIs
 
-void sgemm(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb, int64_t m, int64_t n,
-           int64_t k, float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda,
+void sgemm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
+           int64_t m, int64_t n, int64_t k, float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda,
            cl::sycl::buffer<float, 1> &b, int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c,
            int64_t ldc);
 
-void dgemm(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb, int64_t m, int64_t n,
-           int64_t k, double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda,
-           cl::sycl::buffer<double, 1> &b, int64_t ldb, double beta, cl::sycl::buffer<double, 1> &c,
-           int64_t ldc);
-
-void cgemm(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb, int64_t m, int64_t n,
-           int64_t k, std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-           int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb,
-           std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc);
-
-void zgemm(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb, int64_t m, int64_t n,
-           int64_t k, std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-           int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb,
-           std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc);
-
-void ssymm(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower, int64_t m, int64_t n,
-           float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda, cl::sycl::buffer<float, 1> &b,
-           int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c, int64_t ldc);
-
-void dsymm(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower, int64_t m, int64_t n,
-           double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda,
-           cl::sycl::buffer<double, 1> &b, int64_t ldb, double beta, cl::sycl::buffer<double, 1> &c,
-           int64_t ldc);
-
-void csymm(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower, int64_t m, int64_t n,
-           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
-           cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, std::complex<float> beta,
-           cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc);
-
-void zsymm(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower, int64_t m, int64_t n,
-           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
-           cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, std::complex<double> beta,
-           cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc);
-
-void chemm(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower, int64_t m, int64_t n,
-           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
-           cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, std::complex<float> beta,
-           cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc);
-
-void zhemm(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower, int64_t m, int64_t n,
-           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
-           cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, std::complex<double> beta,
-           cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc);
-
-void ssyrk(cl::sycl::queue &queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans, int64_t n, int64_t k,
-           float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda, float beta,
-           cl::sycl::buffer<float, 1> &c, int64_t ldc);
-
-void dsyrk(cl::sycl::queue &queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans, int64_t n, int64_t k,
-           double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda, double beta,
+void dgemm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
+           int64_t m, int64_t n, int64_t k, double alpha, cl::sycl::buffer<double, 1> &a,
+           int64_t lda, cl::sycl::buffer<double, 1> &b, int64_t ldb, double beta,
            cl::sycl::buffer<double, 1> &c, int64_t ldc);
 
-void csyrk(cl::sycl::queue &queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans, int64_t n, int64_t k,
-           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
-           std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc);
-
-void zsyrk(cl::sycl::queue &queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans, int64_t n, int64_t k,
-           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
-           std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc);
-
-void cherk(cl::sycl::queue &queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans, int64_t n, int64_t k,
-           float alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda, float beta,
+void cgemm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
+           int64_t m, int64_t n, int64_t k, std::complex<float> alpha,
+           cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+           cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, std::complex<float> beta,
            cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc);
 
-void zherk(cl::sycl::queue &queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans, int64_t n, int64_t k,
-           double alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda, double beta,
+void zgemm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
+           int64_t m, int64_t n, int64_t k, std::complex<double> alpha,
+           cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+           cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, std::complex<double> beta,
            cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc);
 
-void ssyr2k(cl::sycl::queue &queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans, int64_t n, int64_t k,
-            float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda, cl::sycl::buffer<float, 1> &b,
-            int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c, int64_t ldc);
+void ssymm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right, MKL_UPLO upper_lower,
+           int64_t m, int64_t n, float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda,
+           cl::sycl::buffer<float, 1> &b, int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c,
+           int64_t ldc);
 
-void dsyr2k(cl::sycl::queue &queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans, int64_t n, int64_t k,
-            double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda,
+void dsymm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right, MKL_UPLO upper_lower,
+           int64_t m, int64_t n, double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda,
+           cl::sycl::buffer<double, 1> &b, int64_t ldb, double beta, cl::sycl::buffer<double, 1> &c,
+           int64_t ldc);
+
+void csymm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right, MKL_UPLO upper_lower,
+           int64_t m, int64_t n, std::complex<float> alpha,
+           cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+           cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, std::complex<float> beta,
+           cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc);
+
+void zsymm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right, MKL_UPLO upper_lower,
+           int64_t m, int64_t n, std::complex<double> alpha,
+           cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+           cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, std::complex<double> beta,
+           cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc);
+
+void chemm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right, MKL_UPLO upper_lower,
+           int64_t m, int64_t n, std::complex<float> alpha,
+           cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+           cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, std::complex<float> beta,
+           cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc);
+
+void zhemm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right, MKL_UPLO upper_lower,
+           int64_t m, int64_t n, std::complex<double> alpha,
+           cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+           cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, std::complex<double> beta,
+           cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc);
+
+void ssyrk(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
+           int64_t n, int64_t k, float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda,
+           float beta, cl::sycl::buffer<float, 1> &c, int64_t ldc);
+
+void dsyrk(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
+           int64_t n, int64_t k, double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda,
+           double beta, cl::sycl::buffer<double, 1> &c, int64_t ldc);
+
+void csyrk(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
+           int64_t n, int64_t k, std::complex<float> alpha,
+           cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda, std::complex<float> beta,
+           cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc);
+
+void zsyrk(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
+           int64_t n, int64_t k, std::complex<double> alpha,
+           cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda, std::complex<double> beta,
+           cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc);
+
+void cherk(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
+           int64_t n, int64_t k, float alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
+           int64_t lda, float beta, cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc);
+
+void zherk(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
+           int64_t n, int64_t k, double alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
+           int64_t lda, double beta, cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc);
+
+void ssyr2k(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
+            int64_t n, int64_t k, float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda,
+            cl::sycl::buffer<float, 1> &b, int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c,
+            int64_t ldc);
+
+void dsyr2k(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
+            int64_t n, int64_t k, double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda,
             cl::sycl::buffer<double, 1> &b, int64_t ldb, double beta,
             cl::sycl::buffer<double, 1> &c, int64_t ldc);
 
-void csyr2k(cl::sycl::queue &queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans, int64_t n, int64_t k,
-            std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+void csyr2k(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
+            int64_t n, int64_t k, std::complex<float> alpha,
+            cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
             cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, std::complex<float> beta,
             cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc);
 
-void zsyr2k(cl::sycl::queue &queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans, int64_t n, int64_t k,
-            std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+void zsyr2k(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
+            int64_t n, int64_t k, std::complex<double> alpha,
+            cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
             cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, std::complex<double> beta,
             cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc);
 
-void cher2k(cl::sycl::queue &queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans, int64_t n, int64_t k,
-            std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+void cher2k(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
+            int64_t n, int64_t k, std::complex<float> alpha,
+            cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
             cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, float beta,
             cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc);
 
-void zher2k(cl::sycl::queue &queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans, int64_t n, int64_t k,
-            std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+void zher2k(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
+            int64_t n, int64_t k, std::complex<double> alpha,
+            cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
             cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, double beta,
             cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc);
 
-void strmm(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
-           MKL_DIAG unit_diag, int64_t m, int64_t n, float alpha, cl::sycl::buffer<float, 1> &a,
-           int64_t lda, cl::sycl::buffer<float, 1> &b, int64_t ldb);
+void strmm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right, MKL_UPLO upper_lower,
+           MKL_TRANSPOSE transa, MKL_DIAG unit_diag, int64_t m, int64_t n, float alpha,
+           cl::sycl::buffer<float, 1> &a, int64_t lda, cl::sycl::buffer<float, 1> &b, int64_t ldb);
 
-void dtrmm(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
-           MKL_DIAG unit_diag, int64_t m, int64_t n, double alpha, cl::sycl::buffer<double, 1> &a,
-           int64_t lda, cl::sycl::buffer<double, 1> &b, int64_t ldb);
+void dtrmm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right, MKL_UPLO upper_lower,
+           MKL_TRANSPOSE transa, MKL_DIAG unit_diag, int64_t m, int64_t n, double alpha,
+           cl::sycl::buffer<double, 1> &a, int64_t lda, cl::sycl::buffer<double, 1> &b,
+           int64_t ldb);
 
-void ctrmm(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
-           MKL_DIAG unit_diag, int64_t m, int64_t n, std::complex<float> alpha,
-           cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+void ctrmm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right, MKL_UPLO upper_lower,
+           MKL_TRANSPOSE transa, MKL_DIAG unit_diag, int64_t m, int64_t n,
+           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
            cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb);
 
-void ztrmm(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
-           MKL_DIAG unit_diag, int64_t m, int64_t n, std::complex<double> alpha,
-           cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+void ztrmm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right, MKL_UPLO upper_lower,
+           MKL_TRANSPOSE transa, MKL_DIAG unit_diag, int64_t m, int64_t n,
+           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
            cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb);
 
-void strsm(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
-           MKL_DIAG unit_diag, int64_t m, int64_t n, float alpha, cl::sycl::buffer<float, 1> &a,
-           int64_t lda, cl::sycl::buffer<float, 1> &b, int64_t ldb);
+void strsm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right, MKL_UPLO upper_lower,
+           MKL_TRANSPOSE transa, MKL_DIAG unit_diag, int64_t m, int64_t n, float alpha,
+           cl::sycl::buffer<float, 1> &a, int64_t lda, cl::sycl::buffer<float, 1> &b, int64_t ldb);
 
-void dtrsm(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
-           MKL_DIAG unit_diag, int64_t m, int64_t n, double alpha, cl::sycl::buffer<double, 1> &a,
-           int64_t lda, cl::sycl::buffer<double, 1> &b, int64_t ldb);
+void dtrsm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right, MKL_UPLO upper_lower,
+           MKL_TRANSPOSE transa, MKL_DIAG unit_diag, int64_t m, int64_t n, double alpha,
+           cl::sycl::buffer<double, 1> &a, int64_t lda, cl::sycl::buffer<double, 1> &b,
+           int64_t ldb);
 
-void ctrsm(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
-           MKL_DIAG unit_diag, int64_t m, int64_t n, std::complex<float> alpha,
-           cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+void ctrsm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right, MKL_UPLO upper_lower,
+           MKL_TRANSPOSE transa, MKL_DIAG unit_diag, int64_t m, int64_t n,
+           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
            cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb);
 
-void ztrsm(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
-           MKL_DIAG unit_diag, int64_t m, int64_t n, std::complex<double> alpha,
-           cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+void ztrsm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right, MKL_UPLO upper_lower,
+           MKL_TRANSPOSE transa, MKL_DIAG unit_diag, int64_t m, int64_t n,
+           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
            cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb);
 
-void sgemv(cl::sycl::queue &queue, MKL_TRANSPOSE trans, int64_t m, int64_t n, float alpha,
-           cl::sycl::buffer<float, 1> &a, int64_t lda, cl::sycl::buffer<float, 1> &x, int64_t incx,
-           float beta, cl::sycl::buffer<float, 1> &y, int64_t incy);
+void sgemv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE trans, int64_t m, int64_t n,
+           float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda, cl::sycl::buffer<float, 1> &x,
+           int64_t incx, float beta, cl::sycl::buffer<float, 1> &y, int64_t incy);
 
-void dgemv(cl::sycl::queue &queue, MKL_TRANSPOSE trans, int64_t m, int64_t n, double alpha,
-           cl::sycl::buffer<double, 1> &a, int64_t lda, cl::sycl::buffer<double, 1> &x,
-           int64_t incx, double beta, cl::sycl::buffer<double, 1> &y, int64_t incy);
+void dgemv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE trans, int64_t m, int64_t n,
+           double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda,
+           cl::sycl::buffer<double, 1> &x, int64_t incx, double beta,
+           cl::sycl::buffer<double, 1> &y, int64_t incy);
 
-void cgemv(cl::sycl::queue &queue, MKL_TRANSPOSE trans, int64_t m, int64_t n,
+void cgemv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE trans, int64_t m, int64_t n,
            std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
            cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx, std::complex<float> beta,
            cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy);
 
-void zgemv(cl::sycl::queue &queue, MKL_TRANSPOSE trans, int64_t m, int64_t n,
+void zgemv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE trans, int64_t m, int64_t n,
            std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
            cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx, std::complex<double> beta,
            cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy);
 
-void sgbmv(cl::sycl::queue &queue, MKL_TRANSPOSE trans, int64_t m, int64_t n, int64_t kl,
-           int64_t ku, float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda,
+void sgbmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE trans, int64_t m, int64_t n,
+           int64_t kl, int64_t ku, float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda,
            cl::sycl::buffer<float, 1> &x, int64_t incx, float beta, cl::sycl::buffer<float, 1> &y,
            int64_t incy);
 
-void dgbmv(cl::sycl::queue &queue, MKL_TRANSPOSE trans, int64_t m, int64_t n, int64_t kl,
-           int64_t ku, double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda,
+void dgbmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE trans, int64_t m, int64_t n,
+           int64_t kl, int64_t ku, double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda,
            cl::sycl::buffer<double, 1> &x, int64_t incx, double beta,
            cl::sycl::buffer<double, 1> &y, int64_t incy);
 
-void cgbmv(cl::sycl::queue &queue, MKL_TRANSPOSE trans, int64_t m, int64_t n, int64_t kl,
-           int64_t ku, std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-           int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx,
-           std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy);
+void cgbmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE trans, int64_t m, int64_t n,
+           int64_t kl, int64_t ku, std::complex<float> alpha,
+           cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+           cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx, std::complex<float> beta,
+           cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy);
 
-void zgbmv(cl::sycl::queue &queue, MKL_TRANSPOSE trans, int64_t m, int64_t n, int64_t kl,
-           int64_t ku, std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-           int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx,
-           std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy);
+void zgbmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE trans, int64_t m, int64_t n,
+           int64_t kl, int64_t ku, std::complex<double> alpha,
+           cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+           cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx, std::complex<double> beta,
+           cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy);
 
-void sger(cl::sycl::queue &queue, int64_t m, int64_t n, float alpha, cl::sycl::buffer<float, 1> &x,
-          int64_t incx, cl::sycl::buffer<float, 1> &y, int64_t incy, cl::sycl::buffer<float, 1> &a,
-          int64_t lda);
+void sger(cl::sycl::queue &queue, MKL_LAYOUT layout, int64_t m, int64_t n, float alpha,
+          cl::sycl::buffer<float, 1> &x, int64_t incx, cl::sycl::buffer<float, 1> &y, int64_t incy,
+          cl::sycl::buffer<float, 1> &a, int64_t lda);
 
-void dger(cl::sycl::queue &queue, int64_t m, int64_t n, double alpha,
+void dger(cl::sycl::queue &queue, MKL_LAYOUT layout, int64_t m, int64_t n, double alpha,
           cl::sycl::buffer<double, 1> &x, int64_t incx, cl::sycl::buffer<double, 1> &y,
           int64_t incy, cl::sycl::buffer<double, 1> &a, int64_t lda);
 
-void cgerc(cl::sycl::queue &queue, int64_t m, int64_t n, std::complex<float> alpha,
-           cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx,
+void cgerc(cl::sycl::queue &queue, MKL_LAYOUT layout, int64_t m, int64_t n,
+           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx,
            cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy,
            cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda);
 
-void zgerc(cl::sycl::queue &queue, int64_t m, int64_t n, std::complex<double> alpha,
-           cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx,
+void zgerc(cl::sycl::queue &queue, MKL_LAYOUT layout, int64_t m, int64_t n,
+           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx,
            cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy,
            cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda);
 
-void cgeru(cl::sycl::queue &queue, int64_t m, int64_t n, std::complex<float> alpha,
-           cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx,
+void cgeru(cl::sycl::queue &queue, MKL_LAYOUT layout, int64_t m, int64_t n,
+           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx,
            cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy,
            cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda);
 
-void zgeru(cl::sycl::queue &queue, int64_t m, int64_t n, std::complex<double> alpha,
-           cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx,
+void zgeru(cl::sycl::queue &queue, MKL_LAYOUT layout, int64_t m, int64_t n,
+           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx,
            cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy,
            cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda);
 
-void chbmv(cl::sycl::queue &queue, MKL_UPLO uplo, int64_t n, int64_t k, std::complex<float> alpha,
-           cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+void chbmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n, int64_t k,
+           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
            cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx, std::complex<float> beta,
            cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy);
 
-void zhbmv(cl::sycl::queue &queue, MKL_UPLO uplo, int64_t n, int64_t k, std::complex<double> alpha,
-           cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+void zhbmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n, int64_t k,
+           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
            cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx, std::complex<double> beta,
            cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy);
 
-void chemv(cl::sycl::queue &queue, MKL_UPLO uplo, int64_t n, std::complex<float> alpha,
-           cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+void chemv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n,
+           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
            cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx, std::complex<float> beta,
            cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy);
 
-void zhemv(cl::sycl::queue &queue, MKL_UPLO uplo, int64_t n, std::complex<double> alpha,
-           cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+void zhemv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n,
+           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
            cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx, std::complex<double> beta,
            cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy);
 
-void cher(cl::sycl::queue &queue, MKL_UPLO upplo, int64_t n, float alpha,
+void cher(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n, float alpha,
           cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx,
           cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda);
 
-void zher(cl::sycl::queue &queue, MKL_UPLO upplo, int64_t n, double alpha,
+void zher(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n, double alpha,
           cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx,
           cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda);
 
-void cher2(cl::sycl::queue &queue, MKL_UPLO upplo, int64_t n, std::complex<float> alpha,
-           cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx,
+void cher2(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx,
            cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy,
            cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda);
 
-void zher2(cl::sycl::queue &queue, MKL_UPLO upplo, int64_t n, std::complex<double> alpha,
-           cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx,
+void zher2(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx,
            cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy,
            cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda);
 
-void chpmv(cl::sycl::queue &queue, MKL_UPLO uplo, int64_t n, std::complex<float> alpha,
-           cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<std::complex<float>, 1> &x,
-           int64_t incx, std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &y,
-           int64_t incy);
+void chpmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n,
+           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
+           cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx, std::complex<float> beta,
+           cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy);
 
-void zhpmv(cl::sycl::queue &queue, MKL_UPLO uplo, int64_t n, std::complex<double> alpha,
-           cl::sycl::buffer<std::complex<double>, 1> &a,
+void zhpmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n,
+           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
            cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx, std::complex<double> beta,
            cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy);
 
-void chpr(cl::sycl::queue &queue, MKL_UPLO upplo, int64_t n, float alpha,
+void chpr(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n, float alpha,
           cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx,
           cl::sycl::buffer<std::complex<float>, 1> &a);
 
-void zhpr(cl::sycl::queue &queue, MKL_UPLO upplo, int64_t n, double alpha,
+void zhpr(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n, double alpha,
           cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx,
           cl::sycl::buffer<std::complex<double>, 1> &a);
 
-void chpr2(cl::sycl::queue &queue, MKL_UPLO upplo, int64_t n, std::complex<float> alpha,
-           cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx,
+void chpr2(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx,
            cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy,
            cl::sycl::buffer<std::complex<float>, 1> &a);
 
-void zhpr2(cl::sycl::queue &queue, MKL_UPLO upplo, int64_t n, std::complex<double> alpha,
-           cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx,
+void zhpr2(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx,
            cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy,
            cl::sycl::buffer<std::complex<double>, 1> &a);
 
-void ssbmv(cl::sycl::queue &queue, MKL_UPLO uplo, int64_t n, int64_t k, float alpha,
-           cl::sycl::buffer<float, 1> &a, int64_t lda, cl::sycl::buffer<float, 1> &x, int64_t incx,
-           float beta, cl::sycl::buffer<float, 1> &y, int64_t incy);
+void ssbmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n, int64_t k,
+           float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda, cl::sycl::buffer<float, 1> &x,
+           int64_t incx, float beta, cl::sycl::buffer<float, 1> &y, int64_t incy);
 
-void dsbmv(cl::sycl::queue &queue, MKL_UPLO uplo, int64_t n, int64_t k, double alpha,
-           cl::sycl::buffer<double, 1> &a, int64_t lda, cl::sycl::buffer<double, 1> &x,
-           int64_t incx, double beta, cl::sycl::buffer<double, 1> &y, int64_t incy);
+void dsbmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n, int64_t k,
+           double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda,
+           cl::sycl::buffer<double, 1> &x, int64_t incx, double beta,
+           cl::sycl::buffer<double, 1> &y, int64_t incy);
 
-void sspmv(cl::sycl::queue &queue, MKL_UPLO uplo, int64_t n, float alpha,
+void sspmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n, float alpha,
            cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<float, 1> &x, int64_t incx, float beta,
            cl::sycl::buffer<float, 1> &y, int64_t incy);
 
-void dspmv(cl::sycl::queue &queue, MKL_UPLO uplo, int64_t n, double alpha,
+void dspmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n, double alpha,
            cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<double, 1> &x, int64_t incx,
            double beta, cl::sycl::buffer<double, 1> &y, int64_t incy);
 
-void sspr(cl::sycl::queue &queue, MKL_UPLO upplo, int64_t n, float alpha,
+void sspr(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n, float alpha,
           cl::sycl::buffer<float, 1> &x, int64_t incx, cl::sycl::buffer<float, 1> &a);
 
-void dspr(cl::sycl::queue &queue, MKL_UPLO upplo, int64_t n, double alpha,
+void dspr(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n, double alpha,
           cl::sycl::buffer<double, 1> &x, int64_t incx, cl::sycl::buffer<double, 1> &a);
 
-void sspr2(cl::sycl::queue &queue, MKL_UPLO upplo, int64_t n, float alpha,
+void sspr2(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n, float alpha,
            cl::sycl::buffer<float, 1> &x, int64_t incx, cl::sycl::buffer<float, 1> &y, int64_t incy,
            cl::sycl::buffer<float, 1> &a);
 
-void dspr2(cl::sycl::queue &queue, MKL_UPLO upplo, int64_t n, double alpha,
+void dspr2(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n, double alpha,
            cl::sycl::buffer<double, 1> &x, int64_t incx, cl::sycl::buffer<double, 1> &y,
            int64_t incy, cl::sycl::buffer<double, 1> &a);
 
-void ssymv(cl::sycl::queue &queue, MKL_UPLO uplo, int64_t n, float alpha,
+void ssymv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n, float alpha,
            cl::sycl::buffer<float, 1> &a, int64_t lda, cl::sycl::buffer<float, 1> &x, int64_t incx,
            float beta, cl::sycl::buffer<float, 1> &y, int64_t incy);
 
-void dsymv(cl::sycl::queue &queue, MKL_UPLO uplo, int64_t n, double alpha,
+void dsymv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n, double alpha,
            cl::sycl::buffer<double, 1> &a, int64_t lda, cl::sycl::buffer<double, 1> &x,
            int64_t incx, double beta, cl::sycl::buffer<double, 1> &y, int64_t incy);
 
-void ssyr(cl::sycl::queue &queue, MKL_UPLO upplo, int64_t n, float alpha,
+void ssyr(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n, float alpha,
           cl::sycl::buffer<float, 1> &x, int64_t incx, cl::sycl::buffer<float, 1> &a, int64_t lda);
 
-void dsyr(cl::sycl::queue &queue, MKL_UPLO upplo, int64_t n, double alpha,
+void dsyr(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n, double alpha,
           cl::sycl::buffer<double, 1> &x, int64_t incx, cl::sycl::buffer<double, 1> &a,
           int64_t lda);
 
-void ssyr2(cl::sycl::queue &queue, MKL_UPLO upplo, int64_t n, float alpha,
+void ssyr2(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n, float alpha,
            cl::sycl::buffer<float, 1> &x, int64_t incx, cl::sycl::buffer<float, 1> &y, int64_t incy,
            cl::sycl::buffer<float, 1> &a, int64_t lda);
 
-void dsyr2(cl::sycl::queue &queue, MKL_UPLO upplo, int64_t n, double alpha,
+void dsyr2(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n, double alpha,
            cl::sycl::buffer<double, 1> &x, int64_t incx, cl::sycl::buffer<double, 1> &y,
            int64_t incy, cl::sycl::buffer<double, 1> &a, int64_t lda);
 
-void stbmv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           int64_t k, cl::sycl::buffer<float, 1> &a, int64_t lda, cl::sycl::buffer<float, 1> &x,
+void stbmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, int64_t k, cl::sycl::buffer<float, 1> &a, int64_t lda,
+           cl::sycl::buffer<float, 1> &x, int64_t incx);
+
+void dtbmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, int64_t k, cl::sycl::buffer<double, 1> &a, int64_t lda,
+           cl::sycl::buffer<double, 1> &x, int64_t incx);
+
+void ctbmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, int64_t k, cl::sycl::buffer<std::complex<float>, 1> &a,
+           int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx);
+
+void ztbmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, int64_t k, cl::sycl::buffer<std::complex<double>, 1> &a,
+           int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx);
+
+void stbsv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, int64_t k, cl::sycl::buffer<float, 1> &a, int64_t lda,
+           cl::sycl::buffer<float, 1> &x, int64_t incx);
+
+void dtbsv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, int64_t k, cl::sycl::buffer<double, 1> &a, int64_t lda,
+           cl::sycl::buffer<double, 1> &x, int64_t incx);
+
+void ctbsv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, int64_t k, cl::sycl::buffer<std::complex<float>, 1> &a,
+           int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx);
+
+void ztbsv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, int64_t k, cl::sycl::buffer<std::complex<double>, 1> &a,
+           int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx);
+
+void stpmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<float, 1> &x,
            int64_t incx);
 
-void dtbmv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           int64_t k, cl::sycl::buffer<double, 1> &a, int64_t lda, cl::sycl::buffer<double, 1> &x,
+void dtpmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<double, 1> &x,
            int64_t incx);
 
-void ctbmv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           int64_t k, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+void ctpmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, cl::sycl::buffer<std::complex<float>, 1> &a,
            cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx);
 
-void ztbmv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           int64_t k, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+void ztpmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, cl::sycl::buffer<std::complex<double>, 1> &a,
            cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx);
 
-void stbsv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           int64_t k, cl::sycl::buffer<float, 1> &a, int64_t lda, cl::sycl::buffer<float, 1> &x,
+void stpsv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<float, 1> &x,
            int64_t incx);
 
-void dtbsv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           int64_t k, cl::sycl::buffer<double, 1> &a, int64_t lda, cl::sycl::buffer<double, 1> &x,
+void dtpsv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<double, 1> &x,
            int64_t incx);
 
-void ctbsv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           int64_t k, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+void ctpsv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, cl::sycl::buffer<std::complex<float>, 1> &a,
            cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx);
 
-void ztbsv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           int64_t k, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+void ztpsv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, cl::sycl::buffer<std::complex<double>, 1> &a,
            cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx);
 
-void stpmv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<float, 1> &x, int64_t incx);
+void strmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, cl::sycl::buffer<float, 1> &a, int64_t lda,
+           cl::sycl::buffer<float, 1> &x, int64_t incx);
 
-void dtpmv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<double, 1> &x, int64_t incx);
+void dtrmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, cl::sycl::buffer<double, 1> &a, int64_t lda,
+           cl::sycl::buffer<double, 1> &x, int64_t incx);
 
-void ctpmv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<std::complex<float>, 1> &x,
-           int64_t incx);
-
-void ztpmv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           cl::sycl::buffer<std::complex<double>, 1> &a,
-           cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx);
-
-void stpsv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           cl::sycl::buffer<float, 1> &a, cl::sycl::buffer<float, 1> &x, int64_t incx);
-
-void dtpsv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           cl::sycl::buffer<double, 1> &a, cl::sycl::buffer<double, 1> &x, int64_t incx);
-
-void ctpsv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           cl::sycl::buffer<std::complex<float>, 1> &a, cl::sycl::buffer<std::complex<float>, 1> &x,
-           int64_t incx);
-
-void ztpsv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           cl::sycl::buffer<std::complex<double>, 1> &a,
-           cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx);
-
-void strmv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           cl::sycl::buffer<float, 1> &a, int64_t lda, cl::sycl::buffer<float, 1> &x, int64_t incx);
-
-void dtrmv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           cl::sycl::buffer<double, 1> &a, int64_t lda, cl::sycl::buffer<double, 1> &x,
-           int64_t incx);
-
-void ctrmv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+void ctrmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
            cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx);
 
-void ztrmv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+void ztrmv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
            cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx);
 
-void strsv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           cl::sycl::buffer<float, 1> &a, int64_t lda, cl::sycl::buffer<float, 1> &x, int64_t incx);
+void strsv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, cl::sycl::buffer<float, 1> &a, int64_t lda,
+           cl::sycl::buffer<float, 1> &x, int64_t incx);
 
-void dtrsv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           cl::sycl::buffer<double, 1> &a, int64_t lda, cl::sycl::buffer<double, 1> &x,
-           int64_t incx);
+void dtrsv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, cl::sycl::buffer<double, 1> &a, int64_t lda,
+           cl::sycl::buffer<double, 1> &x, int64_t incx);
 
-void ctrsv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+void ctrsv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
            cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx);
 
-void ztrsv(cl::sycl::queue &queue, MKL_UPLO upplo, MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
-           cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+void ztrsv(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upplo, MKL_TRANSPOSE trans,
+           MKL_DIAG diag, int64_t n, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
            cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx);
 
 void scasum(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<float>, 1> &x,
@@ -671,632 +699,667 @@ void icamin(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<flo
 void izamin(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<double>, 1> &x,
             int64_t incx, cl::sycl::buffer<int64_t, 1> &result);
 
-void sgemm_batch(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb, int64_t m,
-                 int64_t n, int64_t k, float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda,
-                 int64_t stride_a, cl::sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b,
-                 float beta, cl::sycl::buffer<float, 1> &c, int64_t ldc, int64_t stride_c,
-                 int64_t batch_size, int64_t offset_a = 0, int64_t offset_b = 0,
-                 int64_t offset_c = 0);
+void sgemm_batch(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                 MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k, float alpha,
+                 cl::sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
+                 cl::sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b, float beta,
+                 cl::sycl::buffer<float, 1> &c, int64_t ldc, int64_t stride_c, int64_t batch_size,
+                 int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-void dgemm_batch(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb, int64_t m,
-                 int64_t n, int64_t k, double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda,
-                 int64_t stride_a, cl::sycl::buffer<double, 1> &b, int64_t ldb, int64_t stride_b,
-                 double beta, cl::sycl::buffer<double, 1> &c, int64_t ldc, int64_t stride_c,
-                 int64_t batch_size, int64_t offset_a = 0, int64_t offset_b = 0,
-                 int64_t offset_c = 0);
+void dgemm_batch(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                 MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k, double alpha,
+                 cl::sycl::buffer<double, 1> &a, int64_t lda, int64_t stride_a,
+                 cl::sycl::buffer<double, 1> &b, int64_t ldb, int64_t stride_b, double beta,
+                 cl::sycl::buffer<double, 1> &c, int64_t ldc, int64_t stride_c, int64_t batch_size,
+                 int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-void cgemm_batch(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb, int64_t m,
-                 int64_t n, int64_t k, std::complex<float> alpha,
+void cgemm_batch(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                 MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k, std::complex<float> alpha,
                  cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda, int64_t stride_a,
                  cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, int64_t stride_b,
                  std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc,
                  int64_t stride_c, int64_t batch_size, int64_t offset_a = 0, int64_t offset_b = 0,
                  int64_t offset_c = 0);
 
-void zgemm_batch(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb, int64_t m,
-                 int64_t n, int64_t k, std::complex<double> alpha,
+void zgemm_batch(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                 MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k, std::complex<double> alpha,
                  cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda, int64_t stride_a,
                  cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, int64_t stride_b,
                  std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
                  int64_t ldc, int64_t stride_c, int64_t batch_size, int64_t offset_a = 0,
                  int64_t offset_b = 0, int64_t offset_c = 0);
 
-void strsm_batch(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                 MKL_TRANSPOSE trans, MKL_DIAG unit_diag, int64_t m, int64_t n, float alpha,
-                 cl::sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
-                 cl::sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b, int64_t batch_size,
-                 int64_t offset_a = 0, int64_t offset_b = 0);
+void strsm_batch(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                 MKL_UPLO upper_lower, MKL_TRANSPOSE trans, MKL_DIAG unit_diag, int64_t m,
+                 int64_t n, float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda,
+                 int64_t stride_a, cl::sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b,
+                 int64_t batch_size, int64_t offset_a = 0, int64_t offset_b = 0);
 
-void dtrsm_batch(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                 MKL_TRANSPOSE trans, MKL_DIAG unit_diag, int64_t m, int64_t n, double alpha,
-                 cl::sycl::buffer<double, 1> &a, int64_t lda, int64_t stride_a,
-                 cl::sycl::buffer<double, 1> &b, int64_t ldb, int64_t stride_b, int64_t batch_size,
-                 int64_t offset_a = 0, int64_t offset_b = 0);
+void dtrsm_batch(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                 MKL_UPLO upper_lower, MKL_TRANSPOSE trans, MKL_DIAG unit_diag, int64_t m,
+                 int64_t n, double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda,
+                 int64_t stride_a, cl::sycl::buffer<double, 1> &b, int64_t ldb, int64_t stride_b,
+                 int64_t batch_size, int64_t offset_a = 0, int64_t offset_b = 0);
 
-void ctrsm_batch(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                 MKL_TRANSPOSE trans, MKL_DIAG unit_diag, int64_t m, int64_t n,
-                 std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
+void ctrsm_batch(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                 MKL_UPLO upper_lower, MKL_TRANSPOSE trans, MKL_DIAG unit_diag, int64_t m,
+                 int64_t n, std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
                  int64_t lda, int64_t stride_a, cl::sycl::buffer<std::complex<float>, 1> &b,
                  int64_t ldb, int64_t stride_b, int64_t batch_size, int64_t offset_a = 0,
                  int64_t offset_b = 0);
 
-void ztrsm_batch(cl::sycl::queue &queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                 MKL_TRANSPOSE trans, MKL_DIAG unit_diag, int64_t m, int64_t n,
-                 std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-                 int64_t lda, int64_t stride_a, cl::sycl::buffer<std::complex<double>, 1> &b,
-                 int64_t ldb, int64_t stride_b, int64_t batch_size, int64_t offset_a = 0,
-                 int64_t offset_b = 0);
+void ztrsm_batch(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                 MKL_UPLO upper_lower, MKL_TRANSPOSE trans, MKL_DIAG unit_diag, int64_t m,
+                 int64_t n, std::complex<double> alpha,
+                 cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda, int64_t stride_a,
+                 cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, int64_t stride_b,
+                 int64_t batch_size, int64_t offset_a = 0, int64_t offset_b = 0);
 
-void sgemmt(cl::sycl::queue &queue, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
+void sgemmt(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
             MKL_TRANSPOSE transb, int64_t n, int64_t k, float alpha, cl::sycl::buffer<float, 1> &a,
             int64_t lda, cl::sycl::buffer<float, 1> &b, int64_t ldb, float beta,
             cl::sycl::buffer<float, 1> &c, int64_t ldc);
 
-void dgemmt(cl::sycl::queue &queue, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
+void dgemmt(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
             MKL_TRANSPOSE transb, int64_t n, int64_t k, double alpha,
             cl::sycl::buffer<double, 1> &a, int64_t lda, cl::sycl::buffer<double, 1> &b,
             int64_t ldb, double beta, cl::sycl::buffer<double, 1> &c, int64_t ldc);
 
-void zgemmt(cl::sycl::queue &queue, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
+void zgemmt(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
             MKL_TRANSPOSE transb, int64_t n, int64_t k, std::complex<double> alpha,
             cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
             cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, std::complex<double> beta,
             cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc);
 
-void cgemmt(cl::sycl::queue &queue, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
+void cgemmt(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
             MKL_TRANSPOSE transb, int64_t n, int64_t k, std::complex<float> alpha,
             cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
             cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, std::complex<float> beta,
             cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc);
 
-void hgemm(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb, int64_t m, int64_t n,
-           int64_t k, half alpha, cl::sycl::buffer<half, 1> &a, int64_t lda,
+void hgemm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
+           int64_t m, int64_t n, int64_t k, half alpha, cl::sycl::buffer<half, 1> &a, int64_t lda,
            cl::sycl::buffer<half, 1> &b, int64_t ldb, half beta, cl::sycl::buffer<half, 1> &c,
            int64_t ldc);
 
-void gemm_f16f16f32(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb, int64_t m,
-                    int64_t n, int64_t k, float alpha, cl::sycl::buffer<half, 1> &a, int64_t lda,
-                    cl::sycl::buffer<half, 1> &b, int64_t ldb, float beta,
-                    cl::sycl::buffer<float, 1> &c, int64_t ldc);
+void gemm_f16f16f32(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                    MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k, float alpha,
+                    cl::sycl::buffer<half, 1> &a, int64_t lda, cl::sycl::buffer<half, 1> &b,
+                    int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c, int64_t ldc);
 
-void gemm_s8u8s32(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
-                  CBLAS_OFFSET offsetc, int64_t m, int64_t n, int64_t k, float alpha,
-                  cl::sycl::buffer<int8_t, 1> &a, int64_t lda, int8_t ao,
+void gemm_s8u8s32(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                  MKL_TRANSPOSE transb, CBLAS_OFFSET offsetc, int64_t m, int64_t n, int64_t k,
+                  float alpha, cl::sycl::buffer<int8_t, 1> &a, int64_t lda, int8_t ao,
                   cl::sycl::buffer<uint8_t, 1> &b, int64_t ldb, uint8_t bo, float beta,
                   cl::sycl::buffer<int32_t, 1> &c, int64_t ldc, cl::sycl::buffer<int32_t, 1> &co);
 
 // USM APIs
 
-cl::sycl::event sgemm_sycl(cl::sycl::queue *queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
-                           int64_t m, int64_t n, int64_t k, float alpha, const float *a,
+cl::sycl::event sgemm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                           MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k, float alpha,
+                           const float *a, int64_t lda, const float *b, int64_t ldb, float beta,
+                           float *c, int64_t ldc,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+                           int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
+
+cl::sycl::event dgemm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                           MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k, double alpha,
+                           const double *a, int64_t lda, const double *b, int64_t ldb, double beta,
+                           double *c, int64_t ldc,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+                           int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
+
+cl::sycl::event cgemm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                           MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k,
+                           std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                           const std::complex<float> *b, int64_t ldb, std::complex<float> beta,
+                           std::complex<float> *c, int64_t ldc,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+                           int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
+
+cl::sycl::event zgemm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                           MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k,
+                           std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                           const std::complex<double> *b, int64_t ldb, std::complex<double> beta,
+                           std::complex<double> *c, int64_t ldc,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+                           int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
+
+cl::sycl::event ssymm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                           MKL_UPLO upper_lower, int64_t m, int64_t n, float alpha, const float *a,
                            int64_t lda, const float *b, int64_t ldb, float beta, float *c,
                            int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                            int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-cl::sycl::event dgemm_sycl(cl::sycl::queue *queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
-                           int64_t m, int64_t n, int64_t k, double alpha, const double *a,
-                           int64_t lda, const double *b, int64_t ldb, double beta, double *c,
-                           int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+cl::sycl::event dsymm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                           MKL_UPLO upper_lower, int64_t m, int64_t n, double alpha,
+                           const double *a, int64_t lda, const double *b, int64_t ldb, double beta,
+                           double *c, int64_t ldc,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                            int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-cl::sycl::event cgemm_sycl(cl::sycl::queue *queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
-                           int64_t m, int64_t n, int64_t k, std::complex<float> alpha,
+cl::sycl::event csymm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                           MKL_UPLO upper_lower, int64_t m, int64_t n, std::complex<float> alpha,
                            const std::complex<float> *a, int64_t lda, const std::complex<float> *b,
                            int64_t ldb, std::complex<float> beta, std::complex<float> *c,
                            int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                            int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-cl::sycl::event zgemm_sycl(cl::sycl::queue *queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
-                           int64_t m, int64_t n, int64_t k, std::complex<double> alpha,
+cl::sycl::event zsymm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                           MKL_UPLO upper_lower, int64_t m, int64_t n, std::complex<double> alpha,
                            const std::complex<double> *a, int64_t lda,
                            const std::complex<double> *b, int64_t ldb, std::complex<double> beta,
                            std::complex<double> *c, int64_t ldc,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                            int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-cl::sycl::event ssymm_sycl(cl::sycl::queue *queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                           int64_t m, int64_t n, float alpha, const float *a, int64_t lda,
-                           const float *b, int64_t ldb, float beta, float *c, int64_t ldc,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies,
-                           int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
-
-cl::sycl::event dsymm_sycl(cl::sycl::queue *queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                           int64_t m, int64_t n, double alpha, const double *a, int64_t lda,
-                           const double *b, int64_t ldb, double beta, double *c, int64_t ldc,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies,
-                           int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
-
-cl::sycl::event csymm_sycl(cl::sycl::queue *queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                           int64_t m, int64_t n, std::complex<float> alpha,
+cl::sycl::event chemm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                           MKL_UPLO upper_lower, int64_t m, int64_t n, std::complex<float> alpha,
                            const std::complex<float> *a, int64_t lda, const std::complex<float> *b,
                            int64_t ldb, std::complex<float> beta, std::complex<float> *c,
                            int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                            int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-cl::sycl::event zsymm_sycl(cl::sycl::queue *queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                           int64_t m, int64_t n, std::complex<double> alpha,
+cl::sycl::event zhemm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                           MKL_UPLO upper_lower, int64_t m, int64_t n, std::complex<double> alpha,
                            const std::complex<double> *a, int64_t lda,
                            const std::complex<double> *b, int64_t ldb, std::complex<double> beta,
                            std::complex<double> *c, int64_t ldc,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                            int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-cl::sycl::event chemm_sycl(cl::sycl::queue *queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                           int64_t m, int64_t n, std::complex<float> alpha,
-                           const std::complex<float> *a, int64_t lda, const std::complex<float> *b,
-                           int64_t ldb, std::complex<float> beta, std::complex<float> *c,
-                           int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies,
-                           int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
-
-cl::sycl::event zhemm_sycl(cl::sycl::queue *queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                           int64_t m, int64_t n, std::complex<double> alpha,
-                           const std::complex<double> *a, int64_t lda,
-                           const std::complex<double> *b, int64_t ldb, std::complex<double> beta,
-                           std::complex<double> *c, int64_t ldc,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies,
-                           int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
-
-cl::sycl::event ssyrk_sycl(cl::sycl::queue *queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
-                           int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
-                           float beta, float *c, int64_t ldc,
+cl::sycl::event ssyrk_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
+                           MKL_TRANSPOSE trans, int64_t n, int64_t k, float alpha, const float *a,
+                           int64_t lda, float beta, float *c, int64_t ldc,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                            int64_t offset_a = 0, int64_t offset_c = 0);
 
-cl::sycl::event dsyrk_sycl(cl::sycl::queue *queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
-                           int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
-                           double beta, double *c, int64_t ldc,
+cl::sycl::event dsyrk_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
+                           MKL_TRANSPOSE trans, int64_t n, int64_t k, double alpha, const double *a,
+                           int64_t lda, double beta, double *c, int64_t ldc,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                            int64_t offset_a = 0, int64_t offset_c = 0);
 
-cl::sycl::event csyrk_sycl(cl::sycl::queue *queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
-                           int64_t n, int64_t k, std::complex<float> alpha,
+cl::sycl::event csyrk_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
+                           MKL_TRANSPOSE trans, int64_t n, int64_t k, std::complex<float> alpha,
                            const std::complex<float> *a, int64_t lda, std::complex<float> beta,
                            std::complex<float> *c, int64_t ldc,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                            int64_t offset_a = 0, int64_t offset_c = 0);
 
-cl::sycl::event zsyrk_sycl(cl::sycl::queue *queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
-                           int64_t n, int64_t k, std::complex<double> alpha,
+cl::sycl::event zsyrk_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
+                           MKL_TRANSPOSE trans, int64_t n, int64_t k, std::complex<double> alpha,
                            const std::complex<double> *a, int64_t lda, std::complex<double> beta,
                            std::complex<double> *c, int64_t ldc,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                            int64_t offset_a = 0, int64_t offset_c = 0);
 
-cl::sycl::event cherk_sycl(cl::sycl::queue *queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
-                           int64_t n, int64_t k, float alpha, const std::complex<float> *a,
-                           int64_t lda, float beta, std::complex<float> *c, int64_t ldc,
+cl::sycl::event cherk_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
+                           MKL_TRANSPOSE trans, int64_t n, int64_t k, float alpha,
+                           const std::complex<float> *a, int64_t lda, float beta,
+                           std::complex<float> *c, int64_t ldc,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                            int64_t offset_a = 0, int64_t offset_c = 0);
 
-cl::sycl::event zherk_sycl(cl::sycl::queue *queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
-                           int64_t n, int64_t k, double alpha, const std::complex<double> *a,
-                           int64_t lda, double beta, std::complex<double> *c, int64_t ldc,
+cl::sycl::event zherk_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
+                           MKL_TRANSPOSE trans, int64_t n, int64_t k, double alpha,
+                           const std::complex<double> *a, int64_t lda, double beta,
+                           std::complex<double> *c, int64_t ldc,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                            int64_t offset_a = 0, int64_t offset_c = 0);
 
-cl::sycl::event ssyr2k_sycl(cl::sycl::queue *queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
-                            int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
-                            const float *b, int64_t ldb, float beta, float *c, int64_t ldc,
+cl::sycl::event ssyr2k_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
+                            MKL_TRANSPOSE trans, int64_t n, int64_t k, float alpha, const float *a,
+                            int64_t lda, const float *b, int64_t ldb, float beta, float *c,
+                            int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                             int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-cl::sycl::event dsyr2k_sycl(cl::sycl::queue *queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
-                            int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
-                            const double *b, int64_t ldb, double beta, double *c, int64_t ldc,
+cl::sycl::event dsyr2k_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
+                            MKL_TRANSPOSE trans, int64_t n, int64_t k, double alpha,
+                            const double *a, int64_t lda, const double *b, int64_t ldb, double beta,
+                            double *c, int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                             int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-cl::sycl::event csyr2k_sycl(cl::sycl::queue *queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
-                            int64_t n, int64_t k, std::complex<float> alpha,
+cl::sycl::event csyr2k_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
+                            MKL_TRANSPOSE trans, int64_t n, int64_t k, std::complex<float> alpha,
                             const std::complex<float> *a, int64_t lda, const std::complex<float> *b,
                             int64_t ldb, std::complex<float> beta, std::complex<float> *c,
                             int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                             int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-cl::sycl::event zsyr2k_sycl(cl::sycl::queue *queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
-                            int64_t n, int64_t k, std::complex<double> alpha,
+cl::sycl::event zsyr2k_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
+                            MKL_TRANSPOSE trans, int64_t n, int64_t k, std::complex<double> alpha,
                             const std::complex<double> *a, int64_t lda,
                             const std::complex<double> *b, int64_t ldb, std::complex<double> beta,
                             std::complex<double> *c, int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                             int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-cl::sycl::event cher2k_sycl(cl::sycl::queue *queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
-                            int64_t n, int64_t k, std::complex<float> alpha,
+cl::sycl::event cher2k_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
+                            MKL_TRANSPOSE trans, int64_t n, int64_t k, std::complex<float> alpha,
                             const std::complex<float> *a, int64_t lda, const std::complex<float> *b,
                             int64_t ldb, float beta, std::complex<float> *c, int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                             int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-cl::sycl::event zher2k_sycl(cl::sycl::queue *queue, MKL_UPLO upper_lower, MKL_TRANSPOSE trans,
-                            int64_t n, int64_t k, std::complex<double> alpha,
+cl::sycl::event zher2k_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
+                            MKL_TRANSPOSE trans, int64_t n, int64_t k, std::complex<double> alpha,
                             const std::complex<double> *a, int64_t lda,
                             const std::complex<double> *b, int64_t ldb, double beta,
                             std::complex<double> *c, int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                             int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-cl::sycl::event strmm_sycl(cl::sycl::queue *queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                           MKL_TRANSPOSE transa, MKL_DIAG unit_diag, int64_t m, int64_t n,
-                           float alpha, const float *a, int64_t lda, float *b, int64_t ldb,
+cl::sycl::event strmm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                           MKL_UPLO upper_lower, MKL_TRANSPOSE transa, MKL_DIAG unit_diag,
+                           int64_t m, int64_t n, float alpha, const float *a, int64_t lda, float *b,
+                           int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+                           int64_t offset_a = 0, int64_t offset_b = 0);
+
+cl::sycl::event dtrmm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                           MKL_UPLO upper_lower, MKL_TRANSPOSE transa, MKL_DIAG unit_diag,
+                           int64_t m, int64_t n, double alpha, const double *a, int64_t lda,
+                           double *b, int64_t ldb,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                            int64_t offset_a = 0, int64_t offset_b = 0);
 
-cl::sycl::event dtrmm_sycl(cl::sycl::queue *queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                           MKL_TRANSPOSE transa, MKL_DIAG unit_diag, int64_t m, int64_t n,
-                           double alpha, const double *a, int64_t lda, double *b, int64_t ldb,
+cl::sycl::event ctrmm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                           MKL_UPLO upper_lower, MKL_TRANSPOSE transa, MKL_DIAG unit_diag,
+                           int64_t m, int64_t n, std::complex<float> alpha,
+                           const std::complex<float> *a, int64_t lda, std::complex<float> *b,
+                           int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+                           int64_t offset_a = 0, int64_t offset_b = 0);
+
+cl::sycl::event ztrmm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                           MKL_UPLO upper_lower, MKL_TRANSPOSE transa, MKL_DIAG unit_diag,
+                           int64_t m, int64_t n, std::complex<double> alpha,
+                           const std::complex<double> *a, int64_t lda, std::complex<double> *b,
+                           int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+                           int64_t offset_a = 0, int64_t offset_b = 0);
+
+cl::sycl::event strsm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                           MKL_UPLO upper_lower, MKL_TRANSPOSE transa, MKL_DIAG unit_diag,
+                           int64_t m, int64_t n, float alpha, const float *a, int64_t lda, float *b,
+                           int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+                           int64_t offset_a = 0, int64_t offset_b = 0);
+
+cl::sycl::event dtrsm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                           MKL_UPLO upper_lower, MKL_TRANSPOSE transa, MKL_DIAG unit_diag,
+                           int64_t m, int64_t n, double alpha, const double *a, int64_t lda,
+                           double *b, int64_t ldb,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                            int64_t offset_a = 0, int64_t offset_b = 0);
 
-cl::sycl::event ctrmm_sycl(cl::sycl::queue *queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                           MKL_TRANSPOSE transa, MKL_DIAG unit_diag, int64_t m, int64_t n,
-                           std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
-                           std::complex<float> *b, int64_t ldb,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+cl::sycl::event ctrsm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                           MKL_UPLO upper_lower, MKL_TRANSPOSE transa, MKL_DIAG unit_diag,
+                           int64_t m, int64_t n, std::complex<float> alpha,
+                           const std::complex<float> *a, int64_t lda, std::complex<float> *b,
+                           int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                            int64_t offset_a = 0, int64_t offset_b = 0);
 
-cl::sycl::event ztrmm_sycl(cl::sycl::queue *queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                           MKL_TRANSPOSE transa, MKL_DIAG unit_diag, int64_t m, int64_t n,
-                           std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
-                           std::complex<double> *b, int64_t ldb,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+cl::sycl::event ztrsm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_SIDE left_right,
+                           MKL_UPLO upper_lower, MKL_TRANSPOSE transa, MKL_DIAG unit_diag,
+                           int64_t m, int64_t n, std::complex<double> alpha,
+                           const std::complex<double> *a, int64_t lda, std::complex<double> *b,
+                           int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                            int64_t offset_a = 0, int64_t offset_b = 0);
 
-cl::sycl::event strsm_sycl(cl::sycl::queue *queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                           MKL_TRANSPOSE transa, MKL_DIAG unit_diag, int64_t m, int64_t n,
-                           float alpha, const float *a, int64_t lda, float *b, int64_t ldb,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies,
-                           int64_t offset_a = 0, int64_t offset_b = 0);
-
-cl::sycl::event dtrsm_sycl(cl::sycl::queue *queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                           MKL_TRANSPOSE transa, MKL_DIAG unit_diag, int64_t m, int64_t n,
-                           double alpha, const double *a, int64_t lda, double *b, int64_t ldb,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies,
-                           int64_t offset_a = 0, int64_t offset_b = 0);
-
-cl::sycl::event ctrsm_sycl(cl::sycl::queue *queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                           MKL_TRANSPOSE transa, MKL_DIAG unit_diag, int64_t m, int64_t n,
-                           std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
-                           std::complex<float> *b, int64_t ldb,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies,
-                           int64_t offset_a = 0, int64_t offset_b = 0);
-
-cl::sycl::event ztrsm_sycl(cl::sycl::queue *queue, MKL_SIDE left_right, MKL_UPLO upper_lower,
-                           MKL_TRANSPOSE transa, MKL_DIAG unit_diag, int64_t m, int64_t n,
-                           std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
-                           std::complex<double> *b, int64_t ldb,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies,
-                           int64_t offset_a = 0, int64_t offset_b = 0);
-
-cl::sycl::event sgemv_sycl(cl::sycl::queue *queue, MKL_TRANSPOSE trans, int64_t m, int64_t n,
-                           float alpha, const float *a, int64_t lda, const float *x, int64_t incx,
-                           float beta, float *y, int64_t incy,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event dgemv_sycl(cl::sycl::queue *queue, MKL_TRANSPOSE trans, int64_t m, int64_t n,
-                           double alpha, const double *a, int64_t lda, const double *x,
-                           int64_t incx, double beta, double *y, int64_t incy,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event cgemv_sycl(cl::sycl::queue *queue, MKL_TRANSPOSE trans, int64_t m, int64_t n,
-                           std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
-                           const std::complex<float> *x, int64_t incx, std::complex<float> beta,
-                           std::complex<float> *y, int64_t incy,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event zgemv_sycl(cl::sycl::queue *queue, MKL_TRANSPOSE trans, int64_t m, int64_t n,
-                           std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
-                           const std::complex<double> *x, int64_t incx, std::complex<double> beta,
-                           std::complex<double> *y, int64_t incy,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event sgbmv_sycl(cl::sycl::queue *queue, MKL_TRANSPOSE trans, int64_t m, int64_t n,
-                           int64_t kl, int64_t ku, float alpha, const float *a, int64_t lda,
+cl::sycl::event sgemv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE trans,
+                           int64_t m, int64_t n, float alpha, const float *a, int64_t lda,
                            const float *x, int64_t incx, float beta, float *y, int64_t incy,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event dgbmv_sycl(cl::sycl::queue *queue, MKL_TRANSPOSE trans, int64_t m, int64_t n,
-                           int64_t kl, int64_t ku, double alpha, const double *a, int64_t lda,
+cl::sycl::event dgemv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE trans,
+                           int64_t m, int64_t n, double alpha, const double *a, int64_t lda,
                            const double *x, int64_t incx, double beta, double *y, int64_t incy,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event cgbmv_sycl(cl::sycl::queue *queue, MKL_TRANSPOSE trans, int64_t m, int64_t n,
-                           int64_t kl, int64_t ku, std::complex<float> alpha,
+cl::sycl::event cgemv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE trans,
+                           int64_t m, int64_t n, std::complex<float> alpha,
                            const std::complex<float> *a, int64_t lda, const std::complex<float> *x,
                            int64_t incx, std::complex<float> beta, std::complex<float> *y,
                            int64_t incy,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event zgbmv_sycl(cl::sycl::queue *queue, MKL_TRANSPOSE trans, int64_t m, int64_t n,
-                           int64_t kl, int64_t ku, std::complex<double> alpha,
+cl::sycl::event zgemv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE trans,
+                           int64_t m, int64_t n, std::complex<double> alpha,
                            const std::complex<double> *a, int64_t lda,
                            const std::complex<double> *x, int64_t incx, std::complex<double> beta,
                            std::complex<double> *y, int64_t incy,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event sger_sycl(cl::sycl::queue *queue, int64_t m, int64_t n, float alpha, const float *x,
-                          int64_t incx, const float *y, int64_t incy, float *a, int64_t lda,
+cl::sycl::event sgbmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE trans,
+                           int64_t m, int64_t n, int64_t kl, int64_t ku, float alpha,
+                           const float *a, int64_t lda, const float *x, int64_t incx, float beta,
+                           float *y, int64_t incy,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event dgbmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE trans,
+                           int64_t m, int64_t n, int64_t kl, int64_t ku, double alpha,
+                           const double *a, int64_t lda, const double *x, int64_t incx, double beta,
+                           double *y, int64_t incy,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event cgbmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE trans,
+                           int64_t m, int64_t n, int64_t kl, int64_t ku, std::complex<float> alpha,
+                           const std::complex<float> *a, int64_t lda, const std::complex<float> *x,
+                           int64_t incx, std::complex<float> beta, std::complex<float> *y,
+                           int64_t incy,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event zgbmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE trans,
+                           int64_t m, int64_t n, int64_t kl, int64_t ku, std::complex<double> alpha,
+                           const std::complex<double> *a, int64_t lda,
+                           const std::complex<double> *x, int64_t incx, std::complex<double> beta,
+                           std::complex<double> *y, int64_t incy,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event sger_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, int64_t m, int64_t n,
+                          float alpha, const float *x, int64_t incx, const float *y, int64_t incy,
+                          float *a, int64_t lda,
                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event dger_sycl(cl::sycl::queue *queue, int64_t m, int64_t n, double alpha,
-                          const double *x, int64_t incx, const double *y, int64_t incy, double *a,
-                          int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+cl::sycl::event dger_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, int64_t m, int64_t n,
+                          double alpha, const double *x, int64_t incx, const double *y,
+                          int64_t incy, double *a, int64_t lda,
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event cgerc_sycl(cl::sycl::queue *queue, int64_t m, int64_t n, std::complex<float> alpha,
-                           const std::complex<float> *x, int64_t incx, const std::complex<float> *y,
-                           int64_t incy, std::complex<float> *a, int64_t lda,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event zgerc_sycl(cl::sycl::queue *queue, int64_t m, int64_t n, std::complex<double> alpha,
-                           const std::complex<double> *x, int64_t incx,
-                           const std::complex<double> *y, int64_t incy, std::complex<double> *a,
-                           int64_t lda,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event cgeru_sycl(cl::sycl::queue *queue, int64_t m, int64_t n, std::complex<float> alpha,
-                           const std::complex<float> *x, int64_t incx, const std::complex<float> *y,
-                           int64_t incy, std::complex<float> *a, int64_t lda,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event zgeru_sycl(cl::sycl::queue *queue, int64_t m, int64_t n, std::complex<double> alpha,
-                           const std::complex<double> *x, int64_t incx,
-                           const std::complex<double> *y, int64_t incy, std::complex<double> *a,
-                           int64_t lda,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event chbmv_sycl(cl::sycl::queue *queue, MKL_UPLO uplo, int64_t n, int64_t k,
-                           std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
-                           const std::complex<float> *x, int64_t incx, std::complex<float> beta,
-                           std::complex<float> *y, int64_t incy,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event zhbmv_sycl(cl::sycl::queue *queue, MKL_UPLO uplo, int64_t n, int64_t k,
-                           std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
-                           const std::complex<double> *x, int64_t incx, std::complex<double> beta,
-                           std::complex<double> *y, int64_t incy,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event chemv_sycl(cl::sycl::queue *queue, MKL_UPLO uplo, int64_t n,
-                           std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
-                           const std::complex<float> *x, int64_t incx, std::complex<float> beta,
-                           std::complex<float> *y, int64_t incy,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event zhemv_sycl(cl::sycl::queue *queue, MKL_UPLO uplo, int64_t n,
-                           std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
-                           const std::complex<double> *x, int64_t incx, std::complex<double> beta,
-                           std::complex<double> *y, int64_t incy,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event cher_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, int64_t n, float alpha,
-                          const std::complex<float> *x, int64_t incx, std::complex<float> *a,
-                          int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event zher_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, int64_t n, double alpha,
-                          const std::complex<double> *x, int64_t incx, std::complex<double> *a,
-                          int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event cher2_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, int64_t n,
+cl::sycl::event cgerc_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, int64_t m, int64_t n,
                            std::complex<float> alpha, const std::complex<float> *x, int64_t incx,
                            const std::complex<float> *y, int64_t incy, std::complex<float> *a,
                            int64_t lda,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event zher2_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, int64_t n,
+cl::sycl::event zgerc_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, int64_t m, int64_t n,
                            std::complex<double> alpha, const std::complex<double> *x, int64_t incx,
                            const std::complex<double> *y, int64_t incy, std::complex<double> *a,
                            int64_t lda,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event chpmv_sycl(cl::sycl::queue *queue, MKL_UPLO uplo, int64_t n,
+cl::sycl::event cgeru_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, int64_t m, int64_t n,
+                           std::complex<float> alpha, const std::complex<float> *x, int64_t incx,
+                           const std::complex<float> *y, int64_t incy, std::complex<float> *a,
+                           int64_t lda,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event zgeru_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, int64_t m, int64_t n,
+                           std::complex<double> alpha, const std::complex<double> *x, int64_t incx,
+                           const std::complex<double> *y, int64_t incy, std::complex<double> *a,
+                           int64_t lda,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event chbmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n,
+                           int64_t k, std::complex<float> alpha, const std::complex<float> *a,
+                           int64_t lda, const std::complex<float> *x, int64_t incx,
+                           std::complex<float> beta, std::complex<float> *y, int64_t incy,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event zhbmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n,
+                           int64_t k, std::complex<double> alpha, const std::complex<double> *a,
+                           int64_t lda, const std::complex<double> *x, int64_t incx,
+                           std::complex<double> beta, std::complex<double> *y, int64_t incy,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event chemv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n,
+                           std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                           const std::complex<float> *x, int64_t incx, std::complex<float> beta,
+                           std::complex<float> *y, int64_t incy,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event zhemv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n,
+                           std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                           const std::complex<double> *x, int64_t incx, std::complex<double> beta,
+                           std::complex<double> *y, int64_t incy,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event cher_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+                          float alpha, const std::complex<float> *x, int64_t incx,
+                          std::complex<float> *a, int64_t lda,
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event zher_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+                          double alpha, const std::complex<double> *x, int64_t incx,
+                          std::complex<double> *a, int64_t lda,
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event cher2_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+                           std::complex<float> alpha, const std::complex<float> *x, int64_t incx,
+                           const std::complex<float> *y, int64_t incy, std::complex<float> *a,
+                           int64_t lda,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event zher2_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+                           std::complex<double> alpha, const std::complex<double> *x, int64_t incx,
+                           const std::complex<double> *y, int64_t incy, std::complex<double> *a,
+                           int64_t lda,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event chpmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n,
                            std::complex<float> alpha, const std::complex<float> *a,
                            const std::complex<float> *x, int64_t incx, std::complex<float> beta,
                            std::complex<float> *y, int64_t incy,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event zhpmv_sycl(cl::sycl::queue *queue, MKL_UPLO uplo, int64_t n,
+cl::sycl::event zhpmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n,
                            std::complex<double> alpha, const std::complex<double> *a,
                            const std::complex<double> *x, int64_t incx, std::complex<double> beta,
                            std::complex<double> *y, int64_t incy,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event chpr_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, int64_t n, float alpha,
-                          const std::complex<float> *x, int64_t incx, std::complex<float> *a,
+cl::sycl::event chpr_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+                          float alpha, const std::complex<float> *x, int64_t incx,
+                          std::complex<float> *a,
                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event zhpr_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, int64_t n, double alpha,
-                          const std::complex<double> *x, int64_t incx, std::complex<double> *a,
+cl::sycl::event zhpr_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+                          double alpha, const std::complex<double> *x, int64_t incx,
+                          std::complex<double> *a,
                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event chpr2_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, int64_t n,
+cl::sycl::event chpr2_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
                            std::complex<float> alpha, const std::complex<float> *x, int64_t incx,
                            const std::complex<float> *y, int64_t incy, std::complex<float> *a,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event zhpr2_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, int64_t n,
+cl::sycl::event zhpr2_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
                            std::complex<double> alpha, const std::complex<double> *x, int64_t incx,
                            const std::complex<double> *y, int64_t incy, std::complex<double> *a,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event ssbmv_sycl(cl::sycl::queue *queue, MKL_UPLO uplo, int64_t n, int64_t k, float alpha,
-                           const float *a, int64_t lda, const float *x, int64_t incx, float beta,
+cl::sycl::event ssbmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n,
+                           int64_t k, float alpha, const float *a, int64_t lda, const float *x,
+                           int64_t incx, float beta, float *y, int64_t incy,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event dsbmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n,
+                           int64_t k, double alpha, const double *a, int64_t lda, const double *x,
+                           int64_t incx, double beta, double *y, int64_t incy,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event sspmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n,
+                           float alpha, const float *a, const float *x, int64_t incx, float beta,
                            float *y, int64_t incy,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event dsbmv_sycl(cl::sycl::queue *queue, MKL_UPLO uplo, int64_t n, int64_t k,
+cl::sycl::event dspmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n,
+                           double alpha, const double *a, const double *x, int64_t incx,
+                           double beta, double *y, int64_t incy,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event sspr_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+                          float alpha, const float *x, int64_t incx, float *a,
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event dspr_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+                          double alpha, const double *x, int64_t incx, double *a,
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event sspr2_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+                           float alpha, const float *x, int64_t incx, const float *y, int64_t incy,
+                           float *a, const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event dspr2_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+                           double alpha, const double *x, int64_t incx, const double *y,
+                           int64_t incy, double *a,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event ssymv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n,
+                           float alpha, const float *a, int64_t lda, const float *x, int64_t incx,
+                           float beta, float *y, int64_t incy,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event dsymv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO uplo, int64_t n,
                            double alpha, const double *a, int64_t lda, const double *x,
                            int64_t incx, double beta, double *y, int64_t incy,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event sspmv_sycl(cl::sycl::queue *queue, MKL_UPLO uplo, int64_t n, float alpha,
-                           const float *a, const float *x, int64_t incx, float beta, float *y,
-                           int64_t incy,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event dspmv_sycl(cl::sycl::queue *queue, MKL_UPLO uplo, int64_t n, double alpha,
-                           const double *a, const double *x, int64_t incx, double beta, double *y,
-                           int64_t incy,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event sspr_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, int64_t n, float alpha,
-                          const float *x, int64_t incx, float *a,
+cl::sycl::event ssyr_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+                          float alpha, const float *x, int64_t incx, float *a, int64_t lda,
                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event dspr_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, int64_t n, double alpha,
-                          const double *x, int64_t incx, double *a,
+cl::sycl::event dsyr_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+                          double alpha, const double *x, int64_t incx, double *a, int64_t lda,
                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event sspr2_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, int64_t n, float alpha,
-                           const float *x, int64_t incx, const float *y, int64_t incy, float *a,
+cl::sycl::event ssyr2_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+                           float alpha, const float *x, int64_t incx, const float *y, int64_t incy,
+                           float *a, int64_t lda,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event dspr2_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, int64_t n, double alpha,
-                           const double *x, int64_t incx, const double *y, int64_t incy, double *a,
+cl::sycl::event dsyr2_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo, int64_t n,
+                           double alpha, const double *x, int64_t incx, const double *y,
+                           int64_t incy, double *a, int64_t lda,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event ssymv_sycl(cl::sycl::queue *queue, MKL_UPLO uplo, int64_t n, float alpha,
-                           const float *a, int64_t lda, const float *x, int64_t incx, float beta,
-                           float *y, int64_t incy,
+cl::sycl::event stbmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n, int64_t k, const float *a,
+                           int64_t lda, float *x, int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event dsymv_sycl(cl::sycl::queue *queue, MKL_UPLO uplo, int64_t n, double alpha,
-                           const double *a, int64_t lda, const double *x, int64_t incx, double beta,
-                           double *y, int64_t incy,
+cl::sycl::event dtbmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n, int64_t k,
+                           const double *a, int64_t lda, double *x, int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event ssyr_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, int64_t n, float alpha,
-                          const float *x, int64_t incx, float *a, int64_t lda,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event dsyr_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, int64_t n, double alpha,
-                          const double *x, int64_t incx, double *a, int64_t lda,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event ssyr2_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, int64_t n, float alpha,
-                           const float *x, int64_t incx, const float *y, int64_t incy, float *a,
-                           int64_t lda,
+cl::sycl::event ctbmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n, int64_t k,
+                           const std::complex<float> *a, int64_t lda, std::complex<float> *x,
+                           int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event dsyr2_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, int64_t n, double alpha,
-                           const double *x, int64_t incx, const double *y, int64_t incy, double *a,
-                           int64_t lda,
+cl::sycl::event ztbmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n, int64_t k,
+                           const std::complex<double> *a, int64_t lda, std::complex<double> *x,
+                           int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event stbmv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, int64_t k, const float *a, int64_t lda,
-                           float *x, int64_t incx,
+cl::sycl::event stbsv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n, int64_t k, const float *a,
+                           int64_t lda, float *x, int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event dtbmv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, int64_t k, const double *a, int64_t lda,
+cl::sycl::event dtbsv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n, int64_t k,
+                           const double *a, int64_t lda, double *x, int64_t incx,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event ctbsv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n, int64_t k,
+                           const std::complex<float> *a, int64_t lda, std::complex<float> *x,
+                           int64_t incx,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event ztbsv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n, int64_t k,
+                           const std::complex<double> *a, int64_t lda, std::complex<double> *x,
+                           int64_t incx,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event stpmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n, const float *a, float *x,
+                           int64_t incx,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+
+cl::sycl::event dtpmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n, const double *a,
                            double *x, int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event ctbmv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, int64_t k, const std::complex<float> *a,
-                           int64_t lda, std::complex<float> *x, int64_t incx,
+cl::sycl::event ctpmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
+                           const std::complex<float> *a, std::complex<float> *x, int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event ztbmv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, int64_t k, const std::complex<double> *a,
-                           int64_t lda, std::complex<double> *x, int64_t incx,
+cl::sycl::event ztpmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
+                           const std::complex<double> *a, std::complex<double> *x, int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event stbsv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, int64_t k, const float *a, int64_t lda,
-                           float *x, int64_t incx,
+cl::sycl::event stpsv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n, const float *a, float *x,
+                           int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event dtbsv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, int64_t k, const double *a, int64_t lda,
+cl::sycl::event dtpsv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n, const double *a,
                            double *x, int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event ctbsv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, int64_t k, const std::complex<float> *a,
-                           int64_t lda, std::complex<float> *x, int64_t incx,
+cl::sycl::event ctpsv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
+                           const std::complex<float> *a, std::complex<float> *x, int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event ztbsv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, int64_t k, const std::complex<double> *a,
-                           int64_t lda, std::complex<double> *x, int64_t incx,
+cl::sycl::event ztpsv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
+                           const std::complex<double> *a, std::complex<double> *x, int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event stpmv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, const float *a, float *x, int64_t incx,
+cl::sycl::event strmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n, const float *a,
+                           int64_t lda, float *x, int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event dtpmv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, const double *a, double *x, int64_t incx,
+cl::sycl::event dtrmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n, const double *a,
+                           int64_t lda, double *x, int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event ctpmv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, const std::complex<float> *a,
-                           std::complex<float> *x, int64_t incx,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event ztpmv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, const std::complex<double> *a,
-                           std::complex<double> *x, int64_t incx,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event stpsv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, const float *a, float *x, int64_t incx,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event dtpsv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, const double *a, double *x, int64_t incx,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event ctpsv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, const std::complex<float> *a,
-                           std::complex<float> *x, int64_t incx,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event ztpsv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, const std::complex<double> *a,
-                           std::complex<double> *x, int64_t incx,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event strmv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, const float *a, int64_t lda, float *x,
+cl::sycl::event ctrmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
+                           const std::complex<float> *a, int64_t lda, std::complex<float> *x,
                            int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event dtrmv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, const double *a, int64_t lda, double *x,
+cl::sycl::event ztrmv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
+                           const std::complex<double> *a, int64_t lda, std::complex<double> *x,
                            int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event ctrmv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, const std::complex<float> *a, int64_t lda,
-                           std::complex<float> *x, int64_t incx,
+cl::sycl::event strsv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n, const float *a,
+                           int64_t lda, float *x, int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event ztrmv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, const std::complex<double> *a, int64_t lda,
-                           std::complex<double> *x, int64_t incx,
+cl::sycl::event dtrsv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n, const double *a,
+                           int64_t lda, double *x, int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event strsv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, const float *a, int64_t lda, float *x,
+cl::sycl::event ctrsv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
+                           const std::complex<float> *a, int64_t lda, std::complex<float> *x,
                            int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event dtrsv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, const double *a, int64_t lda, double *x,
+cl::sycl::event ztrsv_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upplo,
+                           MKL_TRANSPOSE trans, MKL_DIAG diag, int64_t n,
+                           const std::complex<double> *a, int64_t lda, std::complex<double> *x,
                            int64_t incx,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event ctrsv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, const std::complex<float> *a, int64_t lda,
-                           std::complex<float> *x, int64_t incx,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event ztrsv_sycl(cl::sycl::queue *queue, MKL_UPLO upplo, MKL_TRANSPOSE trans,
-                           MKL_DIAG diag, int64_t n, const std::complex<double> *a, int64_t lda,
-                           std::complex<double> *x, int64_t incx,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
 cl::sycl::event scasum_sycl(cl::sycl::queue *queue, int64_t n, const std::complex<float> *x,
@@ -1517,113 +1580,125 @@ cl::sycl::event izamin_sycl(cl::sycl::queue *queue, int64_t n, const std::comple
                             int64_t incx, int64_t *result,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event sgemm_batch(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
-                            int64_t m, int64_t n, int64_t k, float alpha, const float *a,
-                            int64_t lda, int64_t strideA, const float *b, int64_t ldb,
-                            int64_t strideB, float beta, float *c, int64_t ldc, int64_t strideC,
-                            int64_t group_size,
+cl::sycl::event sgemm_batch_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                                 MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k, float alpha,
+                                 const float *a, int64_t lda, int64_t strideA, const float *b,
+                                 int64_t ldb, int64_t strideB, float beta, float *c, int64_t ldc,
+                                 int64_t strideC, int64_t group_size,
+                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+                                 int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
+
+cl::sycl::event dgemm_batch_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                                 MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k,
+                                 double alpha, const double *a, int64_t lda, int64_t strideA,
+                                 const double *b, int64_t ldb, int64_t strideB, double beta,
+                                 double *c, int64_t ldc, int64_t strideC, int64_t group_size,
+                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+                                 int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
+
+cl::sycl::event cgemm_batch_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                                 MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k,
+                                 std::complex<float> alpha, const std::complex<float> *a,
+                                 int64_t lda, int64_t strideA, const std::complex<float> *b,
+                                 int64_t ldb, int64_t strideB, std::complex<float> beta,
+                                 std::complex<float> *c, int64_t ldc, int64_t strideC,
+                                 int64_t group_size,
+                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+                                 int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
+
+cl::sycl::event zgemm_batch_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                                 MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k,
+                                 std::complex<double> alpha, const std::complex<double> *a,
+                                 int64_t lda, int64_t strideA, const std::complex<double> *b,
+                                 int64_t ldb, int64_t strideB, std::complex<double> beta,
+                                 std::complex<double> *c, int64_t ldc, int64_t strideC,
+                                 int64_t group_size,
+                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+                                 int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
+
+cl::sycl::event sgemm_batch_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                                 MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k, float alpha,
+                                 const float **a, int64_t lda, const float **b, int64_t ldb,
+                                 float beta, float **c, int64_t ldc, int64_t offset_batch,
+                                 int64_t group_size,
+                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+                                 int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
+
+cl::sycl::event dgemm_batch_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                                 MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k,
+                                 double alpha, const double **a, int64_t lda, const double **b,
+                                 int64_t ldb, double beta, double **c, int64_t ldc,
+                                 int64_t offset_batch, int64_t group_size,
+                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+                                 int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
+
+cl::sycl::event cgemm_batch_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                                 MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k,
+                                 std::complex<float> alpha, const std::complex<float> **a,
+                                 int64_t lda, const std::complex<float> **b, int64_t ldb,
+                                 std::complex<float> beta, std::complex<float> **c, int64_t ldc,
+                                 int64_t offset_batch, int64_t group_size,
+                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+                                 int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
+
+cl::sycl::event zgemm_batch_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                                 MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k,
+                                 std::complex<double> alpha, const std::complex<double> **a,
+                                 int64_t lda, const std::complex<double> **b, int64_t ldb,
+                                 std::complex<double> beta, std::complex<double> **c, int64_t ldc,
+                                 int64_t offset_batch, int64_t group_size,
+                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies,
+                                 int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
+
+cl::sycl::event saxpy_batch(cl::sycl::queue &queue, std::int64_t *n, float *alpha, const float **x,
+                            std::int64_t *incx, float **y, std::int64_t *incy,
+                            std::int64_t group_count, std::int64_t *group_size,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event dgemm_batch(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
-                            int64_t m, int64_t n, int64_t k, double alpha, const double *a,
-                            int64_t lda, int64_t strideA, const double *b, int64_t ldb,
-                            int64_t strideB, double beta, double *c, int64_t ldc, int64_t strideC,
-                            int64_t group_size,
+cl::sycl::event daxpy_batch(cl::sycl::queue &queue, std::int64_t *n, double *alpha,
+                            const double **x, std::int64_t *incx, double **y, std::int64_t *incy,
+                            std::int64_t group_count, std::int64_t *group_size,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event cgemm_batch(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
-                            int64_t m, int64_t n, int64_t k, std::complex<float> alpha,
-                            const std::complex<float> *a, int64_t lda, int64_t strideA,
-                            const std::complex<float> *b, int64_t ldb, int64_t strideB,
-                            std::complex<float> beta, std::complex<float> *c, int64_t ldc,
-                            int64_t strideC, int64_t group_size,
+cl::sycl::event caxpy_batch(cl::sycl::queue &queue, std::int64_t *n, std::complex<float> *alpha,
+                            const std::complex<float> **x, std::int64_t *incx,
+                            std::complex<float> **y, std::int64_t *incy, std::int64_t group_count,
+                            std::int64_t *group_size,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event zgemm_batch(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
-                            int64_t m, int64_t n, int64_t k, std::complex<double> alpha,
-                            const std::complex<double> *a, int64_t lda, int64_t strideA,
-                            const std::complex<double> *b, int64_t ldb, int64_t strideB,
-                            std::complex<double> beta, std::complex<double> *c, int64_t ldc,
-                            int64_t strideC, int64_t group_size,
+cl::sycl::event zaxpy_batch(cl::sycl::queue &queue, std::int64_t *n, std::complex<double> *alpha,
+                            const std::complex<double> **x, std::int64_t *incx,
+                            std::complex<double> **y, std::int64_t *incy, std::int64_t group_count,
+                            std::int64_t *group_size,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event sgemm_batch(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
-                            int64_t m, int64_t n, int64_t k, float alpha, const float **a,
-                            int64_t lda, const float **b, int64_t ldb, float beta, float **c,
-                            int64_t ldc, int64_t offset_batch, int64_t group_size,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event dgemm_batch(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
-                            int64_t m, int64_t n, int64_t k, double alpha, const double **a,
-                            int64_t lda, const double **b, int64_t ldb, double beta, double **c,
-                            int64_t ldc, int64_t offset_batch, int64_t group_size,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event cgemm_batch(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
-                            int64_t m, int64_t n, int64_t k, std::complex<float> alpha,
-                            const std::complex<float> **a, int64_t lda,
-                            const std::complex<float> **b, int64_t ldb, std::complex<float> beta,
-                            std::complex<float> **c, int64_t ldc, int64_t offset_batch,
-                            int64_t group_size,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event zgemm_batch(cl::sycl::queue &queue, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
-                            int64_t m, int64_t n, int64_t k, std::complex<double> alpha,
-                            const std::complex<double> **a, int64_t lda,
-                            const std::complex<double> **b, int64_t ldb, std::complex<double> beta,
-                            std::complex<double> **c, int64_t ldc, int64_t offset_batch,
-                            int64_t group_size,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event saxpy_batch_sycl(cl::sycl::queue *queue, std::int64_t n, float alpha,
-                                 const float **x, std::int64_t incx, float **y, std::int64_t incy,
-                                 std::int64_t batch_size, std::int64_t offset,
-                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event daxpy_batch_sycl(cl::sycl::queue *queue, std::int64_t n, double alpha,
-                                 const double **x, std::int64_t incx, double **y, std::int64_t incy,
-                                 std::int64_t batch_size, std::int64_t offset,
-                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event caxpy_batch_sycl(cl::sycl::queue *queue, std::int64_t n, std::complex<float> alpha,
-                                 const std::complex<float> **x, std::int64_t incx,
-                                 std::complex<float> **y, std::int64_t incy,
-                                 std::int64_t batch_size, std::int64_t offset,
-                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event zaxpy_batch_sycl(cl::sycl::queue *queue, std::int64_t n, std::complex<double> alpha,
-                                 const std::complex<double> **x, std::int64_t incx,
-                                 std::complex<double> **y, std::int64_t incy,
-                                 std::int64_t batch_size, std::int64_t offset,
-                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies);
-
-cl::sycl::event sgemmt_sycl(cl::sycl::queue *queue, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
-                            MKL_TRANSPOSE transb, int64_t n, int64_t k, float alpha, const float *a,
-                            int64_t lda, const float *b, int64_t ldb, float beta, float *c,
-                            int64_t ldc,
+cl::sycl::event sgemmt_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
+                            MKL_TRANSPOSE transa, MKL_TRANSPOSE transb, int64_t n, int64_t k,
+                            float alpha, const float *a, int64_t lda, const float *b, int64_t ldb,
+                            float beta, float *c, int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                             int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-cl::sycl::event dgemmt_sycl(cl::sycl::queue *queue, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
-                            MKL_TRANSPOSE transb, int64_t n, int64_t k, double alpha,
-                            const double *a, int64_t lda, const double *b, int64_t ldb, double beta,
-                            double *c, int64_t ldc,
+cl::sycl::event dgemmt_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
+                            MKL_TRANSPOSE transa, MKL_TRANSPOSE transb, int64_t n, int64_t k,
+                            double alpha, const double *a, int64_t lda, const double *b,
+                            int64_t ldb, double beta, double *c, int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                             int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-cl::sycl::event zgemmt_sycl(cl::sycl::queue *queue, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
-                            MKL_TRANSPOSE transb, int64_t n, int64_t k, std::complex<double> alpha,
-                            const std::complex<double> *a, int64_t lda,
+cl::sycl::event zgemmt_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
+                            MKL_TRANSPOSE transa, MKL_TRANSPOSE transb, int64_t n, int64_t k,
+                            std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
                             const std::complex<double> *b, int64_t ldb, std::complex<double> beta,
                             std::complex<double> *c, int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                             int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-cl::sycl::event cgemmt_sycl(cl::sycl::queue *queue, MKL_UPLO upper_lower, MKL_TRANSPOSE transa,
-                            MKL_TRANSPOSE transb, int64_t n, int64_t k, std::complex<float> alpha,
-                            const std::complex<float> *a, int64_t lda, const std::complex<float> *b,
-                            int64_t ldb, std::complex<float> beta, std::complex<float> *c,
-                            int64_t ldc,
+cl::sycl::event cgemmt_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
+                            MKL_TRANSPOSE transa, MKL_TRANSPOSE transb, int64_t n, int64_t k,
+                            std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                            const std::complex<float> *b, int64_t ldb, std::complex<float> beta,
+                            std::complex<float> *c, int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                             int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 

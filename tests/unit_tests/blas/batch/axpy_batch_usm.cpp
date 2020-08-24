@@ -44,7 +44,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev, int64_t group_count) {
+int test(const device &dev, oneapi::mkl::layout layout, int64_t group_count) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -151,13 +151,34 @@ int test(const device &dev, int64_t group_count) {
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::axpy_batch(main_queue, n, alpha, (const fp **)x_array, incx,
-                                             y_array, incy, group_count, group_size, dependencies);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                done = oneapi::mkl::blas::column_major::axpy_batch(
+                    main_queue, n, alpha, (const fp **)x_array, incx, y_array, incy, group_count,
+                    group_size, dependencies);
+                break;
+            case oneapi::mkl::layout::row_major:
+                done = oneapi::mkl::blas::row_major::axpy_batch(
+                    main_queue, n, alpha, (const fp **)x_array, incx, y_array, incy, group_count,
+                    group_size, dependencies);
+                break;
+            default: break;
+        }
         done.wait();
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::axpy_batch,
-                    (main_queue, n, alpha, (const fp **)x_array, incx, y_array, incy, group_count,
-                     group_size, dependencies));
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::axpy_batch,
+                            (main_queue, n, alpha, (const fp **)x_array, incx, y_array, incy,
+                             group_count, group_size, dependencies));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::axpy_batch,
+                            (main_queue, n, alpha, (const fp **)x_array, incx, y_array, incy,
+                             group_count, group_size, dependencies));
+                break;
+            default: break;
+        }
         main_queue.wait();
 #endif
     }
@@ -192,8 +213,9 @@ int test(const device &dev, int64_t group_count) {
         std::cout << "Error raised during execution of AXPY_BATCH:\n" << error.what() << std::endl;
     }
 
-    // Compare the results of reference implementation and DPC++ implementation.
     bool good = true;
+
+    // Compare the results of reference implementation and DPC++ implementation.
     idx = 0;
     for (i = 0; i < group_count; i++) {
         for (j = 0; j < group_size[i]; j++) {
@@ -220,28 +242,35 @@ int test(const device &dev, int64_t group_count) {
     oneapi::mkl::free_shared(x_array, cxt);
     oneapi::mkl::free_shared(y_array, cxt);
     oneapi::mkl::free_shared(y_ref_array, cxt);
+
     return (int)good;
 }
 
-class AxpyBatchUsmTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class AxpyBatchUsmTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(AxpyBatchUsmTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 TEST_P(AxpyBatchUsmTests, RealDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 TEST_P(AxpyBatchUsmTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 TEST_P(AxpyBatchUsmTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
-INSTANTIATE_TEST_SUITE_P(AxpyBatchUsmTestSuite, AxpyBatchUsmTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(AxpyBatchUsmTestSuite, AxpyBatchUsmTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

@@ -34,6 +34,8 @@ enum class side : char { left = 0, right = 1, L = 0, R = 1 };
 
 enum class offset : char { row = 0, column = 1, fix = 2, R = 0, C = 1, F = 2 };
 
+enum class layout : char { column_major = 0, row_major = 1, C = 0, R = 1 };
+
 // LAPACK flag types.
 enum class job : char {
     novec = 0,

@@ -43,8 +43,8 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, int k, fp alpha, fp beta,
-         int incx, int incy, int lda) {
+int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n, int k,
+         fp alpha, fp beta, int incx, int incy, int lda) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -69,7 +69,7 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, int k, fp alph
     vector<fp, decltype(ua)> x(ua), y(ua), A(ua);
     rand_vector(x, n, incx);
     rand_vector(y, n, incy);
-    rand_matrix(A, oneapi::mkl::transpose::nontrans, n, n, lda);
+    rand_matrix(A, layout, oneapi::mkl::transpose::nontrans, n, n, lda);
 
     auto y_ref = y;
 
@@ -78,21 +78,42 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, int k, fp alph
     const int k_ref = k;
     using fp_ref = typename ref_type_info<fp>::type;
 
-    ::sbmv(convert_to_cblas_uplo(upper_lower), &n_ref, &k_ref, (fp_ref *)&alpha, (fp_ref *)A.data(),
-           &lda_ref, (fp_ref *)x.data(), &incx_ref, (fp_ref *)&beta, (fp_ref *)y_ref.data(),
-           &incy_ref);
+    ::sbmv(convert_to_cblas_layout(layout), convert_to_cblas_uplo(upper_lower), &n_ref, &k_ref,
+           (fp_ref *)&alpha, (fp_ref *)A.data(), &lda_ref, (fp_ref *)x.data(), &incx_ref,
+           (fp_ref *)&beta, (fp_ref *)y_ref.data(), &incy_ref);
 
     // Call DPC++ SBMV.
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::sbmv(main_queue, upper_lower, n, k, alpha, A.data(), lda,
-                                       x.data(), incx, beta, y.data(), incy, dependencies);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                done = oneapi::mkl::blas::column_major::sbmv(main_queue, upper_lower, n, k, alpha,
+                                                             A.data(), lda, x.data(), incx, beta,
+                                                             y.data(), incy, dependencies);
+                break;
+            case oneapi::mkl::layout::row_major:
+                done = oneapi::mkl::blas::row_major::sbmv(main_queue, upper_lower, n, k, alpha,
+                                                          A.data(), lda, x.data(), incx, beta,
+                                                          y.data(), incy, dependencies);
+                break;
+            default: break;
+        }
         done.wait();
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::sbmv,
-                    (main_queue, upper_lower, n, k, alpha, A.data(), lda, x.data(), incx, beta,
-                     y.data(), incy, dependencies));
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::sbmv,
+                            (main_queue, upper_lower, n, k, alpha, A.data(), lda, x.data(), incx,
+                             beta, y.data(), incy, dependencies));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::sbmv,
+                            (main_queue, upper_lower, n, k, alpha, A.data(), lda, x.data(), incx,
+                             beta, y.data(), incy, dependencies));
+                break;
+            default: break;
+        }
         main_queue.wait();
 #endif
     }
@@ -117,42 +138,46 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, int k, fp alph
     return (int)good;
 }
 
-class SbmvUsmTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class SbmvUsmTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(SbmvUsmTests, RealSinglePrecision) {
     float alpha(2.0);
     float beta(3.0);
-    EXPECT_TRUEORSKIP(
-        test<float>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, 2, 3, 42));
-    EXPECT_TRUEORSKIP(
-        test<float>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 2, 3, 42));
-    EXPECT_TRUEORSKIP(
-        test<float>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, -2, -3, 42));
-    EXPECT_TRUEORSKIP(
-        test<float>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, -2, -3, 42));
-    EXPECT_TRUEORSKIP(
-        test<float>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, 1, 1, 42));
-    EXPECT_TRUEORSKIP(
-        test<float>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                  oneapi::mkl::uplo::lower, 30, 5, alpha, beta, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                  oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                  oneapi::mkl::uplo::lower, 30, 5, alpha, beta, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                  oneapi::mkl::uplo::upper, 30, 5, alpha, beta, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                  oneapi::mkl::uplo::lower, 30, 5, alpha, beta, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                  oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 1, 1, 42));
 }
 TEST_P(SbmvUsmTests, RealDoublePrecision) {
     double alpha(2.0);
     double beta(3.0);
-    EXPECT_TRUEORSKIP(
-        test<double>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, 2, 3, 42));
-    EXPECT_TRUEORSKIP(
-        test<double>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 2, 3, 42));
-    EXPECT_TRUEORSKIP(
-        test<double>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, -2, -3, 42));
-    EXPECT_TRUEORSKIP(
-        test<double>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, -2, -3, 42));
-    EXPECT_TRUEORSKIP(
-        test<double>(GetParam(), oneapi::mkl::uplo::lower, 30, 5, alpha, beta, 1, 1, 42));
-    EXPECT_TRUEORSKIP(
-        test<double>(GetParam(), oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                   oneapi::mkl::uplo::lower, 30, 5, alpha, beta, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                   oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                   oneapi::mkl::uplo::lower, 30, 5, alpha, beta, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                   oneapi::mkl::uplo::upper, 30, 5, alpha, beta, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                   oneapi::mkl::uplo::lower, 30, 5, alpha, beta, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                   oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 1, 1, 42));
 }
 
-INSTANTIATE_TEST_SUITE_P(SbmvUsmTestSuite, SbmvUsmTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(SbmvUsmTestSuite, SbmvUsmTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

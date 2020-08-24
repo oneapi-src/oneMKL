@@ -41,7 +41,7 @@ extern std::vector<cl::sycl::device> devices;
 
 namespace {
 
-int test(const device &dev, int N, int incx, int incy, float alpha) {
+int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int incy, float alpha) {
     // Prepare data.
     vector<float> x, y;
     float result = float(-1), result_ref = float(-1);
@@ -79,11 +79,29 @@ int test(const device &dev, int N, int incx, int incy, float alpha) {
 
     try {
 #ifdef CALL_RT_API
-        oneapi::mkl::blas::sdsdot(main_queue, N, alpha, x_buffer, incx, y_buffer, incy,
-                                  result_buffer);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                oneapi::mkl::blas::column_major::sdsdot(main_queue, N, alpha, x_buffer, incx,
+                                                        y_buffer, incy, result_buffer);
+                break;
+            case oneapi::mkl::layout::row_major:
+                oneapi::mkl::blas::row_major::sdsdot(main_queue, N, alpha, x_buffer, incx, y_buffer,
+                                                     incy, result_buffer);
+                break;
+            default: break;
+        }
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::sdsdot,
-                    (main_queue, N, alpha, x_buffer, incx, y_buffer, incy, result_buffer));
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::sdsdot,
+                            (main_queue, N, alpha, x_buffer, incx, y_buffer, incy, result_buffer));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::sdsdot,
+                            (main_queue, N, alpha, x_buffer, incx, y_buffer, incy, result_buffer));
+                break;
+            default: break;
+        }
 #endif
     }
     catch (exception const &e) {
@@ -101,24 +119,26 @@ int test(const device &dev, int N, int incx, int incy, float alpha) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good;
-    {
-        auto result_accessor = result_buffer.template get_access<access::mode::read>();
-        good = check_equal(result_accessor[0], result_ref, N, std::cout);
-    }
+
+    auto result_accessor = result_buffer.template get_access<access::mode::read>();
+    bool good = check_equal(result_accessor[0], result_ref, N, std::cout);
 
     return (int)good;
 }
 
-class SdsdotTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class SdsdotTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(SdsdotTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP(test(GetParam(), 1357, 2, 3, 2.0));
-    EXPECT_TRUEORSKIP(test(GetParam(), 1357, -2, -3, 2.0));
-    EXPECT_TRUEORSKIP(test(GetParam(), 1357, 1, 1, 2.0));
+    EXPECT_TRUEORSKIP(test(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, 2.0));
+    EXPECT_TRUEORSKIP(test(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, 2.0));
+    EXPECT_TRUEORSKIP(test(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, 2.0));
 }
 
-INSTANTIATE_TEST_SUITE_P(SdsdotTestSuite, SdsdotTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(SdsdotTestSuite, SdsdotTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

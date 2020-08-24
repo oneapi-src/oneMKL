@@ -26,8 +26,8 @@
 
 #include <CL/sycl.hpp>
 #include "cblas.h"
-#include "oneapi/mkl/detail/config.hpp"
 #include "oneapi/mkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -43,21 +43,22 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp alpha, fp beta, int incx,
-         int incy) {
+int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n,
+         fp alpha, fp beta, int incx, int incy) {
     // Prepare data.
     vector<fp> x, y, y_ref, A;
     rand_vector(x, n, incx);
     rand_vector(y, n, incy);
     y_ref = y;
-    rand_matrix(A, oneapi::mkl::transpose::nontrans, n, n, n);
+    rand_matrix(A, layout, oneapi::mkl::transpose::nontrans, n, n, n);
 
     // Call Reference HPMV.
     const int n_ref = n, incx_ref = incx, incy_ref = incy;
     using fp_ref = typename ref_type_info<fp>::type;
 
-    ::hpmv(convert_to_cblas_uplo(upper_lower), &n_ref, (fp_ref *)&alpha, (fp_ref *)A.data(),
-           (fp_ref *)x.data(), &incx_ref, (fp_ref *)&beta, (fp_ref *)y_ref.data(), &incy_ref);
+    ::hpmv(convert_to_cblas_layout(layout), convert_to_cblas_uplo(upper_lower), &n_ref,
+           (fp_ref *)&alpha, (fp_ref *)A.data(), (fp_ref *)x.data(), &incx_ref, (fp_ref *)&beta,
+           (fp_ref *)y_ref.data(), &incy_ref);
 
     // Call DPC++ HPMV.
 
@@ -83,12 +84,31 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp alpha, fp b
 
     try {
 #ifdef CALL_RT_API
-        oneapi::mkl::blas::hpmv(main_queue, upper_lower, n, alpha, A_buffer, x_buffer, incx, beta,
-                                y_buffer, incy);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                oneapi::mkl::blas::column_major::hpmv(main_queue, upper_lower, n, alpha, A_buffer,
+                                                      x_buffer, incx, beta, y_buffer, incy);
+                break;
+            case oneapi::mkl::layout::row_major:
+                oneapi::mkl::blas::row_major::hpmv(main_queue, upper_lower, n, alpha, A_buffer,
+                                                   x_buffer, incx, beta, y_buffer, incy);
+                break;
+            default: break;
+        }
 #else
-        TEST_RUN_CT(
-            main_queue, oneapi::mkl::blas::hpmv,
-            (main_queue, upper_lower, n, alpha, A_buffer, x_buffer, incx, beta, y_buffer, incy));
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::hpmv,
+                            (main_queue, upper_lower, n, alpha, A_buffer, x_buffer, incx, beta,
+                             y_buffer, incy));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::hpmv,
+                            (main_queue, upper_lower, n, alpha, A_buffer, x_buffer, incx, beta,
+                             y_buffer, incy));
+                break;
+            default: break;
+        }
 #endif
     }
     catch (exception const &e) {
@@ -106,51 +126,54 @@ int test(const device &dev, oneapi::mkl::uplo upper_lower, int n, fp alpha, fp b
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good;
-    {
-        auto y_accessor = y_buffer.template get_access<access::mode::read>();
-        good = check_equal_vector(y_accessor, y_ref, n, incy, n, std::cout);
-    }
+    auto y_accessor = y_buffer.template get_access<access::mode::read>();
+    bool good = check_equal_vector(y_accessor, y_ref, n, incy, n, std::cout);
 
     return (int)good;
 }
 
-class HpmvTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class HpmvTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(HpmvTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
     std::complex<float> beta(3.0, -1.5);
-    EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, beta, 2, 3));
-    EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, beta, 2, 3));
-    EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, beta, -2, -3));
-    EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, beta, -2, -3));
-    EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, beta, 1, 1));
-    EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, beta, 1, 1));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                oneapi::mkl::uplo::lower, 30, alpha, beta, 2, 3));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                oneapi::mkl::uplo::upper, 30, alpha, beta, 2, 3));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                oneapi::mkl::uplo::lower, 30, alpha, beta, -2, -3));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                oneapi::mkl::uplo::upper, 30, alpha, beta, -2, -3));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                oneapi::mkl::uplo::lower, 30, alpha, beta, 1, 1));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                oneapi::mkl::uplo::upper, 30, alpha, beta, 1, 1));
 }
 TEST_P(HpmvTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
-    EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, beta, 2, 3));
-    EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, beta, 2, 3));
-    EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, beta, -2, -3));
-    EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, beta, -2, -3));
-    EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(GetParam(), oneapi::mkl::uplo::lower, 30, alpha, beta, 1, 1));
-    EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(GetParam(), oneapi::mkl::uplo::upper, 30, alpha, beta, 1, 1));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                 oneapi::mkl::uplo::lower, 30, alpha, beta, 2, 3));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                 oneapi::mkl::uplo::upper, 30, alpha, beta, 2, 3));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                 oneapi::mkl::uplo::lower, 30, alpha, beta, -2,
+                                                 -3));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                 oneapi::mkl::uplo::upper, 30, alpha, beta, -2,
+                                                 -3));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                 oneapi::mkl::uplo::lower, 30, alpha, beta, 1, 1));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                 oneapi::mkl::uplo::upper, 30, alpha, beta, 1, 1));
 }
 
-INSTANTIATE_TEST_SUITE_P(HpmvTestSuite, HpmvTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(HpmvTestSuite, HpmvTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

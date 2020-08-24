@@ -44,7 +44,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev, int64_t group_count) {
+int test(const device &dev, oneapi::mkl::layout layout, int64_t group_count) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -131,18 +131,28 @@ int test(const device &dev, int64_t group_count) {
 
     idx = 0;
     for (i = 0; i < group_count; i++) {
-        size_a = lda[i] * ((transa[i] == oneapi::mkl::transpose::nontrans) ? k[i] : m[i]);
-        size_b = ldb[i] * ((transb[i] == oneapi::mkl::transpose::nontrans) ? n[i] : k[i]);
-        size_c = ldc[i] * n[i];
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                size_a = lda[i] * ((transa[i] == oneapi::mkl::transpose::nontrans) ? k[i] : m[i]);
+                size_b = ldb[i] * ((transb[i] == oneapi::mkl::transpose::nontrans) ? n[i] : k[i]);
+                size_c = ldc[i] * n[i];
+                break;
+            case oneapi::mkl::layout::row_major:
+                size_a = lda[i] * ((transa[i] == oneapi::mkl::transpose::nontrans) ? m[i] : k[i]);
+                size_b = ldb[i] * ((transb[i] == oneapi::mkl::transpose::nontrans) ? k[i] : n[i]);
+                size_c = ldc[i] * m[i];
+                break;
+            default: break;
+        }
         for (j = 0; j < group_size[i]; j++) {
             a_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_a, dev, cxt);
             b_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_b, dev, cxt);
             c_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_c, dev, cxt);
             c_ref_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_c, dev, cxt);
-            rand_matrix(a_array[idx], transa[i], m[i], k[i], lda[i]);
-            rand_matrix(b_array[idx], transb[i], k[i], n[i], ldb[i]);
-            rand_matrix(c_array[idx], oneapi::mkl::transpose::nontrans, m[i], n[i], ldc[i]);
-            copy_matrix(c_array[idx], oneapi::mkl::transpose::nontrans, m[i], n[i], ldc[i],
+            rand_matrix(a_array[idx], layout, transa[i], m[i], k[i], lda[i]);
+            rand_matrix(b_array[idx], layout, transb[i], k[i], n[i], ldb[i]);
+            rand_matrix(c_array[idx], layout, oneapi::mkl::transpose::nontrans, m[i], n[i], ldc[i]);
+            copy_matrix(c_array[idx], layout, oneapi::mkl::transpose::nontrans, m[i], n[i], ldc[i],
                         c_ref_array[idx]);
             idx++;
         }
@@ -200,8 +210,9 @@ int test(const device &dev, int64_t group_count) {
         ldc_ref[i] = (int)ldc[i];
         group_size_ref[i] = (int)group_size[i];
         for (j = 0; j < group_size_ref[i]; j++) {
-            ::gemm(transa_ref[i], transb_ref[i], (const int *)&m_ref[i], (const int *)&n_ref[i],
-                   (const int *)&k_ref[i], (const fp_ref *)&alpha[i], (const fp_ref *)a_array[idx],
+            ::gemm(convert_to_cblas_layout(layout), transa_ref[i], transb_ref[i],
+                   (const int *)&m_ref[i], (const int *)&n_ref[i], (const int *)&k_ref[i],
+                   (const fp_ref *)&alpha[i], (const fp_ref *)a_array[idx],
                    (const int *)&lda_ref[i], (const fp_ref *)b_array[idx], (const int *)&ldb_ref[i],
                    (const fp_ref *)&beta[i], (fp_ref *)c_ref_array[idx], (const int *)&ldc_ref[i]);
             idx++;
@@ -212,16 +223,40 @@ int test(const device &dev, int64_t group_count) {
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::gemm_batch(
-            main_queue, &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
-            (const fp **)&a_array[0], &lda[0], (const fp **)&b_array[0], &ldb[0], &beta[0],
-            &c_array[0], &ldc[0], group_count, &group_size[0], dependencies);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                done = oneapi::mkl::blas::column_major::gemm_batch(
+                    main_queue, &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
+                    (const fp **)&a_array[0], &lda[0], (const fp **)&b_array[0], &ldb[0], &beta[0],
+                    &c_array[0], &ldc[0], group_count, &group_size[0], dependencies);
+                break;
+            case oneapi::mkl::layout::row_major:
+                done = oneapi::mkl::blas::row_major::gemm_batch(
+                    main_queue, &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
+                    (const fp **)&a_array[0], &lda[0], (const fp **)&b_array[0], &ldb[0], &beta[0],
+                    &c_array[0], &ldc[0], group_count, &group_size[0], dependencies);
+                break;
+            default: break;
+        }
         done.wait();
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::gemm_batch,
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(
+                    main_queue, oneapi::mkl::blas::column_major::gemm_batch,
                     (main_queue, &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
                      (const fp **)&a_array[0], &lda[0], (const fp **)&b_array[0], &ldb[0], &beta[0],
                      &c_array[0], &ldc[0], group_count, &group_size[0], dependencies));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(
+                    main_queue, oneapi::mkl::blas::row_major::gemm_batch,
+                    (main_queue, &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
+                     (const fp **)&a_array[0], &lda[0], (const fp **)&b_array[0], &ldb[0], &beta[0],
+                     &c_array[0], &ldc[0], group_count, &group_size[0], dependencies));
+                break;
+            default: break;
+        }
         main_queue.wait();
 #endif
     }
@@ -258,16 +293,14 @@ int test(const device &dev, int64_t group_count) {
         std::cout << "Error raised during execution of GEMM_BATCH:\n" << error.what() << std::endl;
     }
 
-    // Compare the results of reference implementation and DPC++ implementation.
     bool good = true;
-    {
-        idx = 0;
-        for (i = 0; i < group_count; i++) {
-            for (j = 0; j < group_size[i]; j++) {
-                good = good && check_equal_matrix(c_array[idx], c_ref_array[idx], m[i], n[i],
-                                                  ldc[i], 10 * k[i], std::cout);
-                idx++;
-            }
+    // Compare the results of reference implementation and DPC++ implementation.
+    idx = 0;
+    for (i = 0; i < group_count; i++) {
+        for (j = 0; j < group_size[i]; j++) {
+            good = good && check_equal_matrix(c_array[idx], c_ref_array[idx], layout, m[i], n[i],
+                                              ldc[i], 10 * k[i], std::cout);
+            idx++;
         }
     }
     oneapi::mkl::aligned_free(m_ref);
@@ -289,28 +322,35 @@ int test(const device &dev, int64_t group_count) {
             idx++;
         }
     }
+
     return (int)good;
 }
 
-class GemmBatchUsmTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class GemmBatchUsmTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(GemmBatchUsmTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 TEST_P(GemmBatchUsmTests, RealDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 TEST_P(GemmBatchUsmTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 TEST_P(GemmBatchUsmTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
-INSTANTIATE_TEST_SUITE_P(GemmBatchUsmTestSuite, GemmBatchUsmTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(GemmBatchUsmTestSuite, GemmBatchUsmTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

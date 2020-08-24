@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device& dev) {
+int test(const device& dev, oneapi::mkl::layout layout) {
     // Prepare data.
     fp d1, d2, x1, y1, d1_ref, d2_ref, x1_ref;
     vector<fp> param(5, fp(0)), param_ref(5, fp(0));
@@ -84,10 +84,29 @@ int test(const device& dev) {
     buffer<fp, 1> param_buffer = make_buffer(param);
     try {
 #ifdef CALL_RT_API
-        oneapi::mkl::blas::rotmg(main_queue, d1_buffer, d2_buffer, x1_buffer, y1, param_buffer);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                oneapi::mkl::blas::column_major::rotmg(main_queue, d1_buffer, d2_buffer, x1_buffer,
+                                                       y1, param_buffer);
+                break;
+            case oneapi::mkl::layout::row_major:
+                oneapi::mkl::blas::row_major::rotmg(main_queue, d1_buffer, d2_buffer, x1_buffer, y1,
+                                                    param_buffer);
+                break;
+            default: break;
+        }
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::rotmg,
-                    (main_queue, d1_buffer, d2_buffer, x1_buffer, y1, param_buffer));
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::rotmg,
+                            (main_queue, d1_buffer, d2_buffer, x1_buffer, y1, param_buffer));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::rotmg,
+                            (main_queue, d1_buffer, d2_buffer, x1_buffer, y1, param_buffer));
+                break;
+            default: break;
+        }
 #endif
     }
     catch (exception const& e) {
@@ -105,32 +124,34 @@ int test(const device& dev) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good;
-    {
-        auto d1_accessor = d1_buffer.template get_access<access::mode::read>();
-        bool good_d1 = check_equal(d1_accessor[0], d1_ref, 1, std::cout);
-        auto d2_accessor = d2_buffer.template get_access<access::mode::read>();
-        bool good_d2 = check_equal(d2_accessor[0], d2_ref, 1, std::cout);
-        auto x1_accessor = x1_buffer.template get_access<access::mode::read>();
-        bool good_x1 = check_equal(x1_accessor[0], x1_ref, 1, std::cout);
-        auto param_accessor = param_buffer.template get_access<access::mode::read>();
-        bool good_param = check_equal_vector(param_accessor, param_ref, 5, 1, 1, std::cout);
-        good = good_d1 && good_d2 && good_x1 && good_param;
-    }
+
+    auto d1_accessor = d1_buffer.template get_access<access::mode::read>();
+    bool good_d1 = check_equal(d1_accessor[0], d1_ref, 1, std::cout);
+    auto d2_accessor = d2_buffer.template get_access<access::mode::read>();
+    bool good_d2 = check_equal(d2_accessor[0], d2_ref, 1, std::cout);
+    auto x1_accessor = x1_buffer.template get_access<access::mode::read>();
+    bool good_x1 = check_equal(x1_accessor[0], x1_ref, 1, std::cout);
+    auto param_accessor = param_buffer.template get_access<access::mode::read>();
+    bool good_param = check_equal_vector(param_accessor, param_ref, 5, 1, 1, std::cout);
+    bool good = good_d1 && good_d2 && good_x1 && good_param;
 
     return (int)good;
 }
 
-class RotmgTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class RotmgTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(RotmgTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<float>(GetParam()));
+    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 TEST_P(RotmgTests, RealDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<double>(GetParam()));
+    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
-INSTANTIATE_TEST_SUITE_P(RotmgTestSuite, RotmgTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(RotmgTestSuite, RotmgTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

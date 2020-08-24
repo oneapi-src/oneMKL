@@ -26,6 +26,7 @@
 namespace oneapi {
 namespace mkl {
 namespace cublas {
+namespace column_major {
 
 // Buffer APIs
 
@@ -1101,6 +1102,523 @@ NRM2_LAUNCHER_USM(std::complex<float>, float, cublasScnrm2)
 NRM2_LAUNCHER_USM(std::complex<double>, double, cublasDznrm2)
 #undef NRM2_LAUNCHER_USM
 
+} // namespace column_major
+namespace row_major {
+
+// Buffer APIs
+
+// Level 1
+template <typename Func, typename T1, typename T2>
+inline void asum(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T1, 1> &x,
+                 const int64_t incx, cl::sycl::buffer<T2, 1> &result) {
+    throw backend_unsupported_exception();
+}
+
+#define ASUM_LAUNCHER(TYPE1, TYPE2, CUBLAS_ROUTINE)                             \
+    void asum(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<TYPE1, 1> &x, \
+              const int64_t incx, cl::sycl::buffer<TYPE2, 1> &result) {         \
+        asum(CUBLAS_ROUTINE, queue, n, x, incx, result);                        \
+    }
+ASUM_LAUNCHER(float, float, cublasSasum)
+ASUM_LAUNCHER(double, double, cublasDasum)
+ASUM_LAUNCHER(std::complex<float>, float, cublasScasum)
+ASUM_LAUNCHER(std::complex<double>, double, cublasDzasum)
+#undef ASUM_LAUNCHER
+
+template <typename Func, typename T1, typename T2>
+inline void scal(Func func, cl::sycl::queue &queue, int64_t n, T1 a, cl::sycl::buffer<T2, 1> &x,
+                 int64_t incx) {
+    throw backend_unsupported_exception();
+}
+
+#define SCAL_LAUNCHER(TYPE1, TYPE2, CUBLAS_ROUTINE)                                      \
+    void scal(cl::sycl::queue &queue, int64_t n, TYPE1 a, cl::sycl::buffer<TYPE2, 1> &x, \
+              int64_t incx) {                                                            \
+        scal(CUBLAS_ROUTINE, queue, n, a, x, incx);                                      \
+    }
+SCAL_LAUNCHER(float, float, cublasSscal)
+SCAL_LAUNCHER(double, double, cublasDscal)
+SCAL_LAUNCHER(std::complex<float>, std::complex<float>, cublasCscal)
+SCAL_LAUNCHER(std::complex<double>, std::complex<double>, cublasZscal)
+SCAL_LAUNCHER(float, std::complex<float>, cublasCsscal)
+SCAL_LAUNCHER(double, std::complex<double>, cublasZdscal)
+#undef SCAL_LAUNCHER
+
+template <typename Func, typename T>
+inline void axpy(Func func, cl::sycl::queue &queue, int64_t n, T alpha, cl::sycl::buffer<T, 1> &x,
+                 int64_t incx, cl::sycl::buffer<T, 1> &y, int64_t incy) {
+    throw backend_unsupported_exception();
+}
+
+#define AXPY_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                \
+    void axpy(cl::sycl::queue &queue, int64_t n, TYPE alpha, cl::sycl::buffer<TYPE, 1> &x, \
+              int64_t incx, cl::sycl::buffer<TYPE, 1> &y, int64_t incy) {                  \
+        axpy(CUBLAS_ROUTINE, queue, n, alpha, x, incx, y, incy);                           \
+    }
+
+AXPY_LAUNCHER(float, cublasSaxpy)
+AXPY_LAUNCHER(double, cublasDaxpy)
+AXPY_LAUNCHER(std::complex<float>, cublasCaxpy)
+AXPY_LAUNCHER(std::complex<double>, cublasZaxpy)
+#undef AXPY_LAUNCHER
+
+template <typename Func, typename T1, typename T2>
+inline void rotg(Func func, cl::sycl::queue &queue, cl::sycl::buffer<T1, 1> &a,
+                 cl::sycl::buffer<T1, 1> &b, cl::sycl::buffer<T2, 1> &c,
+                 cl::sycl::buffer<T1, 1> &s) {
+    throw backend_unsupported_exception();
+}
+
+#define ROTG_LAUNCHER(TYPE1, TYPE2, CUBLAS_ROUTINE)                         \
+    void rotg(cl::sycl::queue &queue, cl::sycl::buffer<TYPE1, 1> &a,        \
+              cl::sycl::buffer<TYPE1, 1> &b, cl::sycl::buffer<TYPE2, 1> &c, \
+              cl::sycl::buffer<TYPE1, 1> &s) {                              \
+        rotg(CUBLAS_ROUTINE, queue, a, b, c, s);                            \
+    }
+
+ROTG_LAUNCHER(float, float, cublasSrotg)
+ROTG_LAUNCHER(double, double, cublasDrotg)
+ROTG_LAUNCHER(std::complex<float>, float, cublasCrotg)
+ROTG_LAUNCHER(std::complex<double>, double, cublasZrotg)
+#undef ROTG_LAUNCHER
+
+template <typename Func, typename T>
+inline void rotm(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T, 1> &x,
+                 int64_t incx, cl::sycl::buffer<T, 1> &y, int64_t incy,
+                 cl::sycl::buffer<T, 1> &param) {
+    throw backend_unsupported_exception();
+}
+
+#define ROTM_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                   \
+    void rotm(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<TYPE, 1> &x, int64_t incx,  \
+              cl::sycl::buffer<TYPE, 1> &y, int64_t incy, cl::sycl::buffer<TYPE, 1> &param) { \
+        rotm(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, param);                              \
+    }
+
+ROTM_LAUNCHER(float, cublasSrotm)
+ROTM_LAUNCHER(double, cublasDrotm)
+#undef ROTM_LAUNCHER
+
+template <typename Func, typename T>
+inline void copy(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T, 1> &x,
+                 int64_t incx, cl::sycl::buffer<T, 1> &y, int64_t incy) {
+    throw backend_unsupported_exception();
+}
+
+#define COPY_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                  \
+    void copy(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<TYPE, 1> &x, int64_t incx, \
+              cl::sycl::buffer<TYPE, 1> &y, int64_t incy) {                                  \
+        copy(CUBLAS_ROUTINE, queue, n, x, incx, y, incy);                                    \
+    }
+
+COPY_LAUNCHER(float, cublasScopy)
+COPY_LAUNCHER(double, cublasDcopy)
+COPY_LAUNCHER(std::complex<float>, cublasCcopy)
+COPY_LAUNCHER(std::complex<double>, cublasZcopy)
+#undef COPY_LAUNCHER
+
+template <typename Func, typename T>
+inline void dot(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T, 1> &x,
+                const int64_t incx, cl::sycl::buffer<T, 1> &y, int64_t incy,
+                cl::sycl::buffer<T, 1> &result) {
+    throw backend_unsupported_exception();
+}
+
+#define DOT_LAUNCHER(EXT, TYPE, CUBLAS_ROUTINE)                                         \
+    void dot##EXT(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<TYPE, 1> &x,      \
+                  const int64_t incx, cl::sycl::buffer<TYPE, 1> &y, const int64_t incy, \
+                  cl::sycl::buffer<TYPE, 1> &result) {                                  \
+        dot(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, result);                        \
+    }
+DOT_LAUNCHER(, float, cublasSdot)
+DOT_LAUNCHER(, double, cublasDdot)
+DOT_LAUNCHER(c, std::complex<float>, cublasCdotc)
+DOT_LAUNCHER(c, std::complex<double>, cublasZdotc)
+DOT_LAUNCHER(u, std::complex<float>, cublasCdotu)
+DOT_LAUNCHER(u, std::complex<double>, cublasZdotu)
+#undef DOT_LAUNCHER
+
+template <typename Func, typename T1, typename T2, typename T3>
+inline void rot(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T1, 1> &x,
+                const int64_t incx, cl::sycl::buffer<T1, 1> &y, int64_t incy, T2 c, T3 s) {
+    throw backend_unsupported_exception();
+}
+
+#define ROT_LAUNCHER(TYPE1, TYPE2, TYPE3, CUBLAS_ROUTINE)                                          \
+    void rot(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<TYPE1, 1> &x, const int64_t incx, \
+             cl::sycl::buffer<TYPE1, 1> &y, int64_t incy, TYPE2 c, TYPE3 s) {                      \
+        rot(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, c, s);                                     \
+    }
+
+ROT_LAUNCHER(float, float, float, cublasSrot)
+ROT_LAUNCHER(double, double, double, cublasDrot)
+ROT_LAUNCHER(std::complex<float>, float, float, cublasCsrot)
+ROT_LAUNCHER(std::complex<double>, double, double, cublasZdrot)
+#undef ROT_LAUNCHER
+
+void sdsdot(cl::sycl::queue &queue, int64_t n, float sb, cl::sycl::buffer<float, 1> &x,
+            int64_t incx, cl::sycl::buffer<float, 1> &y, int64_t incy,
+            cl::sycl::buffer<float, 1> &result) {
+    throw backend_unsupported_exception();
+}
+
+void dot(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int64_t incx,
+         cl::sycl::buffer<float, 1> &y, int64_t incy, cl::sycl::buffer<double, 1> &result) {
+    throw backend_unsupported_exception();
+}
+
+template <typename Func, typename T>
+inline void rotmg(Func func, cl::sycl::queue &queue, cl::sycl::buffer<T, 1> &d1,
+                  cl::sycl::buffer<T, 1> &d2, cl::sycl::buffer<T, 1> &x1, T y1,
+                  cl::sycl::buffer<T, 1> &param) {
+    throw backend_unsupported_exception();
+}
+
+#define ROTMG_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                          \
+    void rotmg(cl::sycl::queue &queue, cl::sycl::buffer<TYPE, 1> &d1,                 \
+               cl::sycl::buffer<TYPE, 1> &d2, cl::sycl::buffer<TYPE, 1> &x1, TYPE y1, \
+               cl::sycl::buffer<TYPE, 1> &param) {                                    \
+        rotmg(CUBLAS_ROUTINE, queue, d1, d2, x1, y1, param);                          \
+    }
+
+ROTMG_LAUNCHER(float, cublasSrotmg)
+ROTMG_LAUNCHER(double, cublasDrotmg)
+#undef ROTMG_LAUNCHER
+
+template <typename Func, typename T>
+inline void iamax(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T, 1> &x,
+                  const int64_t incx, cl::sycl::buffer<int64_t, 1> &result) {
+    throw backend_unsupported_exception();
+}
+
+#define IAMAX_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                    \
+    void iamax(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<TYPE, 1> &x, \
+               const int64_t incx, cl::sycl::buffer<int64_t, 1> &result) {      \
+        iamax(CUBLAS_ROUTINE, queue, n, x, incx, result);                       \
+    }
+IAMAX_LAUNCHER(float, cublasIsamax)
+IAMAX_LAUNCHER(double, cublasIdamax)
+IAMAX_LAUNCHER(std::complex<float>, cublasIcamax)
+IAMAX_LAUNCHER(std::complex<double>, cublasIzamax)
+#undef IAMAX_LAUNCHER
+
+template <typename Func, typename T>
+inline void swap(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T, 1> &x,
+                 int64_t incx, cl::sycl::buffer<T, 1> &y, int64_t incy) {
+    throw backend_unsupported_exception();
+}
+
+#define SWAP_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                  \
+    void swap(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<TYPE, 1> &x, int64_t incx, \
+              cl::sycl::buffer<TYPE, 1> &y, int64_t incy) {                                  \
+        swap(CUBLAS_ROUTINE, queue, n, x, incx, y, incy);                                    \
+    }
+
+SWAP_LAUNCHER(float, cublasSswap)
+SWAP_LAUNCHER(double, cublasDswap)
+SWAP_LAUNCHER(std::complex<float>, cublasCswap)
+SWAP_LAUNCHER(std::complex<double>, cublasZswap)
+#undef SWAP_LAUNCHER
+
+template <typename Func, typename T>
+inline void iamin(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T, 1> &x,
+                  const int64_t incx, cl::sycl::buffer<int64_t, 1> &result) {
+    throw backend_unsupported_exception();
+}
+
+#define IAMIN_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                    \
+    void iamin(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<TYPE, 1> &x, \
+               const int64_t incx, cl::sycl::buffer<int64_t, 1> &result) {      \
+        iamin(CUBLAS_ROUTINE, queue, n, x, incx, result);                       \
+    }
+IAMIN_LAUNCHER(float, cublasIsamin)
+IAMIN_LAUNCHER(double, cublasIdamin)
+IAMIN_LAUNCHER(std::complex<float>, cublasIcamin)
+IAMIN_LAUNCHER(std::complex<double>, cublasIzamin)
+#undef IAMIN_LAUNCHER
+
+template <typename Func, typename T1, typename T2>
+inline void nrm2(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T1, 1> &x,
+                 const int64_t incx, cl::sycl::buffer<T2, 1> &result) {
+    throw backend_unsupported_exception();
+}
+
+#define NRM2_LAUNCHER(TYPE1, TYPE2, CUBLAS_ROUTINE)                             \
+    void nrm2(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<TYPE1, 1> &x, \
+              const int64_t incx, cl::sycl::buffer<TYPE2, 1> &result) {         \
+        nrm2(CUBLAS_ROUTINE, queue, n, x, incx, result);                        \
+    }
+NRM2_LAUNCHER(float, float, cublasSnrm2)
+NRM2_LAUNCHER(double, double, cublasDnrm2)
+NRM2_LAUNCHER(std::complex<float>, float, cublasScnrm2)
+NRM2_LAUNCHER(std::complex<double>, double, cublasDznrm2)
+#undef NRM2_LAUNCHER
+
+// USM APIs
+
+// Level 1
+template <typename Func, typename T1, typename T2>
+inline cl::sycl::event asum(Func func, cl::sycl::queue &queue, int64_t n, const T1 *x,
+                            const int64_t incx, T2 *result,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+}
+
+#define ASUM_LAUNCHER_USM(TYPE1, TYPE2, CUBLAS_ROUTINE)                                         \
+    cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const TYPE1 *x, const int64_t incx, \
+                         TYPE2 *result,                                                         \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {         \
+        return asum(CUBLAS_ROUTINE, queue, n, x, incx, result, dependencies);                   \
+    }
+ASUM_LAUNCHER_USM(float, float, cublasSasum)
+ASUM_LAUNCHER_USM(double, double, cublasDasum)
+ASUM_LAUNCHER_USM(std::complex<float>, float, cublasScasum)
+ASUM_LAUNCHER_USM(std::complex<double>, double, cublasDzasum)
+#undef ASUM_LAUNCHER_USM
+
+template <typename Func, typename T1, typename T2>
+inline cl::sycl::event scal(Func func, cl::sycl::queue &queue, int64_t n, T1 a, T2 *x, int64_t incx,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+}
+
+#define SCAL_LAUNCHER_USM(TYPE1, TYPE2, CUBLAS_ROUTINE)                                      \
+    cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, TYPE1 a, TYPE2 *x, int64_t incx, \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {      \
+        return scal(CUBLAS_ROUTINE, queue, n, a, x, incx, dependencies);                     \
+    }
+SCAL_LAUNCHER_USM(float, float, cublasSscal)
+SCAL_LAUNCHER_USM(double, double, cublasDscal)
+SCAL_LAUNCHER_USM(std::complex<float>, std::complex<float>, cublasCscal)
+SCAL_LAUNCHER_USM(std::complex<double>, std::complex<double>, cublasZscal)
+SCAL_LAUNCHER_USM(float, std::complex<float>, cublasCsscal)
+SCAL_LAUNCHER_USM(double, std::complex<double>, cublasZdscal)
+#undef SCAL_LAUNCHER_USM
+
+template <typename Func, typename T>
+inline cl::sycl::event axpy(Func func, cl::sycl::queue &queue, int64_t n, T alpha, const T *x,
+                            int64_t incx, T *y, int64_t incy,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+}
+
+#define AXPY_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                         \
+    cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, TYPE alpha, const TYPE *x,  \
+                         int64_t incx, TYPE *y, int64_t incy,                           \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) { \
+        return axpy(CUBLAS_ROUTINE, queue, n, alpha, x, incx, y, incy, dependencies);   \
+    }
+
+AXPY_LAUNCHER_USM(float, cublasSaxpy)
+AXPY_LAUNCHER_USM(double, cublasDaxpy)
+AXPY_LAUNCHER_USM(std::complex<float>, cublasCaxpy)
+AXPY_LAUNCHER_USM(std::complex<double>, cublasZaxpy)
+#undef AXPY_LAUNCHER_USM
+
+template <typename Func, typename T1, typename T2>
+inline cl::sycl::event rotg(Func func, cl::sycl::queue &queue, T1 *a, T1 *b, T2 *c, T1 *s,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+}
+
+#define ROTG_LAUNCHER_USM(TYPE1, TYPE2, CUBLAS_ROUTINE)                                  \
+    cl::sycl::event rotg(cl::sycl::queue &queue, TYPE1 *a, TYPE1 *b, TYPE2 *c, TYPE1 *s, \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {  \
+        return rotg(CUBLAS_ROUTINE, queue, a, b, c, s, dependencies);                    \
+    }
+
+ROTG_LAUNCHER_USM(float, float, cublasSrotg)
+ROTG_LAUNCHER_USM(double, double, cublasDrotg)
+ROTG_LAUNCHER_USM(std::complex<float>, float, cublasCrotg)
+ROTG_LAUNCHER_USM(std::complex<double>, double, cublasZrotg)
+#undef ROTG_LAUNCHER_USM
+
+template <typename Func, typename T>
+inline cl::sycl::event rotm(Func func, cl::sycl::queue &queue, int64_t n, T *x, int64_t incx, T *y,
+                            int64_t incy, T *param,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+}
+
+#define ROTM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
+    cl::sycl::event rotm(cl::sycl::queue &queue, int64_t n, TYPE *x, int64_t incx, TYPE *y, \
+                         int64_t incy, TYPE *param,                                         \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {     \
+        return rotm(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, param, dependencies);       \
+    }
+
+ROTM_LAUNCHER_USM(float, cublasSrotm)
+ROTM_LAUNCHER_USM(double, cublasDrotm)
+#undef ROTM_LAUNCHER_USM
+
+template <typename Func, typename T>
+inline cl::sycl::event copy(Func func, cl::sycl::queue &queue, int64_t n, const T *x, int64_t incx,
+                            T *y, int64_t incy,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+}
+
+#define COPY_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
+    cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const TYPE *x, int64_t incx, TYPE *y, \
+                         int64_t incy,                                                            \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+        return copy(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, dependencies);                    \
+    }
+
+COPY_LAUNCHER_USM(float, cublasScopy)
+COPY_LAUNCHER_USM(double, cublasDcopy)
+COPY_LAUNCHER_USM(std::complex<float>, cublasCcopy)
+COPY_LAUNCHER_USM(std::complex<double>, cublasZcopy)
+#undef COPY_LAUNCHER_USM
+
+template <typename Func, typename T>
+inline cl::sycl::event dot(Func func, cl::sycl::queue &queue, int64_t n, const T *x,
+                           const int64_t incx, const T *y, int64_t incy, T *result,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+}
+
+#define DOT_LAUNCHER_USM(EXT, TYPE, CUBLAS_ROUTINE)                                                \
+    cl::sycl::event dot##EXT(cl::sycl::queue &queue, int64_t n, const TYPE *x, const int64_t incx, \
+                             const TYPE *y, const int64_t incy, TYPE *result,                      \
+                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {        \
+        return dot(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, result, dependencies);              \
+    }
+DOT_LAUNCHER_USM(, float, cublasSdot)
+DOT_LAUNCHER_USM(, double, cublasDdot)
+DOT_LAUNCHER_USM(c, std::complex<float>, cublasCdotc)
+DOT_LAUNCHER_USM(c, std::complex<double>, cublasZdotc)
+DOT_LAUNCHER_USM(u, std::complex<float>, cublasCdotu)
+DOT_LAUNCHER_USM(u, std::complex<double>, cublasZdotu)
+#undef DOT_LAUNCHER_USM
+
+template <typename Func, typename T1, typename T2, typename T3>
+inline cl::sycl::event rot(Func func, cl::sycl::queue &queue, int64_t n, T1 *x, const int64_t incx,
+                           T1 *y, int64_t incy, T2 c, T3 s,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+}
+
+#define ROT_LAUNCHER_USM(TYPE1, TYPE2, TYPE3, CUBLAS_ROUTINE)                                      \
+    cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, TYPE1 *x, const int64_t incx, TYPE1 *y, \
+                        int64_t incy, TYPE2 c, TYPE3 s,                                            \
+                        const cl::sycl::vector_class<cl::sycl::event> &dependencies) {             \
+        return rot(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, c, s, dependencies);                \
+    }
+
+ROT_LAUNCHER_USM(float, float, float, cublasSrot)
+ROT_LAUNCHER_USM(double, double, double, cublasDrot)
+ROT_LAUNCHER_USM(std::complex<float>, float, float, cublasCsrot)
+ROT_LAUNCHER_USM(std::complex<double>, double, double, cublasZdrot)
+#undef ROT_LAUNCHER_USM
+
+cl::sycl::event sdsdot(cl::sycl::queue &queue, int64_t n, float sb, const float *x, int64_t incx,
+                       const float *y, int64_t incy, float *result,
+                       const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+}
+
+cl::sycl::event dot(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, const float *y,
+                    int64_t incy, double *result,
+                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+}
+
+template <typename Func, typename T>
+inline cl::sycl::event rotmg(Func func, cl::sycl::queue &queue, T *d1, T *d2, T *x1, T y1, T *param,
+                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+}
+
+#define ROTMG_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                         \
+    cl::sycl::event rotmg(cl::sycl::queue &queue, TYPE *d1, TYPE *d2, TYPE *x1, TYPE y1, \
+                          TYPE *param,                                                   \
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) { \
+        return rotmg(CUBLAS_ROUTINE, queue, d1, d2, x1, y1, param, dependencies);        \
+    }
+
+ROTMG_LAUNCHER_USM(float, cublasSrotmg)
+ROTMG_LAUNCHER_USM(double, cublasDrotmg)
+#undef ROTMG_LAUNCHER_USM
+
+template <typename Func, typename T>
+inline cl::sycl::event iamax(Func func, cl::sycl::queue &queue, int64_t n, const T *x,
+                             const int64_t incx, int64_t *result,
+                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+}
+
+#define IAMAX_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                \
+    cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const TYPE *x, const int64_t incx, \
+                          int64_t *result,                                                      \
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {        \
+        return iamax(CUBLAS_ROUTINE, queue, n, x, incx, result, dependencies);                  \
+    }
+IAMAX_LAUNCHER_USM(float, cublasIsamax)
+IAMAX_LAUNCHER_USM(double, cublasIdamax)
+IAMAX_LAUNCHER_USM(std::complex<float>, cublasIcamax)
+IAMAX_LAUNCHER_USM(std::complex<double>, cublasIzamax)
+#undef IAMAX_LAUNCHER_USM
+
+template <typename Func, typename T>
+inline cl::sycl::event swap(Func func, cl::sycl::queue &queue, int64_t n, T *x, int64_t incx, T *y,
+                            int64_t incy,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+}
+
+#define SWAP_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
+    cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, TYPE *x, int64_t incx, TYPE *y, \
+                         int64_t incy,                                                      \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {     \
+        return swap(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, dependencies);              \
+    }
+
+SWAP_LAUNCHER_USM(float, cublasSswap)
+SWAP_LAUNCHER_USM(double, cublasDswap)
+SWAP_LAUNCHER_USM(std::complex<float>, cublasCswap)
+SWAP_LAUNCHER_USM(std::complex<double>, cublasZswap)
+#undef SWAP_LAUNCHER_USM
+
+template <typename Func, typename T>
+inline cl::sycl::event iamin(Func func, cl::sycl::queue &queue, int64_t n, const T *x,
+                             const int64_t incx, int64_t *result,
+                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+}
+
+#define IAMIN_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                \
+    cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const TYPE *x, const int64_t incx, \
+                          int64_t *result,                                                      \
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {        \
+        return iamin(CUBLAS_ROUTINE, queue, n, x, incx, result, dependencies);                  \
+    }
+IAMIN_LAUNCHER_USM(float, cublasIsamin)
+IAMIN_LAUNCHER_USM(double, cublasIdamin)
+IAMIN_LAUNCHER_USM(std::complex<float>, cublasIcamin)
+IAMIN_LAUNCHER_USM(std::complex<double>, cublasIzamin)
+#undef IAMIN_LAUNCHER_USM
+
+template <typename Func, typename T1, typename T2>
+inline cl::sycl::event nrm2(Func func, cl::sycl::queue &queue, int64_t n, const T1 *x,
+                            const int64_t incx, T2 *result,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw backend_unsupported_exception();
+}
+
+#define NRM2_LAUNCHER_USM(TYPE1, TYPE2, CUBLAS_ROUTINE)                                         \
+    cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const TYPE1 *x, const int64_t incx, \
+                         TYPE2 *result,                                                         \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {         \
+        return nrm2(CUBLAS_ROUTINE, queue, n, x, incx, result, dependencies);                   \
+    }
+NRM2_LAUNCHER_USM(float, float, cublasSnrm2)
+NRM2_LAUNCHER_USM(double, double, cublasDnrm2)
+NRM2_LAUNCHER_USM(std::complex<float>, float, cublasScnrm2)
+NRM2_LAUNCHER_USM(std::complex<double>, double, cublasDznrm2)
+#undef NRM2_LAUNCHER_USM
+
+} // namespace row_major
 } // namespace cublas
 } // namespace mkl
 } // namespace oneapi

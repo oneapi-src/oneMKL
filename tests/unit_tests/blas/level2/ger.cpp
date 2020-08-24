@@ -26,8 +26,8 @@
 
 #include <CL/sycl.hpp>
 #include "cblas.h"
-#include "oneapi/mkl/detail/config.hpp"
 #include "oneapi/mkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -43,22 +43,23 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda) {
+int test(const device &dev, oneapi::mkl::layout layout, int m, int n, fp alpha, int incx, int incy,
+         int lda) {
     // Prepare data.
 
     vector<fp> x, y, A_ref, A;
 
     rand_vector(x, m, incx);
     rand_vector(y, n, incy);
-    rand_matrix(A, oneapi::mkl::transpose::nontrans, m, n, lda);
+    rand_matrix(A, layout, oneapi::mkl::transpose::nontrans, m, n, lda);
     A_ref = A;
 
     // Call Reference GER.
     const int m_ref = m, n_ref = n, incx_ref = incx, incy_ref = incy, lda_ref = lda;
     using fp_ref = typename ref_type_info<fp>::type;
 
-    ::ger(&m_ref, &n_ref, (fp_ref *)&alpha, (fp_ref *)x.data(), &incx_ref, (fp_ref *)y.data(),
-          &incy_ref, (fp_ref *)A_ref.data(), &lda_ref);
+    ::ger(convert_to_cblas_layout(layout), &m_ref, &n_ref, (fp_ref *)&alpha, (fp_ref *)x.data(),
+          &incx_ref, (fp_ref *)y.data(), &incy_ref, (fp_ref *)A_ref.data(), &lda_ref);
 
     // Call DPC++ GER.
 
@@ -84,11 +85,31 @@ int test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda)
 
     try {
 #ifdef CALL_RT_API
-        oneapi::mkl::blas::ger(main_queue, m, n, alpha, x_buffer, incx, y_buffer, incy, A_buffer,
-                               lda);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                oneapi::mkl::blas::column_major::ger(main_queue, m, n, alpha, x_buffer, incx,
+                                                     y_buffer, incy, A_buffer, lda);
+                break;
+            case oneapi::mkl::layout::row_major:
+                oneapi::mkl::blas::row_major::ger(main_queue, m, n, alpha, x_buffer, incx, y_buffer,
+                                                  incy, A_buffer, lda);
+                break;
+            default: break;
+        }
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::ger,
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(
+                    main_queue, oneapi::mkl::blas::column_major::ger,
                     (main_queue, m, n, alpha, x_buffer, incx, y_buffer, incy, A_buffer, lda));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(
+                    main_queue, oneapi::mkl::blas::row_major::ger,
+                    (main_queue, m, n, alpha, x_buffer, incx, y_buffer, incy, A_buffer, lda));
+                break;
+            default: break;
+        }
 #endif
     }
     catch (exception const &e) {
@@ -106,30 +127,39 @@ int test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda)
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good;
-    {
-        auto A_accessor = A_buffer.template get_access<access::mode::read>();
-        good = check_equal_matrix(A_accessor, A_ref, m, n, lda, std::max<int>(m, n), std::cout);
-    }
+    auto A_accessor = A_buffer.template get_access<access::mode::read>();
+    bool good =
+        check_equal_matrix(A_accessor, A_ref, layout, m, n, lda, std::max<int>(m, n), std::cout);
 
     return (int)good;
 }
 
-class GerTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class GerTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(GerTests, RealSinglePrecision) {
     float alpha(2.0);
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 25, 30, alpha, 2, 3, 42));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 25, 30, alpha, -2, -3, 42));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 25, 30, alpha, 1, 1, 42));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 25, 30, alpha, 2, 3, 42));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 25, 30, alpha, -2, -3, 42));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 25, 30, alpha, 1, 1, 42));
 }
 TEST_P(GerTests, RealDoublePrecision) {
     double alpha(2.0);
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 25, 30, alpha, 2, 3, 42));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 25, 30, alpha, -2, -3, 42));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 25, 30, alpha, 1, 1, 42));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 25, 30, alpha, 2, 3, 42));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 25, 30, alpha, -2, -3, 42));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 25, 30, alpha, 1, 1, 42));
 }
 
-INSTANTIATE_TEST_SUITE_P(GerTestSuite, GerTests, ::testing::ValuesIn(devices), ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(GerTestSuite, GerTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp, typename fp_res>
-int test(const device& dev, int N, int incx, int incy) {
+int test(const device& dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
     // Prepare data.
     vector<fp> x, y;
     fp_res result = fp_res(-1), result_ref = fp_res(-1);
@@ -79,10 +79,29 @@ int test(const device& dev, int N, int incx, int incy) {
 
     try {
 #ifdef CALL_RT_API
-        oneapi::mkl::blas::dot(main_queue, N, x_buffer, incx, y_buffer, incy, result_buffer);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                oneapi::mkl::blas::column_major::dot(main_queue, N, x_buffer, incx, y_buffer, incy,
+                                                     result_buffer);
+                break;
+            case oneapi::mkl::layout::row_major:
+                oneapi::mkl::blas::row_major::dot(main_queue, N, x_buffer, incx, y_buffer, incy,
+                                                  result_buffer);
+                break;
+            default: break;
+        }
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::dot,
-                    (main_queue, N, x_buffer, incx, y_buffer, incy, result_buffer));
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::dot,
+                            (main_queue, N, x_buffer, incx, y_buffer, incy, result_buffer));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::dot,
+                            (main_queue, N, x_buffer, incx, y_buffer, incy, result_buffer));
+                break;
+            default: break;
+        }
 #endif
     }
     catch (exception const& e) {
@@ -100,33 +119,45 @@ int test(const device& dev, int N, int incx, int incy) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good;
-    {
-        auto result_accessor = result_buffer.template get_access<access::mode::read>();
-        good = check_equal(result_accessor[0], result_ref, N, std::cout);
-    }
+
+    auto result_accessor = result_buffer.template get_access<access::mode::read>();
+    bool good = check_equal(result_accessor[0], result_ref, N, std::cout);
 
     return (int)good;
 }
 
-class DotTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class DotTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(DotTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, 2, 3)));
-    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, 1, 1)));
-    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, -3, -2)));
+    EXPECT_TRUEORSKIP(
+        (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3)));
+    EXPECT_TRUEORSKIP(
+        (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1)));
+    EXPECT_TRUEORSKIP(
+        (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, -2)));
 }
 TEST_P(DotTests, RealDoublePrecision) {
-    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, 2, 3)));
-    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, 1, 1)));
-    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, -3, -2)));
+    EXPECT_TRUEORSKIP(
+        (test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3)));
+    EXPECT_TRUEORSKIP(
+        (test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1)));
+    EXPECT_TRUEORSKIP(
+        (test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, -2)));
 }
 TEST_P(DotTests, RealDoubleSinglePrecision) {
-    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, 2, 3)));
-    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, 1, 1)));
-    EXPECT_TRUEORSKIP((test<float, double>(GetParam(), 1357, -3, -2)));
+    EXPECT_TRUEORSKIP(
+        (test<float, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3)));
+    EXPECT_TRUEORSKIP(
+        (test<float, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1)));
+    EXPECT_TRUEORSKIP(
+        (test<float, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, -2)));
 }
 
-INSTANTIATE_TEST_SUITE_P(DotTestSuite, DotTests, ::testing::ValuesIn(devices), ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(DotTestSuite, DotTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

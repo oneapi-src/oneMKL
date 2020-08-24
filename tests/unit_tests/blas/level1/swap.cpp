@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device& dev, int N, int incx, int incy) {
+int test(const device& dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
     // Prepare data.
     vector<fp> x, x_ref, y, y_ref;
     rand_vector(x, N, incx);
@@ -79,10 +79,28 @@ int test(const device& dev, int N, int incx, int incy) {
 
     try {
 #ifdef CALL_RT_API
-        oneapi::mkl::blas::swap(main_queue, N, x_buffer, incx, y_buffer, incy);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                oneapi::mkl::blas::column_major::swap(main_queue, N, x_buffer, incx, y_buffer,
+                                                      incy);
+                break;
+            case oneapi::mkl::layout::row_major:
+                oneapi::mkl::blas::row_major::swap(main_queue, N, x_buffer, incx, y_buffer, incy);
+                break;
+            default: break;
+        }
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::swap,
-                    (main_queue, N, x_buffer, incx, y_buffer, incy));
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::swap,
+                            (main_queue, N, x_buffer, incx, y_buffer, incy));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::swap,
+                            (main_queue, N, x_buffer, incx, y_buffer, incy));
+                break;
+            default: break;
+        }
 #endif
     }
     catch (exception const& e) {
@@ -100,42 +118,50 @@ int test(const device& dev, int N, int incx, int incy) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good;
-    {
-        auto y_accessor = y_buffer.template get_access<access::mode::read>();
-        auto x_accessor = x_buffer.template get_access<access::mode::read>();
-        bool good_y = check_equal_vector(y_accessor, y_ref, N, incy, N, std::cout);
-        bool good_x = check_equal_vector(x_accessor, x_ref, N, incx, N, std::cout);
-        good = good_x && good_y;
-    }
+
+    auto y_accessor = y_buffer.template get_access<access::mode::read>();
+    auto x_accessor = x_buffer.template get_access<access::mode::read>();
+    bool good_y = check_equal_vector(y_accessor, y_ref, N, incy, N, std::cout);
+    bool good_x = check_equal_vector(x_accessor, x_ref, N, incx, N, std::cout);
+    bool good = good_x && good_y;
 
     return (int)good;
 }
 
-class SwapTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class SwapTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(SwapTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -2, -3));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3));
+    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1));
 }
 TEST_P(SwapTests, RealDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -2, -3));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3));
+    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1));
 }
 TEST_P(SwapTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, -2, -3));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1));
 }
 TEST_P(SwapTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, -2, -3));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1));
 }
 
-INSTANTIATE_TEST_SUITE_P(SwapTestSuite, SwapTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(SwapTestSuite, SwapTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

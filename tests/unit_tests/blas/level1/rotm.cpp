@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev, int N, int incx, int incy, fp flag) {
+int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp flag) {
     // Prepare data.
     vector<fp> x, x_ref, y, y_ref;
     vector<fp> param;
@@ -84,10 +84,29 @@ int test(const device &dev, int N, int incx, int incy, fp flag) {
 
     try {
 #ifdef CALL_RT_API
-        oneapi::mkl::blas::rotm(main_queue, N, x_buffer, incx, y_buffer, incy, param_buffer);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                oneapi::mkl::blas::column_major::rotm(main_queue, N, x_buffer, incx, y_buffer, incy,
+                                                      param_buffer);
+                break;
+            case oneapi::mkl::layout::row_major:
+                oneapi::mkl::blas::row_major::rotm(main_queue, N, x_buffer, incx, y_buffer, incy,
+                                                   param_buffer);
+                break;
+            default: break;
+        }
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::rotm,
-                    (main_queue, N, x_buffer, incx, y_buffer, incy, param_buffer));
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::rotm,
+                            (main_queue, N, x_buffer, incx, y_buffer, incy, param_buffer));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::rotm,
+                            (main_queue, N, x_buffer, incx, y_buffer, incy, param_buffer));
+                break;
+            default: break;
+        }
 #endif
     }
     catch (exception const &e) {
@@ -105,58 +124,83 @@ int test(const device &dev, int N, int incx, int incy, fp flag) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good;
-    {
-        auto x_accessor = x_buffer.template get_access<access::mode::read>();
-        bool good_x = check_equal_vector(x_accessor, x_ref, N, incx, N, std::cout);
-        auto y_accessor = y_buffer.template get_access<access::mode::read>();
-        bool good_y = check_equal_vector(y_accessor, y_ref, N, incy, N, std::cout);
-        good = good_x && good_y;
-    }
+    auto x_accessor = x_buffer.template get_access<access::mode::read>();
+    bool good_x = check_equal_vector(x_accessor, x_ref, N, incx, N, std::cout);
+    auto y_accessor = y_buffer.template get_access<access::mode::read>();
+    bool good_y = check_equal_vector(y_accessor, y_ref, N, incy, N, std::cout);
+    bool good = good_x && good_y;
 
     return (int)good;
 }
 
-class RotmTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class RotmTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(RotmTests, RealSinglePrecision) {
     float flag(-1.0);
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
     flag = 0.0;
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
     flag = 1.0;
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
     flag = -2.0;
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
 }
 TEST_P(RotmTests, RealDoublePrecision) {
     double flag(-1.0);
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
     flag = 0.0;
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
     flag = 1.0;
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
     flag = -2.0;
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
 }
 
-INSTANTIATE_TEST_SUITE_P(RotmTestSuite, RotmTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(RotmTestSuite, RotmTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

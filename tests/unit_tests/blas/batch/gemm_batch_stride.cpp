@@ -44,7 +44,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev, int64_t batch_size) {
+int test(const device &dev, oneapi::mkl::layout layout, int64_t batch_size) {
     // Prepare data.
     int64_t m, n, k;
     int64_t lda, ldb, ldc;
@@ -81,17 +81,27 @@ int test(const device &dev, int64_t batch_size) {
 
     int64_t stride_a, stride_b, stride_c;
 
-    stride_a = (transa == oneapi::mkl::transpose::nontrans) ? lda * k : lda * m;
-    stride_b = (transb == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * k;
-    stride_c = ldc * n;
+    switch (layout) {
+        case oneapi::mkl::layout::column_major:
+            stride_a = (transa == oneapi::mkl::transpose::nontrans) ? lda * k : lda * m;
+            stride_b = (transb == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * k;
+            stride_c = ldc * n;
+            break;
+        case oneapi::mkl::layout::row_major:
+            stride_a = (transa == oneapi::mkl::transpose::nontrans) ? lda * m : lda * k;
+            stride_b = (transb == oneapi::mkl::transpose::nontrans) ? ldb * k : ldb * n;
+            stride_c = ldc * m;
+            break;
+        default: break;
+    }
 
     vector<fp, allocator_helper<fp, 64>> A(stride_a * batch_size), B(stride_b * batch_size);
     vector<fp, allocator_helper<fp, 64>> C(stride_c * batch_size), C_ref(stride_c * batch_size);
 
     for (i = 0; i < batch_size; i++) {
-        rand_matrix(A.data() + stride_a * i, transa, m, k, lda);
-        rand_matrix(B.data() + stride_b * i, transb, k, n, ldb);
-        rand_matrix(C.data() + stride_c * i, oneapi::mkl::transpose::nontrans, m, n, ldc);
+        rand_matrix(A.data() + stride_a * i, layout, transa, m, k, lda);
+        rand_matrix(B.data() + stride_b * i, layout, transb, k, n, ldb);
+        rand_matrix(C.data() + stride_c * i, layout, oneapi::mkl::transpose::nontrans, m, n, ldc);
     }
 
     C_ref = C;
@@ -105,13 +115,14 @@ int test(const device &dev, int64_t batch_size) {
     int ldb_ref = (int)ldb;
     int ldc_ref = (int)ldc;
     int batch_size_ref = (int)batch_size;
+
     for (i = 0; i < batch_size_ref; i++) {
-        ::gemm(convert_to_cblas_trans(transa), convert_to_cblas_trans(transb), (const int *)&m_ref,
-               (const int *)&n_ref, (const int *)&k_ref, (const fp_ref *)&alpha,
-               (const fp_ref *)(A.data() + stride_a * i), (const int *)&lda_ref,
-               (const fp_ref *)(B.data() + stride_b * i), (const int *)&ldb_ref,
-               (const fp_ref *)&beta, (fp_ref *)(C_ref.data() + stride_c * i),
-               (const int *)&ldc_ref);
+        ::gemm(
+            convert_to_cblas_layout(layout), convert_to_cblas_trans(transa),
+            convert_to_cblas_trans(transb), (const int *)&m_ref, (const int *)&n_ref,
+            (const int *)&k_ref, (const fp_ref *)&alpha, (const fp_ref *)(A.data() + stride_a * i),
+            (const int *)&lda_ref, (const fp_ref *)(B.data() + stride_b * i), (const int *)&ldb_ref,
+            (const fp_ref *)&beta, (fp_ref *)(C_ref.data() + stride_c * i), (const int *)&ldc_ref);
     }
 
     // Call DPC++ GEMM_BATCH_STRIDE.
@@ -138,13 +149,33 @@ int test(const device &dev, int64_t batch_size) {
 
     try {
 #ifdef CALL_RT_API
-        oneapi::mkl::blas::gemm_batch(main_queue, transa, transb, m, n, k, alpha, A_buffer, lda,
-                                      stride_a, B_buffer, ldb, stride_b, beta, C_buffer, ldc,
-                                      stride_c, batch_size);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                oneapi::mkl::blas::column_major::gemm_batch(
+                    main_queue, transa, transb, m, n, k, alpha, A_buffer, lda, stride_a, B_buffer,
+                    ldb, stride_b, beta, C_buffer, ldc, stride_c, batch_size);
+                break;
+            case oneapi::mkl::layout::row_major:
+                oneapi::mkl::blas::row_major::gemm_batch(
+                    main_queue, transa, transb, m, n, k, alpha, A_buffer, lda, stride_a, B_buffer,
+                    ldb, stride_b, beta, C_buffer, ldc, stride_c, batch_size);
+                break;
+            default: break;
+        }
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::gemm_batch,
-                    (main_queue, transa, transb, m, n, k, alpha, A_buffer, lda, stride_a, B_buffer,
-                     ldb, stride_b, beta, C_buffer, ldc, stride_c, batch_size));
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::gemm_batch,
+                            (main_queue, transa, transb, m, n, k, alpha, A_buffer, lda, stride_a,
+                             B_buffer, ldb, stride_b, beta, C_buffer, ldc, stride_c, batch_size));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::gemm_batch,
+                            (main_queue, transa, transb, m, n, k, alpha, A_buffer, lda, stride_a,
+                             B_buffer, ldb, stride_b, beta, C_buffer, ldc, stride_c, batch_size));
+                break;
+            default: break;
+        }
 #endif
     }
     catch (exception const &e) {
@@ -163,35 +194,40 @@ int test(const device &dev, int64_t batch_size) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good;
-    {
-        auto C_accessor = C_buffer.template get_access<access::mode::read>();
-        good = check_equal_matrix(C_accessor, C_ref, stride_c * batch_size, 1,
-                                  stride_c * batch_size, 10 * k, std::cout);
-    }
+
+    auto C_accessor = C_buffer.template get_access<access::mode::read>();
+    bool good =
+        check_equal_matrix(C_accessor, C_ref, oneapi::mkl::layout::column_major,
+                           stride_c * batch_size, 1, stride_c * batch_size, 10 * k, std::cout);
 
     return (int)good;
 }
 
-class GemmBatchStrideTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class GemmBatchStrideTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(GemmBatchStrideTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 TEST_P(GemmBatchStrideTests, RealDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 TEST_P(GemmBatchStrideTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 TEST_P(GemmBatchStrideTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 INSTANTIATE_TEST_SUITE_P(GemmBatchStrideTestSuite, GemmBatchStrideTests,
-                         ::testing::ValuesIn(devices), ::DeviceNamePrint());
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

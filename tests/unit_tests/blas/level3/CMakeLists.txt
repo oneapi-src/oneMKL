@@ -18,6 +18,8 @@
 #===============================================================================
 
 # Build object from all test sources
+#set(L3_SOURCES "gemm.cpp")
+
 set(L3_SOURCES "gemm.cpp" "symm.cpp" "syrk.cpp" "hemm.cpp" "herk.cpp" "syr2k.cpp" "her2k.cpp" "trmm.cpp" "trsm.cpp" "gemm_usm.cpp" "symm_usm.cpp" "syrk_usm.cpp" "hemm_usm.cpp" "herk_usm.cpp" "syr2k_usm.cpp" "her2k_usm.cpp" "trmm_usm.cpp" "trsm_usm.cpp")
 
 if(BUILD_SHARED_LIBS)

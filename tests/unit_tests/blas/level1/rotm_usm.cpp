@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev, int N, int incx, int incy, fp flag) {
+int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp flag) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -84,12 +84,32 @@ int test(const device &dev, int N, int incx, int incy, fp flag) {
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::rotm(main_queue, N, x.data(), incx, y.data(), incy, param.data(),
-                                       dependencies);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                done = oneapi::mkl::blas::column_major::rotm(
+                    main_queue, N, x.data(), incx, y.data(), incy, param.data(), dependencies);
+                break;
+            case oneapi::mkl::layout::row_major:
+                done = oneapi::mkl::blas::row_major::rotm(main_queue, N, x.data(), incx, y.data(),
+                                                          incy, param.data(), dependencies);
+                break;
+            default: break;
+        }
         done.wait();
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::rotm,
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(
+                    main_queue, oneapi::mkl::blas::column_major::rotm,
                     (main_queue, N, x.data(), incx, y.data(), incy, param.data(), dependencies));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(
+                    main_queue, oneapi::mkl::blas::row_major::rotm,
+                    (main_queue, N, x.data(), incx, y.data(), incy, param.data(), dependencies));
+                break;
+            default: break;
+        }
         main_queue.wait();
 #endif
     }
@@ -116,46 +136,74 @@ int test(const device &dev, int N, int incx, int incy, fp flag) {
     return (int)good;
 }
 
-class RotmUsmTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class RotmUsmTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(RotmUsmTests, RealSinglePrecision) {
     float flag(-1.0);
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
     flag = 0.0;
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
     flag = 1.0;
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
     flag = -2.0;
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(
+        test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
 }
 TEST_P(RotmUsmTests, RealDoublePrecision) {
     double flag(-1.0);
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
     flag = 0.0;
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
     flag = 1.0;
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
     flag = -2.0;
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 2, 3, flag));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, -2, -3, flag));
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 1357, 1, 1, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, flag));
+    EXPECT_TRUEORSKIP(
+        test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
 }
 
-INSTANTIATE_TEST_SUITE_P(RotmUsmTestSuite, RotmUsmTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(RotmUsmTestSuite, RotmUsmTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

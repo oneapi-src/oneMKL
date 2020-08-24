@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp, typename fp_scalar>
-int test(const device &dev) {
+int test(const device &dev, oneapi::mkl::layout layout) {
     // Prepare data.
     fp a, b, s, a_ref, b_ref, s_ref;
     fp_scalar c, c_ref;
@@ -87,10 +87,29 @@ int test(const device &dev) {
 
     try {
 #ifdef CALL_RT_API
-        oneapi::mkl::blas::rotg(main_queue, a_buffer, b_buffer, c_buffer, s_buffer);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                oneapi::mkl::blas::column_major::rotg(main_queue, a_buffer, b_buffer, c_buffer,
+                                                      s_buffer);
+                break;
+            case oneapi::mkl::layout::row_major:
+                oneapi::mkl::blas::row_major::rotg(main_queue, a_buffer, b_buffer, c_buffer,
+                                                   s_buffer);
+                break;
+            default: break;
+        }
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::rotg,
-                    (main_queue, a_buffer, b_buffer, c_buffer, s_buffer));
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::rotg,
+                            (main_queue, a_buffer, b_buffer, c_buffer, s_buffer));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::rotg,
+                            (main_queue, a_buffer, b_buffer, c_buffer, s_buffer));
+                break;
+            default: break;
+        }
 #endif
     }
     catch (exception const &e) {
@@ -108,47 +127,54 @@ int test(const device &dev) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good;
-    {
-        auto a_accessor = a_buffer.template get_access<access::mode::read>();
-        bool good_a = check_equal(a_accessor[0], a_ref, 4, std::cout);
-        auto b_accessor = b_buffer.template get_access<access::mode::read>();
-        bool good_b = check_equal(b_accessor[0], b_ref, 4, std::cout);
-        auto s_accessor = s_buffer.template get_access<access::mode::read>();
-        bool good_s = check_equal(s_accessor[0], s_ref, 4, std::cout);
-        auto c_accessor = c_buffer.template get_access<access::mode::read>();
-        bool good_c = check_equal(c_accessor[0], c_ref, 4, std::cout);
+    auto a_accessor = a_buffer.template get_access<access::mode::read>();
+    bool good_a = check_equal(a_accessor[0], a_ref, 4, std::cout);
+    auto b_accessor = b_buffer.template get_access<access::mode::read>();
+    bool good_b = check_equal(b_accessor[0], b_ref, 4, std::cout);
+    auto s_accessor = s_buffer.template get_access<access::mode::read>();
+    bool good_s = check_equal(s_accessor[0], s_ref, 4, std::cout);
+    auto c_accessor = c_buffer.template get_access<access::mode::read>();
+    bool good_c = check_equal(c_accessor[0], c_ref, 4, std::cout);
 
-        good = good_a && good_b && good_c && good_s;
-    }
+    bool good = good_a && good_b && good_c && good_s;
 
     return (int)good;
 }
 
-class RotgTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class RotgTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(RotgTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP((test<float, float>(GetParam())));
-    EXPECT_TRUEORSKIP((test<float, float>(GetParam())));
-    EXPECT_TRUEORSKIP((test<float, float>(GetParam())));
+    EXPECT_TRUEORSKIP((test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
+    EXPECT_TRUEORSKIP((test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
+    EXPECT_TRUEORSKIP((test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 TEST_P(RotgTests, RealDoublePrecision) {
-    EXPECT_TRUEORSKIP((test<double, double>(GetParam())));
-    EXPECT_TRUEORSKIP((test<double, double>(GetParam())));
-    EXPECT_TRUEORSKIP((test<double, double>(GetParam())));
+    EXPECT_TRUEORSKIP((test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
+    EXPECT_TRUEORSKIP((test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
+    EXPECT_TRUEORSKIP((test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 TEST_P(RotgTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam())));
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam())));
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam())));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<float>, float>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<float>, float>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<float>, float>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 TEST_P(RotgTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam())));
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam())));
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam())));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<double>, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<double>, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<double>, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 
-INSTANTIATE_TEST_SUITE_P(RotgTestSuite, RotgTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(RotgTestSuite, RotgTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

@@ -98,6 +98,115 @@ inline const char *fortran_char(side s) {
     return "L";
 }
 
+// Conversion functions to CBLAS enums.
+inline MKL_TRANSPOSE cblas_convert(transpose t) {
+    if (t == transpose::nontrans)
+        return MKL_NOTRANS;
+    if (t == transpose::trans)
+        return MKL_TRANS;
+    if (t == transpose::conjtrans)
+        return MKL_CONJTRANS;
+    return MKL_NOTRANS;
+}
+
+inline MKL_UPLO cblas_convert(uplo u) {
+    if (u == uplo::upper)
+        return MKL_UPPER;
+    if (u == uplo::lower)
+        return MKL_LOWER;
+    return MKL_UPPER;
+}
+
+inline MKL_DIAG cblas_convert(diag d) {
+    if (d == diag::nonunit)
+        return MKL_NONUNIT;
+    if (d == diag::unit)
+        return MKL_UNIT;
+    return MKL_NONUNIT;
+}
+
+inline MKL_SIDE cblas_convert(side s) {
+    if (s == side::left)
+        return MKL_LEFT;
+    if (s == side::right)
+        return MKL_RIGHT;
+    return MKL_LEFT;
+}
+
+inline CBLAS_OFFSET cblas_convert(oneapi::mkl::offset o) {
+    if (o == oneapi::mkl::offset::fix)
+        return CblasFixOffset;
+    if (o == oneapi::mkl::offset::column)
+        return CblasColOffset;
+    return CblasRowOffset;
+}
+
+template <typename transpose_type>
+inline bool isNonTranspose(transpose_type trans) {
+    return true;
+}
+
+template <>
+inline bool isNonTranspose(transpose trans) {
+    return trans == transpose::nontrans;
+}
+
+template <typename T_src, typename T_dest, typename transpose_type>
+static inline void copy_mat(T_src &src, MKL_LAYOUT layout, transpose_type trans, int64_t row,
+                            int64_t col, int64_t ld, T_dest off, T_dest *&dest) {
+    int64_t i, j, Iend, Jend;
+    if (layout == MKL_COL_MAJOR) {
+        Jend = isNonTranspose(trans) ? col : row;
+        Iend = isNonTranspose(trans) ? row : col;
+    }
+    else {
+        Jend = isNonTranspose(trans) ? row : col;
+        Iend = isNonTranspose(trans) ? col : row;
+    }
+    for (j = 0; j < Jend; j++) {
+        for (i = 0; i < Iend; i++) {
+            dest[i + ld * j] = (T_dest)src[i + ld * j] - off;
+        }
+    }
+}
+
+template <typename T_src, typename T_dest, typename T_off, typename offset_type>
+static inline void copy_mat(T_src &src, MKL_LAYOUT layout, int64_t row, int64_t col, int64_t ld,
+                            offset_type off_kind, T_off off, T_dest &dest) {
+    using T_data = typename std::remove_reference<decltype(dest[0])>::type;
+    int64_t i, j;
+    T_data tmp;
+
+    int64_t Jend = (layout == MKL_COL_MAJOR) ? col : row;
+    int64_t Iend = (layout == MKL_COL_MAJOR) ? row : col;
+
+    if (off_kind == offset::F) {
+        tmp = off[0];
+        for (j = 0; j < Jend; j++) {
+            for (i = 0; i < Iend; i++) {
+                dest[i + ld * j] = tmp + (T_data)src[i + ld * j];
+            }
+        }
+    }
+    else if (((off_kind == offset::C) && (layout == MKL_COL_MAJOR)) ||
+             ((off_kind == offset::R) && (layout == MKL_ROW_MAJOR))) {
+        for (j = 0; j < Jend; j++) {
+            for (i = 0; i < Iend; i++) {
+                tmp = off[i];
+                dest[i + ld * j] = tmp + (T_data)src[i + ld * j];
+            }
+        }
+    }
+    else {
+        for (j = 0; j < Jend; j++) {
+            tmp = off[j];
+            for (i = 0; i < Iend; i++) {
+                dest[i + ld * j] = tmp + (T_data)src[i + ld * j];
+            }
+        }
+    }
+}
+
 } // namespace mklcpu
 } // namespace mkl
 } // namespace oneapi
