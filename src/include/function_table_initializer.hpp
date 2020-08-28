@@ -24,6 +24,7 @@
 #include <map>
 
 #include "oneapi/mkl/detail/backends_table.hpp"
+#include "oneapi/mkl/detail/exceptions.hpp"
 
 #define SPEC_VERSION 1
 
@@ -99,17 +100,17 @@ private:
         }
         if (!handle) {
             std::cerr << ERROR_MSG << '\n';
-            throw std::runtime_error{ "Couldn't load selected backend" };
+            throw mkl::backend_not_found();
         }
 
         auto t = reinterpret_cast<function_table_t *>(::GET_FUNC(handle.get(), "mkl_blas_table"));
 
         if (!t) {
             std::cerr << ERROR_MSG << '\n';
-            throw std::runtime_error{ "Couldn't load functions from selected backend" };
+            throw mkl::function_not_found();
         }
         if (t->version != SPEC_VERSION)
-            throw std::runtime_error{ "Loaded oneMKL specification version mismatch" };
+            throw mkl::specification_mismatch();
 
         handles[key] = std::move(handle);
         tables[key] = *t;

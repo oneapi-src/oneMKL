@@ -23,6 +23,7 @@
 #include <CL/sycl.hpp>
 
 #include "oneapi/mkl/detail/backends_table.hpp"
+#include "oneapi/mkl/exceptions.hpp"
 
 #define INTEL_ID  32902
 #define NVIDIA_ID 4318
@@ -45,11 +46,11 @@ inline oneapi::mkl::device get_device_id(cl::sycl::queue &queue) {
         else if (vendor_id == NVIDIA_ID)
             device_id = device::nvidiagpu;
         else {
-            throw std::runtime_error{ "Unsupported device" };
+            throw unsupported_device("", "", queue.get_device());
         }
     }
     else {
-        throw std::runtime_error{ "Unsupported device" };
+        throw unsupported_device("", "", queue.get_device());
     }
     return device_id;
 }

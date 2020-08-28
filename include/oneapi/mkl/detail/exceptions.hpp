@@ -17,76 +17,43 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_EXCEPTIONS_HPP_
-#define _ONEMKL_EXCEPTIONS_HPP_
+// These are oneAPI Math Kernel Library (oneMKL) Interfaces specific exceptions
 
-#include "oneapi/mkl/detail/backends.hpp"
-#include "oneapi/mkl/types.hpp"
+#ifndef _ONEMKL_DETAIL_EXCEPTIONS_HPP_
+#define _ONEMKL_DETAIL_EXCEPTIONS_HPP_
+
+#include <exception>
+#include <string>
+#include "oneapi/mkl/exceptions.hpp"
 
 namespace oneapi {
 namespace mkl {
 
-class InvalidArgumentsException : virtual public std::exception {
-private:
-    std::string error_message = "";
-
+class backend_not_found : public oneapi::mkl::exception {
 public:
-    InvalidArgumentsException(const std::string& msg)
-            : error_message(std::string("oneMKL InvalidArgumentsException: \n") + msg + "\n") {}
-
-    const char* what() const noexcept override {
-        return error_message.c_str();
-    };
+    backend_not_found(const std::string &info = "")
+            : oneapi::mkl::exception(
+                  "", "", ((info.length() != 0) ? info : "Couldn't load selected backend")) {}
 };
 
-class MemoryAllocationException : virtual public std::exception {
-private:
-    std::string error_message = "";
-
+class function_not_found : public oneapi::mkl::exception {
 public:
-    MemoryAllocationException(const std::string& msg)
-            : error_message(std::string("oneMKL MemoryAllocationException: \n") + msg + "\n") {}
-
-    const char* what() const noexcept override {
-        return error_message.c_str();
-    };
+    function_not_found(const std::string &info = "")
+            : oneapi::mkl::exception(
+                  "", "",
+                  ((info.length() != 0) ? info : "Couldn't load functions from selected backend")) {
+    }
 };
 
-class UnsupportedBackendException : virtual public std::exception {
-private:
-    std::string error_message = "";
-
+class specification_mismatch : public oneapi::mkl::exception {
 public:
-    UnsupportedBackendException(cl::sycl::queue& queue, const std::string& msg)
-            : error_message(
-                  std::string("oneMKL UnsupportedBackendException: \n") +
-                  std::string("  There is currently no oneapi::mkl::backend available for the \n") +
-                  std::string("  provided queue, device and sycl::backend. \n")) {}
-
-    const char* what() const noexcept override {
-        return error_message.c_str();
-    };
+    specification_mismatch(const std::string &info = "")
+            : oneapi::mkl::exception(
+                  "", "",
+                  ((info.length() != 0) ? info : "Loaded oneMKL specification version mismatch")) {}
 };
 
-class BackendNotAvailableForApiException : virtual public std::exception {
-private:
-    std::string error_message = "";
+} // namespace mkl
+} // namespace oneapi
 
-public:
-    BackendNotAvailableForApiException(cl::sycl::queue& queue, oneapi::mkl::backend& backend,
-                                       const std::string& api_description)
-            : error_message(std::string("oneMKL BackendNotAvailableForApiException: \n") +
-                            std::string("  The oneapi::mkl::backend = ") +
-                            oneapi::mkl::backend_map[backend] + std::string("\n") +
-                            std::string("  is not available for ") + api_description +
-                            std::string("\n")) {}
-
-    const char* what() const noexcept override {
-        return error_message.c_str();
-    };
-};
-
-} //namespace mkl
-} //namespace oneapi
-
-#endif //_ONEMKL_EXCEPTIONS_HPP_
+#endif // _ONEMKL_DETAIL_EXCEPTIONS_HPP_

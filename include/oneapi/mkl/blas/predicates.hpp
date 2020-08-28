@@ -24,7 +24,7 @@
 #include <complex>
 #include <cstdint>
 
-#include "oneapi/mkl/detail/exceptions.hpp"
+#include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/types.hpp"
 
 namespace oneapi {
