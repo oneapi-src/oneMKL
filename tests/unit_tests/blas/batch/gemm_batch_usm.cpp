@@ -266,7 +266,7 @@ int test(const device &dev, oneapi::mkl::layout layout, int64_t group_count) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const oneapi::mkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::unimplemented &e) {
         oneapi::mkl::aligned_free(m_ref);
         oneapi::mkl::aligned_free(n_ref);
         oneapi::mkl::aligned_free(k_ref);

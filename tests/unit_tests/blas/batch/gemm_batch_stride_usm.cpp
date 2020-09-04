@@ -213,7 +213,7 @@ int test(const device &dev, oneapi::mkl::layout layout, int64_t batch_size) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const oneapi::mkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::unimplemented &e) {
         oneapi::mkl::free_shared(a_array, cxt);
         oneapi::mkl::free_shared(b_array, cxt);
         oneapi::mkl::free_shared(c_array, cxt);

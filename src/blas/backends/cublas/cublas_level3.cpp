@@ -19,7 +19,7 @@
 #include <CL/sycl/detail/pi.hpp>
 #include "cublas_helper.hpp"
 #include "cublas_scope_handle.hpp"
-#include "include/exceptions_helper.hpp"
+#include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/blas/detail/cublas/onemkl_blas_cublas.hpp"
 
 namespace oneapi {
@@ -469,7 +469,7 @@ cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
                      std::int64_t n, std::int64_t k, half alpha, const half *a, std::int64_t lda,
                      const half *b, std::int64_t ldb, half beta, half *c, std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw std::runtime_error("Not implemented for cublas");
+    throw unimplemented("blas", "gemm", "for column_major layout");
 }
 
 template <typename Func, typename T>
@@ -822,7 +822,7 @@ inline void gemm(Func func, cl::sycl::queue &queue, transpose transa, transpose 
                  int64_t n, int64_t k, T alpha, cl::sycl::buffer<T, 1> &a, int64_t lda,
                  cl::sycl::buffer<T, 1> &b, int64_t ldb, T beta, cl::sycl::buffer<T, 1> &c,
                  int64_t ldc) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemm", "for row_major layout");
 }
 
 #define GEMM_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                        \
@@ -847,7 +847,7 @@ inline void gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
                  int64_t k, T_C alpha, cl::sycl::buffer<T_A, 1> &a, int64_t lda,
                  cl::sycl::buffer<T_B, 1> &b, int64_t ldb, T_C beta, cl::sycl::buffer<T_C, 1> &c,
                  int64_t ldc) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemm", "for row_major layout");
 }
 
 #define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, CUBLAS_ROUTINE, CUDADATATYPE_A, CUDADATATYPE_B, \
@@ -870,7 +870,7 @@ inline void symm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_
                  int64_t n, T alpha, cl::sycl::buffer<T, 1> &a, int64_t lda,
                  cl::sycl::buffer<T, 1> &b, int64_t ldb, T beta, cl::sycl::buffer<T, 1> &c,
                  int64_t ldc) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "symm", "for row_major layout");
 }
 
 #define SYMM_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                        \
@@ -893,7 +893,7 @@ inline void hemm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_
                  int64_t n, T alpha, cl::sycl::buffer<T, 1> &a, int64_t lda,
                  cl::sycl::buffer<T, 1> &b, int64_t ldb, T beta, cl::sycl::buffer<T, 1> &c,
                  int64_t ldc) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "hemm", "for row_major layout");
 }
 
 #define HEMM_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                        \
@@ -912,7 +912,7 @@ template <typename Func, typename T>
 inline void syrk(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                  int64_t k, T alpha, cl::sycl::buffer<T, 1> &a, int64_t lda, T beta,
                  cl::sycl::buffer<T, 1> &c, int64_t ldc) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "syrk", "for row_major layout");
 }
 
 #define SYRK_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                    \
@@ -933,7 +933,7 @@ template <typename Func, typename DataType, typename ScalarType>
 inline void herk(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                  int64_t k, ScalarType alpha, cl::sycl::buffer<DataType, 1> &a, int64_t lda,
                  ScalarType beta, cl::sycl::buffer<DataType, 1> &c, int64_t ldc) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "herk", "for row_major layout");
 }
 
 #define HERK_LAUNCHER(DATA_TYPE, SCALAR_TYPE, CUBLAS_ROUTINE)                                      \
@@ -953,7 +953,7 @@ inline void syr2k(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose
                   int64_t k, T alpha, cl::sycl::buffer<T, 1> &a, int64_t lda,
                   cl::sycl::buffer<T, 1> &b, int64_t ldb, T beta, cl::sycl::buffer<T, 1> &c,
                   int64_t ldc) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "syr2k", "for row_major layout");
 }
 
 #define SYR2K_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                       \
@@ -976,7 +976,7 @@ inline void her2k(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose
                   int64_t k, DataType alpha, cl::sycl::buffer<DataType, 1> &a, int64_t lda,
                   cl::sycl::buffer<DataType, 1> &b, int64_t ldb, ScalarType beta,
                   cl::sycl::buffer<DataType, 1> &c, int64_t ldc) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "her2k", "for row_major layout");
 }
 
 #define HER2K_LAUNCHER(DATA_TYPE, SCALAR_TYPE, CUBLAS_ROUTINE)                                  \
@@ -1001,7 +1001,7 @@ template <typename Func, typename T>
 inline void trmm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                  transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha,
                  cl::sycl::buffer<T, 1> &a, int64_t lda, cl::sycl::buffer<T, 1> &b, int64_t ldb) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "trmm", "for row_major layout");
 }
 
 #define TRMM_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                    \
@@ -1022,7 +1022,7 @@ template <typename Func, typename T>
 inline void trsm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                  transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha,
                  cl::sycl::buffer<T, 1> &a, int64_t lda, cl::sycl::buffer<T, 1> &b, int64_t ldb) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "trsm", "for row_major layout");
 }
 
 #define TRSM_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                    \
@@ -1046,7 +1046,7 @@ inline cl::sycl::event gemm(Func func, cl::sycl::queue &queue, transpose transa,
                             int64_t m, int64_t n, int64_t k, T alpha, const T *a, int64_t lda,
                             const T *b, int64_t ldb, T beta, T *c, int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemm", "for row_major layout");
 }
 
 #define GEMM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                  \
@@ -1069,7 +1069,7 @@ cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
                      std::int64_t n, std::int64_t k, half alpha, const half *a, std::int64_t lda,
                      const half *b, std::int64_t ldb, half beta, half *c, std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw std::runtime_error("Not implemented for cublas");
+    throw unimplemented("blas", "gemm", "for row_major layout");
 }
 
 template <typename Func, typename T>
@@ -1077,7 +1077,7 @@ inline cl::sycl::event symm(Func func, cl::sycl::queue &queue, side left_right, 
                             int64_t m, int64_t n, T alpha, const T *a, int64_t lda, const T *b,
                             int64_t ldb, T beta, T *c, int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "symm", "for row_major layout");
 }
 
 #define SYMM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                  \
@@ -1101,7 +1101,7 @@ inline cl::sycl::event hemm(Func func, cl::sycl::queue &queue, side left_right, 
                             int64_t m, int64_t n, T alpha, const T *a, int64_t lda, const T *b,
                             int64_t ldb, T beta, T *c, int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "hemm", "for row_major layout");
 }
 
 #define HEMM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                  \
@@ -1122,7 +1122,7 @@ inline cl::sycl::event syrk(Func func, cl::sycl::queue &queue, uplo upper_lower,
                             int64_t n, int64_t k, T alpha, const T *a, int64_t lda, T beta, T *c,
                             int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "syrk", "for row_major layout");
 }
 
 #define SYRK_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
@@ -1146,7 +1146,7 @@ inline cl::sycl::event herk(Func func, cl::sycl::queue &queue, uplo upper_lower,
                             int64_t n, int64_t k, const ScalarType alpha, const DataType *a,
                             int64_t lda, const ScalarType beta, DataType *c, int64_t ldc,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "herk", "for row_major layout");
 }
 
 #define HERK_LAUNCHER_USM(DATA_TYPE, SCALAR_TYPE, CUBLAS_ROUTINE)                                 \
@@ -1168,7 +1168,7 @@ inline cl::sycl::event syr2k(Func func, cl::sycl::queue &queue, uplo upper_lower
                              int64_t n, int64_t k, T alpha, const T *a, int64_t lda, const T *b,
                              int64_t ldb, T beta, T *c, int64_t ldc,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "syr2k", "for row_major layout");
 }
 
 #define SYR2K_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
@@ -1192,7 +1192,7 @@ inline cl::sycl::event her2k(Func func, cl::sycl::queue &queue, uplo upper_lower
                              int64_t lda, const DataType *b, int64_t ldb, const ScalarType beta,
                              DataType *c, int64_t ldc,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "her2k", "for row_major layout");
 }
 
 #define HER2K_LAUNCHER_USM(DATA_TYPE, SCALAR_TYPE, CUBLAS_ROUTINE)                                 \
@@ -1219,7 +1219,7 @@ inline cl::sycl::event trmm(Func func, cl::sycl::queue &queue, side left_right, 
                             transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha,
                             const T *a, int64_t lda, T *b, int64_t ldb,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "trmm", "for row_major layout");
 }
 
 #define TRMM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                    \
@@ -1242,7 +1242,7 @@ inline cl::sycl::event trsm(Func func, cl::sycl::queue &queue, side left_right, 
                             transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha,
                             const T *a, int64_t lda, T *b, int64_t ldb,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "trsm", "for row_major layout");
 }
 
 #define TRSM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                    \

@@ -188,7 +188,7 @@ int test(const device &dev, oneapi::mkl::layout layout, int64_t group_count) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const oneapi::mkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::unimplemented &e) {
         idx = 0;
         for (i = 0; i < group_count; i++) {
             for (j = 0; j < group_size[i]; j++) {

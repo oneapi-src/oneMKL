@@ -19,7 +19,7 @@
 #include <CL/sycl/detail/pi.hpp>
 #include "cublas_helper.hpp"
 #include "cublas_scope_handle.hpp"
-#include "include/exceptions_helper.hpp"
+#include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/blas/detail/cublas/onemkl_blas_cublas.hpp"
 
 namespace oneapi {
@@ -1776,7 +1776,7 @@ template <typename Func, typename T>
 inline void gemv(Func func, cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n, T alpha,
                  cl::sycl::buffer<T, 1> &a, int64_t lda, cl::sycl::buffer<T, 1> &x, int64_t incx,
                  T beta, cl::sycl::buffer<T, 1> &y, int64_t incy) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemv", "for row_major layout");
 }
 
 #define GEMV_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                              \
@@ -1797,7 +1797,7 @@ inline void gbmv(Func func, cl::sycl::queue &queue, transpose trans, int64_t m, 
                  int64_t kl, int64_t ku, T alpha, cl::sycl::buffer<T, 1> &a, int64_t lda,
                  cl::sycl::buffer<T, 1> &x, int64_t incx, T beta, cl::sycl::buffer<T, 1> &y,
                  int64_t incy) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gbmv", "for row_major layout");
 }
 
 #define GBMV_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                        \
@@ -1818,7 +1818,7 @@ template <typename Func, typename T>
 inline void ger(Func func, cl::sycl::queue &queue, int64_t m, int64_t n, T alpha,
                 cl::sycl::buffer<T, 1> &x, int64_t incx, cl::sycl::buffer<T, 1> &y, int64_t incy,
                 cl::sycl::buffer<T, 1> &a, int64_t lda) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "ger", "for row_major layout");
 }
 
 #define GER_LAUNCHER(EXT, TYPE, CUBLAS_ROUTINE)                                             \
@@ -1840,7 +1840,7 @@ template <typename Func, typename T>
 inline void hbmv(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k, T alpha,
                  cl::sycl::buffer<T, 1> &a, int64_t lda, cl::sycl::buffer<T, 1> &x, int64_t incx,
                  T beta, cl::sycl::buffer<T, 1> &y, int64_t incy) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "hbmv", "for row_major layout");
 }
 
 #define HBMV_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                    \
@@ -1858,7 +1858,7 @@ template <typename Func, typename T>
 inline void hemv(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                  cl::sycl::buffer<T, 1> &a, int64_t lda, cl::sycl::buffer<T, 1> &x, int64_t incx,
                  T beta, cl::sycl::buffer<T, 1> &y, int64_t incy) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "hemv", "for row_major layout");
 }
 
 #define HEMV_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                 \
@@ -1876,7 +1876,7 @@ template <typename Func, typename ScalarType, typename DataType>
 inline void her(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, ScalarType alpha,
                 cl::sycl::buffer<DataType, 1> &x, int64_t incx, cl::sycl::buffer<DataType, 1> &a,
                 int64_t lda) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "her", "for row_major layout");
 }
 
 #define HER_LAUNCHER(SCALAR_TYPE, DATA_TYPE, CUBLAS_ROUTINE)                                     \
@@ -1895,7 +1895,7 @@ template <typename Func, typename T>
 inline void her2(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                  cl::sycl::buffer<T, 1> &x, int64_t incx, cl::sycl::buffer<T, 1> &y, int64_t incy,
                  cl::sycl::buffer<T, 1> &a, int64_t lda) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "her2", "for row_major layout");
 }
 
 #define HER2_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                             \
@@ -1914,7 +1914,7 @@ template <typename Func, typename T>
 inline void hpmv(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                  cl::sycl::buffer<T, 1> &a, cl::sycl::buffer<T, 1> &x, int64_t incx, T beta,
                  cl::sycl::buffer<T, 1> &y, int64_t incy) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "hpmv", "for row_major layout");
 }
 
 #define HPMV_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                        \
@@ -1932,7 +1932,7 @@ HPMV_LAUNCHER(std::complex<double>, cublasZhpmv)
 template <typename Func, typename ScalarType, typename DataType>
 inline void hpr(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, ScalarType alpha,
                 cl::sycl::buffer<DataType, 1> &x, int64_t incx, cl::sycl::buffer<DataType, 1> &a) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "hpr", "for row_major layout");
 }
 
 #define HPR_LAUNCHER(SCALAR_TYPE, DATA_TYPE, CUBLAS_ROUTINE)                                       \
@@ -1950,7 +1950,7 @@ template <typename Func, typename T>
 inline void hpr2(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                  cl::sycl::buffer<T, 1> &x, int64_t incx, cl::sycl::buffer<T, 1> &y, int64_t incy,
                  cl::sycl::buffer<T, 1> &a) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "hpr2", "for row_major layout");
 }
 
 #define HPR2_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                             \
@@ -1969,7 +1969,7 @@ template <typename Func, typename T>
 inline void sbmv(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k, T alpha,
                  cl::sycl::buffer<T, 1> &a, int64_t lda, cl::sycl::buffer<T, 1> &x, int64_t incx,
                  T beta, cl::sycl::buffer<T, 1> &y, int64_t incy) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "sbmv", "for row_major layout");
 }
 
 #define SBMV_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                    \
@@ -1988,7 +1988,7 @@ template <typename Func, typename T>
 inline void symv(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                  cl::sycl::buffer<T, 1> &a, int64_t lda, cl::sycl::buffer<T, 1> &x, int64_t incx,
                  T beta, cl::sycl::buffer<T, 1> &y, int64_t incy) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "symv", "for row_major layout");
 }
 
 #define SYMV_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                 \
@@ -2006,7 +2006,7 @@ SYMV_LAUNCHER(double, cublasDsymv)
 template <typename Func, typename T>
 inline void syr(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                 cl::sycl::buffer<T, 1> &x, int64_t incx, cl::sycl::buffer<T, 1> &a, int64_t lda) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "syr", "for row_major layout");
 }
 
 #define SYR_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                             \
@@ -2027,7 +2027,7 @@ template <typename Func, typename T>
 inline void syr2(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                  cl::sycl::buffer<T, 1> &x, int64_t incx, cl::sycl::buffer<T, 1> &y, int64_t incy,
                  cl::sycl::buffer<T, 1> &a, int64_t lda) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "syr2", "for row_major layout");
 }
 
 #define SYR2_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                             \
@@ -2049,7 +2049,7 @@ template <typename Func, typename T>
 inline void spmv(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                  cl::sycl::buffer<T, 1> &a, cl::sycl::buffer<T, 1> &x, int64_t incx, T beta,
                  cl::sycl::buffer<T, 1> &y, int64_t incy) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "spmv", "for row_major layout");
 }
 
 #define SPMV_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                        \
@@ -2067,7 +2067,7 @@ SPMV_LAUNCHER(double, cublasDspmv)
 template <typename Func, typename T>
 inline void spr(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                 cl::sycl::buffer<T, 1> &x, int64_t incx, cl::sycl::buffer<T, 1> &a) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "spr", "for row_major layout");
 }
 
 #define SPR_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                               \
@@ -2085,7 +2085,7 @@ template <typename Func, typename T>
 inline void spr2(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                  cl::sycl::buffer<T, 1> &x, int64_t incx, cl::sycl::buffer<T, 1> &y, int64_t incy,
                  cl::sycl::buffer<T, 1> &a) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "spr2", "for row_major layout");
 }
 
 #define SPR2_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                             \
@@ -2104,7 +2104,7 @@ template <typename Func, typename T>
 inline void tbmv(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                  diag unit_diag, int64_t n, int64_t k, cl::sycl::buffer<T, 1> &a, int64_t lda,
                  cl::sycl::buffer<T, 1> &x, int64_t incx) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "tbmv", "for row_major layout");
 }
 
 #define TBMV_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                \
@@ -2125,7 +2125,7 @@ template <typename Func, typename T>
 inline void tbsv(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                  diag unit_diag, int64_t n, int64_t k, cl::sycl::buffer<T, 1> &a, int64_t lda,
                  cl::sycl::buffer<T, 1> &x, int64_t incx) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "tbsv", "for row_major layout");
 }
 
 #define TBSV_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                \
@@ -2146,7 +2146,7 @@ template <typename Func, typename T>
 inline void tpmv(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                  diag unit_diag, int64_t n, cl::sycl::buffer<T, 1> &a, cl::sycl::buffer<T, 1> &x,
                  int64_t incx) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "tpmv", "for row_major layout");
 }
 
 #define TPMV_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                              \
@@ -2167,7 +2167,7 @@ template <typename Func, typename T>
 inline void tpsv(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                  diag unit_diag, int64_t n, cl::sycl::buffer<T, 1> &a, cl::sycl::buffer<T, 1> &x,
                  int64_t incx) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "tpsv", "for row_major layout");
 }
 
 #define TPSV_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                              \
@@ -2188,7 +2188,7 @@ template <typename Func, typename T>
 inline void trmv(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                  diag unit_diag, int64_t n, cl::sycl::buffer<T, 1> &a, int64_t lda,
                  cl::sycl::buffer<T, 1> &x, int64_t incx) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "trmv", "for row_major layout");
 }
 
 #define TRMV_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                       \
@@ -2209,7 +2209,7 @@ template <typename Func, typename T>
 inline void trsv(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                  diag unit_diag, int64_t n, cl::sycl::buffer<T, 1> &a, int64_t lda,
                  cl::sycl::buffer<T, 1> &x, int64_t incx) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "trsv", "for row_major layout");
 }
 
 #define TRSV_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                       \
@@ -2233,7 +2233,7 @@ inline cl::sycl::event gemv(Func func, cl::sycl::queue &queue, transpose trans, 
                             int64_t n, T alpha, const T *a, int64_t lda, const T *x, int64_t incx,
                             T beta, T *y, int64_t incy,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemv", "for row_major layout");
 }
 
 #define GEMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                \
@@ -2256,7 +2256,7 @@ inline cl::sycl::event gbmv(Func func, cl::sycl::queue &queue, transpose trans, 
                             int64_t n, int64_t kl, int64_t ku, T alpha, const T *a, int64_t lda,
                             const T *x, int64_t incx, T beta, T *y, int64_t incy,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gbmv", "for row_major layout");
 }
 
 #define GBMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                  \
@@ -2278,7 +2278,7 @@ template <typename Func, typename T>
 inline cl::sycl::event ger(Func func, cl::sycl::queue &queue, int64_t m, int64_t n, T alpha,
                            const T *x, int64_t incx, const T *y, int64_t incy, T *a, int64_t lda,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "ger", "for row_major layout");
 }
 
 #define GER_LAUNCHER_USM(EXT, TYPE, CUBLAS_ROUTINE)                                             \
@@ -2302,7 +2302,7 @@ inline cl::sycl::event hbmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
                             int64_t k, T alpha, const T *a, int64_t lda, const T *x, int64_t incx,
                             T beta, T *y, int64_t incy,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "hbmv", "for row_major layout");
 }
 
 #define HBMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                \
@@ -2323,7 +2323,7 @@ inline cl::sycl::event hemv(Func func, cl::sycl::queue &queue, uplo upper_lower,
                             const T *a, int64_t lda, const T *x, int64_t incx, T beta, T *y,
                             int64_t incy,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "hemv", "for row_major layout");
 }
 
 #define HEMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
@@ -2344,7 +2344,7 @@ inline cl::sycl::event her(Func func, cl::sycl::queue &queue, uplo upper_lower, 
                            const ScalarType alpha, const DataType *x, int64_t incx, DataType *a,
                            int64_t lda,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "her", "for row_major layout");
 }
 
 #define HER_LAUNCHER_USM(SCALAR_TYPE, DATA_TYPE, CUBLAS_ROUTINE)                                 \
@@ -2364,7 +2364,7 @@ template <typename Func, typename T>
 inline cl::sycl::event her2(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                             const T *x, int64_t incx, const T *y, int64_t incy, T *a, int64_t lda,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "her2", "for row_major layout");
 }
 
 #define HER2_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
@@ -2385,7 +2385,7 @@ template <typename Func, typename T>
 inline cl::sycl::event hpmv(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                             const T *a, const T *x, int64_t incx, T beta, T *y, int64_t incy,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "hpmv", "for row_major layout");
 }
 
 #define HPMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                              \
@@ -2406,7 +2406,7 @@ template <typename Func, typename ScalarType, typename DataType>
 inline cl::sycl::event hpr(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n,
                            const ScalarType alpha, const DataType *x, int64_t incx, DataType *a,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "hpr", "for row_major layout");
 }
 
 #define HPR_LAUNCHER_USM(SCALAR_TYPE, DATA_TYPE, CUBLAS_ROUTINE)                                 \
@@ -2425,7 +2425,7 @@ template <typename Func, typename T>
 inline cl::sycl::event hpr2(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                             const T *x, int64_t incx, const T *y, int64_t incy, T *a,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "hpr2", "for row_major layout");
 }
 
 #define HPR2_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
@@ -2446,7 +2446,7 @@ inline cl::sycl::event sbmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
                             int64_t k, T alpha, const T *a, int64_t lda, const T *x, int64_t incx,
                             T beta, T *y, int64_t incy,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "sbmv", "for row_major layout");
 }
 
 #define SBMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                \
@@ -2468,7 +2468,7 @@ inline cl::sycl::event symv(Func func, cl::sycl::queue &queue, uplo upper_lower,
                             const T *a, int64_t lda, const T *x, int64_t incx, T beta, T *y,
                             int64_t incy,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "symv", "for row_major layout");
 }
 
 #define SYMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
@@ -2489,7 +2489,7 @@ template <typename Func, typename T>
 inline cl::sycl::event syr(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                            const T *x, int64_t incx, T *a, int64_t lda,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "syr", "for row_major layout");
 }
 
 #define SYR_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
@@ -2510,7 +2510,7 @@ template <typename Func, typename T>
 inline cl::sycl::event syr2(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                             const T *x, int64_t incx, const T *y, int64_t incy, T *a, int64_t lda,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "syr2", "for row_major layout");
 }
 
 #define SYR2_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
@@ -2534,7 +2534,7 @@ template <typename Func, typename T>
 inline cl::sycl::event spmv(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                             const T *a, const T *x, int64_t incx, T beta, T *y, int64_t incy,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "spmv", "for row_major layout");
 }
 
 #define SPMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                              \
@@ -2555,7 +2555,7 @@ template <typename Func, typename T>
 inline cl::sycl::event spr(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                            const T *x, int64_t incx, T *a,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "spr", "for row_major layout");
 }
 
 #define SPR_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                              \
@@ -2574,7 +2574,7 @@ template <typename Func, typename T>
 inline cl::sycl::event spr2(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                             const T *x, int64_t incx, const T *y, int64_t incy, T *a,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "spr2", "for row_major layout");
 }
 
 #define SPR2_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
@@ -2595,7 +2595,7 @@ inline cl::sycl::event tbmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
                             diag unit_diag, int64_t n, int64_t k, const T *a, int64_t lda, T *x,
                             int64_t incx,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "tbmv", "for row_major layout");
 }
 
 #define TBMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                  \
@@ -2619,7 +2619,7 @@ inline cl::sycl::event tbsv(Func func, cl::sycl::queue &queue, uplo upper_lower,
                             diag unit_diag, int64_t n, int64_t k, const T *a, int64_t lda, T *x,
                             int64_t incx,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "tbsv", "for row_major layout");
 }
 
 #define TBSV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                  \
@@ -2642,7 +2642,7 @@ template <typename Func, typename T>
 inline cl::sycl::event tpmv(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                             diag unit_diag, int64_t n, const T *a, T *x, int64_t incx,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "tpmv", "for row_major layout");
 }
 
 #define TPMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                           \
@@ -2664,7 +2664,7 @@ template <typename Func, typename T>
 inline cl::sycl::event tpsv(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                             diag unit_diag, int64_t n, const T *a, T *x, int64_t incx,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "tpsv", "for row_major layout");
 }
 
 #define TPSV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                           \
@@ -2686,7 +2686,7 @@ template <typename Func, typename T>
 inline cl::sycl::event trmv(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                             diag unit_diag, int64_t n, const T *a, int64_t lda, T *x, int64_t incx,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "trmv", "for row_major layout");
 }
 
 #define TRMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                               \
@@ -2709,7 +2709,7 @@ template <typename Func, typename T>
 inline cl::sycl::event trsv(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                             diag unit_diag, int64_t n, const T *a, int64_t lda, T *x, int64_t incx,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "trsv", "for row_major layout");
 }
 
 #define TRSV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                               \

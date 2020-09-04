@@ -19,7 +19,7 @@
 #include <CL/sycl/detail/pi.hpp>
 #include "cublas_helper.hpp"
 #include "cublas_scope_handle.hpp"
-#include "include/exceptions_helper.hpp"
+#include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/blas/detail/cublas/onemkl_blas_cublas.hpp"
 
 namespace oneapi {
@@ -78,7 +78,7 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 cl::sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a,
                 cl::sycl::buffer<float, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 std::int64_t batch_size) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "trsm_batch", "for column_major layout");
 }
 
 void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
@@ -86,7 +86,7 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 cl::sycl::buffer<double, 1> &a, std::int64_t lda, std::int64_t stride_a,
                 cl::sycl::buffer<double, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 std::int64_t batch_size) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "trsm_batch", "for column_major layout");
 }
 
 void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
@@ -94,7 +94,7 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
                 std::int64_t stride_a, cl::sycl::buffer<std::complex<float>, 1> &b,
                 std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "trsm_batch", "for column_major layout");
 }
 
 void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
@@ -102,7 +102,7 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                 std::int64_t stride_a, cl::sycl::buffer<std::complex<double>, 1> &b,
                 std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "trsm_batch", "for column_major layout");
 }
 
 // USM APIs
@@ -211,28 +211,28 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, float *alpha, con
                            int64_t *incx, float **y, int64_t *incy, int64_t group_count,
                            int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "axpy_batch", "for column_major layout");
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, double *alpha, const double **x,
                            int64_t *incx, double **y, int64_t *incy, int64_t group_count,
                            int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "axpy_batch", "for column_major layout");
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<float> *alpha,
                            const std::complex<float> **x, int64_t *incx, std::complex<float> **y,
                            int64_t *incy, int64_t group_count, int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "axpy_batch", "for column_major layout");
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<double> *alpha,
                            const std::complex<double> **x, int64_t *incx, std::complex<double> **y,
                            int64_t *incy, int64_t group_count, int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "axpy_batch", "for column_major layout");
 }
 
 } // namespace column_major
@@ -246,7 +246,7 @@ inline void gemm_batch(Func func, cl::sycl::queue &queue, transpose transa, tran
                        int64_t lda, int64_t stride_a, cl::sycl::buffer<T, 1> &b, int64_t ldb,
                        int64_t stride_b, T beta, cl::sycl::buffer<T, 1> &c, int64_t ldc,
                        int64_t stride_c, int64_t batch_size) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemm_batch", "for row_major layout");
 }
 
 #define GEMM_STRIDED_BATCH_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                          \
@@ -271,7 +271,7 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 cl::sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a,
                 cl::sycl::buffer<float, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 std::int64_t batch_size) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "trsm_batch", "for row_major layout");
 }
 
 void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
@@ -279,7 +279,7 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 cl::sycl::buffer<double, 1> &a, std::int64_t lda, std::int64_t stride_a,
                 cl::sycl::buffer<double, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 std::int64_t batch_size) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "trsm_batch", "for row_major layout");
 }
 
 void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
@@ -287,7 +287,7 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
                 std::int64_t stride_a, cl::sycl::buffer<std::complex<float>, 1> &b,
                 std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "trsm_batch", "for row_major layout");
 }
 
 void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
@@ -295,7 +295,7 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
                 std::int64_t stride_a, cl::sycl::buffer<std::complex<double>, 1> &b,
                 std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "trsm_batch", "for row_major layout");
 }
 
 // USM APIs
@@ -307,7 +307,7 @@ inline cl::sycl::event gemm_batch(Func func, cl::sycl::queue &queue, transpose t
                                   int64_t ldb, int64_t stride_b, T beta, T *c, int64_t ldc,
                                   int64_t stride_c, int64_t batch_size,
                                   const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemm_batch", "for row_major layout");
 }
 
 #define GEMM_STRIDED_BATCH_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                      \
@@ -333,7 +333,7 @@ inline cl::sycl::event gemm_batch(Func func, cl::sycl::queue &queue, transpose *
                                   const T **a, int64_t *lda, const T **b, int64_t *ldb, T *beta,
                                   T **c, int64_t *ldc, int64_t group_count, int64_t *group_size,
                                   const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemm_batch", "for row_major layout");
 }
 
 #define GEMM_BATCH_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                            \
@@ -357,28 +357,28 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, float *alpha, con
                            int64_t *incx, float **y, int64_t *incy, int64_t group_count,
                            int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "axpy_batch", "for row_major layout");
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, double *alpha, const double **x,
                            int64_t *incx, double **y, int64_t *incy, int64_t group_count,
                            int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "axpy_batch", "for row_major layout");
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<float> *alpha,
                            const std::complex<float> **x, int64_t *incx, std::complex<float> **y,
                            int64_t *incy, int64_t group_count, int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "axpy_batch", "for row_major layout");
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<double> *alpha,
                            const std::complex<double> **x, int64_t *incx, std::complex<double> **y,
                            int64_t *incy, int64_t group_count, int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "axpy_batch", "for row_major layout");
 }
 
 } // namespace row_major

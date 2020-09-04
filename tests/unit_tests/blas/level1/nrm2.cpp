@@ -107,7 +107,7 @@ int test(const device& dev, oneapi::mkl::layout layout, int N, int incx) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const oneapi::mkl::backend_unsupported_exception& e) {
+    catch (const oneapi::mkl::unimplemented& e) {
         return test_skipped;
     }
 

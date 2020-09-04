@@ -19,7 +19,7 @@
 #include <CL/sycl/detail/pi.hpp>
 #include "cublas_helper.hpp"
 #include "cublas_scope_handle.hpp"
-#include "include/exceptions_helper.hpp"
+#include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/blas/detail/cublas/onemkl_blas_cublas.hpp"
 
 namespace oneapi {
@@ -35,14 +35,14 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
            std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<float, 1> &a,
            std::int64_t lda, cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
            cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
 void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
            std::int64_t n, std::int64_t k, double alpha, cl::sycl::buffer<double, 1> &a,
            std::int64_t lda, cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
            cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
 void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
@@ -50,7 +50,7 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
            cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
            cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, std::complex<float> beta,
            cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
 void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
@@ -59,7 +59,7 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
            cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
            std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
            std::int64_t ldc) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
 void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
@@ -68,7 +68,7 @@ void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offse
                cl::sycl::buffer<uint8_t, 1> &b, std::int64_t ldb, uint8_t bo, float beta,
                cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
                cl::sycl::buffer<int32_t, 1> &co) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemm_bias", "for column_major layout");
 }
 
 // USM APIs
@@ -79,14 +79,14 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
                       int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
                       const float *b, int64_t ldb, float beta, float *c, int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                       int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
                       const double *b, int64_t ldb, double beta, double *c, int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
@@ -94,7 +94,7 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
                       int64_t lda, const std::complex<float> *b, int64_t ldb,
                       std::complex<float> beta, std::complex<float> *c, int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
@@ -102,7 +102,7 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
                       const std::complex<double> *a, int64_t lda, const std::complex<double> *b,
                       int64_t ldb, std::complex<double> beta, std::complex<double> *c, int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
 } // namespace column_major
@@ -116,14 +116,14 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
            std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<float, 1> &a,
            std::int64_t lda, cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
            cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
 void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
            std::int64_t n, std::int64_t k, double alpha, cl::sycl::buffer<double, 1> &a,
            std::int64_t lda, cl::sycl::buffer<double, 1> &b, std::int64_t ldb, double beta,
            cl::sycl::buffer<double, 1> &c, std::int64_t ldc) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
 void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
@@ -131,7 +131,7 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
            cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
            cl::sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, std::complex<float> beta,
            cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
 void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
@@ -140,7 +140,7 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
            cl::sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
            std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c,
            std::int64_t ldc) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
 void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
@@ -149,7 +149,7 @@ void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offse
                cl::sycl::buffer<uint8_t, 1> &b, std::int64_t ldb, uint8_t bo, float beta,
                cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
                cl::sycl::buffer<int32_t, 1> &co) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemm_bias", "for row_major layout");
 }
 
 // USM APIs
@@ -160,14 +160,14 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
                       int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
                       const float *b, int64_t ldb, float beta, float *c, int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                       int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
                       const double *b, int64_t ldb, double beta, double *c, int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
@@ -175,7 +175,7 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
                       int64_t lda, const std::complex<float> *b, int64_t ldb,
                       std::complex<float> beta, std::complex<float> *c, int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
@@ -183,7 +183,7 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
                       const std::complex<double> *a, int64_t lda, const std::complex<double> *b,
                       int64_t ldb, std::complex<double> beta, std::complex<double> *c, int64_t ldc,
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
 } // namespace row_major

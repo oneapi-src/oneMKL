@@ -18,7 +18,7 @@
 **************************************************************************/
 #include "cublas_helper.hpp"
 #include "cublas_scope_handle.hpp"
-#include "include/exceptions_helper.hpp"
+#include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/blas/detail/cublas/onemkl_blas_cublas.hpp"
 
 #include <CL/sycl/detail/pi.hpp>
@@ -359,7 +359,7 @@ void sdsdot(cl::sycl::queue &queue, int64_t n, float sb, cl::sycl::buffer<float,
 
 void dot(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int64_t incx,
          cl::sycl::buffer<float, 1> &y, int64_t incy, cl::sycl::buffer<double, 1> &result) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "dot", "for column_major layout");
 }
 
 template <typename Func, typename T>
@@ -899,7 +899,7 @@ cl::sycl::event sdsdot(cl::sycl::queue &queue, int64_t n, float sb, const float 
 cl::sycl::event dot(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, const float *y,
                     int64_t incy, double *result,
                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "dot", "for column_major layout");
 }
 
 template <typename Func, typename T>
@@ -1111,7 +1111,7 @@ namespace row_major {
 template <typename Func, typename T1, typename T2>
 inline void asum(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T1, 1> &x,
                  const int64_t incx, cl::sycl::buffer<T2, 1> &result) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "asum", "for row_major layout");
 }
 
 #define ASUM_LAUNCHER(TYPE1, TYPE2, CUBLAS_ROUTINE)                             \
@@ -1128,7 +1128,7 @@ ASUM_LAUNCHER(std::complex<double>, double, cublasDzasum)
 template <typename Func, typename T1, typename T2>
 inline void scal(Func func, cl::sycl::queue &queue, int64_t n, T1 a, cl::sycl::buffer<T2, 1> &x,
                  int64_t incx) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "scal", "for row_major layout");
 }
 
 #define SCAL_LAUNCHER(TYPE1, TYPE2, CUBLAS_ROUTINE)                                      \
@@ -1147,7 +1147,7 @@ SCAL_LAUNCHER(double, std::complex<double>, cublasZdscal)
 template <typename Func, typename T>
 inline void axpy(Func func, cl::sycl::queue &queue, int64_t n, T alpha, cl::sycl::buffer<T, 1> &x,
                  int64_t incx, cl::sycl::buffer<T, 1> &y, int64_t incy) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "axpy", "for row_major layout");
 }
 
 #define AXPY_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                \
@@ -1166,7 +1166,7 @@ template <typename Func, typename T1, typename T2>
 inline void rotg(Func func, cl::sycl::queue &queue, cl::sycl::buffer<T1, 1> &a,
                  cl::sycl::buffer<T1, 1> &b, cl::sycl::buffer<T2, 1> &c,
                  cl::sycl::buffer<T1, 1> &s) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "rotg", "for row_major layout");
 }
 
 #define ROTG_LAUNCHER(TYPE1, TYPE2, CUBLAS_ROUTINE)                         \
@@ -1186,7 +1186,7 @@ template <typename Func, typename T>
 inline void rotm(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T, 1> &x,
                  int64_t incx, cl::sycl::buffer<T, 1> &y, int64_t incy,
                  cl::sycl::buffer<T, 1> &param) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "rotm", "for row_major layout");
 }
 
 #define ROTM_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                   \
@@ -1202,7 +1202,7 @@ ROTM_LAUNCHER(double, cublasDrotm)
 template <typename Func, typename T>
 inline void copy(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T, 1> &x,
                  int64_t incx, cl::sycl::buffer<T, 1> &y, int64_t incy) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "copy", "for row_major layout");
 }
 
 #define COPY_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                  \
@@ -1221,7 +1221,7 @@ template <typename Func, typename T>
 inline void dot(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T, 1> &x,
                 const int64_t incx, cl::sycl::buffer<T, 1> &y, int64_t incy,
                 cl::sycl::buffer<T, 1> &result) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "dot", "for row_major layout");
 }
 
 #define DOT_LAUNCHER(EXT, TYPE, CUBLAS_ROUTINE)                                         \
@@ -1241,7 +1241,7 @@ DOT_LAUNCHER(u, std::complex<double>, cublasZdotu)
 template <typename Func, typename T1, typename T2, typename T3>
 inline void rot(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T1, 1> &x,
                 const int64_t incx, cl::sycl::buffer<T1, 1> &y, int64_t incy, T2 c, T3 s) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "rot", "for row_major layout");
 }
 
 #define ROT_LAUNCHER(TYPE1, TYPE2, TYPE3, CUBLAS_ROUTINE)                                          \
@@ -1259,19 +1259,19 @@ ROT_LAUNCHER(std::complex<double>, double, double, cublasZdrot)
 void sdsdot(cl::sycl::queue &queue, int64_t n, float sb, cl::sycl::buffer<float, 1> &x,
             int64_t incx, cl::sycl::buffer<float, 1> &y, int64_t incy,
             cl::sycl::buffer<float, 1> &result) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "sdsdot", "for row_major layout");
 }
 
 void dot(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int64_t incx,
          cl::sycl::buffer<float, 1> &y, int64_t incy, cl::sycl::buffer<double, 1> &result) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "dot", "for row_major layout");
 }
 
 template <typename Func, typename T>
 inline void rotmg(Func func, cl::sycl::queue &queue, cl::sycl::buffer<T, 1> &d1,
                   cl::sycl::buffer<T, 1> &d2, cl::sycl::buffer<T, 1> &x1, T y1,
                   cl::sycl::buffer<T, 1> &param) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "rotmg", "for row_major layout");
 }
 
 #define ROTMG_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                          \
@@ -1288,7 +1288,7 @@ ROTMG_LAUNCHER(double, cublasDrotmg)
 template <typename Func, typename T>
 inline void iamax(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T, 1> &x,
                   const int64_t incx, cl::sycl::buffer<int64_t, 1> &result) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "iamax", "for row_major layout");
 }
 
 #define IAMAX_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                    \
@@ -1305,7 +1305,7 @@ IAMAX_LAUNCHER(std::complex<double>, cublasIzamax)
 template <typename Func, typename T>
 inline void swap(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T, 1> &x,
                  int64_t incx, cl::sycl::buffer<T, 1> &y, int64_t incy) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "swap", "for row_major layout");
 }
 
 #define SWAP_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                  \
@@ -1323,7 +1323,7 @@ SWAP_LAUNCHER(std::complex<double>, cublasZswap)
 template <typename Func, typename T>
 inline void iamin(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T, 1> &x,
                   const int64_t incx, cl::sycl::buffer<int64_t, 1> &result) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "iamin", "for row_major layout");
 }
 
 #define IAMIN_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                    \
@@ -1340,7 +1340,7 @@ IAMIN_LAUNCHER(std::complex<double>, cublasIzamin)
 template <typename Func, typename T1, typename T2>
 inline void nrm2(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T1, 1> &x,
                  const int64_t incx, cl::sycl::buffer<T2, 1> &result) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "nrm2", "for row_major layout");
 }
 
 #define NRM2_LAUNCHER(TYPE1, TYPE2, CUBLAS_ROUTINE)                             \
@@ -1361,7 +1361,7 @@ template <typename Func, typename T1, typename T2>
 inline cl::sycl::event asum(Func func, cl::sycl::queue &queue, int64_t n, const T1 *x,
                             const int64_t incx, T2 *result,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "asum", "for row_major layout");
 }
 
 #define ASUM_LAUNCHER_USM(TYPE1, TYPE2, CUBLAS_ROUTINE)                                         \
@@ -1379,7 +1379,7 @@ ASUM_LAUNCHER_USM(std::complex<double>, double, cublasDzasum)
 template <typename Func, typename T1, typename T2>
 inline cl::sycl::event scal(Func func, cl::sycl::queue &queue, int64_t n, T1 a, T2 *x, int64_t incx,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "scal", "for row_major layout");
 }
 
 #define SCAL_LAUNCHER_USM(TYPE1, TYPE2, CUBLAS_ROUTINE)                                      \
@@ -1399,7 +1399,7 @@ template <typename Func, typename T>
 inline cl::sycl::event axpy(Func func, cl::sycl::queue &queue, int64_t n, T alpha, const T *x,
                             int64_t incx, T *y, int64_t incy,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "axpy", "for row_major layout");
 }
 
 #define AXPY_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                         \
@@ -1418,7 +1418,7 @@ AXPY_LAUNCHER_USM(std::complex<double>, cublasZaxpy)
 template <typename Func, typename T1, typename T2>
 inline cl::sycl::event rotg(Func func, cl::sycl::queue &queue, T1 *a, T1 *b, T2 *c, T1 *s,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "rotg", "for row_major layout");
 }
 
 #define ROTG_LAUNCHER_USM(TYPE1, TYPE2, CUBLAS_ROUTINE)                                  \
@@ -1437,7 +1437,7 @@ template <typename Func, typename T>
 inline cl::sycl::event rotm(Func func, cl::sycl::queue &queue, int64_t n, T *x, int64_t incx, T *y,
                             int64_t incy, T *param,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "rotm", "for row_major layout");
 }
 
 #define ROTM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
@@ -1455,7 +1455,7 @@ template <typename Func, typename T>
 inline cl::sycl::event copy(Func func, cl::sycl::queue &queue, int64_t n, const T *x, int64_t incx,
                             T *y, int64_t incy,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "copy", "for row_major layout");
 }
 
 #define COPY_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
@@ -1475,7 +1475,7 @@ template <typename Func, typename T>
 inline cl::sycl::event dot(Func func, cl::sycl::queue &queue, int64_t n, const T *x,
                            const int64_t incx, const T *y, int64_t incy, T *result,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "dot", "for row_major layout");
 }
 
 #define DOT_LAUNCHER_USM(EXT, TYPE, CUBLAS_ROUTINE)                                                \
@@ -1496,7 +1496,7 @@ template <typename Func, typename T1, typename T2, typename T3>
 inline cl::sycl::event rot(Func func, cl::sycl::queue &queue, int64_t n, T1 *x, const int64_t incx,
                            T1 *y, int64_t incy, T2 c, T3 s,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "rot", "for row_major layout");
 }
 
 #define ROT_LAUNCHER_USM(TYPE1, TYPE2, TYPE3, CUBLAS_ROUTINE)                                      \
@@ -1515,19 +1515,19 @@ ROT_LAUNCHER_USM(std::complex<double>, double, double, cublasZdrot)
 cl::sycl::event sdsdot(cl::sycl::queue &queue, int64_t n, float sb, const float *x, int64_t incx,
                        const float *y, int64_t incy, float *result,
                        const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "sdsdot", "for row_major layout");
 }
 
 cl::sycl::event dot(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, const float *y,
                     int64_t incy, double *result,
                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "dot", "for row_major layout");
 }
 
 template <typename Func, typename T>
 inline cl::sycl::event rotmg(Func func, cl::sycl::queue &queue, T *d1, T *d2, T *x1, T y1, T *param,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "rotmg", "for row_major layout");
 }
 
 #define ROTMG_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                         \
@@ -1545,7 +1545,7 @@ template <typename Func, typename T>
 inline cl::sycl::event iamax(Func func, cl::sycl::queue &queue, int64_t n, const T *x,
                              const int64_t incx, int64_t *result,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "iamax", "for row_major layout");
 }
 
 #define IAMAX_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                \
@@ -1564,7 +1564,7 @@ template <typename Func, typename T>
 inline cl::sycl::event swap(Func func, cl::sycl::queue &queue, int64_t n, T *x, int64_t incx, T *y,
                             int64_t incy,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "swap", "for row_major layout");
 }
 
 #define SWAP_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
@@ -1584,7 +1584,7 @@ template <typename Func, typename T>
 inline cl::sycl::event iamin(Func func, cl::sycl::queue &queue, int64_t n, const T *x,
                              const int64_t incx, int64_t *result,
                              const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "iamin", "for row_major layout");
 }
 
 #define IAMIN_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                \
@@ -1603,7 +1603,7 @@ template <typename Func, typename T1, typename T2>
 inline cl::sycl::event nrm2(Func func, cl::sycl::queue &queue, int64_t n, const T1 *x,
                             const int64_t incx, T2 *result,
                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    throw backend_unsupported_exception();
+    throw unimplemented("blas", "nrm2", "for row_major layout");
 }
 
 #define NRM2_LAUNCHER_USM(TYPE1, TYPE2, CUBLAS_ROUTINE)                                         \

@@ -28,16 +28,6 @@
 
 #include <CL/sycl.hpp>
 
-// Exceptions
-namespace oneapi {
-namespace mkl {
-class backend_unsupported_exception : public std::runtime_error {
-public:
-    backend_unsupported_exception() : std::runtime_error("Not yet supported for this backend") {}
-};
-} // namespace mkl
-} // namespace oneapi
-
 namespace std {
 static cl::sycl::half abs(cl::sycl::half v) {
     if (v < cl::sycl::half(0))
