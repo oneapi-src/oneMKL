@@ -17,10 +17,10 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-find_package(CBLAS REQUIRED)
+# find_package(CBLAS REQUIRED)
 
 # Build BLAS tests first
-add_subdirectory(blas)
+# add_subdirectory(blas)
 
 # Build RNG tests first
 add_subdirectory(rng)
@@ -42,27 +42,31 @@ if(BUILD_SHARED_LIBS)
     gtest
     gtest_main
     ${CMAKE_DL_LIBS}
-    ${CBLAS_LINK}
+    #${CBLAS_LINK}
     ONEMKL::SYCL::SYCL
     onemkl
-    blas_level1_rt
-    blas_level2_rt
-    blas_level3_rt
-    blas_batch_rt
-    blas_extensions_rt
+    #blas_level1_rt
+    #blas_level2_rt
+    #blas_level3_rt
+    #blas_batch_rt
+    #blas_extensions_rt
     rng_statistics_rt
     rng_service_rt
   )
 endif()
 
 if(ENABLE_MKLCPU_BACKEND)
-  add_dependencies(test_main_ct onemkl_blas_mklcpu onemkl_rng_mklcpu)
-  list(APPEND ONEMKL_LIBRARIES onemkl_blas_mklcpu onemkl_rng_mklcpu)
+  #add_dependencies(test_main_ct onemkl_blas_mklcpu onemkl_rng_mklcpu)
+  #list(APPEND ONEMKL_LIBRARIES onemkl_blas_mklcpu onemkl_rng_mklcpu)
+  add_dependencies(test_main_ct onemkl_rng_mklcpu)
+  list(APPEND ONEMKL_LIBRARIES onemkl_rng_mklcpu)
 endif()
 
 if(ENABLE_MKLGPU_BACKEND)
-  add_dependencies(test_main_ct onemkl_blas_mklgpu onemkl_rng_mklgpu)
-  list(APPEND ONEMKL_LIBRARIES onemkl_blas_mklgpu onemkl_rng_mklgpu)
+  #add_dependencies(test_main_ct onemkl_blas_mklgpu onemkl_rng_mklgpu)
+  #list(APPEND ONEMKL_LIBRARIES onemkl_blas_mklgpu onemkl_rng_mklgpu)
+  add_dependencies(test_main_ct onemkl_rng_mklgpu)
+  list(APPEND ONEMKL_LIBRARIES onemkl_rng_mklgpu)
 endif()
 
 if(ENABLE_CUBLAS_BACKEND)
@@ -74,14 +78,14 @@ target_link_libraries(test_main_ct PUBLIC
     gtest
     gtest_main
     ${CMAKE_DL_LIBS}
-    ${CBLAS_LINK}
+    #${CBLAS_LINK}
     ${ONEMKL_LIBRARIES}
     ONEMKL::SYCL::SYCL
-    blas_level1_ct
-    blas_level2_ct
-    blas_level3_ct
-    blas_batch_ct
-    blas_extensions_ct
+    #blas_level1_ct
+    #blas_level2_ct
+    #blas_level3_ct
+    #blas_batch_ct
+    #blas_extensions_ct
     rng_statistics_ct
     rng_service_ct
 )

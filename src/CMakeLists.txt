@@ -18,7 +18,7 @@
 #===============================================================================
 
 # build blas_loader and backends
-add_subdirectory(blas)
+# add_subdirectory(blas)
 
 # build rng_loader and backends
 add_subdirectory(rng)
@@ -48,10 +48,12 @@ set_target_properties(onemkl PROPERTIES
 )
 
 # Build dispatcher library
-target_link_libraries(onemkl PUBLIC onemkl_blas onemkl_rng)
+# target_link_libraries(onemkl PUBLIC onemkl_blas onemkl_rng)
+target_link_libraries(onemkl PUBLIC onemkl_rng)
 
 # Add the library to install package
-install(TARGETS onemkl_blas onemkl_rng EXPORT oneMKLTargets)
+# install(TARGETS onemkl_blas onemkl_rng EXPORT oneMKLTargets)
+install(TARGETS onemkl_rng EXPORT oneMKLTargets)
 install(TARGETS onemkl EXPORT oneMKLTargets
   RUNTIME DESTINATION bin
   ARCHIVE DESTINATION lib
