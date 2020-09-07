@@ -22,6 +22,9 @@ find_package(CBLAS REQUIRED)
 # Build BLAS tests first
 add_subdirectory(blas)
 
+# Build RNG tests first
+add_subdirectory(rng)
+
 include(GoogleTest)
 
 # Build final test binaries: test_main_rt is for testing RunTime API, test_main_ct is for testing CompileTime API
@@ -47,17 +50,19 @@ if(BUILD_SHARED_LIBS)
     blas_level3_rt
     blas_batch_rt
     blas_extensions_rt
+    rng_statistics_rt
+    rng_service_rt
   )
 endif()
 
 if(ENABLE_MKLCPU_BACKEND)
-  add_dependencies(test_main_ct onemkl_blas_mklcpu)
-  list(APPEND ONEMKL_LIBRARIES onemkl_blas_mklcpu)
+  add_dependencies(test_main_ct onemkl_blas_mklcpu onemkl_rng_mklcpu)
+  list(APPEND ONEMKL_LIBRARIES onemkl_blas_mklcpu onemkl_rng_mklcpu)
 endif()
 
 if(ENABLE_MKLGPU_BACKEND)
-  add_dependencies(test_main_ct onemkl_blas_mklgpu)
-  list(APPEND ONEMKL_LIBRARIES onemkl_blas_mklgpu)
+  add_dependencies(test_main_ct onemkl_blas_mklgpu onemkl_rng_mklgpu)
+  list(APPEND ONEMKL_LIBRARIES onemkl_blas_mklgpu onemkl_rng_mklgpu)
 endif()
 
 if(ENABLE_CUBLAS_BACKEND)
@@ -77,6 +82,8 @@ target_link_libraries(test_main_ct PUBLIC
     blas_level3_ct
     blas_batch_ct
     blas_extensions_ct
+    rng_statistics_ct
+    rng_service_ct
 )
 
 if(BUILD_SHARED_LIBS)

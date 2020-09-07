@@ -17,12 +17,21 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_HPP_
-#define _ONEMKL_HPP_
+#ifndef _RNG_FUNCTION_TABLE_HPP_
+#define _RNG_FUNCTION_TABLE_HPP_
 
-#include "oneapi/mkl/types.hpp"
+#include <cstdint>
+#include <CL/sycl.hpp>
 
-#include "oneapi/mkl/blas/blas.hpp"
-#include "oneapi/mkl/rng/rng.hpp"
+#include "oneapi/mkl/rng/detail/engine_impl.hpp"
 
-#endif //_ONEMKL_HPP_
+typedef struct {
+    int version;
+
+    oneapi::mkl::rng::detail::engine_impl* (*create_philox4x32x10_sycl)(cl::sycl::queue queue,
+                                                                        std::uint64_t seed);
+    oneapi::mkl::rng::detail::engine_impl* (*create_philox4x32x10_ex_sycl)(
+        cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed);
+} function_table_t;
+
+#endif //_RNG_FUNCTION_TABLE_HPP_

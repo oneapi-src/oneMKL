@@ -20,6 +20,9 @@
 # build blas_loader and backends
 add_subdirectory(blas)
 
+# build rng_loader and backends
+add_subdirectory(rng)
+
 # generate header with enabled backends for testing
 configure_file(config.hpp.in "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/config.hpp.configured")
 file(GENERATE
@@ -45,10 +48,10 @@ set_target_properties(onemkl PROPERTIES
 )
 
 # Build dispatcher library
-target_link_libraries(onemkl PUBLIC onemkl_blas)
+target_link_libraries(onemkl PUBLIC onemkl_blas onemkl_rng)
 
 # Add the library to install package
-install(TARGETS onemkl_blas EXPORT oneMKLTargets)
+install(TARGETS onemkl_blas onemkl_rng EXPORT oneMKLTargets)
 install(TARGETS onemkl EXPORT oneMKLTargets
   RUNTIME DESTINATION bin
   ARCHIVE DESTINATION lib
