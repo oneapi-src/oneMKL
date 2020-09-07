@@ -62,7 +62,6 @@ public:
             status = test_skipped;
             return;
         }
-
         catch (const std::runtime_error& error) {
             std::cout << "Error raised during execution:\n" << error.what() << std::endl;
         }
@@ -102,7 +101,6 @@ public:
             status = test_skipped;
             return;
         }
-
         catch (const std::runtime_error& error) {
             std::cout << "Error raised during execution:\n" << error.what() << std::endl;
         }

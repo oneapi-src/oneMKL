@@ -35,51 +35,53 @@ class skip_ahead_test {
 public:
     template <typename Queue>
     void operator()(Queue queue) {
-        // initialize rng objects
-        Engine engine(queue);
-
-        std::vector<Engine*> engines;
-
-        oneapi::mkl::rng::bits<std::uint32_t> distr;
-
-        // prepare arrays for random numbers
+        // Prepare arrays for random numbers
         std::vector<std::uint32_t> r1(N_GEN_SERVICE);
         std::vector<std::uint32_t> r2(N_GEN_SERVICE);
 
-        // perform skip
-        for (int i = 0; i < N_ENGINES; i++) {
-            engines.push_back(new Engine(queue));
-            oneapi::mkl::rng::skip_ahead(*(engines[i]), i * N_PORTION);
-        }
+        try {
+            // Initialize rng objects
+            Engine engine(queue);
+            std::vector<Engine*> engines;
 
-        {
+            oneapi::mkl::rng::bits<std::uint32_t> distr;
+
+            // Perform skip
+            for (int i = 0; i < N_ENGINES; i++) {
+                engines.push_back(new Engine(queue));
+                oneapi::mkl::rng::skip_ahead(*(engines[i]), i * N_PORTION);
+            }
+
             cl::sycl::buffer<std::uint32_t, 1> r_buffer(r1.data(), r1.size());
             std::vector<cl::sycl::buffer<std::uint32_t, 1>> r_buffers;
             for (int i = 0; i < N_ENGINES; i++) {
                 r_buffers.push_back(
                     cl::sycl::buffer<std::uint32_t, 1>(r2.data() + i * N_PORTION, N_PORTION));
             }
-            try {
-                oneapi::mkl::rng::generate(distr, engine, N_GEN_SERVICE, r_buffer);
-                for (int i = 0; i < N_ENGINES; i++) {
-                    oneapi::mkl::rng::generate(distr, *(engines[i]), N_PORTION, r_buffers[i]);
-                }
-            }
-            catch (cl::sycl::exception const& e) {
-                std::cout << "SYCL exception during generation" << std::endl
-                          << e.what() << std::endl
-                          << "OpenCL status: " << e.get_cl_code() << std::endl;
-                status = test_failed;
-                return;
-            }
-        } // buffers life-time ends
 
-        // clear memory
-        for (int i = 0; i < N_ENGINES; i++) {
-            delete engines[i];
+            oneapi::mkl::rng::generate(distr, engine, N_GEN_SERVICE, r_buffer);
+            for (int i = 0; i < N_ENGINES; i++) {
+                oneapi::mkl::rng::generate(distr, *(engines[i]), N_PORTION, r_buffers[i]);
+            }
+
+            // Clear memory
+            for (int i = 0; i < N_ENGINES; i++) {
+                delete engines[i];
+            }
+        }
+        catch (const oneapi::mkl::unimplemented& e) {
+            status = test_skipped;
+            return;
+        }
+        catch (cl::sycl::exception const& e) {
+            std::cout << "SYCL exception during generation" << std::endl
+                      << e.what() << std::endl
+                      << "OpenCL status: " << e.get_cl_code() << std::endl;
+            status = test_failed;
+            return;
         }
 
-        // validation
+        // Validation
         status = check_equal_vector(r1, r2);
     }
 
@@ -91,38 +93,40 @@ class skip_ahead_ex_test {
 public:
     template <typename Queue>
     void operator()(Queue queue) {
-        Engine engine1(queue);
-        Engine engine2(queue);
-
-        oneapi::mkl::rng::bits<std::uint32_t> distr;
-
-        // prepare arrays for random numbers
+        // Prepare arrays for random numbers
         std::vector<std::uint32_t> r1(N_GEN);
         std::vector<std::uint32_t> r2(N_GEN);
 
-        // perform skip
+        try {
+            // Initialize rng objects
+            Engine engine1(queue);
+            Engine engine2(queue);
 
-        for (int j = 0; j < SKIP_TIMES; j++) {
-            oneapi::mkl::rng::skip_ahead(engine1, N_SKIP);
-        }
-        oneapi::mkl::rng::skip_ahead(engine2, NUM_TO_SKIP);
+            oneapi::mkl::rng::bits<std::uint32_t> distr;
 
-        {
+            // Perform skip
+            for (int j = 0; j < SKIP_TIMES; j++) {
+                oneapi::mkl::rng::skip_ahead(engine1, N_SKIP);
+            }
+            oneapi::mkl::rng::skip_ahead(engine2, NUM_TO_SKIP);
+
             cl::sycl::buffer<std::uint32_t, 1> r1_buffer(r1.data(), r1.size());
             cl::sycl::buffer<std::uint32_t, 1> r2_buffer(r2.data(), r2.size());
 
-            try {
-                oneapi::mkl::rng::generate(distr, engine1, N_GEN, r1_buffer);
-                oneapi::mkl::rng::generate(distr, engine2, N_GEN, r2_buffer);
-            }
-            catch (cl::sycl::exception const& e) {
-                std::cout << "SYCL exception during generation" << std::endl
-                          << e.what() << std::endl
-                          << "OpenCL status: " << e.get_cl_code() << std::endl;
-                status = test_failed;
-                return;
-            }
-        } // buffers life-time ends
+            oneapi::mkl::rng::generate(distr, engine1, N_GEN, r1_buffer);
+            oneapi::mkl::rng::generate(distr, engine2, N_GEN, r2_buffer);
+        }
+        catch (const oneapi::mkl::unimplemented& e) {
+            status = test_skipped;
+            return;
+        }
+        catch (cl::sycl::exception const& e) {
+            std::cout << "SYCL exception during generation" << std::endl
+                      << e.what() << std::endl
+                      << "OpenCL status: " << e.get_cl_code() << std::endl;
+            status = test_failed;
+            return;
+        }
 
         // validation
         status = check_equal_vector(r1, r2);

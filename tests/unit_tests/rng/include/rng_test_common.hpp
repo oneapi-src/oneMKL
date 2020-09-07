@@ -39,8 +39,6 @@
 #define NUM_TO_SKIP \
     { 0, (std::uint64_t)pow(2, 12) }
 
-#define _PI 3.141592653589793238462643383279502884197
-
 // Correctness checking.
 static inline bool check_equal(float x, float x_ref) {
     float bound = std::numeric_limits<float>::epsilon();
@@ -81,6 +79,13 @@ public:
     // method to call any tests, switch between rt and ct
     template <typename... Args>
     int operator()(const cl::sycl::device& dev, Args... args) {
+        // skip tests for devices with NVIDIA_ID
+        unsigned int vendor_id =
+            static_cast<unsigned int>(dev.get_info<cl::sycl::info::device::vendor_id>());
+        if (dev.is_gpu() && vendor_id == NVIDIA_ID) {
+            return test_skipped;
+        }
+
         auto exception_handler = [](sycl::exception_list exceptions) {
             for (std::exception_ptr const& e : exceptions) {
                 try {
@@ -95,6 +100,7 @@ public:
         };
 
         cl::sycl::queue queue(dev, exception_handler);
+
 #ifdef CALL_RT_API
         test_(queue, args...);
 #else

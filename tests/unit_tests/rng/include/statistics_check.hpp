@@ -34,7 +34,7 @@ bool compare_moments(std::vector<Fp, AllocType>& r, double tM, double tD, double
     double n, s;
     double DeltaM, DeltaD;
 
-    // sample moments
+    // Sample moments
     sum = 0.0;
     sum2 = 0.0;
     for (int i = 0; i < r.size(); i++) {
