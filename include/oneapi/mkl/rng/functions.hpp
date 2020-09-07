@@ -93,7 +93,6 @@ static inline void skip_ahead(Engine& engine, std::uint64_t num_to_skip) {
 //      std::initializer_list<std::uint64_t> num_to_skip - number of skipped elements
 template <typename Engine>
 static inline void skip_ahead(Engine& engine, std::initializer_list<std::uint64_t> num_to_skip) {
-    // TO DO: add static assert for supported engines
     engine.pimpl_->skip_ahead(num_to_skip);
 }
 

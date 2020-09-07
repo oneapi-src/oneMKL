@@ -36,7 +36,7 @@ target_include_directories(${LIB_OBJ}
 
 target_compile_options(${LIB_OBJ} PRIVATE ${MKL_COPT})
 
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL "-fsycl" ${MKL_LINK_SYCL})
+target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ${MKL_LINK_SYCL})
 
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON
