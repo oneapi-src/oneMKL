@@ -33,7 +33,8 @@ public:
     explicit backend_selector(sycl::queue queue) : queue_(queue) {
         if ((queue.is_host() || queue.get_device().is_cpu())) {
             if (Backend != backend::mklcpu) {
-                throw unsupported_device("", "backend_selector<" + backend_map[Backend] + ">",
+                throw unsupported_device("",
+                                         "backend_selector<backend::" + backend_map[Backend] + ">",
                                          queue.get_device());
             }
         }
@@ -42,23 +43,26 @@ public:
                 queue.get_device().get_info<cl::sycl::info::device::vendor_id>());
             if (vendor_id == INTEL_ID) {
                 if (Backend != backend::mklgpu) {
-                    throw unsupported_device("", "backend_selector<" + backend_map[Backend] + ">",
-                                             queue.get_device());
+                    throw unsupported_device(
+                        "", "backend_selector<backend::" + backend_map[Backend] + ">",
+                        queue.get_device());
                 }
             }
             else if (vendor_id == NVIDIA_ID) {
                 if (Backend != backend::cublas) {
-                    throw unsupported_device("", "backend_selector<" + backend_map[Backend] + ">",
-                                             queue.get_device());
+                    throw unsupported_device(
+                        "", "backend_selector<backend::" + backend_map[Backend] + ">",
+                        queue.get_device());
                 }
             }
             else {
-                throw unsupported_device("", "backend_selector<" + backend_map[Backend] + ">",
+                throw unsupported_device("",
+                                         "backend_selector<backend::" + backend_map[Backend] + ">",
                                          queue.get_device());
             }
         }
         else {
-            throw unsupported_device("", "backend_selector<" + backend_map[Backend] + ">",
+            throw unsupported_device("", "backend_selector<backend::" + backend_map[Backend] + ">",
                                      queue.get_device());
         }
     }
