@@ -41,7 +41,7 @@ extern std::vector<cl::sycl::device> devices;
 
 namespace {
 
-int test(const device &dev, int N, int incx, int incy, float alpha) {
+int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int incy, float alpha) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -81,12 +81,32 @@ int test(const device &dev, int N, int incx, int incy, float alpha) {
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::sdsdot(main_queue, N, alpha, x.data(), incx, y.data(), incy,
-                                         result_p, dependencies);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                done = oneapi::mkl::blas::column_major::sdsdot(
+                    main_queue, N, alpha, x.data(), incx, y.data(), incy, result_p, dependencies);
+                break;
+            case oneapi::mkl::layout::row_major:
+                done = oneapi::mkl::blas::row_major::sdsdot(main_queue, N, alpha, x.data(), incx,
+                                                            y.data(), incy, result_p, dependencies);
+                break;
+            default: break;
+        }
         done.wait();
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::sdsdot,
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(
+                    main_queue, oneapi::mkl::blas::column_major::sdsdot,
                     (main_queue, N, alpha, x.data(), incx, y.data(), incy, result_p, dependencies));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(
+                    main_queue, oneapi::mkl::blas::row_major::sdsdot,
+                    (main_queue, N, alpha, x.data(), incx, y.data(), incy, result_p, dependencies));
+                break;
+            default: break;
+        }
         main_queue.wait();
 #endif
     }
@@ -96,7 +116,7 @@ int test(const device &dev, int N, int incx, int incy, float alpha) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const oneapi::mkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::unimplemented &e) {
         return test_skipped;
     }
 
@@ -107,20 +127,24 @@ int test(const device &dev, int N, int incx, int incy, float alpha) {
     // Compare the results of reference implementation and DPC++ implementation.
 
     bool good = check_equal(*result_p, result_ref, N, std::cout);
-
     oneapi::mkl::free_shared(result_p, cxt);
+
     return (int)good;
 }
 
-class SdsdotUsmTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class SdsdotUsmTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(SdsdotUsmTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP(test(GetParam(), 1357, 2, 3, 2.0));
-    EXPECT_TRUEORSKIP(test(GetParam(), 1357, -2, -3, 2.0));
-    EXPECT_TRUEORSKIP(test(GetParam(), 1357, 1, 1, 2.0));
+    EXPECT_TRUEORSKIP(test(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, 2.0));
+    EXPECT_TRUEORSKIP(test(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, 2.0));
+    EXPECT_TRUEORSKIP(test(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, 2.0));
 }
 
-INSTANTIATE_TEST_SUITE_P(SdsdotUsmTestSuite, SdsdotUsmTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(SdsdotUsmTestSuite, SdsdotUsmTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

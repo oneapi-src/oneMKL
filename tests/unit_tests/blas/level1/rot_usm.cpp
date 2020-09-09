@@ -42,7 +42,8 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp, typename fp_scalar>
-int test(const device &dev, int N, int incx, int incy, fp_scalar c, fp_scalar s) {
+int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp_scalar c,
+         fp_scalar s) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -82,12 +83,30 @@ int test(const device &dev, int N, int incx, int incy, fp_scalar c, fp_scalar s)
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::rot(main_queue, N, x.data(), incx, y.data(), incy, c, s,
-                                      dependencies);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                done = oneapi::mkl::blas::column_major::rot(main_queue, N, x.data(), incx, y.data(),
+                                                            incy, c, s, dependencies);
+                break;
+            case oneapi::mkl::layout::row_major:
+                done = oneapi::mkl::blas::row_major::rot(main_queue, N, x.data(), incx, y.data(),
+                                                         incy, c, s, dependencies);
+                break;
+            default: break;
+        }
         done.wait();
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::rot,
-                    (main_queue, N, x.data(), incx, y.data(), incy, c, s, dependencies));
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::rot,
+                            (main_queue, N, x.data(), incx, y.data(), incy, c, s, dependencies));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::rot,
+                            (main_queue, N, x.data(), incx, y.data(), incy, c, s, dependencies));
+                break;
+            default: break;
+        }
         main_queue.wait();
 #endif
     }
@@ -97,7 +116,7 @@ int test(const device &dev, int N, int incx, int incy, fp_scalar c, fp_scalar s)
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const oneapi::mkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::unimplemented &e) {
         return test_skipped;
     }
 
@@ -114,38 +133,54 @@ int test(const device &dev, int N, int incx, int incy, fp_scalar c, fp_scalar s)
     return (int)good;
 }
 
-class RotUsmTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class RotUsmTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(RotUsmTests, RealSinglePrecision) {
     float c(2.0);
     float s(-0.5);
-    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, 2, 3, c, s)));
-    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, 1, 1, c, s)));
-    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, -2, -3, c, s)));
+    EXPECT_TRUEORSKIP(
+        (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, c, s)));
+    EXPECT_TRUEORSKIP(
+        (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, c, s)));
+    EXPECT_TRUEORSKIP(
+        (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, c, s)));
 }
 TEST_P(RotUsmTests, RealDoublePrecision) {
     double c(2.0);
     double s(-0.5);
-    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, 2, 3, c, s)));
-    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, 1, 1, c, s)));
-    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, -2, -3, c, s)));
+    EXPECT_TRUEORSKIP(
+        (test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, c, s)));
+    EXPECT_TRUEORSKIP(
+        (test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, c, s)));
+    EXPECT_TRUEORSKIP((test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357,
+                                            -2, -3, c, s)));
 }
 TEST_P(RotUsmTests, ComplexSinglePrecision) {
     float c = 2.0;
     float s = -0.5;
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), 1357, 2, 3, c, s)));
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), 1357, 1, 1, c, s)));
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), 1357, -2, -3, c, s)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, c, s)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, c, s)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, c, s)));
 }
 TEST_P(RotUsmTests, ComplexDoublePrecision) {
     double c = 2.0;
     double s = -0.5;
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), 1357, 2, 3, c, s)));
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), 1357, 1, 1, c, s)));
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), 1357, -2, -3, c, s)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, c, s)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, c, s)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, c, s)));
 }
 
-INSTANTIATE_TEST_SUITE_P(RotUsmTestSuite, RotUsmTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(RotUsmTestSuite, RotUsmTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

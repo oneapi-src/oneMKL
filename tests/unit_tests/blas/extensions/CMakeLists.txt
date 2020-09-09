@@ -18,7 +18,7 @@
 #===============================================================================
 
 # Build object from all test sources
-set(EXTENSIONS_SOURCES "gemm_ext.cpp" "gemm_ext_off.cpp" "gemmt.cpp" "gemmt_usm.cpp")
+set(EXTENSIONS_SOURCES "gemm_bias.cpp" "gemmt.cpp" "gemmt_usm.cpp")
 
 if(BUILD_SHARED_LIBS)
   add_library(blas_extensions_rt OBJECT ${EXTENSIONS_SOURCES})

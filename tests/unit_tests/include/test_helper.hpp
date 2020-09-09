@@ -20,8 +20,12 @@
 #ifndef _TEST_HELPER_HPP_
 #define _TEST_HELPER_HPP_
 
+#include <iostream>
+#include <string>
+#include <tuple>
 #include <gtest/gtest.h>
 #include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl.hpp"
 
 #ifdef _WIN64
 #include <malloc.h>
@@ -74,15 +78,20 @@
         }                                                                      \
     } while (0);
 
-class DeviceNamePrint {
+class LayoutDeviceNamePrint {
 public:
-    std::string operator()(testing::TestParamInfo<cl::sycl::device> dev) const {
-        std::string dev_name = dev.param.get_info<cl::sycl::info::device::name>();
+    std::string operator()(
+        testing::TestParamInfo<std::tuple<cl::sycl::device, oneapi::mkl::layout>> dev) const {
+        std::string layout_name = std::get<1>(dev.param) == oneapi::mkl::layout::column_major
+                                      ? "Column_Major"
+                                      : "Row_Major";
+        std::string dev_name = std::get<0>(dev.param).get_info<cl::sycl::info::device::name>();
         for (std::string::size_type i = 0; i < dev_name.size(); ++i) {
             if (!isalnum(dev_name[i]))
                 dev_name[i] = '_';
         }
-        return dev_name;
+        std::string info_name = (layout_name.append("_")).append(dev_name);
+        return info_name;
     }
 };
 

@@ -24,7 +24,7 @@
 
 #include "oneapi/mkl/types.hpp"
 
-typedef enum { CblasFixOffset = 101, CblasColOffset = 102, CblasRowOffset = 103 } CBLAS_OFFSET;
+typedef enum { CblasRowOffset = 101, CblasColOffset = 102, CblasFixOffset = 103 } CBLAS_OFFSET;
 
 /**
  * Helper methods for converting between onemkl types and their BLAS
@@ -60,5 +60,26 @@ inline CBLAS_OFFSET convert_to_cblas_offset(oneapi::mkl::offset offsetc) {
     else
         return CBLAS_OFFSET::CblasRowOffset;
 }
+
+inline CBLAS_LAYOUT convert_to_cblas_layout(oneapi::mkl::layout is_column) {
+    return is_column == oneapi::mkl::layout::column_major ? CBLAS_LAYOUT::CblasColMajor
+                                                          : CBLAS_LAYOUT::CblasRowMajor;
+}
+
+static const CBLAS_TRANSPOSE fcblastrans[] = { CblasNoTrans, CblasTrans, CblasConjTrans };
+
+static const CBLAS_UPLO fcblasuplo[] = { CblasUpper, CblasLower };
+
+static const CBLAS_SIDE fcblasside[] = { CblasLeft, CblasRight };
+
+static const CBLAS_DIAG fcblasdiag[] = { CblasNonUnit, CblasUnit };
+
+static const CBLAS_TRANSPOSE fcblastrans_r[] = { CblasTrans, CblasNoTrans, CblasNoTrans };
+
+static const CBLAS_TRANSPOSE fcblastrans_r2[] = { CblasTrans, CblasNoTrans, CblasConjTrans };
+
+static const CBLAS_TRANSPOSE fcblastrans_c[] = { CblasConjTrans, CblasNoTrans, CblasNoTrans };
+
+static const CBLAS_OFFSET fcblasoffset[] = { CblasColOffset, CblasRowOffset, CblasFixOffset };
 
 #endif // ONEMKL_BLAS_HELPER_HPP

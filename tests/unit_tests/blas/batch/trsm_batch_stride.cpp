@@ -44,14 +44,14 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev) {
+int test(const device &dev, oneapi::mkl::layout layout) {
     // Prepare data.
     int64_t m, n;
     int64_t lda, ldb;
     oneapi::mkl::transpose trans;
     oneapi::mkl::side left_right;
     oneapi::mkl::uplo upper_lower;
-    oneapi::mkl::diag unit_diag;
+    oneapi::mkl::diag unit_nonunit;
     fp alpha;
     int64_t batch_size;
     int64_t i, tmp;
@@ -75,13 +75,17 @@ int test(const device &dev) {
     }
     left_right = (oneapi::mkl::side)(std::rand() % 2);
     upper_lower = (oneapi::mkl::uplo)(std::rand() % 2);
-    unit_diag = (oneapi::mkl::diag)(std::rand() % 2);
+    unit_nonunit = (oneapi::mkl::diag)(std::rand() % 2);
 
     int64_t stride_a, stride_b;
     int64_t total_size_b;
 
     stride_a = (left_right == oneapi::mkl::side::left) ? lda * m : lda * n;
-    stride_b = ldb * n;
+    switch (layout) {
+        case oneapi::mkl::layout::column_major: stride_b = ldb * n; break;
+        case oneapi::mkl::layout::row_major: stride_b = ldb * m; break;
+        default: break;
+    }
     total_size_b = batch_size * stride_b;
 
     vector<fp, allocator_helper<fp, 64>> A(batch_size * stride_a), B(total_size_b),
@@ -89,10 +93,10 @@ int test(const device &dev) {
 
     for (i = 0; i < batch_size; i++) {
         if (left_right == oneapi::mkl::side::left)
-            rand_trsm_matrix(A.data() + stride_a * i, trans, m, m, lda);
+            rand_trsm_matrix(A.data() + stride_a * i, layout, trans, m, m, lda);
         else
-            rand_trsm_matrix(A.data() + stride_a * i, trans, n, n, lda);
-        rand_matrix(B.data() + stride_b * i, oneapi::mkl::transpose::nontrans, m, n, ldb);
+            rand_trsm_matrix(A.data() + stride_a * i, layout, trans, n, n, lda);
+        rand_matrix(B.data() + stride_b * i, layout, oneapi::mkl::transpose::nontrans, m, n, ldb);
     }
 
     B_ref = B;
@@ -106,11 +110,12 @@ int test(const device &dev) {
     ldb_ref = (int)ldb;
     batch_size_ref = (int)batch_size;
     for (i = 0; i < batch_size_ref; i++) {
-        ::trsm(convert_to_cblas_side(left_right), convert_to_cblas_uplo(upper_lower),
-               convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag), (const int *)&m_ref,
-               (const int *)&n_ref, (const fp_ref *)&alpha,
-               (const fp_ref *)(A.data() + stride_a * i), (const int *)&lda_ref,
-               (fp_ref *)(B_ref.data() + stride_b * i), (const int *)&ldb_ref);
+        ::trsm(convert_to_cblas_layout(layout), convert_to_cblas_side(left_right),
+               convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+               convert_to_cblas_diag(unit_nonunit), (const int *)&m_ref, (const int *)&n_ref,
+               (const fp_ref *)&alpha, (const fp_ref *)(A.data() + stride_a * i),
+               (const int *)&lda_ref, (fp_ref *)(B_ref.data() + stride_b * i),
+               (const int *)&ldb_ref);
     }
 
     // Call DPC++ TRSM_BATCH_STRIDE.
@@ -136,14 +141,33 @@ int test(const device &dev) {
 
     try {
 #ifdef CALL_RT_API
-        oneapi::mkl::blas::trsm_batch(main_queue, left_right, upper_lower, trans, unit_diag, m, n,
-                                      alpha, A_buffer, lda, stride_a, B_buffer, ldb, stride_b,
-                                      batch_size);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                oneapi::mkl::blas::column_major::trsm_batch(
+                    main_queue, left_right, upper_lower, trans, unit_nonunit, m, n, alpha, A_buffer,
+                    lda, stride_a, B_buffer, ldb, stride_b, batch_size);
+                break;
+            case oneapi::mkl::layout::row_major:
+                oneapi::mkl::blas::row_major::trsm_batch(
+                    main_queue, left_right, upper_lower, trans, unit_nonunit, m, n, alpha, A_buffer,
+                    lda, stride_a, B_buffer, ldb, stride_b, batch_size);
+                break;
+            default: break;
+        }
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::trsm_batch,
-                    (main_queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, A_buffer,
-                     lda, stride_a, B_buffer, ldb, stride_b, batch_size));
-
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::trsm_batch,
+                            (main_queue, left_right, upper_lower, trans, unit_nonunit, m, n, alpha,
+                             A_buffer, lda, stride_a, B_buffer, ldb, stride_b, batch_size));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::trsm_batch,
+                            (main_queue, left_right, upper_lower, trans, unit_nonunit, m, n, alpha,
+                             A_buffer, lda, stride_a, B_buffer, ldb, stride_b, batch_size));
+                break;
+            default: break;
+        }
 #endif
     }
     catch (exception const &e) {
@@ -152,7 +176,7 @@ int test(const device &dev) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const oneapi::mkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::unimplemented &e) {
         return test_skipped;
     }
 
@@ -162,35 +186,37 @@ int test(const device &dev) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good;
-    {
-        auto B_accessor = B_buffer.template get_access<access::mode::read>();
-        good = check_equal_trsm_matrix(B_accessor, B_ref, total_size_b, 1, total_size_b,
-                                       10 * std::max(m, n), std::cout);
-    }
+    auto B_accessor = B_buffer.template get_access<access::mode::read>();
+    bool good =
+        check_equal_trsm_matrix(B_accessor, B_ref, oneapi::mkl::layout::column_major, total_size_b,
+                                1, total_size_b, 10 * std::max(m, n), std::cout);
 
     return (int)good;
 }
 
-class TrsmBatchStrideTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class TrsmBatchStrideTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(TrsmBatchStrideTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<float>(GetParam()));
+    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 TEST_P(TrsmBatchStrideTests, RealDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<double>(GetParam()));
+    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 TEST_P(TrsmBatchStrideTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam()));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 TEST_P(TrsmBatchStrideTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam()));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 INSTANTIATE_TEST_SUITE_P(TrsmBatchStrideTestSuite, TrsmBatchStrideTests,
-                         ::testing::ValuesIn(devices), ::DeviceNamePrint());
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

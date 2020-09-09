@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev, int N, int incx, int incy) {
+int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
     // Prepare data.
     vector<fp> x, y;
     fp result = 0.0, result_reference = 0.0;
@@ -81,10 +81,29 @@ int test(const device &dev, int N, int incx, int incy) {
 
     try {
 #ifdef CALL_RT_API
-        oneapi::mkl::blas::dotu(main_queue, N, x_buffer, incx, y_buffer, incy, result_buffer);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                oneapi::mkl::blas::column_major::dotu(main_queue, N, x_buffer, incx, y_buffer, incy,
+                                                      result_buffer);
+                break;
+            case oneapi::mkl::layout::row_major:
+                oneapi::mkl::blas::row_major::dotu(main_queue, N, x_buffer, incx, y_buffer, incy,
+                                                   result_buffer);
+                break;
+            default: break;
+        }
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::dotu,
-                    (main_queue, N, x_buffer, incx, y_buffer, incy, result_buffer));
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::dotu,
+                            (main_queue, N, x_buffer, incx, y_buffer, incy, result_buffer));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::dotu,
+                            (main_queue, N, x_buffer, incx, y_buffer, incy, result_buffer));
+                break;
+            default: break;
+        }
 #endif
     }
     catch (exception const &e) {
@@ -93,7 +112,7 @@ int test(const device &dev, int N, int incx, int incy) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const oneapi::mkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::unimplemented &e) {
         return test_skipped;
     }
 
@@ -102,29 +121,37 @@ int test(const device &dev, int N, int incx, int incy) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good;
-    {
-        auto result_accessor = result_buffer.template get_access<access::mode::read>();
-        good = check_equal(result_accessor[0], result_reference, N, std::cout);
-    }
+
+    auto result_accessor = result_buffer.template get_access<access::mode::read>();
+    bool good = check_equal(result_accessor[0], result_reference, N, std::cout);
 
     return (int)good;
 }
 
-class DotuTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class DotuTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(DotuTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, 1, 1));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, -3, -2));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, -2));
 }
 TEST_P(DotuTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, 1, 1));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, -3, -2));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, -2));
 }
 
-INSTANTIATE_TEST_SUITE_P(DotuTestSuite, DotuTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(DotuTestSuite, DotuTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

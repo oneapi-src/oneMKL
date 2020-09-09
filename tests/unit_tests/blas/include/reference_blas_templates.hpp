@@ -100,73 +100,81 @@ static void zrotg_wrapper(void *a, void *b, const double *c, void *s) {
 }
 }
 
+inline bool isNonTranspose(CBLAS_TRANSPOSE trans) {
+    return trans == CblasNoTrans;
+}
+
 template <typename T_src, typename T_dest>
-static inline void copy_mat(T_src &src, CBLAS_TRANSPOSE trans, int row, int col, int ld,
-                            T_dest *&dest) {
-    int i, j;
-    if (trans == CblasNoTrans) {
-        for (j = 0; j < col; j++) {
-            for (i = 0; i < row; i++) {
-                dest[i + ld * j] = (T_dest)src[i + ld * j];
-            }
-        }
+static inline void copy_mat(T_src &src, CBLAS_LAYOUT layout, CBLAS_TRANSPOSE trans, int row,
+                            int col, int ld, T_dest *&dest) {
+    int i, j, Iend, Jend;
+    if (layout == CblasColMajor) {
+        Jend = isNonTranspose(trans) ? col : row;
+        Iend = isNonTranspose(trans) ? row : col;
     }
     else {
-        for (i = 0; i < row; i++) {
-            for (j = 0; j < col; j++) {
-                dest[i * ld + j] = (T_dest)src[i * ld + j];
-            }
+        Jend = isNonTranspose(trans) ? row : col;
+        Iend = isNonTranspose(trans) ? col : row;
+    }
+
+    for (j = 0; j < Jend; j++) {
+        for (i = 0; i < Iend; i++) {
+            dest[i + ld * j] = (T_dest)src[i + ld * j];
         }
     }
 }
 
 template <typename T_src, typename T_dest>
-static inline void copy_mat(T_src &src, CBLAS_TRANSPOSE trans, int row, int col, int ld, T_dest off,
-                            T_dest *&dest) {
-    int i, j;
-    if (trans == CblasNoTrans) {
-        for (j = 0; j < col; j++) {
-            for (i = 0; i < row; i++) {
-                dest[i + ld * j] = (T_dest)src[i + ld * j] - off;
-            }
-        }
+static inline void copy_mat(T_src &src, CBLAS_LAYOUT layout, CBLAS_TRANSPOSE trans, int row,
+                            int col, int ld, T_dest off, T_dest *&dest) {
+    int i, j, Iend, Jend;
+    if (layout == CblasColMajor) {
+        Jend = isNonTranspose(trans) ? col : row;
+        Iend = isNonTranspose(trans) ? row : col;
     }
     else {
-        for (i = 0; i < row; i++) {
-            for (j = 0; j < col; j++) {
-                dest[i * ld + j] = (T_dest)src[i * ld + j] - off;
-            }
+        Jend = isNonTranspose(trans) ? row : col;
+        Iend = isNonTranspose(trans) ? col : row;
+    }
+
+    for (j = 0; j < Jend; j++) {
+        for (i = 0; i < Iend; i++) {
+            dest[i + ld * j] = (T_dest)src[i + ld * j] - off;
         }
     }
 }
 
 template <typename T_src, typename T_dest, typename T_off>
-static inline void copy_mat(T_src &src, int row, int col, int ld, CBLAS_OFFSET off_kind, T_off off,
-                            T_dest &dest) {
+static inline void copy_mat(T_src &src, CBLAS_LAYOUT layout, int row, int col, int ld,
+                            CBLAS_OFFSET off_kind, T_off off, T_dest &dest) {
     using T_data = typename std::remove_reference<decltype(dest[0])>::type;
     int i, j;
     T_data tmp;
 
+    int Jend = (layout == CblasColMajor) ? col : row;
+    int Iend = (layout == CblasColMajor) ? row : col;
+
     if (off_kind == CblasFixOffset) {
         tmp = off[0];
-        for (j = 0; j < col; j++) {
-            for (i = 0; i < row; i++) {
+        for (j = 0; j < Jend; j++) {
+            for (i = 0; i < Iend; i++) {
                 dest[i + ld * j] = tmp + (T_data)src[i + ld * j];
             }
         }
     }
-    else if (off_kind == CblasColOffset) {
-        for (j = 0; j < col; j++) {
-            for (i = 0; i < row; i++) {
+    else if (((off_kind == CblasColOffset) && (layout == CblasColMajor)) ||
+             ((off_kind == CblasRowOffset) && (layout == CblasRowMajor))) {
+        for (j = 0; j < Jend; j++) {
+            for (i = 0; i < Iend; i++) {
                 tmp = off[i];
                 dest[i + ld * j] = tmp + (T_data)src[i + ld * j];
             }
         }
     }
     else {
-        for (j = 0; j < col; j++) {
+        for (j = 0; j < Jend; j++) {
             tmp = off[j];
-            for (i = 0; i < row; i++) {
+            for (i = 0; i < Iend; i++) {
                 dest[i + ld * j] = tmp + (T_data)src[i + ld * j];
             }
         }
@@ -174,12 +182,17 @@ static inline void copy_mat(T_src &src, int row, int col, int ld, CBLAS_OFFSET o
 }
 
 template <typename T_src, typename T_desc>
-static inline void update_c(T_src &src, CBLAS_UPLO upper_lower, int row, int col, int ld,
-                            T_desc *&dest) {
+static inline void update_c(T_src &src, CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, int row,
+                            int col, int ld, T_desc *&dest) {
     int i, j;
-    for (j = 0; j < col; j++) {
-        for (i = 0; i < row; i++) {
-            if (upper_lower == CblasUpper) {
+
+    int Jend = (layout == CblasColMajor) ? col : row;
+    int Iend = (layout == CblasColMajor) ? row : col;
+
+    for (j = 0; j < Jend; j++) {
+        for (i = 0; i < Iend; i++) {
+            if (((upper_lower == CblasUpper) && (layout == CblasColMajor)) ||
+                ((upper_lower == CblasLower) && (layout == CblasRowMajor))) {
                 if (j >= i)
                     dest[i + ld * j] = (T_desc)src[i + ld * j];
                 else
@@ -198,832 +211,885 @@ static inline void update_c(T_src &src, CBLAS_UPLO upper_lower, int row, int col
 /* Level 3 */
 
 template <typename fp>
-static void gemm(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
-                 const int *k, const fp *alpha, const fp *a, const int *lda, const fp *b,
-                 const int *ldb, const fp *beta, fp *c, const int *ldc);
+static void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m,
+                 const int *n, const int *k, const fp *alpha, const fp *a, const int *lda,
+                 const fp *b, const int *ldb, const fp *beta, fp *c, const int *ldc);
 
 template <>
-void gemm(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n, const int *k,
-          const half *alpha, const half *a, const int *lda, const half *b, const int *ldb,
-          const half *beta, half *c, const int *ldc) {
+void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m,
+          const int *n, const int *k, const half *alpha, const half *a, const int *lda,
+          const half *b, const int *ldb, const half *beta, half *c, const int *ldc) {
     // Not supported in NETLIB. SGEMM is used as reference.
     int sizea, sizeb, sizec;
     const float alphaf = *alpha;
     const float betaf = *beta;
-    sizea = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
-    sizeb = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
-    sizec = *ldc * *n;
+    if (layout == CblasColMajor) {
+        sizea = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
+        sizeb = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
+        sizec = *ldc * *n;
+    }
+    else {
+        sizea = (transa == CblasNoTrans) ? *lda * *m : *lda * *k;
+        sizeb = (transb == CblasNoTrans) ? *ldb * *k : *ldb * *n;
+        sizec = *ldc * *m;
+    }
     float *af = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizea);
     float *bf = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizeb);
     float *cf = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizec);
-    copy_mat(a, transa, *m, *k, *lda, af);
-    copy_mat(b, transb, *k, *n, *ldb, bf);
-    copy_mat(c, CblasNoTrans, *m, *n, *ldc, cf);
-    cblas_sgemm(CblasColMajor, transa, transb, *m, *n, *k, alphaf, af, *lda, bf, *ldb, betaf, cf,
-                *ldc);
-    copy_mat(cf, CblasNoTrans, *m, *n, *ldc, c);
+    copy_mat(a, layout, transa, *m, *k, *lda, af);
+    copy_mat(b, layout, transb, *k, *n, *ldb, bf);
+    copy_mat(c, layout, CblasNoTrans, *m, *n, *ldc, cf);
+    cblas_sgemm(layout, transa, transb, *m, *n, *k, alphaf, af, *lda, bf, *ldb, betaf, cf, *ldc);
+    copy_mat(cf, layout, CblasNoTrans, *m, *n, *ldc, c);
     oneapi::mkl::aligned_free(af);
     oneapi::mkl::aligned_free(bf);
     oneapi::mkl::aligned_free(cf);
 }
 
 template <>
-void gemm(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n, const int *k,
+void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m,
+          const int *n, const int *k, const float *alpha, const float *a, const int *lda,
+          const float *b, const int *ldb, const float *beta, float *c, const int *ldc) {
+    cblas_sgemm(layout, transa, transb, *m, *n, *k, *alpha, a, *lda, b, *ldb, *beta, c, *ldc);
+}
+
+template <>
+void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m,
+          const int *n, const int *k, const double *alpha, const double *a, const int *lda,
+          const double *b, const int *ldb, const double *beta, double *c, const int *ldc) {
+    cblas_dgemm(layout, transa, transb, *m, *n, *k, *alpha, a, *lda, b, *ldb, *beta, c, *ldc);
+}
+
+template <>
+void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m,
+          const int *n, const int *k, const std::complex<float> *alpha,
+          const std::complex<float> *a, const int *lda, const std::complex<float> *b,
+          const int *ldb, const std::complex<float> *beta, std::complex<float> *c, const int *ldc) {
+    cblas_cgemm(layout, transa, transb, *m, *n, *k, alpha, a, *lda, b, *ldb, beta, c, *ldc);
+}
+
+template <>
+void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m,
+          const int *n, const int *k, const std::complex<double> *alpha,
+          const std::complex<double> *a, const int *lda, const std::complex<double> *b,
+          const int *ldb, const std::complex<double> *beta, std::complex<double> *c,
+          const int *ldc) {
+    cblas_zgemm(layout, transa, transb, *m, *n, *k, alpha, a, *lda, b, *ldb, beta, c, *ldc);
+}
+
+template <typename fpa, typename fpc>
+static void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m,
+                 const int *n, const int *k, const fpc *alpha, const fpa *a, const int *lda,
+                 const fpa *b, const int *ldb, const fpc *beta, fpc *c, const int *ldc);
+
+template <>
+void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m,
+          const int *n, const int *k, const float *alpha, const half *a, const int *lda,
+          const half *b, const int *ldb, const float *beta, float *c, const int *ldc) {
+    // Not supported in NETLIB. SGEMM is used as reference.
+    int sizea, sizeb;
+    if (layout == CblasColMajor) {
+        sizea = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
+        sizeb = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
+    }
+    else {
+        sizea = (transa == CblasNoTrans) ? *lda * *m : *lda * *k;
+        sizeb = (transb == CblasNoTrans) ? *ldb * *k : *ldb * *n;
+    }
+    float *af = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizea);
+    float *bf = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizeb);
+    copy_mat(a, layout, transa, *m, *k, *lda, af);
+    copy_mat(b, layout, transb, *k, *n, *ldb, bf);
+    cblas_sgemm(layout, transa, transb, *m, *n, *k, *alpha, af, *lda, bf, *ldb, *beta, c, *ldc);
+    oneapi::mkl::aligned_free(af);
+    oneapi::mkl::aligned_free(bf);
+}
+
+template <typename fp>
+static void symm(CBLAS_LAYOUT layout, CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m,
+                 const int *n, const fp *alpha, const fp *a, const int *lda, const fp *b,
+                 const int *ldb, const fp *beta, fp *c, const int *ldc);
+
+template <>
+void symm(CBLAS_LAYOUT layout, CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m, const int *n,
           const float *alpha, const float *a, const int *lda, const float *b, const int *ldb,
           const float *beta, float *c, const int *ldc) {
-    cblas_sgemm(CblasColMajor, transa, transb, *m, *n, *k, *alpha, a, *lda, b, *ldb, *beta, c,
-                *ldc);
+    cblas_ssymm(layout, left_right, uplo, *m, *n, *alpha, a, *lda, b, *ldb, *beta, c, *ldc);
 }
 
 template <>
-void gemm(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n, const int *k,
+void symm(CBLAS_LAYOUT layout, CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m, const int *n,
           const double *alpha, const double *a, const int *lda, const double *b, const int *ldb,
           const double *beta, double *c, const int *ldc) {
-    cblas_dgemm(CblasColMajor, transa, transb, *m, *n, *k, *alpha, a, *lda, b, *ldb, *beta, c,
-                *ldc);
+    cblas_dsymm(layout, left_right, uplo, *m, *n, *alpha, a, *lda, b, *ldb, *beta, c, *ldc);
 }
 
 template <>
-void gemm(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n, const int *k,
+void symm(CBLAS_LAYOUT layout, CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m, const int *n,
           const std::complex<float> *alpha, const std::complex<float> *a, const int *lda,
           const std::complex<float> *b, const int *ldb, const std::complex<float> *beta,
           std::complex<float> *c, const int *ldc) {
-    cblas_cgemm(CblasColMajor, transa, transb, *m, *n, *k, alpha, a, *lda, b, *ldb, beta, c, *ldc);
+    cblas_csymm(layout, left_right, uplo, *m, *n, alpha, a, *lda, b, *ldb, beta, c, *ldc);
 }
 
 template <>
-void gemm(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n, const int *k,
+void symm(CBLAS_LAYOUT layout, CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m, const int *n,
           const std::complex<double> *alpha, const std::complex<double> *a, const int *lda,
           const std::complex<double> *b, const int *ldb, const std::complex<double> *beta,
           std::complex<double> *c, const int *ldc) {
-    cblas_zgemm(CblasColMajor, transa, transb, *m, *n, *k, alpha, a, *lda, b, *ldb, beta, c, *ldc);
+    cblas_zsymm(layout, left_right, uplo, *m, *n, alpha, a, *lda, b, *ldb, beta, c, *ldc);
 }
 
 template <typename fp>
-static void symm(CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m, const int *n,
-                 const fp *alpha, const fp *a, const int *lda, const fp *b, const int *ldb,
-                 const fp *beta, fp *c, const int *ldc);
-
-template <>
-void symm(CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m, const int *n, const float *alpha,
-          const float *a, const int *lda, const float *b, const int *ldb, const float *beta,
-          float *c, const int *ldc) {
-    cblas_ssymm(CblasColMajor, left_right, uplo, *m, *n, *alpha, a, *lda, b, *ldb, *beta, c, *ldc);
-}
-
-template <>
-void symm(CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m, const int *n, const double *alpha,
-          const double *a, const int *lda, const double *b, const int *ldb, const double *beta,
-          double *c, const int *ldc) {
-    cblas_dsymm(CblasColMajor, left_right, uplo, *m, *n, *alpha, a, *lda, b, *ldb, *beta, c, *ldc);
-}
-
-template <>
-void symm(CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m, const int *n,
-          const std::complex<float> *alpha, const std::complex<float> *a, const int *lda,
-          const std::complex<float> *b, const int *ldb, const std::complex<float> *beta,
-          std::complex<float> *c, const int *ldc) {
-    cblas_csymm(CblasColMajor, left_right, uplo, *m, *n, alpha, a, *lda, b, *ldb, beta, c, *ldc);
-}
-
-template <>
-void symm(CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m, const int *n,
-          const std::complex<double> *alpha, const std::complex<double> *a, const int *lda,
-          const std::complex<double> *b, const int *ldb, const std::complex<double> *beta,
-          std::complex<double> *c, const int *ldc) {
-    cblas_zsymm(CblasColMajor, left_right, uplo, *m, *n, alpha, a, *lda, b, *ldb, beta, c, *ldc);
-}
-
-template <typename fp>
-static void syrk(CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
-                 const fp *alpha, const fp *a, const int *lda, const fp *beta, fp *c,
+static void syrk(CBLAS_LAYOUT layout, CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n,
+                 const int *k, const fp *alpha, const fp *a, const int *lda, const fp *beta, fp *c,
                  const int *ldc);
 
 template <>
-void syrk(CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k, const float *alpha,
-          const float *a, const int *lda, const float *beta, float *c, const int *ldc) {
-    cblas_ssyrk(CblasColMajor, uplo, trans, *n, *k, *alpha, a, *lda, *beta, c, *ldc);
+void syrk(CBLAS_LAYOUT layout, CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
+          const float *alpha, const float *a, const int *lda, const float *beta, float *c,
+          const int *ldc) {
+    cblas_ssyrk(layout, uplo, trans, *n, *k, *alpha, a, *lda, *beta, c, *ldc);
 }
 
 template <>
-void syrk(CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k, const double *alpha,
-          const double *a, const int *lda, const double *beta, double *c, const int *ldc) {
-    cblas_dsyrk(CblasColMajor, uplo, trans, *n, *k, *alpha, a, *lda, *beta, c, *ldc);
+void syrk(CBLAS_LAYOUT layout, CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
+          const double *alpha, const double *a, const int *lda, const double *beta, double *c,
+          const int *ldc) {
+    cblas_dsyrk(layout, uplo, trans, *n, *k, *alpha, a, *lda, *beta, c, *ldc);
 }
 
 template <>
-void syrk(CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
+void syrk(CBLAS_LAYOUT layout, CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
           const std::complex<float> *alpha, const std::complex<float> *a, const int *lda,
           const std::complex<float> *beta, std::complex<float> *c, const int *ldc) {
-    cblas_csyrk(CblasColMajor, uplo, trans, *n, *k, alpha, a, *lda, beta, c, *ldc);
+    cblas_csyrk(layout, uplo, trans, *n, *k, alpha, a, *lda, beta, c, *ldc);
 }
 
 template <>
-void syrk(CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
+void syrk(CBLAS_LAYOUT layout, CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
           const std::complex<double> *alpha, const std::complex<double> *a, const int *lda,
           const std::complex<double> *beta, std::complex<double> *c, const int *ldc) {
-    cblas_zsyrk(CblasColMajor, uplo, trans, *n, *k, alpha, a, *lda, beta, c, *ldc);
+    cblas_zsyrk(layout, uplo, trans, *n, *k, alpha, a, *lda, beta, c, *ldc);
 }
 
 template <typename fp>
-static void hemm(CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m, const int *n,
-                 const fp *alpha, const fp *a, const int *lda, const fp *b, const int *ldb,
-                 const fp *beta, fp *c, const int *ldc);
+static void hemm(CBLAS_LAYOUT layout, CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m,
+                 const int *n, const fp *alpha, const fp *a, const int *lda, const fp *b,
+                 const int *ldb, const fp *beta, fp *c, const int *ldc);
 
 template <>
-void hemm(CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m, const int *n,
+void hemm(CBLAS_LAYOUT layout, CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m, const int *n,
           const std::complex<float> *alpha, const std::complex<float> *a, const int *lda,
           const std::complex<float> *b, const int *ldb, const std::complex<float> *beta,
           std::complex<float> *c, const int *ldc) {
-    cblas_chemm(CblasColMajor, left_right, uplo, *m, *n, alpha, a, *lda, b, *ldb, beta, c, *ldc);
+    cblas_chemm(layout, left_right, uplo, *m, *n, alpha, a, *lda, b, *ldb, beta, c, *ldc);
 }
 
 template <>
-void hemm(CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m, const int *n,
+void hemm(CBLAS_LAYOUT layout, CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m, const int *n,
           const std::complex<double> *alpha, const std::complex<double> *a, const int *lda,
           const std::complex<double> *b, const int *ldb, const std::complex<double> *beta,
           std::complex<double> *c, const int *ldc) {
-    cblas_zhemm(CblasColMajor, left_right, uplo, *m, *n, alpha, a, *lda, b, *ldb, beta, c, *ldc);
+    cblas_zhemm(layout, left_right, uplo, *m, *n, alpha, a, *lda, b, *ldb, beta, c, *ldc);
 }
 
 template <typename fp_scalar, typename fp_data>
-static void herk(CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
-                 const fp_scalar *alpha, const fp_data *a, const int *lda, const fp_scalar *beta,
-                 fp_data *c, const int *ldc);
+static void herk(CBLAS_LAYOUT layout, CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n,
+                 const int *k, const fp_scalar *alpha, const fp_data *a, const int *lda,
+                 const fp_scalar *beta, fp_data *c, const int *ldc);
 
 template <>
-void herk(CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k, const float *alpha,
-          const std::complex<float> *a, const int *lda, const float *beta, std::complex<float> *c,
-          const int *ldc) {
-    cblas_cherk(CblasColMajor, uplo, trans, *n, *k, *alpha, a, *lda, *beta, c, *ldc);
+void herk(CBLAS_LAYOUT layout, CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
+          const float *alpha, const std::complex<float> *a, const int *lda, const float *beta,
+          std::complex<float> *c, const int *ldc) {
+    cblas_cherk(layout, uplo, trans, *n, *k, *alpha, a, *lda, *beta, c, *ldc);
 }
 
 template <>
-void herk(CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k, const double *alpha,
-          const std::complex<double> *a, const int *lda, const double *beta,
+void herk(CBLAS_LAYOUT layout, CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
+          const double *alpha, const std::complex<double> *a, const int *lda, const double *beta,
           std::complex<double> *c, const int *ldc) {
-    cblas_zherk(CblasColMajor, uplo, trans, *n, *k, *alpha, a, *lda, *beta, c, *ldc);
+    cblas_zherk(layout, uplo, trans, *n, *k, *alpha, a, *lda, *beta, c, *ldc);
 }
 
 template <typename fp>
-static void syr2k(CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
-                  const fp *alpha, const fp *a, const int *lda, const fp *b, const int *ldb,
-                  const fp *beta, fp *c, const int *ldc);
+static void syr2k(CBLAS_LAYOUT layout, CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n,
+                  const int *k, const fp *alpha, const fp *a, const int *lda, const fp *b,
+                  const int *ldb, const fp *beta, fp *c, const int *ldc);
 
 template <>
-void syr2k(CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k, const float *alpha,
-           const float *a, const int *lda, const float *b, const int *ldb, const float *beta,
-           float *c, const int *ldc) {
-    cblas_ssyr2k(CblasColMajor, uplo, trans, *n, *k, *alpha, a, *lda, b, *ldb, *beta, c, *ldc);
+void syr2k(CBLAS_LAYOUT layout, CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
+           const float *alpha, const float *a, const int *lda, const float *b, const int *ldb,
+           const float *beta, float *c, const int *ldc) {
+    cblas_ssyr2k(layout, uplo, trans, *n, *k, *alpha, a, *lda, b, *ldb, *beta, c, *ldc);
 }
 
 template <>
-void syr2k(CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k, const double *alpha,
-           const double *a, const int *lda, const double *b, const int *ldb, const double *beta,
-           double *c, const int *ldc) {
-    cblas_dsyr2k(CblasColMajor, uplo, trans, *n, *k, *alpha, a, *lda, b, *ldb, *beta, c, *ldc);
+void syr2k(CBLAS_LAYOUT layout, CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
+           const double *alpha, const double *a, const int *lda, const double *b, const int *ldb,
+           const double *beta, double *c, const int *ldc) {
+    cblas_dsyr2k(layout, uplo, trans, *n, *k, *alpha, a, *lda, b, *ldb, *beta, c, *ldc);
 }
 
 template <>
-void syr2k(CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
+void syr2k(CBLAS_LAYOUT layout, CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
            const std::complex<float> *alpha, const std::complex<float> *a, const int *lda,
            const std::complex<float> *b, const int *ldb, const std::complex<float> *beta,
            std::complex<float> *c, const int *ldc) {
-    cblas_csyr2k(CblasColMajor, uplo, trans, *n, *k, alpha, a, *lda, b, *ldb, beta, c, *ldc);
+    cblas_csyr2k(layout, uplo, trans, *n, *k, alpha, a, *lda, b, *ldb, beta, c, *ldc);
 }
 
 template <>
-void syr2k(CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
+void syr2k(CBLAS_LAYOUT layout, CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
            const std::complex<double> *alpha, const std::complex<double> *a, const int *lda,
            const std::complex<double> *b, const int *ldb, const std::complex<double> *beta,
            std::complex<double> *c, const int *ldc) {
-    cblas_zsyr2k(CblasColMajor, uplo, trans, *n, *k, alpha, a, *lda, b, *ldb, beta, c, *ldc);
+    cblas_zsyr2k(layout, uplo, trans, *n, *k, alpha, a, *lda, b, *ldb, beta, c, *ldc);
 }
 
 template <typename fp_scalar, typename fp_data>
-static void her2k(CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
-                  const fp_data *alpha, const fp_data *a, const int *lda, const fp_data *b,
-                  const int *ldb, const fp_scalar *beta, fp_data *c, const int *ldc);
+static void her2k(CBLAS_LAYOUT layout, CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n,
+                  const int *k, const fp_data *alpha, const fp_data *a, const int *lda,
+                  const fp_data *b, const int *ldb, const fp_scalar *beta, fp_data *c,
+                  const int *ldc);
 
 template <>
-void her2k(CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
+void her2k(CBLAS_LAYOUT layout, CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
            const std::complex<float> *alpha, const std::complex<float> *a, const int *lda,
            const std::complex<float> *b, const int *ldb, const float *beta, std::complex<float> *c,
            const int *ldc) {
-    cblas_cher2k(CblasColMajor, uplo, trans, *n, *k, alpha, a, *lda, b, *ldb, *beta, c, *ldc);
+    cblas_cher2k(layout, uplo, trans, *n, *k, alpha, a, *lda, b, *ldb, *beta, c, *ldc);
 }
 
 template <>
-void her2k(CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
+void her2k(CBLAS_LAYOUT layout, CBLAS_UPLO uplo, CBLAS_TRANSPOSE trans, const int *n, const int *k,
            const std::complex<double> *alpha, const std::complex<double> *a, const int *lda,
            const std::complex<double> *b, const int *ldb, const double *beta,
            std::complex<double> *c, const int *ldc) {
-    cblas_zher2k(CblasColMajor, uplo, trans, *n, *k, alpha, a, *lda, b, *ldb, *beta, c, *ldc);
+    cblas_zher2k(layout, uplo, trans, *n, *k, alpha, a, *lda, b, *ldb, *beta, c, *ldc);
 }
 
 template <typename fp>
-static void trmm(CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa, CBLAS_DIAG diag,
-                 const int *m, const int *n, const fp *alpha, const fp *a, const int *lda, fp *b,
-                 const int *ldb);
+static void trmm(CBLAS_LAYOUT layout, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa,
+                 CBLAS_DIAG diag, const int *m, const int *n, const fp *alpha, const fp *a,
+                 const int *lda, fp *b, const int *ldb);
 
 template <>
-void trmm(CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa, CBLAS_DIAG diag, const int *m,
-          const int *n, const float *alpha, const float *a, const int *lda, float *b,
-          const int *ldb) {
-    cblas_strmm(CblasColMajor, side, uplo, transa, diag, *m, *n, *alpha, a, *lda, b, *ldb);
+void trmm(CBLAS_LAYOUT layout, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa,
+          CBLAS_DIAG diag, const int *m, const int *n, const float *alpha, const float *a,
+          const int *lda, float *b, const int *ldb) {
+    cblas_strmm(layout, side, uplo, transa, diag, *m, *n, *alpha, a, *lda, b, *ldb);
 }
 
 template <>
-void trmm(CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa, CBLAS_DIAG diag, const int *m,
-          const int *n, const double *alpha, const double *a, const int *lda, double *b,
-          const int *ldb) {
-    cblas_dtrmm(CblasColMajor, side, uplo, transa, diag, *m, *n, *alpha, a, *lda, b, *ldb);
+void trmm(CBLAS_LAYOUT layout, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa,
+          CBLAS_DIAG diag, const int *m, const int *n, const double *alpha, const double *a,
+          const int *lda, double *b, const int *ldb) {
+    cblas_dtrmm(layout, side, uplo, transa, diag, *m, *n, *alpha, a, *lda, b, *ldb);
 }
 
 template <>
-void trmm(CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa, CBLAS_DIAG diag, const int *m,
-          const int *n, const std::complex<float> *alpha, const std::complex<float> *a,
-          const int *lda, std::complex<float> *b, const int *ldb) {
-    cblas_ctrmm(CblasColMajor, side, uplo, transa, diag, *m, *n, alpha, a, *lda, b, *ldb);
+void trmm(CBLAS_LAYOUT layout, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa,
+          CBLAS_DIAG diag, const int *m, const int *n, const std::complex<float> *alpha,
+          const std::complex<float> *a, const int *lda, std::complex<float> *b, const int *ldb) {
+    cblas_ctrmm(layout, side, uplo, transa, diag, *m, *n, alpha, a, *lda, b, *ldb);
 }
 
 template <>
-void trmm(CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa, CBLAS_DIAG diag, const int *m,
-          const int *n, const std::complex<double> *alpha, const std::complex<double> *a,
-          const int *lda, std::complex<double> *b, const int *ldb) {
-    cblas_ztrmm(CblasColMajor, side, uplo, transa, diag, *m, *n, alpha, a, *lda, b, *ldb);
+void trmm(CBLAS_LAYOUT layout, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa,
+          CBLAS_DIAG diag, const int *m, const int *n, const std::complex<double> *alpha,
+          const std::complex<double> *a, const int *lda, std::complex<double> *b, const int *ldb) {
+    cblas_ztrmm(layout, side, uplo, transa, diag, *m, *n, alpha, a, *lda, b, *ldb);
 }
 
 template <typename fp>
-static void trsm(CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa, CBLAS_DIAG diag,
-                 const int *m, const int *n, const fp *alpha, const fp *a, const int *lda, fp *b,
-                 const int *ldb);
+static void trsm(CBLAS_LAYOUT layout, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa,
+                 CBLAS_DIAG diag, const int *m, const int *n, const fp *alpha, const fp *a,
+                 const int *lda, fp *b, const int *ldb);
 
 template <>
-void trsm(CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa, CBLAS_DIAG diag, const int *m,
-          const int *n, const float *alpha, const float *a, const int *lda, float *b,
-          const int *ldb) {
-    cblas_strsm(CblasColMajor, side, uplo, transa, diag, *m, *n, *alpha, a, *lda, b, *ldb);
+void trsm(CBLAS_LAYOUT layout, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa,
+          CBLAS_DIAG diag, const int *m, const int *n, const float *alpha, const float *a,
+          const int *lda, float *b, const int *ldb) {
+    cblas_strsm(layout, side, uplo, transa, diag, *m, *n, *alpha, a, *lda, b, *ldb);
 }
 
 template <>
-void trsm(CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa, CBLAS_DIAG diag, const int *m,
-          const int *n, const double *alpha, const double *a, const int *lda, double *b,
-          const int *ldb) {
-    cblas_dtrsm(CblasColMajor, side, uplo, transa, diag, *m, *n, *alpha, a, *lda, b, *ldb);
+void trsm(CBLAS_LAYOUT layout, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa,
+          CBLAS_DIAG diag, const int *m, const int *n, const double *alpha, const double *a,
+          const int *lda, double *b, const int *ldb) {
+    cblas_dtrsm(layout, side, uplo, transa, diag, *m, *n, *alpha, a, *lda, b, *ldb);
 }
 
 template <>
-void trsm(CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa, CBLAS_DIAG diag, const int *m,
-          const int *n, const std::complex<float> *alpha, const std::complex<float> *a,
-          const int *lda, std::complex<float> *b, const int *ldb) {
-    cblas_ctrsm(CblasColMajor, side, uplo, transa, diag, *m, *n, alpha, a, *lda, b, *ldb);
+void trsm(CBLAS_LAYOUT layout, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa,
+          CBLAS_DIAG diag, const int *m, const int *n, const std::complex<float> *alpha,
+          const std::complex<float> *a, const int *lda, std::complex<float> *b, const int *ldb) {
+    cblas_ctrsm(layout, side, uplo, transa, diag, *m, *n, alpha, a, *lda, b, *ldb);
 }
 
 template <>
-void trsm(CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa, CBLAS_DIAG diag, const int *m,
-          const int *n, const std::complex<double> *alpha, const std::complex<double> *a,
-          const int *lda, std::complex<double> *b, const int *ldb) {
-    cblas_ztrsm(CblasColMajor, side, uplo, transa, diag, *m, *n, alpha, a, *lda, b, *ldb);
+void trsm(CBLAS_LAYOUT layout, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transa,
+          CBLAS_DIAG diag, const int *m, const int *n, const std::complex<double> *alpha,
+          const std::complex<double> *a, const int *lda, std::complex<double> *b, const int *ldb) {
+    cblas_ztrsm(layout, side, uplo, transa, diag, *m, *n, alpha, a, *lda, b, *ldb);
 }
 
 /*  Level 2 */
 
 template <typename fp>
-static void gemv(CBLAS_TRANSPOSE trans, const int *m, const int *n, const fp *alpha, const fp *a,
-                 const int *lda, const fp *x, const int *incx, const fp *beta, fp *y,
-                 const int *incy);
-
-template <>
-void gemv(CBLAS_TRANSPOSE trans, const int *m, const int *n, const float *alpha, const float *a,
-          const int *lda, const float *x, const int *incx, const float *beta, float *y,
-          const int *incy) {
-    cblas_sgemv(CblasColMajor, trans, *m, *n, *alpha, a, *lda, x, *incx, *beta, y, *incy);
-}
-
-template <>
-void gemv(CBLAS_TRANSPOSE trans, const int *m, const int *n, const double *alpha, const double *a,
-          const int *lda, const double *x, const int *incx, const double *beta, double *y,
-          const int *incy) {
-    cblas_dgemv(CblasColMajor, trans, *m, *n, *alpha, a, *lda, x, *incx, *beta, y, *incy);
-}
-
-template <>
-void gemv(CBLAS_TRANSPOSE trans, const int *m, const int *n, const std::complex<float> *alpha,
-          const std::complex<float> *a, const int *lda, const std::complex<float> *x,
-          const int *incx, const std::complex<float> *beta, std::complex<float> *y,
-          const int *incy) {
-    cblas_cgemv(CblasColMajor, trans, *m, *n, alpha, a, *lda, x, *incx, beta, y, *incy);
-}
-
-template <>
-void gemv(CBLAS_TRANSPOSE trans, const int *m, const int *n, const std::complex<double> *alpha,
-          const std::complex<double> *a, const int *lda, const std::complex<double> *x,
-          const int *incx, const std::complex<double> *beta, std::complex<double> *y,
-          const int *incy) {
-    cblas_zgemv(CblasColMajor, trans, *m, *n, alpha, a, *lda, x, *incx, beta, y, *incy);
-}
-
-template <typename fp>
-static void gbmv(CBLAS_TRANSPOSE trans, const int *m, const int *n, int *kl, int *ku,
+static void gemv(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE trans, const int *m, const int *n,
                  const fp *alpha, const fp *a, const int *lda, const fp *x, const int *incx,
                  const fp *beta, fp *y, const int *incy);
 
 template <>
-void gbmv(CBLAS_TRANSPOSE trans, const int *m, const int *n, int *kl, int *ku, const float *alpha,
-          const float *a, const int *lda, const float *x, const int *incx, const float *beta,
-          float *y, const int *incy) {
-    cblas_sgbmv(CblasColMajor, trans, *m, *n, *kl, *ku, *alpha, a, *lda, x, *incx, *beta, y, *incy);
+void gemv(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE trans, const int *m, const int *n,
+          const float *alpha, const float *a, const int *lda, const float *x, const int *incx,
+          const float *beta, float *y, const int *incy) {
+    cblas_sgemv(layout, trans, *m, *n, *alpha, a, *lda, x, *incx, *beta, y, *incy);
 }
 
 template <>
-void gbmv(CBLAS_TRANSPOSE trans, const int *m, const int *n, int *kl, int *ku, const double *alpha,
-          const double *a, const int *lda, const double *x, const int *incx, const double *beta,
-          double *y, const int *incy) {
-    cblas_dgbmv(CblasColMajor, trans, *m, *n, *kl, *ku, *alpha, a, *lda, x, *incx, *beta, y, *incy);
+void gemv(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE trans, const int *m, const int *n,
+          const double *alpha, const double *a, const int *lda, const double *x, const int *incx,
+          const double *beta, double *y, const int *incy) {
+    cblas_dgemv(layout, trans, *m, *n, *alpha, a, *lda, x, *incx, *beta, y, *incy);
 }
 
 template <>
-void gbmv(CBLAS_TRANSPOSE trans, const int *m, const int *n, int *kl, int *ku,
+void gemv(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE trans, const int *m, const int *n,
           const std::complex<float> *alpha, const std::complex<float> *a, const int *lda,
           const std::complex<float> *x, const int *incx, const std::complex<float> *beta,
           std::complex<float> *y, const int *incy) {
-    cblas_cgbmv(CblasColMajor, trans, *m, *n, *kl, *ku, alpha, a, *lda, x, *incx, beta, y, *incy);
+    cblas_cgemv(layout, trans, *m, *n, alpha, a, *lda, x, *incx, beta, y, *incy);
 }
 
 template <>
-void gbmv(CBLAS_TRANSPOSE trans, const int *m, const int *n, int *kl, int *ku,
+void gemv(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE trans, const int *m, const int *n,
           const std::complex<double> *alpha, const std::complex<double> *a, const int *lda,
           const std::complex<double> *x, const int *incx, const std::complex<double> *beta,
           std::complex<double> *y, const int *incy) {
-    cblas_zgbmv(CblasColMajor, trans, *m, *n, *kl, *ku, alpha, a, *lda, x, *incx, beta, y, *incy);
+    cblas_zgemv(layout, trans, *m, *n, alpha, a, *lda, x, *incx, beta, y, *incy);
 }
 
 template <typename fp>
-static void ger(const int *m, const int *n, const fp *alpha, const fp *x, const int *incx,
-                const fp *y, const int *incy, fp *a, const int *lda);
-
-template <>
-void ger(const int *m, const int *n, const float *alpha, const float *x, const int *incx,
-         const float *y, const int *incy, float *a, const int *lda) {
-    cblas_sger(CblasColMajor, *m, *n, *alpha, x, *incx, y, *incy, a, *lda);
-}
-
-template <>
-void ger(const int *m, const int *n, const double *alpha, const double *x, const int *incx,
-         const double *y, const int *incy, double *a, const int *lda) {
-    cblas_dger(CblasColMajor, *m, *n, *alpha, x, *incx, y, *incy, a, *lda);
-}
-
-template <typename fp>
-static void gerc(const int *m, const int *n, const fp *alpha, const fp *x, const int *incx,
-                 const fp *y, const int *incy, fp *a, const int *lda);
-
-template <>
-void gerc(const int *m, const int *n, const std::complex<float> *alpha,
-          const std::complex<float> *x, const int *incx, const std::complex<float> *y,
-          const int *incy, std::complex<float> *a, const int *lda) {
-    cblas_cgerc(CblasColMajor, *m, *n, alpha, x, *incx, y, *incy, a, *lda);
-}
-
-template <>
-void gerc(const int *m, const int *n, const std::complex<double> *alpha,
-          const std::complex<double> *x, const int *incx, const std::complex<double> *y,
-          const int *incy, std::complex<double> *a, const int *lda) {
-    cblas_zgerc(CblasColMajor, *m, *n, alpha, x, *incx, y, *incy, a, *lda);
-}
-
-template <typename fp>
-static void geru(const int *m, const int *n, const fp *alpha, const fp *x, const int *incx,
-                 const fp *y, const int *incy, fp *a, const int *lda);
-
-template <>
-void geru(const int *m, const int *n, const std::complex<float> *alpha,
-          const std::complex<float> *x, const int *incx, const std::complex<float> *y,
-          const int *incy, std::complex<float> *a, const int *lda) {
-    cblas_cgeru(CblasColMajor, *m, *n, alpha, x, *incx, y, *incy, a, *lda);
-}
-
-template <>
-void geru(const int *m, const int *n, const std::complex<double> *alpha,
-          const std::complex<double> *x, const int *incx, const std::complex<double> *y,
-          const int *incy, std::complex<double> *a, const int *lda) {
-    cblas_zgeru(CblasColMajor, *m, *n, alpha, x, *incx, y, *incy, a, *lda);
-}
-
-template <typename fp>
-static void hbmv(CBLAS_UPLO upper_lower, const int *n, const int *k, const fp *alpha, const fp *a,
-                 const int *lda, const fp *x, const int *incx, const fp *beta, fp *y,
-                 const int *incy);
-
-template <>
-void hbmv(CBLAS_UPLO upper_lower, const int *n, const int *k, const std::complex<float> *alpha,
-          const std::complex<float> *a, const int *lda, const std::complex<float> *x,
-          const int *incx, const std::complex<float> *beta, std::complex<float> *y,
-          const int *incy) {
-    cblas_chbmv(CblasColMajor, upper_lower, *n, *k, alpha, a, *lda, x, *incx, beta, y, *incy);
-}
-
-template <>
-void hbmv(CBLAS_UPLO upper_lower, const int *n, const int *k, const std::complex<double> *alpha,
-          const std::complex<double> *a, const int *lda, const std::complex<double> *x,
-          const int *incx, const std::complex<double> *beta, std::complex<double> *y,
-          const int *incy) {
-    cblas_zhbmv(CblasColMajor, upper_lower, *n, *k, alpha, a, *lda, x, *incx, beta, y, *incy);
-}
-
-template <typename fp>
-static void hemv(CBLAS_UPLO upper_lower, const int *n, const fp *alpha, const fp *a, const int *lda,
-                 const fp *x, const int *incx, const fp *beta, fp *y, const int *incy);
-
-template <>
-void hemv(CBLAS_UPLO upper_lower, const int *n, const std::complex<float> *alpha,
-          const std::complex<float> *a, const int *lda, const std::complex<float> *x,
-          const int *incx, const std::complex<float> *beta, std::complex<float> *y,
-          const int *incy) {
-    cblas_chemv(CblasColMajor, upper_lower, *n, alpha, a, *lda, x, *incx, beta, y, *incy);
-}
-
-template <>
-void hemv(CBLAS_UPLO upper_lower, const int *n, const std::complex<double> *alpha,
-          const std::complex<double> *a, const int *lda, const std::complex<double> *x,
-          const int *incx, const std::complex<double> *beta, std::complex<double> *y,
-          const int *incy) {
-    cblas_zhemv(CblasColMajor, upper_lower, *n, alpha, a, *lda, x, *incx, beta, y, *incy);
-}
-
-template <typename fp_scalar, typename fp_data>
-static void her(CBLAS_UPLO upper_lower, const int *n, const fp_scalar *alpha, const fp_data *x,
-                const int *incx, fp_data *a, const int *lda);
-
-template <>
-void her(CBLAS_UPLO upper_lower, const int *n, const float *alpha, const std::complex<float> *x,
-         const int *incx, std::complex<float> *a, const int *lda) {
-    cblas_cher(CblasColMajor, upper_lower, *n, *alpha, x, *incx, a, *lda);
-}
-
-template <>
-void her(CBLAS_UPLO upper_lower, const int *n, const double *alpha, const std::complex<double> *x,
-         const int *incx, std::complex<double> *a, const int *lda) {
-    cblas_zher(CblasColMajor, upper_lower, *n, *alpha, x, *incx, a, *lda);
-}
-
-template <typename fp>
-static void her2(CBLAS_UPLO upper_lower, const int *n, const fp *alpha, const fp *x,
-                 const int *incx, const fp *y, const int *incy, fp *a, const int *lda);
-
-template <>
-void her2(CBLAS_UPLO upper_lower, const int *n, const std::complex<float> *alpha,
-          const std::complex<float> *x, const int *incx, const std::complex<float> *y,
-          const int *incy, std::complex<float> *a, const int *lda) {
-    cblas_cher2(CblasColMajor, upper_lower, *n, alpha, x, *incx, y, *incy, a, *lda);
-}
-
-template <>
-void her2(CBLAS_UPLO upper_lower, const int *n, const std::complex<double> *alpha,
-          const std::complex<double> *x, const int *incx, const std::complex<double> *y,
-          const int *incy, std::complex<double> *a, const int *lda) {
-    cblas_zher2(CblasColMajor, upper_lower, *n, alpha, x, *incx, y, *incy, a, *lda);
-}
-
-template <typename fp>
-static void hpmv(CBLAS_UPLO upper_lower, const int *n, const fp *alpha, const fp *a, const fp *x,
+static void gbmv(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE trans, const int *m, const int *n, int *kl,
+                 int *ku, const fp *alpha, const fp *a, const int *lda, const fp *x,
                  const int *incx, const fp *beta, fp *y, const int *incy);
 
 template <>
-void hpmv(CBLAS_UPLO upper_lower, const int *n, const std::complex<float> *alpha,
-          const std::complex<float> *a, const std::complex<float> *x, const int *incx,
-          const std::complex<float> *beta, std::complex<float> *y, const int *incy) {
-    cblas_chpmv(CblasColMajor, upper_lower, *n, alpha, a, x, *incx, beta, y, *incy);
+void gbmv(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE trans, const int *m, const int *n, int *kl, int *ku,
+          const float *alpha, const float *a, const int *lda, const float *x, const int *incx,
+          const float *beta, float *y, const int *incy) {
+    cblas_sgbmv(layout, trans, *m, *n, *kl, *ku, *alpha, a, *lda, x, *incx, *beta, y, *incy);
 }
 
 template <>
-void hpmv(CBLAS_UPLO upper_lower, const int *n, const std::complex<double> *alpha,
-          const std::complex<double> *a, const std::complex<double> *x, const int *incx,
-          const std::complex<double> *beta, std::complex<double> *y, const int *incy) {
-    cblas_zhpmv(CblasColMajor, upper_lower, *n, alpha, a, x, *incx, beta, y, *incy);
-}
-
-template <typename fp_scalar, typename fp_data>
-static void hpr(CBLAS_UPLO upper_lower, const int *n, const fp_scalar *alpha, const fp_data *x,
-                const int *incx, fp_data *a);
-
-template <>
-void hpr(CBLAS_UPLO upper_lower, const int *n, const float *alpha, const std::complex<float> *x,
-         const int *incx, std::complex<float> *a) {
-    cblas_chpr(CblasColMajor, upper_lower, *n, *alpha, x, *incx, a);
+void gbmv(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE trans, const int *m, const int *n, int *kl, int *ku,
+          const double *alpha, const double *a, const int *lda, const double *x, const int *incx,
+          const double *beta, double *y, const int *incy) {
+    cblas_dgbmv(layout, trans, *m, *n, *kl, *ku, *alpha, a, *lda, x, *incx, *beta, y, *incy);
 }
 
 template <>
-void hpr(CBLAS_UPLO upper_lower, const int *n, const double *alpha, const std::complex<double> *x,
-         const int *incx, std::complex<double> *a) {
-    cblas_zhpr(CblasColMajor, upper_lower, *n, *alpha, x, *incx, a);
+void gbmv(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE trans, const int *m, const int *n, int *kl, int *ku,
+          const std::complex<float> *alpha, const std::complex<float> *a, const int *lda,
+          const std::complex<float> *x, const int *incx, const std::complex<float> *beta,
+          std::complex<float> *y, const int *incy) {
+    cblas_cgbmv(layout, trans, *m, *n, *kl, *ku, alpha, a, *lda, x, *incx, beta, y, *incy);
+}
+
+template <>
+void gbmv(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE trans, const int *m, const int *n, int *kl, int *ku,
+          const std::complex<double> *alpha, const std::complex<double> *a, const int *lda,
+          const std::complex<double> *x, const int *incx, const std::complex<double> *beta,
+          std::complex<double> *y, const int *incy) {
+    cblas_zgbmv(layout, trans, *m, *n, *kl, *ku, alpha, a, *lda, x, *incx, beta, y, *incy);
 }
 
 template <typename fp>
-static void hpr2(CBLAS_UPLO upper_lower, const int *n, const fp *alpha, const fp *x,
-                 const int *incx, const fp *y, const int *incy, fp *a);
+static void ger(CBLAS_LAYOUT layout, const int *m, const int *n, const fp *alpha, const fp *x,
+                const int *incx, const fp *y, const int *incy, fp *a, const int *lda);
 
 template <>
-void hpr2(CBLAS_UPLO upper_lower, const int *n, const std::complex<float> *alpha,
-          const std::complex<float> *x, const int *incx, const std::complex<float> *y,
-          const int *incy, std::complex<float> *a) {
-    cblas_chpr2(CblasColMajor, upper_lower, *n, alpha, x, *incx, y, *incy, a);
+void ger(CBLAS_LAYOUT layout, const int *m, const int *n, const float *alpha, const float *x,
+         const int *incx, const float *y, const int *incy, float *a, const int *lda) {
+    cblas_sger(layout, *m, *n, *alpha, x, *incx, y, *incy, a, *lda);
 }
 
 template <>
-void hpr2(CBLAS_UPLO upper_lower, const int *n, const std::complex<double> *alpha,
-          const std::complex<double> *x, const int *incx, const std::complex<double> *y,
-          const int *incy, std::complex<double> *a) {
-    cblas_zhpr2(CblasColMajor, upper_lower, *n, alpha, x, *incx, y, *incy, a);
-}
-
-template <typename fp>
-static void sbmv(CBLAS_UPLO upper_lower, const int *n, const int *k, const fp *alpha, const fp *a,
-                 const int *lda, const fp *x, const int *incx, const fp *beta, fp *y,
-                 const int *incy);
-
-template <>
-void sbmv(CBLAS_UPLO upper_lower, const int *n, const int *k, const float *alpha, const float *a,
-          const int *lda, const float *x, const int *incx, const float *beta, float *y,
-          const int *incy) {
-    cblas_ssbmv(CblasColMajor, upper_lower, *n, *k, *alpha, a, *lda, x, *incx, *beta, y, *incy);
-}
-
-template <>
-void sbmv(CBLAS_UPLO upper_lower, const int *n, const int *k, const double *alpha, const double *a,
-          const int *lda, const double *x, const int *incx, const double *beta, double *y,
-          const int *incy) {
-    cblas_dsbmv(CblasColMajor, upper_lower, *n, *k, *alpha, a, *lda, x, *incx, *beta, y, *incy);
+void ger(CBLAS_LAYOUT layout, const int *m, const int *n, const double *alpha, const double *x,
+         const int *incx, const double *y, const int *incy, double *a, const int *lda) {
+    cblas_dger(layout, *m, *n, *alpha, x, *incx, y, *incy, a, *lda);
 }
 
 template <typename fp>
-static void symv(CBLAS_UPLO upper_lower, const int *n, const fp *alpha, const fp *a, const int *lda,
-                 const fp *x, const int *incx, const fp *beta, fp *y, const int *incy);
-
-template <>
-void symv(CBLAS_UPLO upper_lower, const int *n, const float *alpha, const float *a, const int *lda,
-          const float *x, const int *incx, const float *beta, float *y, const int *incy) {
-    cblas_ssymv(CblasColMajor, upper_lower, *n, *alpha, a, *lda, x, *incx, *beta, y, *incy);
-}
-
-template <>
-void symv(CBLAS_UPLO upper_lower, const int *n, const double *alpha, const double *a,
-          const int *lda, const double *x, const int *incx, const double *beta, double *y,
-          const int *incy) {
-    cblas_dsymv(CblasColMajor, upper_lower, *n, *alpha, a, *lda, x, *incx, *beta, y, *incy);
-}
-
-template <typename fp>
-static void syr(CBLAS_UPLO upper_lower, const int *n, const fp *alpha, const fp *x, const int *incx,
-                fp *a, const int *lda);
-
-template <>
-void syr(CBLAS_UPLO upper_lower, const int *n, const float *alpha, const float *x, const int *incx,
-         float *a, const int *lda) {
-    cblas_ssyr(CblasColMajor, upper_lower, *n, *alpha, x, *incx, a, *lda);
-}
-
-template <>
-void syr(CBLAS_UPLO upper_lower, const int *n, const double *alpha, const double *x,
-         const int *incx, double *a, const int *lda) {
-    cblas_dsyr(CblasColMajor, upper_lower, *n, *alpha, x, *incx, a, *lda);
-}
-
-template <typename fp>
-static void syr2(CBLAS_UPLO upper_lower, const int *n, const fp *alpha, const fp *x,
+static void gerc(CBLAS_LAYOUT layout, const int *m, const int *n, const fp *alpha, const fp *x,
                  const int *incx, const fp *y, const int *incy, fp *a, const int *lda);
 
 template <>
-void syr2(CBLAS_UPLO upper_lower, const int *n, const float *alpha, const float *x, const int *incx,
-          const float *y, const int *incy, float *a, const int *lda) {
-    cblas_ssyr2(CblasColMajor, upper_lower, *n, *alpha, x, *incx, y, *incy, a, *lda);
+void gerc(CBLAS_LAYOUT layout, const int *m, const int *n, const std::complex<float> *alpha,
+          const std::complex<float> *x, const int *incx, const std::complex<float> *y,
+          const int *incy, std::complex<float> *a, const int *lda) {
+    cblas_cgerc(layout, *m, *n, alpha, x, *incx, y, *incy, a, *lda);
 }
 
 template <>
-void syr2(CBLAS_UPLO upper_lower, const int *n, const double *alpha, const double *x,
-          const int *incx, const double *y, const int *incy, double *a, const int *lda) {
-    cblas_dsyr2(CblasColMajor, upper_lower, *n, *alpha, x, *incx, y, *incy, a, *lda);
-}
-
-template <typename fp>
-static void spmv(CBLAS_UPLO upper_lower, const int *n, const fp *alpha, const fp *a, const fp *x,
-                 const int *incx, const fp *beta, fp *y, const int *incy);
-
-template <>
-void spmv(CBLAS_UPLO upper_lower, const int *n, const float *alpha, const float *a, const float *x,
-          const int *incx, const float *beta, float *y, const int *incy) {
-    cblas_sspmv(CblasColMajor, upper_lower, *n, *alpha, a, x, *incx, *beta, y, *incy);
-}
-
-template <>
-void spmv(CBLAS_UPLO upper_lower, const int *n, const double *alpha, const double *a,
-          const double *x, const int *incx, const double *beta, double *y, const int *incy) {
-    cblas_dspmv(CblasColMajor, upper_lower, *n, *alpha, a, x, *incx, *beta, y, *incy);
+void gerc(CBLAS_LAYOUT layout, const int *m, const int *n, const std::complex<double> *alpha,
+          const std::complex<double> *x, const int *incx, const std::complex<double> *y,
+          const int *incy, std::complex<double> *a, const int *lda) {
+    cblas_zgerc(layout, *m, *n, alpha, x, *incx, y, *incy, a, *lda);
 }
 
 template <typename fp>
-static void spr(CBLAS_UPLO upper_lower, const int *n, const fp *alpha, const fp *x, const int *incx,
-                fp *a);
+static void geru(CBLAS_LAYOUT layout, const int *m, const int *n, const fp *alpha, const fp *x,
+                 const int *incx, const fp *y, const int *incy, fp *a, const int *lda);
 
 template <>
-void spr(CBLAS_UPLO upper_lower, const int *n, const float *alpha, const float *x, const int *incx,
-         float *a) {
-    cblas_sspr(CblasColMajor, upper_lower, *n, *alpha, x, *incx, a);
+void geru(CBLAS_LAYOUT layout, const int *m, const int *n, const std::complex<float> *alpha,
+          const std::complex<float> *x, const int *incx, const std::complex<float> *y,
+          const int *incy, std::complex<float> *a, const int *lda) {
+    cblas_cgeru(layout, *m, *n, alpha, x, *incx, y, *incy, a, *lda);
 }
 
 template <>
-void spr(CBLAS_UPLO upper_lower, const int *n, const double *alpha, const double *x,
-         const int *incx, double *a) {
-    cblas_dspr(CblasColMajor, upper_lower, *n, *alpha, x, *incx, a);
-}
-
-template <typename fp>
-static void spr2(CBLAS_UPLO upper_lower, const int *n, const fp *alpha, const fp *x,
-                 const int *incx, const fp *y, const int *incy, fp *a);
-
-template <>
-void spr2(CBLAS_UPLO upper_lower, const int *n, const float *alpha, const float *x, const int *incx,
-          const float *y, const int *incy, float *a) {
-    cblas_sspr2(CblasColMajor, upper_lower, *n, *alpha, x, *incx, y, *incy, a);
-}
-
-template <>
-void spr2(CBLAS_UPLO upper_lower, const int *n, const double *alpha, const double *x,
-          const int *incx, const double *y, const int *incy, double *a) {
-    cblas_dspr2(CblasColMajor, upper_lower, *n, *alpha, x, *incx, y, *incy, a);
+void geru(CBLAS_LAYOUT layout, const int *m, const int *n, const std::complex<double> *alpha,
+          const std::complex<double> *x, const int *incx, const std::complex<double> *y,
+          const int *incy, std::complex<double> *a, const int *lda) {
+    cblas_zgeru(layout, *m, *n, alpha, x, *incx, y, *incy, a, *lda);
 }
 
 template <typename fp>
-static void tbmv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-                 const int *k, const fp *a, const int *lda, fp *x, const int *incx);
+static void hbmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const int *k,
+                 const fp *alpha, const fp *a, const int *lda, const fp *x, const int *incx,
+                 const fp *beta, fp *y, const int *incy);
 
 template <>
-void tbmv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const int *k, const float *a, const int *lda, float *x, const int *incx) {
-    cblas_stbmv(CblasColMajor, upper_lower, trans, unit_diag, *n, *k, a, *lda, x, *incx);
+void hbmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const int *k,
+          const std::complex<float> *alpha, const std::complex<float> *a, const int *lda,
+          const std::complex<float> *x, const int *incx, const std::complex<float> *beta,
+          std::complex<float> *y, const int *incy) {
+    cblas_chbmv(layout, upper_lower, *n, *k, alpha, a, *lda, x, *incx, beta, y, *incy);
 }
 
 template <>
-void tbmv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const int *k, const double *a, const int *lda, double *x, const int *incx) {
-    cblas_dtbmv(CblasColMajor, upper_lower, trans, unit_diag, *n, *k, a, *lda, x, *incx);
+void hbmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const int *k,
+          const std::complex<double> *alpha, const std::complex<double> *a, const int *lda,
+          const std::complex<double> *x, const int *incx, const std::complex<double> *beta,
+          std::complex<double> *y, const int *incy) {
+    cblas_zhbmv(layout, upper_lower, *n, *k, alpha, a, *lda, x, *incx, beta, y, *incy);
+}
+
+template <typename fp>
+static void hemv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const fp *alpha,
+                 const fp *a, const int *lda, const fp *x, const int *incx, const fp *beta, fp *y,
+                 const int *incy);
+
+template <>
+void hemv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n,
+          const std::complex<float> *alpha, const std::complex<float> *a, const int *lda,
+          const std::complex<float> *x, const int *incx, const std::complex<float> *beta,
+          std::complex<float> *y, const int *incy) {
+    cblas_chemv(layout, upper_lower, *n, alpha, a, *lda, x, *incx, beta, y, *incy);
 }
 
 template <>
-void tbmv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const int *k, const std::complex<float> *a, const int *lda, std::complex<float> *x,
+void hemv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n,
+          const std::complex<double> *alpha, const std::complex<double> *a, const int *lda,
+          const std::complex<double> *x, const int *incx, const std::complex<double> *beta,
+          std::complex<double> *y, const int *incy) {
+    cblas_zhemv(layout, upper_lower, *n, alpha, a, *lda, x, *incx, beta, y, *incy);
+}
+
+template <typename fp_scalar, typename fp_data>
+static void her(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const fp_scalar *alpha,
+                const fp_data *x, const int *incx, fp_data *a, const int *lda);
+
+template <>
+void her(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const float *alpha,
+         const std::complex<float> *x, const int *incx, std::complex<float> *a, const int *lda) {
+    cblas_cher(layout, upper_lower, *n, *alpha, x, *incx, a, *lda);
+}
+
+template <>
+void her(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const double *alpha,
+         const std::complex<double> *x, const int *incx, std::complex<double> *a, const int *lda) {
+    cblas_zher(layout, upper_lower, *n, *alpha, x, *incx, a, *lda);
+}
+
+template <typename fp>
+static void her2(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const fp *alpha,
+                 const fp *x, const int *incx, const fp *y, const int *incy, fp *a, const int *lda);
+
+template <>
+void her2(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n,
+          const std::complex<float> *alpha, const std::complex<float> *x, const int *incx,
+          const std::complex<float> *y, const int *incy, std::complex<float> *a, const int *lda) {
+    cblas_cher2(layout, upper_lower, *n, alpha, x, *incx, y, *incy, a, *lda);
+}
+
+template <>
+void her2(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n,
+          const std::complex<double> *alpha, const std::complex<double> *x, const int *incx,
+          const std::complex<double> *y, const int *incy, std::complex<double> *a, const int *lda) {
+    cblas_zher2(layout, upper_lower, *n, alpha, x, *incx, y, *incy, a, *lda);
+}
+
+template <typename fp>
+static void hpmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const fp *alpha,
+                 const fp *a, const fp *x, const int *incx, const fp *beta, fp *y, const int *incy);
+
+template <>
+void hpmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n,
+          const std::complex<float> *alpha, const std::complex<float> *a,
+          const std::complex<float> *x, const int *incx, const std::complex<float> *beta,
+          std::complex<float> *y, const int *incy) {
+    cblas_chpmv(layout, upper_lower, *n, alpha, a, x, *incx, beta, y, *incy);
+}
+
+template <>
+void hpmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n,
+          const std::complex<double> *alpha, const std::complex<double> *a,
+          const std::complex<double> *x, const int *incx, const std::complex<double> *beta,
+          std::complex<double> *y, const int *incy) {
+    cblas_zhpmv(layout, upper_lower, *n, alpha, a, x, *incx, beta, y, *incy);
+}
+
+template <typename fp_scalar, typename fp_data>
+static void hpr(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const fp_scalar *alpha,
+                const fp_data *x, const int *incx, fp_data *a);
+
+template <>
+void hpr(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const float *alpha,
+         const std::complex<float> *x, const int *incx, std::complex<float> *a) {
+    cblas_chpr(layout, upper_lower, *n, *alpha, x, *incx, a);
+}
+
+template <>
+void hpr(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const double *alpha,
+         const std::complex<double> *x, const int *incx, std::complex<double> *a) {
+    cblas_zhpr(layout, upper_lower, *n, *alpha, x, *incx, a);
+}
+
+template <typename fp>
+static void hpr2(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const fp *alpha,
+                 const fp *x, const int *incx, const fp *y, const int *incy, fp *a);
+
+template <>
+void hpr2(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n,
+          const std::complex<float> *alpha, const std::complex<float> *x, const int *incx,
+          const std::complex<float> *y, const int *incy, std::complex<float> *a) {
+    cblas_chpr2(layout, upper_lower, *n, alpha, x, *incx, y, *incy, a);
+}
+
+template <>
+void hpr2(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n,
+          const std::complex<double> *alpha, const std::complex<double> *x, const int *incx,
+          const std::complex<double> *y, const int *incy, std::complex<double> *a) {
+    cblas_zhpr2(layout, upper_lower, *n, alpha, x, *incx, y, *incy, a);
+}
+
+template <typename fp>
+static void sbmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const int *k,
+                 const fp *alpha, const fp *a, const int *lda, const fp *x, const int *incx,
+                 const fp *beta, fp *y, const int *incy);
+
+template <>
+void sbmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const int *k,
+          const float *alpha, const float *a, const int *lda, const float *x, const int *incx,
+          const float *beta, float *y, const int *incy) {
+    cblas_ssbmv(layout, upper_lower, *n, *k, *alpha, a, *lda, x, *incx, *beta, y, *incy);
+}
+
+template <>
+void sbmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const int *k,
+          const double *alpha, const double *a, const int *lda, const double *x, const int *incx,
+          const double *beta, double *y, const int *incy) {
+    cblas_dsbmv(layout, upper_lower, *n, *k, *alpha, a, *lda, x, *incx, *beta, y, *incy);
+}
+
+template <typename fp>
+static void symv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const fp *alpha,
+                 const fp *a, const int *lda, const fp *x, const int *incx, const fp *beta, fp *y,
+                 const int *incy);
+
+template <>
+void symv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const float *alpha,
+          const float *a, const int *lda, const float *x, const int *incx, const float *beta,
+          float *y, const int *incy) {
+    cblas_ssymv(layout, upper_lower, *n, *alpha, a, *lda, x, *incx, *beta, y, *incy);
+}
+
+template <>
+void symv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const double *alpha,
+          const double *a, const int *lda, const double *x, const int *incx, const double *beta,
+          double *y, const int *incy) {
+    cblas_dsymv(layout, upper_lower, *n, *alpha, a, *lda, x, *incx, *beta, y, *incy);
+}
+
+template <typename fp>
+static void syr(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const fp *alpha,
+                const fp *x, const int *incx, fp *a, const int *lda);
+
+template <>
+void syr(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const float *alpha,
+         const float *x, const int *incx, float *a, const int *lda) {
+    cblas_ssyr(layout, upper_lower, *n, *alpha, x, *incx, a, *lda);
+}
+
+template <>
+void syr(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const double *alpha,
+         const double *x, const int *incx, double *a, const int *lda) {
+    cblas_dsyr(layout, upper_lower, *n, *alpha, x, *incx, a, *lda);
+}
+
+template <typename fp>
+static void syr2(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const fp *alpha,
+                 const fp *x, const int *incx, const fp *y, const int *incy, fp *a, const int *lda);
+
+template <>
+void syr2(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const float *alpha,
+          const float *x, const int *incx, const float *y, const int *incy, float *a,
+          const int *lda) {
+    cblas_ssyr2(layout, upper_lower, *n, *alpha, x, *incx, y, *incy, a, *lda);
+}
+
+template <>
+void syr2(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const double *alpha,
+          const double *x, const int *incx, const double *y, const int *incy, double *a,
+          const int *lda) {
+    cblas_dsyr2(layout, upper_lower, *n, *alpha, x, *incx, y, *incy, a, *lda);
+}
+
+template <typename fp>
+static void spmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const fp *alpha,
+                 const fp *a, const fp *x, const int *incx, const fp *beta, fp *y, const int *incy);
+
+template <>
+void spmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const float *alpha,
+          const float *a, const float *x, const int *incx, const float *beta, float *y,
+          const int *incy) {
+    cblas_sspmv(layout, upper_lower, *n, *alpha, a, x, *incx, *beta, y, *incy);
+}
+
+template <>
+void spmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const double *alpha,
+          const double *a, const double *x, const int *incx, const double *beta, double *y,
+          const int *incy) {
+    cblas_dspmv(layout, upper_lower, *n, *alpha, a, x, *incx, *beta, y, *incy);
+}
+
+template <typename fp>
+static void spr(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const fp *alpha,
+                const fp *x, const int *incx, fp *a);
+
+template <>
+void spr(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const float *alpha,
+         const float *x, const int *incx, float *a) {
+    cblas_sspr(layout, upper_lower, *n, *alpha, x, *incx, a);
+}
+
+template <>
+void spr(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const double *alpha,
+         const double *x, const int *incx, double *a) {
+    cblas_dspr(layout, upper_lower, *n, *alpha, x, *incx, a);
+}
+
+template <typename fp>
+static void spr2(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const fp *alpha,
+                 const fp *x, const int *incx, const fp *y, const int *incy, fp *a);
+
+template <>
+void spr2(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const float *alpha,
+          const float *x, const int *incx, const float *y, const int *incy, float *a) {
+    cblas_sspr2(layout, upper_lower, *n, *alpha, x, *incx, y, *incy, a);
+}
+
+template <>
+void spr2(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, const int *n, const double *alpha,
+          const double *x, const int *incx, const double *y, const int *incy, double *a) {
+    cblas_dspr2(layout, upper_lower, *n, *alpha, x, *incx, y, *incy, a);
+}
+
+template <typename fp>
+static void tbmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans,
+                 CBLAS_DIAG unit_diag, const int *n, const int *k, const fp *a, const int *lda,
+                 fp *x, const int *incx);
+
+template <>
+void tbmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const int *k, const float *a, const int *lda, float *x, const int *incx) {
+    cblas_stbmv(layout, upper_lower, trans, unit_diag, *n, *k, a, *lda, x, *incx);
+}
+
+template <>
+void tbmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const int *k, const double *a, const int *lda, double *x, const int *incx) {
+    cblas_dtbmv(layout, upper_lower, trans, unit_diag, *n, *k, a, *lda, x, *incx);
+}
+
+template <>
+void tbmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const int *k, const std::complex<float> *a, const int *lda,
+          std::complex<float> *x, const int *incx) {
+    cblas_ctbmv(layout, upper_lower, trans, unit_diag, *n, *k, a, *lda, x, *incx);
+}
+
+template <>
+void tbmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const int *k, const std::complex<double> *a, const int *lda,
+          std::complex<double> *x, const int *incx) {
+    cblas_ztbmv(layout, upper_lower, trans, unit_diag, *n, *k, a, *lda, x, *incx);
+}
+
+template <typename fp>
+static void tbsv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans,
+                 CBLAS_DIAG unit_diag, const int *n, const int *k, const fp *a, const int *lda,
+                 fp *x, const int *incx);
+
+template <>
+void tbsv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const int *k, const float *a, const int *lda, float *x, const int *incx) {
+    cblas_stbsv(layout, upper_lower, trans, unit_diag, *n, *k, a, *lda, x, *incx);
+}
+
+template <>
+void tbsv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const int *k, const double *a, const int *lda, double *x, const int *incx) {
+    cblas_dtbsv(layout, upper_lower, trans, unit_diag, *n, *k, a, *lda, x, *incx);
+}
+
+template <>
+void tbsv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const int *k, const std::complex<float> *a, const int *lda,
+          std::complex<float> *x, const int *incx) {
+    cblas_ctbsv(layout, upper_lower, trans, unit_diag, *n, *k, a, *lda, x, *incx);
+}
+
+template <>
+void tbsv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const int *k, const std::complex<double> *a, const int *lda,
+          std::complex<double> *x, const int *incx) {
+    cblas_ztbsv(layout, upper_lower, trans, unit_diag, *n, *k, a, *lda, x, *incx);
+}
+
+template <typename fp>
+static void tpmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans,
+                 CBLAS_DIAG unit_diag, const int *n, const fp *a, fp *x, const int *incx);
+
+template <>
+void tpmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const float *a, float *x, const int *incx) {
+    cblas_stpmv(layout, upper_lower, trans, unit_diag, *n, a, x, *incx);
+}
+
+template <>
+void tpmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const double *a, double *x, const int *incx) {
+    cblas_dtpmv(layout, upper_lower, trans, unit_diag, *n, a, x, *incx);
+}
+
+template <>
+void tpmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const std::complex<float> *a, std::complex<float> *x, const int *incx) {
+    cblas_ctpmv(layout, upper_lower, trans, unit_diag, *n, a, x, *incx);
+}
+
+template <>
+void tpmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const std::complex<double> *a, std::complex<double> *x, const int *incx) {
+    cblas_ztpmv(layout, upper_lower, trans, unit_diag, *n, a, x, *incx);
+}
+
+template <typename fp>
+static void tpsv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans,
+                 CBLAS_DIAG unit_diag, const int *n, const fp *a, fp *x, const int *incx);
+
+template <>
+void tpsv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const float *a, float *x, const int *incx) {
+    cblas_stpsv(layout, upper_lower, trans, unit_diag, *n, a, x, *incx);
+}
+
+template <>
+void tpsv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const double *a, double *x, const int *incx) {
+    cblas_dtpsv(layout, upper_lower, trans, unit_diag, *n, a, x, *incx);
+}
+
+template <>
+void tpsv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const std::complex<float> *a, std::complex<float> *x, const int *incx) {
+    cblas_ctpsv(layout, upper_lower, trans, unit_diag, *n, a, x, *incx);
+}
+
+template <>
+void tpsv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const std::complex<double> *a, std::complex<double> *x, const int *incx) {
+    cblas_ztpsv(layout, upper_lower, trans, unit_diag, *n, a, x, *incx);
+}
+
+template <typename fp>
+static void trmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans,
+                 CBLAS_DIAG unit_diag, const int *n, const fp *a, const int *lda, fp *x,
+                 const int *incx);
+
+template <>
+void trmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const float *a, const int *lda, float *x, const int *incx) {
+    cblas_strmv(layout, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
+}
+
+template <>
+void trmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const double *a, const int *lda, double *x, const int *incx) {
+    cblas_dtrmv(layout, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
+}
+
+template <>
+void trmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const std::complex<float> *a, const int *lda, std::complex<float> *x,
           const int *incx) {
-    cblas_ctbmv(CblasColMajor, upper_lower, trans, unit_diag, *n, *k, a, *lda, x, *incx);
+    cblas_ctrmv(layout, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
 }
 
 template <>
-void tbmv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const int *k, const std::complex<double> *a, const int *lda, std::complex<double> *x,
+void trmv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const std::complex<double> *a, const int *lda, std::complex<double> *x,
           const int *incx) {
-    cblas_ztbmv(CblasColMajor, upper_lower, trans, unit_diag, *n, *k, a, *lda, x, *incx);
+    cblas_ztrmv(layout, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
 }
 
 template <typename fp>
-static void tbsv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-                 const int *k, const fp *a, const int *lda, fp *x, const int *incx);
+static void trsv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans,
+                 CBLAS_DIAG unit_diag, const int *n, const fp *a, const int *lda, fp *x,
+                 const int *incx);
 
 template <>
-void tbsv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const int *k, const float *a, const int *lda, float *x, const int *incx) {
-    cblas_stbsv(CblasColMajor, upper_lower, trans, unit_diag, *n, *k, a, *lda, x, *incx);
+void trsv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const float *a, const int *lda, float *x, const int *incx) {
+    cblas_strsv(layout, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
 }
 
 template <>
-void tbsv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const int *k, const double *a, const int *lda, double *x, const int *incx) {
-    cblas_dtbsv(CblasColMajor, upper_lower, trans, unit_diag, *n, *k, a, *lda, x, *incx);
+void trsv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const double *a, const int *lda, double *x, const int *incx) {
+    cblas_dtrsv(layout, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
 }
 
 template <>
-void tbsv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const int *k, const std::complex<float> *a, const int *lda, std::complex<float> *x,
+void trsv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const std::complex<float> *a, const int *lda, std::complex<float> *x,
           const int *incx) {
-    cblas_ctbsv(CblasColMajor, upper_lower, trans, unit_diag, *n, *k, a, *lda, x, *incx);
+    cblas_ctrsv(layout, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
 }
 
 template <>
-void tbsv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const int *k, const std::complex<double> *a, const int *lda, std::complex<double> *x,
+void trsv(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag,
+          const int *n, const std::complex<double> *a, const int *lda, std::complex<double> *x,
           const int *incx) {
-    cblas_ztbsv(CblasColMajor, upper_lower, trans, unit_diag, *n, *k, a, *lda, x, *incx);
-}
-
-template <typename fp>
-static void tpmv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-                 const fp *a, fp *x, const int *incx);
-
-template <>
-void tpmv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const float *a, float *x, const int *incx) {
-    cblas_stpmv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, x, *incx);
-}
-
-template <>
-void tpmv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const double *a, double *x, const int *incx) {
-    cblas_dtpmv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, x, *incx);
-}
-
-template <>
-void tpmv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const std::complex<float> *a, std::complex<float> *x, const int *incx) {
-    cblas_ctpmv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, x, *incx);
-}
-
-template <>
-void tpmv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const std::complex<double> *a, std::complex<double> *x, const int *incx) {
-    cblas_ztpmv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, x, *incx);
-}
-
-template <typename fp>
-static void tpsv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-                 const fp *a, fp *x, const int *incx);
-
-template <>
-void tpsv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const float *a, float *x, const int *incx) {
-    cblas_stpsv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, x, *incx);
-}
-
-template <>
-void tpsv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const double *a, double *x, const int *incx) {
-    cblas_dtpsv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, x, *incx);
-}
-
-template <>
-void tpsv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const std::complex<float> *a, std::complex<float> *x, const int *incx) {
-    cblas_ctpsv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, x, *incx);
-}
-
-template <>
-void tpsv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const std::complex<double> *a, std::complex<double> *x, const int *incx) {
-    cblas_ztpsv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, x, *incx);
-}
-
-template <typename fp>
-static void trmv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-                 const fp *a, const int *lda, fp *x, const int *incx);
-
-template <>
-void trmv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const float *a, const int *lda, float *x, const int *incx) {
-    cblas_strmv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
-}
-
-template <>
-void trmv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const double *a, const int *lda, double *x, const int *incx) {
-    cblas_dtrmv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
-}
-
-template <>
-void trmv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const std::complex<float> *a, const int *lda, std::complex<float> *x, const int *incx) {
-    cblas_ctrmv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
-}
-
-template <>
-void trmv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const std::complex<double> *a, const int *lda, std::complex<double> *x, const int *incx) {
-    cblas_ztrmv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
-}
-
-template <typename fp>
-static void trsv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-                 const fp *a, const int *lda, fp *x, const int *incx);
-
-template <>
-void trsv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const float *a, const int *lda, float *x, const int *incx) {
-    cblas_strsv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
-}
-
-template <>
-void trsv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const double *a, const int *lda, double *x, const int *incx) {
-    cblas_dtrsv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
-}
-
-template <>
-void trsv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const std::complex<float> *a, const int *lda, std::complex<float> *x, const int *incx) {
-    cblas_ctrsv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
-}
-
-template <>
-void trsv(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE trans, CBLAS_DIAG unit_diag, const int *n,
-          const std::complex<double> *a, const int *lda, std::complex<double> *x, const int *incx) {
-    cblas_ztrsv(CblasColMajor, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
+    cblas_ztrsv(layout, upper_lower, trans, unit_diag, *n, a, *lda, x, *incx);
 }
 
 /* Level 1 */
@@ -1435,107 +1501,31 @@ int iamin(const int *n, const std::complex<double> *x, const int *incx) {
 
 /* Extensions */
 
-template <typename fp>
-static void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
-                     const int *k, const fp *alpha, const fp *a, const int *lda, const fp *b,
-                     const int *ldb, const fp *beta, fp *c, const int *ldc);
-
-template <>
-void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
-              const int *k, const half *alpha, const half *a, const int *lda, const half *b,
-              const int *ldb, const half *beta, half *c, const int *ldc) {
-    // Not supported in NETLIB. SGEMM is used as reference.
-    int sizea, sizeb, sizec;
-    const float alphaf = *alpha;
-    const float betaf = *beta;
-    sizea = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
-    sizeb = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
-    sizec = *ldc * *n;
-    float *af = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizea);
-    float *bf = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizeb);
-    float *cf = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizec);
-    copy_mat(a, transa, *m, *k, *lda, af);
-    copy_mat(b, transb, *k, *n, *ldb, bf);
-    copy_mat(c, CblasNoTrans, *m, *n, *ldc, cf);
-    cblas_sgemm(CblasColMajor, transa, transb, *m, *n, *k, alphaf, af, *lda, bf, *ldb, betaf, cf,
-                *ldc);
-    copy_mat(cf, CblasNoTrans, *m, *n, *ldc, c);
-    oneapi::mkl::aligned_free(af);
-    oneapi::mkl::aligned_free(bf);
-    oneapi::mkl::aligned_free(cf);
-}
-
-template <>
-void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
-              const int *k, const float *alpha, const float *a, const int *lda, const float *b,
-              const int *ldb, const float *beta, float *c, const int *ldc) {
-    cblas_sgemm(CblasColMajor, transa, transb, *m, *n, *k, *alpha, a, *lda, b, *ldb, *beta, c,
-                *ldc);
-}
-
-template <>
-void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
-              const int *k, const double *alpha, const double *a, const int *lda, const double *b,
-              const int *ldb, const double *beta, double *c, const int *ldc) {
-    cblas_dgemm(CblasColMajor, transa, transb, *m, *n, *k, *alpha, a, *lda, b, *ldb, *beta, c,
-                *ldc);
-}
-
-template <>
-void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
-              const int *k, const std::complex<float> *alpha, const std::complex<float> *a,
-              const int *lda, const std::complex<float> *b, const int *ldb,
-              const std::complex<float> *beta, std::complex<float> *c, const int *ldc) {
-    cblas_cgemm(CblasColMajor, transa, transb, *m, *n, *k, alpha, a, *lda, b, *ldb, beta, c, *ldc);
-}
-
-template <>
-void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
-              const int *k, const std::complex<double> *alpha, const std::complex<double> *a,
-              const int *lda, const std::complex<double> *b, const int *ldb,
-              const std::complex<double> *beta, std::complex<double> *c, const int *ldc) {
-    cblas_zgemm(CblasColMajor, transa, transb, *m, *n, *k, alpha, a, *lda, b, *ldb, beta, c, *ldc);
-}
-
-template <typename fpa, typename fpc>
-static void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
-                     const int *k, const fpc *alpha, const fpa *a, const int *lda, const fpa *b,
-                     const int *ldb, const fpc *beta, fpc *c, const int *ldc);
-
-template <>
-void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m, const int *n,
-              const int *k, const float *alpha, const half *a, const int *lda, const half *b,
-              const int *ldb, const float *beta, float *c, const int *ldc) {
-    // Not supported in NETLIB. SGEMM is used as reference.
-    int sizea, sizeb;
-    sizea = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
-    sizeb = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
-    float *af = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizea);
-    float *bf = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizeb);
-    copy_mat(a, transa, *m, *k, *lda, af);
-    copy_mat(b, transb, *k, *n, *ldb, bf);
-    cblas_sgemm(CblasColMajor, transa, transb, *m, *n, *k, *alpha, af, *lda, bf, *ldb, *beta, c,
-                *ldc);
-    oneapi::mkl::aligned_free(af);
-    oneapi::mkl::aligned_free(bf);
-}
-
 template <typename fps, typename fpa, typename fpb, typename fpc>
-static void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, CBLAS_OFFSET offsetc,
-                     const int *m, const int *n, const int *k, const fps *alpha, const fpa *a,
-                     const int *lda, const fpa *ao, const fpb *b, const int *ldb, const fpb *bo,
-                     const fps *beta, fpc *c, const int *ldc, const fpc *co);
+static void gemm_bias(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb,
+                      CBLAS_OFFSET offsetc, const int *m, const int *n, const int *k,
+                      const fps *alpha, const fpa *a, const int *lda, const fpa *ao, const fpb *b,
+                      const int *ldb, const fpb *bo, const fps *beta, fpc *c, const int *ldc,
+                      const fpc *co);
 
 template <>
-void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, CBLAS_OFFSET offsetc, const int *m,
-              const int *n, const int *k, const float *alpha, const int8_t *a, const int *lda,
-              const int8_t *ao, const uint8_t *b, const int *ldb, const uint8_t *bo,
-              const float *beta, int32_t *c, const int *ldc, const int32_t *co) {
+void gemm_bias(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb,
+               CBLAS_OFFSET offsetc, const int *m, const int *n, const int *k, const float *alpha,
+               const int8_t *a, const int *lda, const int8_t *ao, const uint8_t *b, const int *ldb,
+               const uint8_t *bo, const float *beta, int32_t *c, const int *ldc,
+               const int32_t *co) {
     // Not supported in NETLIB. DGEMM is used as reference.
     int sizea, sizeb, sizec;
-    sizea = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
-    sizeb = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
-    sizec = *ldc * *n;
+    if (layout == CblasColMajor) {
+        sizea = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
+        sizeb = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
+        sizec = *ldc * *n;
+    }
+    else {
+        sizea = (transa == CblasNoTrans) ? *lda * *m : *lda * *k;
+        sizeb = (transb == CblasNoTrans) ? *ldb * *k : *ldb * *n;
+        sizec = *ldc * *m;
+    }
     double *ad = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizea);
     double *bd = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizeb);
     double *cd = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizec);
@@ -1543,81 +1533,117 @@ void gemm_ext(CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, CBLAS_OFFSET offse
     double betad = *beta;
     double aod = *ao;
     double bod = *bo;
-    copy_mat(a, transa, *m, *k, *lda, aod, ad);
-    copy_mat(b, transb, *k, *n, *ldb, bod, bd);
-    copy_mat(c, CblasNoTrans, *m, *n, *ldc, 0.0, cd);
-    cblas_dgemm(CblasColMajor, transa, transb, *m, *n, *k, alphad, ad, *lda, bd, *ldb, betad, cd,
-                *ldc);
-    copy_mat(cd, *m, *n, *ldc, offsetc, co, c);
+    copy_mat(a, layout, transa, *m, *k, *lda, aod, ad);
+    copy_mat(b, layout, transb, *k, *n, *ldb, bod, bd);
+    copy_mat(c, layout, CblasNoTrans, *m, *n, *ldc, 0.0, cd);
+    cblas_dgemm(layout, transa, transb, *m, *n, *k, alphad, ad, *lda, bd, *ldb, betad, cd, *ldc);
+    copy_mat(cd, layout, *m, *n, *ldc, offsetc, co, c);
+    oneapi::mkl::aligned_free(ad);
+    oneapi::mkl::aligned_free(bd);
+    oneapi::mkl::aligned_free(cd);
+}
+
+template <>
+void gemm_bias(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb,
+               CBLAS_OFFSET offsetc, const int *m, const int *n, const int *k, const float *alpha,
+               const uint8_t *a, const int *lda, const uint8_t *ao, const int8_t *b, const int *ldb,
+               const int8_t *bo, const float *beta, int32_t *c, const int *ldc, const int32_t *co) {
+    // Not supported in NETLIB. DGEMM is used as reference.
+    int sizea, sizeb, sizec;
+    if (layout == CblasColMajor) {
+        sizea = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
+        sizeb = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
+        sizec = *ldc * *n;
+    }
+    else {
+        sizea = (transa == CblasNoTrans) ? *lda * *m : *lda * *k;
+        sizeb = (transb == CblasNoTrans) ? *ldb * *k : *ldb * *n;
+        sizec = *ldc * *m;
+    }
+    double *ad = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizea);
+    double *bd = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizeb);
+    double *cd = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizec);
+    double alphad = *alpha;
+    double betad = *beta;
+    double aod = *ao;
+    double bod = *bo;
+    copy_mat(a, layout, transa, *m, *k, *lda, aod, ad);
+    copy_mat(b, layout, transb, *k, *n, *ldb, bod, bd);
+    copy_mat(c, layout, CblasNoTrans, *m, *n, *ldc, 0.0, cd);
+    cblas_dgemm(layout, transa, transb, *m, *n, *k, alphad, ad, *lda, bd, *ldb, betad, cd, *ldc);
+    copy_mat(cd, layout, *m, *n, *ldc, offsetc, co, c);
     oneapi::mkl::aligned_free(ad);
     oneapi::mkl::aligned_free(bd);
     oneapi::mkl::aligned_free(cd);
 }
 
 template <typename fp>
-static void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb,
-                  const int *n, const int *k, const fp *alpha, const fp *a, const int *lda,
-                  const fp *b, const int *ldb, const fp *beta, fp *c, const int *ldc);
+static void gemmt(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa,
+                  CBLAS_TRANSPOSE transb, const int *n, const int *k, const fp *alpha, const fp *a,
+                  const int *lda, const fp *b, const int *ldb, const fp *beta, fp *c,
+                  const int *ldc);
 
 template <>
-void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *n,
-           const int *k, const float *alpha, const float *a, const int *lda, const float *b,
-           const int *ldb, const float *beta, float *c, const int *ldc) {
+void gemmt(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa,
+           CBLAS_TRANSPOSE transb, const int *n, const int *k, const float *alpha, const float *a,
+           const int *lda, const float *b, const int *ldb, const float *beta, float *c,
+           const int *ldc) {
     // Not supported in NETLIB. SGEMM is used as reference.
     int sizec;
     sizec = *ldc * *n;
     float *cf = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizec);
-    update_c(c, upper_lower, *n, *n, *ldc, cf);
-    cblas_sgemm(CblasColMajor, transa, transb, *n, *n, *k, *alpha, a, *lda, b, *ldb, *beta, cf,
-                *ldc);
-    update_c(cf, upper_lower, *n, *n, *ldc, c);
+    update_c(c, layout, upper_lower, *n, *n, *ldc, cf);
+    cblas_sgemm(layout, transa, transb, *n, *n, *k, *alpha, a, *lda, b, *ldb, *beta, cf, *ldc);
+    update_c(cf, layout, upper_lower, *n, *n, *ldc, c);
     oneapi::mkl::aligned_free(cf);
 }
 
 template <>
-void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *n,
-           const int *k, const double *alpha, const double *a, const int *lda, const double *b,
-           const int *ldb, const double *beta, double *c, const int *ldc) {
+void gemmt(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa,
+           CBLAS_TRANSPOSE transb, const int *n, const int *k, const double *alpha, const double *a,
+           const int *lda, const double *b, const int *ldb, const double *beta, double *c,
+           const int *ldc) {
     // Not supported in NETLIB. DGEMM is used as reference.
     int sizec;
     sizec = *ldc * *n;
     double *cf = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizec);
-    update_c(c, upper_lower, *n, *n, *ldc, cf);
-    cblas_dgemm(CblasColMajor, transa, transb, *n, *n, *k, *alpha, a, *lda, b, *ldb, *beta, cf,
-                *ldc);
-    update_c(cf, upper_lower, *n, *n, *ldc, c);
+    update_c(c, layout, upper_lower, *n, *n, *ldc, cf);
+    cblas_dgemm(layout, transa, transb, *n, *n, *k, *alpha, a, *lda, b, *ldb, *beta, cf, *ldc);
+    update_c(cf, layout, upper_lower, *n, *n, *ldc, c);
     oneapi::mkl::aligned_free(cf);
 }
 
 template <>
-void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *n,
-           const int *k, const std::complex<float> *alpha, const std::complex<float> *a,
-           const int *lda, const std::complex<float> *b, const int *ldb,
-           const std::complex<float> *beta, std::complex<float> *c, const int *ldc) {
+void gemmt(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa,
+           CBLAS_TRANSPOSE transb, const int *n, const int *k, const std::complex<float> *alpha,
+           const std::complex<float> *a, const int *lda, const std::complex<float> *b,
+           const int *ldb, const std::complex<float> *beta, std::complex<float> *c,
+           const int *ldc) {
     // Not supported in NETLIB. CGEMM is used as reference.
     int sizec;
     sizec = *ldc * *n;
     std::complex<float> *cf =
         (std::complex<float> *)oneapi::mkl::aligned_alloc(64, sizeof(std::complex<float>) * sizec);
-    update_c(c, upper_lower, *n, *n, *ldc, cf);
-    cblas_cgemm(CblasColMajor, transa, transb, *n, *n, *k, alpha, a, *lda, b, *ldb, beta, cf, *ldc);
-    update_c(cf, upper_lower, *n, *n, *ldc, c);
+    update_c(c, layout, upper_lower, *n, *n, *ldc, cf);
+    cblas_cgemm(layout, transa, transb, *n, *n, *k, alpha, a, *lda, b, *ldb, beta, cf, *ldc);
+    update_c(cf, layout, upper_lower, *n, *n, *ldc, c);
     oneapi::mkl::aligned_free(cf);
 }
 
 template <>
-void gemmt(CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *n,
-           const int *k, const std::complex<double> *alpha, const std::complex<double> *a,
-           const int *lda, const std::complex<double> *b, const int *ldb,
-           const std::complex<double> *beta, std::complex<double> *c, const int *ldc) {
+void gemmt(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa,
+           CBLAS_TRANSPOSE transb, const int *n, const int *k, const std::complex<double> *alpha,
+           const std::complex<double> *a, const int *lda, const std::complex<double> *b,
+           const int *ldb, const std::complex<double> *beta, std::complex<double> *c,
+           const int *ldc) {
     // Not supported in NETLIB. ZGEMM is used as reference.
     int sizec;
     sizec = *ldc * *n;
     std::complex<double> *cf = (std::complex<double> *)oneapi::mkl::aligned_alloc(
         64, sizeof(std::complex<double>) * sizec);
-    update_c(c, upper_lower, *n, *n, *ldc, cf);
-    cblas_zgemm(CblasColMajor, transa, transb, *n, *n, *k, alpha, a, *lda, b, *ldb, beta, cf, *ldc);
-    update_c(cf, upper_lower, *n, *n, *ldc, c);
+    update_c(c, layout, upper_lower, *n, *n, *ldc, cf);
+    cblas_zgemm(layout, transa, transb, *n, *n, *k, alpha, a, *lda, b, *ldb, beta, cf, *ldc);
+    update_c(cf, layout, upper_lower, *n, *n, *ldc, c);
     oneapi::mkl::aligned_free(cf);
 }
 

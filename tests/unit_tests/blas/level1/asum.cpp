@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp, typename fp_res>
-int test(const device& dev, int64_t N, int64_t incx) {
+int test(const device& dev, oneapi::mkl::layout layout, int64_t N, int64_t incx) {
     // Prepare data.
     vector<fp> x;
     fp_res result = fp_res(-1), result_ref = fp_res(-1);
@@ -77,10 +77,27 @@ int test(const device& dev, int64_t N, int64_t incx) {
 
     try {
 #ifdef CALL_RT_API
-        oneapi::mkl::blas::asum(main_queue, N, x_buffer, incx, result_buffer);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                oneapi::mkl::blas::column_major::asum(main_queue, N, x_buffer, incx, result_buffer);
+                break;
+            case oneapi::mkl::layout::row_major:
+                oneapi::mkl::blas::row_major::asum(main_queue, N, x_buffer, incx, result_buffer);
+                break;
+            default: break;
+        }
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::asum,
-                    (main_queue, N, x_buffer, incx, result_buffer));
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::asum,
+                            (main_queue, N, x_buffer, incx, result_buffer));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::asum,
+                            (main_queue, N, x_buffer, incx, result_buffer));
+                break;
+            default: break;
+        }
 #endif
     }
     catch (exception const& e) {
@@ -89,7 +106,7 @@ int test(const device& dev, int64_t N, int64_t incx) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const oneapi::mkl::backend_unsupported_exception& e) {
+    catch (const oneapi::mkl::unimplemented& e) {
         return test_skipped;
     }
 
@@ -98,42 +115,56 @@ int test(const device& dev, int64_t N, int64_t incx) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good;
-    {
-        auto result_accessor = result_buffer.template get_access<access::mode::read>();
-        good = check_equal(result_accessor[0], result_ref, N, std::cout);
-    }
+
+    auto result_accessor = result_buffer.template get_access<access::mode::read>();
+    bool good = check_equal(result_accessor[0], result_ref, N, std::cout);
 
     return (int)good;
 }
 
-class AsumTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class AsumTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(AsumTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP((::test<float, float>(GetParam(), 1357, 2)));
-    EXPECT_TRUEORSKIP((::test<float, float>(GetParam(), 1357, 1)));
-    EXPECT_TRUEORSKIP((::test<float, float>(GetParam(), 1357, -3)));
+    EXPECT_TRUEORSKIP(
+        (::test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2)));
+    EXPECT_TRUEORSKIP(
+        (::test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1)));
+    EXPECT_TRUEORSKIP(
+        (::test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3)));
 }
 
 TEST_P(AsumTests, RealDoublePrecision) {
-    EXPECT_TRUEORSKIP((::test<double, double>(GetParam(), 1357, 2)));
-    EXPECT_TRUEORSKIP((::test<double, double>(GetParam(), 1357, 1)));
-    EXPECT_TRUEORSKIP((::test<double, double>(GetParam(), 1357, -3)));
+    EXPECT_TRUEORSKIP(
+        (::test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2)));
+    EXPECT_TRUEORSKIP(
+        (::test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1)));
+    EXPECT_TRUEORSKIP(
+        (::test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3)));
 }
 
 TEST_P(AsumTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP((::test<std::complex<float>, float>(GetParam(), 1357, 2)));
-    EXPECT_TRUEORSKIP((::test<std::complex<float>, float>(GetParam(), 1357, 1)));
-    EXPECT_TRUEORSKIP((::test<std::complex<float>, float>(GetParam(), 1357, -3)));
+    EXPECT_TRUEORSKIP((::test<std::complex<float>, float>(std::get<0>(GetParam()),
+                                                          std::get<1>(GetParam()), 1357, 2)));
+    EXPECT_TRUEORSKIP((::test<std::complex<float>, float>(std::get<0>(GetParam()),
+                                                          std::get<1>(GetParam()), 1357, 1)));
+    EXPECT_TRUEORSKIP((::test<std::complex<float>, float>(std::get<0>(GetParam()),
+                                                          std::get<1>(GetParam()), 1357, -3)));
 }
 
 TEST_P(AsumTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), 1357, 2)));
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), 1357, 1)));
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), 1357, -3)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(std::get<0>(GetParam()),
+                                                          std::get<1>(GetParam()), 1357, 2)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(std::get<0>(GetParam()),
+                                                          std::get<1>(GetParam()), 1357, 1)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(std::get<0>(GetParam()),
+                                                          std::get<1>(GetParam()), 1357, -3)));
 }
 
-INSTANTIATE_TEST_SUITE_P(AsumTestSuite, AsumTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(AsumTestSuite, AsumTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

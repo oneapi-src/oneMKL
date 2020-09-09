@@ -26,8 +26,8 @@
 
 #include <CL/sycl.hpp>
 #include "cblas.h"
-#include "oneapi/mkl/detail/config.hpp"
 #include "oneapi/mkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -43,7 +43,8 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda) {
+int test(const device &dev, oneapi::mkl::layout layout, int m, int n, fp alpha, int incx, int incy,
+         int lda) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -69,7 +70,7 @@ int test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda)
 
     rand_vector(x, m, incx);
     rand_vector(y, n, incy);
-    rand_matrix(A, oneapi::mkl::transpose::nontrans, m, n, lda);
+    rand_matrix(A, layout, oneapi::mkl::transpose::nontrans, m, n, lda);
 
     auto A_ref = A;
 
@@ -77,20 +78,41 @@ int test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda)
     const int m_ref = m, n_ref = n, incx_ref = incx, incy_ref = incy, lda_ref = lda;
     using fp_ref = typename ref_type_info<fp>::type;
 
-    ::geru(&m_ref, &n_ref, (fp_ref *)&alpha, (fp_ref *)x.data(), &incx_ref, (fp_ref *)y.data(),
-           &incy_ref, (fp_ref *)A_ref.data(), &lda_ref);
+    ::geru(convert_to_cblas_layout(layout), &m_ref, &n_ref, (fp_ref *)&alpha, (fp_ref *)x.data(),
+           &incx_ref, (fp_ref *)y.data(), &incy_ref, (fp_ref *)A_ref.data(), &lda_ref);
 
     // Call DPC++ GERU.
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::geru(main_queue, m, n, alpha, x.data(), incx, y.data(), incy,
-                                       A.data(), lda, dependencies);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                done = oneapi::mkl::blas::column_major::geru(main_queue, m, n, alpha, x.data(),
+                                                             incx, y.data(), incy, A.data(), lda,
+                                                             dependencies);
+                break;
+            case oneapi::mkl::layout::row_major:
+                done =
+                    oneapi::mkl::blas::row_major::geru(main_queue, m, n, alpha, x.data(), incx,
+                                                       y.data(), incy, A.data(), lda, dependencies);
+                break;
+            default: break;
+        }
         done.wait();
 #else
-        TEST_RUN_CT(
-            main_queue, oneapi::mkl::blas::geru,
-            (main_queue, m, n, alpha, x.data(), incx, y.data(), incy, A.data(), lda, dependencies));
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::geru,
+                            (main_queue, m, n, alpha, x.data(), incx, y.data(), incy, A.data(), lda,
+                             dependencies));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::geru,
+                            (main_queue, m, n, alpha, x.data(), incx, y.data(), incy, A.data(), lda,
+                             dependencies));
+                break;
+            default: break;
+        }
         main_queue.wait();
 #endif
     }
@@ -100,7 +122,7 @@ int test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda)
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const oneapi::mkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::unimplemented &e) {
         return test_skipped;
     }
 
@@ -110,27 +132,37 @@ int test(const device &dev, int m, int n, fp alpha, int incx, int incy, int lda)
 
     // Compare the results of reference implementation and DPC++ implementation.
 
-    bool good = check_equal_matrix(A, A_ref, m, n, lda, std::max<int>(m, n), std::cout);
+    bool good = check_equal_matrix(A, A_ref, layout, m, n, lda, std::max<int>(m, n), std::cout);
 
     return (int)good;
 }
 
-class GeruUsmTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class GeruUsmTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(GeruUsmTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 25, 30, alpha, 2, 3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 25, 30, alpha, -2, -3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 25, 30, alpha, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                25, 30, alpha, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                25, 30, alpha, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                25, 30, alpha, 1, 1, 42));
 }
 TEST_P(GeruUsmTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 25, 30, alpha, 2, 3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 25, 30, alpha, -2, -3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 25, 30, alpha, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                 25, 30, alpha, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                 25, 30, alpha, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                 25, 30, alpha, 1, 1, 42));
 }
 
-INSTANTIATE_TEST_SUITE_P(GeruUsmTestSuite, GeruUsmTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(GeruUsmTestSuite, GeruUsmTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

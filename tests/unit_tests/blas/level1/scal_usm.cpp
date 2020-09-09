@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp, typename fp_scalar>
-int test(const device& dev, int N, int incx, fp_scalar alpha) {
+int test(const device& dev, oneapi::mkl::layout layout, int N, int incx, fp_scalar alpha) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const& e : exceptions) {
@@ -82,11 +82,30 @@ int test(const device& dev, int N, int incx, fp_scalar alpha) {
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::scal(main_queue, N, alpha, x.data(), incx, dependencies);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                done = oneapi::mkl::blas::column_major::scal(main_queue, N, alpha, x.data(), incx,
+                                                             dependencies);
+                break;
+            case oneapi::mkl::layout::row_major:
+                done = oneapi::mkl::blas::row_major::scal(main_queue, N, alpha, x.data(), incx,
+                                                          dependencies);
+                break;
+            default: break;
+        }
         done.wait();
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::scal,
-                    (main_queue, N, alpha, x.data(), incx, dependencies));
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::scal,
+                            (main_queue, N, alpha, x.data(), incx, dependencies));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::scal,
+                            (main_queue, N, alpha, x.data(), incx, dependencies));
+                break;
+            default: break;
+        }
         main_queue.wait();
 #endif
     }
@@ -96,7 +115,7 @@ int test(const device& dev, int N, int incx, fp_scalar alpha) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const oneapi::mkl::backend_unsupported_exception& e) {
+    catch (const oneapi::mkl::unimplemented& e) {
         return test_skipped;
     }
 
@@ -111,43 +130,56 @@ int test(const device& dev, int N, int incx, fp_scalar alpha) {
     return (int)good;
 }
 
-class ScalUsmTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class ScalUsmTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(ScalUsmTests, RealSinglePrecision) {
     float alpha(2.0);
-    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, 2, alpha)));
-    EXPECT_TRUEORSKIP((test<float, float>(GetParam(), 1357, -3, alpha)));
+    EXPECT_TRUEORSKIP(
+        (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, alpha)));
+    EXPECT_TRUEORSKIP(
+        (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, alpha)));
 }
 TEST_P(ScalUsmTests, RealDoublePrecision) {
     double alpha(2.0);
-    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, 2, alpha)));
-    EXPECT_TRUEORSKIP((test<double, double>(GetParam(), 1357, -3, alpha)));
+    EXPECT_TRUEORSKIP(
+        (test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, alpha)));
+    EXPECT_TRUEORSKIP(
+        (test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, alpha)));
 }
 TEST_P(ScalUsmTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
-    EXPECT_TRUEORSKIP((test<std::complex<float>, std::complex<float>>(GetParam(), 1357, 2, alpha)));
-    EXPECT_TRUEORSKIP(
-        (test<std::complex<float>, std::complex<float>>(GetParam(), 1357, -3, alpha)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, std::complex<float>>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, alpha)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, std::complex<float>>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, alpha)));
 }
 TEST_P(ScalUsmTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
-    EXPECT_TRUEORSKIP(
-        (test<std::complex<double>, std::complex<double>>(GetParam(), 1357, 2, alpha)));
-    EXPECT_TRUEORSKIP(
-        (test<std::complex<double>, std::complex<double>>(GetParam(), 1357, -3, alpha)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, std::complex<double>>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, alpha)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, std::complex<double>>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, alpha)));
 }
 TEST_P(ScalUsmTests, ComplexRealSinglePrecision) {
     float alpha(2.0);
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), 1357, 2, alpha)));
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(GetParam(), 1357, -3, alpha)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(std::get<0>(GetParam()),
+                                                        std::get<1>(GetParam()), 1357, 2, alpha)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(std::get<0>(GetParam()),
+                                                        std::get<1>(GetParam()), 1357, -3, alpha)));
 }
 TEST_P(ScalUsmTests, ComplexRealDoublePrecision) {
     double alpha(2.0);
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), 1357, 2, alpha)));
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(GetParam(), 1357, -3, alpha)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, alpha)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, alpha)));
 }
 
-INSTANTIATE_TEST_SUITE_P(ScalUsmTestSuite, ScalUsmTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(ScalUsmTestSuite, ScalUsmTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace
