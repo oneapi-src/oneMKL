@@ -99,38 +99,38 @@ inline const char *fortran_char(side s) {
 }
 
 // Conversion functions to CBLAS enums.
-inline MKL_TRANSPOSE cblas_convert(transpose t) {
+inline CBLAS_TRANSPOSE cblas_convert(transpose t) {
     if (t == transpose::nontrans)
-        return MKL_NOTRANS;
+        return CblasNoTrans;
     if (t == transpose::trans)
-        return MKL_TRANS;
+        return CblasTrans;
     if (t == transpose::conjtrans)
-        return MKL_CONJTRANS;
-    return MKL_NOTRANS;
+        return CblasConjTrans;
+    return CblasNoTrans;
 }
 
-inline MKL_UPLO cblas_convert(uplo u) {
+inline CBLAS_UPLO cblas_convert(uplo u) {
     if (u == uplo::upper)
-        return MKL_UPPER;
+        return CblasUpper;
     if (u == uplo::lower)
-        return MKL_LOWER;
-    return MKL_UPPER;
+        return CblasLower;
+    return CblasUpper;
 }
 
-inline MKL_DIAG cblas_convert(diag d) {
+inline CBLAS_DIAG cblas_convert(diag d) {
     if (d == diag::nonunit)
-        return MKL_NONUNIT;
+        return CblasNonUnit;
     if (d == diag::unit)
-        return MKL_UNIT;
-    return MKL_NONUNIT;
+        return CblasUnit;
+    return CblasNonUnit;
 }
 
-inline MKL_SIDE cblas_convert(side s) {
+inline CBLAS_SIDE cblas_convert(side s) {
     if (s == side::left)
-        return MKL_LEFT;
+        return CblasLeft;
     if (s == side::right)
-        return MKL_RIGHT;
-    return MKL_LEFT;
+        return CblasRight;
+    return CblasLeft;
 }
 
 inline CBLAS_OFFSET cblas_convert(oneapi::mkl::offset o) {

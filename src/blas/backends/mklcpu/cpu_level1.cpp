@@ -25,6 +25,7 @@
 namespace oneapi {
 namespace mkl {
 namespace mklcpu {
+
 namespace column_major {
 
 // Buffer APIs

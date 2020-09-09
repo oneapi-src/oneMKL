@@ -38,8 +38,8 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
         auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.get_access<cl::sycl::access::mode::read_write>(cgh);
-        CBLAS_TRANSPOSE transa_ = (CBLAS_TRANSPOSE)cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = (CBLAS_TRANSPOSE)cblas_convert(transb);
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_sgemm_batch_stride>(cgh, [=]() {
@@ -68,10 +68,10 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
             }
 
             ::cblas_sgemm_batch(
-                (CBLAS_LAYOUT)MKL_COL_MAJOR, &transa_, &transb_, (const MKL_INT *)&m,
-                (const MKL_INT *)&n, (const MKL_INT *)&k, &alpha, (const float **)a_array,
-                (const MKL_INT *)&lda, (const float **)b_array, (const MKL_INT *)&ldb, &beta,
-                (float **)c_array, (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
+                CblasColMajor, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                (const MKL_INT *)&k, &alpha, (const float **)a_array, (const MKL_INT *)&lda,
+                (const float **)b_array, (const MKL_INT *)&ldb, &beta, (float **)c_array,
+                (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -89,8 +89,8 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
         auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.get_access<cl::sycl::access::mode::read_write>(cgh);
-        CBLAS_TRANSPOSE transa_ = (CBLAS_TRANSPOSE)cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = (CBLAS_TRANSPOSE)cblas_convert(transb);
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_dgemm_batch_stride>(cgh, [=]() {
@@ -119,10 +119,10 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
             }
 
             ::cblas_dgemm_batch(
-                (CBLAS_LAYOUT)MKL_COL_MAJOR, &transa_, &transb_, (const MKL_INT *)&m,
-                (const MKL_INT *)&n, (const MKL_INT *)&k, &alpha, (const double **)a_array,
-                (const MKL_INT *)&lda, (const double **)b_array, (const MKL_INT *)&ldb, &beta,
-                (double **)c_array, (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
+                CblasColMajor, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                (const MKL_INT *)&k, &alpha, (const double **)a_array, (const MKL_INT *)&lda,
+                (const double **)b_array, (const MKL_INT *)&ldb, &beta, (double **)c_array,
+                (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -141,8 +141,8 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
         auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.get_access<cl::sycl::access::mode::read_write>(cgh);
-        CBLAS_TRANSPOSE transa_ = (CBLAS_TRANSPOSE)cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = (CBLAS_TRANSPOSE)cblas_convert(transb);
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_cgemm_batch_stride>(cgh, [=]() {
@@ -171,10 +171,10 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
             }
 
             ::cblas_cgemm_batch(
-                (CBLAS_LAYOUT)MKL_COL_MAJOR, &transa_, &transb_, (const MKL_INT *)&m,
-                (const MKL_INT *)&n, (const MKL_INT *)&k, &alpha, (const void **)a_array,
-                (const MKL_INT *)&lda, (const void **)b_array, (const MKL_INT *)&ldb, &beta,
-                (void **)c_array, (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
+                CblasColMajor, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                (const MKL_INT *)&k, &alpha, (const void **)a_array, (const MKL_INT *)&lda,
+                (const void **)b_array, (const MKL_INT *)&ldb, &beta, (void **)c_array,
+                (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -193,8 +193,8 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
         auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.get_access<cl::sycl::access::mode::read_write>(cgh);
-        CBLAS_TRANSPOSE transa_ = (CBLAS_TRANSPOSE)cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = (CBLAS_TRANSPOSE)cblas_convert(transb);
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_zgemm_batch_stride>(cgh, [=]() {
@@ -226,10 +226,10 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
             }
 
             ::cblas_zgemm_batch(
-                (CBLAS_LAYOUT)MKL_COL_MAJOR, &transa_, &transb_, (const MKL_INT *)&m,
-                (const MKL_INT *)&n, (const MKL_INT *)&k, &alpha, (const void **)a_array,
-                (const MKL_INT *)&lda, (const void **)b_array, (const MKL_INT *)&ldb, &beta,
-                (void **)c_array, (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
+                CblasColMajor, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                (const MKL_INT *)&k, &alpha, (const void **)a_array, (const MKL_INT *)&lda,
+                (const void **)b_array, (const MKL_INT *)&ldb, &beta, (void **)c_array,
+                (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -245,10 +245,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
     queue.submit([&](cl::sycl::handler &cgh) {
         auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.get_access<cl::sycl::access::mode::read_write>(cgh);
-        CBLAS_TRANSPOSE trans_ = (CBLAS_TRANSPOSE)cblas_convert(trans);
-        CBLAS_SIDE side_ = (CBLAS_SIDE)cblas_convert(left_right);
-        CBLAS_UPLO uplo_ = (CBLAS_UPLO)cblas_convert(upper_lower);
-        CBLAS_DIAG diag_ = (CBLAS_DIAG)cblas_convert(unit_diag);
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        CBLAS_SIDE side_ = cblas_convert(left_right);
+        CBLAS_UPLO uplo_ = cblas_convert(upper_lower);
+        CBLAS_DIAG diag_ = cblas_convert(unit_diag);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_strsm_batch_stride>(cgh, [=]() {
@@ -272,10 +272,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 }
             }
 
-            ::cblas_strsm_batch((CBLAS_LAYOUT)MKL_COL_MAJOR, &side_, &uplo_, &trans_, &diag_,
-                                (const MKL_INT *)&m, (const MKL_INT *)&n, &alpha,
-                                (const float **)a_array, (const MKL_INT *)&lda, (float **)b_array,
-                                (const MKL_INT *)&ldb, one, (const MKL_INT *)&batch_size);
+            ::cblas_strsm_batch(CblasColMajor, &side_, &uplo_, &trans_, &diag_, (const MKL_INT *)&m,
+                                (const MKL_INT *)&n, &alpha, (const float **)a_array,
+                                (const MKL_INT *)&lda, (float **)b_array, (const MKL_INT *)&ldb,
+                                one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -290,10 +290,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
     queue.submit([&](cl::sycl::handler &cgh) {
         auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.get_access<cl::sycl::access::mode::read_write>(cgh);
-        CBLAS_TRANSPOSE trans_ = (CBLAS_TRANSPOSE)cblas_convert(trans);
-        CBLAS_SIDE side_ = (CBLAS_SIDE)cblas_convert(left_right);
-        CBLAS_UPLO uplo_ = (CBLAS_UPLO)cblas_convert(upper_lower);
-        CBLAS_DIAG diag_ = (CBLAS_DIAG)cblas_convert(unit_diag);
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        CBLAS_SIDE side_ = cblas_convert(left_right);
+        CBLAS_UPLO uplo_ = cblas_convert(upper_lower);
+        CBLAS_DIAG diag_ = cblas_convert(unit_diag);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_dtrsm_batch_stride>(cgh, [=]() {
@@ -317,10 +317,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 }
             }
 
-            ::cblas_dtrsm_batch((CBLAS_LAYOUT)MKL_COL_MAJOR, &side_, &uplo_, &trans_, &diag_,
-                                (const MKL_INT *)&m, (const MKL_INT *)&n, &alpha,
-                                (const double **)a_array, (const MKL_INT *)&lda, (double **)b_array,
-                                (const MKL_INT *)&ldb, one, (const MKL_INT *)&batch_size);
+            ::cblas_dtrsm_batch(CblasColMajor, &side_, &uplo_, &trans_, &diag_, (const MKL_INT *)&m,
+                                (const MKL_INT *)&n, &alpha, (const double **)a_array,
+                                (const MKL_INT *)&lda, (double **)b_array, (const MKL_INT *)&ldb,
+                                one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -336,10 +336,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
     queue.submit([&](cl::sycl::handler &cgh) {
         auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.get_access<cl::sycl::access::mode::read_write>(cgh);
-        CBLAS_TRANSPOSE trans_ = (CBLAS_TRANSPOSE)cblas_convert(trans);
-        CBLAS_SIDE side_ = (CBLAS_SIDE)cblas_convert(left_right);
-        CBLAS_UPLO uplo_ = (CBLAS_UPLO)cblas_convert(upper_lower);
-        CBLAS_DIAG diag_ = (CBLAS_DIAG)cblas_convert(unit_diag);
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        CBLAS_SIDE side_ = cblas_convert(left_right);
+        CBLAS_UPLO uplo_ = cblas_convert(upper_lower);
+        CBLAS_DIAG diag_ = cblas_convert(unit_diag);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_ctrsm_batch_stride>(cgh, [=]() {
@@ -363,10 +363,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 }
             }
 
-            ::cblas_ctrsm_batch((CBLAS_LAYOUT)MKL_COL_MAJOR, &side_, &uplo_, &trans_, &diag_,
-                                (const MKL_INT *)&m, (const MKL_INT *)&n, &alpha,
-                                (const void **)a_array, (const MKL_INT *)&lda, (void **)b_array,
-                                (const MKL_INT *)&ldb, one, (const MKL_INT *)&batch_size);
+            ::cblas_ctrsm_batch(CblasColMajor, &side_, &uplo_, &trans_, &diag_, (const MKL_INT *)&m,
+                                (const MKL_INT *)&n, &alpha, (const void **)a_array,
+                                (const MKL_INT *)&lda, (void **)b_array, (const MKL_INT *)&ldb, one,
+                                (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -382,10 +382,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
     queue.submit([&](cl::sycl::handler &cgh) {
         auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.get_access<cl::sycl::access::mode::read_write>(cgh);
-        CBLAS_TRANSPOSE trans_ = (CBLAS_TRANSPOSE)cblas_convert(trans);
-        CBLAS_SIDE side_ = (CBLAS_SIDE)cblas_convert(left_right);
-        CBLAS_UPLO uplo_ = (CBLAS_UPLO)cblas_convert(upper_lower);
-        CBLAS_DIAG diag_ = (CBLAS_DIAG)cblas_convert(unit_diag);
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        CBLAS_SIDE side_ = cblas_convert(left_right);
+        CBLAS_UPLO uplo_ = cblas_convert(upper_lower);
+        CBLAS_DIAG diag_ = cblas_convert(unit_diag);
         MKL_INT one = 1;
         host_task<class mkl_kernel_init_ztrsm_batch_stride>(cgh, [=]() {
             MKL_Complex16 **a_array =
@@ -410,10 +410,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 }
             }
 
-            ::cblas_ztrsm_batch((CBLAS_LAYOUT)MKL_COL_MAJOR, &side_, &uplo_, &trans_, &diag_,
-                                (const MKL_INT *)&m, (const MKL_INT *)&n, &alpha,
-                                (const void **)a_array, (const MKL_INT *)&lda, (void **)b_array,
-                                (const MKL_INT *)&ldb, one, (const MKL_INT *)&batch_size);
+            ::cblas_ztrsm_batch(CblasColMajor, &side_, &uplo_, &trans_, &diag_, (const MKL_INT *)&m,
+                                (const MKL_INT *)&n, &alpha, (const void **)a_array,
+                                (const MKL_INT *)&lda, (void **)b_array, (const MKL_INT *)&ldb, one,
+                                (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -445,10 +445,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
                 return;
             }
             for (int64_t i = 0; i < group_count; i++) {
-                transa_[i] = (CBLAS_TRANSPOSE)cblas_convert(transa[i]);
-                transb_[i] = (CBLAS_TRANSPOSE)cblas_convert(transb[i]);
+                transa_[i] = cblas_convert(transa[i]);
+                transb_[i] = cblas_convert(transb[i]);
             }
-            ::cblas_sgemm_batch((CBLAS_LAYOUT)MKL_COL_MAJOR, transa_, transb_, (const MKL_INT *)m,
+            ::cblas_sgemm_batch(CblasColMajor, transa_, transb_, (const MKL_INT *)m,
                                 (const MKL_INT *)n, (const MKL_INT *)k, alpha, (const float **)a,
                                 (const MKL_INT *)lda, (const float **)b, (const MKL_INT *)ldb, beta,
                                 c, (const MKL_INT *)ldc, group_count, (const MKL_INT *)group_size);
@@ -481,10 +481,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
                 return;
             }
             for (int64_t i = 0; i < group_count; i++) {
-                transa_[i] = (CBLAS_TRANSPOSE)cblas_convert(transa[i]);
-                transb_[i] = (CBLAS_TRANSPOSE)cblas_convert(transb[i]);
+                transa_[i] = cblas_convert(transa[i]);
+                transb_[i] = cblas_convert(transb[i]);
             }
-            ::cblas_dgemm_batch((CBLAS_LAYOUT)MKL_COL_MAJOR, transa_, transb_, (const MKL_INT *)m,
+            ::cblas_dgemm_batch(CblasColMajor, transa_, transb_, (const MKL_INT *)m,
                                 (const MKL_INT *)n, (const MKL_INT *)k, alpha, (const double **)a,
                                 (const MKL_INT *)lda, (const double **)b, (const MKL_INT *)ldb,
                                 beta, c, (const MKL_INT *)ldc, group_count,
@@ -520,10 +520,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
                 return;
             }
             for (int64_t i = 0; i < group_count; i++) {
-                transa_[i] = (CBLAS_TRANSPOSE)cblas_convert(transa[i]);
-                transb_[i] = (CBLAS_TRANSPOSE)cblas_convert(transb[i]);
+                transa_[i] = cblas_convert(transa[i]);
+                transb_[i] = cblas_convert(transb[i]);
             }
-            ::cblas_cgemm_batch((CBLAS_LAYOUT)MKL_COL_MAJOR, transa_, transb_, (const MKL_INT *)m,
+            ::cblas_cgemm_batch(CblasColMajor, transa_, transb_, (const MKL_INT *)m,
                                 (const MKL_INT *)n, (const MKL_INT *)k, alpha, (const void **)a,
                                 (const MKL_INT *)lda, (const void **)b, (const MKL_INT *)ldb, beta,
                                 (void **)c, (const MKL_INT *)ldc, group_count,
@@ -559,10 +559,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
                 return;
             }
             for (int64_t i = 0; i < group_count; i++) {
-                transa_[i] = (CBLAS_TRANSPOSE)cblas_convert(transa[i]);
-                transb_[i] = (CBLAS_TRANSPOSE)cblas_convert(transb[i]);
+                transa_[i] = cblas_convert(transa[i]);
+                transb_[i] = cblas_convert(transb[i]);
             }
-            ::cblas_zgemm_batch((CBLAS_LAYOUT)MKL_COL_MAJOR, transa_, transb_, (const MKL_INT *)m,
+            ::cblas_zgemm_batch(CblasColMajor, transa_, transb_, (const MKL_INT *)m,
                                 (const MKL_INT *)n, (const MKL_INT *)k, alpha, (const void **)a,
                                 (const MKL_INT *)lda, (const void **)b, (const MKL_INT *)ldb, beta,
                                 (void **)c, (const MKL_INT *)ldc, group_count,
@@ -584,8 +584,8 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        CBLAS_TRANSPOSE transa_ = (CBLAS_TRANSPOSE)cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = (CBLAS_TRANSPOSE)cblas_convert(transb);
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
         host_task<class mkl_kernel_sgemm_batch_usm>(cgh, [=]() {
             float **a_array = (float **)::malloc(sizeof(float *) * batch_size);
@@ -611,10 +611,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                 }
             }
             ::cblas_sgemm_batch(
-                (CBLAS_LAYOUT)MKL_COL_MAJOR, &transa_, &transb_, (const MKL_INT *)&m,
-                (const MKL_INT *)&n, (const MKL_INT *)&k, &alpha, (const float **)a_array,
-                (const MKL_INT *)&lda, (const float **)b_array, (const MKL_INT *)&ldb, &beta,
-                (float **)c_array, (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
+                CblasColMajor, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                (const MKL_INT *)&k, &alpha, (const float **)a_array, (const MKL_INT *)&lda,
+                (const float **)b_array, (const MKL_INT *)&ldb, &beta, (float **)c_array,
+                (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -635,8 +635,8 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        CBLAS_TRANSPOSE transa_ = (CBLAS_TRANSPOSE)cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = (CBLAS_TRANSPOSE)cblas_convert(transb);
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
         host_task<class mkl_kernel_dgemm_batch_usm>(cgh, [=]() {
             double **a_array = (double **)::malloc(sizeof(double *) * batch_size);
@@ -662,10 +662,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                 }
             }
             ::cblas_dgemm_batch(
-                (CBLAS_LAYOUT)MKL_COL_MAJOR, &transa_, &transb_, (const MKL_INT *)&m,
-                (const MKL_INT *)&n, (const MKL_INT *)&k, &alpha, (const double **)a_array,
-                (const MKL_INT *)&lda, (const double **)b_array, (const MKL_INT *)&ldb, &beta,
-                (double **)c_array, (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
+                CblasColMajor, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                (const MKL_INT *)&k, &alpha, (const double **)a_array, (const MKL_INT *)&lda,
+                (const double **)b_array, (const MKL_INT *)&ldb, &beta, (double **)c_array,
+                (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -687,8 +687,8 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        CBLAS_TRANSPOSE transa_ = (CBLAS_TRANSPOSE)cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = (CBLAS_TRANSPOSE)cblas_convert(transb);
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
         host_task<class mkl_kernel_cgemm_batch_usm>(cgh, [=]() {
             std::complex<float> **a_array =
@@ -717,10 +717,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                 }
             }
             ::cblas_cgemm_batch(
-                (CBLAS_LAYOUT)MKL_COL_MAJOR, &transa_, &transb_, (const MKL_INT *)&m,
-                (const MKL_INT *)&n, (const MKL_INT *)&k, &alpha, (const void **)a_array,
-                (const MKL_INT *)&lda, (const void **)b_array, (const MKL_INT *)&ldb, &beta,
-                (void **)c_array, (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
+                CblasColMajor, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                (const MKL_INT *)&k, &alpha, (const void **)a_array, (const MKL_INT *)&lda,
+                (const void **)b_array, (const MKL_INT *)&ldb, &beta, (void **)c_array,
+                (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -742,8 +742,8 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        CBLAS_TRANSPOSE transa_ = (CBLAS_TRANSPOSE)cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = (CBLAS_TRANSPOSE)cblas_convert(transb);
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
         host_task<class mkl_kernel_zgemm_batch_usm>(cgh, [=]() {
             std::complex<double> **a_array =
@@ -772,10 +772,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                 }
             }
             ::cblas_zgemm_batch(
-                (CBLAS_LAYOUT)MKL_COL_MAJOR, &transa_, &transb_, (const MKL_INT *)&m,
-                (const MKL_INT *)&n, (const MKL_INT *)&k, &alpha, (const void **)a_array,
-                (const MKL_INT *)&lda, (const void **)b_array, (const MKL_INT *)&ldb, &beta,
-                (void **)c_array, (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
+                CblasColMajor, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                (const MKL_INT *)&k, &alpha, (const void **)a_array, (const MKL_INT *)&lda,
+                (const void **)b_array, (const MKL_INT *)&ldb, &beta, (void **)c_array,
+                (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -869,8 +869,8 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
         auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.get_access<cl::sycl::access::mode::read_write>(cgh);
-        CBLAS_TRANSPOSE transa_ = (CBLAS_TRANSPOSE)cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = (CBLAS_TRANSPOSE)cblas_convert(transb);
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_sgemm_batch_stride>(cgh, [=]() {
@@ -899,10 +899,10 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
             }
 
             ::cblas_sgemm_batch(
-                (CBLAS_LAYOUT)MKL_ROW_MAJOR, &transa_, &transb_, (const MKL_INT *)&m,
-                (const MKL_INT *)&n, (const MKL_INT *)&k, &alpha, (const float **)a_array,
-                (const MKL_INT *)&lda, (const float **)b_array, (const MKL_INT *)&ldb, &beta,
-                (float **)c_array, (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
+                CblasRowMajor, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                (const MKL_INT *)&k, &alpha, (const float **)a_array, (const MKL_INT *)&lda,
+                (const float **)b_array, (const MKL_INT *)&ldb, &beta, (float **)c_array,
+                (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -920,8 +920,8 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
         auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.get_access<cl::sycl::access::mode::read_write>(cgh);
-        CBLAS_TRANSPOSE transa_ = (CBLAS_TRANSPOSE)cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = (CBLAS_TRANSPOSE)cblas_convert(transb);
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_dgemm_batch_stride>(cgh, [=]() {
@@ -950,10 +950,10 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
             }
 
             ::cblas_dgemm_batch(
-                (CBLAS_LAYOUT)MKL_ROW_MAJOR, &transa_, &transb_, (const MKL_INT *)&m,
-                (const MKL_INT *)&n, (const MKL_INT *)&k, &alpha, (const double **)a_array,
-                (const MKL_INT *)&lda, (const double **)b_array, (const MKL_INT *)&ldb, &beta,
-                (double **)c_array, (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
+                CblasRowMajor, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                (const MKL_INT *)&k, &alpha, (const double **)a_array, (const MKL_INT *)&lda,
+                (const double **)b_array, (const MKL_INT *)&ldb, &beta, (double **)c_array,
+                (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -972,8 +972,8 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
         auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.get_access<cl::sycl::access::mode::read_write>(cgh);
-        CBLAS_TRANSPOSE transa_ = (CBLAS_TRANSPOSE)cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = (CBLAS_TRANSPOSE)cblas_convert(transb);
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_cgemm_batch_stride>(cgh, [=]() {
@@ -1002,10 +1002,10 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
             }
 
             ::cblas_cgemm_batch(
-                (CBLAS_LAYOUT)MKL_ROW_MAJOR, &transa_, &transb_, (const MKL_INT *)&m,
-                (const MKL_INT *)&n, (const MKL_INT *)&k, &alpha, (const void **)a_array,
-                (const MKL_INT *)&lda, (const void **)b_array, (const MKL_INT *)&ldb, &beta,
-                (void **)c_array, (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
+                CblasRowMajor, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                (const MKL_INT *)&k, &alpha, (const void **)a_array, (const MKL_INT *)&lda,
+                (const void **)b_array, (const MKL_INT *)&ldb, &beta, (void **)c_array,
+                (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -1024,8 +1024,8 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
         auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.get_access<cl::sycl::access::mode::read_write>(cgh);
-        CBLAS_TRANSPOSE transa_ = (CBLAS_TRANSPOSE)cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = (CBLAS_TRANSPOSE)cblas_convert(transb);
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_zgemm_batch_stride>(cgh, [=]() {
@@ -1057,10 +1057,10 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
             }
 
             ::cblas_zgemm_batch(
-                (CBLAS_LAYOUT)MKL_ROW_MAJOR, &transa_, &transb_, (const MKL_INT *)&m,
-                (const MKL_INT *)&n, (const MKL_INT *)&k, &alpha, (const void **)a_array,
-                (const MKL_INT *)&lda, (const void **)b_array, (const MKL_INT *)&ldb, &beta,
-                (void **)c_array, (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
+                CblasRowMajor, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                (const MKL_INT *)&k, &alpha, (const void **)a_array, (const MKL_INT *)&lda,
+                (const void **)b_array, (const MKL_INT *)&ldb, &beta, (void **)c_array,
+                (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -1076,10 +1076,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
     queue.submit([&](cl::sycl::handler &cgh) {
         auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.get_access<cl::sycl::access::mode::read_write>(cgh);
-        CBLAS_TRANSPOSE trans_ = (CBLAS_TRANSPOSE)cblas_convert(trans);
-        CBLAS_SIDE side_ = (CBLAS_SIDE)cblas_convert(left_right);
-        CBLAS_UPLO uplo_ = (CBLAS_UPLO)cblas_convert(upper_lower);
-        CBLAS_DIAG diag_ = (CBLAS_DIAG)cblas_convert(unit_diag);
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        CBLAS_SIDE side_ = cblas_convert(left_right);
+        CBLAS_UPLO uplo_ = cblas_convert(upper_lower);
+        CBLAS_DIAG diag_ = cblas_convert(unit_diag);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_strsm_batch_stride>(cgh, [=]() {
@@ -1103,10 +1103,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 }
             }
 
-            ::cblas_strsm_batch((CBLAS_LAYOUT)MKL_ROW_MAJOR, &side_, &uplo_, &trans_, &diag_,
-                                (const MKL_INT *)&m, (const MKL_INT *)&n, &alpha,
-                                (const float **)a_array, (const MKL_INT *)&lda, (float **)b_array,
-                                (const MKL_INT *)&ldb, one, (const MKL_INT *)&batch_size);
+            ::cblas_strsm_batch(CblasRowMajor, &side_, &uplo_, &trans_, &diag_, (const MKL_INT *)&m,
+                                (const MKL_INT *)&n, &alpha, (const float **)a_array,
+                                (const MKL_INT *)&lda, (float **)b_array, (const MKL_INT *)&ldb,
+                                one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -1121,10 +1121,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
     queue.submit([&](cl::sycl::handler &cgh) {
         auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.get_access<cl::sycl::access::mode::read_write>(cgh);
-        CBLAS_TRANSPOSE trans_ = (CBLAS_TRANSPOSE)cblas_convert(trans);
-        CBLAS_SIDE side_ = (CBLAS_SIDE)cblas_convert(left_right);
-        CBLAS_UPLO uplo_ = (CBLAS_UPLO)cblas_convert(upper_lower);
-        CBLAS_DIAG diag_ = (CBLAS_DIAG)cblas_convert(unit_diag);
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        CBLAS_SIDE side_ = cblas_convert(left_right);
+        CBLAS_UPLO uplo_ = cblas_convert(upper_lower);
+        CBLAS_DIAG diag_ = cblas_convert(unit_diag);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_dtrsm_batch_stride>(cgh, [=]() {
@@ -1148,10 +1148,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 }
             }
 
-            ::cblas_dtrsm_batch((CBLAS_LAYOUT)MKL_ROW_MAJOR, &side_, &uplo_, &trans_, &diag_,
-                                (const MKL_INT *)&m, (const MKL_INT *)&n, &alpha,
-                                (const double **)a_array, (const MKL_INT *)&lda, (double **)b_array,
-                                (const MKL_INT *)&ldb, one, (const MKL_INT *)&batch_size);
+            ::cblas_dtrsm_batch(CblasRowMajor, &side_, &uplo_, &trans_, &diag_, (const MKL_INT *)&m,
+                                (const MKL_INT *)&n, &alpha, (const double **)a_array,
+                                (const MKL_INT *)&lda, (double **)b_array, (const MKL_INT *)&ldb,
+                                one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -1167,10 +1167,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
     queue.submit([&](cl::sycl::handler &cgh) {
         auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.get_access<cl::sycl::access::mode::read_write>(cgh);
-        CBLAS_TRANSPOSE trans_ = (CBLAS_TRANSPOSE)cblas_convert(trans);
-        CBLAS_SIDE side_ = (CBLAS_SIDE)cblas_convert(left_right);
-        CBLAS_UPLO uplo_ = (CBLAS_UPLO)cblas_convert(upper_lower);
-        CBLAS_DIAG diag_ = (CBLAS_DIAG)cblas_convert(unit_diag);
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        CBLAS_SIDE side_ = cblas_convert(left_right);
+        CBLAS_UPLO uplo_ = cblas_convert(upper_lower);
+        CBLAS_DIAG diag_ = cblas_convert(unit_diag);
         MKL_INT one = 1;
 
         host_task<class mkl_kernel_init_ctrsm_batch_stride>(cgh, [=]() {
@@ -1194,10 +1194,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 }
             }
 
-            ::cblas_ctrsm_batch((CBLAS_LAYOUT)MKL_ROW_MAJOR, &side_, &uplo_, &trans_, &diag_,
-                                (const MKL_INT *)&m, (const MKL_INT *)&n, &alpha,
-                                (const void **)a_array, (const MKL_INT *)&lda, (void **)b_array,
-                                (const MKL_INT *)&ldb, one, (const MKL_INT *)&batch_size);
+            ::cblas_ctrsm_batch(CblasRowMajor, &side_, &uplo_, &trans_, &diag_, (const MKL_INT *)&m,
+                                (const MKL_INT *)&n, &alpha, (const void **)a_array,
+                                (const MKL_INT *)&lda, (void **)b_array, (const MKL_INT *)&ldb, one,
+                                (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -1213,10 +1213,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
     queue.submit([&](cl::sycl::handler &cgh) {
         auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.get_access<cl::sycl::access::mode::read_write>(cgh);
-        CBLAS_TRANSPOSE trans_ = (CBLAS_TRANSPOSE)cblas_convert(trans);
-        CBLAS_SIDE side_ = (CBLAS_SIDE)cblas_convert(left_right);
-        CBLAS_UPLO uplo_ = (CBLAS_UPLO)cblas_convert(upper_lower);
-        CBLAS_DIAG diag_ = (CBLAS_DIAG)cblas_convert(unit_diag);
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        CBLAS_SIDE side_ = cblas_convert(left_right);
+        CBLAS_UPLO uplo_ = cblas_convert(upper_lower);
+        CBLAS_DIAG diag_ = cblas_convert(unit_diag);
         MKL_INT one = 1;
         host_task<class mkl_kernel_init_ztrsm_batch_stride>(cgh, [=]() {
             MKL_Complex16 **a_array =
@@ -1241,10 +1241,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 }
             }
 
-            ::cblas_ztrsm_batch((CBLAS_LAYOUT)MKL_ROW_MAJOR, &side_, &uplo_, &trans_, &diag_,
-                                (const MKL_INT *)&m, (const MKL_INT *)&n, &alpha,
-                                (const void **)a_array, (const MKL_INT *)&lda, (void **)b_array,
-                                (const MKL_INT *)&ldb, one, (const MKL_INT *)&batch_size);
+            ::cblas_ztrsm_batch(CblasRowMajor, &side_, &uplo_, &trans_, &diag_, (const MKL_INT *)&m,
+                                (const MKL_INT *)&n, &alpha, (const void **)a_array,
+                                (const MKL_INT *)&lda, (void **)b_array, (const MKL_INT *)&ldb, one,
+                                (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -1276,10 +1276,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
                 return;
             }
             for (int64_t i = 0; i < group_count; i++) {
-                transa_[i] = (CBLAS_TRANSPOSE)cblas_convert(transa[i]);
-                transb_[i] = (CBLAS_TRANSPOSE)cblas_convert(transb[i]);
+                transa_[i] = cblas_convert(transa[i]);
+                transb_[i] = cblas_convert(transb[i]);
             }
-            ::cblas_sgemm_batch((CBLAS_LAYOUT)MKL_ROW_MAJOR, transa_, transb_, (const MKL_INT *)m,
+            ::cblas_sgemm_batch(CblasRowMajor, transa_, transb_, (const MKL_INT *)m,
                                 (const MKL_INT *)n, (const MKL_INT *)k, alpha, (const float **)a,
                                 (const MKL_INT *)lda, (const float **)b, (const MKL_INT *)ldb, beta,
                                 c, (const MKL_INT *)ldc, group_count, (const MKL_INT *)group_size);
@@ -1312,10 +1312,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
                 return;
             }
             for (int64_t i = 0; i < group_count; i++) {
-                transa_[i] = (CBLAS_TRANSPOSE)cblas_convert(transa[i]);
-                transb_[i] = (CBLAS_TRANSPOSE)cblas_convert(transb[i]);
+                transa_[i] = cblas_convert(transa[i]);
+                transb_[i] = cblas_convert(transb[i]);
             }
-            ::cblas_dgemm_batch((CBLAS_LAYOUT)MKL_ROW_MAJOR, transa_, transb_, (const MKL_INT *)m,
+            ::cblas_dgemm_batch(CblasRowMajor, transa_, transb_, (const MKL_INT *)m,
                                 (const MKL_INT *)n, (const MKL_INT *)k, alpha, (const double **)a,
                                 (const MKL_INT *)lda, (const double **)b, (const MKL_INT *)ldb,
                                 beta, c, (const MKL_INT *)ldc, group_count,
@@ -1351,10 +1351,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
                 return;
             }
             for (int64_t i = 0; i < group_count; i++) {
-                transa_[i] = (CBLAS_TRANSPOSE)cblas_convert(transa[i]);
-                transb_[i] = (CBLAS_TRANSPOSE)cblas_convert(transb[i]);
+                transa_[i] = cblas_convert(transa[i]);
+                transb_[i] = cblas_convert(transb[i]);
             }
-            ::cblas_cgemm_batch((CBLAS_LAYOUT)MKL_ROW_MAJOR, transa_, transb_, (const MKL_INT *)m,
+            ::cblas_cgemm_batch(CblasRowMajor, transa_, transb_, (const MKL_INT *)m,
                                 (const MKL_INT *)n, (const MKL_INT *)k, alpha, (const void **)a,
                                 (const MKL_INT *)lda, (const void **)b, (const MKL_INT *)ldb, beta,
                                 (void **)c, (const MKL_INT *)ldc, group_count,
@@ -1390,10 +1390,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
                 return;
             }
             for (int64_t i = 0; i < group_count; i++) {
-                transa_[i] = (CBLAS_TRANSPOSE)cblas_convert(transa[i]);
-                transb_[i] = (CBLAS_TRANSPOSE)cblas_convert(transb[i]);
+                transa_[i] = cblas_convert(transa[i]);
+                transb_[i] = cblas_convert(transb[i]);
             }
-            ::cblas_zgemm_batch((CBLAS_LAYOUT)MKL_ROW_MAJOR, transa_, transb_, (const MKL_INT *)m,
+            ::cblas_zgemm_batch(CblasRowMajor, transa_, transb_, (const MKL_INT *)m,
                                 (const MKL_INT *)n, (const MKL_INT *)k, alpha, (const void **)a,
                                 (const MKL_INT *)lda, (const void **)b, (const MKL_INT *)ldb, beta,
                                 (void **)c, (const MKL_INT *)ldc, group_count,
@@ -1415,8 +1415,8 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        CBLAS_TRANSPOSE transa_ = (CBLAS_TRANSPOSE)cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = (CBLAS_TRANSPOSE)cblas_convert(transb);
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
         host_task<class mkl_kernel_sgemm_batch_usm>(cgh, [=]() {
             float **a_array = (float **)::malloc(sizeof(float *) * batch_size);
@@ -1442,10 +1442,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                 }
             }
             ::cblas_sgemm_batch(
-                (CBLAS_LAYOUT)MKL_ROW_MAJOR, &transa_, &transb_, (const MKL_INT *)&m,
-                (const MKL_INT *)&n, (const MKL_INT *)&k, &alpha, (const float **)a_array,
-                (const MKL_INT *)&lda, (const float **)b_array, (const MKL_INT *)&ldb, &beta,
-                (float **)c_array, (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
+                CblasRowMajor, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                (const MKL_INT *)&k, &alpha, (const float **)a_array, (const MKL_INT *)&lda,
+                (const float **)b_array, (const MKL_INT *)&ldb, &beta, (float **)c_array,
+                (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -1466,8 +1466,8 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        CBLAS_TRANSPOSE transa_ = (CBLAS_TRANSPOSE)cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = (CBLAS_TRANSPOSE)cblas_convert(transb);
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
         host_task<class mkl_kernel_dgemm_batch_usm>(cgh, [=]() {
             double **a_array = (double **)::malloc(sizeof(double *) * batch_size);
@@ -1493,10 +1493,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                 }
             }
             ::cblas_dgemm_batch(
-                (CBLAS_LAYOUT)MKL_ROW_MAJOR, &transa_, &transb_, (const MKL_INT *)&m,
-                (const MKL_INT *)&n, (const MKL_INT *)&k, &alpha, (const double **)a_array,
-                (const MKL_INT *)&lda, (const double **)b_array, (const MKL_INT *)&ldb, &beta,
-                (double **)c_array, (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
+                CblasRowMajor, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                (const MKL_INT *)&k, &alpha, (const double **)a_array, (const MKL_INT *)&lda,
+                (const double **)b_array, (const MKL_INT *)&ldb, &beta, (double **)c_array,
+                (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -1518,8 +1518,8 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        CBLAS_TRANSPOSE transa_ = (CBLAS_TRANSPOSE)cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = (CBLAS_TRANSPOSE)cblas_convert(transb);
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
         host_task<class mkl_kernel_cgemm_batch_usm>(cgh, [=]() {
             std::complex<float> **a_array =
@@ -1548,10 +1548,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                 }
             }
             ::cblas_cgemm_batch(
-                (CBLAS_LAYOUT)MKL_ROW_MAJOR, &transa_, &transb_, (const MKL_INT *)&m,
-                (const MKL_INT *)&n, (const MKL_INT *)&k, &alpha, (const void **)a_array,
-                (const MKL_INT *)&lda, (const void **)b_array, (const MKL_INT *)&ldb, &beta,
-                (void **)c_array, (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
+                CblasRowMajor, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                (const MKL_INT *)&k, &alpha, (const void **)a_array, (const MKL_INT *)&lda,
+                (const void **)b_array, (const MKL_INT *)&ldb, &beta, (void **)c_array,
+                (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
@@ -1573,8 +1573,8 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        CBLAS_TRANSPOSE transa_ = (CBLAS_TRANSPOSE)cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = (CBLAS_TRANSPOSE)cblas_convert(transb);
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
         host_task<class mkl_kernel_zgemm_batch_usm>(cgh, [=]() {
             std::complex<double> **a_array =
@@ -1603,10 +1603,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                 }
             }
             ::cblas_zgemm_batch(
-                (CBLAS_LAYOUT)MKL_ROW_MAJOR, &transa_, &transb_, (const MKL_INT *)&m,
-                (const MKL_INT *)&n, (const MKL_INT *)&k, &alpha, (const void **)a_array,
-                (const MKL_INT *)&lda, (const void **)b_array, (const MKL_INT *)&ldb, &beta,
-                (void **)c_array, (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
+                CblasRowMajor, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
+                (const MKL_INT *)&k, &alpha, (const void **)a_array, (const MKL_INT *)&lda,
+                (const void **)b_array, (const MKL_INT *)&ldb, &beta, (void **)c_array,
+                (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
 
             ::free(a_array);
             ::free(b_array);
