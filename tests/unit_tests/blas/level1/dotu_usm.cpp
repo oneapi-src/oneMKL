@@ -42,7 +42,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev, int N, int incx, int incy) {
+int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -83,12 +83,32 @@ int test(const device &dev, int N, int incx, int incy) {
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::dotu(main_queue, N, x.data(), incx, y.data(), incy, result_p,
-                                       dependencies);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                done = oneapi::mkl::blas::column_major::dotu(
+                    main_queue, N, x.data(), incx, y.data(), incy, result_p, dependencies);
+                break;
+            case oneapi::mkl::layout::row_major:
+                done = oneapi::mkl::blas::row_major::dotu(main_queue, N, x.data(), incx, y.data(),
+                                                          incy, result_p, dependencies);
+                break;
+            default: break;
+        }
         done.wait();
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::dotu,
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(
+                    main_queue, oneapi::mkl::blas::column_major::dotu,
                     (main_queue, N, x.data(), incx, y.data(), incy, result_p, dependencies));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(
+                    main_queue, oneapi::mkl::blas::row_major::dotu,
+                    (main_queue, N, x.data(), incx, y.data(), incy, result_p, dependencies));
+                break;
+            default: break;
+        }
         main_queue.wait();
 #endif
     }
@@ -98,7 +118,7 @@ int test(const device &dev, int N, int incx, int incy) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const oneapi::mkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::unimplemented &e) {
         return test_skipped;
     }
 
@@ -109,25 +129,35 @@ int test(const device &dev, int N, int incx, int incy) {
     // Compare the results of reference implementation and DPC++ implementation.
 
     bool good = check_equal(*result_p, result_reference, N, std::cout);
-
     oneapi::mkl::free_shared(result_p, cxt);
+
     return (int)good;
 }
 
-class DotuUsmTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class DotuUsmTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(DotuUsmTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, 1, 1));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 1357, -3, -2));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, -2));
 }
 TEST_P(DotuUsmTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, 2, 3));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, 1, 1));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 1357, -3, -2));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, -2));
 }
 
-INSTANTIATE_TEST_SUITE_P(DotuUsmTestSuite, DotuUsmTests, ::testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(DotuUsmTestSuite, DotuUsmTests,
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

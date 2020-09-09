@@ -44,7 +44,7 @@ extern std::vector<cl::sycl::device> devices;
 namespace {
 
 template <typename fp>
-int test(const device &dev, int64_t batch_size) {
+int test(const device &dev, oneapi::mkl::layout layout, int64_t batch_size) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -100,9 +100,19 @@ int test(const device &dev, int64_t batch_size) {
 
     int64_t stride_a, stride_b, stride_c;
 
-    stride_a = (transa == oneapi::mkl::transpose::nontrans) ? lda * k : lda * m;
-    stride_b = (transb == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * k;
-    stride_c = ldc * n;
+    switch (layout) {
+        case oneapi::mkl::layout::column_major:
+            stride_a = (transa == oneapi::mkl::transpose::nontrans) ? lda * k : lda * m;
+            stride_b = (transb == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * k;
+            stride_c = ldc * n;
+            break;
+        case oneapi::mkl::layout::row_major:
+            stride_a = (transa == oneapi::mkl::transpose::nontrans) ? lda * m : lda * k;
+            stride_b = (transb == oneapi::mkl::transpose::nontrans) ? ldb * k : ldb * n;
+            stride_c = ldc * m;
+            break;
+        default: break;
+    }
 
     auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, dev);
     vector<fp, decltype(ua)> A(ua), B(ua), C(ua), C_ref(ua);
@@ -133,14 +143,14 @@ int test(const device &dev, int64_t batch_size) {
         c_ref_array[i] = &C_ref[i * stride_c];
     }
 
-    rand_matrix(A, oneapi::mkl::transpose::nontrans, stride_a * batch_size, 1,
-                stride_a * batch_size);
-    rand_matrix(B, oneapi::mkl::transpose::nontrans, stride_b * batch_size, 1,
-                stride_b * batch_size);
-    rand_matrix(C, oneapi::mkl::transpose::nontrans, stride_c * batch_size, 1,
-                stride_c * batch_size);
-    copy_matrix(C, oneapi::mkl::transpose::nontrans, stride_c * batch_size, 1,
-                stride_c * batch_size, C_ref);
+    rand_matrix(A, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+                stride_a * batch_size, 1, stride_a * batch_size);
+    rand_matrix(B, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+                stride_b * batch_size, 1, stride_b * batch_size);
+    rand_matrix(C, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+                stride_c * batch_size, 1, stride_c * batch_size);
+    copy_matrix(C, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+                stride_c * batch_size, 1, stride_c * batch_size, C_ref);
 
     // Call reference GEMM_BATCH_STRIDE.
     using fp_ref = typename ref_type_info<fp>::type;
@@ -152,25 +162,48 @@ int test(const device &dev, int64_t batch_size) {
     int ldc_ref = (int)ldc;
     int batch_size_ref = (int)batch_size;
     for (i = 0; i < batch_size_ref; i++) {
-        ::gemm(convert_to_cblas_trans(transa), convert_to_cblas_trans(transb), (const int *)&m_ref,
-               (const int *)&n_ref, (const int *)&k_ref, (const fp_ref *)&alpha,
-               (const fp_ref *)a_array[i], (const int *)&lda_ref, (const fp_ref *)b_array[i],
-               (const int *)&ldb_ref, (const fp_ref *)&beta, (fp_ref *)c_ref_array[i],
-               (const int *)&ldc_ref);
+        ::gemm(
+            convert_to_cblas_layout(layout), convert_to_cblas_trans(transa),
+            convert_to_cblas_trans(transb), (const int *)&m_ref, (const int *)&n_ref,
+            (const int *)&k_ref, (const fp_ref *)&alpha, (const fp_ref *)(A.data() + stride_a * i),
+            (const int *)&lda_ref, (const fp_ref *)(B.data() + stride_b * i), (const int *)&ldb_ref,
+            (const fp_ref *)&beta, (fp_ref *)(C_ref.data() + stride_c * i), (const int *)&ldc_ref);
     }
 
     // Call DPC++ GEMM_BATCH_STRIDE.
 
     try {
 #ifdef CALL_RT_API
-        done = oneapi::mkl::blas::gemm_batch(main_queue, transa, transb, m, n, k, alpha, &A[0], lda,
-                                             stride_a, &B[0], ldb, stride_b, beta, &C[0], ldc,
-                                             stride_c, batch_size, dependencies);
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                done = oneapi::mkl::blas::column_major::gemm_batch(
+                    main_queue, transa, transb, m, n, k, alpha, &A[0], lda, stride_a, &B[0], ldb,
+                    stride_b, beta, &C[0], ldc, stride_c, batch_size, dependencies);
+                break;
+            case oneapi::mkl::layout::row_major:
+                done = oneapi::mkl::blas::row_major::gemm_batch(
+                    main_queue, transa, transb, m, n, k, alpha, &A[0], lda, stride_a, &B[0], ldb,
+                    stride_b, beta, &C[0], ldc, stride_c, batch_size, dependencies);
+                break;
+            default: break;
+        }
         done.wait();
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::gemm_batch,
+        switch (layout) {
+            case oneapi::mkl::layout::column_major:
+                TEST_RUN_CT(
+                    main_queue, oneapi::mkl::blas::column_major::gemm_batch,
                     (main_queue, transa, transb, m, n, k, alpha, &A[0], lda, stride_a, &B[0], ldb,
                      stride_b, beta, &C[0], ldc, stride_c, batch_size, dependencies));
+                break;
+            case oneapi::mkl::layout::row_major:
+                TEST_RUN_CT(
+                    main_queue, oneapi::mkl::blas::row_major::gemm_batch,
+                    (main_queue, transa, transb, m, n, k, alpha, &A[0], lda, stride_a, &B[0], ldb,
+                     stride_b, beta, &C[0], ldc, stride_c, batch_size, dependencies));
+                break;
+            default: break;
+        }
         main_queue.wait();
 #endif
     }
@@ -180,7 +213,7 @@ int test(const device &dev, int64_t batch_size) {
                   << "OpenCL status: " << e.get_cl_code() << std::endl;
     }
 
-    catch (const oneapi::mkl::backend_unsupported_exception &e) {
+    catch (const oneapi::mkl::unimplemented &e) {
         oneapi::mkl::free_shared(a_array, cxt);
         oneapi::mkl::free_shared(b_array, cxt);
         oneapi::mkl::free_shared(c_array, cxt);
@@ -194,38 +227,43 @@ int test(const device &dev, int64_t batch_size) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good = true;
-    {
-        good = check_equal_matrix(C, C_ref, stride_c * batch_size, 1, stride_c * batch_size, 10 * k,
-                                  std::cout);
-    }
+    bool good =
+        check_equal_matrix(C, C_ref, oneapi::mkl::layout::column_major, stride_c * batch_size, 1,
+                           stride_c * batch_size, 10 * k, std::cout);
 
     oneapi::mkl::free_shared(a_array, cxt);
     oneapi::mkl::free_shared(b_array, cxt);
     oneapi::mkl::free_shared(c_array, cxt);
     oneapi::mkl::free_shared(c_ref_array, cxt);
+
     return (int)good;
 }
 
-class GemmBatchStrideUsmTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class GemmBatchStrideUsmTests
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
 
 TEST_P(GemmBatchStrideUsmTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<float>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 TEST_P(GemmBatchStrideUsmTests, RealDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<double>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 TEST_P(GemmBatchStrideUsmTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 TEST_P(GemmBatchStrideUsmTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(GetParam(), 5));
+    EXPECT_TRUEORSKIP(
+        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 INSTANTIATE_TEST_SUITE_P(GemmBatchStrideUsmTestSuite, GemmBatchStrideUsmTests,
-                         ::testing::ValuesIn(devices), ::DeviceNamePrint());
+                         ::testing::Combine(testing::ValuesIn(devices),
+                                            testing::Values(oneapi::mkl::layout::column_major,
+                                                            oneapi::mkl::layout::row_major)),
+                         ::LayoutDeviceNamePrint());
 
 } // anonymous namespace
