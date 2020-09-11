@@ -29,7 +29,6 @@ if(BUILD_SHARED_LIBS)
       PUBLIC ${PROJECT_SOURCE_DIR}/include
       PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
       PUBLIC ${CMAKE_BINARY_DIR}/bin
-      PUBLIC ${CBLAS_INCLUDE}
   )
   target_link_libraries(rng_service_rt PUBLIC ONEMKL::SYCL::SYCL)
 endif()
@@ -42,6 +41,5 @@ target_include_directories(rng_service_ct
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
     PUBLIC ${CMAKE_BINARY_DIR}/bin
-    PUBLIC ${CBLAS_INCLUDE}
 )
 target_link_libraries(rng_service_ct PUBLIC ONEMKL::SYCL::SYCL)
