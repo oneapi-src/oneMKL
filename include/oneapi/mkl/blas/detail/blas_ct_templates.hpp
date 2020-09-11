@@ -18,7 +18,7 @@
 *******************************************************************************/
 
 //
-// Generated based on include/oneapi/mkl/blas/blas.hpp
+// Generated based on include/oneapi/mkl/blas.hpp
 //
 
 #ifndef _DETAIL_COMMON_BLAS_HPP__

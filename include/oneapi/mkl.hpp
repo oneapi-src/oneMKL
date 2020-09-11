@@ -22,6 +22,6 @@
 
 #include "oneapi/mkl/types.hpp"
 
-#include "oneapi/mkl/blas/blas.hpp"
+#include "oneapi/mkl/blas.hpp"
 
 #endif //_ONEMKL_HPP_
