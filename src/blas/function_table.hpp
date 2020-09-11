@@ -25,6 +25,11 @@
 #include <CL/sycl.hpp>
 #include "oneapi/mkl/types.hpp"
 
+namespace oneapi {
+namespace mkl {
+namespace blas {
+namespace detail {
+
 typedef struct {
     int version;
 
@@ -3090,5 +3095,10 @@ typedef struct {
         const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
 } function_table_t;
+
+} // namespace detail
+} // namespace blas
+} // namespace mkl
+} // namespace oneapi
 
 #endif //_BLAS_FUNCTION_TABLE_HPP_

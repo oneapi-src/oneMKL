@@ -22,7 +22,7 @@
 
 #define WRAPPER_VERSION 1
 
-extern "C" ONEMKL_EXPORT function_table_t mkl_rng_table = {
+extern "C" ONEMKL_EXPORT oneapi::mkl::rng::detail::function_table_t mkl_rng_table = {
     WRAPPER_VERSION, oneapi::mkl::rng::mklgpu::create_philox4x32x10,
     oneapi::mkl::rng::mklgpu::create_philox4x32x10
 };

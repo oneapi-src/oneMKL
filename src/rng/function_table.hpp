@@ -25,6 +25,11 @@
 
 #include "oneapi/mkl/rng/detail/engine_impl.hpp"
 
+namespace oneapi {
+namespace mkl {
+namespace rng {
+namespace detail {
+
 typedef struct {
     int version;
 
@@ -33,5 +38,10 @@ typedef struct {
     oneapi::mkl::rng::detail::engine_impl* (*create_philox4x32x10_ex_sycl)(
         cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed);
 } function_table_t;
+
+} // namespace detail
+} // namespace rng
+} // namespace mkl
+} // namespace oneapi
 
 #endif //_RNG_FUNCTION_TABLE_HPP_

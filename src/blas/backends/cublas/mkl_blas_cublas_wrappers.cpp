@@ -21,7 +21,7 @@
 
 #define WRAPPER_VERSION 1
 
-extern "C" function_table_t mkl_blas_table = {
+extern "C" oneapi::mkl::blas::detail::function_table_t mkl_blas_table = {
     WRAPPER_VERSION,
     oneapi::mkl::cublas::column_major::asum,
     oneapi::mkl::cublas::column_major::asum,
