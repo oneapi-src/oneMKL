@@ -28,9 +28,7 @@ namespace blas {
 namespace column_major {
 namespace detail {
 
-static oneapi::mkl::detail::table_initializer<domain::blas,
-                                              oneapi::mkl::blas::detail::function_table_t>
-    function_tables;
+static oneapi::mkl::detail::table_initializer<domain::blas, blas_function_table_t> function_tables;
 
 // Buffer APIs
 
@@ -2652,9 +2650,7 @@ cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
 namespace row_major {
 namespace detail {
 
-static oneapi::mkl::detail::table_initializer<domain::blas,
-                                              oneapi::mkl::blas::detail::function_table_t>
-    function_tables;
+static oneapi::mkl::detail::table_initializer<domain::blas, blas_function_table_t> function_tables;
 
 // Buffer APIs
 
