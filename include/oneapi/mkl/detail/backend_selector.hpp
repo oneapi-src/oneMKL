@@ -22,7 +22,7 @@
 
 #include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/detail/backends.hpp"
-#include "oneapi/mkl/detail/get_device_id.hpp"
+#include "oneapi/mkl/detail/backend_selector_predicates.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -31,40 +31,7 @@ template <backend Backend>
 class backend_selector {
 public:
     explicit backend_selector(sycl::queue queue) : queue_(queue) {
-        if ((queue.is_host() || queue.get_device().is_cpu())) {
-            if (Backend != backend::mklcpu) {
-                throw unsupported_device("",
-                                         "backend_selector<backend::" + backend_map[Backend] + ">",
-                                         queue.get_device());
-            }
-        }
-        else if (queue.get_device().is_gpu()) {
-            unsigned int vendor_id = static_cast<unsigned int>(
-                queue.get_device().get_info<cl::sycl::info::device::vendor_id>());
-            if (vendor_id == INTEL_ID) {
-                if (Backend != backend::mklgpu) {
-                    throw unsupported_device(
-                        "", "backend_selector<backend::" + backend_map[Backend] + ">",
-                        queue.get_device());
-                }
-            }
-            else if (vendor_id == NVIDIA_ID) {
-                if (Backend != backend::cublas) {
-                    throw unsupported_device(
-                        "", "backend_selector<backend::" + backend_map[Backend] + ">",
-                        queue.get_device());
-                }
-            }
-            else {
-                throw unsupported_device("",
-                                         "backend_selector<backend::" + backend_map[Backend] + ">",
-                                         queue.get_device());
-            }
-        }
-        else {
-            throw unsupported_device("", "backend_selector<backend::" + backend_map[Backend] + ">",
-                                     queue.get_device());
-        }
+        backend_selector_precondition<Backend>(queue_);
     }
     sycl::queue& get_queue() {
         return queue_;
