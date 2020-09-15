@@ -22,7 +22,7 @@
 
 #define WRAPPER_VERSION 1
 
-extern "C" ONEMKL_EXPORT function_table_t mkl_blas_table = {
+extern "C" ONEMKL_EXPORT blas_function_table_t mkl_blas_table = {
     WRAPPER_VERSION,
     oneapi::mkl::mklcpu::column_major::asum,
     oneapi::mkl::mklcpu::column_major::asum,

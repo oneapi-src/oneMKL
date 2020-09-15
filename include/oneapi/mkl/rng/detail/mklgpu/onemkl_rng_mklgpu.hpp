@@ -17,12 +17,29 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_HPP_
-#define _ONEMKL_HPP_
+#ifndef _ONEMKL_RNG_MKLGPU_HPP_
+#define _ONEMKL_RNG_MKLGPU_HPP_
 
-#include "oneapi/mkl/types.hpp"
+#include <cstdint>
+#include <CL/sycl.hpp>
 
-#include "oneapi/mkl/blas.hpp"
-#include "oneapi/mkl/rng.hpp"
+#include "oneapi/mkl/detail/export.hpp"
+#include "oneapi/mkl/rng/detail/engine_impl.hpp"
 
-#endif //_ONEMKL_HPP_
+namespace oneapi {
+namespace mkl {
+namespace rng {
+namespace mklgpu {
+
+ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(cl::sycl::queue queue,
+                                                                          std::uint64_t seed);
+
+ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(
+    cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed);
+
+} // namespace mklgpu
+} // namespace rng
+} // namespace mkl
+} // namespace oneapi
+
+#endif //_ONEMKL_RNG_MKLGPU_HPP_
