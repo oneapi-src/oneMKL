@@ -34,7 +34,7 @@ For each new backend library, you should create the following two header files:
 
 .. code-block:: bash
 
-    python scripts/generate_backend_api.py include/oneapi/mkl/blas/blas.hpp \                             # Base header file
+    python scripts/generate_backend_api.py include/oneapi/mkl/blas.hpp \                                  # Base header file
                                            include/oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp \ # Output header file
                                            oneapi::mkl::newlib                                            # Wrappers namespace
 
@@ -94,6 +94,7 @@ Below you can see structure of oneMKL top-level include directory:
             mkl/
                 mkl.hpp -> oneMKL spec APIs
                 types.hpp  -> oneMKL spec types
+                blas.hpp   -> oneMKL BLAS APIs w/ pre-check/dispatching/post-check
                 detail/    -> implementation specific header files
                     exceptions.hpp        -> oneMKL exception classes
                     backends.hpp          -> list of oneMKL backends
@@ -101,7 +102,6 @@ Below you can see structure of oneMKL top-level include directory:
                     get_device_id.hpp     -> function to query device information from queue for Run-time dispatching
                 blas/
                     predicates.hpp -> oneMKL BLAS pre-check post-check
-                    blas.hpp       -> oneMKL BLAS APIs w/ pre-check/dispatching/post-check
                     detail/        -> BLAS domain specific implementation details
                         blas_loader.hpp       -> oneMKL Run-time BLAS API
                         blas_ct_templates.hpp -> oneMKL Compile-time BLAS API general templates
@@ -169,7 +169,7 @@ To integrate the new third-party library to a oneMKL header-based part, followin
      +      if (queue.is_host())
      +          device_id=device::newdevice;
 
-* ``include/oneapi/mkl/blas/blas.hpp``: include the generated header file for the compile-time dispatching interface (see `oneMKL Usage Models <../README.md#supported-usage-models>`_)
+* ``include/oneapi/mkl/blas.hpp``: include the generated header file for the compile-time dispatching interface (see `oneMKL Usage Models <../README.md#supported-usage-models>`_)
 
   **Example**: add ``include/oneapi/mkl/blas/detail/newlib/blas_ct.hpp`` generated at the `1. Create Header Files`_ step
     
@@ -187,9 +187,9 @@ The new files generated at the `1. Create Header Files`_ step result in the foll
     include/
         oneapi/
             mkl/
+                blas.hpp -> oneMKL BLAS APIs w/ pre-check/dispatching/post-check
                 blas/
                     predicates.hpp -> oneMKL BLAS pre-check post-check
-                    blas.hpp       -> oneMKL BLAS APIs w/ pre-check/dispatching/post-check
                     detail/        -> BLAS domain specific implementation details
                         blas_loader.hpp       -> oneMKL Run-time BLAS API
                         blas_ct_templates.hpp -> oneMKL Compile-time BLAS API general templates
