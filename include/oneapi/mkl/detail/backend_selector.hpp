@@ -17,12 +17,31 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_HPP_
-#define _ONEMKL_HPP_
+#ifndef _ONEMKL_BACKEND_SELECTOR_HPP_
+#define _ONEMKL_BACKEND_SELECTOR_HPP_
 
-#include "oneapi/mkl/types.hpp"
+#include "oneapi/mkl/exceptions.hpp"
+#include "oneapi/mkl/detail/backends.hpp"
+#include "oneapi/mkl/detail/backend_selector_predicates.hpp"
 
-#include "oneapi/mkl/blas/blas.hpp"
-#include "oneapi/mkl/rng.hpp"
+namespace oneapi {
+namespace mkl {
 
-#endif //_ONEMKL_HPP_
+template <backend Backend>
+class backend_selector {
+public:
+    explicit backend_selector(sycl::queue queue) : queue_(queue) {
+        backend_selector_precondition<Backend>(queue_);
+    }
+    sycl::queue& get_queue() {
+        return queue_;
+    }
+
+private:
+    sycl::queue queue_;
+};
+
+} // namespace mkl
+} // namespace oneapi
+
+#endif //_ONEMKL_BACKEND_SELECTOR_HPP_

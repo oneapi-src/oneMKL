@@ -3089,6 +3089,6 @@ typedef struct {
         std::int64_t ldb, std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
         const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-} function_table_t;
+} blas_function_table_t;
 
 #endif //_BLAS_FUNCTION_TABLE_HPP_

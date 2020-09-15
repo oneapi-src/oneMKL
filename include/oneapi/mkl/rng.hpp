@@ -17,12 +17,21 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_HPP_
-#define _ONEMKL_HPP_
+#ifndef _ONEMKL_RNG_HPP_
+#define _ONEMKL_RNG_HPP_
 
-#include "oneapi/mkl/types.hpp"
+#include <CL/sycl.hpp>
+#include <complex>
+#include <cstdint>
 
-#include "oneapi/mkl/blas/blas.hpp"
-#include "oneapi/mkl/rng.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/mkl/detail/get_device_id.hpp"
 
-#endif //_ONEMKL_HPP_
+#include "oneapi/mkl/rng/predicates.hpp"
+#include "oneapi/mkl/rng/detail/rng_loader.hpp"
+
+#include "oneapi/mkl/rng/functions.hpp"
+#include "oneapi/mkl/rng/distributions.hpp"
+#include "oneapi/mkl/rng/engines.hpp"
+
+#endif // _ONEMKL_RNG_HPP_

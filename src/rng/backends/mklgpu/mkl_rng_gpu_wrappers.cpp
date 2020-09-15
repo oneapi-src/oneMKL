@@ -17,12 +17,12 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_HPP_
-#define _ONEMKL_HPP_
+#include "rng/function_table.hpp"
+#include "oneapi/mkl/rng/detail/mklgpu/onemkl_rng_mklgpu.hpp"
 
-#include "oneapi/mkl/types.hpp"
+#define WRAPPER_VERSION 1
 
-#include "oneapi/mkl/blas/blas.hpp"
-#include "oneapi/mkl/rng.hpp"
-
-#endif //_ONEMKL_HPP_
+extern "C" ONEMKL_EXPORT rng_function_table_t mkl_rng_table = {
+    WRAPPER_VERSION, oneapi::mkl::rng::mklgpu::create_philox4x32x10,
+    oneapi::mkl::rng::mklgpu::create_philox4x32x10
+};
