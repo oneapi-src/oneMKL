@@ -34,7 +34,7 @@ using ::testing::TestInfo;
 using ::testing::TestPartResult;
 using ::testing::UnitTest;
 
-cl::sycl::device host, cpu, gpu;
+cl::sycl::device host, cpu, gpu = cl::sycl::default_selector().select_device();
 std::vector<cl::sycl::device> devices;
 
 std::string gtestInFile;
