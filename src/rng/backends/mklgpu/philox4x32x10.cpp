@@ -129,7 +129,8 @@ public:
         const oneapi::mkl::rng::uniform<std::int32_t, oneapi::mkl::rng::uniform_method::standard>&
             distr,
         std::int64_t n, std::int32_t* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {;
+        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        ;
         return oneapi::mkl::rng::generate(distr, engine_, n, r, dependencies);
     }
 
