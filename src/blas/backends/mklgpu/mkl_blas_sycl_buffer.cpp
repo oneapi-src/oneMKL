@@ -22,6 +22,7 @@
 #include "oneapi/mkl/blas/detail/mklgpu/onemkl_blas_mklgpu.hpp"
 #include "oneapi/mkl/types.hpp"
 #include "mkl_internal_blas_sycl_gpu.hpp"
+#include "oneapi/mkl/exceptions.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -2485,10 +2486,7 @@ void gemm_bias(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mk
                cl::sycl::buffer<uint8_t, 1> &b, std::int64_t ldb, uint8_t bo, float beta,
                cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
                cl::sycl::buffer<int32_t, 1> &co) {
-    ::oneapi::mkl::gpu::gemm_s8u8s32_sycl(&queue, MKL_ROW_MAJOR, ::mkl::cblas_convert(transa),
-                                          ::mkl::cblas_convert(transb),
-                                          ::mkl::cblas_convert(offsetc), m, n, k, alpha, &a, lda,
-                                          ao, &b, ldb, bo, beta, &c, ldc, &co);
+    throw unimplemented("blas", "gemm_bias", "for row_major layout");
 }
 
 } //namespace row_major

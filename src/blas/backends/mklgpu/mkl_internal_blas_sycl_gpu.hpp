@@ -795,7 +795,8 @@ void gemm_s8u8s32_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE 
                        float alpha, cl::sycl::buffer<int8_t, 1> *a, int64_t lda, int8_t ao,
                        cl::sycl::buffer<uint8_t, 1> *b, int64_t ldb, uint8_t bo, float beta,
                        cl::sycl::buffer<int32_t, 1> *c, int64_t ldc,
-                       cl::sycl::buffer<int32_t, 1> *co);
+                       cl::sycl::buffer<int32_t, 1> *co, int64_t offset_a = 0, int64_t offset_b = 0,
+                       int64_t offset_c = 0, int64_t offset_co = 0);
 
 // USM APIs
 
