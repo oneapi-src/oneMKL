@@ -91,12 +91,10 @@ int main(int argc, char** argv) {
                         unique_devices.insert(dev.get_info<cl::sycl::info::device::name>());
                         unsigned int vendor_id = static_cast<unsigned int>(
                             dev.get_info<cl::sycl::info::device::vendor_id>());
-                        /* temporary w/a to exclude L0 from windows testing */
-#ifdef _WIN64
-                        if (plat.get_info<cl::sycl::info::platform::version>().find("Level-Zero") !=
-                            std::string::npos)
+                        /* Do not test for OpenCL backend on GPU */
+                        if (dev.is_gpu() && plat.get_info<cl::sycl::info::platform::name>().find(
+                                                "OpenCL") != std::string::npos)
                             continue;
-#endif
 #ifndef ENABLE_MKLCPU_BACKEND
                         if (dev.is_cpu())
                             continue;
