@@ -37,12 +37,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp alpha) {
+int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp alpha) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -131,7 +131,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp 
 }
 
 class AxpyUsmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(AxpyUsmTests, RealSinglePrecision) {
     float alpha(2.0);

@@ -38,13 +38,13 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n,
-         fp alpha, int incx) {
+int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n, fp alpha,
+         int incx) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -134,7 +134,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
 }
 
 class SprUsmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(SprUsmTests, RealSinglePrecision) {
     float alpha(2.0);

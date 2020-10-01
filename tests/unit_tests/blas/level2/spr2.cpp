@@ -38,13 +38,13 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n,
-         fp alpha, int incx, int incy) {
+int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n, fp alpha,
+         int incx, int incy) {
     // Prepare data.
     vector<fp> x, y, A_ref, A;
     rand_vector(x, n, incx);
@@ -133,7 +133,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
 }
 
 class Spr2Tests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(Spr2Tests, RealSinglePrecision) {
     float alpha(2.0);

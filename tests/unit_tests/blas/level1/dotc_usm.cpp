@@ -37,12 +37,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
+int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -136,7 +136,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
 }
 
 class DotcUsmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(DotcUsmTests, ComplexSinglePrecision) {
     EXPECT_TRUEORSKIP(

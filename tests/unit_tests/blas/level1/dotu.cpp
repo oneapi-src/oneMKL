@@ -37,12 +37,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
+int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
     // Prepare data.
     vector<fp> x, y;
     fp result = 0.0, result_reference = 0.0;
@@ -129,7 +129,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
 }
 
 class DotuTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(DotuTests, ComplexSinglePrecision) {
     EXPECT_TRUEORSKIP(

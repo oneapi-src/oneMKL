@@ -38,12 +38,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout, int m, int n, fp alpha, int incx, int incy,
+int test(device *dev, oneapi::mkl::layout layout, int m, int n, fp alpha, int incx, int incy,
          int lda) {
     // Prepare data.
 
@@ -135,7 +135,7 @@ int test(device* dev, oneapi::mkl::layout layout, int m, int n, fp alpha, int in
 }
 
 class GerTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(GerTests, RealSinglePrecision) {
     float alpha(2.0);

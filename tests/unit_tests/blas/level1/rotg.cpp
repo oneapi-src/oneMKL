@@ -37,12 +37,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp, typename fp_scalar>
-int test(device* dev, oneapi::mkl::layout layout) {
+int test(device *dev, oneapi::mkl::layout layout) {
     // Prepare data.
     fp a, b, s, a_ref, b_ref, s_ref;
     fp_scalar c, c_ref;
@@ -142,7 +142,7 @@ int test(device* dev, oneapi::mkl::layout layout) {
 }
 
 class RotgTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(RotgTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP((test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()))));

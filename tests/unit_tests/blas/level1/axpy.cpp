@@ -37,12 +37,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp alpha) {
+int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp alpha) {
     // Prepare data.
     vector<fp> x, y, y_ref;
 
@@ -128,7 +128,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp 
 }
 
 class AxpyTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(AxpyTests, RealSinglePrecision) {
     float alpha(2.0);

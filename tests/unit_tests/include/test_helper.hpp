@@ -108,7 +108,7 @@
 
 class DeviceNamePrint {
 public:
-    std::string operator()(testing::TestParamInfo<cl::sycl::device*> dev) const {
+    std::string operator()(testing::TestParamInfo<cl::sycl::device *> dev) const {
         std::string dev_name = dev.param->get_info<cl::sycl::info::device::name>();
         for (std::string::size_type i = 0; i < dev_name.size(); ++i) {
             if (!isalnum(dev_name[i]))
@@ -121,7 +121,7 @@ public:
 class LayoutDeviceNamePrint {
 public:
     std::string operator()(
-        testing::TestParamInfo<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> dev) const {
+        testing::TestParamInfo<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> dev) const {
         std::string layout_name = std::get<1>(dev.param) == oneapi::mkl::layout::column_major
                                       ? "Column_Major"
                                       : "Row_Major";

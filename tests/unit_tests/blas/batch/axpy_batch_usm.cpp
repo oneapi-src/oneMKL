@@ -39,12 +39,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout, int64_t group_count) {
+int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -65,7 +65,8 @@ int test(device* dev, oneapi::mkl::layout layout, int64_t group_count) {
     std::vector<event> dependencies;
 
     // Prepare data.
-    int64_t *n = (int64_t *)oneapi::mkl::malloc_shared(64, sizeof(int64_t) * group_count, *dev, cxt);
+    int64_t *n =
+        (int64_t *)oneapi::mkl::malloc_shared(64, sizeof(int64_t) * group_count, *dev, cxt);
     int64_t *incx =
         (int64_t *)oneapi::mkl::malloc_shared(64, sizeof(int64_t) * group_count, *dev, cxt);
     int64_t *incy =
@@ -247,7 +248,7 @@ int test(device* dev, oneapi::mkl::layout layout, int64_t group_count) {
 }
 
 class AxpyBatchUsmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(AxpyBatchUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));

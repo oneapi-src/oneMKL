@@ -38,13 +38,13 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n,
-         fp alpha, fp beta, int incx, int incy) {
+int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n, fp alpha,
+         fp beta, int incx, int incy) {
     // Prepare data.
     vector<fp> x, y, y_ref, A;
     rand_vector(x, n, incx);
@@ -133,7 +133,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
 }
 
 class SpmvTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(SpmvTests, RealSinglePrecision) {
     float alpha(2.0);

@@ -39,12 +39,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout) {
+int test(device *dev, oneapi::mkl::layout layout) {
     // Prepare data.
     int64_t m, n;
     int64_t lda, ldb;
@@ -195,7 +195,7 @@ int test(device* dev, oneapi::mkl::layout layout) {
 }
 
 class TrsmBatchStrideTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(TrsmBatchStrideTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam())));

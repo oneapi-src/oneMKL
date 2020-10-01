@@ -38,12 +38,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n, int k,
+int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n, int k,
          fp alpha, fp beta, int incx, int incy, int lda) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
@@ -140,7 +140,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
 }
 
 class HbmvUsmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(HbmvUsmTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);

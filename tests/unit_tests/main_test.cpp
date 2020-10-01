@@ -121,7 +121,7 @@ int main(int argc, char** argv) {
 #ifdef ENABLE_MKLCPU_BACKEND
     local_devices.push_back(cl::sycl::device(cl::sycl::host_selector()));
 #endif
-    for(int i = 0; i < local_devices.size(); i++) {
+    for (int i = 0; i < local_devices.size(); i++) {
         devices.push_back(&(local_devices[i]));
     }
 

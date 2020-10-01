@@ -37,11 +37,11 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
-int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy, float alpha) {
+int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy, float alpha) {
     // Prepare data.
     vector<float> x, y;
     float result = float(-1), result_ref = float(-1);
@@ -127,7 +127,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy, flo
 }
 
 class SdsdotTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(SdsdotTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, 2.0));

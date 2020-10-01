@@ -38,12 +38,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout, int m, int n, fp alpha, int incx, int incy,
+int test(device *dev, oneapi::mkl::layout layout, int m, int n, fp alpha, int incx, int incy,
          int lda) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
@@ -138,7 +138,7 @@ int test(device* dev, oneapi::mkl::layout layout, int m, int n, fp alpha, int in
 }
 
 class GeruUsmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(GeruUsmTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);

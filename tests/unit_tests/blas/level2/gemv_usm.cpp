@@ -38,12 +38,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa, int m, int n,
+int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa, int m, int n,
          fp alpha, fp beta, int incx, int incy, int lda) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
@@ -141,7 +141,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
 }
 
 class GemvUsmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(GemvUsmTests, RealSinglePrecision) {
     float alpha(2.0);

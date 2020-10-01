@@ -38,12 +38,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa, int m, int n,
+int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa, int m, int n,
          fp alpha, fp beta, int incx, int incy, int lda) {
     // Prepare data.
     int x_len = outer_dimension(transa, m, n);
@@ -137,7 +137,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
 }
 
 class GemvTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(GemvTests, RealSinglePrecision) {
     float alpha(2.0);

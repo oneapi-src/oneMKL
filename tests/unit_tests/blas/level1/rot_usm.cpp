@@ -37,12 +37,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp, typename fp_scalar>
-int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp_scalar c,
+int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp_scalar c,
          fp_scalar s) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
@@ -134,7 +134,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp_
 }
 
 class RotUsmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(RotUsmTests, RealSinglePrecision) {
     float c(2.0);
