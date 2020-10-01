@@ -37,12 +37,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
 template <typename fp, typename fp_res>
-int test(const device& dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
+int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
     // Prepare data.
     vector<fp> x, y;
     fp_res result = fp_res(-1), result_ref = fp_res(-1);
@@ -71,7 +71,7 @@ int test(const device& dev, oneapi::mkl::layout layout, int N, int incx, int inc
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
 
     buffer<fp, 1> x_buffer = make_buffer(x);
     buffer<fp, 1> y_buffer = make_buffer(y);
@@ -127,7 +127,7 @@ int test(const device& dev, oneapi::mkl::layout layout, int N, int incx, int inc
 }
 
 class DotTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(DotTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(

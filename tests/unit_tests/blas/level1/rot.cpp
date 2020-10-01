@@ -37,12 +37,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
 template <typename fp, typename fp_scalar>
-int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp_scalar c,
+int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp_scalar c,
          fp_scalar s) {
     // Prepare data.
     vector<fp> x, x_ref, y, y_ref;
@@ -74,7 +74,7 @@ int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int inc
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
 
     buffer<fp, 1> x_buffer = make_buffer(x);
     buffer<fp, 1> y_buffer = make_buffer(y);
@@ -133,7 +133,7 @@ int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int inc
 }
 
 class RotTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(RotTests, RealSinglePrecision) {
     float c(2.0);

@@ -39,12 +39,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
 template <typename Ts, typename Ta, typename Tb, typename Tc>
-int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
+int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
          oneapi::mkl::transpose transb, oneapi::mkl::offset offsetc, int m, int n, int k, int lda,
          int ldb, int ldc, Ts alpha, Ts beta) {
     // Prepare data.
@@ -101,7 +101,7 @@ int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::transpose t
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
 
     buffer<Ta, 1> A_buffer(A.data(), range<1>(A.size()));
     buffer<Tb, 1> B_buffer(B.data(), range<1>(B.size()));
@@ -161,7 +161,7 @@ int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::transpose t
 }
 
 class GemmBiasTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(GemmBiasTests, Int8Uint8Int32Precision) {
     float alpha(2.0);

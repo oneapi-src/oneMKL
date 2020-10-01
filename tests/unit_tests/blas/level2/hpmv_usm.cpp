@@ -38,12 +38,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n,
+int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n,
          fp alpha, fp beta, int incx, int incy) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
@@ -59,13 +59,13 @@ int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
     context cxt = main_queue.get_context();
     event done;
     std::vector<event> dependencies;
 
     // Prepare data.
-    auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, dev);
+    auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, *dev);
     vector<fp, decltype(ua)> x(ua), y(ua), A(ua);
     rand_vector(x, n, incx);
     rand_vector(y, n, incy);
@@ -138,7 +138,7 @@ int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_
 }
 
 class HpmvUsmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(HpmvUsmTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);

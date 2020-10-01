@@ -37,12 +37,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
 template <typename fp, typename fp_res>
-int test(const device& dev, oneapi::mkl::layout layout, int64_t N, int64_t incx) {
+int test(device* dev, oneapi::mkl::layout layout, int64_t N, int64_t incx) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const& e : exceptions) {
@@ -57,13 +57,13 @@ int test(const device& dev, oneapi::mkl::layout layout, int64_t N, int64_t incx)
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
     context cxt = main_queue.get_context();
     event done;
     std::vector<event> dependencies;
 
     // Prepare data.
-    auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, dev);
+    auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, *dev);
     vector<fp, decltype(ua)> x(ua);
     fp_res result_ref = fp_res(-1);
 
@@ -77,7 +77,7 @@ int test(const device& dev, oneapi::mkl::layout layout, int64_t N, int64_t incx)
 
     // Call DPC++ ASUM.
 
-    auto result_p = (fp_res*)oneapi::mkl::malloc_shared(64, sizeof(fp_res), dev, cxt);
+    auto result_p = (fp_res*)oneapi::mkl::malloc_shared(64, sizeof(fp_res), *dev, cxt);
 
     try {
 #ifdef CALL_RT_API
@@ -132,7 +132,7 @@ int test(const device& dev, oneapi::mkl::layout layout, int64_t N, int64_t incx)
 }
 
 class AsumUsmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(AsumUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(

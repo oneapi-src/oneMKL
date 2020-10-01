@@ -38,12 +38,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa, int m, int n,
+int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa, int m, int n,
          int kl, int ku, fp alpha, fp beta, int incx, int incy, int lda) {
     // Prepare data.
     int x_len = outer_dimension(transa, m, n);
@@ -81,7 +81,7 @@ int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::transpose t
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
 
     buffer<fp, 1> x_buffer = make_buffer(x);
     buffer<fp, 1> y_buffer = make_buffer(y);
@@ -140,7 +140,7 @@ int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::transpose t
 }
 
 class GbmvTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(GbmvTests, RealSinglePrecision) {
     float alpha(2.0);

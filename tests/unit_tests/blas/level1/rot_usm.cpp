@@ -37,12 +37,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
 template <typename fp, typename fp_scalar>
-int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp_scalar c,
+int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp_scalar c,
          fp_scalar s) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
@@ -58,13 +58,13 @@ int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int inc
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
     context cxt = main_queue.get_context();
     event done;
     std::vector<event> dependencies;
 
     // Prepare data.
-    auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, dev);
+    auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, *dev);
     vector<fp, decltype(ua)> x(ua), y(ua);
     rand_vector(x, N, incx);
     rand_vector(y, N, incy);
@@ -134,7 +134,7 @@ int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int inc
 }
 
 class RotUsmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(RotUsmTests, RealSinglePrecision) {
     float c(2.0);

@@ -37,11 +37,11 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
-int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int incy, float alpha) {
+int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy, float alpha) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -56,13 +56,13 @@ int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int inc
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
     context cxt = main_queue.get_context();
     event done;
     std::vector<event> dependencies;
 
     // Prepare data.
-    auto ua = usm_allocator<float, usm::alloc::shared, 64>(cxt, dev);
+    auto ua = usm_allocator<float, usm::alloc::shared, 64>(cxt, *dev);
     vector<float, decltype(ua)> x(ua), y(ua);
     float result_ref = float(-1);
 
@@ -77,7 +77,7 @@ int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int inc
 
     // Call DPC++ SDSDOT.
 
-    auto result_p = (float *)oneapi::mkl::malloc_shared(64, sizeof(float), dev, cxt);
+    auto result_p = (float *)oneapi::mkl::malloc_shared(64, sizeof(float), *dev, cxt);
 
     try {
 #ifdef CALL_RT_API
@@ -133,7 +133,7 @@ int test(const device &dev, oneapi::mkl::layout layout, int N, int incx, int inc
 }
 
 class SdsdotUsmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(SdsdotUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, 2.0));

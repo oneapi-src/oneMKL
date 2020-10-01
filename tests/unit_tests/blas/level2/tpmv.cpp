@@ -38,12 +38,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
+int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
          oneapi::mkl::transpose transa, oneapi::mkl::diag unit_nonunit, int n, int incx) {
     // Prepare data.
     vector<fp> x, x_ref, A;
@@ -75,7 +75,7 @@ int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
 
     buffer<fp, 1> x_buffer = make_buffer(x);
     buffer<fp, 1> A_buffer = make_buffer(A);
@@ -131,7 +131,7 @@ int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_
 }
 
 class TpmvTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(TpmvTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),

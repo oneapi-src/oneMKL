@@ -34,8 +34,7 @@ using ::testing::TestInfo;
 using ::testing::TestPartResult;
 using ::testing::UnitTest;
 
-cl::sycl::device host, cpu, gpu = cl::sycl::default_selector().select_device();
-std::vector<cl::sycl::device> devices;
+std::vector<cl::sycl::device*> devices;
 
 std::string gtestInFile;
 
@@ -79,6 +78,7 @@ private:
 
 int main(int argc, char** argv) {
     std::set<std::string> unique_devices;
+    std::vector<cl::sycl::device> local_devices;
 
     auto platforms = cl::sycl::platform::get_platforms();
     for (auto plat : platforms) {
@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
                             continue;
 #endif
                         if (!dev.is_accelerator())
-                            devices.push_back(dev);
+                            local_devices.push_back(dev);
                     }
                 }
                 catch (std::exception const& e) {
@@ -119,8 +119,11 @@ int main(int argc, char** argv) {
     }
 
 #ifdef ENABLE_MKLCPU_BACKEND
-    devices.push_back(cl::sycl::device(cl::sycl::host_selector()));
+    local_devices.push_back(cl::sycl::device(cl::sycl::host_selector()));
 #endif
+    for(int i = 0; i < local_devices.size(); i++) {
+        devices.push_back(&(local_devices[i]));
+    }
 
     // start Google Test pickup and output
     testing::InitGoogleTest(&argc, argv);
