@@ -38,13 +38,13 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n,
-         fp alpha, int incx, int lda) {
+int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n, fp alpha,
+         int incx, int lda) {
     // Prepare data.
     vector<fp> x, A_ref, A;
     rand_vector(x, n, incx);
@@ -74,7 +74,7 @@ int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
 
     buffer<fp, 1> x_buffer = make_buffer(x);
     buffer<fp, 1> A_buffer = make_buffer(A);
@@ -128,7 +128,7 @@ int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_
 }
 
 class SyrTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(SyrTests, RealSinglePrecision) {
     float alpha(2.0);

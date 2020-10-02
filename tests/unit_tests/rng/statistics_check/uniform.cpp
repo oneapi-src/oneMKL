@@ -21,13 +21,13 @@
 
 #include <gtest/gtest.h>
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
-class UniformStdTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class UniformStdTests : public ::testing::TestWithParam<cl::sycl::device*> {};
 
-class UniformAccurateTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class UniformAccurateTests : public ::testing::TestWithParam<cl::sycl::device*> {};
 
 TEST_P(UniformStdTests, RealSinglePrecision) {
     rng_test<statistics_test<

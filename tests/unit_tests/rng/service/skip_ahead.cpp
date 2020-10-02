@@ -21,13 +21,13 @@
 
 #include <gtest/gtest.h>
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
-class Philox4x32x10SkipAheadTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class Philox4x32x10SkipAheadTests : public ::testing::TestWithParam<cl::sycl::device*> {};
 
-class Philox4x32x10SkipAheadExTests : public ::testing::TestWithParam<cl::sycl::device> {};
+class Philox4x32x10SkipAheadExTests : public ::testing::TestWithParam<cl::sycl::device*> {};
 
 TEST_P(Philox4x32x10SkipAheadTests, BinaryPrecision) {
     rng_test<skip_ahead_test<oneapi::mkl::rng::philox4x32x10>> test;

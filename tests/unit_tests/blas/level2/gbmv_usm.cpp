@@ -38,12 +38,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa, int m, int n,
+int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa, int m, int n,
          int kl, int ku, fp alpha, fp beta, int incx, int incy, int lda) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
@@ -59,13 +59,13 @@ int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::transpose t
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
     context cxt = main_queue.get_context();
     event done;
     std::vector<event> dependencies;
 
     // Prepare data.
-    auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, dev);
+    auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, *dev);
     vector<fp, decltype(ua)> x(ua), y(ua), A(ua);
     int x_len = outer_dimension(transa, m, n);
     int y_len = inner_dimension(transa, m, n);
@@ -142,7 +142,7 @@ int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::transpose t
 }
 
 class GbmvUsmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(GbmvUsmTests, RealSinglePrecision) {
     float alpha(2.0);

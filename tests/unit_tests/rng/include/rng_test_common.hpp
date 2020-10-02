@@ -78,11 +78,11 @@ class rng_test {
 public:
     // method to call any tests, switch between rt and ct
     template <typename... Args>
-    int operator()(const cl::sycl::device& dev, Args... args) {
+    int operator()(cl::sycl::device* dev, Args... args) {
         // skip tests for devices with NVIDIA_ID
         unsigned int vendor_id =
-            static_cast<unsigned int>(dev.get_info<cl::sycl::info::device::vendor_id>());
-        if (dev.is_gpu() && vendor_id == NVIDIA_ID) {
+            static_cast<unsigned int>(dev->get_info<cl::sycl::info::device::vendor_id>());
+        if (dev->is_gpu() && vendor_id == NVIDIA_ID) {
             return test_skipped;
         }
 
@@ -99,7 +99,7 @@ public:
             }
         };
 
-        cl::sycl::queue queue(dev, exception_handler);
+        cl::sycl::queue queue(*dev, exception_handler);
 
 #ifdef CALL_RT_API
         test_(queue, args...);

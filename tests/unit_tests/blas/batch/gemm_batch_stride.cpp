@@ -39,12 +39,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(const device &dev, oneapi::mkl::layout layout, int64_t batch_size) {
+int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     // Prepare data.
     int64_t m, n, k;
     int64_t lda, ldb, ldc;
@@ -141,7 +141,7 @@ int test(const device &dev, oneapi::mkl::layout layout, int64_t batch_size) {
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
 
     buffer<fp, 1> A_buffer(A.data(), range<1>(A.size()));
     buffer<fp, 1> B_buffer(B.data(), range<1>(B.size()));
@@ -204,7 +204,7 @@ int test(const device &dev, oneapi::mkl::layout layout, int64_t batch_size) {
 }
 
 class GemmBatchStrideTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(GemmBatchStrideTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));

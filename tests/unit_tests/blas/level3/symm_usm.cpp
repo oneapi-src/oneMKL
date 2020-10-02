@@ -38,12 +38,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
+int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
          oneapi::mkl::uplo upper_lower, int m, int n, int lda, int ldb, int ldc, fp alpha,
          fp beta) {
     // Catch asynchronous exceptions.
@@ -60,13 +60,13 @@ int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::side left_r
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
     context cxt = main_queue.get_context();
     event done;
     std::vector<event> dependencies;
 
     // Prepare data.
-    auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, dev);
+    auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, *dev);
     vector<fp, decltype(ua)> A(ua), B(ua), C(ua);
     if (left_right == oneapi::mkl::side::left)
         rand_matrix(A, layout, oneapi::mkl::transpose::nontrans, m, m, lda);
@@ -143,7 +143,7 @@ int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::side left_r
 }
 
 class SymmUsmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(SymmUsmTests, RealSinglePrecision) {
     float alpha(2.0);

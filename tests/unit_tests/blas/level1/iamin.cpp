@@ -37,12 +37,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(const device& dev, oneapi::mkl::layout layout, int N, int incx) {
+int test(device* dev, oneapi::mkl::layout layout, int N, int incx) {
     // Prepare data.
     vector<fp> x;
     int64_t result = -1, result_ref = -1;
@@ -70,7 +70,7 @@ int test(const device& dev, oneapi::mkl::layout layout, int N, int incx) {
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
 
     buffer<fp, 1> x_buffer = make_buffer(x);
     buffer<int64_t, 1> result_buffer(&result, range<1>(1));
@@ -124,7 +124,7 @@ int test(const device& dev, oneapi::mkl::layout layout, int N, int incx) {
 }
 
 class IaminTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(IaminTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2));

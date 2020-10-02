@@ -38,13 +38,13 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device *> devices;
 
 namespace {
 
 template <typename fp>
-int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n,
-         fp alpha, int incx, int incy, int lda) {
+int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n, fp alpha,
+         int incx, int incy, int lda) {
     // Prepare data.
     vector<fp> x, y, A_ref, A;
 
@@ -77,7 +77,7 @@ int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
 
     buffer<fp, 1> x_buffer = make_buffer(x);
     buffer<fp, 1> y_buffer = make_buffer(y);
@@ -134,7 +134,7 @@ int test(const device &dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_
 }
 
 class Her2Tests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(Her2Tests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);

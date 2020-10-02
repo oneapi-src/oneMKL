@@ -39,12 +39,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
 template <typename fp, typename fp_scalar>
-int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
+int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
          oneapi::mkl::transpose trans, int n, int k, int lda, int ldc, fp_scalar alpha,
          fp_scalar beta) {
     // Prepare data.
@@ -79,7 +79,7 @@ int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
 
     buffer<fp, 1> A_buffer(A.data(), range<1>(A.size()));
     buffer<fp, 1> C_buffer(C.data(), range<1>(C.size()));
@@ -136,7 +136,7 @@ int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_
 }
 
 class HerkTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(HerkTests, ComplexSinglePrecision) {
     float alpha(2.0);

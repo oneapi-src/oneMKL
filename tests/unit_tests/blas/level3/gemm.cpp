@@ -39,12 +39,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
 template <typename Ta, typename Tc>
-int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
+int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
          oneapi::mkl::transpose transb, int m, int n, int k, int lda, int ldb, int ldc, Tc alpha,
          Tc beta) {
     // Prepare data.
@@ -84,7 +84,7 @@ int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::transpose t
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
 
     buffer<Ta, 1> A_buffer(A.data(), range<1>(A.size()));
     buffer<Ta, 1> B_buffer(B.data(), range<1>(B.size()));
@@ -143,7 +143,7 @@ int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::transpose t
 }
 
 class GemmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(GemmTests, HalfHalfFloatPrecision) {
     float alpha(2.0);

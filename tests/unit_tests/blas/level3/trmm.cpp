@@ -39,12 +39,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
+int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
          oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose transa,
          oneapi::mkl::diag unit_nonunit, int m, int n, int lda, int ldb, fp alpha) {
     // Prepare data.
@@ -84,7 +84,7 @@ int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::side left_r
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
 
     buffer<fp, 1> A_buffer(A.data(), range<1>(A.size()));
     buffer<fp, 1> B_buffer(B.data(), range<1>(B.size()));
@@ -143,7 +143,7 @@ int test(const device& dev, oneapi::mkl::layout layout, oneapi::mkl::side left_r
 }
 
 class TrmmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(TrmmTests, RealSinglePrecision) {
     float alpha(2.0);

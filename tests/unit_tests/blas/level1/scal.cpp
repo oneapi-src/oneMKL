@@ -37,12 +37,12 @@
 using namespace cl::sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device> devices;
+extern std::vector<cl::sycl::device*> devices;
 
 namespace {
 
 template <typename fp, typename fp_scalar>
-int test(const device& dev, oneapi::mkl::layout layout, int N, int incx, fp_scalar alpha) {
+int test(device* dev, oneapi::mkl::layout layout, int N, int incx, fp_scalar alpha) {
     // Prepare data.
     vector<fp> x, x_ref;
 
@@ -73,7 +73,7 @@ int test(const device& dev, oneapi::mkl::layout layout, int N, int incx, fp_scal
         }
     };
 
-    queue main_queue(dev, exception_handler);
+    queue main_queue(*dev, exception_handler);
 
     buffer<fp, 1> x_buffer = make_buffer(x);
 
@@ -124,7 +124,7 @@ int test(const device& dev, oneapi::mkl::layout layout, int N, int incx, fp_scal
 }
 
 class ScalTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(ScalTests, RealSinglePrecision) {
     float alpha(2.0);
