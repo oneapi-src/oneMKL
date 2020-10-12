@@ -98,22 +98,26 @@ $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl_blas_mklcpu –lonemkl_blas_c
 
 ### Supported Configurations:
 
-Supported domains: BLAS
+Supported domains: BLAS, RNG
 
 #### Linux*
 
- Backend | Library | Supported Link Type
- :------| :-------| :------------------
- Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
- Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
- NVIDIA GPU | NVIDIA cuBLAS | Dynamic, Static
+ Domain | Backend | Library | Supported Link Type
+ :------| :------| :-------| :------------------
+ BLAS   | Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+   ^    | Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+   ^    | NVIDIA GPU | NVIDIA cuBLAS | Dynamic, Static
+ RNG    | Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+   ^    | Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
 
 #### Windows*
 
- Backend | Library | Supported Link Type
- :------| :-------| :------------------
- Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
- Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+ Domain | Backend | Library | Supported Link Type
+ :------| :------| :-------| :------------------
+ BLAS   | Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+   ^    | Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+ RNG    | Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+   ^    | Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
   
 ---
 
