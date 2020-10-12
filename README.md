@@ -138,13 +138,6 @@ Supported domains: BLAS, RNG
 
 #### Windows*
 
- |Domain | Backend | Library | Supported Link Type
- |-------|------|-------|------------------
- | BLAS  | Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
- |       | Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
- | RNG   | Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
- |       | Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
- 
  <table>
     <thead>
         <tr align="center" >
