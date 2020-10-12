@@ -102,23 +102,79 @@ Supported domains: BLAS, RNG
 
 #### Linux*
 
- Domain | Backend | Library | Supported Link Type
- :------| :------| :-------| :------------------
- BLAS   | Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
-   ^    | Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
-   ^    | NVIDIA GPU | NVIDIA cuBLAS | Dynamic, Static
- RNG    | Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
-   ^    | Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+<table>
+    <thead>
+        <tr align="center" >
+            <th>Domain</th>
+            <th>Backend</th>
+            <th>Library</th>
+            <th>Supported Link Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=3 align="center">BLAS</td>
+            <td align="center">Intel CPU</td>
+            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td rowspan=5 align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">Intel GPU</td>
+        </tr>
+        <tr>
+            <td align="center">NVIDIA GPU</td>
+            <td align="center">NVIDIA cuBLAS</td>
+        </tr>
+        <tr>
+            <td rowspan=2 align="center">RNG</td>
+            <td align="center">Intel CPU</td>
+            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+        </tr>
+        <tr>
+            <td align="center">Intel GPU</td>
+        </tr>
+    </tbody>
+</table>
 
 #### Windows*
 
- Domain | Backend | Library | Supported Link Type
- :------| :------| :-------| :------------------
- BLAS   | Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
-   ^    | Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
- RNG    | Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
-   ^    | Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
-  
+ |Domain | Backend | Library | Supported Link Type
+ |-------|------|-------|------------------
+ | BLAS  | Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+ |       | Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+ | RNG   | Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+ |       | Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+ 
+ <table>
+    <thead>
+        <tr align="center" >
+            <th>Domain</th>
+            <th>Backend</th>
+            <th>Library</th>
+            <th>Supported Link Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=2 align="center">BLAS</td>
+            <td align="center">Intel CPU</td>
+            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td rowspan=4 align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">Intel GPU</td>
+        </tr>
+        <tr>
+            <td rowspan=2 align="center">RNG</td>
+            <td align="center">Intel CPU</td>
+            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+        </tr>
+        <tr>
+            <td align="center">Intel GPU</td>
+        </tr>
+    </tbody>
+</table>
+
 ---
 
 ## Support and Requirements
