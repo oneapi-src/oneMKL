@@ -158,12 +158,9 @@ Supported domains: BLAS, RNG
             <td align="center">Intel GPU</td>
         </tr>
         <tr>
-            <td rowspan=2 align="center">RNG</td>
+            <td align="center">RNG</td>
             <td align="center">Intel CPU</td>
-            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
-        </tr>
-        <tr>
-            <td align="center">Intel GPU</td>
+            <td align="center">Intel(R) oneAPI Math Kernel Library</td>
         </tr>
     </tbody>
 </table>
