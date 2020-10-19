@@ -98,14 +98,12 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
 #else
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::tbmv,
-                            (main_queue, upper_lower, transa, unit_nonunit, n, k, A_buffer, lda,
-                             x_buffer, incx));
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::tbmv, upper_lower,
+                                   transa, unit_nonunit, n, k, A_buffer, lda, x_buffer, incx);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::tbmv,
-                            (main_queue, upper_lower, transa, unit_nonunit, n, k, A_buffer, lda,
-                             x_buffer, incx));
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::tbmv, upper_lower,
+                                   transa, unit_nonunit, n, k, A_buffer, lda, x_buffer, incx);
                 break;
             default: break;
         }

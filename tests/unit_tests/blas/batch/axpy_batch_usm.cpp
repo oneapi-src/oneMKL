@@ -169,14 +169,14 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
 #else
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::axpy_batch,
-                            (main_queue, n, alpha, (const fp **)x_array, incx, y_array, incy,
-                             group_count, group_size, dependencies));
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::axpy_batch,
+                            n, alpha, (const fp **)x_array, incx, y_array, incy,
+                             group_count, group_size, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::axpy_batch,
-                            (main_queue, n, alpha, (const fp **)x_array, incx, y_array, incy,
-                             group_count, group_size, dependencies));
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::axpy_batch,
+                            n, alpha, (const fp **)x_array, incx, y_array, incy,
+                             group_count, group_size, dependencies);
                 break;
             default: break;
         }

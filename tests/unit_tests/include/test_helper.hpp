@@ -48,61 +48,43 @@
             EXPECT_EQ(res, test_passed); \
     } while (0);
 
+#if defined(ENABLE_MKLCPU_BACKEND) || defined(ENABLE_NETLIB_BACKEND)
 #ifdef ENABLE_MKLCPU_BACKEND
-#define TEST_RUN_INTELCPU(q, func, args) func<oneapi::mkl::backend::mklcpu> args
+#define TEST_RUN_INTELCPU_SELECT(q, func, ...) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ q }, __VA_ARGS__)
 #else
-#define TEST_RUN_INTELCPU(q, func, args)
+#define TEST_RUN_INTELCPU_SELECT(q, func, ...) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::netlib>{ q }, __VA_ARGS__)
+#endif
+#else
+#define TEST_RUN_INTELCPU_SELECT(q, func, ...)
 #endif
 
 #ifdef ENABLE_MKLGPU_BACKEND
-#define TEST_RUN_INTELGPU(q, func, args) func<oneapi::mkl::backend::mklgpu> args
+#define TEST_RUN_INTELGPU_SELECT(q, func, ...) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklgpu>{ q }, __VA_ARGS__)
 #else
-#define TEST_RUN_INTELGPU(q, func, args)
+#define TEST_RUN_INTELGPU_SELECT(q, func, ...)
 #endif
 
 #ifdef ENABLE_CUBLAS_BACKEND
-#define TEST_RUN_NVIDIAGPU(q, func, args) func<oneapi::mkl::backend::cublas> args
+#define TEST_RUN_NVIDIAGPU_SELECT(q, func, ...) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas>{ q }, __VA_ARGS__)
 #else
-#define TEST_RUN_NVIDIAGPU(q, func, args)
+#define TEST_RUN_NVIDIAGPU_SELECT(q, func, ...)
 #endif
 
-#define TEST_RUN_CT(q, func, args)                                             \
+#define TEST_RUN_CT_SELECT(q, func, ...)                                       \
     do {                                                                       \
         if (q.is_host() || q.get_device().is_cpu())                            \
-            TEST_RUN_INTELCPU(q, func, args);                                  \
+            TEST_RUN_INTELCPU_SELECT(q, func, __VA_ARGS__);                    \
         else if (q.get_device().is_gpu()) {                                    \
             unsigned int vendor_id = static_cast<unsigned int>(                \
                 q.get_device().get_info<cl::sycl::info::device::vendor_id>()); \
             if (vendor_id == INTEL_ID)                                         \
-                TEST_RUN_INTELGPU(q, func, args);                              \
+                TEST_RUN_INTELGPU_SELECT(q, func, __VA_ARGS__);                \
             else if (vendor_id == NVIDIA_ID)                                   \
-                TEST_RUN_NVIDIAGPU(q, func, args);                             \
-        }                                                                      \
-    } while (0);
-
-#ifdef ENABLE_MKLCPU_BACKEND
-#define TEST_RUN_INTELCPU_SELECT(q, func, args) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ q }, args)
-#else
-#define TEST_RUN_INTELCPU_SELECT(q, func, args)
-#endif
-
-#ifdef ENABLE_MKLGPU_BACKEND
-#define TEST_RUN_INTELGPU_SELECT(q, func, args) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklgpu>{ q }, args)
-#else
-#define TEST_RUN_INTELGPU_SELECT(q, func, args)
-#endif
-
-#define TEST_RUN_CT_SELECT(q, func, args)                                      \
-    do {                                                                       \
-        if (q.is_host() || q.get_device().is_cpu())                            \
-            TEST_RUN_INTELCPU_SELECT(q, func, args);                           \
-        else if (q.get_device().is_gpu()) {                                    \
-            unsigned int vendor_id = static_cast<unsigned int>(                \
-                q.get_device().get_info<cl::sycl::info::device::vendor_id>()); \
-            if (vendor_id == INTEL_ID)                                         \
-                TEST_RUN_INTELGPU_SELECT(q, func, args);                       \
+                TEST_RUN_NVIDIAGPU_SELECT(q, func, __VA_ARGS__);               \
         }                                                                      \
     } while (0);
 

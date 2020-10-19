@@ -108,14 +108,10 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
 #else
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT(main_queue, oneapi::mkl::blas::column_major::gemm,
-                            (main_queue, transa, transb, m, n, k, alpha, A_buffer, lda, B_buffer,
-                             ldb, beta, C_buffer, ldc));
+                  TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::gemm, transa, transb, m, n, k, alpha, A_buffer, lda, B_buffer, ldb, beta, C_buffer, ldc);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT(main_queue, oneapi::mkl::blas::row_major::gemm,
-                            (main_queue, transa, transb, m, n, k, alpha, A_buffer, lda, B_buffer,
-                             ldb, beta, C_buffer, ldc));
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::gemm, transa, transb, m, n, k, alpha, A_buffer, lda, B_buffer, ldb, beta, C_buffer, ldc);
                 break;
             default: break;
         }

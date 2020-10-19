@@ -242,18 +242,18 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
 #else
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT(
+                TEST_RUN_CT_SELECT(
                     main_queue, oneapi::mkl::blas::column_major::gemm_batch,
-                    (main_queue, &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
+                    &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
                      (const fp **)&a_array[0], &lda[0], (const fp **)&b_array[0], &ldb[0], &beta[0],
-                     &c_array[0], &ldc[0], group_count, &group_size[0], dependencies));
+                     &c_array[0], &ldc[0], group_count, &group_size[0], dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT(
+                TEST_RUN_CT_SELECT(
                     main_queue, oneapi::mkl::blas::row_major::gemm_batch,
-                    (main_queue, &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
+                    &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
                      (const fp **)&a_array[0], &lda[0], (const fp **)&b_array[0], &ldb[0], &beta[0],
-                     &c_array[0], &ldc[0], group_count, &group_size[0], dependencies));
+                     &c_array[0], &ldc[0], group_count, &group_size[0], dependencies);
                 break;
             default: break;
         }

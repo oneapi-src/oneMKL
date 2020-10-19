@@ -29,8 +29,6 @@ namespace column_major {
 
 // Buffer APIs
 
-// BLAS-like extensions
-
 void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
            std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<float, 1> &a,
            std::int64_t lda, cl::sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
@@ -73,8 +71,6 @@ void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offse
 
 // USM APIs
 
-// BLAS-like extensions
-
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                       int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
                       const float *b, int64_t ldb, float beta, float *c, int64_t ldc,
@@ -109,8 +105,6 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
 namespace row_major {
 
 // Buffer APIs
-
-// BLAS-like extensions
 
 void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
            std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<float, 1> &a,
@@ -153,8 +147,6 @@ void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offse
 }
 
 // USM APIs
-
-// BLAS-like extensions
 
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                       int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
