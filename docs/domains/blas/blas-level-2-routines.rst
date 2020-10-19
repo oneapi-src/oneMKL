@@ -6,6 +6,7 @@ BLAS Level 2 Routines
 
 .. container::
 
+
    BLAS Level 2 includes routines which perform
    matrix-vector operations as described in the following table. 
 
@@ -18,55 +19,55 @@ BLAS Level 2 Routines
 
          * -     Routines
            -     Description  
-         * -     \ `gbmv <gbmv.html>`__\   
+         * -     :ref:`onemkl_blas_gbmv`   
            -     Matrix-vector product using a general band matrix         
-         * -     \ `gemv <gemv.html>`__\   
+         * -     :ref:`onemkl_blas_gemv`   
            -     Matrix-vector product using a general matrix     
-         * -     \ `ger <ger.html>`__\   
+         * -     :ref:`onemkl_blas_ger`   
            -     Rank-1 update of a general matrix     
-         * -     \ `gerc <gerc.html>`__\   
+         * -     :ref:`onemkl_blas_gerc`   
            -     Rank-1 update of a conjugated general matrix     
-         * -     \ `geru <geru.html>`__\   
+         * -     :ref:`onemkl_blas_geru`   
            -     Rank-1 update of a general matrix, unconjugated          
-         * -     \ `hbmv <hbmv.html>`__\   
+         * -     :ref:`onemkl_blas_hbmv`   
            -     Matrix-vector product using a Hermitian band matrix          
-         * -     \ `hemv <hemv.html>`__\
+         * -     :ref:`onemkl_blas_hemv`
            -     Matrix-vector product using a Hermitian matrix          
-         * -     \ `her <her.html>`__\   
+         * -     :ref:`onemkl_blas_her`   
            -     Rank-1 update of a Hermitian matrix     
-         * -     \ `her2 <her2.html>`__\   
+         * -     :ref:`onemkl_blas_her2`   
            -     Rank-2 update of a Hermitian matrix     
-         * -     \ `hpmv <hpmv.html>`__\   
+         * -     :ref:`onemkl_blas_hpmv`   
            -     Matrix-vector product using a Hermitian packed matrix          
-         * -     \ `hpr <hpr.html>`__\   
+         * -     :ref:`onemkl_blas_hpr`   
            -     Rank-1 update of a Hermitian packed matrix     
-         * -     \ `hpr2 <hpr2.html>`__\   
+         * -     :ref:`onemkl_blas_hpr2`   
            -     Rank-2 update of a Hermitian packed matrix     
-         * -     \ `sbmv <sbmv.html>`__\   
+         * -     :ref:`onemkl_blas_sbmv`   
            -     Matrix-vector product using symmetric band matrix          
-         * -     \ `spmv <spmv.html>`__\   
+         * -     :ref:`onemkl_blas_spmv`   
            -     Matrix-vector product using a symmetric packed matrix          
-         * -     \ `spr <spr.html>`__\   
+         * -     :ref:`onemkl_blas_spr`   
            -     Rank-1 update of a symmetric packed matrix     
-         * -     \ `spr2 <spr2.html>`__\   
+         * -     :ref:`onemkl_blas_spr2`   
            -     Rank-2 update of a symmetric packed matrix     
-         * -     \ `symv <symv.html>`__\   
+         * -     :ref:`onemkl_blas_symv`   
            -     Matrix-vector product using a symmetric matrix          
-         * -     \ `syr <syr.html>`__\   
+         * -     :ref:`onemkl_blas_syr`   
            -     Rank-1 update of a symmetric matrix     
-         * -     \ `syr2 <syr2.html>`__\   
+         * -     :ref:`onemkl_blas_syr2`   
            -     Rank-2 update of a symmetric matrix     
-         * -     \ `tbmv <tbmv.html>`__\   
+         * -     :ref:`onemkl_blas_tbmv`   
            -     Matrix-vector product using a triangular band matrix          
-         * -     \ `tbsv <tbsv.html>`__\   
+         * -     :ref:`onemkl_blas_tbsv`   
            -     Solution of a linear system of equations with a triangular band matrix    
-         * -     \ `tpmv <tpmv.html>`__\   
+         * -     :ref:`onemkl_blas_tpmv`   
            -     Matrix-vector product using a triangular packed matrix          
-         * -     \ `tpsv <tpsv.html>`__\   
+         * -     :ref:`onemkl_blas_tpsv`   
            -     Solution of a linear system of equations with a triangular packed matrix    
-         * -     \ `trmv <trmv.html>`__\   
+         * -     :ref:`onemkl_blas_trmv`   
            -     Matrix-vector product using a triangular matrix          
-         * -     \ `trsv <trsv.html>`__\   
+         * -     :ref:`onemkl_blas_trsv`   
            -     Solution of a linear system of equations with a triangular matrix    
 
 

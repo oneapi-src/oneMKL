@@ -3,221 +3,197 @@
 tpmv
 ====
 
+Computes a matrix-vector product using a triangular packed matrix.
 
-.. container::
+.. _onemkl_blas_tpmv_description:
 
+.. rubric:: Description
 
-   Computes a matrix-vector product using a triangular packed matrix.
+The ``tpmv`` routines compute a matrix-vector product with a triangular
+packed matrix. The operation is defined as:
 
+.. math::
 
+      x \leftarrow op(A)*x
 
-      ``tpmv`` supports the following precisions.
+where:
 
+op(``A``) is one of op(``A``) = ``A``, or op(``A``) =
+``A``\ :sup:`T`, or op(``A``) = ``A``\ :sup:`H`,
 
-      .. list-table:: 
-         :header-rows: 1
+``A`` is an ``n``-by-``n`` unit or non-unit, upper or lower
+triangular band matrix, supplied in packed form,
 
-         * -  T 
-         * -  ``float`` 
-         * -  ``double`` 
-         * -  ``std::complex<float>`` 
-         * -  ``std::complex<double>`` 
+``x`` is a vector of length ``n``.
 
+``tpmv`` supports the following precisions.
 
+   .. list-table:: 
+      :header-rows: 1
 
+      * -  T 
+      * -  ``float`` 
+      * -  ``double`` 
+      * -  ``std::complex<float>`` 
+      * -  ``std::complex<double>`` 
 
-.. container:: section
-
-
-   .. rubric:: Description
-      :class: sectiontitle
-
-
-   The ``tpmv`` routines compute a matrix-vector product with a triangular
-   packed matrix. The operation is defined as
-
-
-      x <- op(A)*x
-
-
-   where:
-
-
-   op(``A``) is one of op(``A``) = ``A``, or op(``A``) =
-   ``A``\ :sup:`T`, or op(``A``) = ``A``\ :sup:`H`,
-
-
-   ``A`` is an ``n``-by-``n`` unit or non-unit, upper or lower
-   triangular band matrix, supplied in packed form,
-
-
-   ``x`` is a vector of length ``n``.
-
+.. _onemkl_blas_tpmv_buffer:
 
 tpmv (Buffer Version)
 ---------------------
 
-.. container::
+.. rubric:: Syntax
 
-   .. container:: section
+.. code-block:: cpp
 
+   namespace oneapi::mkl::blas::column_major {
+       void tpmv(sycl::queue &queue,
+                 onemkl::uplo upper_lower,
+                 onemkl::transpose trans,
+                 onemkl::diag unit_nonunit,
+                 std::int64_t n,
+                 sycl::buffer<T,1> &a,
+                 sycl::buffer<T,1> &x,
+                 std::int64_t incx)
+   }
+.. code-block:: cpp
 
-      .. rubric:: Syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void oneapi::mkl::blas::tpmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_nonunit, std::int64_t n, sycl::buffer<T,1> &a, sycl::buffer<T,1> &x, std::int64_t incx)
+   namespace oneapi::mkl::blas::row_major {
+       void tpmv(sycl::queue &queue,
+                 onemkl::uplo upper_lower,
+                 onemkl::transpose trans,
+                 onemkl::diag unit_nonunit,
+                 std::int64_t n,
+                 sycl::buffer<T,1> &a,
+                 sycl::buffer<T,1> &x,
+                 std::int64_t incx)
+   }
 
 .. container:: section
 
-
    .. rubric:: Input Parameters
-      :class: sectiontitle
-
 
    queue
       The queue where the routine should be executed.
 
-
    upper_lower
       Specifies whether ``A`` is upper or lower triangular. See :ref:`onemkl_datatypes` for more details.
-
 
    trans
       Specifies op(``A``), the transposition operation applied to ``A``. See :ref:`onemkl_datatypes` for more details.
 
-
    unit_nonunit
       Specifies whether the matrix ``A`` is unit triangular or not. See :ref:`onemkl_datatypes` for more details.
-
 
    n
       Numbers of rows and columns of ``A``. Must be at least zero.
 
-
    a
       Buffer holding input matrix ``A``. Must have size at least
-      (``n``\ \*(``n``\ +1))/2. See `Matrix and Vector
-      Storage <../matrix-storage.html>`__ for
+      (``n``\ \*(``n``\ +1))/2. See :ref:`matrix-storage` for
       more details.
-
 
    x
       Buffer holding input vector ``x``. The buffer must be of size at
-      least (1 + (``n`` - 1)*abs(``incx``)). See `Matrix and Vector
-      Storage <../matrix-storage.html>`__ for
+      least (1 + (``n`` - 1)*abs(``incx``)). See :ref:`matrix-storage` for
       more details.
-
 
    incx
       Stride of vector ``x``.
 
-
 .. container:: section
 
-
    .. rubric:: Output Parameters
-      :class: sectiontitle
-
 
    x
       Buffer holding the updated vector ``x``.
 
 
+.. _onemkl_blas_tpmv_usm:
+
 tpmv (USM Version)
 ------------------
+      
+.. rubric:: Syntax
 
-.. container::
+.. code-block:: cpp
 
-   .. container:: section
+   namespace oneapi::mkl::blas::column_major {
+       sycl::event tpmv(sycl::queue &queue,
+                        onemkl::uplo upper_lower,
+                        onemkl::transpose trans,
+                        onemkl::diag unit_nonunit,
+                        std::int64_t n,
+                        const T *a,
+                        T *x,
+                        std::int64_t incx,
+                        const sycl::vector_class<sycl::event> &dependencies = {})
+   }
+.. code-block:: cpp
 
+   namespace oneapi::mkl::blas::row_major {
+       sycl::event tpmv(sycl::queue &queue,
+                        onemkl::uplo upper_lower,
+                        onemkl::transpose trans,
+                        onemkl::diag unit_nonunit,
+                        std::int64_t n,
+                        const T *a,
+                        T *x,
+                        std::int64_t incx,
+                        const sycl::vector_class<sycl::event> &dependencies = {})
+   }
 
-      .. rubric:: Syntax
-         :class: sectiontitle
+.. container:: section
 
+   .. rubric:: Input Parameters
 
-      .. container:: dlsyntaxpara
+   queue
+      The queue where the routine should be executed.
 
+   upper_lower
+      Specifies whether ``A`` is upper or lower triangular. See :ref:`onemkl_datatypes` for more details.
 
-         .. cpp:function::  sycl::event oneapi::mkl::blas::tpmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_nonunit, std::int64_t n, const T *a, T *x, std::int64_t incx, const sycl::vector_class<sycl::event> &dependencies = {})
-   .. container:: section
+   trans
+      Specifies op(``A``), the transposition operation applied to
+      ``A``. See :ref:`onemkl_datatypes` for more details.
 
+   unit_nonunit
+      Specifies whether the matrix ``A`` is unit triangular or not. See :ref:`onemkl_datatypes` for more details.
 
-      .. rubric:: Input Parameters
-         :class: sectiontitle
+   n
+      Numbers of rows and columns of ``A``. Must be at least zero.
 
+   a
+      Pointer to input matrix ``A``. The array holding input matrix
+      ``A`` must have size at least (``n``\ \*(``n``\ +1))/2. See
+      :ref:`matrix-storage` for
+      more details.
 
-      queue
-         The queue where the routine should be executed.
+   x
+      Pointer to input vector ``x``. The array holding input vector
+      ``x`` must be of size at least (1 + (``n`` - 1)*abs(``incx``)).
+      See :ref:`matrix-storage` for
+      more details.
 
+   incx
+      Stride of vector ``x``.
 
-      upper_lower
-         Specifies whether ``A`` is upper or lower triangular. See :ref:`onemkl_datatypes` for more details.
+   dependencies
+      List of events to wait for before starting computation, if any.
+      If omitted, defaults to no dependencies.
 
+.. container:: section
 
-      trans
-         Specifies op(``A``), the transposition operation applied to
-         ``A``. See :ref:`onemkl_datatypes` for more details.
+   .. rubric:: Output Parameters
 
+   x
+      Pointer to the updated vector ``x``.
 
-      unit_nonunit
-         Specifies whether the matrix ``A`` is unit triangular or not. See :ref:`onemkl_datatypes` for more details.
+.. container:: section
 
+   .. rubric:: Return Values
 
-      n
-         Numbers of rows and columns of ``A``. Must be at least zero.
-
-
-      a
-         Pointer to input matrix ``A``. The array holding input matrix
-         ``A`` must have size at least (``n``\ \*(``n``\ +1))/2. See
-         `Matrix and Vector
-         Storage <../matrix-storage.html>`__ for
-         more details.
-
-
-      x
-         Pointer to input vector ``x``. The array holding input vector
-         ``x`` must be of size at least (1 + (``n`` - 1)*abs(``incx``)).
-         See `Matrix and Vector
-         Storage <../matrix-storage.html>`__ for
-         more details.
-
-
-      incx
-         Stride of vector ``x``.
-
-
-      dependencies
-         List of events to wait for before starting computation, if any.
-         If omitted, defaults to no dependencies.
-
-
-   .. container:: section
-
-
-      .. rubric:: Output Parameters
-         :class: sectiontitle
-
-
-      x
-         Pointer to the updated vector ``x``.
-
-
-   .. container:: section
-
-
-      .. rubric:: Return Values
-         :class: sectiontitle
+   Output event to wait on to ensure computation is complete.
 
 
-      Output event to wait on to ensure computation is complete.
-
-
-.. container:: familylinks
-
-
-   .. container:: parentlink
-
-
-      **Parent topic:** :ref:`blas-level-2-routines`
+   **Parent topic:** :ref:`blas-level-2-routines`

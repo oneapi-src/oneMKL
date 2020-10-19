@@ -3,311 +3,395 @@
 her2k
 =====
 
+Performs a Hermitian rank-2k update.
 
-.. container::
+.. _onemkl_blas_her2k_description:
 
+.. rubric:: Description
 
-   Performs a Hermitian rank-2k update.
+The ``her2k`` routines perform a rank-2k update of an ``n`` x ``n``
+Hermitian matrix ``C`` by general matrices ``A`` and ``B``. 
 
+If ``trans`` = ``transpose::nontrans``, the operation is defined as:
 
+.. math::
 
-      ``her2k`` supports the following precisions:
+      C \leftarrow alpha*A*B^H + conjg(alpha)*B*A^H + beta*C
 
+where ``A`` is ``n`` x ``k`` and ``B`` is ``k`` x ``n``.
 
-      .. list-table:: 
-         :header-rows: 1
+If ``trans`` = ``transpose::conjtrans``, the operation is defined as:
 
-         * -  T 
-           -  T_real 
-         * -  ``std::complex<float>`` 
-           -  ``float`` 
-         * -  ``std::complex<double>`` 
-           -  ``double`` 
+.. math::
 
+      C \leftarrow alpha*B*A^H + conjg(alpha)*A*B^H + beta*C
 
+where ``A`` is ``k`` x ``n`` and ``B`` is ``n`` x ``k``.
 
+In both cases:
 
-.. container:: section
+``alpha`` is a complex scalar and ``beta`` is a real scalar.
 
+``C`` is a Hermitian matrix and ``A`` , ``B`` are general matrices.
 
-   .. rubric:: Description
-      :class: sectiontitle
+The inner dimension of both matrix multiplications is ``k``.
 
+``her2k`` supports the following precisions:
 
-   The ``her2k`` routines perform a rank-2k update of an ``n`` x ``n``
-   Hermitian matrix ``C`` by general matrices ``A`` and ``B``. If
-   ``trans`` = ``transpose::nontrans``. The operation is defined as
+   .. list-table:: 
+      :header-rows: 1
 
+      * -  T 
+        -  T_real 
+      * -  ``std::complex<float>`` 
+        -  ``float`` 
+      * -  ``std::complex<double>`` 
+        -  ``double`` 
 
-      C <- alpha*A*B :sup:`H` + conjg(alpha)*B*A :sup:`H` + beta*C
-
-
-   where ``A`` is ``n`` x ``k`` and ``B`` is ``k`` x ``n``.
-
-
-   If ``trans`` = ``transpose::conjtrans``, the operation is defined as:
-
-
-      C <- alpha*B*A :sup:`H` + conjg(alpha)*A*B :sup:`H` + beta*C
-
-
-   where ``A`` is ``k`` x ``n`` and ``B`` is ``n`` x ``k``.
-
-
-   In both cases:
-
-
-   ``alpha`` is a complex scalar and ``beta`` is a real scalar.
-
-
-   ``C`` is a Hermitian matrix and ``A, B`` are general matrices.
-
-
-   The inner dimension of both matrix multiplications is ``k``.
-
+.. _onemkl_blas_her2k_buffer:
 
 her2k (Buffer Version)
 ----------------------
 
-.. container::
+.. rubric:: Syntax
 
-   .. container:: section
+.. code-block:: cpp
 
+   namespace oneapi::mkl::blas::column_major {
+       void her2k(sycl::queue &queue,
+                  onemkl::uplo upper_lower,
+                  onemkl::transpose trans,
+                  std::int64_t n,
+                  std::int64_t k,
+                  T alpha,
+                  sycl::buffer<T,1> &a,
+                  std::int64_t lda,
+                  sycl::buffer<T,1> &b,
+                  std::int64_t ldb,
+                  T_real beta,
+                  sycl::buffer<T,1> &c,
+                  std::int64_t ldc)
+   }
+.. code-block:: cpp
 
-      .. rubric:: Syntax
-         :class: sectiontitle
+   namespace oneapi::mkl::blas::row_major {
+       void her2k(sycl::queue &queue,
+                  onemkl::uplo upper_lower,
+                  onemkl::transpose trans,
+                  std::int64_t n,
+                  std::int64_t k,
+                  T alpha,
+                  sycl::buffer<T,1> &a,
+                  std::int64_t lda,
+                  sycl::buffer<T,1> &b,
+                  std::int64_t ldb,
+                  T_real beta,
+                  sycl::buffer<T,1> &c,
+                  std::int64_t ldc)
+   }
 
-
-      .. cpp:function:: void oneapi::mkl::blas::her2k(sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k, T alpha, sycl::buffer<T,1> &a, std::int64_t lda, sycl::buffer<T,1> &b, std::int64_t ldb, T_real beta, sycl::buffer<T,1> &c, std::int64_t ldc)
 .. container:: section
 
-
    .. rubric:: Input Parameters
-      :class: sectiontitle
-
 
    queue
       The queue where the routine should be executed.
 
-
    upper_lower
       Specifies whether ``A``'s data is stored in its upper or lower
       triangle. See :ref:`onemkl_datatypes` for more details.
-
-
 
    trans
       Specifies the operation to apply, as described above. Supported
       operations are ``transpose::nontrans`` and
       ``transpose::conjtrans``.
 
-
    n
       The number of rows and columns in ``C``. The value of ``n`` must
       be at least zero.
-
 
    k
       The inner dimension of matrix multiplications. The value of ``k``
       must be at least equal to zero.
 
-
    alpha
-      Complex scaling factor for the rank-2\ ``k`` update.
-
+      Complex scaling factor for the rank-2k update.
 
    a
-      Buffer holding input matrix ``A``. If ``trans`` =
-      ``transpose::nontrans``, ``A`` is an ``n``-by-``k`` matrix so the
-      array ``a`` must have size at least ``lda``\ \*\ ``k``. Otherwise,
-      ``A`` is an ``k``-by-``n`` matrix so the array ``a`` must have
-      size at least ``lda``\ \*\ ``n``. See `Matrix and Vector
-      Storage <../matrix-storage.html>`__ for
-      more details.
+      Buffer holding input matrix ``A``.
 
+      .. list-table::
+         :header-rows: 1
+
+         * -
+           - ``trans`` = ``transpose::nontrans``
+           - ``trans`` = ``transpose::trans`` or ``transpose::conjtrans``
+         * - Column major
+           - ``A`` is an ``n``-by-``k`` matrix so the array ``a``
+             must have size at least ``lda``\ \*\ ``k``.
+           - ``A`` is an ``k``-by-``n`` matrix so the array ``a``
+             must have size at least ``lda``\ \*\ ``n``
+         * - Row major
+           - ``A`` is an ``n``-by-``k`` matrix so the array ``a``
+             must have size at least ``lda``\ \*\ ``n``.
+           - ``A`` is an ``k``-by-``n`` matrix so the array ``a``
+             must have size at least ``lda``\ \*\ ``k``.
+
+      See :ref:`matrix-storage` for
+      more details.
 
    lda
-      Leading dimension of ``A``. Must be at least ``n`` if ``trans`` =
-      ``transpose::nontrans``, and at least ``k`` otherwise. Must be
-      positive.
+      The leading dimension of ``A``. It must be positive.
 
+      .. list-table::
+         :header-rows: 1
 
-   beta
-      Real scaling factor for matrix ``C``.
-
-
+         * -
+           - ``trans`` = ``transpose::nontrans``
+           - ``trans`` = ``transpose::trans`` or ``transpose::conjtrans``
+         * - Column major
+           - ``lda`` must be at least ``n``.
+           - ``lda`` must be at least ``k``.
+         * - Row major
+           - ``lda`` must be at least ``k``.
+           - ``lda`` must be at least ``n``.
+                
    b
-      Buffer holding input matrix ``B``. If ``trans`` =
-      ``transpose::nontrans``, ``B`` is an ``k``-by-``n`` matrix so the
-      array ``b`` must have size at least ``ldb``\ \*\ ``n``. Otherwise,
-      ``B`` is an ``n``-by-``k`` matrix so the array ``b`` must have
-      size at least ``ldb``\ \*\ ``k``. See `Matrix and Vector
-      Storage <../matrix-storage.html>`__ for
-      more details.
+      Buffer holding input matrix ``B``.
 
+      .. list-table::
+         :header-rows: 1
+
+         * -
+           - ``trans`` = ``transpose::nontrans``
+           - ``trans`` = ``transpose::trans`` or ``transpose::conjtrans``
+         * - Column major
+           - ``B`` is an ``k``-by-``n`` matrix so the array ``b``
+             must have size at least ``ldb``\ \*\ ``n``.
+           - ``B`` is an ``n``-by-``k`` matrix so the array ``b``
+             must have size at least ``ldb``\ \*\ ``k``
+         * - Row major
+           - ``B`` is an ``k``-by-``n`` matrix so the array ``b``
+             must have size at least ``ldb``\ \*\ ``k``.
+           - ``B`` is an ``n``-by-``k`` matrix so the array ``b``
+             must have size at least ``ldb``\ \*\ ``n``.
+
+      See :ref:`matrix-storage`
+      for more details.
 
    ldb
-      Leading dimension of ``B``. Must be at least ``k`` if ``trans`` =
-      ``transpose::nontrans``, and at least ``n`` otherwise. Must be
-      positive.
+      The leading dimension of ``B``. It must be positive.
 
+      .. list-table::
+         :header-rows: 1
 
+         * -
+           - ``trans`` = ``transpose::nontrans``
+           - ``trans`` = ``transpose::trans`` or ``transpose::conjtrans``
+         * - Column major
+           - ``ldb`` must be at least ``k``.
+           - ``ldb`` must be at least ``n``.
+         * - Row major
+           - ``ldb`` must be at least ``n``.
+           - ``ldb`` must be at least ``k``.
+             
+   beta
+      Real scaling factor for matrix ``C``.
+      
    c
       Buffer holding input/output matrix ``C``. Must have size at least
-      ``ldc``\ \*\ ``n``. See `Matrix and Vector
-      Storage <../matrix-storage.html>`__ for
+      ``ldc``\ \*\ ``n``. See :ref:`matrix-storage` for
       more details.
-
 
    ldc
       Leading dimension of ``C``. Must be positive and at least ``n``.
 
-
 .. container:: section
 
-
    .. rubric:: Output Parameters
-      :class: sectiontitle
-
 
    c
       Output buffer, overwritten by the updated ``C`` matrix.
 
 
+.. _onemkl_blas_her2k_usm:
+
 her2k (USM Version)
 -------------------
 
-.. container::
+.. rubric:: Syntax
 
-   .. container:: section
+.. code-block:: cpp
 
+   namespace oneapi::mkl::blas::column_major {
+       sycl::event her2k(sycl::queue &queue,
+                         onemkl::uplo upper_lower,
+                         onemkl::transpose trans,
+                         std::int64_t n,
+                         std::int64_t k,
+                         T alpha,
+                         const T* a,
+                         std::int64_t lda,
+                         const T* b,
+                         std::int64_t ldb,
+                         T_real beta,
+                         T* c,
+                         std::int64_t ldc,
+                         const sycl::vector_class<sycl::event> &dependencies = {})
+   }
+.. code-block:: cpp
 
-      .. rubric:: Syntax
-         :class: sectiontitle
+   namespace oneapi::mkl::blas::row_major {
+       sycl::event her2k(sycl::queue &queue,
+                         onemkl::uplo upper_lower,
+                         onemkl::transpose trans,
+                         std::int64_t n,
+                         std::int64_t k,
+                         T alpha,
+                         const T* a,
+                         std::int64_t lda,
+                         const T* b,
+                         std::int64_t ldb,
+                         T_real beta,
+                         T* c,
+                         std::int64_t ldc,
+                         const sycl::vector_class<sycl::event> &dependencies = {})
+   }
 
+.. container:: section
 
-      .. container:: dlsyntaxpara
+   .. rubric:: Input Parameters
 
+   queue
+      The queue where the routine should be executed.
 
-         .. cpp:function::  sycl::event oneapi::mkl::blas::her2k(sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k, T alpha, const T* a, std::int64_t lda, const T* b, std::int64_t ldb, T_real beta, T* c, std::int64_t ldc, const sycl::vector_class<sycl::event> &dependencies = {})
-   .. container:: section
+   upper_lower
+      Specifies whether ``A``'s data is stored in its upper or lower
+      triangle. See :ref:`onemkl_datatypes` for more details.
 
+   trans
+      Specifies the operation to apply, as described above. Supported
+      operations are ``transpose::nontrans`` and
+      ``transpose::conjtrans``.
 
-      .. rubric:: Input Parameters
-         :class: sectiontitle
+   n
+      The number of rows and columns in ``C``. The value of ``n``
+      must be at least zero.
 
+   k
+      The inner dimension of matrix multiplications. The value of
+      ``k`` must be at least equal to zero.
 
-      queue
-         The queue where the routine should be executed.
+   alpha
+      Complex scaling factor for the rank-2k update.
 
+   a
+      Pointer to input matrix ``A``.
 
-      upper_lower
-         Specifies whether ``A``'s data is stored in its upper or lower
-         triangle. See :ref:`onemkl_datatypes` for more details.
+      .. list-table::
+         :header-rows: 1
 
+         * -
+           - ``trans`` = ``transpose::nontrans``
+           - ``trans`` = ``transpose::trans`` or ``transpose::conjtrans``
+         * - Column major
+           - ``A`` is an ``n``-by-``k`` matrix so the array ``a``
+             must have size at least ``lda``\ \*\ ``k``.
+           - ``A`` is an ``k``-by-``n`` matrix so the array ``a``
+             must have size at least ``lda``\ \*\ ``n``
+         * - Row major
+           - ``A`` is an ``n``-by-``k`` matrix so the array ``a``
+             must have size at least ``lda``\ \*\ ``n``.
+           - ``A`` is an ``k``-by-``n`` matrix so the array ``a``
+             must have size at least ``lda``\ \*\ ``k``.
+      
+      See :ref:`matrix-storage` for more details.
 
+   lda
+      The leading dimension of ``A``. It must be positive.
 
-      trans
-         Specifies the operation to apply, as described above. Supported
-         operations are ``transpose::nontrans`` and
-         ``transpose::conjtrans``.
+      .. list-table::
+         :header-rows: 1
 
+         * -
+           - ``trans`` = ``transpose::nontrans``
+           - ``trans`` = ``transpose::trans`` or ``transpose::conjtrans``
+         * - Column major
+           - ``lda`` must be at least ``n``.
+           - ``lda`` must be at least ``k``.
+         * - Row major
+           - ``lda`` must be at least ``k``.
+           - ``lda`` must be at least ``n``.
+   
+   b
+      Pointer to input matrix ``B``.
 
-      n
-         The number of rows and columns in ``C``. The value of ``n``
-         must be at least zero.
+      .. list-table::
+         :header-rows: 1
 
+         * -
+           - ``trans`` = ``transpose::nontrans``
+           - ``trans`` = ``transpose::trans`` or ``transpose::conjtrans``
+         * - Column major
+           - ``B`` is an ``k``-by-``n`` matrix so the array ``b``
+             must have size at least ``ldb``\ \*\ ``n``.
+           - ``B`` is an ``n``-by-``k`` matrix so the array ``b``
+             must have size at least ``ldb``\ \*\ ``k``
+         * - Row major
+           - ``B`` is an ``k``-by-``n`` matrix so the array ``b``
+             must have size at least ``ldb``\ \*\ ``k``.
+           - ``B`` is an ``n``-by-``k`` matrix so the array ``b``
+             must have size at least ``ldb``\ \*\ ``n``.
+   
+      See :ref:`matrix-storage` for
+      more details.
 
-      k
-         The inner dimension of matrix multiplications. The value of
-         ``k`` must be at least equal to zero.
+   ldb
+      The leading dimension of ``B``. It must be positive.
 
+      .. list-table::
+         :header-rows: 1
 
-      alpha
-         Complex scaling factor for the rank-2\ ``k`` update.
+         * -
+           - ``trans`` = ``transpose::nontrans``
+           - ``trans`` = ``transpose::trans`` or ``transpose::conjtrans``
+         * - Column major
+           - ``ldb`` must be at least ``k``.
+           - ``ldb`` must be at least ``n``.
+         * - Row major
+           - ``ldb`` must be at least ``n``.
+           - ``ldb`` must be at least ``k``.
 
+   beta
+      Real scaling factor for matrix ``C``.
 
-      a
-         Pointer to input matrix ``A``. If ``trans`` =
-         ``transpose::nontrans``, ``A`` is an ``n``-by-``k`` matrix so
-         the array ``a`` must have size at least ``lda``\ \*\ ``k``.
-         Otherwise, ``A`` is an ``k``-by-``n`` matrix so the array ``a``
-         must have size at least ``lda``\ \*\ ``n``. See `Matrix and
-         Vector
-         Storage <../matrix-storage.html>`__ for
-         more details.
+   c
+      Pointer to input/output matrix ``C``. Must have size at least
+      ``ldc``\ \*\ ``n``. See :ref:`matrix-storage` for
+      more details.
 
+   ldc
+      Leading dimension of ``C``. Must be positive and at least
+      ``n``.
 
-      lda
-         Leading dimension of ``A``. Must be at least ``n`` if ``trans``
-         = ``transpose::nontrans``, and at least ``k`` otherwise. Must
-         be positive.
+   dependencies
+      List of events to wait for before starting computation, if any.
+      If omitted, defaults to no dependencies.
 
+.. container:: section
 
-      beta
-         Real scaling factor for matrix ``C``.
+   .. rubric:: Output Parameters
 
+   c
+      Pointer to the output matrix, overwritten by the updated ``C``
+      matrix.
 
-      b
-         Pointer to input matrix ``B``. If ``trans`` =
-         ``transpose::nontrans``, ``B`` is an ``k``-by-``n`` matrix so
-         the array ``b`` must have size at least ``ldb``\ \*\ ``n``.
-         Otherwise, ``B`` is an ``n``-by-``k`` matrix so the array ``b``
-         must have size at least ``ldb``\ \*\ ``k``. See `Matrix and
-         Vector
-         Storage <../matrix-storage.html>`__ for
-         more details.
+.. container:: section
 
+   .. rubric:: Return Values
 
-      ldb
-         Leading dimension of ``B``. Must be at least ``k`` if ``trans``
-         = ``transpose::nontrans``, and at least ``n`` otherwise. Must
-         be positive.
+   Output event to wait on to ensure computation is complete.
 
+      
 
-      c
-         Pointer to input/output matrix ``C``. Must have size at least
-         ``ldc``\ \*\ ``n``. See `Matrix and Vector
-         Storage <../matrix-storage.html>`__ for
-         more details.
-
-
-      ldc
-         Leading dimension of ``C``. Must be positive and at least
-         ``n``.
-
-
-      dependencies
-         List of events to wait for before starting computation, if any.
-         If omitted, defaults to no dependencies.
-
-
-   .. container:: section
-
-
-      .. rubric:: Output Parameters
-         :class: sectiontitle
-
-
-      c
-         Pointer to the output matrix, overwritten by the updated ``C``
-         matrix.
-
-
-   .. container:: section
-
-
-      .. rubric:: Return Values
-         :class: sectiontitle
-
-
-      Output event to wait on to ensure computation is complete.
-
-
-.. container:: familylinks
-
-
-   .. container:: parentlink
-
-
-      **Parent topic:** :ref:`blas-level-3-routines`
+   **Parent topic:** :ref:`blas-level-3-routines`

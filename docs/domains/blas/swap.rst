@@ -3,199 +3,182 @@
 swap
 ====
 
+Swaps a vector with another vector.
 
-.. container::
+.. _onemkl_blas_swap_description:
 
+.. rubric:: Description
 
-   Swaps a vector with another vector.
+Given two vectors of ``n`` elements, ``x`` and ``y``, the ``swap``
+routines return vectors ``y`` and ``x`` swapped, each replacing the
+other.
 
+.. math::
 
+   \left[\begin{array}{c}
+      y\\x
+   \end{array}\right]
+   \leftarrow
+   \left[\begin{array}{c}
+      x\\y
+   \end{array}\right]
 
-      ``swap`` supports the following precisions.
+``swap`` supports the following precisions.
 
+   .. list-table:: 
+      :header-rows: 1
 
-      .. list-table:: 
-         :header-rows: 1
+      * -  T 
+      * -  ``float`` 
+      * -  ``double`` 
+      * -  ``std::complex<float>`` 
+      * -  ``std::complex<double>`` 
 
-         * -  T 
-         * -  ``float`` 
-         * -  ``double`` 
-         * -  ``std::complex<float>`` 
-         * -  ``std::complex<double>`` 
-
-
-.. container:: section
-
-
-   .. rubric:: Description
-      :class: sectiontitle
-
-
-   Given two vectors of ``n`` elements, ``x`` and ``y``, the ``swap``
-   routines return vectors ``y`` and ``x`` swapped, each replacing the
-   other.
-
-
-      y <- x, x <- y
-
+.. _onemkl_blas_swap_buffer:
 
 swap (Buffer Version)
 ---------------------
 
-.. container::
+.. rubric:: Syntax
 
-   .. container:: section
+.. code-block:: cpp
 
+   namespace oneapi::mkl::blas::column_major {
+       void swap(sycl::queue &queue,
+                 std::int64_t n,
+                 sycl::buffer<T,1> &x,
+                 std::int64_t incx,
+                 sycl::buffer<T,1> &y,
+                 std::int64_t incy)
+   }
+.. code-block:: cpp
 
-      .. rubric:: Syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void oneapi::mkl::blas::swap(sycl::queue &queue, std::int64_t n, sycl::buffer<T,1> &x, std::int64_t incx, sycl::buffer<T,1> &y, std::int64_t incy)
+   namespace oneapi::mkl::blas::row_major {
+       void swap(sycl::queue &queue,
+                 std::int64_t n,
+                 sycl::buffer<T,1> &x,
+                 std::int64_t incx,
+                 sycl::buffer<T,1> &y,
+                 std::int64_t incy)
+   }
 
 .. container:: section
 
-
    .. rubric:: Input Parameters
-      :class: sectiontitle
-
 
    queue
       The queue where the routine should be executed.
 
-
    n
       Number of elements in vector ``x``.
 
-
    x
       Buffer holding input vector ``x``. The buffer must be of size at
-      least (1 + (``n`` - 1)*abs(``incx``)). See `Matrix and Vector
-      Storage <../matrix-storage.html>`__ for
+      least (1 + (``n`` - 1)*abs(``incx``)). See :ref:`matrix-storage` for
       more details.
-
 
    incx
       Stride of vector ``x``.
 
-
    y
       Buffer holding input vector ``y``. The buffer must be of size at
-      least (1 + (``n`` - 1)*abs(``incy``)). See `Matrix and Vector
-      Storage <../matrix-storage.html>`__ for
+      least (1 + (``n`` - 1)*abs(``incy``)). See :ref:`matrix-storage` for
       more details.
-
 
    incy
       Stride of vector ``y``.
 
-
 .. container:: section
 
-
    .. rubric:: Output Parameters
-      :class: sectiontitle
-
 
    x
       Buffer holding updated buffer ``x``, that is, the input vector
       ``y``.
 
-
    y
       Buffer holding updated buffer ``y``, that is, the input vector
       ``x``.
 
+      
+
+.. _onemkl_blas_swap_usm:
 
 swap (USM Version)
 ------------------
 
-.. container::
+.. rubric:: Syntax
 
-   .. container:: section
+.. code-block:: cpp
 
+   namespace oneapi::mkl::blas::column_major {
+       sycl::event swap(sycl::queue &queue,
+                        std::int64_t n,
+                        T *x,
+                        std::int64_t incx,
+                        T *y,
+                        std::int64_t incy,
+                        const sycl::vector_class<sycl::event> &dependencies = {})
+   }
+.. code-block:: cpp
 
-      .. rubric:: Syntax
-         :class: sectiontitle
+   namespace oneapi::mkl::blas::row_major {
+       sycl::event swap(sycl::queue &queue,
+                        std::int64_t n,
+                        T *x,
+                        std::int64_t incx,
+                        T *y,
+                        std::int64_t incy,
+                        const sycl::vector_class<sycl::event> &dependencies = {})
+   }
+   
+.. container:: section
+   
+   .. rubric:: Input Parameters
 
+   queue
+      The queue where the routine should be executed.
 
-      .. container:: dlsyntaxpara
+   n
+      Number of elements in vector ``x``.
 
+   x
+      Pointer to the input vector ``x``. The array must be of size at
+      least (1 + (``n`` - 1)*abs(``incx``)). See :ref:`matrix-storage` for
+      more details.
 
-         .. cpp:function::  sycl::event oneapi::mkl::blas::swap(sycl::queue &queue, std::int64_t n, T *x, std::int64_t incx, T *y, std::int64_t incy, const sycl::vector_class<sycl::event> &dependencies = {})
-   .. container:: section
+   incx
+      Stride of vector ``x``.
 
+   y
+      Pointer to the input vector ``y``. The array must be of size at
+      least (1 + (``n`` - 1)*abs(``incy``)). See :ref:`matrix-storage` for
+      more details.
 
-      .. rubric:: Input Parameters
-         :class: sectiontitle
+   incy
+      Stride of vector ``y``.
 
+   dependencies
+      List of events to wait for before starting computation, if any.
+      If omitted, defaults to no dependencies.
 
-      queue
-         The queue where the routine should be executed.
+.. container:: section
 
+   .. rubric:: Output Parameters
 
-      n
-         Number of elements in vector ``x``.
+   x
+      Pointer to the updated array ``x``, that is, the input vector
+      ``y``.
 
+   y
+      Pointer to the updated array ``y``, that is, the input vector
+      ``x``.
 
-      x
-         Pointer to the input vector ``x``. The array must be of size at
-         least (1 + (``n`` - 1)*abs(``incx``)). See `Matrix and Vector
-         Storage <../matrix-storage.html>`__ for
-         more details.
+.. container:: section
 
+   .. rubric:: Return Values
 
-      incx
-         Stride of vector ``x``.
-
-
-      y
-         Pointer to the input vector ``y``. The array must be of size at
-         least (1 + (``n`` - 1)*abs(``incy``)). See `Matrix and Vector
-         Storage <../matrix-storage.html>`__ for
-         more details.
-
-
-      incy
-         Stride of vector ``y``.
-
-
-      dependencies
-         List of events to wait for before starting computation, if any.
-         If omitted, defaults to no dependencies.
-
-
-   .. container:: section
-
-
-      .. rubric:: Output Parameters
-         :class: sectiontitle
-
-
-      x
-         Pointer to the updated array ``x``, that is, the input vector
-         ``y``.
-
-
-      y
-         Pointer to the updated array ``y``, that is, the input vector
-         ``x``.
-
-
-   .. container:: section
-
-
-      .. rubric:: Return Values
-         :class: sectiontitle
+   Output event to wait on to ensure computation is complete.
 
 
-      Output event to wait on to ensure computation is complete.
-
-
-.. container:: familylinks
-
-
-   .. container:: parentlink
-
-
-      **Parent topic:** :ref:`blas-level-1-routines`
+   **Parent topic:** :ref:`blas-level-1-routines`

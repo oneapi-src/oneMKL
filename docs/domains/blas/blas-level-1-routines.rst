@@ -19,37 +19,37 @@ BLAS Level 1 Routines
 
          * -     Routines
            -     Description     
-         * -     \ `asum <asum.html>`__\   
+         * -     :ref:`onemkl_blas_asum`   
            -     Sum of vector magnitudes      
-         * -     \ `axpy <axpy.html>`__\   
+         * -     :ref:`onemkl_blas_axpy`   
            -     Scalar-vector product      
-         * -     \ `copy <copy.html>`__\   
+         * -     :ref:`onemkl_blas_copy`   
            -     Copy vector      
-         * -     \ `dot <dot.html>`__\   
+         * -     :ref:`onemkl_blas_dot`   
            -     Dot product      
-         * -     \ `sdsdot <sdsdot.html>`__\   
+         * -     :ref:`onemkl_blas_sdsdot`   
            -     Dot product with double precision      
-         * -     \ `dotc <dotc.html>`__\   
+         * -     :ref:`onemkl_blas_dotc`   
            -     Dot product conjugated      
-         * -     \ `dotu <dotu.html>`__\
+         * -     :ref:`onemkl_blas_dotu`
            -     Dot product unconjugated      
-         * -     \ `nrm2 <nrm2.html>`__\   
+         * -     :ref:`onemkl_blas_nrm2`   
            -     Vector 2-norm (Euclidean norm)      
-         * -     \ `rot <rot.html>`__\
+         * -     :ref:`onemkl_blas_rot`
            -     Plane rotation of points      
-         * -     \ `rotg <rotg.html>`__\   
+         * -     :ref:`onemkl_blas_rotg`   
            -     Generate Givens rotation of points      
-         * -     \ `rotm <rotm.html>`__\   
+         * -     :ref:`onemkl_blas_rotm`   
            -     Modified Givens plane rotation of points           
-         * -     \ `rotmg <rotmg.html>`__\   
+         * -     :ref:`onemkl_blas_rotmg`  
            -     Generate modified Givens plane rotation of points           
-         * -     \ `scal <scal.html>`__\
+         * -     :ref:`onemkl_blas_scal`
            -     Vector-scalar product      
-         * -     \ `swap <swap.html>`__\   
+         * -     :ref:`onemkl_blas_swap`   
            -     Vector-vector swap      
-         * -     \ `iamax <iamax.html>`__\   
+         * -     :ref:`onemkl_blas_iamax`   
            -     Index of the maximum absolute value element of a vector     
-         * -     \ `iamin <iamin.html>`__\   
+         * -     :ref:`onemkl_blas_iamin`   
            -     Index of the minimum absolute value element of a vector     
 
 .. toctree::
