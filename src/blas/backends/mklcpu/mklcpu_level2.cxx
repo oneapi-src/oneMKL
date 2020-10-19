@@ -135,9 +135,9 @@ void gemv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::co
         host_task<class mkl_kernel_cgemv>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex8 beta_ = { beta_real, beta_imag };
-            ::cblas_cgemv(CBLASMAJOR, trans_, m, n, (const void *)&alpha_,
-                          accessor_a.get_pointer(), lda, accessor_x.get_pointer(), incx,
-                          (const void *)&beta_, accessor_y.get_pointer(), incy);
+            ::cblas_cgemv(CBLASMAJOR, trans_, m, n, (const void *)&alpha_, accessor_a.get_pointer(),
+                          lda, accessor_x.get_pointer(), incx, (const void *)&beta_,
+                          accessor_y.get_pointer(), incy);
         });
     });
 }
@@ -156,9 +156,9 @@ void gemv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::co
         host_task<class mkl_kernel_zgemv>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex16 beta_ = { beta_real, beta_imag };
-            ::cblas_zgemv(CBLASMAJOR, trans_, m, n, (const void *)&alpha_,
-                          accessor_a.get_pointer(), lda, accessor_x.get_pointer(), incx,
-                          (const void *)&beta_, accessor_y.get_pointer(), incy);
+            ::cblas_zgemv(CBLASMAJOR, trans_, m, n, (const void *)&alpha_, accessor_a.get_pointer(),
+                          lda, accessor_x.get_pointer(), incx, (const void *)&beta_,
+                          accessor_y.get_pointer(), incy);
         });
     });
 }
@@ -202,8 +202,8 @@ void gerc(cl::sycl::queue &queue, int64_t m, int64_t n, std::complex<float> alph
         auto accessor_a = a.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_cgerc>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
-            ::cblas_cgerc(CBLASMAJOR, m, n, (const void *)&alpha_, accessor_x.get_pointer(),
-                          incx, accessor_y.get_pointer(), incy, accessor_a.get_pointer(), lda);
+            ::cblas_cgerc(CBLASMAJOR, m, n, (const void *)&alpha_, accessor_x.get_pointer(), incx,
+                          accessor_y.get_pointer(), incy, accessor_a.get_pointer(), lda);
         });
     });
 }
@@ -219,8 +219,8 @@ void gerc(cl::sycl::queue &queue, int64_t m, int64_t n, std::complex<double> alp
         auto accessor_a = a.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_zgerc>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
-            ::cblas_zgerc(CBLASMAJOR, m, n, (const void *)&alpha_, accessor_x.get_pointer(),
-                          incx, accessor_y.get_pointer(), incy, accessor_a.get_pointer(), lda);
+            ::cblas_zgerc(CBLASMAJOR, m, n, (const void *)&alpha_, accessor_x.get_pointer(), incx,
+                          accessor_y.get_pointer(), incy, accessor_a.get_pointer(), lda);
         });
     });
 }
@@ -236,8 +236,8 @@ void geru(cl::sycl::queue &queue, int64_t m, int64_t n, std::complex<float> alph
         auto accessor_a = a.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_cgeru>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
-            ::cblas_cgeru(CBLASMAJOR, m, n, (const void *)&alpha_, accessor_x.get_pointer(),
-                          incx, accessor_y.get_pointer(), incy, accessor_a.get_pointer(), lda);
+            ::cblas_cgeru(CBLASMAJOR, m, n, (const void *)&alpha_, accessor_x.get_pointer(), incx,
+                          accessor_y.get_pointer(), incy, accessor_a.get_pointer(), lda);
         });
     });
 }
@@ -253,8 +253,8 @@ void geru(cl::sycl::queue &queue, int64_t m, int64_t n, std::complex<double> alp
         auto accessor_a = a.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_zgeru>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
-            ::cblas_zgeru(CBLASMAJOR, m, n, (const void *)&alpha_, accessor_x.get_pointer(),
-                          incx, accessor_y.get_pointer(), incy, accessor_a.get_pointer(), lda);
+            ::cblas_zgeru(CBLASMAJOR, m, n, (const void *)&alpha_, accessor_x.get_pointer(), incx,
+                          accessor_y.get_pointer(), incy, accessor_a.get_pointer(), lda);
         });
     });
 }
@@ -1044,8 +1044,8 @@ void trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_strsv>(cgh, [=]() {
-            ::cblas_strsv(CBLASMAJOR, upper_lower_, trans_, unit_diag_, n,
-                          accessor_a.get_pointer(), lda, accessor_x.get_pointer(), incx);
+            ::cblas_strsv(CBLASMAJOR, upper_lower_, trans_, unit_diag_, n, accessor_a.get_pointer(),
+                          lda, accessor_x.get_pointer(), incx);
         });
     });
 }
@@ -1060,8 +1060,8 @@ void trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_dtrsv>(cgh, [=]() {
-            ::cblas_dtrsv(CBLASMAJOR, upper_lower_, trans_, unit_diag_, n,
-                          accessor_a.get_pointer(), lda, accessor_x.get_pointer(), incx);
+            ::cblas_dtrsv(CBLASMAJOR, upper_lower_, trans_, unit_diag_, n, accessor_a.get_pointer(),
+                          lda, accessor_x.get_pointer(), incx);
         });
     });
 }
@@ -1076,8 +1076,8 @@ void trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_ctrsv>(cgh, [=]() {
-            ::cblas_ctrsv(CBLASMAJOR, upper_lower_, trans_, unit_diag_, n,
-                          accessor_a.get_pointer(), lda, accessor_x.get_pointer(), incx);
+            ::cblas_ctrsv(CBLASMAJOR, upper_lower_, trans_, unit_diag_, n, accessor_a.get_pointer(),
+                          lda, accessor_x.get_pointer(), incx);
         });
     });
 }
@@ -1092,8 +1092,8 @@ void trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_ztrsv>(cgh, [=]() {
-            ::cblas_ztrsv(CBLASMAJOR, upper_lower_, trans_, unit_diag_, n,
-                          accessor_a.get_pointer(), lda, accessor_x.get_pointer(), incx);
+            ::cblas_ztrsv(CBLASMAJOR, upper_lower_, trans_, unit_diag_, n, accessor_a.get_pointer(),
+                          lda, accessor_x.get_pointer(), incx);
         });
     });
 }
@@ -1111,8 +1111,7 @@ cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t
         }
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         host_task<class mkl_kernel_sgbmv_usm>(cgh, [=]() {
-            ::cblas_sgbmv(CBLASMAJOR, trans_, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
-                          incy);
+            ::cblas_sgbmv(CBLASMAJOR, trans_, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy);
         });
     });
     return done;
@@ -1129,8 +1128,7 @@ cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t
         }
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         host_task<class mkl_kernel_dgbmv_usm>(cgh, [=]() {
-            ::cblas_dgbmv(CBLASMAJOR, trans_, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
-                          incy);
+            ::cblas_dgbmv(CBLASMAJOR, trans_, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy);
         });
     });
     return done;
@@ -1152,8 +1150,8 @@ cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t
         host_task<class mkl_kernel_cgbmv_usm>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex8 beta_ = { beta_real, beta_imag };
-            ::cblas_cgbmv(CBLASMAJOR, trans_, m, n, kl, ku, (const void *)&alpha_, a, lda, x,
-                          incx, (const void *)&beta_, y, incy);
+            ::cblas_cgbmv(CBLASMAJOR, trans_, m, n, kl, ku, (const void *)&alpha_, a, lda, x, incx,
+                          (const void *)&beta_, y, incy);
         });
     });
     return done;
@@ -1175,8 +1173,8 @@ cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t
         host_task<class mkl_kernel_zgbmv_usm>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex16 beta_ = { beta_real, beta_imag };
-            ::cblas_zgbmv(CBLASMAJOR, trans_, m, n, kl, ku, (const void *)&alpha_, a, lda, x,
-                          incx, (const void *)&beta_, y, incy);
+            ::cblas_zgbmv(CBLASMAJOR, trans_, m, n, kl, ku, (const void *)&alpha_, a, lda, x, incx,
+                          (const void *)&beta_, y, incy);
         });
     });
     return done;
@@ -1496,8 +1494,8 @@ cl::sycl::event her2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, std::c
         float alpha_real = alpha.real(), alpha_imag = alpha.imag();
         host_task<class mkl_kernel_cher2_usm>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
-            ::cblas_cher2(CBLASMAJOR, upper_lower_, n, (const void *)&alpha_, x, incx, y, incy,
-                          a, lda);
+            ::cblas_cher2(CBLASMAJOR, upper_lower_, n, (const void *)&alpha_, x, incx, y, incy, a,
+                          lda);
         });
     });
     return done;
@@ -1516,8 +1514,8 @@ cl::sycl::event her2(cl::sycl::queue &queue, uplo upper_lower, int64_t n,
         double alpha_real = alpha.real(), alpha_imag = alpha.imag();
         host_task<class mkl_kernel_zher2_usm>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
-            ::cblas_zher2(CBLASMAJOR, upper_lower_, n, (const void *)&alpha_, x, incx, y, incy,
-                          a, lda);
+            ::cblas_zher2(CBLASMAJOR, upper_lower_, n, (const void *)&alpha_, x, incx, y, incy, a,
+                          lda);
         });
     });
     return done;
@@ -1611,8 +1609,7 @@ cl::sycl::event hpr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, std::c
         float alpha_real = alpha.real(), alpha_imag = alpha.imag();
         host_task<class mkl_kernel_chpr2_usm>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
-            ::cblas_chpr2(CBLASMAJOR, upper_lower_, n, (const void *)&alpha_, x, incx, y, incy,
-                          ap);
+            ::cblas_chpr2(CBLASMAJOR, upper_lower_, n, (const void *)&alpha_, x, incx, y, incy, ap);
         });
     });
     return done;
@@ -1631,8 +1628,7 @@ cl::sycl::event hpr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n,
         double alpha_real = alpha.real(), alpha_imag = alpha.imag();
         host_task<class mkl_kernel_zhpr2_usm>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
-            ::cblas_zhpr2(CBLASMAJOR, upper_lower_, n, (const void *)&alpha_, x, incx, y, incy,
-                          ap);
+            ::cblas_zhpr2(CBLASMAJOR, upper_lower_, n, (const void *)&alpha_, x, incx, y, incy, ap);
         });
     });
     return done;
@@ -2297,4 +2293,3 @@ cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
     });
     return done;
 }
-

@@ -3508,4 +3508,3 @@ static inline cl::sycl::event trsv(
     trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     return done;
 }
-

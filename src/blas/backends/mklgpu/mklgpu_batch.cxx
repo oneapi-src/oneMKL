@@ -121,10 +121,9 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                            std::int64_t ldb, std::int64_t stride_b, float beta, float *c,
                            std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    return ::oneapi::mkl::gpu::sgemm_batch_sycl(&queue, MAJOR, ::mkl::cblas_convert(transa),
-                                                ::mkl::cblas_convert(transb), m, n, k, alpha, a,
-                                                lda, stride_a, b, ldb, stride_b, beta, c, ldc,
-                                                stride_c, batch_size, dependencies);
+    return ::oneapi::mkl::gpu::sgemm_batch_sycl(
+        &queue, MAJOR, ::mkl::cblas_convert(transa), ::mkl::cblas_convert(transb), m, n, k, alpha,
+        a, lda, stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
 }
 
 cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
@@ -134,10 +133,9 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                            double *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    return ::oneapi::mkl::gpu::dgemm_batch_sycl(&queue, MAJOR, ::mkl::cblas_convert(transa),
-                                                ::mkl::cblas_convert(transb), m, n, k, alpha, a,
-                                                lda, stride_a, b, ldb, stride_b, beta, c, ldc,
-                                                stride_c, batch_size, dependencies);
+    return ::oneapi::mkl::gpu::dgemm_batch_sycl(
+        &queue, MAJOR, ::mkl::cblas_convert(transa), ::mkl::cblas_convert(transb), m, n, k, alpha,
+        a, lda, stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
 }
 
 cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
@@ -148,10 +146,9 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                            std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    return ::oneapi::mkl::gpu::cgemm_batch_sycl(&queue, MAJOR, ::mkl::cblas_convert(transa),
-                                                ::mkl::cblas_convert(transb), m, n, k, alpha, a,
-                                                lda, stride_a, b, ldb, stride_b, beta, c, ldc,
-                                                stride_c, batch_size, dependencies);
+    return ::oneapi::mkl::gpu::cgemm_batch_sycl(
+        &queue, MAJOR, ::mkl::cblas_convert(transa), ::mkl::cblas_convert(transb), m, n, k, alpha,
+        a, lda, stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
 }
 
 cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
@@ -162,10 +159,9 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                            std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    return ::oneapi::mkl::gpu::zgemm_batch_sycl(&queue, MAJOR, ::mkl::cblas_convert(transa),
-                                                ::mkl::cblas_convert(transb), m, n, k, alpha, a,
-                                                lda, stride_a, b, ldb, stride_b, beta, c, ldc,
-                                                stride_c, batch_size, dependencies);
+    return ::oneapi::mkl::gpu::zgemm_batch_sycl(
+        &queue, MAJOR, ::mkl::cblas_convert(transa), ::mkl::cblas_convert(transb), m, n, k, alpha,
+        a, lda, stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
 }
 
 cl::sycl::event *coalesce_events(cl::sycl::queue &queue, std::vector<cl::sycl::event *> &prereqs) {
@@ -198,9 +194,9 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
     for (std::int64_t i = 0; i < group_count; i++) {
         cl::sycl::event *gemm_batch_event =
             new cl::sycl::event(::oneapi::mkl::gpu::sgemm_batch_sycl(
-                &queue, MAJOR, ::mkl::cblas_convert(transa[i]),
-                ::mkl::cblas_convert(transb[i]), m[i], n[i], k[i], alpha[i], a, lda[i], b, ldb[i],
-                beta[i], c, ldc[i], total_group_size, group_size[i], dependencies));
+                &queue, MAJOR, ::mkl::cblas_convert(transa[i]), ::mkl::cblas_convert(transb[i]),
+                m[i], n[i], k[i], alpha[i], a, lda[i], b, ldb[i], beta[i], c, ldc[i],
+                total_group_size, group_size[i], dependencies));
         coalesced_events.push_back(gemm_batch_event);
         total_group_size += group_size[i];
     }
@@ -219,9 +215,9 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
     for (std::int64_t i = 0; i < group_count; i++) {
         cl::sycl::event *gemm_batch_event =
             new cl::sycl::event(::oneapi::mkl::gpu::dgemm_batch_sycl(
-                &queue, MAJOR, ::mkl::cblas_convert(transa[i]),
-                ::mkl::cblas_convert(transb[i]), m[i], n[i], k[i], alpha[i], a, lda[i], b, ldb[i],
-                beta[i], c, ldc[i], total_group_size, group_size[i], dependencies));
+                &queue, MAJOR, ::mkl::cblas_convert(transa[i]), ::mkl::cblas_convert(transb[i]),
+                m[i], n[i], k[i], alpha[i], a, lda[i], b, ldb[i], beta[i], c, ldc[i],
+                total_group_size, group_size[i], dependencies));
         coalesced_events.push_back(gemm_batch_event);
         total_group_size += group_size[i];
     }
@@ -241,9 +237,9 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
     for (std::int64_t i = 0; i < group_count; i++) {
         cl::sycl::event *gemm_batch_event =
             new cl::sycl::event(::oneapi::mkl::gpu::cgemm_batch_sycl(
-                &queue, MAJOR, ::mkl::cblas_convert(transa[i]),
-                ::mkl::cblas_convert(transb[i]), m[i], n[i], k[i], alpha[i], a, lda[i], b, ldb[i],
-                beta[i], c, ldc[i], total_group_size, group_size[i], dependencies));
+                &queue, MAJOR, ::mkl::cblas_convert(transa[i]), ::mkl::cblas_convert(transb[i]),
+                m[i], n[i], k[i], alpha[i], a, lda[i], b, ldb[i], beta[i], c, ldc[i],
+                total_group_size, group_size[i], dependencies));
         coalesced_events.push_back(gemm_batch_event);
         total_group_size += group_size[i];
     }
@@ -263,9 +259,9 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
     for (std::int64_t i = 0; i < group_count; i++) {
         cl::sycl::event *gemm_batch_event =
             new cl::sycl::event(::oneapi::mkl::gpu::zgemm_batch_sycl(
-                &queue, MAJOR, ::mkl::cblas_convert(transa[i]),
-                ::mkl::cblas_convert(transb[i]), m[i], n[i], k[i], alpha[i], a, lda[i], b, ldb[i],
-                beta[i], c, ldc[i], total_group_size, group_size[i], dependencies));
+                &queue, MAJOR, ::mkl::cblas_convert(transa[i]), ::mkl::cblas_convert(transb[i]),
+                m[i], n[i], k[i], alpha[i], a, lda[i], b, ldb[i], beta[i], c, ldc[i],
+                total_group_size, group_size[i], dependencies));
         coalesced_events.push_back(gemm_batch_event);
         total_group_size += group_size[i];
     }
@@ -305,4 +301,3 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n, std::complex
     return ::oneapi::mkl::gpu::zaxpy_batch(queue, n, alpha, x, incx, y, incy, group_count,
                                            group_size, dependencies);
 }
-

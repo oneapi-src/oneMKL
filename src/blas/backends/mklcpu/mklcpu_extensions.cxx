@@ -25,30 +25,30 @@ void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offse
                float beta, cl::sycl::buffer<int32_t, 1> &c, int64_t ldc,
                cl::sycl::buffer<int32_t, 1> &co) {
 #ifdef COLUMN_MAJOR
-        queue.submit([&](cl::sycl::handler &cgh) {
-            CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
-            CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
-            CBLAS_OFFSET offsetc_ = cblas_convert(offsetc);
-            auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-            auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-            auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
-            auto accessor_co = co.get_access<cl::sycl::access::mode::read>(cgh);
-            host_task<class mkl_kernel_gemm_s8u8s32>(cgh, [=]() {
-                MKL_INT8 *a_mat =
-                    static_cast<MKL_INT8 *>(static_cast<void *>(accessor_a.get_pointer()));
-                MKL_UINT8 *b_mat =
-                    static_cast<MKL_UINT8 *>(static_cast<void *>(accessor_b.get_pointer()));
-                MKL_INT8 bo_internal = -bo;
-                MKL_INT8 ao_internal = -ao;
-                ::cblas_gemm_s8u8s32(CBLASMAJOR, transa_, transb_, offsetc_, m, n, k, alpha, a_mat,
-                                     lda, ao_internal, b_mat, ldb, bo_internal, beta,
-                                     (MKL_INT32 *)accessor_c.get_pointer(), ldc,
-                                     (const MKL_INT32 *)accessor_co.get_pointer());
-            });
+    queue.submit([&](cl::sycl::handler &cgh) {
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
+        CBLAS_OFFSET offsetc_ = cblas_convert(offsetc);
+        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_co = co.get_access<cl::sycl::access::mode::read>(cgh);
+        host_task<class mkl_kernel_gemm_s8u8s32>(cgh, [=]() {
+            MKL_INT8 *a_mat =
+                static_cast<MKL_INT8 *>(static_cast<void *>(accessor_a.get_pointer()));
+            MKL_UINT8 *b_mat =
+                static_cast<MKL_UINT8 *>(static_cast<void *>(accessor_b.get_pointer()));
+            MKL_INT8 bo_internal = -bo;
+            MKL_INT8 ao_internal = -ao;
+            ::cblas_gemm_s8u8s32(CBLASMAJOR, transa_, transb_, offsetc_, m, n, k, alpha, a_mat, lda,
+                                 ao_internal, b_mat, ldb, bo_internal, beta,
+                                 (MKL_INT32 *)accessor_c.get_pointer(), ldc,
+                                 (const MKL_INT32 *)accessor_co.get_pointer());
         });
+    });
 #endif
 #ifdef ROW_MAJOR
-        throw unimplemented("blas", "gemm_bias", "for row_major layout");
+    throw unimplemented("blas", "gemm_bias", "for row_major layout");
 #endif
 }
 
@@ -106,10 +106,9 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
         host_task<class mkl_kernel_cgemmt>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex8 beta_ = { beta_real, beta_imag };
-            ::cblas_cgemmt(CBLASMAJOR, upper_lower_, transa_, transb_, n, k,
-                           (const void *)&alpha_, accessor_a.get_pointer(), lda,
-                           accessor_b.get_pointer(), ldb, (const void *)&beta_,
-                           accessor_c.get_pointer(), ldc);
+            ::cblas_cgemmt(CBLASMAJOR, upper_lower_, transa_, transb_, n, k, (const void *)&alpha_,
+                           accessor_a.get_pointer(), lda, accessor_b.get_pointer(), ldb,
+                           (const void *)&beta_, accessor_c.get_pointer(), ldc);
         });
     });
 }
@@ -130,10 +129,9 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
         host_task<class mkl_kernel_zgemmt>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex16 beta_ = { beta_real, beta_imag };
-            ::cblas_zgemmt(CBLASMAJOR, upper_lower_, transa_, transb_, n, k,
-                           (const void *)&alpha_, accessor_a.get_pointer(), lda,
-                           accessor_b.get_pointer(), ldb, (const void *)&beta_,
-                           accessor_c.get_pointer(), ldc);
+            ::cblas_zgemmt(CBLASMAJOR, upper_lower_, transa_, transb_, n, k, (const void *)&alpha_,
+                           accessor_a.get_pointer(), lda, accessor_b.get_pointer(), ldb,
+                           (const void *)&beta_, accessor_c.get_pointer(), ldc);
         });
     });
 }
@@ -153,8 +151,8 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         host_task<class mkl_kernel_sgemmt_usm>(cgh, [=]() {
-            ::cblas_sgemmt(CBLASMAJOR, upper_lower_, transa_, transb_, n, k, alpha, a, lda, b,
-                           ldb, beta, c, ldc);
+            ::cblas_sgemmt(CBLASMAJOR, upper_lower_, transa_, transb_, n, k, alpha, a, lda, b, ldb,
+                           beta, c, ldc);
         });
     });
     return done;
@@ -173,8 +171,8 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         host_task<class mkl_kernel_dgemmt_usm>(cgh, [=]() {
-            ::cblas_dgemmt(CBLASMAJOR, upper_lower_, transa_, transb_, n, k, alpha, a, lda, b,
-                           ldb, beta, c, ldc);
+            ::cblas_dgemmt(CBLASMAJOR, upper_lower_, transa_, transb_, n, k, alpha, a, lda, b, ldb,
+                           beta, c, ldc);
         });
     });
     return done;
@@ -198,8 +196,8 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
         host_task<class mkl_kernel_cgemmt_usm>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex8 beta_ = { beta_real, beta_imag };
-            ::cblas_cgemmt(CBLASMAJOR, upper_lower_, transa_, transb_, n, k,
-                           (const void *)&alpha_, a, lda, b, ldb, (const void *)&beta_, c, ldc);
+            ::cblas_cgemmt(CBLASMAJOR, upper_lower_, transa_, transb_, n, k, (const void *)&alpha_,
+                           a, lda, b, ldb, (const void *)&beta_, c, ldc);
         });
     });
     return done;
@@ -223,11 +221,9 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
         host_task<class mkl_kernel_zgemmt_usm>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex16 beta_ = { beta_real, beta_imag };
-            ::cblas_zgemmt(CBLASMAJOR, upper_lower_, transa_, transb_, n, k,
-                           (const void *)&alpha_, a, lda, b, ldb, (const void *)&beta_, c, ldc);
+            ::cblas_zgemmt(CBLASMAJOR, upper_lower_, transa_, transb_, n, k, (const void *)&alpha_,
+                           a, lda, b, ldb, (const void *)&beta_, c, ldc);
         });
     });
     return done;
 }
-
-

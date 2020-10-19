@@ -22,7 +22,7 @@
 void asum(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int64_t incx,
           cl::sycl::buffer<float, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_sasum>(cgh, [=]() {
             accessor_result[0] =
@@ -34,7 +34,7 @@ void asum(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int6
 void asum(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<double, 1> &x, int64_t incx,
           cl::sycl::buffer<double, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_dasum>(cgh, [=]() {
             accessor_result[0] =
@@ -46,7 +46,7 @@ void asum(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<double, 1> &x, int
 void asum(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<float>, 1> &x,
           int64_t incx, cl::sycl::buffer<float, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_scasum>(cgh, [=]() {
             accessor_result[0] =
@@ -58,7 +58,7 @@ void asum(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<float
 void asum(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<double>, 1> &x,
           int64_t incx, cl::sycl::buffer<double, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_dzasum>(cgh, [=]() {
             accessor_result[0] =
@@ -168,8 +168,8 @@ void copy(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<doubl
 void dot(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int64_t incx,
          cl::sycl::buffer<float, 1> &y, int64_t incy, cl::sycl::buffer<float, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y      = y.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_sdot>(cgh, [=]() {
             accessor_result[0] =
@@ -182,8 +182,8 @@ void dot(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int64
 void dot(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<double, 1> &x, int64_t incx,
          cl::sycl::buffer<double, 1> &y, int64_t incy, cl::sycl::buffer<double, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y      = y.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_ddot>(cgh, [=]() {
             accessor_result[0] =
@@ -196,8 +196,8 @@ void dot(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<double, 1> &x, int6
 void dot(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int64_t incx,
          cl::sycl::buffer<float, 1> &y, int64_t incy, cl::sycl::buffer<double, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y      = y.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_dsdot>(cgh, [=]() {
             accessor_result[0] =
@@ -211,8 +211,8 @@ void dotc(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<float
           int64_t incx, cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy,
           cl::sycl::buffer<std::complex<float>, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y      = y.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_cdotc>(cgh, [=]() {
             ::cblas_cdotc_sub((const int)n, accessor_x.get_pointer(), (const int)incx,
@@ -226,8 +226,8 @@ void dotc(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<doubl
           int64_t incx, cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy,
           cl::sycl::buffer<std::complex<double>, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y      = y.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_zdotc>(cgh, [=]() {
             ::cblas_zdotc_sub((const int)n, accessor_x.get_pointer(), (const int)incx,
@@ -241,8 +241,8 @@ void dotu(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<float
           int64_t incx, cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy,
           cl::sycl::buffer<std::complex<float>, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y      = y.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_cdotu>(cgh, [=]() {
             ::cblas_cdotu_sub((const int)n, accessor_x.get_pointer(), (const int)incx,
@@ -256,8 +256,8 @@ void dotu(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<doubl
           int64_t incx, cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy,
           cl::sycl::buffer<std::complex<double>, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y      = y.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_zdotu>(cgh, [=]() {
             ::cblas_zdotu_sub((const int)n, accessor_x.get_pointer(), (const int)incx,
@@ -270,7 +270,7 @@ void dotu(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<doubl
 void iamin(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int64_t incx,
            cl::sycl::buffer<int64_t, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_isamin>(cgh, [=]() {
             accessor_result[0] = ::cblas_isamin((int)n, accessor_x.get_pointer(), (int)incx);
@@ -281,7 +281,7 @@ void iamin(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int
 void iamin(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<double, 1> &x, int64_t incx,
            cl::sycl::buffer<int64_t, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.template get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.template get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_idamin>(cgh, [=]() {
             accessor_result[0] = ::cblas_idamin((int)n, accessor_x.get_pointer(), (int)incx);
@@ -292,7 +292,7 @@ void iamin(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<double, 1> &x, in
 void iamin(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<float>, 1> &x,
            int64_t incx, cl::sycl::buffer<int64_t, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_icamin>(cgh, [=]() {
             accessor_result[0] = ::cblas_icamin((int)n, accessor_x.get_pointer(), (int)incx);
@@ -303,7 +303,7 @@ void iamin(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<floa
 void iamin(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<double>, 1> &x,
            int64_t incx, cl::sycl::buffer<int64_t, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_izamin>(cgh, [=]() {
             accessor_result[0] = ::cblas_izamin((int)n, accessor_x.get_pointer(), (int)incx);
@@ -314,7 +314,7 @@ void iamin(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<doub
 void iamax(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int64_t incx,
            cl::sycl::buffer<int64_t, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_isamax>(cgh, [=]() {
             accessor_result[0] = ::cblas_isamax((int)n, accessor_x.get_pointer(), (int)incx);
@@ -325,7 +325,7 @@ void iamax(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int
 void iamax(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<double, 1> &x, int64_t incx,
            cl::sycl::buffer<int64_t, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_idamax>(cgh, [=]() {
             accessor_result[0] = ::cblas_idamax((int)n, accessor_x.get_pointer(), (int)incx);
@@ -336,7 +336,7 @@ void iamax(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<double, 1> &x, in
 void iamax(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<float>, 1> &x,
            int64_t incx, cl::sycl::buffer<int64_t, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_icamax>(cgh, [=]() {
             accessor_result[0] = ::cblas_icamax((int)n, accessor_x.get_pointer(), (int)incx);
@@ -347,7 +347,7 @@ void iamax(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<floa
 void iamax(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<double>, 1> &x,
            int64_t incx, cl::sycl::buffer<int64_t, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_izamax>(cgh, [=]() {
             accessor_result[0] = ::cblas_izamax((int)n, accessor_x.get_pointer(), (int)incx);
@@ -358,7 +358,7 @@ void iamax(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<doub
 void nrm2(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int64_t incx,
           cl::sycl::buffer<float, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.template get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.template get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_snrm2>(cgh, [=]() {
             accessor_result[0] =
@@ -370,7 +370,7 @@ void nrm2(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int6
 void nrm2(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<double, 1> &x, int64_t incx,
           cl::sycl::buffer<double, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_dnrm2>(cgh, [=]() {
             accessor_result[0] =
@@ -382,7 +382,7 @@ void nrm2(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<double, 1> &x, int
 void nrm2(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<float>, 1> &x,
           int64_t incx, cl::sycl::buffer<float, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_scnrm2>(cgh, [=]() {
             accessor_result[0] =
@@ -394,7 +394,7 @@ void nrm2(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<float
 void nrm2(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<double>, 1> &x,
           int64_t incx, cl::sycl::buffer<double, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_dznrm2>(cgh, [=]() {
             accessor_result[0] =
@@ -514,8 +514,8 @@ void rotg(cl::sycl::queue &queue, cl::sycl::buffer<std::complex<double>, 1> &a,
 void rotm(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int64_t incx,
           cl::sycl::buffer<float, 1> &y, int64_t incy, cl::sycl::buffer<float, 1> &param) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x     = x.get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto accessor_y     = y.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read_write>(cgh);
         auto accessor_param = param.get_access<cl::sycl::access::mode::read>(cgh);
         host_task<class netlib_srotm>(cgh, [=]() {
             ::cblas_srotm((const int)n, accessor_x.get_pointer(), (const int)incx,
@@ -527,8 +527,8 @@ void rotm(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int6
 void rotm(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<double, 1> &x, int64_t incx,
           cl::sycl::buffer<double, 1> &y, int64_t incy, cl::sycl::buffer<double, 1> &param) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x     = x.get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto accessor_y     = y.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read_write>(cgh);
         auto accessor_param = param.get_access<cl::sycl::access::mode::read>(cgh);
         host_task<class netlib_drotm>(cgh, [=]() {
             ::cblas_drotm((const int)n, accessor_x.get_pointer(), (const int)incx,
@@ -540,9 +540,9 @@ void rotm(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<double, 1> &x, int
 void rotmg(cl::sycl::queue &queue, cl::sycl::buffer<float, 1> &d1, cl::sycl::buffer<float, 1> &d2,
            cl::sycl::buffer<float, 1> &x1, float y1, cl::sycl::buffer<float, 1> &param) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_d1    = d1.get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto accessor_d2    = d2.get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto accessor_x1    = x1.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_d1 = d1.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_d2 = d2.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_x1 = x1.get_access<cl::sycl::access::mode::read_write>(cgh);
         auto accessor_param = param.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_srotmg>(cgh, [=]() {
             ::cblas_srotmg(accessor_d1.get_pointer(), accessor_d2.get_pointer(),
@@ -554,9 +554,9 @@ void rotmg(cl::sycl::queue &queue, cl::sycl::buffer<float, 1> &d1, cl::sycl::buf
 void rotmg(cl::sycl::queue &queue, cl::sycl::buffer<double, 1> &d1, cl::sycl::buffer<double, 1> &d2,
            cl::sycl::buffer<double, 1> &x1, double y1, cl::sycl::buffer<double, 1> &param) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_d1    = d1.get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto accessor_d2    = d2.get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto accessor_x1    = x1.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_d1 = d1.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_d2 = d2.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_x1 = x1.get_access<cl::sycl::access::mode::read_write>(cgh);
         auto accessor_param = param.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_drotmg>(cgh, [=]() {
             ::cblas_drotmg(accessor_d1.get_pointer(), accessor_d2.get_pointer(),
@@ -635,8 +635,8 @@ void sdsdot(cl::sycl::queue &queue, int64_t n, float sb, cl::sycl::buffer<float,
             int64_t incx, cl::sycl::buffer<float, 1> &y, int64_t incy,
             cl::sycl::buffer<float, 1> &result) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y      = y.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
         host_task<class netlib_sdsdot>(cgh, [=]() {
             accessor_result[0] =
@@ -703,9 +703,8 @@ cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const float *x, int64_t 
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_sasum_usm>(cgh, [=]() {
-            result[0] = ::cblas_sasum((const int)n, x, (const int)std::abs(incx));
-        });
+        host_task<class netlib_sasum_usm>(
+            cgh, [=]() { result[0] = ::cblas_sasum((const int)n, x, (const int)std::abs(incx)); });
     });
     return done;
 }
@@ -717,9 +716,8 @@ cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const double *x, int64_t
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_dasum_usm>(cgh, [=]() {
-            result[0] = ::cblas_dasum((const int)n, x, (const int)std::abs(incx));
-        });
+        host_task<class netlib_dasum_usm>(
+            cgh, [=]() { result[0] = ::cblas_dasum((const int)n, x, (const int)std::abs(incx)); });
     });
     return done;
 }
@@ -731,9 +729,8 @@ cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const std::complex<float
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_scasum_usm>(cgh, [=]() {
-            result[0] = ::cblas_scasum((const int)n, x, (const int)std::abs(incx));
-        });
+        host_task<class netlib_scasum_usm>(
+            cgh, [=]() { result[0] = ::cblas_scasum((const int)n, x, (const int)std::abs(incx)); });
     });
     return done;
 }
@@ -745,9 +742,8 @@ cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const std::complex<doubl
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_dzasum_usm>(cgh, [=]() {
-            result[0] = ::cblas_dzasum((const int)n, x, (const int)std::abs(incx));
-        });
+        host_task<class netlib_dzasum_usm>(
+            cgh, [=]() { result[0] = ::cblas_dzasum((const int)n, x, (const int)std::abs(incx)); });
     });
     return done;
 }
@@ -822,9 +818,8 @@ cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const float *x, int64_t 
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_scopy_usm>(cgh, [=]() {
-            ::cblas_scopy((const int)n, x, (const int)incx, y, (const int)incy);
-        });
+        host_task<class netlib_scopy_usm>(
+            cgh, [=]() { ::cblas_scopy((const int)n, x, (const int)incx, y, (const int)incy); });
     });
     return done;
 }
@@ -836,9 +831,8 @@ cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const double *x, int64_t
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_dcopy_usm>(cgh, [=]() {
-            ::cblas_dcopy((const int)n, x, (const int)incx, y, (const int)incy);
-        });
+        host_task<class netlib_dcopy_usm>(
+            cgh, [=]() { ::cblas_dcopy((const int)n, x, (const int)incx, y, (const int)incy); });
     });
     return done;
 }
@@ -851,9 +845,8 @@ cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const std::complex<float
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_ccopy_usm>(cgh, [=]() {
-            ::cblas_ccopy((const int)n, x, (const int)incx, y, (const int)incy);
-        });
+        host_task<class netlib_ccopy_usm>(
+            cgh, [=]() { ::cblas_ccopy((const int)n, x, (const int)incx, y, (const int)incy); });
     });
     return done;
 }
@@ -866,9 +859,8 @@ cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const std::complex<doubl
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_zcopy_usm>(cgh, [=]() {
-            ::cblas_zcopy((const int)n, x, (const int)incx, y, (const int)incy);
-        });
+        host_task<class netlib_zcopy_usm>(
+            cgh, [=]() { ::cblas_zcopy((const int)n, x, (const int)incx, y, (const int)incy); });
     });
     return done;
 }
@@ -986,9 +978,8 @@ cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const float *x, int64_t
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_isamin_usm>(cgh, [=]() {
-            result[0] = ::cblas_isamin((int)n, x, (int)incx);
-        });
+        host_task<class netlib_isamin_usm>(
+            cgh, [=]() { result[0] = ::cblas_isamin((int)n, x, (int)incx); });
     });
     return done;
 }
@@ -1001,9 +992,8 @@ cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const double *x, int64_
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_idamin_usm>(cgh, [=]() {
-            result[0] = ::cblas_idamin((const int)n, x, (const int)incx);
-        });
+        host_task<class netlib_idamin_usm>(
+            cgh, [=]() { result[0] = ::cblas_idamin((const int)n, x, (const int)incx); });
     });
     return done;
 }
@@ -1016,9 +1006,8 @@ cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const std::complex<floa
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_icamin_usm>(cgh, [=]() {
-            result[0] = ::cblas_icamin((int)n, x, (int)incx);
-        });
+        host_task<class netlib_icamin_usm>(
+            cgh, [=]() { result[0] = ::cblas_icamin((int)n, x, (int)incx); });
     });
     return done;
 }
@@ -1031,9 +1020,8 @@ cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const std::complex<doub
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_izamin_usm>(cgh, [=]() {
-            result[0] = ::cblas_izamin((int)n, x, (int)incx);
-        });
+        host_task<class netlib_izamin_usm>(
+            cgh, [=]() { result[0] = ::cblas_izamin((int)n, x, (int)incx); });
     });
     return done;
 }
@@ -1046,9 +1034,8 @@ cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const float *x, int64_t
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_isamax_usm>(cgh, [=]() {
-            result[0] = ::cblas_isamax((int)n, x, (int)incx);
-        });
+        host_task<class netlib_isamax_usm>(
+            cgh, [=]() { result[0] = ::cblas_isamax((int)n, x, (int)incx); });
     });
     return done;
 }
@@ -1061,9 +1048,8 @@ cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const double *x, int64_
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_idamax_usm>(cgh, [=]() {
-            result[0] = ::cblas_idamax((int)n, x, (int)incx);
-        });
+        host_task<class netlib_idamax_usm>(
+            cgh, [=]() { result[0] = ::cblas_idamax((int)n, x, (int)incx); });
     });
     return done;
 }
@@ -1076,9 +1062,8 @@ cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const std::complex<floa
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_icamax_usm>(cgh, [=]() {
-            result[0] = ::cblas_icamax((int)n, x, (int)incx);
-        });
+        host_task<class netlib_icamax_usm>(
+            cgh, [=]() { result[0] = ::cblas_icamax((int)n, x, (int)incx); });
     });
     return done;
 }
@@ -1091,9 +1076,8 @@ cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const std::complex<doub
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_izamax_usm>(cgh, [=]() {
-            result[0] = ::cblas_izamax((int)n, x, (int)incx);
-        });
+        host_task<class netlib_izamax_usm>(
+            cgh, [=]() { result[0] = ::cblas_izamax((int)n, x, (int)incx); });
     });
     return done;
 }
@@ -1105,9 +1089,8 @@ cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const float *x, int64_t 
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_snrm2_usm>(cgh, [=]() {
-            result[0] = ::cblas_snrm2((const int)n, x, (const int)std::abs(incx));
-        });
+        host_task<class netlib_snrm2_usm>(
+            cgh, [=]() { result[0] = ::cblas_snrm2((const int)n, x, (const int)std::abs(incx)); });
     });
     return done;
 }
@@ -1119,9 +1102,8 @@ cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const double *x, int64_t
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_dnrm2_usm>(cgh, [=]() {
-            result[0] = ::cblas_dnrm2((const int)n, x, (const int)std::abs(incx));
-        });
+        host_task<class netlib_dnrm2_usm>(
+            cgh, [=]() { result[0] = ::cblas_dnrm2((const int)n, x, (const int)std::abs(incx)); });
     });
     return done;
 }
@@ -1133,9 +1115,8 @@ cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const std::complex<float
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_scnrm2_usm>(cgh, [=]() {
-            result[0] = ::cblas_scnrm2((const int)n, x, (const int)std::abs(incx));
-        });
+        host_task<class netlib_scnrm2_usm>(
+            cgh, [=]() { result[0] = ::cblas_scnrm2((const int)n, x, (const int)std::abs(incx)); });
     });
     return done;
 }
@@ -1147,9 +1128,8 @@ cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const std::complex<doubl
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_dznrm2_usm>(cgh, [=]() {
-            result[0] = ::cblas_dznrm2((const int)n, x, (const int)std::abs(incx));
-        });
+        host_task<class netlib_dznrm2_usm>(
+            cgh, [=]() { result[0] = ::cblas_dznrm2((const int)n, x, (const int)std::abs(incx)); });
     });
     return done;
 }
@@ -1223,9 +1203,7 @@ cl::sycl::event rotg(cl::sycl::queue &queue, float *a, float *b, float *c, float
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_srotg_usm>(cgh, [=]() {
-            ::cblas_srotg(a, b, c, s);
-        });
+        host_task<class netlib_srotg_usm>(cgh, [=]() { ::cblas_srotg(a, b, c, s); });
     });
     return done;
 }
@@ -1237,9 +1215,7 @@ cl::sycl::event rotg(cl::sycl::queue &queue, double *a, double *b, double *c, do
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_drotg_usm>(cgh, [=]() {
-            ::cblas_drotg(a, b, c, s);
-        });
+        host_task<class netlib_drotg_usm>(cgh, [=]() { ::cblas_drotg(a, b, c, s); });
     });
     return done;
 }
@@ -1252,9 +1228,7 @@ cl::sycl::event rotg(cl::sycl::queue &queue, std::complex<float> *a, std::comple
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_crotg_usm>(cgh, [=]() {
-            ::crotg_(a, b, c, s);
-        });
+        host_task<class netlib_crotg_usm>(cgh, [=]() { ::crotg_(a, b, c, s); });
     });
     return done;
 }
@@ -1267,9 +1241,7 @@ cl::sycl::event rotg(cl::sycl::queue &queue, std::complex<double> *a, std::compl
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_zrotg_usm>(cgh, [=]() {
-            ::zrotg_(a, b, c, s);
-        });
+        host_task<class netlib_zrotg_usm>(cgh, [=]() { ::zrotg_(a, b, c, s); });
     });
     return done;
 }
@@ -1311,9 +1283,8 @@ cl::sycl::event rotmg(cl::sycl::queue &queue, float *d1, float *d2, float *x1, f
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_srotmg_usm>(cgh, [=]() {
-            ::cblas_srotmg(d1, d2, x1, (float)y1, param);
-        });
+        host_task<class netlib_srotmg_usm>(cgh,
+                                           [=]() { ::cblas_srotmg(d1, d2, x1, (float)y1, param); });
     });
     return done;
 }
@@ -1325,9 +1296,8 @@ cl::sycl::event rotmg(cl::sycl::queue &queue, double *d1, double *d2, double *x1
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_drotmg_usm>(cgh, [=]() {
-            ::cblas_drotmg(d1, d2, x1, (double)y1, param);
-        });
+        host_task<class netlib_drotmg_usm>(
+            cgh, [=]() { ::cblas_drotmg(d1, d2, x1, (double)y1, param); });
     });
     return done;
 }
@@ -1441,9 +1411,8 @@ cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, float *x, int64_t incx, 
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_sswap_usm>(cgh, [=]() {
-            ::cblas_sswap((const int)n, x, (const int)incx, y, (const int)incy);
-        });
+        host_task<class netlib_sswap_usm>(
+            cgh, [=]() { ::cblas_sswap((const int)n, x, (const int)incx, y, (const int)incy); });
     });
     return done;
 }
@@ -1455,9 +1424,8 @@ cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, double *x, int64_t incx,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_dswap_usm>(cgh, [=]() {
-            ::cblas_dswap((const int)n, x, (const int)incx, y, (const int)incy);
-        });
+        host_task<class netlib_dswap_usm>(
+            cgh, [=]() { ::cblas_dswap((const int)n, x, (const int)incx, y, (const int)incy); });
     });
     return done;
 }
@@ -1470,9 +1438,8 @@ cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, std::complex<float> *x, 
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_cswap_usm>(cgh, [=]() {
-            ::cblas_cswap((const int)n, x, (const int)incx, y, (const int)incy);
-        });
+        host_task<class netlib_cswap_usm>(
+            cgh, [=]() { ::cblas_cswap((const int)n, x, (const int)incx, y, (const int)incy); });
     });
     return done;
 }
@@ -1485,10 +1452,8 @@ cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, std::complex<double> *x,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_zswap_usm>(cgh, [=]() {
-            ::cblas_zswap((const int)n, x, (const int)incx, y, (const int)incy);
-        });
+        host_task<class netlib_zswap_usm>(
+            cgh, [=]() { ::cblas_zswap((const int)n, x, (const int)incx, y, (const int)incy); });
     });
     return done;
 }
-

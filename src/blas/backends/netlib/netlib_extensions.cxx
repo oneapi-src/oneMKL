@@ -131,4 +131,3 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
     throw unimplemented("blas", "gemmt", "for row_major layout");
 #endif
 }
-

@@ -844,4 +844,3 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<doub
     });
     return done;
 }
-

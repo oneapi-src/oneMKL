@@ -1614,4 +1614,3 @@ ONEMKL_EXPORT cl::sycl::event rotg(
     oneapi::mkl::device libkey, cl::sycl::queue &queue, std::complex<double> *a,
     std::complex<double> *b, double *c, std::complex<double> *s,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
-

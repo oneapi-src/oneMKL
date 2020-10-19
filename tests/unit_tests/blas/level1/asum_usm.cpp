@@ -96,12 +96,12 @@ int test(device* dev, oneapi::mkl::layout layout, int64_t N, int64_t incx) {
 #else
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::asum,
-                            N, x.data(), incx, result_p, dependencies);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::asum, N, x.data(),
+                                   incx, result_p, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::asum,
-                            N, x.data(), incx, result_p, dependencies);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::asum, N, x.data(),
+                                   incx, result_p, dependencies);
                 break;
             default: break;
         }

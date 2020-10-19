@@ -37,14 +37,14 @@ namespace column_major {
 
 #define MAJOR column_major
 #include "blas_ct.hxx"
-#undef MAJOR 
+#undef MAJOR
 
 } //namespace column_major
 namespace row_major {
 
 #define MAJOR row_major
 #include "blas_ct.hxx"
-#undef MAJOR 
+#undef MAJOR
 
 } //namespace row_major
 } //namespace blas

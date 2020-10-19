@@ -69,7 +69,6 @@ inline CBLAS_OFFSET convert_to_cblas_offset(offset offsetc) {
         return CBLAS_OFFSET::CblasRowOffset;
 }
 
-
 // host_task automatically uses run_on_host_intel if it is supported by the
 //  compiler. Otherwise, it falls back to single_task.
 template <typename K, typename H, typename F>
@@ -86,7 +85,6 @@ template <typename K, typename H, typename F>
 static inline void host_task(H &cgh, F f) {
     (void)host_task_internal<K>(cgh, f, 0);
 }
-
 
 } // namespace netlib
 } // namespace mkl

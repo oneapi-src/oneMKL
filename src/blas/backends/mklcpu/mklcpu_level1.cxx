@@ -1429,4 +1429,3 @@ cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, std::complex<double> *x,
     });
     return done;
 }
-

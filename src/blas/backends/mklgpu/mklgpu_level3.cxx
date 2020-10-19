@@ -631,4 +631,3 @@ cl::sycl::event trsm(cl::sycl::queue &queue, oneapi::mkl::side left_right,
         ::mkl::cblas_convert(transa), ::mkl::cblas_convert(unit_diag), m, n, alpha, a, lda, b, ldb,
         dependencies);
 }
-

@@ -623,4 +623,3 @@ cl::sycl::event iamin(cl::sycl::queue &queue, std::int64_t n, const std::complex
                       const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::izamin_sycl(&queue, n, x, incx, result, dependencies);
 }
-

@@ -6207,4 +6207,3 @@ inline void rotg_postcondition(cl::sycl::queue &queue, std::complex<double> *a,
     /* add postchecks to queue here for input args.  */
 #endif
 }
-

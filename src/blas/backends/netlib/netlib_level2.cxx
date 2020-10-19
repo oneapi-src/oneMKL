@@ -258,10 +258,10 @@ void hbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k, std::c
         auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_y = y.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_chbmv>(cgh, [=]() {
-            ::cblas_chbmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
-                          (const int)k, (const void *)&alpha, accessor_a.get_pointer(),
-                          (const int)lda, accessor_x.get_pointer(), (const int)incx,
-                          (const void *)&beta, accessor_y.get_pointer(), (const int)incy);
+            ::cblas_chbmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n, (const int)k,
+                          (const void *)&alpha, accessor_a.get_pointer(), (const int)lda,
+                          accessor_x.get_pointer(), (const int)incx, (const void *)&beta,
+                          accessor_y.get_pointer(), (const int)incy);
         });
     });
 }
@@ -275,10 +275,10 @@ void hbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k,
         auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_y = y.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_zhbmv>(cgh, [=]() {
-            ::cblas_zhbmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
-                          (const int)k, (const void *)&alpha, accessor_a.get_pointer(),
-                          (const int)lda, accessor_x.get_pointer(), (const int)incx,
-                          (const void *)&beta, accessor_y.get_pointer(), (const int)incy);
+            ::cblas_zhbmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n, (const int)k,
+                          (const void *)&alpha, accessor_a.get_pointer(), (const int)lda,
+                          accessor_x.get_pointer(), (const int)incx, (const void *)&beta,
+                          accessor_y.get_pointer(), (const int)incy);
         });
     });
 }
@@ -385,8 +385,8 @@ void hpmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, std::complex<floa
           int64_t incy) {
     queue.submit([&](cl::sycl::handler &cgh) {
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y  = y.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_chpmv>(cgh, [=]() {
             ::cblas_chpmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
                           (const void *)&alpha, accessor_ap.get_pointer(), accessor_x.get_pointer(),
@@ -402,8 +402,8 @@ void hpmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, std::complex<doub
           cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy) {
     queue.submit([&](cl::sycl::handler &cgh) {
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y  = y.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_zhpmv>(cgh, [=]() {
             ::cblas_zhpmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
                           (const void *)&alpha, accessor_ap.get_pointer(), accessor_x.get_pointer(),
@@ -417,7 +417,7 @@ void hpr(cl::sycl::queue &queue, uplo upper_lower, int64_t n, float alpha,
          cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx,
          cl::sycl::buffer<std::complex<float>, 1> &ap) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_chpr>(cgh, [=]() {
             ::cblas_chpr(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
@@ -431,7 +431,7 @@ void hpr(cl::sycl::queue &queue, uplo upper_lower, int64_t n, double alpha,
          cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx,
          cl::sycl::buffer<std::complex<double>, 1> &ap) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_zhpr>(cgh, [=]() {
             ::cblas_zhpr(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
@@ -446,8 +446,8 @@ void hpr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, std::complex<floa
           cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy,
           cl::sycl::buffer<std::complex<float>, 1> &ap) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y  = y.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_chpr2>(cgh, [=]() {
             ::cblas_chpr2(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
@@ -462,8 +462,8 @@ void hpr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, std::complex<doub
           cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy,
           cl::sycl::buffer<std::complex<double>, 1> &ap) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y  = y.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_zhpr2>(cgh, [=]() {
             ::cblas_zhpr2(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
@@ -481,10 +481,10 @@ void sbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k, float 
         auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_y = y.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_ssbmv>(cgh, [=]() {
-            ::cblas_ssbmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
-                          (const int)k, (const float)alpha, accessor_a.get_pointer(),
-                          (const int)lda, accessor_x.get_pointer(), (const int)incx,
-                          (const float)beta, accessor_y.get_pointer(), (const int)incy);
+            ::cblas_ssbmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n, (const int)k,
+                          (const float)alpha, accessor_a.get_pointer(), (const int)lda,
+                          accessor_x.get_pointer(), (const int)incx, (const float)beta,
+                          accessor_y.get_pointer(), (const int)incy);
         });
     });
 }
@@ -497,10 +497,10 @@ void sbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k, double
         auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_y = y.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_dsbmv>(cgh, [=]() {
-            ::cblas_dsbmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
-                          (const int)k, (const double)alpha, accessor_a.get_pointer(),
-                          (const int)lda, accessor_x.get_pointer(), (const int)incx,
-                          (const double)beta, accessor_y.get_pointer(), (const int)incy);
+            ::cblas_dsbmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n, (const int)k,
+                          (const double)alpha, accessor_a.get_pointer(), (const int)lda,
+                          accessor_x.get_pointer(), (const int)incx, (const double)beta,
+                          accessor_y.get_pointer(), (const int)incy);
         });
     });
 }
@@ -510,8 +510,8 @@ void spmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, float alpha,
           cl::sycl::buffer<float, 1> &y, int64_t incy) {
     queue.submit([&](cl::sycl::handler &cgh) {
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y  = y.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_sspmv>(cgh, [=]() {
             ::cblas_sspmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
                           (const float)alpha, accessor_ap.get_pointer(), accessor_x.get_pointer(),
@@ -526,8 +526,8 @@ void spmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, double alpha,
           double beta, cl::sycl::buffer<double, 1> &y, int64_t incy) {
     queue.submit([&](cl::sycl::handler &cgh) {
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y  = y.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_dspmv>(cgh, [=]() {
             ::cblas_dspmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
                           (const double)alpha, accessor_ap.get_pointer(), accessor_x.get_pointer(),
@@ -540,7 +540,7 @@ void spmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, double alpha,
 void spr(cl::sycl::queue &queue, uplo upper_lower, int64_t n, float alpha,
          cl::sycl::buffer<float, 1> &x, int64_t incx, cl::sycl::buffer<float, 1> &ap) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_sspr>(cgh, [=]() {
             ::cblas_sspr(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
@@ -553,7 +553,7 @@ void spr(cl::sycl::queue &queue, uplo upper_lower, int64_t n, float alpha,
 void spr(cl::sycl::queue &queue, uplo upper_lower, int64_t n, double alpha,
          cl::sycl::buffer<double, 1> &x, int64_t incx, cl::sycl::buffer<double, 1> &ap) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_dspr>(cgh, [=]() {
             ::cblas_dspr(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
@@ -567,8 +567,8 @@ void spr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, float alpha,
           cl::sycl::buffer<float, 1> &x, int64_t incx, cl::sycl::buffer<float, 1> &y, int64_t incy,
           cl::sycl::buffer<float, 1> &ap) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y  = y.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_sspr2>(cgh, [=]() {
             ::cblas_sspr2(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
@@ -582,8 +582,8 @@ void spr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, double alpha,
           cl::sycl::buffer<double, 1> &x, int64_t incx, cl::sycl::buffer<double, 1> &y,
           int64_t incy, cl::sycl::buffer<double, 1> &ap) {
     queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y  = y.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_dspr2>(cgh, [=]() {
             ::cblas_dspr2(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
@@ -691,10 +691,10 @@ void tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_stbmv>(cgh, [=]() {
-            ::cblas_stbmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, (const int)k, accessor_a.get_pointer(), (const int)lda,
-                          accessor_x.get_pointer(), (const int)incx);
+            ::cblas_stbmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, (const int)k,
+                          accessor_a.get_pointer(), (const int)lda, accessor_x.get_pointer(),
+                          (const int)incx);
         });
     });
 }
@@ -706,10 +706,10 @@ void tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_dtbmv>(cgh, [=]() {
-            ::cblas_dtbmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, (const int)k, accessor_a.get_pointer(), (const int)lda,
-                          accessor_x.get_pointer(), (const int)incx);
+            ::cblas_dtbmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, (const int)k,
+                          accessor_a.get_pointer(), (const int)lda, accessor_x.get_pointer(),
+                          (const int)incx);
         });
     });
 }
@@ -721,10 +721,10 @@ void tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_ctbmv>(cgh, [=]() {
-            ::cblas_ctbmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, (const int)k, accessor_a.get_pointer(), (const int)lda,
-                          accessor_x.get_pointer(), (const int)incx);
+            ::cblas_ctbmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, (const int)k,
+                          accessor_a.get_pointer(), (const int)lda, accessor_x.get_pointer(),
+                          (const int)incx);
         });
     });
 }
@@ -736,10 +736,10 @@ void tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_ztbmv>(cgh, [=]() {
-            ::cblas_ztbmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, (const int)k, accessor_a.get_pointer(), (const int)lda,
-                          accessor_x.get_pointer(), (const int)incx);
+            ::cblas_ztbmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, (const int)k,
+                          accessor_a.get_pointer(), (const int)lda, accessor_x.get_pointer(),
+                          (const int)incx);
         });
     });
 }
@@ -751,10 +751,10 @@ void tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_stbsv>(cgh, [=]() {
-            ::cblas_stbsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, (const int)k, accessor_a.get_pointer(), (const int)lda,
-                          accessor_x.get_pointer(), (const int)incx);
+            ::cblas_stbsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, (const int)k,
+                          accessor_a.get_pointer(), (const int)lda, accessor_x.get_pointer(),
+                          (const int)incx);
         });
     });
 }
@@ -766,10 +766,10 @@ void tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_dtbsv>(cgh, [=]() {
-            ::cblas_dtbsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, (const int)k, accessor_a.get_pointer(), (const int)lda,
-                          accessor_x.get_pointer(), (const int)incx);
+            ::cblas_dtbsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, (const int)k,
+                          accessor_a.get_pointer(), (const int)lda, accessor_x.get_pointer(),
+                          (const int)incx);
         });
     });
 }
@@ -781,10 +781,10 @@ void tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_ctbsv>(cgh, [=]() {
-            ::cblas_ctbsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, (const int)k, accessor_a.get_pointer(), (const int)lda,
-                          accessor_x.get_pointer(), (const int)incx);
+            ::cblas_ctbsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, (const int)k,
+                          accessor_a.get_pointer(), (const int)lda, accessor_x.get_pointer(),
+                          (const int)incx);
         });
     });
 }
@@ -796,38 +796,36 @@ void tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_ztbsv>(cgh, [=]() {
-            ::cblas_ztbsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, (const int)k, accessor_a.get_pointer(), (const int)lda,
+            ::cblas_ztbsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, (const int)k,
+                          accessor_a.get_pointer(), (const int)lda, accessor_x.get_pointer(),
+                          (const int)incx);
+        });
+    });
+}
+
+void tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, int64_t n,
+          cl::sycl::buffer<float, 1> &ap, cl::sycl::buffer<float, 1> &x, int64_t incx) {
+    queue.submit([&](cl::sycl::handler &cgh) {
+        auto accessor_ap = ap.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
+        host_task<class netlib_stpmv>(cgh, [=]() {
+            ::cblas_stpmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, accessor_ap.get_pointer(),
                           accessor_x.get_pointer(), (const int)incx);
         });
     });
 }
 
 void tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, int64_t n,
-          cl::sycl::buffer<float, 1> &ap, cl::sycl::buffer<float, 1> &x, int64_t incx) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_ap = ap.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read_write>(cgh);
-        host_task<class netlib_stpmv>(cgh, [=]() {
-            ::cblas_stpmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, accessor_ap.get_pointer(), accessor_x.get_pointer(),
-                          (const int)incx);
-        });
-    });
-}
-
-void tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, int64_t n,
           cl::sycl::buffer<double, 1> &ap, cl::sycl::buffer<double, 1> &x, int64_t incx) {
     queue.submit([&](cl::sycl::handler &cgh) {
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_dtpmv>(cgh, [=]() {
-            ::cblas_dtpmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, accessor_ap.get_pointer(), accessor_x.get_pointer(),
-                          (const int)incx);
+            ::cblas_dtpmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, accessor_ap.get_pointer(),
+                          accessor_x.get_pointer(), (const int)incx);
         });
     });
 }
@@ -837,12 +835,11 @@ void tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
           int64_t incx) {
     queue.submit([&](cl::sycl::handler &cgh) {
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_ctpmv>(cgh, [=]() {
-            ::cblas_ctpmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, accessor_ap.get_pointer(), accessor_x.get_pointer(),
-                          (const int)incx);
+            ::cblas_ctpmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, accessor_ap.get_pointer(),
+                          accessor_x.get_pointer(), (const int)incx);
         });
     });
 }
@@ -852,12 +849,11 @@ void tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
           cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx) {
     queue.submit([&](cl::sycl::handler &cgh) {
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_ztpmv>(cgh, [=]() {
-            ::cblas_ztpmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, accessor_ap.get_pointer(), accessor_x.get_pointer(),
-                          (const int)incx);
+            ::cblas_ztpmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, accessor_ap.get_pointer(),
+                          accessor_x.get_pointer(), (const int)incx);
         });
     });
 }
@@ -866,12 +862,11 @@ void tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
           cl::sycl::buffer<float, 1> &ap, cl::sycl::buffer<float, 1> &x, int64_t incx) {
     queue.submit([&](cl::sycl::handler &cgh) {
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_stpsv>(cgh, [=]() {
-            ::cblas_stpsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, accessor_ap.get_pointer(), accessor_x.get_pointer(),
-                          (const int)incx);
+            ::cblas_stpsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, accessor_ap.get_pointer(),
+                          accessor_x.get_pointer(), (const int)incx);
         });
     });
 }
@@ -880,12 +875,11 @@ void tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
           cl::sycl::buffer<double, 1> &ap, cl::sycl::buffer<double, 1> &x, int64_t incx) {
     queue.submit([&](cl::sycl::handler &cgh) {
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_dtpsv>(cgh, [=]() {
-            ::cblas_dtpsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, accessor_ap.get_pointer(), accessor_x.get_pointer(),
-                          (const int)incx);
+            ::cblas_dtpsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, accessor_ap.get_pointer(),
+                          accessor_x.get_pointer(), (const int)incx);
         });
     });
 }
@@ -895,12 +889,11 @@ void tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
           int64_t incx) {
     queue.submit([&](cl::sycl::handler &cgh) {
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_ctpsv>(cgh, [=]() {
-            ::cblas_ctpsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, accessor_ap.get_pointer(), accessor_x.get_pointer(),
-                          (const int)incx);
+            ::cblas_ctpsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, accessor_ap.get_pointer(),
+                          accessor_x.get_pointer(), (const int)incx);
         });
     });
 }
@@ -910,12 +903,11 @@ void tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
           cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx) {
     queue.submit([&](cl::sycl::handler &cgh) {
         auto accessor_ap = ap.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_x  = x.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_ztpsv>(cgh, [=]() {
-            ::cblas_ztpsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, accessor_ap.get_pointer(), accessor_x.get_pointer(),
-                          (const int)incx);
+            ::cblas_ztpsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, accessor_ap.get_pointer(),
+                          accessor_x.get_pointer(), (const int)incx);
         });
     });
 }
@@ -926,10 +918,9 @@ void trmv(cl::sycl::queue &queue, uplo upper_lower, transpose transa, diag unit_
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_b = b.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_strmv>(cgh, [=]() {
-            ::cblas_strmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(transa), convert_to_cblas_diag(unit_diag),
-                          (const int)n, accessor_a.get_pointer(), (const int)lda,
-                          accessor_b.get_pointer(), (const int)incx);
+            ::cblas_strmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(transa),
+                          convert_to_cblas_diag(unit_diag), (const int)n, accessor_a.get_pointer(),
+                          (const int)lda, accessor_b.get_pointer(), (const int)incx);
         });
     });
 }
@@ -941,10 +932,9 @@ void trmv(cl::sycl::queue &queue, uplo upper_lower, transpose transa, diag unit_
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_b = b.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_dtrmv>(cgh, [=]() {
-            ::cblas_dtrmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(transa), convert_to_cblas_diag(unit_diag),
-                          (const int)n, accessor_a.get_pointer(), (const int)lda,
-                          accessor_b.get_pointer(), (const int)incx);
+            ::cblas_dtrmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(transa),
+                          convert_to_cblas_diag(unit_diag), (const int)n, accessor_a.get_pointer(),
+                          (const int)lda, accessor_b.get_pointer(), (const int)incx);
         });
     });
 }
@@ -956,10 +946,9 @@ void trmv(cl::sycl::queue &queue, uplo upper_lower, transpose transa, diag unit_
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_b = b.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_ctrmv>(cgh, [=]() {
-            ::cblas_ctrmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(transa), convert_to_cblas_diag(unit_diag),
-                          (const int)n, accessor_a.get_pointer(), (const int)lda,
-                          accessor_b.get_pointer(), (const int)incx);
+            ::cblas_ctrmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(transa),
+                          convert_to_cblas_diag(unit_diag), (const int)n, accessor_a.get_pointer(),
+                          (const int)lda, accessor_b.get_pointer(), (const int)incx);
         });
     });
 }
@@ -971,10 +960,9 @@ void trmv(cl::sycl::queue &queue, uplo upper_lower, transpose transa, diag unit_
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_b = b.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_ztrmv>(cgh, [=]() {
-            ::cblas_ztrmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(transa), convert_to_cblas_diag(unit_diag),
-                          (const int)n, accessor_a.get_pointer(), (const int)lda,
-                          accessor_b.get_pointer(), (const int)incx);
+            ::cblas_ztrmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(transa),
+                          convert_to_cblas_diag(unit_diag), (const int)n, accessor_a.get_pointer(),
+                          (const int)lda, accessor_b.get_pointer(), (const int)incx);
         });
     });
 }
@@ -985,10 +973,9 @@ void trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_strsv>(cgh, [=]() {
-            ::cblas_strsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, accessor_a.get_pointer(), (const int)lda,
-                          accessor_x.get_pointer(), (const int)incx);
+            ::cblas_strsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, accessor_a.get_pointer(),
+                          (const int)lda, accessor_x.get_pointer(), (const int)incx);
         });
     });
 }
@@ -1000,10 +987,9 @@ void trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_dtrsv>(cgh, [=]() {
-            ::cblas_dtrsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, accessor_a.get_pointer(), (const int)lda,
-                          accessor_x.get_pointer(), (const int)incx);
+            ::cblas_dtrsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, accessor_a.get_pointer(),
+                          (const int)lda, accessor_x.get_pointer(), (const int)incx);
         });
     });
 }
@@ -1015,10 +1001,9 @@ void trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_ctrsv>(cgh, [=]() {
-            ::cblas_ctrsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, accessor_a.get_pointer(), (const int)lda,
-                          accessor_x.get_pointer(), (const int)incx);
+            ::cblas_ctrsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, accessor_a.get_pointer(),
+                          (const int)lda, accessor_x.get_pointer(), (const int)incx);
         });
     });
 }
@@ -1030,10 +1015,9 @@ void trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_d
         auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_ztrsv>(cgh, [=]() {
-            ::cblas_ztrsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, accessor_a.get_pointer(), (const int)lda,
-                          accessor_x.get_pointer(), (const int)incx);
+            ::cblas_ztrsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, accessor_a.get_pointer(),
+                          (const int)lda, accessor_x.get_pointer(), (const int)incx);
         });
     });
 }
@@ -1197,8 +1181,8 @@ cl::sycl::event ger(cl::sycl::queue &queue, int64_t m, int64_t n, float alpha, c
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_sger_usm>(cgh, [=]() {
-            ::cblas_sger(MAJOR, (const int)m, (const int)n, (const float)alpha, x,
-                         (const int)incx, y, (const int)incy, a, (const int)lda);
+            ::cblas_sger(MAJOR, (const int)m, (const int)n, (const float)alpha, x, (const int)incx,
+                         y, (const int)incy, a, (const int)lda);
         });
     });
     return done;
@@ -1213,8 +1197,8 @@ cl::sycl::event ger(cl::sycl::queue &queue, int64_t m, int64_t n, double alpha, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_dger_usm>(cgh, [=]() {
-            ::cblas_dger(MAJOR, (const int)m, (const int)n, (const double)alpha, x,
-                         (const int)incx, y, (const int)incy, a, (const int)lda);
+            ::cblas_dger(MAJOR, (const int)m, (const int)n, (const double)alpha, x, (const int)incx,
+                         y, (const int)incy, a, (const int)lda);
         });
     });
     return done;
@@ -1299,8 +1283,8 @@ cl::sycl::event hbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_chbmv_usm>(cgh, [=]() {
-            ::cblas_chbmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
-                          (const int)k, (const void *)&alpha, a, (const int)lda, x, (const int)incx,
+            ::cblas_chbmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n, (const int)k,
+                          (const void *)&alpha, a, (const int)lda, x, (const int)incx,
                           (const void *)&beta, y, (const int)incy);
         });
     });
@@ -1318,8 +1302,8 @@ cl::sycl::event hbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_zhbmv_usm>(cgh, [=]() {
-            ::cblas_zhbmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
-                          (const int)k, (const void *)&alpha, a, (const int)lda, x, (const int)incx,
+            ::cblas_zhbmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n, (const int)k,
+                          (const void *)&alpha, a, (const int)lda, x, (const int)incx,
                           (const void *)&beta, y, (const int)incy);
         });
     });
@@ -1544,8 +1528,8 @@ cl::sycl::event sbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_ssbmv_usm>(cgh, [=]() {
-            ::cblas_ssbmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
-                          (const int)k, (const float)alpha, a, (const int)lda, x, (const int)incx,
+            ::cblas_ssbmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n, (const int)k,
+                          (const float)alpha, a, (const int)lda, x, (const int)incx,
                           (const float)beta, y, (const int)incy);
         });
     });
@@ -1562,8 +1546,8 @@ cl::sycl::event sbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_dsbmv_usm>(cgh, [=]() {
-            ::cblas_dsbmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n,
-                          (const int)k, (const double)alpha, a, (const int)lda, x, (const int)incx,
+            ::cblas_dsbmv(MAJOR, convert_to_cblas_uplo(upper_lower), (const int)n, (const int)k,
+                          (const double)alpha, a, (const int)lda, x, (const int)incx,
                           (const double)beta, y, (const int)incy);
         });
     });
@@ -1779,9 +1763,9 @@ cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_stbmv_usm>(cgh, [=]() {
-            ::cblas_stbmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, (const int)k, a, (const int)lda, x, (const int)incx);
+            ::cblas_stbmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, (const int)k, a,
+                          (const int)lda, x, (const int)incx);
         });
     });
     return done;
@@ -1796,9 +1780,9 @@ cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_dtbmv_usm>(cgh, [=]() {
-            ::cblas_dtbmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, (const int)k, a, (const int)lda, x, (const int)incx);
+            ::cblas_dtbmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, (const int)k, a,
+                          (const int)lda, x, (const int)incx);
         });
     });
     return done;
@@ -1814,9 +1798,9 @@ cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_ctbmv_usm>(cgh, [=]() {
-            ::cblas_ctbmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, (const int)k, a, (const int)lda, x, (const int)incx);
+            ::cblas_ctbmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, (const int)k, a,
+                          (const int)lda, x, (const int)incx);
         });
     });
     return done;
@@ -1832,9 +1816,9 @@ cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_ztbmv_usm>(cgh, [=]() {
-            ::cblas_ztbmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, (const int)k, a, (const int)lda, x, (const int)incx);
+            ::cblas_ztbmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, (const int)k, a,
+                          (const int)lda, x, (const int)incx);
         });
     });
     return done;
@@ -1849,9 +1833,9 @@ cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_stbsv_usm>(cgh, [=]() {
-            ::cblas_stbsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, (const int)k, a, (const int)lda, x, (const int)incx);
+            ::cblas_stbsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, (const int)k, a,
+                          (const int)lda, x, (const int)incx);
         });
     });
     return done;
@@ -1866,9 +1850,9 @@ cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_dtbsv_usm>(cgh, [=]() {
-            ::cblas_dtbsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, (const int)k, a, (const int)lda, x, (const int)incx);
+            ::cblas_dtbsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, (const int)k, a,
+                          (const int)lda, x, (const int)incx);
         });
     });
     return done;
@@ -1884,9 +1868,9 @@ cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_ctbsv_usm>(cgh, [=]() {
-            ::cblas_ctbsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, (const int)k, a, (const int)lda, x, (const int)incx);
+            ::cblas_ctbsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, (const int)k, a,
+                          (const int)lda, x, (const int)incx);
         });
     });
     return done;
@@ -1902,9 +1886,9 @@ cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_ztbsv_usm>(cgh, [=]() {
-            ::cblas_ztbsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, (const int)k, a, (const int)lda, x, (const int)incx);
+            ::cblas_ztbsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, (const int)k, a,
+                          (const int)lda, x, (const int)incx);
         });
     });
     return done;
@@ -1919,9 +1903,8 @@ cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_stpmv_usm>(cgh, [=]() {
-            ::cblas_stpmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, ap, x, (const int)incx);
+            ::cblas_stpmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, ap, x, (const int)incx);
         });
     });
     return done;
@@ -1936,9 +1919,8 @@ cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_dtpmv_usm>(cgh, [=]() {
-            ::cblas_dtpmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, ap, x, (const int)incx);
+            ::cblas_dtpmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, ap, x, (const int)incx);
         });
     });
     return done;
@@ -1953,9 +1935,8 @@ cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_ctpmv_usm>(cgh, [=]() {
-            ::cblas_ctpmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, ap, x, (const int)incx);
+            ::cblas_ctpmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, ap, x, (const int)incx);
         });
     });
     return done;
@@ -1970,9 +1951,8 @@ cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_ztpmv_usm>(cgh, [=]() {
-            ::cblas_ztpmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, ap, x, (const int)incx);
+            ::cblas_ztpmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, ap, x, (const int)incx);
         });
     });
     return done;
@@ -1987,9 +1967,8 @@ cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_stpsv_usm>(cgh, [=]() {
-            ::cblas_stpsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, ap, x, (const int)incx);
+            ::cblas_stpsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, ap, x, (const int)incx);
         });
     });
     return done;
@@ -2004,9 +1983,8 @@ cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_dtpsv_usm>(cgh, [=]() {
-            ::cblas_dtpsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, ap, x, (const int)incx);
+            ::cblas_dtpsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, ap, x, (const int)incx);
         });
     });
     return done;
@@ -2021,9 +1999,8 @@ cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_ctpsv_usm>(cgh, [=]() {
-            ::cblas_ctpsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, ap, x, (const int)incx);
+            ::cblas_ctpsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, ap, x, (const int)incx);
         });
     });
     return done;
@@ -2038,9 +2015,8 @@ cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_ztpsv_usm>(cgh, [=]() {
-            ::cblas_ztpsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, ap, x, (const int)incx);
+            ::cblas_ztpsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, ap, x, (const int)incx);
         });
     });
     return done;
@@ -2055,9 +2031,9 @@ cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose transa,
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_strmv_usm>(cgh, [=]() {
-            ::cblas_strmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(transa), convert_to_cblas_diag(unit_diag),
-                          (const int)n, a, (const int)lda, b, (const int)incx);
+            ::cblas_strmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(transa),
+                          convert_to_cblas_diag(unit_diag), (const int)n, a, (const int)lda, b,
+                          (const int)incx);
         });
     });
     return done;
@@ -2072,9 +2048,9 @@ cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose transa,
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_dtrmv_usm>(cgh, [=]() {
-            ::cblas_dtrmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(transa), convert_to_cblas_diag(unit_diag),
-                          (const int)n, a, (const int)lda, b, (const int)incx);
+            ::cblas_dtrmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(transa),
+                          convert_to_cblas_diag(unit_diag), (const int)n, a, (const int)lda, b,
+                          (const int)incx);
         });
     });
     return done;
@@ -2089,9 +2065,9 @@ cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose transa,
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_ctrmv_usm>(cgh, [=]() {
-            ::cblas_ctrmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(transa), convert_to_cblas_diag(unit_diag),
-                          (const int)n, a, (const int)lda, b, (const int)incx);
+            ::cblas_ctrmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(transa),
+                          convert_to_cblas_diag(unit_diag), (const int)n, a, (const int)lda, b,
+                          (const int)incx);
         });
     });
     return done;
@@ -2106,9 +2082,9 @@ cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose transa,
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_ztrmv_usm>(cgh, [=]() {
-            ::cblas_ztrmv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(transa), convert_to_cblas_diag(unit_diag),
-                          (const int)n, a, (const int)lda, b, (const int)incx);
+            ::cblas_ztrmv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(transa),
+                          convert_to_cblas_diag(unit_diag), (const int)n, a, (const int)lda, b,
+                          (const int)incx);
         });
     });
     return done;
@@ -2123,9 +2099,9 @@ cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_strsv_usm>(cgh, [=]() {
-            ::cblas_strsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, a, (const int)lda, x, (const int)incx);
+            ::cblas_strsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, a, (const int)lda, x,
+                          (const int)incx);
         });
     });
     return done;
@@ -2140,9 +2116,9 @@ cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_dtrsv_usm>(cgh, [=]() {
-            ::cblas_dtrsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, a, (const int)lda, x, (const int)incx);
+            ::cblas_dtrsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, a, (const int)lda, x,
+                          (const int)incx);
         });
     });
     return done;
@@ -2157,9 +2133,9 @@ cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_ctrsv_usm>(cgh, [=]() {
-            ::cblas_ctrsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, a, (const int)lda, x, (const int)incx);
+            ::cblas_ctrsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, a, (const int)lda, x,
+                          (const int)incx);
         });
     });
     return done;
@@ -2174,11 +2150,10 @@ cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_ztrsv_usm>(cgh, [=]() {
-            ::cblas_ztrsv(MAJOR, convert_to_cblas_uplo(upper_lower),
-                          convert_to_cblas_trans(trans), convert_to_cblas_diag(unit_diag),
-                          (const int)n, a, (const int)lda, x, (const int)incx);
+            ::cblas_ztrsv(MAJOR, convert_to_cblas_uplo(upper_lower), convert_to_cblas_trans(trans),
+                          convert_to_cblas_diag(unit_diag), (const int)n, a, (const int)lda, x,
+                          (const int)incx);
         });
     });
     return done;
 }
-

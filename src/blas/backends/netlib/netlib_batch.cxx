@@ -296,4 +296,3 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
     throw unimplemented("blas", "gemm_batch", "for row_major layout");
 #endif
 }
-

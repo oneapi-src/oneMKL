@@ -26,13 +26,13 @@ void gemm_bias(cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mk
                cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
                cl::sycl::buffer<int32_t, 1> &co) {
 #ifdef COLUMN_MAJOR
-        ::oneapi::mkl::gpu::gemm_s8u8s32_sycl(&queue, MAJOR, ::mkl::cblas_convert(transa),
-                                              ::mkl::cblas_convert(transb),
-                                              ::mkl::cblas_convert(offsetc), m, n, k, alpha, &a, lda,
-                                              ao, &b, ldb, bo, beta, &c, ldc, &co);
+    ::oneapi::mkl::gpu::gemm_s8u8s32_sycl(&queue, MAJOR, ::mkl::cblas_convert(transa),
+                                          ::mkl::cblas_convert(transb),
+                                          ::mkl::cblas_convert(offsetc), m, n, k, alpha, &a, lda,
+                                          ao, &b, ldb, bo, beta, &c, ldc, &co);
 #endif
 #ifdef ROW_MAJOR
-        throw unimplemented("blas", "gemm_bias", "for row_major layout");
+    throw unimplemented("blas", "gemm_bias", "for row_major layout");
 #endif
 }
 
@@ -117,4 +117,3 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
         &queue, MAJOR, ::mkl::cblas_convert(upper_lower), ::mkl::cblas_convert(transa),
         ::mkl::cblas_convert(transb), n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
-

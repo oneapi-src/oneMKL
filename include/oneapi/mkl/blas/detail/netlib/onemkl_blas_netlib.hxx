@@ -1695,4 +1695,3 @@ ONEMKL_EXPORT cl::sycl::event gemmt(
     const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
     std::complex<double> *c, std::int64_t ldc,
     const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
-
