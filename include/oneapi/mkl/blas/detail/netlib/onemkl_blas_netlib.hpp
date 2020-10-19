@@ -17,13 +17,40 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef ONEMKL_CONFIG_H
-#define ONEMKL_CONFIG_H
+#ifndef _ONEMKL_BLAS_NETLIB_HPP_
+#define _ONEMKL_BLAS_NETLIB_HPP_
 
-#cmakedefine ENABLE_CUBLAS_BACKEND
-#cmakedefine ENABLE_MKLCPU_BACKEND
-#cmakedefine ENABLE_MKLGPU_BACKEND
-#cmakedefine ENABLE_NETLIB_BACKEND
-#cmakedefine BUILD_SHARED_LIBS
+#include <CL/sycl.hpp>
 
-#endif
+#include <complex>
+#include <cstdint>
+
+#include "oneapi/mkl/types.hpp"
+
+#include "oneapi/mkl/detail/export.hpp"
+
+namespace oneapi {
+namespace mkl {
+
+using oneapi::mkl::transpose;
+using oneapi::mkl::uplo;
+using oneapi::mkl::side;
+using oneapi::mkl::diag;
+using oneapi::mkl::offset;
+
+namespace netlib {
+namespace column_major {
+
+#include "onemkl_blas_netlib.hxx"
+
+} //namespace column_major
+namespace row_major {
+
+#include "onemkl_blas_netlib.hxx"
+
+} //namespace row_major
+} //namespace netlib
+} //namespace mkl
+} //namespace oneapi
+
+#endif //_ONEMKL_BLAS_NETLIB_HPP_
