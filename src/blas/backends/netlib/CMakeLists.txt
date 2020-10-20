@@ -39,7 +39,7 @@ target_include_directories(${LIB_OBJ}
 
 target_compile_options(${LIB_OBJ} PRIVATE ${NETLIB_COPT})
 
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ${NETLIB_LINK_C})
+target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ${NETLIB_LINK})
 
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON
