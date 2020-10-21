@@ -91,10 +91,9 @@ cl::sycl::queue cpu_queue(cpu_dev);
 cl::sycl::queue gpu_queue(gpu_dev);
 
 oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> cpu_selector(cpu_queue);
-oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas> cublas_selector(gpu_queue);
 
 oneapi::mkl::blas::gemm(cpu_selector, transA, transB, m, ...);
-oneapi::mkl::blas::gemm(cublas_selector, transA, transB, m, ...);
+oneapi::mkl::blas::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas> {gpu_queue}, transA, transB, m, ...);
 ```
 How to build an application with run-time dispatching:
 
