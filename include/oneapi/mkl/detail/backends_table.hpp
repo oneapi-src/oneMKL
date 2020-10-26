@@ -44,7 +44,10 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
       { { device::x86cpu,
           {
 #ifdef ENABLE_MKLCPU_BACKEND
-              LIB_NAME("blas_mklcpu")
+              LIB_NAME("blas_mklcpu"),
+#endif
+#ifdef ENABLE_NETLIB_BACKEND
+              LIB_NAME("blas_netlib")
 #endif
           } },
         { device::intelgpu,

@@ -3,179 +3,157 @@
 copy
 ====
 
+Copies a vector to another vector.
 
-.. container::
+.. _onemkl_blas_copy_description:
 
+.. rubric:: Description
 
-   Copies a vector to another vector.
+The ``copy`` routines copy one vector to another:
 
+.. math::
+      
+      y \leftarrow  x
 
+where ``x`` and ``y`` are vectors of n elements.
 
-      ``copy`` supports the following precisions.
+``copy`` supports the following precisions.
 
+   .. list-table:: 
+      :header-rows: 1
 
-      .. list-table:: 
-         :header-rows: 1
-
-         * -  T 
-         * -  ``float`` 
-         * -  ``double`` 
-         * -  ``std::complex<float>`` 
-         * -  ``std::complex<double>`` 
-
-
-
-
-.. container:: section
-
-
-   .. rubric:: Description
-      :class: sectiontitle
+      * -  T 
+      * -  ``float`` 
+      * -  ``double`` 
+      * -  ``std::complex<float>`` 
+      * -  ``std::complex<double>`` 
 
 
-   The copy routines copy one vector to another:
-
-
-  
-
-
-      y ←x
-
-
-   where ``x`` and ``y`` are vectors of n elements.
-
+.. _onemkl_blas_copy_buffer:
 
 copy (Buffer Version)
 ---------------------
 
-.. container::
+.. rubric:: Syntax
 
-   .. container:: section
+.. code-block:: cpp
 
+   namespace oneapi::mkl::blas::column_major {
+       void copy(sycl::queue &queue,
+                 std::int64_t n,
+                 sycl::buffer<T,1> &x,
+                 std::int64_t incx,
+                 sycl::buffer<T,1> &y,
+                 std::int64_t incy)
+   }
+.. code-block:: cpp
 
-      .. rubric:: Syntax
-         :class: sectiontitle
+   namespace oneapi::mkl::blas::row_major {
+       void copy(sycl::queue &queue,
+                 std::int64_t n,
+                 sycl::buffer<T,1> &x,
+                 std::int64_t incx,
+                 sycl::buffer<T,1> &y,
+                 std::int64_t incy)
+   }
 
-
-      .. cpp:function::  void oneapi::mkl::blas::copy(sycl::queue &queue, std::int64_t n, sycl::buffer<T,1> &x, std::int64_t incx, sycl::buffer<T,1> &y, std::int64_t incy)
 .. container:: section
 
-
    .. rubric:: Input Parameters
-      :class: sectiontitle
-
 
    queue
       The queue where the routine should be executed.
 
-
    n
       Number of elements in vector ``x``.
 
-
    x
       Buffer holding input vector ``x``. The buffer must be of size at least
-      ``(1 + (n – 1)*abs(incx))``. See `Matrix and Vector
-      Storage <../matrix-storage.html>`__ for
+      (1 + (``n`` – 1)*abs(``incx``)). See :ref:`matrix-storage` for
       more details.
-
 
    incx
       Stride of vector ``x``.
 
-
    incy
       Stride of vector ``y``.
 
-
 .. container:: section
 
-
    .. rubric:: Output Parameters
-      :class: sectiontitle
-
 
    y
       Buffer holding the updated vector ``y``.
 
 
+.. _onemkl_blas_copy_usm:
+
 copy (USM Version)
 ------------------
 
-.. container::
+.. rubric:: Syntax
 
-   .. container:: section
+.. code-block:: cpp
 
+   namespace oneapi::mkl::blas::column_major {
+       sycl::event copy(sycl::queue &queue,
+                        std::int64_t n,
+                        const T *x,
+                        std::int64_t incx,
+                        T *y,
+                        std::int64_t incy,
+                        const sycl::vector_class<sycl::event> &dependencies = {})
+   }
+.. code-block:: cpp
 
-      .. rubric:: Syntax
-         :class: sectiontitle
+   namespace oneapi::mkl::blas::row_major {
+       sycl::event copy(sycl::queue &queue,
+                        std::int64_t n,
+                        const T *x,
+                        std::int64_t incx,
+                        T *y,
+                        std::int64_t incy,
+                        const sycl::vector_class<sycl::event> &dependencies = {})
+   }
+   
+.. container:: section
 
+   .. rubric:: Input Parameters
 
-      .. container:: dlsyntaxpara
+   queue
+      The queue where the routine should be executed.
 
+   n
+      Number of elements in vector ``x``.
 
-         .. cpp:function::  sycl::event oneapi::mkl::blas::copy(sycl::queue &queue, std::int64_t n, const T *x, std::int64_t incx, T *y, std::int64_t incy, const sycl::vector_class<sycl::event> &dependencies = {})
-   .. container:: section
+   x
+      Pointer to the input vector ``x``. The array holding the vector
+      ``x`` must be of size at least (1 + (``n`` – 1)*abs(``incx``)). See
+      :ref:`matrix-storage` for
+      more details.
 
+   incx
+      Stride of vector ``x``.
 
-      .. rubric:: Input Parameters
-         :class: sectiontitle
+   incy
+      Stride of vector ``y``.
 
+   dependencies
+      List of events to wait for before starting computation, if any.
+      If omitted, defaults to no dependencies.
 
-      queue
-         The queue where the routine should be executed.
+.. container:: section
 
+   .. rubric:: Output Parameters
 
-      n
-         Number of elements in vector ``x``.
+   y
+      Pointer to the updated vector ``y``.
 
+.. container:: section
 
-      x
-         Pointer to the input vector ``x``. The array holding the vector
-         ``x`` must be of size at least ``(1 + (n – 1)*abs(incx))``. See
-         `Matrix and Vector
-         Storage <../matrix-storage.html>`__ for
-         more details.
+   .. rubric:: Return Values
 
-
-      incx
-         Stride of vector ``x``.
-
-
-      incy
-         Stride of vector ``y``.
-
-
-      dependencies
-         List of events to wait for before starting computation, if any.
-         If omitted, defaults to no dependencies.
-
-
-   .. container:: section
-
-
-      .. rubric:: Output Parameters
-         :class: sectiontitle
-
-
-      y
-         Pointer to the updated vector ``y``.
-
-
-   .. container:: section
-
-
-      .. rubric:: Return Values
-         :class: sectiontitle
+   Output event to wait on to ensure computation is complete.
 
 
-      Output event to wait on to ensure computation is complete.
-
-
-.. container:: familylinks
-
-
-   .. container:: parentlink
-
-
-      **Parent topic:** :ref:`blas-level-1-routines`
+   **Parent topic:** :ref:`blas-level-1-routines`

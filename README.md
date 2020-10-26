@@ -41,6 +41,10 @@ oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel 
             <td align="center"><a href="https://developer.nvidia.com/cublas"> NVIDIA cuBLAS</a> for NVIDIA GPU </td>
             <td align="center">NVIDIA GPU</td>
         </tr>
+        <tr>
+            <td align="center"><a href="https://ww.netlib.org"> NETLIB LAPACK</a> for INTEL CPU </td>
+            <td align="center">INTEL CPU</td>
+        </tr>
     </tbody>
 </table>
 
@@ -72,7 +76,7 @@ $> clang++ -fsycl –I$ONEMKL/include app.cpp
 $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl
 ```
 
-- **Compile-time dispatching**: The application uses a templated API where the template parameters specify the required backends and third-party libraries and the application is linked with the required oneMKL backend wrapper libraries (libraries can be static or dynamic).
+- **Compile-time dispatching**: The application uses a templated backend selector API where the template parameters specify the required backends and third-party libraries and the application is linked with the required oneMKL backend wrapper libraries (libraries can be static or dynamic).
 
 Example of app.cpp with compile-time dispatching:
 
@@ -86,8 +90,10 @@ gpu_dev = cl::sycl::device(cl::sycl::gpu_selector());
 cl::sycl::queue cpu_queue(cpu_dev);
 cl::sycl::queue gpu_queue(gpu_dev);
 
-oneapi::mkl::blas::gemm<mklcpu>(cpu_queue, transA, transB, m, ...);
-oneapi::mkl::blas::gemm<cublas>(gpu_queue, transA, transB, m, ...);
+oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> cpu_selector(cpu_queue);
+
+oneapi::mkl::blas::gemm(cpu_selector, transA, transB, m, ...);
+oneapi::mkl::blas::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas> {gpu_queue}, transA, transB, m, ...);
 ```
 How to build an application with run-time dispatching:
 
@@ -107,6 +113,7 @@ Supported domains: BLAS
  Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
  Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
  NVIDIA GPU | NVIDIA cuBLAS | Dynamic, Static
+ Intel CPU | NETLIB LAPACK | Dynamic, Static
 
 #### Windows*
 
@@ -114,6 +121,7 @@ Supported domains: BLAS
  :------| :-------| :------------------
  Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
  Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+ Intel CPU | NETLIB LAPACK | Dynamic, Static
   
 ---
 
@@ -442,6 +450,7 @@ build_shared_libs        | BUILD_SHARED_LIBS        | True, False         | True
 enable_mklcpu_backend    | ENABLE_MKLCPU_BACKEND    | True, False         | True
 enable_mklgpu_backend    | ENABLE_MKLGPU_BACKEND    | True, False         | True
 *Not Supported*          | ENABLE_CUBLAS_BACKEND    | True, False         | False
+*Not Supported*          | ENABLE_NETLIB_BACKEND    | True, False         | False
 enable_mklcpu_thread_tbb | ENABLE_MKLCPU_THREAD_TBB | True, False         | True
 build_functional_tests   | BUILD_FUNCTIONAL_TESTS   | True, False         | True
 build_doc                | BUILD_DOC                | True, False         | False

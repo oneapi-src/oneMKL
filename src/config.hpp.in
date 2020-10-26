@@ -23,6 +23,7 @@
 #cmakedefine ENABLE_CUBLAS_BACKEND
 #cmakedefine ENABLE_MKLCPU_BACKEND
 #cmakedefine ENABLE_MKLGPU_BACKEND
+#cmakedefine ENABLE_NETLIB_BACKEND
 #cmakedefine BUILD_SHARED_LIBS
 
 #endif

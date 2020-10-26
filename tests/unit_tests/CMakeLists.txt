@@ -23,7 +23,9 @@ find_package(CBLAS REQUIRED)
 add_subdirectory(blas)
 
 # Build RNG tests first
-add_subdirectory(rng)
+if((NOT ENABLE_NETLIB_BACKEND) AND (NOT ENABLE_CUBLAS_BACKEND))
+  add_subdirectory(rng)
+endif()
 
 include(GoogleTest)
 
@@ -34,9 +36,11 @@ add_executable(test_main_blas_ct main_test.cpp)
 target_include_directories(test_main_blas_ct PUBLIC ${GTEST_INCLUDE_DIR})
 target_compile_options(test_main_blas_ct PRIVATE -fsycl)
 
-add_executable(test_main_rng_ct main_test.cpp)
-target_include_directories(test_main_rng_ct PUBLIC ${GTEST_INCLUDE_DIR})
-target_compile_options(test_main_rng_ct PRIVATE -fsycl)
+if((NOT ENABLE_NETLIB_BACKEND) AND (NOT ENABLE_CUBLAS_BACKEND))
+  add_executable(test_main_rng_ct main_test.cpp)
+  target_include_directories(test_main_rng_ct PUBLIC ${GTEST_INCLUDE_DIR})
+  target_compile_options(test_main_rng_ct PRIVATE -fsycl)
+endif()
 
 if(BUILD_SHARED_LIBS)
   add_executable(test_main_blas_rt main_test.cpp)
@@ -57,19 +61,21 @@ if(BUILD_SHARED_LIBS)
   )
 endif()
 
-if(BUILD_SHARED_LIBS)
-  add_executable(test_main_rng_rt main_test.cpp)
-  target_include_directories(test_main_rng_rt PUBLIC ${GTEST_INCLUDE_DIR})
-  target_compile_options(test_main_rng_rt PRIVATE -fsycl)
-  target_link_libraries(test_main_rng_rt PUBLIC
-    gtest
-    gtest_main
-    ${CMAKE_DL_LIBS}
-    ONEMKL::SYCL::SYCL
-    onemkl
-    rng_statistics_rt
-    rng_service_rt
-  )
+if((NOT ENABLE_NETLIB_BACKEND) AND (NOT ENABLE_CUBLAS_BACKEND))
+  if(BUILD_SHARED_LIBS)
+    add_executable(test_main_rng_rt main_test.cpp)
+    target_include_directories(test_main_rng_rt PUBLIC ${GTEST_INCLUDE_DIR})
+    target_compile_options(test_main_rng_rt PRIVATE -fsycl)
+    target_link_libraries(test_main_rng_rt PUBLIC
+      gtest
+      gtest_main
+      ${CMAKE_DL_LIBS}
+      ONEMKL::SYCL::SYCL
+      onemkl
+      rng_statistics_rt
+      rng_service_rt
+    )
+  endif()
 endif()
 
 if(ENABLE_MKLCPU_BACKEND)
@@ -91,6 +97,11 @@ if(ENABLE_CUBLAS_BACKEND)
   list(APPEND ONEMKL_LIBRARIES_BLAS onemkl_blas_cublas)
 endif()
 
+if(ENABLE_NETLIB_BACKEND)
+  add_dependencies(test_main_blas_ct onemkl_blas_netlib)
+  list(APPEND ONEMKL_LIBRARIES_BLAS onemkl_blas_netlib)
+endif()
+
 target_link_libraries(test_main_blas_ct PUBLIC
     gtest
     gtest_main
@@ -105,15 +116,17 @@ target_link_libraries(test_main_blas_ct PUBLIC
     blas_extensions_ct
 )
 
-target_link_libraries(test_main_rng_ct PUBLIC
-    gtest
-    gtest_main
-    ${CMAKE_DL_LIBS}
-    ${ONEMKL_LIBRARIES_RNG}
-    ONEMKL::SYCL::SYCL
-    rng_statistics_ct
-    rng_service_ct
-)
+if((NOT ENABLE_NETLIB_BACKEND) AND (NOT ENABLE_CUBLAS_BACKEND))
+  target_link_libraries(test_main_rng_ct PUBLIC
+      gtest
+      gtest_main
+      ${CMAKE_DL_LIBS}
+      ${ONEMKL_LIBRARIES_RNG}
+      ONEMKL::SYCL::SYCL
+      rng_statistics_ct
+      rng_service_ct
+  )
+endif()
 
 if(BUILD_SHARED_LIBS)
   set_target_properties(test_main_blas_rt
@@ -127,16 +140,18 @@ if(BUILD_SHARED_LIBS)
   )
 endif()
 
-if(BUILD_SHARED_LIBS)
-  set_target_properties(test_main_rng_rt
-    PROPERTIES BUILD_RPATH $<TARGET_FILE_DIR:onemkl>)
-# Find individual tests within executable
-  gtest_discover_tests(test_main_rng_rt
-    PROPERTIES BUILD_RPATH ${CMAKE_BINARY_DIR}/lib
-    PROPERTIES ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH}
-    PROPERTIES TEST_PREFIX RNG/
-    DISCOVERY_TIMEOUT 30
-  )
+if((NOT ENABLE_NETLIB_BACKEND) AND (NOT ENABLE_CUBLAS_BACKEND))
+  if(BUILD_SHARED_LIBS)
+    set_target_properties(test_main_rng_rt
+      PROPERTIES BUILD_RPATH $<TARGET_FILE_DIR:onemkl>)
+  # Find individual tests within executable
+    gtest_discover_tests(test_main_rng_rt
+      PROPERTIES BUILD_RPATH ${CMAKE_BINARY_DIR}/lib
+      PROPERTIES ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH}
+      PROPERTIES TEST_PREFIX RNG/
+      DISCOVERY_TIMEOUT 30
+    )
+  endif()
 endif()
 
 gtest_discover_tests(test_main_blas_ct
@@ -146,9 +161,11 @@ gtest_discover_tests(test_main_blas_ct
   DISCOVERY_TIMEOUT 30
 )
 
-gtest_discover_tests(test_main_rng_ct
-  PROPERTIES BUILD_RPATH ${CMAKE_BINARY_DIR}/lib
-  PROPERTIES ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH}
-  PROPERTIES TEST_PREFIX RNG/
-  DISCOVERY_TIMEOUT 30
-)
+if((NOT ENABLE_NETLIB_BACKEND) AND (NOT ENABLE_CUBLAS_BACKEND))
+  gtest_discover_tests(test_main_rng_ct
+    PROPERTIES BUILD_RPATH ${CMAKE_BINARY_DIR}/lib
+    PROPERTIES ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH}
+    PROPERTIES TEST_PREFIX RNG/
+    DISCOVERY_TIMEOUT 30
+  )
+endif()

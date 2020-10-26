@@ -3,283 +3,264 @@
 rotm
 ====
 
+Performs modified Givens rotation of points in the plane.
 
-.. container::
+.. _onemkl_blas_rotm_description:
 
+.. rubric:: Description
 
-   Performs modified Givens rotation of points in the plane.
+Given two vectors ``x`` and ``y``, each vector element of these
+vectors is replaced as follows:
 
+.. math::
 
+      \begin{bmatrix}x_i \\ y_i\end{bmatrix}=
+      H
+      \begin{bmatrix}x_i \\ y_i\end{bmatrix} 
 
-      ``rotm`` supports the following precisions.
+for ``i`` from 1 to ``n``, where ``H`` is a modified Givens
+transformation matrix.
 
+``rotm`` supports the following precisions.
 
-      .. list-table:: 
-         :header-rows: 1
+   .. list-table:: 
+      :header-rows: 1
 
-         * -  T 
-         * -  ``float`` 
-         * -  ``double`` 
+      * -  T 
+      * -  ``float`` 
+      * -  ``double`` 
 
-
-
-
-.. container:: section
-
-
-   .. rubric:: Description
-      :class: sectiontitle
-
-
-   Given two vectors ``x`` and ``y``, each vector element of these
-   vectors is replaced as follows:
-
-
-   | 
-   | |image0|
-
-
-   for ``i`` from 1 to ``n``, where ``H`` is a modified Givens
-   transformation matrix.
-
+.. _onemkl_blas_rotm_buffer:
 
 rotm (Buffer Version)
 ---------------------
 
-.. container::
+.. rubric:: Syntax
 
-   .. container:: section
+.. code-block:: cpp
 
+   namespace oneapi::mkl::blas::column_major {
+       void rotm(sycl::queue &queue,
+                 std::int64_t n,
+                 sycl::buffer<T,1> &x,
+                 std::int64_t incx,
+                 sycl::buffer<T,1> &y,
+                 std::int64_t incy,
+                 sycl::buffer<T,1> &param)
+   }
+.. code-block:: cpp
 
-      .. rubric:: Syntax
-         :class: sectiontitle
-
-
-      .. cpp:function::  void oneapi::mkl::blas::rotm(sycl::queue &queue, std::int64_t n, sycl::buffer<T,1> &x, std::int64_t incx, sycl::buffer<T,1> &y, std::int64_t incy, sycl::buffer<T,1> &param)
+   namespace oneapi::mkl::blas::row_major {
+       void rotm(sycl::queue &queue,
+                 std::int64_t n,
+                 sycl::buffer<T,1> &x,
+                 std::int64_t incx,
+                 sycl::buffer<T,1> &y,
+                 std::int64_t incy,
+                 sycl::buffer<T,1> &param)
+   }
 
 .. container:: section
 
-
    .. rubric:: Input Parameters
-      :class: sectiontitle
-
 
    queue
       The queue where the routine should be executed.
 
-
    n
       Number of elements in vector ``x``.
 
-
    x
       Buffer holding input vector ``x``. The buffer must be of size at
-      least (1 + (``n`` - 1)*abs(``incx``)). See `Matrix and Vector
-      Storage <../matrix-storage.html>`__ for
+      least (1 + (``n`` - 1)*abs(``incx``)). See :ref:`matrix-storage` for
       more details.
-
 
    incx
       Stride of vector ``x``.
 
-
    y
       Buffer holding input vector ``x``. The buffer must be of size at
-      least (1 + (``n`` - 1)*abs(``incy``)). See `Matrix and Vector
-      Storage <../matrix-storage.html>`__ for
+      least (1 + (``n`` - 1)*abs(``incy``)). See :ref:`matrix-storage` for
       more details.
-
 
    incy
       Stride of vector ``y``.
 
-
    param
-      Buffer holding an array of size 5. The elements of the ``param``
-      array are:
+      Buffer holding an array of size 5.
 
+      The elements of the ``param`` array are:
 
-      ``param``\ [0] contains a switch, ``flag``,
+      ``param[0]`` contains a switch, ``flag``. The other array elements
+      ``param[1-4]`` contain the components of the modified Givens 
+      transformation matrix ``H``:
+      h\ :sub:`11`, h\ :sub:`21`, h\ :sub:`12`, and
+      h\ :sub:`22`, respectively.
 
+      Depending on the values of ``flag``, the components of ``H``
+      are set as follows:
 
-      ``param``\ [1-4] contain *h\ 11*, \ *h\ 21*, *h\ 12*, and \ *h\ 22*
-      respectively, the components of the modified Givens transformation
-      matrix ``H``.
+      | ``flag = -1.0``:
 
+      .. math::
+   
+         H=\begin{bmatrix}h_{11} & h_{12} \\ h_{21} & h_{22}\end{bmatrix} 
 
-      Depending on the values of ``flag``, the components of ``H`` are
-      set as follows:
+      | ``flag = 0.0``:
 
+      .. math::
+   
+         H=\begin{bmatrix}1.0 & h_{12} \\ h_{21} & 1.0\end{bmatrix} 
 
-      | ``flag =``\ ``-1.0``:
-      | |image1|
+      | ``flag = 1.0``:
 
+      .. math::
+   
+         H=\begin{bmatrix}h_{11} & 1.0 \\ -1.0 & h_{22}\end{bmatrix} 
 
-      | ``flag =``\ ``0.0``:
-      | |image2|
+      | ``flag = -2.0``:
+      
+      .. math::
+   
+         H=\begin{bmatrix}1.0 & 0.0 \\ 0.0 & 1.0\end{bmatrix} 
 
-
-      | ``flag =``\ ``1.0``:
-      | |image3|
-
-
-      | ``flag =``\ ``-2.0``:
-      | |image4|
-
-
-      In the last three cases, the matrix entries of 1.0, -1.0, 0.0 are
-      assumed based on the value of ``flag`` and are not required to be
-      set in the ``param`` vector.
-
+      In the last three cases, the matrix entries of 1.0, -1.0, and 0.0
+      are assumed based on the value of ``flag`` and are not required to
+      be set in the ``param`` vector.
 
 .. container:: section
 
-
    .. rubric:: Output Parameters
-      :class: sectiontitle
-
 
    x
       Buffer holding updated buffer ``x``.
 
-
    y
       Buffer holding updated buffer ``y``.
 
+      
+
+.. _onemkl_blas_rotm_usm:
 
 rotm (USM Version)
 ------------------
 
-.. container::
+.. rubric:: Syntax
 
-   .. container:: section
+.. code-block:: cpp
 
+   namespace oneapi::mkl::blas::column_major {
+       sycl::event rotm(sycl::queue &queue,
+                        std::int64_t n,
+                        T *x,
+                        std::int64_t incx,
+                        T *y,
+                        std::int64_t incy,
+                        T *param,
+                        const sycl::vector_class<sycl::event> &dependencies = {})
+   }
+.. code-block:: cpp
 
-      .. rubric:: Syntax
-         :class: sectiontitle
+   namespace oneapi::mkl::blas::row_major {
+       sycl::event rotm(sycl::queue &queue,
+                        std::int64_t n,
+                        T *x,
+                        std::int64_t incx,
+                        T *y,
+                        std::int64_t incy,
+                        T *param,
+                        const sycl::vector_class<sycl::event> &dependencies = {})
+   }
+   
+.. container:: section
 
+   .. rubric:: Input Parameters
 
-      .. container:: dlsyntaxpara
+   queue
+      The queue where the routine should be executed.
 
+   n
+      Number of elements in vector ``x``.
 
-         .. cpp:function::  sycl::event oneapi::mkl::blas::rotm(sycl::queue &queue, std::int64_t n, T *x, std::int64_t incx, T *y, std::int64_t incy, T *param, const sycl::vector_class<sycl::event> &dependencies = {})
-   .. container:: section
+   x
+      Pointer to the input vector ``x``. The array holding the vector
+      ``x`` must be of size at least (1 + (``n`` - 1)*abs(``incx``)).
+      See :ref:`matrix-storage` for
+      more details.
 
+   incx
+      Stride of vector ``x``.
 
-      .. rubric:: Input Parameters
-         :class: sectiontitle
+   yparam
+      Pointer to the input vector ``y``. The array holding the vector
+      ``y`` must be of size at least (1 + (``n`` - 1)*abs(``incy``)).
+      See :ref:`matrix-storage` for
+      more details.
 
+   incy
+      Stride of vector ``y``.
 
-      queue
-         The queue where the routine should be executed.
+   param
+      Buffer holding an array of size 5.
 
+      The elements of the ``param`` array are:
 
-      n
-         Number of elements in vector ``x``.
+      ``param[0]`` contains a switch, ``flag``. The other array elements
+      ``param[1-4]`` contain the components of the modified Givens 
+      transformation matrix ``H``:
+      h\ :sub:`11`, h\ :sub:`21`, h\ :sub:`12`, and
+      h\ :sub:`22`, respectively.
 
+      Depending on the values of ``flag``, the components of ``H``
+      are set as follows:
 
-      x
-         Pointer to the input vector ``x``. The array holding the vector
-         ``x`` must be of size at least (1 + (``n`` - 1)*abs(``incx``)).
-         See `Matrix and Vector
-         Storage <../matrix-storage.html>`__ for
-         more details.
+      | ``flag = -1.0``:
 
+      .. math::
+   
+         H=\begin{bmatrix}h_{11} & h_{12} \\ h_{21} & h_{22}\end{bmatrix} 
 
-      incx
-         Stride of vector ``x``.
+      | ``flag = 0.0``:
 
+      .. math::
+   
+         H=\begin{bmatrix}1.0 & h_{12} \\ h_{21} & 1.0\end{bmatrix} 
 
-      yparam
-         Pointer to the input vector ``y``. The array holding the vector
-         ``y`` must be of size at least (1 + (``n`` - 1)*abs(``incy``)).
-         See `Matrix and Vector
-         Storage <../matrix-storage.html>`__ for
-         more details.
+      | ``flag = 1.0``:
 
+      .. math::
+   
+         H=\begin{bmatrix}h_{11} & 1.0 \\ -1.0 & h_{22}\end{bmatrix} 
 
-      incy
-         Stride of vector ``y``.
+      | ``flag = -2.0``:
+      
+      .. math::
+   
+         H=\begin{bmatrix}1.0 & 0.0 \\ 0.0 & 1.0\end{bmatrix} 
 
+      In the last three cases, the matrix entries of 1.0, -1.0, and 0.0
+      are assumed based on the value of ``flag`` and are not required to
+      be set in the ``param`` vector.
+   
+   dependencies
+      List of events to wait for before starting computation, if any.
+      If omitted, defaults to no dependencies.
 
-      param
-         Pointer to an array of size 5. The elements of the ``param``
-         array are:
+.. container:: section
 
+   .. rubric:: Output Parameters
 
-         ``param``\ [0] contains a switch, ``flag``,
+   x
+      Pointer to the updated array ``x``.
 
+   y
+      Pointer to the updated array ``y``.
 
-         ``param``\ [1-4] contain *h\ 11*, \ *h\ 21*, *h\ 12*, and \ *h\ 22*
-         respectively, the components of the modified Givens
-         transformation matrix ``H``.
+.. container:: section
 
+   .. rubric:: Return Values
 
-         Depending on the values of ``flag``, the components of ``H`` are
-         set as follows:
-
-
-         | ``flag =``\ ``-1.0``:
-         | |image1|
-
-
-         | ``flag =``\ ``0.0``:
-         | |image2|
-
-
-         | ``flag =``\ ``1.0``:
-         | |image3|
-
-
-         | ``flag =``\ ``-2.0``:
-         | |image4|
-
-
-         In the last three cases, the matrix entries of 1.0, -1.0, 0.0
-         are assumed based on the value of ``flag`` and are not required
-         to be set in the ``param`` vector.
-
-
-      dependencies
-         List of events to wait for before starting computation, if any.
-         If omitted, defaults to no dependencies.
-
-
-   .. container:: section
-
-
-      .. rubric:: Output Parameters
-         :class: sectiontitle
-
-
-      x
-         Pointer to the updated array ``x``.
-
-
-      y
-         Pointer to the updated array ``y``.
-
-
-   .. container:: section
-
-
-      .. rubric:: Return Values
-         :class: sectiontitle
-
-
-      Output event to wait on to ensure computation is complete.
+   Output event to wait on to ensure computation is complete.
 
 
-.. container:: familylinks
-
-
-   .. container:: parentlink
-
-
-      **Parent topic:** :ref:`blas-level-1-routines`
-.. |image0| image:: ../equations/GUID-67FC4AB3-40CB-441F-BA9F-88BAAC78Cee1.png
-.. |image1| image:: ../equations/GUID-67FC4AB3-40CB-441F-BA9F-88BAAC78Cee2.png
-.. |image2| image:: ../equations/GUID-67FC4AB3-40CB-441F-BA9F-88BAAC78Cee3.png
-.. |image3| image:: ../equations/GUID-67FC4AB3-40CB-441F-BA9F-88BAAC78Cee4.png
-.. |image4| image:: ../equations/GUID-67FC4AB3-40CB-441F-BA9F-88BAAC78Cee5.png
-
+   **Parent topic:** :ref:`blas-level-1-routines`
