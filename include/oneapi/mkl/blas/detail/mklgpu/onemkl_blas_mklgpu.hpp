@@ -33,12 +33,12 @@ namespace mkl {
 namespace mklgpu {
 namespace column_major {
 
-#include "onemkl_blas_mklgpu.hxx"
+#include "oneapi/mkl/blas/detail/onemkl_blas_backends.hxx"
 
 } //namespace column_major
 namespace row_major {
 
-#include "onemkl_blas_mklgpu.hxx"
+#include "oneapi/mkl/blas/detail/onemkl_blas_backends.hxx"
 
 } //namespace row_major
 } //namespace mklgpu
