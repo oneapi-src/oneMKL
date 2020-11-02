@@ -95,7 +95,7 @@ oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> cpu_selector(cpu_que
 oneapi::mkl::blas::gemm(cpu_selector, transA, transB, m, ...);
 oneapi::mkl::blas::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas> {gpu_queue}, transA, transB, m, ...);
 ```
-How to build an application with run-time dispatching:
+How to build an application with compile-time dispatching:
 
 ```cmd
 $> clang++ -fsycl –I$ONEMKL/include app.cpp
