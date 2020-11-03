@@ -71,7 +71,7 @@ public:
 
     explicit uniform(Type a, Type b) : a_(a), b_(b) {
         if (a >= b) {
-            throw oneapi::mkl::invalid_argument("rng", "uniform distribution",
+            throw oneapi::mkl::invalid_argument("rng", "uniform",
                                                 "parameters are incorrect, a >= b");
         }
     }
@@ -99,7 +99,7 @@ public:
 
     explicit uniform(std::int32_t a, std::int32_t b) : a_(a), b_(b) {
         if (a >= b) {
-            throw oneapi::mkl::invalid_argument("rng", "uniform distribution",
+            throw oneapi::mkl::invalid_argument("rng", "uniform",
                                                 "parameters are incorrect, a >= b");
         }
     }
@@ -117,13 +117,21 @@ private:
     std::int32_t b_;
 };
 
-template <typename UIntType = std::uint32_t>
-class bits {
-public:
-    static_assert(std::is_same<UIntType, std::uint32_t>::value,
-                  "rng uniform distribution type is not supported");
-    using result_type = UIntType;
-};
+// Class template oneapi::mkl::rng::gaussian
+//
+// Represents continuous normal random number distribution
+//
+// Supported types:
+//      float
+//      double
+//
+// Supported methods:
+//      oneapi::mkl::rng::gaussian_method::box_muller2
+//      oneapi::mkl::rng::gaussian_method::icdf
+//
+// Input arguments:
+//      mean   - mean. 0 by default
+//      stddev - standard deviation. 1.0 by default
 
 namespace gaussian_method {
 struct icdf {};
@@ -148,7 +156,7 @@ public:
 
     explicit gaussian(RealType mean, RealType stddev) : mean_(mean), stddev_(stddev) {
         if (stddev <= static_cast<RealType>(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "gaussian distribution",
+            throw oneapi::mkl::invalid_argument("rng", "gaussian",
                                                 "stddev parameter is incorrect, stddev <= 0.0");
         }
     }
@@ -164,6 +172,194 @@ public:
 private:
     RealType mean_;
     RealType stddev_;
+};
+
+// Class template oneapi::mkl::rng::lognormal
+//
+// Represents continuous lognormal random number distribution
+//
+// Supported types:
+//      float
+//      double
+//
+// Supported methods:
+//      oneapi::mkl::rng::lognormal_method::box_muller2
+//      oneapi::mkl::rng::lognormal_method::icdf
+//
+// Input arguments:
+//      m     - mean of the subject normal distribution. 0.0 by default
+//      s     - standard deviation of the subject normal distribution. 1.0 by default
+//      displ - displacement. 0.0 by default
+//      scale - scalefactor. 1.0 by default
+
+namespace lognormal_method {
+struct icdf {};
+struct box_muller2 {};
+using by_default = box_muller2;
+} // namespace lognormal_method
+
+template <typename RealType = float, typename Method = lognormal_method::by_default>
+class lognormal {
+public:
+    static_assert(std::is_same<Method, lognormal_method::box_muller2>::value ||
+                      std::is_same<Method, lognormal_method::icdf>::value,
+                  "rng lognormal distribution method is incorrect");
+
+    static_assert(std::is_same<RealType, float>::value || std::is_same<RealType, double>::value,
+                  "rng lognormal distribution type is not supported");
+
+    using method_type = Method;
+    using result_type = RealType;
+
+    lognormal()
+            : lognormal(static_cast<RealType>(0.0), static_cast<RealType>(1.0),
+                        static_cast<RealType>(0.0), static_cast<RealType>(1.0)) {}
+
+    explicit lognormal(RealType m, RealType s, RealType displ = static_cast<RealType>(0.0),
+                       RealType scale = static_cast<RealType>(1.0))
+            : m_(m),
+              s_(s),
+              displ_(displ),
+              scale_(scale) {
+        if (s <= static_cast<RealType>(0.0)) {
+            throw oneapi::mkl::invalid_argument("rng", "lognormal", "s <= 0");
+        }
+        if (scale <= static_cast<RealType>(0.0)) {
+            throw oneapi::mkl::invalid_argument("rng", "lognormal", "scale <= 0");
+        }
+    }
+
+    RealType m() const {
+        return m_;
+    }
+
+    RealType s() const {
+        return s_;
+    }
+
+    RealType displ() const {
+        return displ_;
+    }
+
+    RealType scale() const {
+        return scale_;
+    }
+
+private:
+    RealType m_;
+    RealType s_;
+    RealType displ_;
+    RealType scale_;
+};
+
+// Class template oneapi::mkl::rng::bernoulli
+//
+// Represents discrete Bernoulli random number distribution
+//
+// Supported types:
+//      std::uint32_t
+//      std::int32_t
+//
+// Supported methods:
+//      oneapi::mkl::rng::bernoulli_method::icdf;
+//
+// Input arguments:
+//      p - success probablity of a trial. 0.5 by default
+
+namespace bernoulli_method {
+struct icdf {};
+using by_default = icdf;
+} // namespace bernoulli_method
+
+template <typename IntType = std::uint32_t, typename Method = bernoulli_method::by_default>
+class bernoulli {
+public:
+    static_assert(std::is_same<Method, bernoulli_method::icdf>::value,
+                  "rng bernoulli method is incorrect");
+
+    static_assert(std::is_same<IntType, std::int32_t>::value ||
+                      std::is_same<IntType, std::uint32_t>::value,
+                  "rng bernoulli type is not supported");
+
+    using method_type = Method;
+    using result_type = IntType;
+
+    bernoulli() : bernoulli(0.5f) {}
+
+    explicit bernoulli(float p) : p_(p) {
+        if ((p > 1.0f) || (p < 0.0f)) {
+            throw oneapi::mkl::invalid_argument("rng", "bernoulli", "p > 1 or p < 0");
+        }
+    }
+
+    float p() const {
+        return p_;
+    }
+
+private:
+    float p_;
+};
+
+// Class template oneapi::mkl::rng::poisson
+//
+// Represents discrete Poisson random number distribution
+//
+// Supported types:
+//      std::int32_t
+//
+// Supported methods:
+//      oneapi::mkl::rng::poisson_method::gaussian_icdf_based
+//
+// Input arguments:
+//      lambda - distribution parameter. 0.5 by default
+
+namespace poisson_method {
+struct gaussian_icdf_based {};
+using by_default = gaussian_icdf_based;
+} // namespace poisson_method
+
+template <typename IntType = std::int32_t, typename Method = poisson_method::by_default>
+class poisson {
+public:
+    static_assert(std::is_same<Method, poisson_method::gaussian_icdf_based>::value,
+                  "rng poisson method is incorrect");
+
+    static_assert(std::is_same<IntType, std::int32_t>::value ||
+                      std::is_same<IntType, std::uint32_t>::value,
+                  "rng poisson type is not supported");
+
+    using method_type = Method;
+    using result_type = IntType;
+
+    poisson() : poisson(0.5) {}
+
+    explicit poisson(double lambda) : lambda_(lambda) {
+        if ((lambda <= 0.0)) {
+            throw oneapi::mkl::invalid_argument("rng", "poisson", "lamdba < 0");
+        }
+    }
+
+    double lambda() const {
+        return lambda_;
+    }
+
+private:
+    double lambda_;
+};
+
+// Class template oneapi::mkl::rng::bits
+//
+// Represents bits of underlying random number engine
+//
+// Supported types:
+//      std::uint32_t
+//
+
+template <typename UIntType = std::uint32_t>
+class bits {
+public:
+    static_assert(std::is_same<UIntType, std::uint32_t>::value, "rng bits type is not supported");
+    using result_type = UIntType;
 };
 
 } // namespace rng

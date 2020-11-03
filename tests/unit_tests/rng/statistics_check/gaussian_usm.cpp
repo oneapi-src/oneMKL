@@ -33,32 +33,52 @@ TEST_P(GaussianIcdfUsmTest, RealSinglePrecision) {
     rng_test<statistics_usm_test<
         oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::icdf>,
         oneapi::mkl::rng::philox4x32x10>>
-        test;
-    EXPECT_TRUEORSKIP((test(GetParam(), N_GEN, GAUSSIAN_ARGS_FLOAT)));
+        test1;
+    EXPECT_TRUEORSKIP((test1(GetParam(), N_GEN, GAUSSIAN_ARGS_FLOAT)));
+    rng_test<statistics_usm_test<
+        oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::icdf>,
+        oneapi::mkl::rng::mrg32k3a>>
+        test2;
+    EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, GAUSSIAN_ARGS_FLOAT)));
 }
 
 TEST_P(GaussianIcdfUsmTest, RealDoublePrecision) {
     rng_test<statistics_usm_test<
         oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>,
         oneapi::mkl::rng::philox4x32x10>>
-        test;
-    EXPECT_TRUEORSKIP((test(GetParam(), N_GEN, GAUSSIAN_ARGS_DOUBLE)));
+        test1;
+    EXPECT_TRUEORSKIP((test1(GetParam(), N_GEN, GAUSSIAN_ARGS_DOUBLE)));
+    rng_test<statistics_usm_test<
+        oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>,
+        oneapi::mkl::rng::mrg32k3a>>
+        test2;
+    EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, GAUSSIAN_ARGS_DOUBLE)));
 }
 
 TEST_P(GaussianBoxmullerUsmTest, RealSinglePrecision) {
     rng_test<statistics_usm_test<
         oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::box_muller2>,
         oneapi::mkl::rng::philox4x32x10>>
-        test;
-    EXPECT_TRUEORSKIP((test(GetParam(), N_GEN, GAUSSIAN_ARGS_FLOAT)));
+        test1;
+    EXPECT_TRUEORSKIP((test1(GetParam(), N_GEN, GAUSSIAN_ARGS_FLOAT)));
+    rng_test<statistics_usm_test<
+        oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::box_muller2>,
+        oneapi::mkl::rng::mrg32k3a>>
+        test2;
+    EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, GAUSSIAN_ARGS_FLOAT)));
 }
 
 TEST_P(GaussianBoxmullerUsmTest, RealDoublePrecision) {
     rng_test<statistics_usm_test<
         oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::box_muller2>,
         oneapi::mkl::rng::philox4x32x10>>
-        test;
-    EXPECT_TRUEORSKIP((test(GetParam(), N_GEN, GAUSSIAN_ARGS_DOUBLE)));
+        test1;
+    EXPECT_TRUEORSKIP((test1(GetParam(), N_GEN, GAUSSIAN_ARGS_DOUBLE)));
+    rng_test<statistics_usm_test<
+        oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::box_muller2>,
+        oneapi::mkl::rng::mrg32k3a>>
+        test2;
+    EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, GAUSSIAN_ARGS_DOUBLE)));
 }
 
 INSTANTIATE_TEST_SUITE_P(GaussianIcdfUsmTestSuite, GaussianIcdfUsmTest,

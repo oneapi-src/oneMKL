@@ -34,7 +34,7 @@ macro(fix_default_compiler_settings_)
         # preferable to use CRT as static libraries, as we don't have to rely
         # on CRT DLLs being available. CMake always defaults to using shared
         # CRT libraries, so we override that default here.
-        string(REPLACE "/MD" "-MT" ${flag_var} "${${flag_var}}")
+        string(REGEX REPLACE "/M[TD]+[d]*" "" ${flag_var} "${${flag_var}}")
       endif()
 
       # We prefer more strict warning checking for building Google Test.
@@ -114,7 +114,7 @@ macro(config_compiler_and_linker)
     # explicitly.
     set(cxx_no_rtti_flags "-qnortti -DGTEST_HAS_RTTI=0")
   elseif (CMAKE_CXX_COMPILER_ID STREQUAL "HP")
-    set(cxx_base_flags "-AA -mt")
+    set(cxx_base_flags "-AA -md")
     set(cxx_exception_flags "-DGTEST_HAS_EXCEPTIONS=1")
     set(cxx_no_exception_flags "+noeh -DGTEST_HAS_EXCEPTIONS=0")
     # RTTI can not be disabled in HP aCC compiler.

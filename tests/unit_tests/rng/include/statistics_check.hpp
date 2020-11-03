@@ -26,8 +26,8 @@
 
 #include "rng_test_common.hpp"
 
-template <typename Fp, typename AllocType>
-bool compare_moments(std::vector<Fp, AllocType>& r, double tM, double tD, double tQ) {
+template <typename Type, typename AllocType>
+bool compare_moments(std::vector<Type, AllocType>& r, double tM, double tD, double tQ) {
     double tD2;
     double sM, sD;
     double sum, sum2;
@@ -63,13 +63,14 @@ bool compare_moments(std::vector<Fp, AllocType>& r, double tM, double tD, double
 template <typename Distribution>
 struct statistics {};
 
-template <typename Fp, typename Method>
-struct statistics<oneapi::mkl::rng::uniform<Fp, Method>> {
+template <typename Type, typename Method>
+struct statistics<oneapi::mkl::rng::uniform<Type, Method>> {
     template <typename AllocType>
-    bool check(std::vector<Fp, AllocType>& r, const oneapi::mkl::rng::uniform<Fp, Method>& distr) {
+    bool check(std::vector<Type, AllocType>& r,
+               const oneapi::mkl::rng::uniform<Type, Method>& distr) {
         double tM, tD, tQ;
-        Fp a = distr.a();
-        Fp b = distr.b();
+        Type a = distr.a();
+        Type b = distr.b();
 
         // Theoretical moments
         tM = (b + a) / 2.0;
@@ -99,18 +100,73 @@ struct statistics<oneapi::mkl::rng::uniform<std::int32_t, Method>> {
     }
 };
 
-template <typename Fp, typename Method>
-struct statistics<oneapi::mkl::rng::gaussian<Fp, Method>> {
+template <typename Type, typename Method>
+struct statistics<oneapi::mkl::rng::gaussian<Type, Method>> {
     template <typename AllocType>
-    bool check(std::vector<Fp, AllocType>& r, const oneapi::mkl::rng::gaussian<Fp, Method>& distr) {
+    bool check(std::vector<Type, AllocType>& r,
+               const oneapi::mkl::rng::gaussian<Type, Method>& distr) {
         double tM, tD, tQ;
-        Fp a = distr.mean();
-        Fp sigma = distr.stddev();
+        Type a = distr.mean();
+        Type sigma = distr.stddev();
 
         // Theoretical moments
         tM = a;
         tD = sigma * sigma;
         tQ = 720.0 * sigma * sigma * sigma * sigma;
+
+        return compare_moments(r, tM, tD, tQ);
+    }
+};
+
+template <typename Type, typename Method>
+struct statistics<oneapi::mkl::rng::lognormal<Type, Method>> {
+    template <typename AllocType>
+    bool check(std::vector<Type, AllocType>& r,
+               const oneapi::mkl::rng::lognormal<Type, Method>& distr) {
+        double tM, tD, tQ;
+        Type a = distr.m();
+        Type b = distr.displ();
+        Type sigma = distr.s();
+        Type beta = distr.scale();
+
+        // Theoretical moments
+        tM = b + beta * exp(a + sigma * sigma * 0.5);
+        tD = beta * beta * exp(2.0 * a + sigma * sigma) * (exp(sigma * sigma) - 1.0);
+        tQ = beta * beta * beta * beta * exp(4.0 * a + 2.0 * sigma * sigma) *
+             (exp(6.0 * sigma * sigma) - 4.0 * exp(3.0 * sigma * sigma) + 6.0 * exp(sigma * sigma) -
+              3.0);
+
+        return compare_moments(r, tM, tD, tQ);
+    }
+};
+
+template <typename Type, typename Method>
+struct statistics<oneapi::mkl::rng::bernoulli<Type, Method>> {
+    template <typename AllocType>
+    bool check(std::vector<Type, AllocType>& r,
+               const oneapi::mkl::rng::bernoulli<Type, Method>& distr) {
+        double tM, tD, tQ;
+        double p = distr.p();
+
+        tM = p;
+        tD = p * (1.0 - p);
+        tQ = p * (1.0 - 4.0 * p + 6.0 * p * p - 3.0 * p * p * p);
+
+        return compare_moments(r, tM, tD, tQ);
+    }
+};
+
+template <typename Type, typename Method>
+struct statistics<oneapi::mkl::rng::poisson<Type, Method>> {
+    template <typename AllocType>
+    bool check(std::vector<Type, AllocType>& r,
+               const oneapi::mkl::rng::poisson<Type, Method>& distr) {
+        double tM, tD, tQ;
+        double lambda = distr.lambda();
+
+        tM = lambda;
+        tD = lambda;
+        tQ = 4 * lambda * lambda + lambda;
 
         return compare_moments(r, tM, tD, tQ);
     }

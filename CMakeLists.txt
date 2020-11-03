@@ -60,7 +60,7 @@ else()
   foreach (flag_var
            CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
            CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-    string(REPLACE "/MD" "-MT" ${flag_var} "${${flag_var}}")
+  string(REGEX REPLACE "/M[TD]+[d]*" "" ${flag_var} "${${flag_var}}")
   endforeach()
 endif()
 
