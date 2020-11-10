@@ -190,7 +190,7 @@ private:
                                 const sycl::vector_class<sycl::event>& dependencies);
 };
 
-// default engine to be used for common cases
+// Default engine to be used for common cases
 using default_engine = philox4x32x10;
 
 } // namespace rng
