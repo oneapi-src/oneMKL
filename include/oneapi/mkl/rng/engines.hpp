@@ -29,6 +29,7 @@
 #include "oneapi/mkl/detail/backend_selector.hpp"
 
 #include "oneapi/mkl/rng/detail/engine_impl.hpp"
+#include "oneapi/mkl/rng/detail/rng_loader.hpp"
 
 #ifdef ENABLE_MKLCPU_BACKEND
 #include "oneapi/mkl/rng/detail/mklcpu/onemkl_rng_mklcpu.hpp"
@@ -115,6 +116,82 @@ private:
                                 typename Distr::result_type* r,
                                 const sycl::vector_class<sycl::event>& dependencies);
 };
+
+// Class oneapi::mkl::rng::mrg32k3a
+//
+// Represents the combined recurcive pseudorandom number generator
+//
+// Supported parallelization methods:
+//      skip_ahead
+class mrg32k3a {
+public:
+    static constexpr std::uint32_t default_seed = 1;
+
+    mrg32k3a(sycl::queue queue, std::uint32_t seed = default_seed)
+            : pimpl_(detail::create_mrg32k3a(get_device_id(queue), queue, seed)) {}
+
+    mrg32k3a(sycl::queue queue, std::initializer_list<std::uint32_t> seed)
+            : pimpl_(detail::create_mrg32k3a(get_device_id(queue), queue, seed)) {}
+
+#ifdef ENABLE_MKLCPU_BACKEND
+    mrg32k3a(backend_selector<backend::mklcpu> selector, std::uint32_t seed = default_seed)
+            : pimpl_(mklcpu::create_mrg32k3a(selector.get_queue(), seed)) {}
+
+    mrg32k3a(backend_selector<backend::mklcpu> selector, std::initializer_list<std::uint32_t> seed)
+            : pimpl_(mklcpu::create_mrg32k3a(selector.get_queue(), seed)) {}
+#endif
+
+#ifdef ENABLE_MKLGPU_BACKEND
+    mrg32k3a(backend_selector<backend::mklgpu> selector, std::uint32_t seed = default_seed)
+            : pimpl_(mklgpu::create_mrg32k3a(selector.get_queue(), seed)) {}
+
+    mrg32k3a(backend_selector<backend::mklgpu> selector, std::initializer_list<std::uint32_t> seed)
+            : pimpl_(mklgpu::create_mrg32k3a(selector.get_queue(), seed)) {}
+#endif
+
+    mrg32k3a(const mrg32k3a& other) {
+        pimpl_.reset(other.pimpl_.get()->copy_state());
+    }
+
+    mrg32k3a(mrg32k3a&& other) {
+        pimpl_ = std::move(other.pimpl_);
+    }
+
+    mrg32k3a& operator=(const mrg32k3a& other) {
+        if (this == &other)
+            return *this;
+        pimpl_.reset(other.pimpl_.get()->copy_state());
+        return *this;
+    }
+
+    mrg32k3a& operator=(mrg32k3a&& other) {
+        if (this == &other)
+            return *this;
+        pimpl_ = std::move(other.pimpl_);
+        return *this;
+    }
+
+private:
+    std::unique_ptr<detail::engine_impl> pimpl_;
+
+    template <typename Engine>
+    friend void skip_ahead(Engine& engine, std::uint64_t num_to_skip);
+
+    template <typename Engine>
+    friend void skip_ahead(Engine& engine, std::initializer_list<std::uint64_t> num_to_skip);
+
+    template <typename Distr, typename Engine>
+    friend void generate(const Distr& distr, Engine& engine, std::int64_t n,
+                         sycl::buffer<typename Distr::result_type, 1>& r);
+
+    template <typename Distr, typename Engine>
+    friend sycl::event generate(const Distr& distr, Engine& engine, std::int64_t n,
+                                typename Distr::result_type* r,
+                                const sycl::vector_class<sycl::event>& dependencies);
+};
+
+// Default engine to be used for common cases
+using default_engine = philox4x32x10;
 
 } // namespace rng
 } // namespace mkl

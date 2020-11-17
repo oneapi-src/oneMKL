@@ -37,6 +37,13 @@
 #define GAUSSIAN_ARGS_FLOAT  -1.0f, 5.0f
 #define GAUSSIAN_ARGS_DOUBLE -1.0, 5.0
 
+#define LOGNORMAL_ARGS_FLOAT  -1.0f, 5.0f, 1.0f, 2.0f
+#define LOGNORMAL_ARGS_DOUBLE -1.0, 5.0, 1.0, 2.0
+
+#define BERNOULLI_ARGS 0.5f
+
+#define POISSON_ARGS 0.5
+
 template <typename Distr, typename Engine>
 class statistics_test {
 public:

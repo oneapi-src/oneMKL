@@ -34,7 +34,7 @@ macro(fix_default_compiler_settings_)
         # preferable to use CRT as static libraries, as we don't have to rely
         # on CRT DLLs being available. CMake always defaults to using shared
         # CRT libraries, so we override that default here.
-        string(REPLACE "/MD" "-MT" ${flag_var} "${${flag_var}}")
+        string(REGEX REPLACE "/M[TD]+[d]*" "" ${flag_var} "${${flag_var}}")
       endif()
 
       # We prefer more strict warning checking for building Google Test.
@@ -133,7 +133,11 @@ macro(config_compiler_and_linker)
   set(cxx_exception "${cxx_base_flags} ${cxx_exception_flags}")
   set(cxx_no_exception
     "${CMAKE_CXX_FLAGS} ${cxx_base_flags} ${cxx_no_exception_flags}")
+  if(NOT WIN32)
   set(cxx_default "${cxx_exception}")
+  else()
+  set(cxx_default "${cxx_exception} /MD")
+  endif()
   set(cxx_no_rtti "${cxx_default} ${cxx_no_rtti_flags}")
 
   # For building the gtest libraries.

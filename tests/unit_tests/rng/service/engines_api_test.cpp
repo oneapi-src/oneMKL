@@ -46,4 +46,25 @@ INSTANTIATE_TEST_SUITE_P(Philox4x32x10ConstructorsTestsuite, Philox4x32x10Constr
 INSTANTIATE_TEST_SUITE_P(Philox4x32x10CopyTestsuite, Philox4x32x10CopyTests,
                          ::testing::ValuesIn(devices), ::DeviceNamePrint());
 
+class Mrg32k3aConstructorsTests : public ::testing::TestWithParam<cl::sycl::device*> {};
+
+class Mrg32k3aCopyTests : public ::testing::TestWithParam<cl::sycl::device*> {};
+
+TEST_P(Mrg32k3aConstructorsTests, BinaryPrecision) {
+    rng_test<engines_constructors_test<oneapi::mkl::rng::mrg32k3a>> test;
+    std::initializer_list<std::uint32_t> seed_ex = { SEED, 1, 1, 1, 1, 1 };
+    EXPECT_TRUEORSKIP((test(GetParam(), seed_ex)));
+}
+
+TEST_P(Mrg32k3aCopyTests, BinaryPrecision) {
+    rng_test<engines_copy_test<oneapi::mkl::rng::mrg32k3a>> test;
+    EXPECT_TRUEORSKIP((test(GetParam())));
+}
+
+INSTANTIATE_TEST_SUITE_P(Mrg32k3aConstructorsTestsuite, Mrg32k3aConstructorsTests,
+                         ::testing::ValuesIn(devices), ::DeviceNamePrint());
+
+INSTANTIATE_TEST_SUITE_P(Mrg32k3aCopyTestsuite, Mrg32k3aCopyTests, ::testing::ValuesIn(devices),
+                         ::DeviceNamePrint());
+
 } // anonymous namespace

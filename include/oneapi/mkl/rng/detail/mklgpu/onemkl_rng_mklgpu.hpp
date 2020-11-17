@@ -37,6 +37,12 @@ ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(cl::sy
 ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(
     cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed);
 
+ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(cl::sycl::queue queue,
+                                                                     std::uint32_t seed);
+
+ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(
+    cl::sycl::queue queue, std::initializer_list<std::uint32_t> seed);
+
 } // namespace mklgpu
 } // namespace rng
 } // namespace mkl

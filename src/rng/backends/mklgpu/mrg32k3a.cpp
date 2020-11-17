@@ -35,24 +35,23 @@ namespace rng {
 namespace mklgpu {
 
 #if !defined(_WIN64)
-class philox4x32x10_impl : public oneapi::mkl::rng::detail::engine_impl {
+class mrg32k3a_impl : public oneapi::mkl::rng::detail::engine_impl {
 public:
-    philox4x32x10_impl(cl::sycl::queue queue, std::uint64_t seed)
+    mrg32k3a_impl(cl::sycl::queue queue, std::uint32_t seed)
             : oneapi::mkl::rng::detail::engine_impl(queue) {
-        engine_ = oneapi::mkl::rng::detail::gpu::create_engine<oneapi::mkl::rng::philox4x32x10>(
-            queue, seed);
+        engine_ =
+            oneapi::mkl::rng::detail::gpu::create_engine<oneapi::mkl::rng::mrg32k3a>(queue, seed);
     }
 
-    philox4x32x10_impl(cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed)
+    mrg32k3a_impl(cl::sycl::queue queue, std::initializer_list<std::uint32_t> seed)
             : oneapi::mkl::rng::detail::engine_impl(queue) {
-        engine_ = oneapi::mkl::rng::detail::gpu::create_engine<oneapi::mkl::rng::philox4x32x10>(
-            queue, (std::int64_t)(seed.size() * 2), (const unsigned int*)seed.begin());
+        engine_ = oneapi::mkl::rng::detail::gpu::create_engine<oneapi::mkl::rng::mrg32k3a>(
+            queue, (std::int64_t)(seed.size()), (const unsigned int*)seed.begin());
     }
 
-    philox4x32x10_impl(const philox4x32x10_impl* other)
-            : oneapi::mkl::rng::detail::engine_impl(*other) {
+    mrg32k3a_impl(const mrg32k3a_impl* other) : oneapi::mkl::rng::detail::engine_impl(*other) {
         sycl::queue queue(other->queue_);
-        engine_ = oneapi::mkl::rng::detail::gpu::create_engine<oneapi::mkl::rng::philox4x32x10>(
+        engine_ = oneapi::mkl::rng::detail::gpu::create_engine<oneapi::mkl::rng::mrg32k3a>(
             queue, other->engine_);
     }
 
@@ -291,7 +290,7 @@ public:
     }
 
     virtual oneapi::mkl::rng::detail::engine_impl* copy_state() override {
-        return new philox4x32x10_impl(this);
+        return new mrg32k3a_impl(this);
     }
 
     virtual void skip_ahead(std::uint64_t num_to_skip) override {
@@ -306,29 +305,28 @@ public:
         throw oneapi::mkl::unimplemented("rng", "leapfrog");
     }
 
-    virtual ~philox4x32x10_impl() override {
+    virtual ~mrg32k3a_impl() override {
         oneapi::mkl::rng::detail::gpu::delete_engine(queue_, engine_);
     }
 
 private:
-    oneapi::mkl::rng::detail::engine_base_impl<oneapi::mkl::rng::philox4x32x10>* engine_;
+    oneapi::mkl::rng::detail::engine_base_impl<oneapi::mkl::rng::mrg32k3a>* engine_;
 };
 #else // GPU backend is not supported for Windows OS currently
-class philox4x32x10_impl : public oneapi::mkl::rng::detail::engine_impl {
+class mrg32k3a_impl : public oneapi::mkl::rng::detail::engine_impl {
 public:
-    philox4x32x10_impl(cl::sycl::queue queue, std::uint64_t seed)
+    mrg32k3a_impl(cl::sycl::queue queue, std::uint32_t seed)
             : oneapi::mkl::rng::detail::engine_impl(queue) {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
-    philox4x32x10_impl(cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed)
+    mrg32k3a_impl(cl::sycl::queue queue, std::initializer_list<std::uint32_t> seed)
             : oneapi::mkl::rng::detail::engine_impl(queue) {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
-    philox4x32x10_impl(const philox4x32x10_impl* other)
-            : oneapi::mkl::rng::detail::engine_impl(*other) {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+    mrg32k3a_impl(const mrg32k3a_impl* other) : oneapi::mkl::rng::detail::engine_impl(*other) {
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     // Buffers API
@@ -336,104 +334,104 @@ public:
     virtual void generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::standard>& distr,
         std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::standard>& distr,
         std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(const oneapi::mkl::rng::uniform<
                               std::int32_t, oneapi::mkl::rng::uniform_method::standard>& distr,
                           std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::accurate>& distr,
         std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::accurate>& distr,
         std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(const oneapi::mkl::rng::gaussian<
                               float, oneapi::mkl::rng::gaussian_method::box_muller2>& distr,
                           std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(const oneapi::mkl::rng::gaussian<
                               double, oneapi::mkl::rng::gaussian_method::box_muller2>& distr,
                           std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::icdf>& distr,
         std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>& distr,
         std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(const oneapi::mkl::rng::lognormal<
                               float, oneapi::mkl::rng::lognormal_method::box_muller2>& distr,
                           std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(const oneapi::mkl::rng::lognormal<
                               double, oneapi::mkl::rng::lognormal_method::box_muller2>& distr,
                           std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::lognormal<float, oneapi::mkl::rng::lognormal_method::icdf>& distr,
         std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::icdf>& distr,
         std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
                           std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
                           std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr,
                           std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr,
                           std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void generate(const bits<std::uint32_t>& distr, std::int64_t n,
                           cl::sycl::buffer<std::uint32_t, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     // USM APIs
@@ -442,7 +440,7 @@ public:
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::standard>& distr,
         std::int64_t n, float* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
@@ -450,7 +448,7 @@ public:
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::standard>& distr,
         std::int64_t n, double* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
@@ -459,7 +457,7 @@ public:
             distr,
         std::int64_t n, std::int32_t* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
@@ -467,7 +465,7 @@ public:
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::accurate>& distr,
         std::int64_t n, float* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
@@ -475,7 +473,7 @@ public:
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::accurate>& distr,
         std::int64_t n, double* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
@@ -484,7 +482,7 @@ public:
             distr,
         std::int64_t n, float* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
@@ -493,7 +491,7 @@ public:
             distr,
         std::int64_t n, double* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
@@ -501,7 +499,7 @@ public:
         const oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::icdf>& distr,
         std::int64_t n, float* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
@@ -509,7 +507,7 @@ public:
         const oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>& distr,
         std::int64_t n, double* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
@@ -518,7 +516,7 @@ public:
             distr,
         std::int64_t n, float* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
@@ -527,7 +525,7 @@ public:
             distr,
         std::int64_t n, double* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
@@ -535,7 +533,7 @@ public:
         const oneapi::mkl::rng::lognormal<float, oneapi::mkl::rng::lognormal_method::icdf>& distr,
         std::int64_t n, float* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
@@ -543,73 +541,73 @@ public:
         const oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::icdf>& distr,
         std::int64_t n, double* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const bernoulli<std::int32_t, bernoulli_method::icdf>& distr, std::int64_t n,
         std::int32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr, std::int64_t n,
         std::uint32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
         std::int32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
         std::uint32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const bits<std::uint32_t>& distr, std::int64_t n, std::uint32_t* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return cl::sycl::event{};
     }
 
     virtual oneapi::mkl::rng::detail::engine_impl* copy_state() override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return nullptr;
     }
 
     virtual void skip_ahead(std::uint64_t num_to_skip) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void skip_ahead(std::initializer_list<std::uint64_t> num_to_skip) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
     virtual void leapfrog(std::uint64_t idx, std::uint64_t stride) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
     }
 
-    virtual ~philox4x32x10_impl() override {}
+    virtual ~mrg32k3a_impl() override {}
 };
 #endif
 
-oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(sycl::queue queue, std::uint64_t seed) {
-    return new philox4x32x10_impl(queue, seed);
+oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(sycl::queue queue, std::uint32_t seed) {
+    return new mrg32k3a_impl(queue, seed);
 }
 
-oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(
-    cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed) {
-    return new philox4x32x10_impl(queue, seed);
+oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(cl::sycl::queue queue,
+                                                       std::initializer_list<std::uint32_t> seed) {
+    return new mrg32k3a_impl(queue, seed);
 }
 
 } // namespace mklgpu

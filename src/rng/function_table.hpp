@@ -32,6 +32,11 @@ typedef struct {
                                                                         std::uint64_t seed);
     oneapi::mkl::rng::detail::engine_impl* (*create_philox4x32x10_ex_sycl)(
         cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed);
+
+    oneapi::mkl::rng::detail::engine_impl* (*create_mrg32k3a_sycl)(cl::sycl::queue queue,
+                                                                   std::uint32_t seed);
+    oneapi::mkl::rng::detail::engine_impl* (*create_mrg32k3a_ex_sycl)(
+        cl::sycl::queue queue, std::initializer_list<std::uint32_t> seed);
 } rng_function_table_t;
 
 #endif //_RNG_FUNCTION_TABLE_HPP_

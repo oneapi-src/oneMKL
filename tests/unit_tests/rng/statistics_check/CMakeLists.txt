@@ -18,7 +18,7 @@
 #===============================================================================
 
 # Build object from all test sources
-set(STATS_CHECK_SOURCES "uniform.cpp" "uniform_usm.cpp" "gaussian_usm.cpp" "gaussian.cpp")
+set(STATS_CHECK_SOURCES "uniform.cpp" "uniform_usm.cpp" "gaussian_usm.cpp" "gaussian.cpp" "lognormal_usm.cpp" "lognormal.cpp" "bernoulli_usm.cpp" "bernoulli.cpp" "poisson_usm.cpp" "poisson.cpp")
 
 if(BUILD_SHARED_LIBS)
   add_library(rng_statistics_rt OBJECT ${STATS_CHECK_SOURCES})

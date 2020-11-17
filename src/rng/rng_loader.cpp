@@ -39,6 +39,16 @@ engine_impl* create_philox4x32x10(oneapi::mkl::device libkey, cl::sycl::queue qu
     return function_tables[libkey].create_philox4x32x10_ex_sycl(queue, seed);
 }
 
+engine_impl* create_mrg32k3a(oneapi::mkl::device libkey, cl::sycl::queue queue,
+                             std::uint32_t seed) {
+    return function_tables[libkey].create_mrg32k3a_sycl(queue, seed);
+}
+
+engine_impl* create_mrg32k3a(oneapi::mkl::device libkey, cl::sycl::queue queue,
+                             std::initializer_list<std::uint32_t> seed) {
+    return function_tables[libkey].create_mrg32k3a_ex_sycl(queue, seed);
+}
+
 } // namespace detail
 } // namespace rng
 } // namespace mkl
