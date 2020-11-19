@@ -104,25 +104,89 @@ $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl_blas_mklcpu –lonemkl_blas_c
 
 ### Supported Configurations:
 
-Supported domains: BLAS
+Supported domains: BLAS, RNG
 
 #### Linux*
 
- Backend | Library | Supported Link Type
- :------| :-------| :------------------
- Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
- Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
- NVIDIA GPU | NVIDIA cuBLAS | Dynamic, Static
- Intel CPU | NETLIB LAPACK | Dynamic, Static
+<table>
+    <thead>
+        <tr align="center" >
+            <th>Domain</th>
+            <th>Backend</th>
+            <th>Library</th>
+            <th>Supported Link Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=4 align="center">BLAS</td>
+            <td align="center">Intel CPU</td>
+            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">Intel GPU</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">NVIDIA GPU</td>
+            <td align="center">NVIDIA cuBLAS</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">Intel CPU</td>
+            <td align="center">NETLIB LAPACK</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td rowspan=2 align="center">RNG</td>
+            <td align="center">Intel CPU</td>
+            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">Intel GPU</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+    </tbody>
+</table>
 
 #### Windows*
 
- Backend | Library | Supported Link Type
- :------| :-------| :------------------
- Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
- Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
- Intel CPU | NETLIB LAPACK | Dynamic, Static
-  
+<table>
+    <thead>
+        <tr align="center" >
+            <th>Domain</th>
+            <th>Backend</th>
+            <th>Library</th>
+            <th>Supported Link Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=3 align="center">BLAS</td>
+            <td align="center">Intel CPU</td>
+            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">Intel GPU</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">Intel CPU</td>
+            <td align="center">NETLIB LAPACK</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">RNG</td>
+            <td align="center">Intel CPU</td>
+            <td align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+    </tbody>
+</table>
+
 ---
 
 ## Support and Requirements
