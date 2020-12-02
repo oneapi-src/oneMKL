@@ -272,16 +272,34 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n, float *alpha
                            std::int64_t *incx, float **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    return ::oneapi::mkl::gpu::saxpy_batch(queue, n, alpha, x, incx, y, incy, group_count,
-                                           group_size, dependencies);
+    std::vector<cl::sycl::event *> coalesced_events;
+    coalesced_events.reserve(group_count);
+    std::int64_t total_group_size = 0;
+    for (std::int64_t i = 0; i < group_count; i++) {
+        cl::sycl::event *axpy_batch_event = new cl::sycl::event(
+            ::oneapi::mkl::gpu::saxpy_batch_sycl(&queue, n[i], alpha[i], x, incx[i], y, incy[i],
+                                                 group_size[i], total_group_size, dependencies));
+        coalesced_events.push_back(axpy_batch_event);
+        total_group_size += group_size[i];
+    }
+    return *coalesce_events(queue, coalesced_events);
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n, double *alpha, const double **x,
                            std::int64_t *incx, double **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    return ::oneapi::mkl::gpu::daxpy_batch(queue, n, alpha, x, incx, y, incy, group_count,
-                                           group_size, dependencies);
+    std::vector<cl::sycl::event *> coalesced_events;
+    coalesced_events.reserve(group_count);
+    std::int64_t total_group_size = 0;
+    for (std::int64_t i = 0; i < group_count; i++) {
+        cl::sycl::event *axpy_batch_event = new cl::sycl::event(
+            ::oneapi::mkl::gpu::daxpy_batch_sycl(&queue, n[i], alpha[i], x, incx[i], y, incy[i],
+                                                 group_size[i], total_group_size, dependencies));
+        coalesced_events.push_back(axpy_batch_event);
+        total_group_size += group_size[i];
+    }
+    return *coalesce_events(queue, coalesced_events);
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n, std::complex<float> *alpha,
@@ -289,8 +307,17 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n, std::complex
                            std::complex<float> **y, std::int64_t *incy, std::int64_t group_count,
                            std::int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    return ::oneapi::mkl::gpu::caxpy_batch(queue, n, alpha, x, incx, y, incy, group_count,
-                                           group_size, dependencies);
+    std::vector<cl::sycl::event *> coalesced_events;
+    coalesced_events.reserve(group_count);
+    std::int64_t total_group_size = 0;
+    for (std::int64_t i = 0; i < group_count; i++) {
+        cl::sycl::event *axpy_batch_event = new cl::sycl::event(
+            ::oneapi::mkl::gpu::caxpy_batch_sycl(&queue, n[i], alpha[i], x, incx[i], y, incy[i],
+                                                 group_size[i], total_group_size, dependencies));
+        coalesced_events.push_back(axpy_batch_event);
+        total_group_size += group_size[i];
+    }
+    return *coalesce_events(queue, coalesced_events);
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n, std::complex<double> *alpha,
@@ -298,6 +325,15 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n, std::complex
                            std::complex<double> **y, std::int64_t *incy, std::int64_t group_count,
                            std::int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    return ::oneapi::mkl::gpu::zaxpy_batch(queue, n, alpha, x, incx, y, incy, group_count,
-                                           group_size, dependencies);
+    std::vector<cl::sycl::event *> coalesced_events;
+    coalesced_events.reserve(group_count);
+    std::int64_t total_group_size = 0;
+    for (std::int64_t i = 0; i < group_count; i++) {
+        cl::sycl::event *axpy_batch_event = new cl::sycl::event(
+            ::oneapi::mkl::gpu::zaxpy_batch_sycl(&queue, n[i], alpha[i], x, incx[i], y, incy[i],
+                                                 group_size[i], total_group_size, dependencies));
+        coalesced_events.push_back(axpy_batch_event);
+        total_group_size += group_size[i];
+    }
+    return *coalesce_events(queue, coalesced_events);
 }

@@ -1657,27 +1657,27 @@ cl::sycl::event zgemm_batch_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_
                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies,
                                  int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
-cl::sycl::event saxpy_batch(cl::sycl::queue &queue, std::int64_t *n, float *alpha, const float **x,
-                            std::int64_t *incx, float **y, std::int64_t *incy,
-                            std::int64_t group_count, std::int64_t *group_size,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+cl::sycl::event saxpy_batch_sycl(cl::sycl::queue *queue, std::int64_t n, float alpha,
+                                 const float **x, std::int64_t incx, float **y, std::int64_t incy,
+                                 std::int64_t batch_size, std::int64_t offset,
+                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event daxpy_batch(cl::sycl::queue &queue, std::int64_t *n, double *alpha,
-                            const double **x, std::int64_t *incx, double **y, std::int64_t *incy,
-                            std::int64_t group_count, std::int64_t *group_size,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+cl::sycl::event daxpy_batch_sycl(cl::sycl::queue *queue, std::int64_t n, double alpha,
+                                 const double **x, std::int64_t incx, double **y, std::int64_t incy,
+                                 std::int64_t batch_size, std::int64_t offset,
+                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event caxpy_batch(cl::sycl::queue &queue, std::int64_t *n, std::complex<float> *alpha,
-                            const std::complex<float> **x, std::int64_t *incx,
-                            std::complex<float> **y, std::int64_t *incy, std::int64_t group_count,
-                            std::int64_t *group_size,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+cl::sycl::event caxpy_batch_sycl(cl::sycl::queue *queue, std::int64_t n, std::complex<float> alpha,
+                                 const std::complex<float> **x, std::int64_t incx,
+                                 std::complex<float> **y, std::int64_t incy,
+                                 std::int64_t batch_size, std::int64_t offset,
+                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
-cl::sycl::event zaxpy_batch(cl::sycl::queue &queue, std::int64_t *n, std::complex<double> *alpha,
-                            const std::complex<double> **x, std::int64_t *incx,
-                            std::complex<double> **y, std::int64_t *incy, std::int64_t group_count,
-                            std::int64_t *group_size,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies);
+cl::sycl::event zaxpy_batch_sycl(cl::sycl::queue *queue, std::int64_t n, std::complex<double> alpha,
+                                 const std::complex<double> **x, std::int64_t incx,
+                                 std::complex<double> **y, std::int64_t incy,
+                                 std::int64_t batch_size, std::int64_t offset,
+                                 const cl::sycl::vector_class<cl::sycl::event> &dependencies);
 
 cl::sycl::event sgemmt_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_UPLO upper_lower,
                             MKL_TRANSPOSE transa, MKL_TRANSPOSE transb, int64_t n, int64_t k,
