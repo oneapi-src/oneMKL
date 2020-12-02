@@ -790,7 +790,7 @@ void gemm_f16f16f32(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE tra
                     cl::sycl::buffer<half, 1> &a, int64_t lda, cl::sycl::buffer<half, 1> &b,
                     int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c, int64_t ldc);
 
-void gemm_s8u8s32_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+cl::sycl::event gemm_s8u8s32_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
                        MKL_TRANSPOSE transb, CBLAS_OFFSET offsetc, int64_t m, int64_t n, int64_t k,
                        float alpha, cl::sycl::buffer<int8_t, 1> *a, int64_t lda, int8_t ao,
                        cl::sycl::buffer<uint8_t, 1> *b, int64_t ldb, uint8_t bo, float beta,
