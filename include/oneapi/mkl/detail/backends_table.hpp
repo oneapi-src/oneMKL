@@ -58,6 +58,7 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
           } },
         { device::nvidiagpu,
           {
+/// TODO: ENABLE_CUDA_BACKEND?
 #ifdef ENABLE_CUBLAS_BACKEND
               LIB_NAME("blas_cublas")
 #endif
@@ -74,6 +75,12 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
           {
 #ifdef ENABLE_MKLGPU_BACKEND
               LIB_NAME("rng_mklgpu")
+#endif
+          } },
+        { device::nvidiagpu,
+          {
+#ifdef ENABLE_CURAND_BACKEND
+              LIB_NAME("rng_curand")
 #endif
           } } } }
 };
