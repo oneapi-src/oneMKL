@@ -1,18 +1,5 @@
 # oneAPI Math Kernel Library (oneMKL) Interfaces
 
-## Contents
-
-- [Introduction](#introduction)
-- [Support and Requirements](#support-and-requirements)
-- [Build Setup](#build-setup)
-- [Building with Conan](#building-with-conan)
-- [Building with CMake](#building-with-cmake)
-- [Project Cleanup](#project-cleanup)
-- [FAQs](#faqs)
-- [Legal Information](#legal-information)
-
----
-
 ## Introduction
 
 oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel C++ (DPC++) interface according to the [oneMKL specification](https://spec.oneapi.com/versions/latest/elements/oneMKL/source/index.html). It works with multiple devices (backends) using device-specific libraries underneath.
@@ -47,6 +34,19 @@ oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel 
         </tr>
     </tbody>
 </table>
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Support and Requirements](#support-and-requirements)
+- [Build Setup](#build-setup)
+- [Building with Conan](#building-with-conan)
+- [Building with CMake](#building-with-cmake)
+- [Project Cleanup](#project-cleanup)
+- [FAQs](#faqs)
+- [Legal Information](#legal-information)
+
+---
 
 ### Supported Usage Models:
 
@@ -535,6 +535,20 @@ ninja -t clean
 
 ---
 
+## Contributing
+
+See [CONTRIBUTING](CONTRIBUTING.md) for more information.
+
+If all contribution guidelines are included in this section, the CONTRIBUTING.md
+file can be skipped.
+
+## License
+
+Distributed under the LICENSE TYPE license. See [LICENSE](LICENSE) for more
+information.
+
+---
+
 ## FAQs
 
 ### oneMKL
@@ -569,5 +583,6 @@ Answer:
       2. Checking `/opt/intel/inteloneapi` for `mkl` and/or `tbb` directories.
 
 ---
+
 
 #### [Legal information](legal_information.md)
