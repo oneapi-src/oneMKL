@@ -536,12 +536,9 @@ ninja -t clean
 
 See [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
-If all contribution guidelines are included in this section, the CONTRIBUTING.md
-file can be skipped.
-
 ## License
 
-Distributed under the LICENSE TYPE license. See [LICENSE](LICENSE) for more
+    Distributed under the Apache license 2.0. See [LICENSE](LICENSE) for more
 information.
 
 ---
