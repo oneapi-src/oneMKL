@@ -45,7 +45,7 @@ Open an Request For Comment (RFC) issue when contributing new interfaces. In the
 
 ## Bug Reporting
 
-Log a bug or feedback with an [issue](https://github.com/oneapi-src/oneMKL/issues)
+If you find a bug or problem, please open a request under [Issues](https://github.com/oneapi-src/oneMKL/issues).
 
 
 ## Security Issues
