@@ -1,7 +1,5 @@
 # oneAPI Math Kernel Library (oneMKL) Interfaces
 
-## Introduction
-
 oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel C++ (DPC++) interface according to the [oneMKL specification](https://spec.oneapi.com/versions/latest/elements/oneMKL/source/index.html). It works with multiple devices (backends) using device-specific libraries underneath.
 
 <table>
@@ -37,7 +35,6 @@ oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel 
 
 ## Table of Contents
 
-- [Introduction](#introduction)
 - [Support and Requirements](#support-and-requirements)
 - [Build Setup](#build-setup)
 - [Building with Conan](#building-with-conan)
