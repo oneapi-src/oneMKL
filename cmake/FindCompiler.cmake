@@ -25,10 +25,6 @@ include(FindPackageHandleStandardArgs)
 check_cxx_compiler_flag("-fsycl" is_dpcpp)
 
 if(is_dpcpp)
-  find_package_handle_standard_args(SYCL DEFAULT_MSG)
-endif()
-
-if(SYCL_FOUND AND is_dpcpp)
   # Workaround for internal compiler error during linking if -fsycl is used
   get_filename_component(SYCL_BINARY_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
   find_library(SYCL_LIBRARY NAMES sycl PATHS "${SYCL_BINARY_DIR}/../lib")
