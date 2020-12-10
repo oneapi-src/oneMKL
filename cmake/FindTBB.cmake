@@ -31,7 +31,7 @@ find_path(TBB_LIB_DIR ${TBB_LIBNAME}
       PATH_SUFFIXES "lib" "lib/intel64/gcc4.4" "lib/intel64/gcc4.8"
                "../tbb/lib/intel64/gcc4.4" "../tbb/lib/intel64/gcc4.8"
                "../../tbb/latest/lib/intel64/gcc4.8"
-               "../tbb/lib/intel64/vc_mt" "lib/intel64/vc_mt" "../tbb/lib/intel64/vc14"
+               "../tbb/lib/intel64/vc14"
 )
 
 find_library(TBB_LIBRARIES NAMES tbb
@@ -39,7 +39,7 @@ find_library(TBB_LIBRARIES NAMES tbb
         PATH_SUFFIXES "lib" "lib/intel64/gcc4.4" "lib/intel64/gcc4.8"
                  "../tbb/lib/intel64/gcc4.4" "../tbb/lib/intel64/gcc4.8"
                  "../../tbb/latest/lib/intel64/gcc4.8"
-                 "../tbb/lib/intel64/vc_mt" "../tbb/lib/intel64/vc14"
+                 "../tbb/lib/intel64/vc14"
                  )
 
 #Workaround for ref problem
