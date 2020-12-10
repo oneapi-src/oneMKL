@@ -42,6 +42,17 @@ Open an Request For Comment (RFC) issue when contributing new interfaces. In the
 
 * What exisitng libraries have implementation of this function and can be used under the oneMKL interface.
 
+
+## Bug Reporting
+
+If you find a bug or problem, please open a request under [Issues](https://github.com/oneapi-src/oneMKL/issues).
+
+
+## Security Issues
+
+Report security issues to onemkl.maintainers@intel.com
+
+
 ## Coding Style
 
 The general principle is to follow the style of existing / surrounding code. If you are in doubt, use the `clang-format`:
