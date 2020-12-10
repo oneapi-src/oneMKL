@@ -40,6 +40,7 @@ find_library(TBB_LIBRARIES NAMES tbb
                  "../tbb/lib/intel64/gcc4.4" "../tbb/lib/intel64/gcc4.8"
                  "../../tbb/latest/lib/intel64/gcc4.8"
                  "../tbb/lib/intel64/vc14"
+                 "../tbb/lib/intel64/vc_mt"
                  )
 
 #Workaround for ref problem
