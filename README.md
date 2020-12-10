@@ -45,6 +45,8 @@ oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel 
 
 ---
 
+## Support and Requirements
+
 ### Supported Usage Models:
 
 There are two oneMKL selector layer implementations:
@@ -185,8 +187,6 @@ Supported domains: BLAS, RNG
 </table>
 
 ---
-
-## Support and Requirements
 
 ### Hardware Platform Support
 
