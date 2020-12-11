@@ -121,8 +121,13 @@ int main(int argc, char** argv) {
 #if defined(ENABLE_MKLCPU_BACKEND) || defined(ENABLE_NETLIB_BACKEND)
     local_devices.push_back(cl::sycl::device(cl::sycl::host_selector()));
 #endif
-    for (int i = 0; i < local_devices.size(); i++) {
-        devices.push_back(&(local_devices[i]));
+#define GET_NAME(d) (d).template get_info<cl::sycl::info::device::name>()
+    for (auto& local_dev : local_devices) {
+        // Test only unique devices
+        if (std::find_if(devices.begin(), devices.end(), [&](cl::sycl::device* dev) {
+                return GET_NAME(*dev) == GET_NAME(local_dev);
+            }) == devices.end())
+            devices.push_back(&local_dev);
     }
 
     // start Google Test pickup and output
