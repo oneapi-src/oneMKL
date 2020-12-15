@@ -25,6 +25,7 @@
 
 namespace oneapi {
 namespace mkl {
+namespace blas {
 namespace cublas {
 namespace column_major {
 
@@ -1620,5 +1621,6 @@ NRM2_LAUNCHER_USM(std::complex<double>, double, cublasDznrm2)
 
 } // namespace row_major
 } // namespace cublas
+} // namespace blas
 } // namespace mkl
 } // namespace oneapi

@@ -24,6 +24,7 @@
 
 namespace oneapi {
 namespace mkl {
+namespace blas {
 namespace cublas {
 namespace column_major {
 
@@ -2730,5 +2731,6 @@ TRSV_LAUNCHER_USM(std::complex<double>, cublasZtrsv)
 
 } // namespace row_major
 } // namespace cublas
+} // namespace blas
 } // namespace mkl
 } // namespace oneapi

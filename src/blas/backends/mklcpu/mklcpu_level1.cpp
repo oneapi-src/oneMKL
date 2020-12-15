@@ -24,6 +24,7 @@
 
 namespace oneapi {
 namespace mkl {
+namespace blas {
 namespace mklcpu {
 namespace column_major {
 
@@ -36,5 +37,6 @@ namespace row_major {
 
 } // namespace row_major
 } // namespace mklcpu
+} // namespace blas
 } // namespace mkl
 } // namespace oneapi

@@ -30,6 +30,7 @@
 
 namespace oneapi {
 namespace mkl {
+namespace blas {
 namespace cublas {
 
 // The static assert to make sure that all index types used in
@@ -220,6 +221,7 @@ struct CudaEquivalentType<std::complex<double>> {
 };
 
 } // namespace cublas
+} // namespace blas
 } // namespace mkl
 } // namespace oneapi
 #endif // _MKL_BLAS_CUBLAS_HELPER_HPP_

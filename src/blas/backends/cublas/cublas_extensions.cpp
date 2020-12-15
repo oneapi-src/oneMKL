@@ -24,6 +24,7 @@
 
 namespace oneapi {
 namespace mkl {
+namespace blas {
 namespace cublas {
 namespace column_major {
 
@@ -180,5 +181,6 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
 
 } // namespace row_major
 } // namespace cublas
+} // namespace blas
 } // namespace mkl
 } // namespace oneapi

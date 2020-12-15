@@ -29,6 +29,7 @@
 #include "cublas_helper.hpp"
 namespace oneapi {
 namespace mkl {
+namespace blas {
 namespace cublas {
 
 struct cublas_handle {
@@ -93,6 +94,7 @@ public:
 };
 
 } // namespace cublas
+} // namespace blas
 } // namespace mkl
 } // namespace oneapi
 #endif //_MKL_BLAS_CUBLAS_SCOPED_HANDLE_HPP_

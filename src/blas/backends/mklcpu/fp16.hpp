@@ -27,6 +27,7 @@
 
 namespace oneapi {
 namespace mkl {
+namespace blas {
 namespace mklcpu {
 
 union float_raw {
@@ -286,58 +287,59 @@ inline fp16::operator float() const {
 }
 
 } // namespace mklcpu
+} // namespace blas
 } // namespace mkl
 } // namespace oneapi
 
 namespace std {
 
-bool isfinite(oneapi::mkl::mklcpu::fp16 h) {
+bool isfinite(oneapi::mkl::blas::mklcpu::fp16 h) {
     return (~h.raw & 0x7C00);
 }
 
-oneapi::mkl::mklcpu::fp16 abs(oneapi::mkl::mklcpu::fp16 h) {
-    oneapi::mkl::mklcpu::fp16 a = h;
+oneapi::mkl::blas::mklcpu::fp16 abs(oneapi::mkl::blas::mklcpu::fp16 h) {
+    oneapi::mkl::blas::mklcpu::fp16 a = h;
     a.raw &= ~0x8000;
     return a;
 }
 
-oneapi::mkl::mklcpu::fp16 real(oneapi::mkl::mklcpu::fp16 h) {
+oneapi::mkl::blas::mklcpu::fp16 real(oneapi::mkl::blas::mklcpu::fp16 h) {
     return h;
 }
 
-float imag(oneapi::mkl::mklcpu::fp16 h) {
+float imag(oneapi::mkl::blas::mklcpu::fp16 h) {
     return 0.0f;
 }
 
 template <>
-class numeric_limits<oneapi::mkl::mklcpu::fp16> {
+class numeric_limits<oneapi::mkl::blas::mklcpu::fp16> {
 public:
-    static oneapi::mkl::mklcpu::fp16 min() {
-        return oneapi::mkl::mklcpu::fp16(0x0100, false);
+    static oneapi::mkl::blas::mklcpu::fp16 min() {
+        return oneapi::mkl::blas::mklcpu::fp16(0x0100, false);
     }
-    static oneapi::mkl::mklcpu::fp16 lowest() {
-        return oneapi::mkl::mklcpu::fp16(0xFBFF, false);
+    static oneapi::mkl::blas::mklcpu::fp16 lowest() {
+        return oneapi::mkl::blas::mklcpu::fp16(0xFBFF, false);
     }
-    static oneapi::mkl::mklcpu::fp16 max() {
-        return oneapi::mkl::mklcpu::fp16(0x7BFF, false);
+    static oneapi::mkl::blas::mklcpu::fp16 max() {
+        return oneapi::mkl::blas::mklcpu::fp16(0x7BFF, false);
     }
-    static oneapi::mkl::mklcpu::fp16 epsilon() {
-        return oneapi::mkl::mklcpu::fp16(0x1400, false);
+    static oneapi::mkl::blas::mklcpu::fp16 epsilon() {
+        return oneapi::mkl::blas::mklcpu::fp16(0x1400, false);
     }
-    static oneapi::mkl::mklcpu::fp16 round_error() {
-        return oneapi::mkl::mklcpu::fp16(0x3800, false);
+    static oneapi::mkl::blas::mklcpu::fp16 round_error() {
+        return oneapi::mkl::blas::mklcpu::fp16(0x3800, false);
     } // 0.5ulp
-    static oneapi::mkl::mklcpu::fp16 infinity() {
-        return oneapi::mkl::mklcpu::fp16(0x7C00, false);
+    static oneapi::mkl::blas::mklcpu::fp16 infinity() {
+        return oneapi::mkl::blas::mklcpu::fp16(0x7C00, false);
     }
-    static oneapi::mkl::mklcpu::fp16 quiet_NaN() {
-        return oneapi::mkl::mklcpu::fp16(0x7D00, false);
+    static oneapi::mkl::blas::mklcpu::fp16 quiet_NaN() {
+        return oneapi::mkl::blas::mklcpu::fp16(0x7D00, false);
     }
-    static oneapi::mkl::mklcpu::fp16 signaling_NaN() {
-        return oneapi::mkl::mklcpu::fp16(0x7E00, false);
+    static oneapi::mkl::blas::mklcpu::fp16 signaling_NaN() {
+        return oneapi::mkl::blas::mklcpu::fp16(0x7E00, false);
     }
-    static oneapi::mkl::mklcpu::fp16 denorm_min() {
-        return oneapi::mkl::mklcpu::fp16(0x0001, false);
+    static oneapi::mkl::blas::mklcpu::fp16 denorm_min() {
+        return oneapi::mkl::blas::mklcpu::fp16(0x0001, false);
     }
 };
 

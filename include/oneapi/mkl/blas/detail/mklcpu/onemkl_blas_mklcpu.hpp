@@ -37,20 +37,21 @@ using oneapi::mkl::uplo;
 using oneapi::mkl::side;
 using oneapi::mkl::diag;
 using oneapi::mkl::offset;
-
+namespace blas {
 namespace mklcpu {
 namespace column_major {
 
 #include "oneapi/mkl/blas/detail/onemkl_blas_backends.hxx"
 
-} //namespace column_major
+} // namespace column_major
 namespace row_major {
 
 #include "oneapi/mkl/blas/detail/onemkl_blas_backends.hxx"
 
-} //namespace row_major
-} //namespace mklcpu
-} //namespace mkl
-} //namespace oneapi
+} // namespace row_major
+} // namespace mklcpu
+} // namespace blas
+} // namespace mkl
+} // namespace oneapi
 
 #endif //_ONEMKL_BLAS_MKLCPU_HPP_
