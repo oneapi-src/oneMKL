@@ -34,6 +34,7 @@
 
 namespace oneapi {
 namespace mkl {
+namespace blas {
 namespace mklcpu {
 
 // host_task automatically uses run_on_host_intel if it is supported by the
@@ -208,6 +209,7 @@ static inline void copy_mat(T_src &src, MKL_LAYOUT layout, int64_t row, int64_t 
 }
 
 } // namespace mklcpu
+} // namespace blas
 } // namespace mkl
 } // namespace oneapi
 

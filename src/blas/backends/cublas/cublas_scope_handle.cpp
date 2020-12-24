@@ -21,6 +21,7 @@
 
 namespace oneapi {
 namespace mkl {
+namespace blas {
 namespace cublas {
 
 cublas_handle::~cublas_handle() noexcept(false) {
@@ -143,5 +144,6 @@ cl::sycl::context CublasScopedContextHandler::get_context(const cl::sycl::queue 
 }
 
 } // namespace cublas
+} // namespace blas
 } // namespace mkl
 } // namespace oneapi

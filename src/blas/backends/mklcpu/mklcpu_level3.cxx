@@ -116,9 +116,11 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
         host_task<class mkl_kernel_hgemm>(cgh, [=]() {
             int64_t sizea, sizeb, sizec;
             sizea = (MKLMAJOR == MKL_COL_MAJOR) ? (transa == transpose::N) ? lda * k : lda * m
-                                                : (transa == transpose::N) ? lda * m : lda * k;
+                    : (transa == transpose::N)  ? lda * m
+                                                : lda * k;
             sizeb = (MKLMAJOR == MKL_COL_MAJOR) ? (transb == transpose::N) ? ldb * n : ldb * k
-                                                : (transb == transpose::N) ? ldb * k : ldb * n;
+                    : (transb == transpose::N)  ? ldb * k
+                                                : ldb * n;
             sizec = ldc * n;
             // copy A, B and C to float
             float *f32_a = (float *)::malloc(sizeof(float) * sizea);
@@ -154,9 +156,11 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
         host_task<class mkl_kernel_gemm_f16f16f32>(cgh, [=]() {
             int64_t sizea, sizeb;
             sizea = (MKLMAJOR == MKL_COL_MAJOR) ? (transa == transpose::N) ? lda * k : lda * m
-                                                : (transa == transpose::N) ? lda * m : lda * k;
+                    : (transa == transpose::N)  ? lda * m
+                                                : lda * k;
             sizeb = (MKLMAJOR == MKL_COL_MAJOR) ? (transb == transpose::N) ? ldb * n : ldb * k
-                                                : (transb == transpose::N) ? ldb * k : ldb * n;
+                    : (transb == transpose::N)  ? ldb * k
+                                                : ldb * n;
             // copy A and B to float
             float *f32_a = (float *)::malloc(sizeof(float) * sizea);
             float *f32_b = (float *)::malloc(sizeof(float) * sizeb);

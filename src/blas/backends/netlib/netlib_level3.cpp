@@ -25,6 +25,7 @@
 
 namespace oneapi {
 namespace mkl {
+namespace blas {
 namespace netlib {
 namespace column_major {
 
@@ -45,5 +46,6 @@ namespace row_major {
 
 } // namespace row_major
 } // namespace netlib
+} // namespace blas
 } // namespace mkl
 } // namespace oneapi

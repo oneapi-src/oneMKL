@@ -31,6 +31,7 @@ using oneapi::mkl::offset;
 using oneapi::mkl::side;
 using oneapi::mkl::transpose;
 using oneapi::mkl::uplo;
+namespace blas {
 namespace cublas {
 namespace column_major {
 
@@ -43,6 +44,7 @@ namespace row_major {
 
 } //namespace row_major
 } //namespace cublas
+} //namespace blas
 } //namespace mkl
 } //namespace oneapi
 
