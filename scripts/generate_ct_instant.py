@@ -22,6 +22,7 @@ from sys import argv, exit, stdin
 from subprocess import call
 from pprint import pprint
 from collections import defaultdict
+import errno
 import re
 import os
 
@@ -82,7 +83,7 @@ template<>
 try:
     os.makedirs(os.path.dirname(out_filename))
 except OSError as exc:
-    if exc.errno != os.errno.EEXIST:
+    if exc.errno != errno.EEXIST:
         raise
 
 out_file = open(out_filename, "w+")
@@ -124,6 +125,6 @@ try:
     lc = ["clang-format", "-style=file", "-i", out_filename]
     call(lc)
 except OSError as exc:
-    if exc.errno == os.errno.ENOENT:
+    if exc.errno == errno.ENOENT:
         print("Error: clang-format is not found")
 
