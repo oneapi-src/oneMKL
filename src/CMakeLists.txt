@@ -17,11 +17,10 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-# build blas_loader and backends
-add_subdirectory(blas)
-
-# build rng_loader and backends
-add_subdirectory(rng)
+foreach(domain ${TARGET_DOMAINS})
+  # build loader and backends
+  add_subdirectory(${domain})
+endforeach()
 
 # generate header with enabled backends for testing
 configure_file(config.hpp.in "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/config.hpp.configured")
@@ -36,26 +35,29 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/detail/config.hpp"
 
 # Add recipe for onemkl loader library
 if(BUILD_SHARED_LIBS)
-add_library(onemkl SHARED)
+  add_library(onemkl SHARED)
 
-target_include_directories(onemkl
-  PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-         $<INSTALL_INTERFACE:include>
-)
-set_target_properties(onemkl PROPERTIES
-  SOVERSION ${PROJECT_VERSION_MAJOR}
-)
+  target_include_directories(onemkl
+    PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+           $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+           $<INSTALL_INTERFACE:include>
+  )
+  set_target_properties(onemkl PROPERTIES
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+  )
 
-# Build dispatcher library
-target_link_libraries(onemkl PUBLIC onemkl_blas onemkl_rng)
+  # Build dispatcher library
+  set (ONEMKL_LIBS ${TARGET_DOMAINS})
+  list(TRANSFORM ONEMKL_LIBS PREPEND onemkl_)
+  target_link_libraries(onemkl PUBLIC ${ONEMKL_LIBS})
 
-# Add the library to install package
-install(TARGETS onemkl_blas EXPORT oneMKLTargets)
-install(TARGETS onemkl_rng EXPORT oneMKLTargets)
-install(TARGETS onemkl EXPORT oneMKLTargets
-  RUNTIME DESTINATION bin
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-)
+  # Add the library to install package
+  foreach(domain_lib ${ONEMKL_LIBS})
+    install(TARGETS ${domain_lib} EXPORT oneMKLTargets)
+  endforeach()
+  install(TARGETS onemkl EXPORT oneMKLTargets
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+  )
 endif()

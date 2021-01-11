@@ -17,155 +17,113 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-find_package(CBLAS REQUIRED)
-
-# Build BLAS tests first
-add_subdirectory(blas)
-
-# Build RNG tests first
-if((NOT ENABLE_NETLIB_BACKEND) AND (NOT ENABLE_CUBLAS_BACKEND))
-  add_subdirectory(rng)
+if("blas" IN_LIST TARGET_DOMAINS)
+  find_package(CBLAS REQUIRED)
 endif()
+
+foreach(domain ${TARGET_DOMAINS})
+  # Build tests first
+  add_subdirectory(${domain})
+endforeach()
 
 include(GoogleTest)
 
-# Build final test binaries: test_main_rt is for testing RunTime API, test_main_ct is for testing CompileTime API
 get_target_property(GTEST_INCLUDE_DIR gtest INTERFACE_INCLUDE_DIRECTORIES)
 
-add_executable(test_main_blas_ct main_test.cpp)
-target_include_directories(test_main_blas_ct PUBLIC ${GTEST_INCLUDE_DIR})
-target_compile_options(test_main_blas_ct PRIVATE -fsycl)
+# Build final test binaries: test_main_rt is for testing RunTime API (RT), test_main_ct is for testing CompileTime API (CT)
 
-if((NOT ENABLE_NETLIB_BACKEND) AND (NOT ENABLE_CUBLAS_BACKEND))
-  add_executable(test_main_rng_ct main_test.cpp)
-  target_include_directories(test_main_rng_ct PUBLIC ${GTEST_INCLUDE_DIR})
-  target_compile_options(test_main_rng_ct PRIVATE -fsycl)
-endif()
+# BLAS config
+set(blas_TEST_LIST
+        blas_level1
+        blas_level2
+        blas_level3
+        blas_batch
+        blas_extensions)
 
-if(BUILD_SHARED_LIBS)
-  add_executable(test_main_blas_rt main_test.cpp)
-  target_include_directories(test_main_blas_rt PUBLIC ${GTEST_INCLUDE_DIR})
-  target_compile_options(test_main_blas_rt PRIVATE -fsycl)
-  target_link_libraries(test_main_blas_rt PUBLIC
-    gtest
-    gtest_main
-    ${CMAKE_DL_LIBS}
-    ${CBLAS_LINK}
-    ONEMKL::SYCL::SYCL
-    onemkl
-    blas_level1_rt
-    blas_level2_rt
-    blas_level3_rt
-    blas_batch_rt
-    blas_extensions_rt
-  )
-endif()
+set(blas_TEST_LINK ${CBLAS_LINK})
 
-if((NOT ENABLE_NETLIB_BACKEND) AND (NOT ENABLE_CUBLAS_BACKEND))
+# RNG config
+set(rng_TEST_LIST
+      rng_statistics
+      rng_service)
+
+set(rng_TEST_LINK "")
+
+foreach(domain ${TARGET_DOMAINS})
+  # Generate RT and CT test lists
+  set(${domain}_TEST_LIST_RT ${${domain}_TEST_LIST})
+  set(${domain}_TEST_LIST_CT ${${domain}_TEST_LIST})
+  list(TRANSFORM ${domain}_TEST_LIST_RT APPEND _rt)
+  list(TRANSFORM ${domain}_TEST_LIST_CT APPEND _ct)
+
+  add_executable(test_main_${domain}_ct main_test.cpp)
+  target_include_directories(test_main_${domain}_ct PUBLIC ${GTEST_INCLUDE_DIR})
+  target_compile_options(test_main_${domain}_ct PRIVATE -fsycl)
+
   if(BUILD_SHARED_LIBS)
-    add_executable(test_main_rng_rt main_test.cpp)
-    target_include_directories(test_main_rng_rt PUBLIC ${GTEST_INCLUDE_DIR})
-    target_compile_options(test_main_rng_rt PRIVATE -fsycl)
-    target_link_libraries(test_main_rng_rt PUBLIC
+    add_executable(test_main_${domain}_rt main_test.cpp)
+    target_include_directories(test_main_${domain}_rt PUBLIC ${GTEST_INCLUDE_DIR})
+    target_compile_options(test_main_${domain}_rt PRIVATE -fsycl)
+    target_link_libraries(test_main_${domain}_rt PUBLIC
       gtest
       gtest_main
       ${CMAKE_DL_LIBS}
+      ${${domain}_TEST_LINK}
       ONEMKL::SYCL::SYCL
       onemkl
-      rng_statistics_rt
-      rng_service_rt
+      ${${domain}_TEST_LIST_RT}
     )
   endif()
-endif()
 
-if(ENABLE_MKLCPU_BACKEND)
-  add_dependencies(test_main_blas_ct onemkl_blas_mklcpu)
-  add_dependencies(test_main_rng_ct onemkl_rng_mklcpu)
-  list(APPEND ONEMKL_LIBRARIES_BLAS onemkl_blas_mklcpu)
-  list(APPEND ONEMKL_LIBRARIES_RNG onemkl_rng_mklcpu)
-endif()
+  if(ENABLE_MKLCPU_BACKEND)
+    add_dependencies(test_main_${domain}_ct onemkl_${domain}_mklcpu)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu)
+  endif()
 
-if(ENABLE_MKLGPU_BACKEND)
-  add_dependencies(test_main_blas_ct onemkl_blas_mklgpu)
-  add_dependencies(test_main_rng_ct onemkl_rng_mklgpu)
-  list(APPEND ONEMKL_LIBRARIES_BLAS onemkl_blas_mklgpu)
-  list(APPEND ONEMKL_LIBRARIES_RNG onemkl_rng_mklgpu)
-endif()
+  if(ENABLE_MKLGPU_BACKEND)
+    add_dependencies(test_main_${domain}_ct onemkl_${domain}_mklgpu)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklgpu)
+  endif()
 
-if(ENABLE_CUBLAS_BACKEND)
-  add_dependencies(test_main_blas_ct onemkl_blas_cublas)
-  list(APPEND ONEMKL_LIBRARIES_BLAS onemkl_blas_cublas)
-endif()
+  if(domain STREQUAL "blas" AND ENABLE_CUBLAS_BACKEND)
+    add_dependencies(test_main_${domain}_ct onemkl_${domain}_cublas)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_cublas)
+  endif()
 
-if(ENABLE_NETLIB_BACKEND)
-  add_dependencies(test_main_blas_ct onemkl_blas_netlib)
-  list(APPEND ONEMKL_LIBRARIES_BLAS onemkl_blas_netlib)
-endif()
+  if(domain STREQUAL "blas" AND ENABLE_NETLIB_BACKEND)
+    add_dependencies(test_main_${domain}_ct onemkl_${domain}_netlib)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_netlib)
+  endif()
 
-target_link_libraries(test_main_blas_ct PUBLIC
-    gtest
-    gtest_main
-    ${CMAKE_DL_LIBS}
-    ${CBLAS_LINK}
-    ${ONEMKL_LIBRARIES_BLAS}
-    ONEMKL::SYCL::SYCL
-    blas_level1_ct
-    blas_level2_ct
-    blas_level3_ct
-    blas_batch_ct
-    blas_extensions_ct
-)
-
-if((NOT ENABLE_NETLIB_BACKEND) AND (NOT ENABLE_CUBLAS_BACKEND))
-  target_link_libraries(test_main_rng_ct PUBLIC
+  target_link_libraries(test_main_${domain}_ct PUBLIC
       gtest
       gtest_main
       ${CMAKE_DL_LIBS}
-      ${ONEMKL_LIBRARIES_RNG}
+      ${${domain}_TEST_LINK}
+      ${ONEMKL_LIBRARIES_${domain}}
       ONEMKL::SYCL::SYCL
-      rng_statistics_ct
-      rng_service_ct
+      ${${domain}_TEST_LIST_CT}
   )
-endif()
 
-if(BUILD_SHARED_LIBS)
-  set_target_properties(test_main_blas_rt
-    PROPERTIES BUILD_RPATH $<TARGET_FILE_DIR:onemkl>)
-# Find individual tests within executable
-  gtest_discover_tests(test_main_blas_rt
-    PROPERTIES BUILD_RPATH ${CMAKE_BINARY_DIR}/lib
-    PROPERTIES ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH}
-    PROPERTIES TEST_PREFIX BLAS/
-    DISCOVERY_TIMEOUT 30
-  )
-endif()
+  string(TOUPPER ${domain} DOMAIN_PREFIX)
 
-if((NOT ENABLE_NETLIB_BACKEND) AND (NOT ENABLE_CUBLAS_BACKEND))
   if(BUILD_SHARED_LIBS)
-    set_target_properties(test_main_rng_rt
+    set_target_properties(test_main_${domain}_rt
       PROPERTIES BUILD_RPATH $<TARGET_FILE_DIR:onemkl>)
   # Find individual tests within executable
-    gtest_discover_tests(test_main_rng_rt
+    gtest_discover_tests(test_main_${domain}_rt
       PROPERTIES BUILD_RPATH ${CMAKE_BINARY_DIR}/lib
       PROPERTIES ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH}
-      PROPERTIES TEST_PREFIX RNG/
+      PROPERTIES TEST_PREFIX ${DOMAIN_PREFIX}/RT/
       DISCOVERY_TIMEOUT 30
     )
   endif()
-endif()
 
-gtest_discover_tests(test_main_blas_ct
-  PROPERTIES BUILD_RPATH ${CMAKE_BINARY_DIR}/lib
-  PROPERTIES ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH}
-  PROPERTIES TEST_PREFIX BLAS/
-  DISCOVERY_TIMEOUT 30
-)
-
-if((NOT ENABLE_NETLIB_BACKEND) AND (NOT ENABLE_CUBLAS_BACKEND))
-  gtest_discover_tests(test_main_rng_ct
+  gtest_discover_tests(test_main_${domain}_ct
     PROPERTIES BUILD_RPATH ${CMAKE_BINARY_DIR}/lib
     PROPERTIES ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH}
-    PROPERTIES TEST_PREFIX RNG/
+    PROPERTIES TEST_PREFIX ${DOMAIN_PREFIX}/CT/
     DISCOVERY_TIMEOUT 30
   )
-endif()
+
+endforeach()
