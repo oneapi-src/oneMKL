@@ -39,15 +39,52 @@ endif()
 project(oneMKL VERSION 0.1.0 LANGUAGES CXX)
 
 option(BUILD_SHARED_LIBS "Build dynamic libraries" ON)
+
 ## Backends
 option(ENABLE_MKLCPU_BACKEND "" ON)
 option(ENABLE_MKLGPU_BACKEND "" ON)
 if(ENABLE_MKLCPU_BACKEND)
   option(ENABLE_MKLCPU_THREAD_TBB "" ON)
 endif()
+option(ENABLE_CUBLAS_BACKEND "" OFF)
+option(ENABLE_NETLIB_BACKEND "" OFF)
+
+## Domains
+set(DOMAINS_LIST "")
+if(ENABLE_MKLCPU_BACKEND
+        OR ENABLE_MKLGPU_BACKEND
+        OR ENABLE_CUBLAS_BACKEND
+        OR ENABLE_NETLIB_BACKEND)
+  list(APPEND DOMAINS_LIST "blas")
+endif()
+if(ENABLE_MKLCPU_BACKEND
+        OR ENABLE_MKLGPU_BACKEND)
+  list(APPEND DOMAINS_LIST "rng")
+endif()
+
+if(NOT TARGET_DOMAINS)
+  # Set to all by default
+  set(TARGET_DOMAINS ${DOMAINS_LIST})
+else()
+  # Make sure the input was converted to list
+  string(REPLACE " " ";" TARGET_DOMAINS ${TARGET_DOMAINS})
+  set(NOT_FOUND 0)
+  foreach(domain ${TARGET_DOMAINS})
+    if(NOT ${domain} IN_LIST DOMAINS_LIST)
+      set(NOT_FOUND 1)
+      break()
+    endif()
+  endforeach()
+  if(NOT_FOUND)
+    message(STATUS "TARGET_DOMAINS contains unsupported options, reset to all")
+    set(TARGET_DOMAINS ${DOMAINS_LIST})
+  endif()
+endif()
+message(STATUS "TARGET_DOMAINS: ${TARGET_DOMAINS}")
 
 ## Testing
 option(BUILD_FUNCTIONAL_TESTS "" ON)
+
 ## Documentation
 option(BUILD_DOC "" OFF)
 
