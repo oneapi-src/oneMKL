@@ -45,6 +45,7 @@ THIRD-PARTY-PROGRAMS file and in the README.md file included with the Software P
     options = {
         # Build style
         "build_shared_libs": [True, False],
+        "target_domains"   : "ANY",
 
         # Backends
         "enable_mklcpu_backend"   : [True, False],
@@ -61,6 +62,7 @@ THIRD-PARTY-PROGRAMS file and in the README.md file included with the Software P
     }
     default_options = {
         "build_shared_libs"       : True,
+        "target_domains"          : None,
 
         "enable_mklcpu_backend"   : True,
         "enable_mklgpu_backend"   : True,
@@ -136,6 +138,9 @@ THIRD-PARTY-PROGRAMS file and in the README.md file included with the Software P
             "CONAN_DISABLE_CHECK_COMPILER" : True,
             "MKL_ROOT"                 : "/opt/intel/inteloneapi/mkl/latest",
         })
+        # Pass target_domains definition transparently to CMake, since CMakeLists.txt contains checks and defaults.
+        if self.options.target_domains != None:
+            cmake.definitions["TARGET_DOMAINS"] = self.options.target_domains
         cmake.configure()
         cmake.build()
         if tools.get_env("CONAN_RUN_TESTS", default=True) and self.options.build_functional_tests:
