@@ -445,6 +445,7 @@ Tells Conan where to install the package. It is similar to specifying `CMAKE_INS
 The following `options` are available to pass on `conan install` when building the oneMKL library:
 
 - `build_shared_libs=[True | False]`. Setting it to `True` enables the building of dynamic libraries. The default value is `True`.
+- `target_domains=[<any value>]`. Setting it to `blas` or any other domain, enables building of that specific domain only. If not defined, the default value is all supported domains.
 - `enable_mklcpu_backend=[True | False]`. Setting it to `True` enables the building of oneMKL mklcpu backend. The default value is `True`.
 - `enable_mklgpu_backend=[True | False]`. Setting it to `True` enables the building of oneMKL mklgpu backend. The default value is `True`.
 - `enable_mklcpu_thread_tbb=[True | False]`. Setting it to `True` enables oneMKL on CPU with TBB threading instead of sequential. The default value is `True`.
@@ -515,7 +516,9 @@ enable_mklgpu_backend    | ENABLE_MKLGPU_BACKEND    | True, False         | True
 enable_mklcpu_thread_tbb | ENABLE_MKLCPU_THREAD_TBB | True, False         | True
 build_functional_tests   | BUILD_FUNCTIONAL_TESTS   | True, False         | True
 build_doc                | BUILD_DOC                | True, False         | False
-*Not Supported*          | TARGET_DOMAINS (list)    | blas, rng           | All domains
+target_domains (list)    | TARGET_DOMAINS (list)    | blas, rng           | All domains
+
+*Note: `build_functional_tests` and related CMake option affects all domains at a global scope.*
 
 ---
 
