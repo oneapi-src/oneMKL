@@ -68,19 +68,15 @@
 #endif
 
 /// TODO: Combine into a single CUDA test?
-#if defined(ENABLE_CUBLAS_BACKEND)
 #ifdef ENABLE_CUBLAS_BACKEND
 #define TEST_RUN_NVIDIAGPU_CUBLAS_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas>{ q }, __VA_ARGS__)
-#endif
 #else
 #define TEST_RUN_NVIDIAGPU_CUBLAS_SELECT(q, func, ...)
 #endif
-#if defined(ENABLE_CURAND_BACKEND)
 #ifdef ENABLE_CURAND_BACKEND
 #define TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::curand>{ q }, __VA_ARGS__)
-#endif
 #else
 #define TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, ...)
 #endif
@@ -96,7 +92,7 @@
                 TEST_RUN_INTELGPU_SELECT(q, func, __VA_ARGS__);                \
             else if (vendor_id == NVIDIA_ID)                                   \
                 TEST_RUN_NVIDIAGPU_CUBLAS_SELECT(q, func, __VA_ARGS__);        \
-                TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, __VA_ARGS__);                  \
+            TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, __VA_ARGS__);            \
         }                                                                      \
     } while (0);
 
