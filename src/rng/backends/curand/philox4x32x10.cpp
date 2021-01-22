@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020 Intel Corporation
+* Copyright 2020-2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -19,11 +19,14 @@
 
 #include <iostream>
 #include <CL/sycl.hpp>
+#include <CL/sycl/backend/cuda.hpp>
 
 #include "oneapi/mkl/rng/detail/engine_impl.hpp"
 #include "oneapi/mkl/rng/engines.hpp"
 #include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/rng/detail/curand/onemkl_rng_curand.hpp"
+
+#include "curand_helper.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -31,35 +34,100 @@ namespace rng {
 namespace curand {
 
 #if !defined(_WIN64)
+/*
+ * Note that cuRAND consists of two pieces: a host (CPU) API and a device (GPU) API.
+ * The host API acts like any standard library; the `curand.h' header is included and the functions
+ * can be called as usual. The generator is instantiated on the host and random numbers can be
+ * generated on either the host CPU or device. For device-side generation, calls to the library happen
+ * on the host, but the actual work of RNG is done on the device. In this case, the resulting random
+ * numbers are stored in global memory on the device. These random numbers can then be used in other
+ * kernels or be copied back to the host for further processing. For host-side generation, everything
+ * is done on the host, and the random numbers are stored in host memory.
+ * 
+ * The second piece is the device header, `curand_kernel.h'. Using this file permits setting up random
+ * number generator states and generating sequences of random numbers. This allows random numbers to
+ * be generated and immediately consumed in other kernels without requiring the random numbers to be
+ * written to, and read from, global memory.
+ * 
+ * Here we utilize the host API since this is most aligned with how oneMKL generates random numbers.
+ * 
+*/
 class philox4x32x10_impl : public oneapi::mkl::rng::detail::engine_impl {
 public:
     philox4x32x10_impl(cl::sycl::queue queue, std::uint64_t seed)
             : oneapi::mkl::rng::detail::engine_impl(queue) {
-        std::cout << "philox4x32x10_impl(cl::sycl::queue queue, std::uint64_t seed) : oneapi::mkl::rng::detail::engine_impl(queue)\n";
+        curandStatus_t status;
+        CURAND_CALL(curandCreateGenerator, status, &engine_, CURAND_RNG_PSEUDO_PHILOX4_32_10);
     }
 
     philox4x32x10_impl(cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed)
             : oneapi::mkl::rng::detail::engine_impl(queue) {
-        std::cout << "philox4x32x10_impl(cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed) : oneapi::mkl::rng::detail::engine_impl(queue)\n";
+        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     philox4x32x10_impl(const philox4x32x10_impl* other)
             : oneapi::mkl::rng::detail::engine_impl(*other) {
-        std::cout << "philox4x32x10_impl(const philox4x32x10_impl* other) : oneapi::mkl::rng::detail::engine_impl(*other)\n";
+        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     // Buffers API
 
-    virtual void generate(
+    inline void generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::standard>& distr,
         std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        queue_
+            .submit([&](cl::sycl::handler& cgh) {
+                auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
+                // cgh.interop_task([=](cl::sycl::interop_handler ih) {
+                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                    auto r_ptr =
+                        reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
+                    curandStatus_t status;
+                    CURAND_CALL(curandGenerateUniform, status, engine_, r_ptr, n);
+                });
+            })
+            .wait_and_throw();
+        // Post-processing on device (currently crashes with `OPENCL_INVALID_BINARY')
+        // curandGenerateUniform generates uniform random numbers on [0, 1).
+        // We need to convert to range [distr.a(), distr.b()).
+        // queue_.wait_and_throw();
+        // queue_
+        //     .submit([&](cl::sycl::handler& cgh) {
+        //         auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
+        //         cgh.parallel_for<class philox4x32x10_impl>(
+        //             cl::sycl::range<1>(n), [=](cl::sycl::id<1> id) {
+        //                 acc[id] = acc[id] * (distr.b() - distr.a()) + distr.a();
+        //             });
+        //     })
+        //     .wait_and_throw();
+        // queue_.wait_and_throw();
+        // Post-processing on host (CPU)
+        // curandGenerateUniform generates uniform random numbers on [0, 1).
+        // We need to convert to range [distr.a(), distr.b()).
+        // auto acc = r.get_access<cl::sycl::access::mode::read_write>();
+        // for (unsigned int i = 0; i < n; ++i) {
+        //     acc[i] = acc[i] * (distr.b() - distr.a()) + distr.a();
+        // }
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::standard>& distr,
         std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
+            cgh.interop_task([=](cl::sycl::interop_handler ih) {
+                auto r_ptr = reinterpret_cast<double*>(ih.get_mem<cl::sycl::backend::cuda>(acc));
+                curandStatus_t status;
+                CURAND_CALL(curandGenerateUniformDouble, status, engine_, r_ptr, n);
+            });
+        });
+        // Post-processing
+        // curandGenerateUniform generates uniform random numbers on [0, 1).
+        // We need to convert to range [distr.a(), distr.b()).
+        auto acc = r.get_access<cl::sycl::access::mode::read_write>();
+        for (unsigned int i = 0; i < n; ++i) {
+            acc[i] = acc[i] * (distr.b() - distr.a()) + distr.a();
+        }
     }
 
     virtual void generate(const oneapi::mkl::rng::uniform<
@@ -152,6 +220,10 @@ public:
                           cl::sycl::buffer<std::uint32_t, 1>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
+
+private:
+    // The engine (CUDA "generator")
+    curandGenerator_t engine_;
 
     // USM APIs
 

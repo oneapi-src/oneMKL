@@ -35,16 +35,16 @@ class mrg32k3a_impl : public oneapi::mkl::rng::detail::engine_impl {
 public:
     mrg32k3a_impl(cl::sycl::queue queue, std::uint32_t seed)
             : oneapi::mkl::rng::detail::engine_impl(queue) {
-        std::cout << "mrg32k3a_impl(cl::sycl::queue queue, std::uint32_t seed) : oneapi::mkl::rng::detail::engine_impl(queue)\n";
+        throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
     }
 
     mrg32k3a_impl(cl::sycl::queue queue, std::initializer_list<std::uint32_t> seed)
             : oneapi::mkl::rng::detail::engine_impl(queue) {
-        std::cout << "mrg32k3a_impl(cl::sycl::queue queue, std::initializer_list<std::uint32_t> seed) : oneapi::mkl::rng::detail::engine_impl(queue)\n";
+        throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
     }
 
     mrg32k3a_impl(const mrg32k3a_impl* other) : oneapi::mkl::rng::detail::engine_impl(*other) {
-        std::cout << "mrg32k3a_impl(const mrg32k3a_impl* other) : oneapi::mkl::rng::detail::engine_impl(*other)\n";
+        throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
     }
 
     // Buffers API
