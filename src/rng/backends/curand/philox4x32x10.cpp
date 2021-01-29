@@ -22,7 +22,7 @@
 #include <CL/sycl/backend/cuda.hpp>
 
 #include "oneapi/mkl/rng/detail/engine_impl.hpp"
-#include "oneapi/mkl/rng/engines.hpp"
+// #include "oneapi/mkl/rng/engines.hpp"
 #include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/rng/detail/curand/onemkl_rng_curand.hpp"
 
@@ -72,68 +72,64 @@ public:
 
     // Buffers API
 
-    inline void generate(
+    virtual inline void generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::standard>& distr,
         std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        using Type = float;
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                // cgh.interop_task([=](cl::sycl::interop_handler ih) {
                 cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
-                        reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
+                        reinterpret_cast<Type*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
                     CURAND_CALL(curandGenerateUniform, status, engine_, r_ptr, n);
                 });
             })
             .wait_and_throw();
-        // Post-processing on device (currently crashes with `OPENCL_INVALID_BINARY')
-        // curandGenerateUniform generates uniform random numbers on [0, 1).
-        // We need to convert to range [distr.a(), distr.b()).
-        // queue_.wait_and_throw();
-        // queue_
-        //     .submit([&](cl::sycl::handler& cgh) {
-        //         auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-        //         cgh.parallel_for<class philox4x32x10_impl>(
-        //             cl::sycl::range<1>(n), [=](cl::sycl::id<1> id) {
-        //                 acc[id] = acc[id] * (distr.b() - distr.a()) + distr.a();
-        //             });
-        //     })
-        //     .wait_and_throw();
-        // queue_.wait_and_throw();
-        // Post-processing on host (CPU)
-        // curandGenerateUniform generates uniform random numbers on [0, 1).
-        // We need to convert to range [distr.a(), distr.b()).
-        // auto acc = r.get_access<cl::sycl::access::mode::read_write>();
-        // for (unsigned int i = 0; i < n; ++i) {
-        //     acc[i] = acc[i] * (distr.b() - distr.a()) + distr.a();
-        // }
+        // Post-processing
+        this->range_transform<Type>(distr.a(), distr.b(), n, r);
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::standard>& distr,
         std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
-        queue_.submit([&](cl::sycl::handler& cgh) {
-            auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-            cgh.interop_task([=](cl::sycl::interop_handler ih) {
-                auto r_ptr = reinterpret_cast<double*>(ih.get_mem<cl::sycl::backend::cuda>(acc));
-                curandStatus_t status;
-                CURAND_CALL(curandGenerateUniformDouble, status, engine_, r_ptr, n);
-            });
-        });
+        using Type = double;
+
+        queue_
+            .submit([&](cl::sycl::handler& cgh) {
+                auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
+                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                    auto r_ptr =
+                        reinterpret_cast<Type*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
+                    curandStatus_t status;
+                    CURAND_CALL(curandGenerateUniformDouble, status, engine_, r_ptr, n);
+                });
+            })
+            .wait_and_throw();
         // Post-processing
-        // curandGenerateUniform generates uniform random numbers on [0, 1).
-        // We need to convert to range [distr.a(), distr.b()).
-        auto acc = r.get_access<cl::sycl::access::mode::read_write>();
-        for (unsigned int i = 0; i < n; ++i) {
-            acc[i] = acc[i] * (distr.b() - distr.a()) + distr.a();
-        }
+        this->range_transform<Type>(distr.a(), distr.b(), n, r);
     }
 
     virtual void generate(const oneapi::mkl::rng::uniform<
                               std::int32_t, oneapi::mkl::rng::uniform_method::standard>& distr,
                           std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
+        // cuRAND only supports positive (unsigned) integer output.
+        using Type = std::int32_t;
+
+        queue_
+            .submit([&](cl::sycl::handler& cgh) {
+                auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
+                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                    auto r_ptr = reinterpret_cast<unsigned int*>(
+                        ih.get_native_mem<cl::sycl::backend::cuda>(acc));
+                    curandStatus_t status;
+                    CURAND_CALL(curandGenerate, status, engine_, r_ptr, n);
+                });
+            })
+            .wait_and_throw();
+        // Post-processing
+        this->range_transform2<Type>(distr.a(), distr.b(), n, r);
     }
 
     virtual void generate(
@@ -220,10 +216,6 @@ public:
                           cl::sycl::buffer<std::uint32_t, 1>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
-
-private:
-    // The engine (CUDA "generator")
-    curandGenerator_t engine_;
 
     // USM APIs
 
@@ -385,7 +377,28 @@ private:
     }
 
 private:
-    // oneapi::mkl::rng::detail::engine_base_impl<oneapi::mkl::rng::philox4x32x10>* engine_;
+    curandGenerator_t engine_;
+
+    // On-device post-processing
+    // curandGenerateUniform generates uniform random numbers on [0, 1).
+    // We need to convert to range [distr.a(), distr.b()).
+    template <typename T>
+    inline void range_transform(T a, T b, std::int64_t n, cl::sycl::buffer<T, 1>& r) {
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            auto acc = r.template get_access<cl::sycl::access::mode::read_write>(cgh);
+            cgh.parallel_for(cl::sycl::range<1>(n),
+                             [=](cl::sycl::id<1> id) { acc[id] = acc[id] * (b - a) + a; });
+        });
+    }
+
+    template <typename T>
+    inline void range_transform2(T a, T b, std::int64_t n, cl::sycl::buffer<T, 1>& r) {
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            auto acc = r.template get_access<cl::sycl::access::mode::read_write>(cgh);
+            cgh.parallel_for(cl::sycl::range<1>(n),
+                             [=](cl::sycl::id<1> id) { acc[id] = a + acc[id] % (b - a); });
+        });
+    }
 };
 #else // cuRAND backend is currently not supported on Windows
 class philox4x32x10_impl : public oneapi::mkl::rng::detail::engine_impl {
