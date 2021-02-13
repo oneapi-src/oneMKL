@@ -18,7 +18,7 @@
 *******************************************************************************/
 
 /**
- * @file mkl_rng_curand.cpp : contains the implementation of all the routines
+ * @file curand_helper.cpp : contains the implementation of all the routines
  * for CUDA backend
  */
 #ifndef _MKL_RNG_CURAND_HELPER_HPP_
@@ -35,7 +35,7 @@ namespace curand {
 
 class curand_error : virtual public std::runtime_error {
 protected:
-    inline const char *curand_error_map(curandStatus_t error) {
+    inline const char* curand_error_map(curandStatus_t error) {
         switch (error) {
             case CURAND_STATUS_SUCCESS: return "CURAND_STATUS_SUCCESS";
 
@@ -94,7 +94,7 @@ public:
 
 class cuda_error : virtual public std::runtime_error {
 protected:
-    inline const char *cuda_error_map(CUresult result) {
+    inline const char* cuda_error_map(CUresult result) {
         switch (result) {
             case CUDA_SUCCESS: return "CUDA_SUCCESS";
 
@@ -149,24 +149,107 @@ public:
         throw curand_error(std::string(#func) + std::string(" : "), status); \
     }
 
-// inline curandGeneratorType_t get_curand_generator() {
-//     return CURAND_RNG_TEST;
-// }
+// Static template functions oneapi::mkl::rng::curand::range_transform_fp for Buffer and USM APIs
+//
+// cuRAND has no built-in functionality to specify a custom range for sampling
+// random numbers; `curandGenerateUniform' generates uniform random numbers on [0, 1).
+// This function is used to convert to range [a, b).
+//
+// Supported types:
+//      float
+//      double
+//
+// Input arguments:
+//      queue - the queue to submit the kernel to
+//      a     - range lower bound (inclusive)
+//      b     - range upper bound (exclusive)
+//      r     - buffer to store transformed random numbers
+template <typename T>
+static inline void range_transform_fp(cl::sycl::queue& queue, T a, T b, std::int64_t n,
+                                      cl::sycl::buffer<T, 1>& r) {
+    queue.submit([&](cl::sycl::handler& cgh) {
+        auto acc = r.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        cgh.parallel_for(cl::sycl::range<1>(n),
+                         [=](cl::sycl::id<1> id) { acc[id] = acc[id] * (b - a) + a; });
+    });
+}
+template <typename T>
+static inline cl::sycl::event range_transform_fp(cl::sycl::queue& queue, T a, T b, std::int64_t n,
+                                                 T* r) {
+    return queue.submit([&](cl::sycl::handler& cgh) {
+        cgh.parallel_for(cl::sycl::range<1>(n),
+                         [=](cl::sycl::id<1> id) { r[id] = r[id] * (b - a) + a; });
+    });
+}
 
-// inline curandRngType_t get_curand_rng() {
-//     CURAND_RNG_TEST = 0,
-//     CURAND_RNG_PSEUDO_DEFAULT = 100, ///< Default pseudorandom generator
-//         CURAND_RNG_PSEUDO_XORWOW = 101, ///< XORWOW pseudorandom generator
-//         CURAND_RNG_PSEUDO_MRG32K3A = 121, ///< MRG32k3a pseudorandom generator
-//         CURAND_RNG_PSEUDO_MTGP32 = 141, ///< Mersenne Twister MTGP32 pseudorandom generator
-//         CURAND_RNG_PSEUDO_MT19937 = 142, ///< Mersenne Twister MT19937 pseudorandom generator
-//         CURAND_RNG_PSEUDO_PHILOX4_32_10 = 161, ///< PHILOX-4x32-10 pseudorandom generator
-//         CURAND_RNG_QUASI_DEFAULT = 200, ///< Default quasirandom generator
-//         CURAND_RNG_QUASI_SOBOL32 = 201, ///< Sobol32 quasirandom generator
-//         CURAND_RNG_QUASI_SCRAMBLED_SOBOL32 = 202, ///< Scrambled Sobol32 quasirandom generator
-//         CURAND_RNG_QUASI_SOBOL64 = 203, ///< Sobol64 quasirandom generator
-//         CURAND_RNG_QUASI_SCRAMBLED_SOBOL64 = 204 ///< Scrambled Sobol64 quasirandom generator
-// }
+// Static template functions oneapi::mkl::rng::curand::range_transform_int for Buffer and USM APIs
+//
+// cuRAND has no built-in functionality to specify a custom range for sampling
+// random numbers; `curandGenerateUniform' generates uniform random numbers on [0, 1).
+// This function is used to convert to range [a, b).
+//
+// Supported types:
+//      std::int32_t
+//      std::uint32_t
+//
+// Input arguments:
+//      queue - the queue to submit the kernel to
+//      a     - range lower bound (inclusive)
+//      b     - range upper bound (exclusive)
+//      r     - buffer to store transformed random numbers
+template <typename T>
+inline void range_transform_int(cl::sycl::queue& queue, T a, T b, std::int64_t n,
+                                cl::sycl::buffer<std::uint32_t, 1>& in,
+                                cl::sycl::buffer<T, 1>& out) {
+    queue.submit([&](cl::sycl::handler& cgh) {
+        auto acc_in = in.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto acc_out = out.template get_access<cl::sycl::access::mode::write>(cgh);
+        cgh.parallel_for(cl::sycl::range<1>(n),
+                         [=](cl::sycl::id<1> id) { acc_out[id] = a + acc_in[id] % (b - a); });
+    });
+}
+template <typename T>
+inline cl::sycl::event range_transform_int(cl::sycl::queue& queue, T a, T b, std::int64_t n,
+                                           std::uint32_t* in, T* out) {
+    return queue.submit([&](cl::sycl::handler& cgh) {
+        cgh.parallel_for(cl::sycl::range<1>(n),
+                         [=](cl::sycl::id<1> id) { out[id] = a + in[id] % (b - a); });
+    });
+}
+
+// Static template functions oneapi::mkl::rng::curand::sample_bernoulli for Buffer and USM APIs
+//
+// cuRAND has no built-in functionality to sample from a Bernoulli distribution.
+// The implementation here uses uniformly-generated random numbers and returns
+// the corresponding Bernoulli distribution based on a probability.
+//
+// Supported types:
+//      std::int32_t
+//      std::uint32_t
+//
+// Input arguments:
+//      queue - the queue to submit the kernel to
+//      p     - success probablity of a trial
+//      in    - buffer containing uniformly-generated random numbers
+//      out   - buffer to store Bernoulli
+template <typename T>
+static inline void sample_bernoulli_from_uniform(cl::sycl::queue& queue, float p, std::int64_t n,
+                                                 cl::sycl::buffer<float, 1> in,
+                                                 cl::sycl::buffer<T, 1>& out) {
+    queue.submit([&](cl::sycl::handler& cgh) {
+        auto acc_in = in.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto acc_out = out.template get_access<cl::sycl::access::mode::write>(cgh);
+        cgh.parallel_for(cl::sycl::range<1>(n),
+                         [=](cl::sycl::id<1> id) { acc_out[id] = acc_in[id] < p; });
+    });
+}
+template <typename T>
+static inline cl::sycl::event sample_bernoulli_from_uniform(cl::sycl::queue& queue, float p,
+                                                            std::int64_t n, float* in, T* out) {
+    return queue.submit([&](cl::sycl::handler& cgh) {
+        cgh.parallel_for(cl::sycl::range<1>(n), [=](cl::sycl::id<1> id) { out[id] = in[id] < p; });
+    });
+}
 
 } // namespace curand
 } // namespace rng
