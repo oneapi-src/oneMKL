@@ -56,7 +56,7 @@ There are two oneMKL selector layer implementations:
 Example of app.cpp with run-time dispatching:
 
 ```cpp
-include "oneapi/mkl.hpp"
+#include "oneapi/mkl.hpp"
 
 ...
 cpu_dev = cl::sycl::device(cl::sycl::cpu_selector());
@@ -80,7 +80,7 @@ $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl
 Example of app.cpp with compile-time dispatching:
 
 ```cpp
-include "oneapi/mkl.hpp"
+#include "oneapi/mkl.hpp"
 
 ...
 cpu_dev = cl::sycl::device(cl::sycl::cpu_selector());
@@ -482,7 +482,7 @@ Then:
 # Inside <path to onemkl>
 mkdir build && cd build
 export CXX=<path_to_dpcpp_compiler>/bin/dpcpp;
-cmake .. [-DMKL_ROOT=<mkl_install_prefix>] \               # required only if enviroment variable MKLROOT is not set
+cmake .. [-DMKL_ROOT=<mkl_install_prefix>] \               # required only if environment variable MKLROOT is not set
          [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] # required only for testing
 cmake --build .
 ctest
@@ -493,7 +493,7 @@ cmake --install . --prefix <path_to_install_dir>
 # Inside <path to onemkl>
 md build && cd build
 cmake .. -G Ninja  -DCMAKE_TOOLCHAIN_FILE="..\cmake\toolchain\intel_clang-cl-toolchain.cmake"  
-                  [-DMKL_ROOT=<mkl_install_prefix>] \                   # required only if enviroment variable MKLROOT is not set
+                  [-DMKL_ROOT=<mkl_install_prefix>] \                   # required only if environment variable MKLROOT is not set
                   [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]     # required only for testing
 
 ninja 

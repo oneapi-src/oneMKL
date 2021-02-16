@@ -117,7 +117,7 @@ public:
     }
 };
 
-/* to accomodate Windows and Linux differences between alligned_alloc and
+/* to accommodate Windows and Linux differences between alligned_alloc and
    _aligned_malloc calls use oneapi::mkl::aligned_alloc and oneapi::mkl::aligned_free instead */
 namespace oneapi {
 namespace mkl {
