@@ -37,7 +37,7 @@ target_include_directories(${LIB_OBJ}
           ${NETLIB_INCLUDE}
 )
 
-target_compile_options(${LIB_OBJ} PRIVATE ${NETLIB_COPT})
+target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
 
 target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ${NETLIB_LINK})
 

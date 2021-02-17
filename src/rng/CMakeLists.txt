@@ -32,7 +32,7 @@ target_include_directories(onemkl_rng
           $<TARGET_FILE_DIR:onemkl>
 )
 
-target_compile_options(onemkl_rng PRIVATE "-Donemkl_EXPORTS")
+target_compile_options(onemkl_rng PRIVATE ${ONEMKL_BUILD_COPT})
 
 set_target_properties(onemkl_rng PROPERTIES
   POSITION_INDEPENDENT_CODE ON
