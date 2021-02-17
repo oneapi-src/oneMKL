@@ -46,12 +46,12 @@ public:
     mrg32k3a_impl(cl::sycl::queue queue, std::initializer_list<std::uint32_t> seed)
             : oneapi::mkl::rng::detail::engine_impl(queue) {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine",
-                                         "multi-seed unsupported by cuRAND");
+                                         "multi-seed unsupported by cuRAND backend");
     }
 
     mrg32k3a_impl(const mrg32k3a_impl* other) : oneapi::mkl::rng::detail::engine_impl(*other) {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine",
-                                         "copy construction unsupported by cuRAND");
+                                         "copy construction unsupported by cuRAND backend");
     }
 
     // Buffers API
@@ -179,35 +179,17 @@ public:
     virtual void generate(
         const oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::icdf>& distr,
         std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
-        queue_
-            .submit([&](cl::sycl::handler& cgh) {
-                auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
-                    auto r_ptr =
-                        reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateNormal, status, engine_, r_ptr, n, distr.mean(),
-                                distr.stddev());
-                });
-            })
-            .wait_and_throw();
+        throw oneapi::mkl::unimplemented(
+            "rng", "mrg32ka engine",
+            "ICDF method not used for pseudorandom generators in cuRAND backend");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>& distr,
         std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
-        queue_
-            .submit([&](cl::sycl::handler& cgh) {
-                auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
-                    auto r_ptr =
-                        reinterpret_cast<double*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateNormalDouble, status, engine_, r_ptr, n, distr.mean(),
-                                distr.stddev());
-                });
-            })
-            .wait_and_throw();
+        throw oneapi::mkl::unimplemented(
+            "rng", "mrg32ka engine",
+            "ICDF method not used for pseudorandom generators in cuRAND backend");
     }
 
     virtual void generate(const oneapi::mkl::rng::lognormal<
@@ -247,99 +229,45 @@ public:
     virtual void generate(
         const oneapi::mkl::rng::lognormal<float, oneapi::mkl::rng::lognormal_method::icdf>& distr,
         std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
-        queue_
-            .submit([&](cl::sycl::handler& cgh) {
-                auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
-                    auto r_ptr =
-                        reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateLogNormal, status, engine_, r_ptr, n, distr.m(),
-                                distr.s());
-                });
-            })
-            .wait_and_throw();
+        throw oneapi::mkl::unimplemented(
+            "rng", "mrg32ka engine",
+            "ICDF method not used for pseudorandom generators in cuRAND backend");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::icdf>& distr,
         std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
-        queue_
-            .submit([&](cl::sycl::handler& cgh) {
-                auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
-                    auto r_ptr =
-                        reinterpret_cast<double*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateLogNormalDouble, status, engine_, r_ptr, n, distr.m(),
-                                distr.s());
-                });
-            })
-            .wait_and_throw();
+        throw oneapi::mkl::unimplemented(
+            "rng", "mrg32ka engine",
+            "ICDF method not used for pseudorandom generators in cuRAND backend");
     }
 
     virtual void generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
                           std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
-        cl::sycl::buffer<float, 1> fb(n);
-        queue_
-            .submit([&](cl::sycl::handler& cgh) {
-                auto acc = fb.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
-                    auto r_ptr =
-                        reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateUniform, status, engine_, r_ptr, n);
-                });
-            })
-            .wait_and_throw();
-        sample_bernoulli_from_uniform<std::int32_t>(queue_, distr.p(), n, fb, r);
+        throw oneapi::mkl::unimplemented(
+            "rng", "mrg32ka engine",
+            "ICDF method not used for pseudorandom generators in cuRAND backend");
     }
 
     virtual void generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
                           std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) override {
-        cl::sycl::buffer<float, 1> fb(n);
-        queue_
-            .submit([&](cl::sycl::handler& cgh) {
-                auto acc = fb.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
-                    auto r_ptr =
-                        reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateUniform, status, engine_, r_ptr, n);
-                });
-            })
-            .wait_and_throw();
-        sample_bernoulli_from_uniform<std::uint32_t>(queue_, distr.p(), n, fb, r);
+        throw oneapi::mkl::unimplemented(
+            "rng", "mrg32ka engine",
+            "ICDF method not used for pseudorandom generators in cuRAND backend");
     }
 
     virtual void generate(const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr,
                           std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
-        queue_
-            .submit([&](cl::sycl::handler& cgh) {
-                auto acc = r.template get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
-                    auto r_ptr = reinterpret_cast<std::uint32_t*>(
-                        ih.get_native_mem<cl::sycl::backend::cuda>(acc));
-                    curandStatus_t status;
-                    CURAND_CALL(curandGeneratePoisson, status, engine_, r_ptr, n, distr.lambda());
-                });
-            })
-            .wait_and_throw();
+        throw oneapi::mkl::unimplemented(
+            "rng", "mrg32ka engine",
+            "ICDF method not used for pseudorandom generators in cuRAND backend");
     }
 
     virtual void generate(const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr,
                           std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) override {
-        queue_
-            .submit([&](cl::sycl::handler& cgh) {
-                auto acc = r.template get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
-                    auto r_ptr = reinterpret_cast<std::uint32_t*>(
-                        ih.get_native_mem<cl::sycl::backend::cuda>(acc));
-                    curandStatus_t status;
-                    CURAND_CALL(curandGeneratePoisson, status, engine_, r_ptr, n, distr.lambda());
-                });
-            })
-            .wait_and_throw();
+        throw oneapi::mkl::unimplemented(
+            "rng", "mrg32ka engine",
+            "ICDF method not used for pseudorandom generators in cuRAND backend");
     }
 
     virtual void generate(const bits<std::uint32_t>& distr, std::int64_t n,
@@ -475,28 +403,20 @@ public:
         const oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::icdf>& distr,
         std::int64_t n, float* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](cl::sycl::handler& cgh) {
-            cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
-                curandStatus_t status;
-                CURAND_CALL(curandGenerateNormal, status, engine_, r, n, distr.mean(),
-                            distr.stddev());
-            });
-        });
+        throw oneapi::mkl::unimplemented(
+            "rng", "mrg32ka engine",
+            "ICDF method not used for pseudorandom generators in cuRAND backend");
+        return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>& distr,
         std::int64_t n, double* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](cl::sycl::handler& cgh) {
-            cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
-                curandStatus_t status;
-                CURAND_CALL(curandGenerateNormalDouble, status, engine_, r, n, distr.mean(),
-                            distr.stddev());
-            });
-        });
+        throw oneapi::mkl::unimplemented(
+            "rng", "mrg32ka engine",
+            "ICDF method not used for pseudorandom generators in cuRAND backend");
+        return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
@@ -532,87 +452,56 @@ public:
         const oneapi::mkl::rng::lognormal<float, oneapi::mkl::rng::lognormal_method::icdf>& distr,
         std::int64_t n, float* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](cl::sycl::handler& cgh) {
-            cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
-                curandStatus_t status;
-                CURAND_CALL(curandGenerateLogNormal, status, engine_, r, n, distr.m(), distr.s());
-            });
-        });
+        throw oneapi::mkl::unimplemented(
+            "rng", "mrg32ka engine",
+            "ICDF method not used for pseudorandom generators in cuRAND backend");
+        return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::icdf>& distr,
         std::int64_t n, double* r,
         const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](cl::sycl::handler& cgh) {
-            cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
-                curandStatus_t status;
-                CURAND_CALL(curandGenerateLogNormalDouble, status, engine_, r, n, distr.m(),
-                            distr.s());
-            });
-        });
+        throw oneapi::mkl::unimplemented(
+            "rng", "mrg32ka engine",
+            "ICDF method not used for pseudorandom generators in cuRAND backend");
+        return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const bernoulli<std::int32_t, bernoulli_method::icdf>& distr, std::int64_t n,
         std::int32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
-        float* fb =
-            (float*)malloc_device(n * sizeof(float), queue_.get_device(), queue_.get_context());
-        queue_
-            .submit([&](cl::sycl::handler& cgh) {
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateUniform, status, engine_, fb, n);
-                });
-            })
-            .wait_and_throw();
-        return sample_bernoulli_from_uniform<std::int32_t>(queue_, distr.p(), n, fb, r);
+        throw oneapi::mkl::unimplemented(
+            "rng", "mrg32ka engine",
+            "ICDF method not used for pseudorandom generators in cuRAND backend");
+        return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr, std::int64_t n,
         std::uint32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
-        float* fb =
-            (float*)malloc_device(n * sizeof(float), queue_.get_device(), queue_.get_context());
-        queue_
-            .submit([&](cl::sycl::handler& cgh) {
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateUniform, status, engine_, fb, n);
-                });
-            })
-            .wait_and_throw();
-        return sample_bernoulli_from_uniform<std::uint32_t>(queue_, distr.p(), n, fb, r);
+        throw oneapi::mkl::unimplemented(
+            "rng", "mrg32ka engine",
+            "ICDF method not used for pseudorandom generators in cuRAND backend");
+        return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
         std::int32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](cl::sycl::handler& cgh) {
-            cl::sycl::event::wait_and_throw(dependencies);
-            cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
-                curandStatus_t status;
-                CURAND_CALL(curandGeneratePoisson, status, engine_, (std::uint32_t*)r, n,
-                            distr.lambda());
-            });
-        });
+        throw oneapi::mkl::unimplemented(
+            "rng", "mrg32ka engine",
+            "ICDF method not used for pseudorandom generators in cuRAND backend");
+        return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
         std::uint32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](cl::sycl::handler& cgh) {
-            cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
-                curandStatus_t status;
-                CURAND_CALL(curandGeneratePoisson, status, engine_, r, n, distr.lambda());
-            });
-        });
+        throw oneapi::mkl::unimplemented(
+            "rng", "mrg32ka engine",
+            "ICDF method not used for pseudorandom generators in cuRAND backend");
+        return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
@@ -637,7 +526,8 @@ public:
     }
 
     virtual void skip_ahead(std::initializer_list<std::uint64_t> num_to_skip) override {
-        throw oneapi::mkl::unimplemented("rng", "skip_ahead", "unsupported by cuRAND backend");
+        throw oneapi::mkl::unimplemented("rng", "skip_ahead",
+                                         "initializer list unsupported by cuRAND backend");
     }
 
     virtual void leapfrog(std::uint64_t idx, std::uint64_t stride) override {
