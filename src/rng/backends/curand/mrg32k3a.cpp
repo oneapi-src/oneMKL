@@ -122,7 +122,7 @@ public:
                 });
             })
             .wait_and_throw();
-        range_transform_fp<float>(queue_, distr.a(), distr.b(), n, r);
+        range_transform_fp_accurate<float>(queue_, distr.a(), distr.b(), n, r);
     }
 
     virtual void generate(
@@ -139,7 +139,7 @@ public:
                 });
             })
             .wait_and_throw();
-        range_transform_fp<double>(queue_, distr.a(), distr.b(), n, r);
+        range_transform_fp_accurate<double>(queue_, distr.a(), distr.b(), n, r);
     }
 
     virtual void generate(const oneapi::mkl::rng::gaussian<
@@ -350,7 +350,7 @@ public:
                 });
             })
             .wait_and_throw();
-        return range_transform_fp<float>(queue_, distr.a(), distr.b(), n, r);
+        return range_transform_fp_accurate<float>(queue_, distr.a(), distr.b(), n, r);
     }
 
     virtual cl::sycl::event generate(
@@ -366,7 +366,7 @@ public:
                 });
             })
             .wait_and_throw();
-        return range_transform_fp<double>(queue_, distr.a(), distr.b(), n, r);
+        return range_transform_fp_accurate<double>(queue_, distr.a(), distr.b(), n, r);
     }
 
     virtual cl::sycl::event generate(
