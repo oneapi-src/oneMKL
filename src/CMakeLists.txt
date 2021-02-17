@@ -17,12 +17,18 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
+# Define common build flags for oneMKL libraries
+set(ONEMKL_BUILD_COPT "")
+if(WIN32 AND BUILD_SHARED_LIBS)
+  list(APPEND ONEMKL_BUILD_COPT "-Donemkl_EXPORTS")
+endif()
+
+# Build loader and backends for each domain
 foreach(domain ${TARGET_DOMAINS})
-  # build loader and backends
   add_subdirectory(${domain})
 endforeach()
 
-# generate header with enabled backends for testing
+# Generate header with enabled backends for testing
 configure_file(config.hpp.in "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/config.hpp.configured")
 file(GENERATE
   OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/detail/config.hpp"

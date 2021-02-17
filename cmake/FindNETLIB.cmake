@@ -34,22 +34,8 @@ list(APPEND NETLIB_LINK ${NETLIB_CBLAS_LIBRARY})
 list(APPEND NETLIB_LINK ${NETLIB_BLAS_LIBRARY})
 
 
-set(NETLIB_COPT "")
-
-if(UNIX)
-  set(NETLIB_COPT "")
-else()
-  if(${BUILD_SHARED_LIBS})
-    set(NETLIB_COPT ${NETLIB_COPT} "-Donemkl_EXPORTS")
-  endif()
-endif()
-
 include(FindPackageHandleStandardArgs)
-if(UNIX)
-  find_package_handle_standard_args(NETLIB REQUIRED_VARS NETLIB_INCLUDE NETLIB_LINK)
-else()
-  find_package_handle_standard_args(NETLIB REQUIRED_VARS NETLIB_INCLUDE NETLIB_COPT NETLIB_LINK)
-endif()
+find_package_handle_standard_args(NETLIB REQUIRED_VARS NETLIB_INCLUDE NETLIB_LINK)
 
 add_library(ONEMKL::NETLIB::NETLIB UNKNOWN IMPORTED)
 set_target_properties(ONEMKL::NETLIB::NETLIB PROPERTIES IMPORTED_LOCATION ${NETLIB_CBLAS_LIBRARY})

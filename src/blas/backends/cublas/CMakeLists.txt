@@ -35,6 +35,7 @@ target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
           ${PROJECT_SOURCE_DIR}/src
 )
+target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
 target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ONEMKL::cuBLAS::cuBLAS)
 target_compile_features(${LIB_OBJ} PUBLIC cxx_std_11)
 set_target_properties(${LIB_OBJ} PROPERTIES
