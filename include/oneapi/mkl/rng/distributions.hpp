@@ -264,7 +264,7 @@ private:
 //      oneapi::mkl::rng::bernoulli_method::icdf;
 //
 // Input arguments:
-//      p - success probablity of a trial. 0.5 by default
+//      p - success probability of a trial. 0.5 by default
 
 namespace bernoulli_method {
 struct icdf {};

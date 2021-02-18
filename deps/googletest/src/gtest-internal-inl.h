@@ -513,9 +513,9 @@ class GTEST_API_ UnitTestImpl {
   virtual ~UnitTestImpl();
 
   // There are two different ways to register your own TestPartResultReporter.
-  // You can register your own repoter to listen either only for test results
+  // You can register your own reporter to listen either only for test results
   // from the current thread or for results from all threads.
-  // By default, each per-thread test result repoter just passes a new
+  // By default, each per-thread test result reporter just passes a new
   // TestPartResult to the global test result reporter, which registers the
   // test part result for the currently running test.
 
@@ -1153,13 +1153,13 @@ class StreamingListener : public EmptyTestEventListener {
   }
 
   // Note that "event=TestCaseStart" is a wire format and has to remain
-  // "case" for compatibilty
+  // "case" for compatibility
   void OnTestCaseStart(const TestCase& test_case) override {
     SendLn(std::string("event=TestCaseStart&name=") + test_case.name());
   }
 
   // Note that "event=TestCaseEnd" is a wire format and has to remain
-  // "case" for compatibilty
+  // "case" for compatibility
   void OnTestCaseEnd(const TestCase& test_case) override {
     SendLn("event=TestCaseEnd&passed=" + FormatBool(test_case.Passed()) +
            "&elapsed_time=" + StreamableToString(test_case.elapsed_time()) +

@@ -40,7 +40,7 @@ Open an Request For Comment (RFC) issue when contributing new interfaces. In the
 
 * The definition of the function including the interface and semantics, and how this interface will be extendable for different HW implementations.
 
-* What exisitng libraries have implementation of this function and can be used under the oneMKL interface.
+* What existing libraries have implementation of this function and can be used under the oneMKL interface.
 
 
 ## Bug Reporting
@@ -322,4 +322,4 @@ for (int i = 0; i < loop_size; i++) ...;
 
 oneMKL uses GoogleTest for functional testing.
 
-Be sure to extend the existing tests when fixing an issue, adding a new interface or new implementation under exisitng interfaces.
+Be sure to extend the existing tests when fixing an issue, adding a new interface or new implementation under existing interfaces.

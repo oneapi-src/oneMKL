@@ -77,7 +77,7 @@ public:
 
     ~CublasScopedContextHandler() noexcept(false);
     /**
-   * @brief get_handle: creates the handle by implicitely impose the advice
+   * @brief get_handle: creates the handle by implicitly impose the advice
    * given by nvidia for creating a cublas_handle. (e.g. one cuStream per device
    * per thread).
    * @param queue sycl queue.

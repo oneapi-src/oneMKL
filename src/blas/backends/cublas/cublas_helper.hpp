@@ -34,7 +34,7 @@ namespace blas {
 namespace cublas {
 
 // The static assert to make sure that all index types used in
-// src/oneMKL/backend/cublas/blas.hpp inteface are int64_t
+// src/oneMKL/backend/cublas/blas.hpp interface are int64_t
 template <typename... Next>
 struct is_int64 : std::false_type {};
 
