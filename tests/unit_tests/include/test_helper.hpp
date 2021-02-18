@@ -90,9 +90,10 @@
                 q.get_device().get_info<cl::sycl::info::device::vendor_id>()); \
             if (vendor_id == INTEL_ID)                                         \
                 TEST_RUN_INTELGPU_SELECT(q, func, __VA_ARGS__);                \
-            else if (vendor_id == NVIDIA_ID)                                   \
+            else if (vendor_id == NVIDIA_ID) {                                 \
                 TEST_RUN_NVIDIAGPU_CUBLAS_SELECT(q, func, __VA_ARGS__);        \
-            TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, __VA_ARGS__);            \
+                TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, __VA_ARGS__);        \
+            }                                                                  \
         }                                                                      \
     } while (0);
 
