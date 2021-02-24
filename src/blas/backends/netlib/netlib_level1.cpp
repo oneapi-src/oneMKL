@@ -22,18 +22,6 @@
 #include "netlib_common.hpp"
 #include "oneapi/mkl/blas/detail/netlib/onemkl_blas_netlib.hpp"
 
-extern "C" {
-void csrot_(const int *N, void *X, const int *incX, void *Y, const int *incY, const float *c,
-            const float *s);
-
-void zdrot_(const int *N, void *X, const int *incX, void *Y, const int *incY, const double *c,
-            const double *s);
-
-void crotg_(void *a, void *b, const float *c, void *s);
-
-void zrotg_(void *a, void *b, const double *c, void *s);
-}
-
 inline float abs_val(float val) {
     return std::abs(val);
 }
@@ -124,6 +112,96 @@ int cblas_izamin(int n, const std::complex<double> *x, int incx) {
         }
     }
     return min_idx;
+}
+
+void cblas_csrot(const int n, std::complex<float> *cx, const int incx, std::complex<float> *cy,
+                 const int incy, const float c, const float s) {
+    if (n < 1)
+        return;
+    if (incx == 1 && incy == 1) {
+        for (int i = 0; i < n; i++) {
+            std::complex<float> ctemp = c * cx[i] + s * cy[i];
+            cy[i] = c * cy[i] - s * cx[i];
+            cx[i] = ctemp;
+        }
+    }
+    else {
+        int ix = 0, iy = 0;
+        if (incx < 0)
+            ix = (-n + 1) * incx;
+        if (incy < 0)
+            iy = (-n + 1) * incy;
+        for (int i = 0; i < n; i++) {
+            std::complex<float> ctemp = c * cx[ix] + s * cy[iy];
+            cy[iy] = c * cy[iy] - s * cx[ix];
+            cx[ix] = ctemp;
+            ix = ix + incx;
+            iy = iy + incy;
+        }
+    }
+}
+
+void cblas_zdrot(const int n, std::complex<double> *zx, const int incx, std::complex<double> *zy,
+                 const int incy, const double c, const double s) {
+    if (n < 1)
+        return;
+    if (incx == 1 && incy == 1) {
+        for (int i = 0; i < n; i++) {
+            std::complex<double> ctemp = c * zx[i] + s * zy[i];
+            zy[i] = c * zy[i] - s * zx[i];
+            zx[i] = ctemp;
+        }
+    }
+    else {
+        int ix = 0, iy = 0;
+        if (incx < 0)
+            ix = (-n + 1) * incx;
+        if (incy < 0)
+            iy = (-n + 1) * incy;
+        for (int i = 0; i < n; i++) {
+            std::complex<double> ctemp = c * zx[ix] + s * zy[iy];
+            zy[iy] = c * zy[iy] - s * zx[ix];
+            zx[ix] = ctemp;
+            ix = ix + incx;
+            iy = iy + incy;
+        }
+    }
+}
+
+void cblas_crotg(std::complex<float> *ca, std::complex<float> *cb, float *c,
+                 std::complex<float> *s) {
+    if (std::abs(ca[0]) == 0) {
+        c[0] = 0.0;
+        s[0] = std::complex<float>(1.0, 0.0);
+        ca[0] = cb[0];
+    }
+    else {
+        float scale = std::abs(ca[0]) + std::abs(cb[0]);
+        float norm = scale * std::sqrt(std::pow(std::abs(ca[0] / scale), 2) +
+                                       std::pow(std::abs(cb[0] / scale), 2));
+        std::complex<float> alpha = ca[0] / std::abs(ca[0]);
+        c[0] = std::abs(ca[0]) / norm;
+        s[0] = alpha * std::conj(cb[0]) / norm;
+        ca[0] = alpha * norm;
+    }
+}
+
+void cblas_zrotg(std::complex<double> *ca, std::complex<double> *cb, double *c,
+                 std::complex<double> *s) {
+    if (std::abs(ca[0]) == 0) {
+        c[0] = 0.0;
+        s[0] = std::complex<double>(1.0, 0.0);
+        ca[0] = cb[0];
+    }
+    else {
+        double scale = std::abs(ca[0]) + std::abs(cb[0]);
+        double norm = scale * std::sqrt(std::pow(std::abs(ca[0] / scale), 2) +
+                                        std::pow(std::abs(cb[0] / scale), 2));
+        std::complex<double> alpha = ca[0] / std::abs(ca[0]);
+        c[0] = std::abs(ca[0]) / norm;
+        s[0] = alpha * std::conj(cb[0]) / norm;
+        ca[0] = alpha * norm;
+    }
 }
 
 namespace oneapi {
