@@ -434,8 +434,9 @@ void rot(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<float>
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         auto accessor_y = y.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_csrot>(cgh, [=]() {
-            ::csrot_((const int *)&n, accessor_x.get_pointer(), (const int *)&incx,
-                     accessor_y.get_pointer(), (const int *)&incy, &c, &s);
+            ::cblas_csrot((const int)n, accessor_x.get_pointer(), (const int)incx,
+                          accessor_y.get_pointer(), (const int)incy, (const float)c,
+                          (const float)s);
         });
     });
 }
@@ -447,8 +448,9 @@ void rot(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<double
         auto accessor_x = x.get_access<cl::sycl::access::mode::read_write>(cgh);
         auto accessor_y = y.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_zdrot>(cgh, [=]() {
-            ::zdrot_((const int *)&n, accessor_x.get_pointer(), (const int *)&incx,
-                     accessor_y.get_pointer(), (const int *)&incy, &c, &s);
+            ::cblas_zdrot((const int)n, accessor_x.get_pointer(), (const int)incx,
+                          accessor_y.get_pointer(), (const int)incy, (const double)c,
+                          (const double)s);
         });
     });
 }
@@ -490,8 +492,8 @@ void rotg(cl::sycl::queue &queue, cl::sycl::buffer<std::complex<float>, 1> &a,
         auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
         auto accessor_s = s.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_crotg>(cgh, [=]() {
-            ::crotg_(accessor_a.get_pointer(), accessor_b.get_pointer(), accessor_c.get_pointer(),
-                     accessor_s.get_pointer());
+            ::cblas_crotg(accessor_a.get_pointer(), accessor_b.get_pointer(),
+                          accessor_c.get_pointer(), accessor_s.get_pointer());
         });
     });
 }
@@ -505,8 +507,8 @@ void rotg(cl::sycl::queue &queue, cl::sycl::buffer<std::complex<double>, 1> &a,
         auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
         auto accessor_s = s.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class netlib_zrotg>(cgh, [=]() {
-            ::zrotg_(accessor_a.get_pointer(), accessor_b.get_pointer(), accessor_c.get_pointer(),
-                     accessor_s.get_pointer());
+            ::cblas_zrotg(accessor_a.get_pointer(), accessor_b.get_pointer(),
+                          accessor_c.get_pointer(), accessor_s.get_pointer());
         });
     });
 }
@@ -1175,7 +1177,8 @@ cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, std::complex<float> *x, i
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_csrot_usm>(cgh, [=]() {
-            ::csrot_((const int *)&n, x, (const int *)&incx, y, (const int *)&incy, &c, &s);
+            ::cblas_csrot((const int)n, x, (const int)incx, y, (const int)incy, (const float)c,
+                          (const float)s);
         });
     });
     return done;
@@ -1190,7 +1193,8 @@ cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, std::complex<double> *x, 
             cgh.depends_on(dependencies[i]);
         }
         host_task<class netlib_zdrot_usm>(cgh, [=]() {
-            ::zdrot_((const int *)&n, x, (const int *)&incx, y, (const int *)&incy, &c, &s);
+            ::cblas_zdrot((const int)n, x, (const int)incx, y, (const int)incy, (const double)c,
+                          (const double)s);
         });
     });
     return done;
@@ -1228,7 +1232,7 @@ cl::sycl::event rotg(cl::sycl::queue &queue, std::complex<float> *a, std::comple
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_crotg_usm>(cgh, [=]() { ::crotg_(a, b, c, s); });
+        host_task<class netlib_crotg_usm>(cgh, [=]() { ::cblas_crotg(a, b, c, s); });
     });
     return done;
 }
@@ -1241,7 +1245,7 @@ cl::sycl::event rotg(cl::sycl::queue &queue, std::complex<double> *a, std::compl
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        host_task<class netlib_zrotg_usm>(cgh, [=]() { ::zrotg_(a, b, c, s); });
+        host_task<class netlib_zrotg_usm>(cgh, [=]() { ::cblas_zrotg(a, b, c, s); });
     });
     return done;
 }
