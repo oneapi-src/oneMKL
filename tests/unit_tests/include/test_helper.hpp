@@ -67,7 +67,6 @@
 #define TEST_RUN_INTELGPU_SELECT(q, func, ...)
 #endif
 
-/// TODO: Combine into a single CUDA test?
 #ifdef ENABLE_CUBLAS_BACKEND
 #define TEST_RUN_NVIDIAGPU_CUBLAS_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas>{ q }, __VA_ARGS__)

@@ -30,7 +30,6 @@ enum class backend { mklcpu, mklgpu, cublas, curand, netlib, unsupported };
 
 typedef std::map<backend, std::string> backendmap;
 
-/// TODO: cublas/curand -> cuda?
 static backendmap backend_map = {
     { backend::mklcpu, "mklcpu" }, { backend::mklgpu, "mklgpu" },
     { backend::cublas, "cublas" }, { backend::curand, "curand" },
