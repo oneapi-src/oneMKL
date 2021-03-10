@@ -95,6 +95,11 @@ foreach(domain ${TARGET_DOMAINS})
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_netlib)
   endif()
 
+  if(domain STREQUAL "rng" AND ENABLE_CURAND_BACKEND)
+    add_dependencies(test_main_${domain}_ct onemkl_${domain}_curand)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_curand)
+  endif()
+
   target_link_libraries(test_main_${domain}_ct PUBLIC
       gtest
       gtest_main

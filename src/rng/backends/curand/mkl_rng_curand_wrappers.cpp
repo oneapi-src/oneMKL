@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright 2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,26 +17,13 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_BACKENDS_HPP_
-#define _ONEMKL_BACKENDS_HPP_
+#include "rng/function_table.hpp"
+#include "oneapi/mkl/rng/detail/curand/onemkl_rng_curand.hpp"
 
-#include <map>
-#include <string>
+#define WRAPPER_VERSION 1
 
-namespace oneapi {
-namespace mkl {
-
-enum class backend { mklcpu, mklgpu, cublas, curand, netlib, unsupported };
-
-typedef std::map<backend, std::string> backendmap;
-
-static backendmap backend_map = {
-    { backend::mklcpu, "mklcpu" }, { backend::mklgpu, "mklgpu" },
-    { backend::cublas, "cublas" }, { backend::curand, "curand" },
-    { backend::netlib, "netlib" }, { backend::unsupported, "unsupported" }
+extern "C" ONEMKL_EXPORT rng_function_table_t mkl_rng_table = {
+    WRAPPER_VERSION, oneapi::mkl::rng::curand::create_philox4x32x10,
+    oneapi::mkl::rng::curand::create_philox4x32x10, oneapi::mkl::rng::curand::create_mrg32k3a,
+    oneapi::mkl::rng::curand::create_mrg32k3a
 };
-
-} //namespace mkl
-} //namespace oneapi
-
-#endif //_ONEMKL_BACKENDS_HPP_

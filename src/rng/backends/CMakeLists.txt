@@ -24,3 +24,7 @@ endif()
 if(ENABLE_MKLGPU_BACKEND)
   add_subdirectory(mklgpu)
 endif()
+
+if(ENABLE_CURAND_BACKEND AND UNIX)
+  add_subdirectory(curand)
+endif()
