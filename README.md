@@ -13,8 +13,8 @@ oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel 
     </thead>
     <tbody>
         <tr>
-            <td rowspan=4 align="center">oneMKL interface</td>
-            <td rowspan=4 align="center">oneMKL selector</td>
+            <td rowspan=5 align="center">oneMKL interface</td>
+            <td rowspan=5 align="center">oneMKL selector</td>
             <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for Intel CPU</td>
             <td align="center">Intel CPU</td>
         </tr>
@@ -24,6 +24,10 @@ oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel 
         </tr>
         <tr>
             <td align="center"><a href="https://developer.nvidia.com/cublas"> NVIDIA cuBLAS</a> for NVIDIA GPU </td>
+            <td align="center">NVIDIA GPU</td>
+        </tr>
+        <tr>
+            <td align="center"><a href="https://developer.nvidia.com/curand"> NVIDIA cuRAND</a> for NVIDIA GPU </td>
             <td align="center">NVIDIA GPU</td>
         </tr>
         <tr>
@@ -59,14 +63,14 @@ Example of app.cpp with run-time dispatching:
 #include "oneapi/mkl.hpp"
 
 ...
-cpu_dev = cl::sycl::device(cl::sycl::cpu_selector());
-gpu_dev = cl::sycl::device(cl::sycl::gpu_selector());
+cpu_dev = sycl::device(sycl::cpu_selector());
+gpu_dev = sycl::device(sycl::gpu_selector());
 
-cl::sycl::queue cpu_queue(cpu_dev);
-cl::sycl::queue gpu_queue(gpu_dev);
+sycl::queue cpu_queue(cpu_dev);
+sycl::queue gpu_queue(gpu_dev);
 
-oneapi::mkl::blas::gemm(cpu_queue, transA, transB, m, ...);
-oneapi::mkl::blas::gemm(gpu_queue, transA, transB, m, ...);
+oneapi::mkl::blas::column_major::gemm(cpu_queue, transA, transB, m, ...);
+oneapi::mkl::blas::column_major::gemm(gpu_queue, transA, transB, m, ...);
 ```
 How to build an application with run-time dispatching:
 
@@ -83,16 +87,16 @@ Example of app.cpp with compile-time dispatching:
 #include "oneapi/mkl.hpp"
 
 ...
-cpu_dev = cl::sycl::device(cl::sycl::cpu_selector());
-gpu_dev = cl::sycl::device(cl::sycl::gpu_selector());
+cpu_dev = sycl::device(sycl::cpu_selector());
+gpu_dev = sycl::device(sycl::gpu_selector());
 
-cl::sycl::queue cpu_queue(cpu_dev);
-cl::sycl::queue gpu_queue(gpu_dev);
+sycl::queue cpu_queue(cpu_dev);
+sycl::queue gpu_queue(gpu_dev);
 
 oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> cpu_selector(cpu_queue);
 
-oneapi::mkl::blas::gemm(cpu_selector, transA, transB, m, ...);
-oneapi::mkl::blas::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas> {gpu_queue}, transA, transB, m, ...);
+oneapi::mkl::blas::column_major::gemm(cpu_selector, transA, transB, m, ...);
+oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas> {gpu_queue}, transA, transB, m, ...);
 ```
 How to build an application with compile-time dispatching:
 
@@ -138,13 +142,18 @@ Supported domains: BLAS, RNG
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
-            <td rowspan=2 align="center">RNG</td>
+            <td rowspan=3 align="center">RNG</td>
             <td align="center">Intel CPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">NVIDIA GPU</td>
+            <td align="center">NVIDIA cuRAND</td>
             <td align="center">Dynamic, Static</td>
         </tr>
     </tbody>
@@ -512,6 +521,7 @@ build_shared_libs        | BUILD_SHARED_LIBS        | True, False         | True
 enable_mklcpu_backend    | ENABLE_MKLCPU_BACKEND    | True, False         | True
 enable_mklgpu_backend    | ENABLE_MKLGPU_BACKEND    | True, False         | True
 *Not Supported*          | ENABLE_CUBLAS_BACKEND    | True, False         | False
+*Not Supported*          | ENABLE_CURAND_BACKEND    | True, False         | False
 *Not Supported*          | ENABLE_NETLIB_BACKEND    | True, False         | False
 enable_mklcpu_thread_tbb | ENABLE_MKLCPU_THREAD_TBB | True, False         | True
 build_functional_tests   | BUILD_FUNCTIONAL_TESTS   | True, False         | True
