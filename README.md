@@ -205,7 +205,7 @@ Supported domains: BLAS, RNG
     - Intel(R) Xeon(R) Processor Family
 - Accelerators
     - Intel(R) Processor Graphics GEN9
-    - NVIDIA(R) TITAN RTX(TM) (Linux* only. Not tested with other NVIDIA GPU families and products.)
+    - NVIDIA(R) TITAN RTX(TM) (Linux* only. cuRAND backend tested also with Quadro and A100 GPUs. Not tested with other NVIDIA GPU families and products.)
     
 ---
 ### Supported Operating Systems
@@ -214,7 +214,7 @@ Supported domains: BLAS, RNG
 
 Operating System | CPU Host/Target | Integrated Graphics from Intel (Intel GPU) |  NVIDIA GPU
 :--- | :--- | :--- | :---
-Ubuntu                            | 18.04.3, 19.04 | 18.04.3, 19.10  | 18.04.3
+Ubuntu                            | 18.04.3, 19.04 | 18.04.3, 19.10  | 18.04.3, 20.04
 SUSE Linux Enterprise Server*     | 15             | *Not supported* | *Not supported*
 Red Hat Enterprise Linux* (RHEL*) | 8              | *Not supported* | *Not supported*
 Linux* kernel                     | *N/A*          | 4.11 or higher | *N/A*
