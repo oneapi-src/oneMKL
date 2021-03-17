@@ -16,7 +16,7 @@ oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel 
             <td rowspan=5 align="center">oneMKL interface</td>
             <td rowspan=5 align="center">oneMKL selector</td>
             <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for x86 CPU</td>
-            <td align="center">Intel CPU</td>
+            <td align="center">x86 CPU</td>
         </tr>
         <tr>
             <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for Intel GPU</td>
@@ -32,7 +32,7 @@ oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel 
         </tr>
         <tr>
             <td align="center"><a href="https://ww.netlib.org"> NETLIB LAPACK</a> for x86 CPU </td>
-            <td align="center">INTEL CPU</td>
+            <td align="center">x86 CPU</td>
         </tr>
     </tbody>
 </table>
@@ -123,7 +123,7 @@ Supported domains: BLAS, RNG
     <tbody>
         <tr>
             <td rowspan=4 align="center">BLAS</td>
-            <td align="center">Intel CPU</td>
+            <td align="center">x86 CPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
         </tr>
@@ -137,13 +137,13 @@ Supported domains: BLAS, RNG
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
-            <td align="center">Intel CPU</td>
+            <td align="center">x86 CPU</td>
             <td align="center">NETLIB LAPACK</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td rowspan=3 align="center">RNG</td>
-            <td align="center">Intel CPU</td>
+            <td align="center">x86 CPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
         </tr>
@@ -173,7 +173,7 @@ Supported domains: BLAS, RNG
     <tbody>
         <tr>
             <td rowspan=3 align="center">BLAS</td>
-            <td align="center">Intel CPU</td>
+            <td align="center">x86 CPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
         </tr>
@@ -182,13 +182,13 @@ Supported domains: BLAS, RNG
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
-            <td align="center">Intel CPU</td>
+            <td align="center">x86 CPU</td>
             <td align="center">NETLIB LAPACK</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">RNG</td>
-            <td align="center">Intel CPU</td>
+            <td align="center">x86 CPU</td>
             <td align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
         </tr>
@@ -283,7 +283,7 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
     </thead>
     <tbody>
         <td rowspan=5> Linux*/Windows* </td>
-        <td rowspan=2> Intel CPU </td>
+        <td rowspan=2> x86 CPU </td>
         <td> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
         <td> No</td>
         <tr>
@@ -328,7 +328,7 @@ Python | 3.6 or higher | No | *N/A* | *Pre-installed or Installed by user* | [PS
 [Ninja](https://ninja-build.org/) | 1.10.0 | Yes | conan-center | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [Apache License v2.0](https://github.com/ninja-build/ninja/blob/master/COPYING)
 [GNU* FORTRAN Compiler](https://gcc.gnu.org/wiki/GFortran) | 7.4.0 or higher | Yes | apt | /usr/bin | [GNU General Public License, version 3](https://gcc.gnu.org/onlinedocs/gcc-7.5.0/gfortran/Copying.html)
 [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) | latest | No | *N/A* | *Installed by user* | [End User License Agreement for the Intel(R) Software Development Products](https://software.intel.com/en-us/license/eula-for-intel-software-development-products)
-[Intel project for LLVM* technology binary for Intel CPU](https://github.com/intel/llvm/releases) | Daily builds (experimental) tested with [20200331](https://github.com/intel/llvm/releases/download/20200331/dpcpp-compiler.tar.gz) | No | *N/A* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
+[Intel project for LLVM* technology binary for x86 CPU](https://github.com/intel/llvm/releases) | Daily builds (experimental) tested with [20200331](https://github.com/intel/llvm/releases/download/20200331/dpcpp-compiler.tar.gz) | No | *N/A* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
 [Intel project for LLVM* technology source for NVIDIA GPU](https://github.com/intel/llvm/releases) | Daily source releases: tested with [20200421](https://github.com/intel/llvm/tree/20200421) | No | *N/A* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
 [Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) | latest | Yes | apt | /opt/intel/inteloneapi/mkl | [Intel Simplified Software License](https://software.intel.com/en-us/license/intel-simplified-software-license)
 [NVIDIA CUDA SDK](https://developer.nvidia.com/cublas) | 10.2 | No | *N/A* | *Installed by user* |[End User License Agreement](https://docs.nvidia.com/cuda/eula/index.html)
@@ -385,7 +385,7 @@ export CONAN_USER_HOME=/usr/local/my_workspace/conan_cache
 
 Profiles are a way for Conan to determine a basic environment to use for building a project. This project ships with profiles for:
 
-- Intel(R) oneAPI DPC++ Compiler for Intel CPU and Intel GPU backend: `inteldpcpp_lnx`
+- Intel(R) oneAPI DPC++ Compiler for x86 CPU and Intel GPU backend: `inteldpcpp_lnx`
 
 1. Open the profile you wish to use from `<path to onemkl>/conan/profiles/` and set `COMPILER_PREFIX` to the path to the root folder of compiler. The root folder is the one that contains the `bin` and `lib` directories. For example, Intel(R) oneAPI DPC++ Compiler root folder for default installation on Linux is `/opt/intel/inteloneapi/compiler/<version>/linux`. User can define custom path for installing the compiler.
 
