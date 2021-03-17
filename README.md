@@ -15,7 +15,7 @@ oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel 
         <tr>
             <td rowspan=5 align="center">oneMKL interface</td>
             <td rowspan=5 align="center">oneMKL selector</td>
-            <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for Intel CPU</td>
+            <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for x86 CPU</td>
             <td align="center">Intel CPU</td>
         </tr>
         <tr>
@@ -31,7 +31,7 @@ oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel 
             <td align="center">NVIDIA GPU</td>
         </tr>
         <tr>
-            <td align="center"><a href="https://ww.netlib.org"> NETLIB LAPACK</a> for INTEL CPU </td>
+            <td align="center"><a href="https://ww.netlib.org"> NETLIB LAPACK</a> for x86 CPU </td>
             <td align="center">INTEL CPU</td>
         </tr>
     </tbody>
