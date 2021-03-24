@@ -69,7 +69,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, *dev);
     vector<fp, decltype(ua)> x(ua), A(ua);
     rand_vector(x, n, incx);
-    rand_trsm_matrix(A, layout, transa, n, n, lda);
+    rand_tbsv_matrix(A, layout, upper_lower, transa, n, k, lda);
 
     auto x_ref = x;
 

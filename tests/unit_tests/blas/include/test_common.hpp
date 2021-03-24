@@ -358,6 +358,61 @@ void rand_trsm_matrix(fp *M, oneapi::mkl::layout layout, oneapi::mkl::transpose 
     }
 }
 
+template <typename vec>
+void rand_tpsv_matrix(vec &M, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
+                      oneapi::mkl::transpose trans, int m) {
+    using fp = typename vec::value_type;
+    std::vector<fp> tmp;
+    int start, end, i, j, k = 0;
+
+    rand_trsm_matrix(tmp, layout, trans, m, m, m);
+    M.resize((m * (m + 1)) / 2);
+
+    for (j = 0; j < m; j++) {
+        if (layout == oneapi::mkl::layout::column_major) {
+            start = (upper_lower == oneapi::mkl::uplo::U) ? 0 : j;
+            end = (upper_lower == oneapi::mkl::uplo::U) ? j : m - 1;
+        }
+        else {
+            start = (upper_lower == oneapi::mkl::uplo::U) ? j : 0;
+            end = (upper_lower == oneapi::mkl::uplo::U) ? m - 1 : j;
+        }
+        for (i = start; i <= end; i++) {
+            M[k] = tmp[i + j * m];
+            k++;
+        }
+    }
+}
+
+template <typename vec>
+void rand_tbsv_matrix(vec &M, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
+                      oneapi::mkl::transpose trans, int m, int k, int ld) {
+    using fp = typename vec::value_type;
+    std::vector<fp> tmp;
+    int i, j, n;
+
+    rand_trsm_matrix(tmp, layout, trans, m, m, ld);
+    M.resize(matrix_size(layout, trans, m, m, ld));
+
+    if (((layout == oneapi::mkl::layout::column_major) && (upper_lower == oneapi::mkl::uplo::U)) ||
+        ((layout == oneapi::mkl::layout::row_major) && (upper_lower == oneapi::mkl::uplo::L))) {
+        for (j = 0; j < m; j++) {
+            n = k - j;
+            for (i = std::max(0, j - k); i <= j; i++) {
+                M[(n + i) + j * ld] = tmp[i + j * ld];
+            }
+        }
+    }
+    else {
+        for (j = 0; j < m; j++) {
+            n = -j;
+            for (i = j; i < std::min(m, j + k + 1); i++) {
+                M[(n + i) + j * ld] = tmp[i + j * ld];
+            }
+        }
+    }
+}
+
 // Correctness checking.
 template <typename fp>
 typename std::enable_if<!std::is_integral<fp>::value, bool>::type check_equal(fp x, fp x_ref,
