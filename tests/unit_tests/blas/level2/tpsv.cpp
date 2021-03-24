@@ -49,7 +49,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     vector<fp> x, x_ref, A;
     rand_vector(x, n, incx);
     x_ref = x;
-    rand_trsm_matrix(A, layout, transa, n, n, n);
+    rand_tpsv_matrix(A, layout, upper_lower, transa, n);
 
     // Call Reference TPSV.
     const int n_ref = n, incx_ref = incx;
