@@ -36,9 +36,29 @@ else()
     message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 endif()
 
+# Define required compilers for Windows before project
+if(WIN32)
+  set(CMAKE_CXX_COMPILER "clang-cl")
+  set(CMAKE_C_COMPILER "clang-cl")
+endif()
+
 project(oneMKL VERSION 0.1.0 LANGUAGES CXX)
 
 option(BUILD_SHARED_LIBS "Build dynamic libraries" ON)
+
+# Override default CXX compile/link lines for Windows after project
+if(WIN32)
+  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function -w")
+  foreach (flag_var
+           CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+           CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+    string(REPLACE "/MD" "" ${flag_var} "${${flag_var}}")
+  endforeach()
+  set(CMAKE_CXX_COMPILE_OBJECT "<CMAKE_CXX_COMPILER> -fsycl /nologo <DEFINES> <INCLUDES> /EHsc <FLAGS> /Fo<OBJECT> -c <SOURCE>")
+  set(CMAKE_CXX_CREATE_STATIC_LIBRARY "lib /nologo <OBJECTS> /out:<TARGET>")
+  set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> -fsycl /nologo <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
+endif()
 
 ## Backends
 option(ENABLE_MKLCPU_BACKEND "" ON)
@@ -90,23 +110,6 @@ option(BUILD_FUNCTIONAL_TESTS "" ON)
 ## Documentation
 option(BUILD_DOC "" OFF)
 
-# Set compilation flags
-if(UNIX)
-  set(CMAKE_CXX_STANDARD 11)
-else()
-  set(CMAKE_CXX_STANDARD 14)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function")
-  foreach (flag_var
-           CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
-           CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-  string(REGEX REPLACE "/M[TD]+[d]*" "" ${flag_var} "${${flag_var}}")
-  endforeach()
-endif()
-
-set(CMAKE_CXX_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
 # Set output directories for the project
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -118,8 +121,12 @@ add_subdirectory(cmake)
 # Include general cmake config files
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
-# Find necessary packages
-find_package(Compiler REQUIRED)
+# Add DPC++ options for Linux
+if(WIN32)
+  add_library(ONEMKL::SYCL::SYCL INTERFACE IMPORTED)
+else()
+  find_package(Compiler REQUIRED)
+endif()
 
 # Add source directory and output to bin/
 add_subdirectory(src bin)

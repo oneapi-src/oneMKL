@@ -46,7 +46,7 @@ find_library(TBB_LIBRARIES NAMES tbb
 if(UNIX)
   set(TBB_LINK "-Wl,-rpath,${TBB_LIB_DIR} -L${TBB_LIB_DIR} -ltbb")
 else()
-  set(TBB_LINK "-LIBPATH:\"${TBB_LIB_DIR}\" tbb.lib")
+  set(TBB_LINK ${TBB_LIBRARIES})
 endif()
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(TBB REQUIRED_VARS TBB_LIBRARIES TBB_LINK)

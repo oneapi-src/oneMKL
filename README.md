@@ -501,7 +501,7 @@ cmake --install . --prefix <path_to_install_dir>
 ```bash
 # Inside <path to onemkl>
 md build && cd build
-cmake .. -G Ninja  -DCMAKE_TOOLCHAIN_FILE="..\cmake\toolchain\intel_clang-cl-toolchain.cmake"  
+cmake .. -G Ninja
                   [-DMKL_ROOT=<mkl_install_prefix>] \                   # required only if environment variable MKLROOT is not set
                   [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]     # required only for testing
 

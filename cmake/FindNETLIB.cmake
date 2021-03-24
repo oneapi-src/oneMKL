@@ -19,6 +19,7 @@
 
 include_guard()
 
+include(FindPackageHandleStandardArgs)
 find_library(NETLIB_CBLAS_LIBRARY NAMES cblas.dll.lib cblas.lib cblas HINTS ${REF_BLAS_ROOT} PATH_SUFFIXES lib lib64)
 find_package_handle_standard_args(NETLIB REQUIRED_VARS NETLIB_CBLAS_LIBRARY)
 find_library(NETLIB_BLAS_LIBRARY NAMES blas.dll.lib blas.lib blas HINTS ${REF_BLAS_ROOT} PATH_SUFFIXES lib lib64)
@@ -33,8 +34,6 @@ endif()
 list(APPEND NETLIB_LINK ${NETLIB_CBLAS_LIBRARY})
 list(APPEND NETLIB_LINK ${NETLIB_BLAS_LIBRARY})
 
-
-include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(NETLIB REQUIRED_VARS NETLIB_INCLUDE NETLIB_LINK)
 
 add_library(ONEMKL::NETLIB::NETLIB UNKNOWN IMPORTED)
