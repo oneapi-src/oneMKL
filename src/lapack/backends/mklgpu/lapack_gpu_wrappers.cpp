@@ -17,13 +17,14 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_HPP_
-#define _ONEMKL_HPP_
+#include "lapack/function_table.hpp"
+#include "oneapi/mkl/lapack/detail/mklgpu/onemkl_lapack_mklgpu.hpp"
 
-#include "oneapi/mkl/types.hpp"
+#define WRAPPER_VERSION 1
 
-#include "oneapi/mkl/blas.hpp"
-#include "oneapi/mkl/lapack.hpp"
-#include "oneapi/mkl/rng.hpp"
-
-#endif //_ONEMKL_HPP_
+extern "C" ONEMKL_EXPORT lapack_function_table_t mkl_lapack_table = {
+    WRAPPER_VERSION,
+#define LAPACK_BACKEND mklgpu
+#include "../mkl_common/lapack_wrappers.cxx"
+#undef LAPACK_BACKEND
+};

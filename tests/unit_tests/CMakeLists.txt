@@ -21,6 +21,10 @@ if("blas" IN_LIST TARGET_DOMAINS)
   find_package(CBLAS REQUIRED)
 endif()
 
+if("lapack" IN_LIST TARGET_DOMAINS)
+    find_package(LAPACKE REQUIRED)
+endif()
+
 foreach(domain ${TARGET_DOMAINS})
   # Build tests first
   add_subdirectory(${domain})
@@ -41,6 +45,12 @@ set(blas_TEST_LIST
         blas_extensions)
 
 set(blas_TEST_LINK ${CBLAS_LINK})
+
+# LAPACK config
+set(lapack_TEST_LIST
+        lapack_source)
+
+set(lapack_TEST_LINK ${LAPACKE_LINK})
 
 # RNG config
 set(rng_TEST_LIST
