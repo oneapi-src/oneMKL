@@ -115,7 +115,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::side left_right, oneapi::mkl
 }
 
 const char* dependency_input = R"(
-1 1 1 1 1 1 1 1
+0 0 1 1 1 1 1 1
 )";
 
 template <typename mem_T>
