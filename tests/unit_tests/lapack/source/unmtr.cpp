@@ -28,7 +28,9 @@
 #include "reference_lapack_wrappers.hpp"
 #include "test_helper.hpp"
 
-static const char* accuracy_input = R"(
+namespace {
+
+const char* accuracy_input = R"(
 1 31 33 35 37 27182
 )";
 
@@ -109,7 +111,7 @@ bool accuracy(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t m, int64_
     return result;
 }
 
-static const char* dependency_input = R"(
+const char* dependency_input = R"(
 1 1 1 1 1 1
 )";
 
@@ -179,8 +181,10 @@ bool usm_dependency(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t m, 
     return result;
 }
 
-static InputTestController<decltype(::accuracy<void>)> accuracy_controller{accuracy_input};
-static InputTestController<decltype(::usm_dependency<void>)> dependency_controller{dependency_input};
+InputTestController<decltype(::accuracy<void>)> accuracy_controller{accuracy_input};
+InputTestController<decltype(::usm_dependency<void>)> dependency_controller{dependency_input};
+
+} /* unnamed namespace */
 
 #ifdef STANDALONE
 int main() {

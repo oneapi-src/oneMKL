@@ -225,11 +225,12 @@ struct InputTestController {
                 log_result(1, false);
             }
             test_result aggregate_result;
-            size_t input_file_line = 1;
+            size_t input_file_line = 0;
             for( auto& args : vargs ) {
+                input_file_line++;
                 test_result result = call_test(tp, dev, args);
                 if (!result)
-                    log_result(input_file_line++, result, args, std::make_index_sequence<arg_count>());
+                    log_result(input_file_line, result, args, std::make_index_sequence<arg_count>());
                 else {
                     global::log.str("");
                     global::log.clear();

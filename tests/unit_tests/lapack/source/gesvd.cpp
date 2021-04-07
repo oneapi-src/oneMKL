@@ -28,7 +28,9 @@
 #include "reference_lapack_wrappers.hpp"
 #include "test_helper.hpp"
 
-static const char* accuracy_input = R"(
+namespace {
+
+const char* accuracy_input = R"(
 1 1 8 8 10 10 10 27182
 1 1 30 24 42 33 33 27182
 )";
@@ -139,7 +141,7 @@ bool accuracy(const sycl::device &dev, oneapi::mkl::jobsvd jobu, oneapi::mkl::jo
     return result;
 }
 
-static const char* dependency_input = R"(
+const char* dependency_input = R"(
 1 1 1 1 1 1 1 1
 )";
 
@@ -205,8 +207,10 @@ bool usm_dependency(const sycl::device &dev, oneapi::mkl::jobsvd jobu, oneapi::m
     return result;
 }
 
-static InputTestController<decltype(::accuracy<void>)> accuracy_controller{accuracy_input};
-static InputTestController<decltype(::usm_dependency<void>)> dependency_controller{dependency_input};
+InputTestController<decltype(::accuracy<void>)> accuracy_controller{accuracy_input};
+InputTestController<decltype(::usm_dependency<void>)> dependency_controller{dependency_input};
+
+} /* unnamed namespace */
 
 #ifdef STANDALONE
 int main() {
@@ -229,7 +233,7 @@ int main() {
 #else
 #include <gtest/gtest.h>
 extern std::vector<sycl::device*> devices;
-class gesvdTests : public ::testing::TestWithParam<sycl::device*> {};
-INSTANTIATE_TEST_SUITE_P(gesvdTestSuite, gesvdTests, ::testing::ValuesIn(devices), DeviceNamePrint());
-RUN_SUITE(gesvd)
+class GesvdTests : public ::testing::TestWithParam<sycl::device*> {};
+INSTANTIATE_TEST_SUITE_P(GesvdTestSuite, GesvdTests, ::testing::ValuesIn(devices), DeviceNamePrint());
+RUN_SUITE(Gesvd)
 #endif
