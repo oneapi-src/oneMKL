@@ -112,9 +112,6 @@ static const char* dependency_input = R"(
 
 template <typename mem_T>
 bool usm_dependency(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t n, int64_t lda, uint64_t seed) {
-#ifndef CALL_RT_API
-    return true;
-#else
     using fp = typename mem_T_info<mem_T>::value_type;
     using fp_real = typename complex_info<fp>::real_type;
 
@@ -134,7 +131,12 @@ bool usm_dependency(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t n, 
     {
         sycl::queue queue{dev};
         auto A_dev = device_alloc<mem_T>(queue, A.size());
+#ifdef CALL_RT_API
         const auto scratchpad_size = oneapi::mkl::lapack::potri_scratchpad_size<fp>(queue, uplo, n, lda);
+#else
+        int64_t scratchpad_size;
+        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::potri_scratchpad_size<fp>, uplo, n, lda);
+#endif
         auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
 
         host_to_device_copy(queue, A.data(), A_dev, A.size());
@@ -142,7 +144,12 @@ bool usm_dependency(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t n, 
 
         /* Check dependency handling */
         auto in_event = create_dependent_event(queue);
+#ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::potri(queue, uplo, n, A_dev, lda, scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+#else
+        sycl::event func_event;
+        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::potri, uplo, n, A_dev, lda, scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+#endif
         result = check_dependency(in_event, func_event);
 
         queue.wait_and_throw();
@@ -151,7 +158,6 @@ bool usm_dependency(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t n, 
     }
 
     return result;
-#endif
 }
 
 static InputTestController<decltype(::accuracy<void>)> accuracy_controller{accuracy_input};

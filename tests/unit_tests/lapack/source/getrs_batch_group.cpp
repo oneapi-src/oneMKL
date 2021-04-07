@@ -185,9 +185,6 @@ static const char* dependency_input = R"(
 
 template <typename fp>
 bool usm_dependency(const sycl::device &dev, uint64_t seed) {
-#ifndef CALL_RT_API
-    return true;
-#else
     using fp_real = typename complex_info<fp>::real_type;
 
     /* Test Parameters */
@@ -266,7 +263,12 @@ bool usm_dependency(const sycl::device &dev, uint64_t seed) {
             ipiv_dev_list.emplace_back(ipiv_iter->size(), usm_int_allocator);
         }
 
+#ifdef CALL_RT_API
         const auto scratchpad_size = oneapi::mkl::lapack::getrs_batch_scratchpad_size<fp>(queue, trans_vec.data(), n_vec.data(), nrhs_vec.data(), lda_vec.data(), ldb_vec.data(), group_count, group_sizes_vec.data());
+#else
+        int64_t scratchpad_size;
+        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::getrs_batch_scratchpad_size<fp>, trans_vec.data(), n_vec.data(), nrhs_vec.data(), lda_vec.data(), ldb_vec.data(), group_count, group_sizes_vec.data());
+#endif
         auto scratchpad_dev = device_alloc<fp>(queue, scratchpad_size);
 
         auto A_dev_iter = A_dev_list.begin();
@@ -290,14 +292,18 @@ bool usm_dependency(const sycl::device &dev, uint64_t seed) {
 
         /* Check dependency handling */
         auto in_event = create_dependent_event(queue);
+#ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::getrs_batch(queue, trans_vec.data(), n_vec.data(), nrhs_vec.data(), A_dev_ptrs.data(), lda_vec.data(), ipiv_dev_ptrs.data(), B_dev_ptrs.data(), ldb_vec.data(), group_count, group_sizes_vec.data(), scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+#else
+        sycl::event func_event;
+        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::getrs_batch, trans_vec.data(), n_vec.data(), nrhs_vec.data(), A_dev_ptrs.data(), lda_vec.data(), ipiv_dev_ptrs.data(), B_dev_ptrs.data(), ldb_vec.data(), group_count, group_sizes_vec.data(), scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+#endif
         result = check_dependency(in_event, func_event);
 
         queue.wait_and_throw();
     }
 
     return result;
-#endif
 }
 
 static InputTestController<decltype(::accuracy<void>)> accuracy_controller{accuracy_input};

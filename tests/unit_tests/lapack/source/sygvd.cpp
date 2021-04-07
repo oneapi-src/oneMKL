@@ -210,9 +210,6 @@ static const char* dependency_input = R"(
 
 template <typename mem_T>
 bool usm_dependency(const sycl::device &dev, int64_t itype, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, int64_t n, int64_t lda, int64_t ldb, uint64_t seed) {
-#ifndef CALL_RT_API
-    return true;
-#else
     using fp = typename mem_T_info<mem_T>::value_type;
     using fp_real = typename complex_info<fp>::real_type;
 
@@ -233,7 +230,12 @@ bool usm_dependency(const sycl::device &dev, int64_t itype, oneapi::mkl::job job
         auto A_dev = device_alloc<mem_T>(queue, A.size());
         auto B_dev = device_alloc<mem_T>(queue, B.size());
         auto w_dev = device_alloc<mem_T, fp_real>(queue, w.size());
+#ifdef CALL_RT_API
         const auto scratchpad_size = oneapi::mkl::lapack::sygvd_scratchpad_size<fp>(queue, itype, jobz, uplo, n, lda, ldb);
+#else
+        int64_t scratchpad_size;
+        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::sygvd_scratchpad_size<fp>, itype, jobz, uplo, n, lda, ldb);
+#endif
         auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
 
         host_to_device_copy(queue, A.data(), A_dev, A.size());
@@ -242,7 +244,12 @@ bool usm_dependency(const sycl::device &dev, int64_t itype, oneapi::mkl::job job
 
         /* Check dependency handling */
         auto in_event = create_dependent_event(queue);
+#ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::sygvd(queue, itype, jobz, uplo, n, A_dev, lda, B_dev, ldb, w_dev, scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+#else
+        sycl::event func_event;
+        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::sygvd, itype, jobz, uplo, n, A_dev, lda, B_dev, ldb, w_dev, scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+#endif
         result = check_dependency(in_event, func_event);
 
         queue.wait_and_throw();
@@ -253,7 +260,6 @@ bool usm_dependency(const sycl::device &dev, int64_t itype, oneapi::mkl::job job
     }
 
     return result;
-#endif
 }
 
 static InputTestController<decltype(::accuracy<void>)> accuracy_controller{accuracy_input};
