@@ -43,7 +43,7 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, uint64
     using fp_real = typename complex_info<fp>::real_type;
 
     /* Initialize */
-    std::vector<fp> A_initial(lda*n);
+    std::vector<fp> A_initial(lda * n);
     rand_matrix(seed, oneapi::mkl::transpose::nontrans, m, n, A_initial, lda);
 
     std::vector<fp> A = A_initial;
@@ -51,15 +51,17 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, uint64
 
     /* Compute on device */
     {
-        sycl::queue queue{dev};
+        sycl::queue queue{ dev };
 
         auto A_dev = device_alloc<mem_T>(queue, A.size());
         auto tau_dev = device_alloc<mem_T>(queue, tau.size());
 #ifdef CALL_RT_API
-        const auto scratchpad_size = oneapi::mkl::lapack::gerqf_scratchpad_size<fp>(queue, m, n, lda);
+        const auto scratchpad_size =
+            oneapi::mkl::lapack::gerqf_scratchpad_size<fp>(queue, m, n, lda);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::gerqf_scratchpad_size<fp>, m, n, lda);
+        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::gerqf_scratchpad_size<fp>,
+                           m, n, lda);
 #endif
         auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
 
@@ -67,13 +69,15 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, uint64
         queue.wait_and_throw();
 
 #ifdef CALL_RT_API
-        oneapi::mkl::lapack::gerqf(queue, m, n, A_dev, lda, tau_dev, scratchpad_dev, scratchpad_size);
+        oneapi::mkl::lapack::gerqf(queue, m, n, A_dev, lda, tau_dev, scratchpad_dev,
+                                   scratchpad_size);
 #else
-        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::gerqf, m, n, A_dev, lda, tau_dev, scratchpad_dev, scratchpad_size);
+        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::gerqf, m, n, A_dev, lda, tau_dev,
+                           scratchpad_dev, scratchpad_size);
 #endif
         queue.wait_and_throw();
 
-        device_to_host_copy(queue, A_dev,   A.data(),   A.size());
+        device_to_host_copy(queue, A_dev, A.data(), A.size());
         device_to_host_copy(queue, tau_dev, tau.data(), tau.size());
         queue.wait_and_throw();
 
@@ -95,7 +99,7 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, 
     using fp_real = typename complex_info<fp>::real_type;
 
     /* Initialize */
-    std::vector<fp> A_initial(lda*n);
+    std::vector<fp> A_initial(lda * n);
     rand_matrix(seed, oneapi::mkl::transpose::nontrans, m, n, A_initial, lda);
 
     std::vector<fp> A = A_initial;
@@ -104,15 +108,17 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, 
     /* Compute on device */
     bool result;
     {
-        sycl::queue queue{dev};
+        sycl::queue queue{ dev };
 
         auto A_dev = device_alloc<mem_T>(queue, A.size());
         auto tau_dev = device_alloc<mem_T>(queue, tau.size());
 #ifdef CALL_RT_API
-        const auto scratchpad_size = oneapi::mkl::lapack::gerqf_scratchpad_size<fp>(queue, m, n, lda);
+        const auto scratchpad_size =
+            oneapi::mkl::lapack::gerqf_scratchpad_size<fp>(queue, m, n, lda);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::gerqf_scratchpad_size<fp>, m, n, lda);
+        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::gerqf_scratchpad_size<fp>,
+                           m, n, lda);
 #endif
         auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
 
@@ -122,10 +128,14 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, 
         /* Check dependency handling */
         auto in_event = create_dependent_event(queue);
 #ifdef CALL_RT_API
-        sycl::event func_event = oneapi::mkl::lapack::gerqf(queue, m, n, A_dev, lda, tau_dev, scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+        sycl::event func_event = oneapi::mkl::lapack::gerqf(
+            queue, m, n, A_dev, lda, tau_dev, scratchpad_dev, scratchpad_size,
+            sycl::vector_class<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::gerqf, m, n, A_dev, lda, tau_dev, scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::gerqf, m, n, A_dev,
+                           lda, tau_dev, scratchpad_dev, scratchpad_size,
+                           sycl::vector_class<sycl::event>{ in_event });
 #endif
         result = check_dependency(in_event, func_event);
 
@@ -138,14 +148,14 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, 
     return result;
 }
 
-InputTestController<decltype(::accuracy<void>)> accuracy_controller{accuracy_input};
-InputTestController<decltype(::usm_dependency<void>)> dependency_controller{dependency_input};
+InputTestController<decltype(::accuracy<void>)> accuracy_controller{ accuracy_input };
+InputTestController<decltype(::usm_dependency<void>)> dependency_controller{ dependency_input };
 
 } /* unnamed namespace */
 
 #ifdef STANDALONE
 int main() {
-    sycl::device dev = sycl::device { sycl::host_selector{} };
+    sycl::device dev = sycl::device{ sycl::host_selector{} };
     int64_t res = 0;
     res += !accuracy_controller.run(::accuracy<RealSinglePrecisionUsm>, dev);
     res += !accuracy_controller.run(::accuracy<RealDoublePrecisionUsm>, dev);
@@ -165,6 +175,7 @@ int main() {
 #include <gtest/gtest.h>
 extern std::vector<sycl::device*> devices;
 class GerqfTests : public ::testing::TestWithParam<sycl::device*> {};
-INSTANTIATE_TEST_SUITE_P(GerqfTestSuite, GerqfTests, ::testing::ValuesIn(devices), DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(GerqfTestSuite, GerqfTests, ::testing::ValuesIn(devices),
+                         DeviceNamePrint());
 RUN_SUITE(Gerqf);
 #endif

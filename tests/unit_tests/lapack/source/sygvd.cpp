@@ -37,14 +37,15 @@ const char* accuracy_input = R"(
 )";
 
 template <typename mem_T>
-bool accuracy(const sycl::device &dev, int64_t itype, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, int64_t n, int64_t lda, int64_t ldb, uint64_t seed) {
+bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,
+              int64_t n, int64_t lda, int64_t ldb, uint64_t seed) {
     using fp = typename mem_T_info<mem_T>::value_type;
     using fp_real = typename complex_info<fp>::real_type;
 
     /* Initialize */
-    std::vector<fp> A(lda*n);
+    std::vector<fp> A(lda * n);
     rand_hermitian_matrix(seed, uplo, n, A, lda);
-    std::vector<fp> B(ldb*n);
+    std::vector<fp> B(ldb * n);
     rand_pos_def_matrix(seed, uplo, n, B, ldb);
 
     std::vector<fp> A_initial = A;
@@ -53,15 +54,17 @@ bool accuracy(const sycl::device &dev, int64_t itype, oneapi::mkl::job jobz, one
 
     /* Compute on device */
     {
-        sycl::queue queue{dev};
+        sycl::queue queue{ dev };
         auto A_dev = device_alloc<mem_T>(queue, A.size());
         auto B_dev = device_alloc<mem_T>(queue, B.size());
         auto w_dev = device_alloc<mem_T, fp_real>(queue, w.size());
 #ifdef CALL_RT_API
-        const auto scratchpad_size = oneapi::mkl::lapack::sygvd_scratchpad_size<fp>(queue, itype, jobz, uplo, n, lda, ldb);
+        const auto scratchpad_size =
+            oneapi::mkl::lapack::sygvd_scratchpad_size<fp>(queue, itype, jobz, uplo, n, lda, ldb);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::sygvd_scratchpad_size<fp>, itype, jobz, uplo, n, lda, ldb);
+        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::sygvd_scratchpad_size<fp>,
+                           itype, jobz, uplo, n, lda, ldb);
 #endif
         auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
 
@@ -70,9 +73,11 @@ bool accuracy(const sycl::device &dev, int64_t itype, oneapi::mkl::job jobz, one
         queue.wait_and_throw();
 
 #ifdef CALL_RT_API
-        oneapi::mkl::lapack::sygvd(queue, itype, jobz, uplo, n, A_dev, lda, B_dev, ldb, w_dev, scratchpad_dev, scratchpad_size);
+        oneapi::mkl::lapack::sygvd(queue, itype, jobz, uplo, n, A_dev, lda, B_dev, ldb, w_dev,
+                                   scratchpad_dev, scratchpad_size);
 #else
-        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::sygvd, itype, jobz, uplo, n, A_dev, lda, B_dev, ldb, w_dev, scratchpad_dev, scratchpad_size);
+        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::sygvd, itype, jobz, uplo, n, A_dev, lda,
+                           B_dev, ldb, w_dev, scratchpad_dev, scratchpad_size);
 #endif
         queue.wait_and_throw();
 
@@ -96,8 +101,10 @@ bool accuracy(const sycl::device &dev, int64_t itype, oneapi::mkl::job jobz, one
 
     /* |D_ref - D| < |D_ref| O(eps) */
     std::vector<fp_real> D_ref(n);
-    auto info = reference::sygvd(itype, oneapi::mkl::job::novec, uplo, n, std::vector<fp>(A_initial).data(), lda, std::vector<fp>(B_initial).data(), ldb, D_ref.data());
-    if( 0 != info) {
+    auto info =
+        reference::sygvd(itype, oneapi::mkl::job::novec, uplo, n, std::vector<fp>(A_initial).data(),
+                         lda, std::vector<fp>(B_initial).data(), ldb, D_ref.data());
+    if (0 != info) {
         global::log << "\treference sygvd failed with info = " << info << std::endl;
         return false;
     }
@@ -107,21 +114,23 @@ bool accuracy(const sycl::device &dev, int64_t itype, oneapi::mkl::job jobz, one
     }
 
     if (oneapi::mkl::job::vec == jobz) {
-        if (itype == 1 ) {
+        if (itype == 1) {
             /* |A Z - B Z D| < |A Z| O(eps) */
-            std::vector<fp> AZ(n*n);
+            std::vector<fp> AZ(n * n);
             int64_t ldaz = n;
-            reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, n, n, n, 1.0, A_initial.data(), lda, Z.data(), ldz, 0.0, AZ.data(), ldaz);
+            reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, n,
+                            n, n, 1.0, A_initial.data(), lda, Z.data(), ldz, 0.0, AZ.data(), ldaz);
 
-            std::vector<fp> BZ(n*n);
+            std::vector<fp> BZ(n * n);
             int64_t ldbz = n;
-            reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, n, n, n, 1.0, B_initial.data(), ldb, Z.data(), ldz, 0.0, BZ.data(), ldbz);
+            reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, n,
+                            n, n, 1.0, B_initial.data(), ldb, Z.data(), ldz, 0.0, BZ.data(), ldbz);
 
-            std::vector<fp> BZD(n*n);
+            std::vector<fp> BZD(n * n);
             int64_t ldbzd = n;
             for (int64_t col = 0; col < n; col++)
                 for (int64_t row = 0; row < n; row++)
-                    BZD[row + col*ldbzd] = BZ[row + col*ldbz]*D[col];
+                    BZD[row + col * ldbzd] = BZ[row + col * ldbz] * D[col];
 
             if (!rel_mat_err_check(n, n, AZ.data(), ldaz, BZD.data(), ldbzd)) {
                 global::log << "\tFactorization check failed" << std::endl;
@@ -129,28 +138,33 @@ bool accuracy(const sycl::device &dev, int64_t itype, oneapi::mkl::job jobz, one
             }
 
             /* |I - Z' B Z| < n O(eps) */
-            std::vector<fp> ZBZ(n*n);
+            std::vector<fp> ZBZ(n * n);
             int64_t ldzbz = n;
-            reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n, n, n, 1.0, Z.data(), ldz, BZ.data(), ldbz, 0.0, ZBZ.data(), ldzbz);
+            reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n,
+                            n, n, 1.0, Z.data(), ldz, BZ.data(), ldbz, 0.0, ZBZ.data(), ldzbz);
             if (!rel_id_err_check(n, ZBZ.data(), ldzbz)) {
                 global::log << "\tOrthogonality check failed" << std::endl;
                 result = false;
             }
-        } else if (itype == 2) {
+        }
+        else if (itype == 2) {
             /* |A B Z - Z D| < |A B Z| O(eps) */
-            std::vector<fp> BZ(n*n);
+            std::vector<fp> BZ(n * n);
             int64_t ldbz = n;
-            reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, n, n, n, 1.0, B_initial.data(), ldb, Z.data(), ldz, 0.0, BZ.data(), ldbz);
+            reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, n,
+                            n, n, 1.0, B_initial.data(), ldb, Z.data(), ldz, 0.0, BZ.data(), ldbz);
 
-            std::vector<fp> ABZ(n*n);
+            std::vector<fp> ABZ(n * n);
             int64_t ldabz = n;
-            reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, n, n, n, 1.0, A_initial.data(), lda, BZ.data(), ldbz, 0.0, ABZ.data(), ldabz);
+            reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, n,
+                            n, n, 1.0, A_initial.data(), lda, BZ.data(), ldbz, 0.0, ABZ.data(),
+                            ldabz);
 
-            std::vector<fp> ZD(n*n);
+            std::vector<fp> ZD(n * n);
             int64_t ldzd = n;
             for (int64_t col = 0; col < n; col++)
                 for (int64_t row = 0; row < n; row++)
-                    ZD[row + col*ldzd] = Z[row + col*ldz]*D[col];
+                    ZD[row + col * ldzd] = Z[row + col * ldz] * D[col];
 
             if (!rel_mat_err_check(n, n, ABZ.data(), ldabz, ZD.data(), ldbz)) {
                 global::log << "\tFactorization check failed" << std::endl;
@@ -158,35 +172,37 @@ bool accuracy(const sycl::device &dev, int64_t itype, oneapi::mkl::job jobz, one
             }
 
             /* |I - Z' B Z| < n O(eps) */
-            std::vector<fp> ZBZ(n*n);
+            std::vector<fp> ZBZ(n * n);
             int64_t ldzbz = n;
-            reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n, n, n, 1.0, Z.data(), ldz, BZ.data(), ldbz, 0.0, ZBZ.data(), ldzbz);
+            reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n,
+                            n, n, 1.0, Z.data(), ldz, BZ.data(), ldbz, 0.0, ZBZ.data(), ldzbz);
             if (!rel_id_err_check(n, ZBZ.data(), ldzbz)) {
                 global::log << "\tOrthogonality check failed" << std::endl;
                 result = false;
             }
-
-        } else {
+        }
+        else {
             /* |A Z - B^-1 Z D| < |A Z| O(eps) */
             /* C = B^-1 Z */
-            std::vector<fp> AZ(n*n);
+            std::vector<fp> AZ(n * n);
             int64_t ldaz = n;
-            reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, n, n, n, 1.0, A_initial.data(), lda, Z.data(), ldz, 0.0, AZ.data(), ldaz);
+            reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, n,
+                            n, n, 1.0, A_initial.data(), lda, Z.data(), ldz, 0.0, AZ.data(), ldaz);
 
-            std::vector<fp> C(n*n);
+            std::vector<fp> C(n * n);
             int64_t ldc = n;
             reference::lacpy('A', n, n, Z.data(), ldz, C.data(), ldc);
             auto info = reference::potrs(uplo, n, n, B.data(), ldb, C.data(), ldc);
-            if( 0 != info) {
+            if (0 != info) {
                 global::log << "\treference potrs failed with info = " << info << std::endl;
                 return false;
             }
 
-            std::vector<fp> CD(n*n);
+            std::vector<fp> CD(n * n);
             int64_t ldcd = n;
             for (int64_t col = 0; col < n; col++)
                 for (int64_t row = 0; row < n; row++)
-                    CD[row + col*ldcd] = C[row + col*ldc]*D[col];
+                    CD[row + col * ldcd] = C[row + col * ldc] * D[col];
 
             if (!rel_mat_err_check(n, n, AZ.data(), ldaz, CD.data(), ldcd)) {
                 global::log << "\tFactorization check failed" << std::endl;
@@ -194,9 +210,10 @@ bool accuracy(const sycl::device &dev, int64_t itype, oneapi::mkl::job jobz, one
             }
 
             /* |I - Z' B^-1 Z| = |I - Z' C| < n O(eps) */
-            std::vector<fp> ZhC(n*n);
+            std::vector<fp> ZhC(n * n);
             int64_t ldzhc = n;
-            reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n, n, n, 1.0, Z.data(), ldz, C.data(), ldc, 0.0, ZhC.data(), ldzhc);
+            reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n,
+                            n, n, 1.0, Z.data(), ldz, C.data(), ldc, 0.0, ZhC.data(), ldzhc);
             if (!rel_id_err_check(n, ZhC.data(), ldzhc)) {
                 global::log << "\tOrthogonality check failed" << std::endl;
                 result = false;
@@ -211,14 +228,15 @@ const char* dependency_input = R"(
 )";
 
 template <typename mem_T>
-bool usm_dependency(const sycl::device &dev, int64_t itype, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, int64_t n, int64_t lda, int64_t ldb, uint64_t seed) {
+bool usm_dependency(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz,
+                    oneapi::mkl::uplo uplo, int64_t n, int64_t lda, int64_t ldb, uint64_t seed) {
     using fp = typename mem_T_info<mem_T>::value_type;
     using fp_real = typename complex_info<fp>::real_type;
 
     /* Initialize */
-    std::vector<fp> A(lda*n);
+    std::vector<fp> A(lda * n);
     rand_hermitian_matrix(seed, uplo, n, A, lda);
-    std::vector<fp> B(ldb*n);
+    std::vector<fp> B(ldb * n);
     rand_pos_def_matrix(seed, uplo, n, B, ldb);
 
     std::vector<fp> A_initial = A;
@@ -228,15 +246,17 @@ bool usm_dependency(const sycl::device &dev, int64_t itype, oneapi::mkl::job job
     /* Compute on device */
     bool result;
     {
-        sycl::queue queue{dev};
+        sycl::queue queue{ dev };
         auto A_dev = device_alloc<mem_T>(queue, A.size());
         auto B_dev = device_alloc<mem_T>(queue, B.size());
         auto w_dev = device_alloc<mem_T, fp_real>(queue, w.size());
 #ifdef CALL_RT_API
-        const auto scratchpad_size = oneapi::mkl::lapack::sygvd_scratchpad_size<fp>(queue, itype, jobz, uplo, n, lda, ldb);
+        const auto scratchpad_size =
+            oneapi::mkl::lapack::sygvd_scratchpad_size<fp>(queue, itype, jobz, uplo, n, lda, ldb);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::sygvd_scratchpad_size<fp>, itype, jobz, uplo, n, lda, ldb);
+        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::sygvd_scratchpad_size<fp>,
+                           itype, jobz, uplo, n, lda, ldb);
 #endif
         auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
 
@@ -247,10 +267,14 @@ bool usm_dependency(const sycl::device &dev, int64_t itype, oneapi::mkl::job job
         /* Check dependency handling */
         auto in_event = create_dependent_event(queue);
 #ifdef CALL_RT_API
-        sycl::event func_event = oneapi::mkl::lapack::sygvd(queue, itype, jobz, uplo, n, A_dev, lda, B_dev, ldb, w_dev, scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+        sycl::event func_event = oneapi::mkl::lapack::sygvd(
+            queue, itype, jobz, uplo, n, A_dev, lda, B_dev, ldb, w_dev, scratchpad_dev,
+            scratchpad_size, sycl::vector_class<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::sygvd, itype, jobz, uplo, n, A_dev, lda, B_dev, ldb, w_dev, scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::sygvd, itype, jobz,
+                           uplo, n, A_dev, lda, B_dev, ldb, w_dev, scratchpad_dev, scratchpad_size,
+                           sycl::vector_class<sycl::event>{ in_event });
 #endif
         result = check_dependency(in_event, func_event);
 
@@ -264,14 +288,14 @@ bool usm_dependency(const sycl::device &dev, int64_t itype, oneapi::mkl::job job
     return result;
 }
 
-InputTestController<decltype(::accuracy<void>)> accuracy_controller{accuracy_input};
-InputTestController<decltype(::usm_dependency<void>)> dependency_controller{dependency_input};
+InputTestController<decltype(::accuracy<void>)> accuracy_controller{ accuracy_input };
+InputTestController<decltype(::usm_dependency<void>)> dependency_controller{ dependency_input };
 
 } /* unnamed namespace */
 
 #ifdef STANDALONE
 int main() {
-    sycl::device dev = sycl::device { sycl::host_selector{} };
+    sycl::device dev = sycl::device{ sycl::host_selector{} };
     int64_t res = 0;
     res += !accuracy_controller.run(::accuracy<RealSinglePrecisionUsm>, dev);
     res += !accuracy_controller.run(::accuracy<RealDoublePrecisionUsm>, dev);
@@ -285,6 +309,7 @@ int main() {
 #include <gtest/gtest.h>
 extern std::vector<sycl::device*> devices;
 class SygvdTests : public ::testing::TestWithParam<sycl::device*> {};
-INSTANTIATE_TEST_SUITE_P(SygvdTestSuite, SygvdTests, ::testing::ValuesIn(devices), DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(SygvdTestSuite, SygvdTests, ::testing::ValuesIn(devices),
+                         DeviceNamePrint());
 RUN_SUITE_REAL(Sygvd)
 #endif

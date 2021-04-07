@@ -35,12 +35,13 @@ const char* accuracy_input = R"(
 )";
 
 template <typename mem_T>
-bool accuracy(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t n, int64_t lda, uint64_t seed) {
+bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_t lda,
+              uint64_t seed) {
     using fp = typename mem_T_info<mem_T>::value_type;
     using fp_real = typename complex_info<fp>::real_type;
 
     /* Initialize */
-    std::vector<fp> A(lda*n);
+    std::vector<fp> A(lda * n);
     std::vector<int64_t> ipiv(n);
     rand_symmetric_matrix(seed, uplo, n, A, lda);
 
@@ -48,15 +49,17 @@ bool accuracy(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t n, int64_
 
     /* Compute on device */
     {
-        sycl::queue queue{dev};
+        sycl::queue queue{ dev };
 
-        auto A_dev    = device_alloc<mem_T>(queue, A.size());
-        auto ipiv_dev = device_alloc<mem_T,int64_t>(queue, ipiv.size());
+        auto A_dev = device_alloc<mem_T>(queue, A.size());
+        auto ipiv_dev = device_alloc<mem_T, int64_t>(queue, ipiv.size());
 #ifdef CALL_RT_API
-        const auto scratchpad_size = oneapi::mkl::lapack::sytrf_scratchpad_size<fp>(queue, uplo, n, lda);
+        const auto scratchpad_size =
+            oneapi::mkl::lapack::sytrf_scratchpad_size<fp>(queue, uplo, n, lda);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::sytrf_scratchpad_size<fp>, uplo, n, lda);
+        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::sytrf_scratchpad_size<fp>,
+                           uplo, n, lda);
 #endif
         auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
 
@@ -65,9 +68,11 @@ bool accuracy(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t n, int64_
         queue.wait_and_throw();
 
 #ifdef CALL_RT_API
-        oneapi::mkl::lapack::sytrf(queue, uplo, n, A_dev, lda, ipiv_dev, scratchpad_dev, scratchpad_size);
+        oneapi::mkl::lapack::sytrf(queue, uplo, n, A_dev, lda, ipiv_dev, scratchpad_dev,
+                                   scratchpad_size);
 #else
-        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::sytrf, uplo, n, A_dev, lda, ipiv_dev, scratchpad_dev, scratchpad_size);
+        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::sytrf, uplo, n, A_dev, lda, ipiv_dev,
+                           scratchpad_dev, scratchpad_size);
 #endif
         queue.wait_and_throw();
 
@@ -80,103 +85,116 @@ bool accuracy(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t n, int64_
         device_free(queue, scratchpad_dev);
     }
 
-    std::vector<fp> U(n*n);
-    std::vector<fp> Uk(n*n);
+    std::vector<fp> U(n * n);
+    std::vector<fp> Uk(n * n);
     int64_t ldu = n;
-    std::vector<fp> D(n*n);
+    std::vector<fp> D(n * n);
     int64_t ldd = n;
     symmetric_to_full(uplo, n, A_initial, lda);
     bool result = true;
 
     for (int64_t d = 0; d < n; d++)
-        U[d + d*ldu] = 1.0;
+        U[d + d * ldu] = 1.0;
 
     if (uplo == oneapi::mkl::uplo::upper) {
-
-        int64_t k = n-1;
+        int64_t k = n - 1;
         while (k >= 0) {
             reference::laset('A', n, n, 0.0, 1.0, Uk.data(), ldu);
-            if (ipiv[k] > 0){ /* 1x1 block case */
+            if (ipiv[k] > 0) { /* 1x1 block case */
 
-                auto piv = ipiv[k]-1;
-                for(int64_t i = 0; i < k; i++)
-                    Uk[i + k*ldu] = A[i + k*lda];
+                auto piv = ipiv[k] - 1;
+                for (int64_t i = 0; i < k; i++)
+                    Uk[i + k * ldu] = A[i + k * lda];
                 if (piv != k)
-                    reference::swap(n, Uk.data()+(k + 0*ldu), ldu, Uk.data()+(piv + 0*ldu), ldu);
+                    reference::swap(n, Uk.data() + (k + 0 * ldu), ldu, Uk.data() + (piv + 0 * ldu),
+                                    ldu);
                 auto U_temp = U;
-                reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, n, n, n, 1.0, U_temp.data(), ldu, Uk.data(), ldu, 0.0, U.data(), ldu);
+                reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans,
+                                n, n, n, 1.0, U_temp.data(), ldu, Uk.data(), ldu, 0.0, U.data(),
+                                ldu);
 
-                D[k + k*ldd] = A[k + k*lda];
+                D[k + k * ldd] = A[k + k * lda];
                 k -= 1;
+            }
+            else { /* 2x2 block case */
 
-            } else { /* 2x2 block case */
-
-                auto piv = -ipiv[k]-1;
-                for(int64_t i = 0; i < k-1; i++) {
-                    Uk[i + k*ldu] = A[i + k*lda];
-                    Uk[i + (k-1)*ldu] = A[i + (k-1)*lda];
+                auto piv = -ipiv[k] - 1;
+                for (int64_t i = 0; i < k - 1; i++) {
+                    Uk[i + k * ldu] = A[i + k * lda];
+                    Uk[i + (k - 1) * ldu] = A[i + (k - 1) * lda];
                 }
-                if (piv != k-1)
-                    reference::swap(n, Uk.data()+(k-1 + 0*ldu), ldu, Uk.data()+(piv + 0*ldu), ldu);
+                if (piv != k - 1)
+                    reference::swap(n, Uk.data() + (k - 1 + 0 * ldu), ldu,
+                                    Uk.data() + (piv + 0 * ldu), ldu);
                 auto U_temp = U;
-                reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, n, n, n, 1.0, U_temp.data(), ldu, Uk.data(), ldu, 0.0, U.data(), ldu);
+                reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans,
+                                n, n, n, 1.0, U_temp.data(), ldu, Uk.data(), ldu, 0.0, U.data(),
+                                ldu);
 
-                D[k   +     k*ldd] = A[k   +     k*lda];
-                D[k-1 + (k-1)*ldd] = A[k-1 + (k-1)*lda];
-                D[k-1 +     k*ldd] = A[k-1 +     k*lda];
-                D[k   + (k-1)*ldd] = A[k-1 + k*lda];
+                D[k + k * ldd] = A[k + k * lda];
+                D[k - 1 + (k - 1) * ldd] = A[k - 1 + (k - 1) * lda];
+                D[k - 1 + k * ldd] = A[k - 1 + k * lda];
+                D[k + (k - 1) * ldd] = A[k - 1 + k * lda];
                 k -= 2;
             }
         }
-    } else {
+    }
+    else {
         int64_t k = 0;
         while (k < n) {
             reference::laset('A', n, n, 0.0, 1.0, Uk.data(), ldu);
-            if (ipiv[k] > 0){ /* 1x1 block case */
+            if (ipiv[k] > 0) { /* 1x1 block case */
 
-                auto piv = ipiv[k]-1;
-                for(int64_t i = k+1; i < n; i++)
-                    Uk[i + k*ldu] = A[i + k*lda];
+                auto piv = ipiv[k] - 1;
+                for (int64_t i = k + 1; i < n; i++)
+                    Uk[i + k * ldu] = A[i + k * lda];
                 if (piv != k)
-                    reference::swap(n, Uk.data()+(k + 0*lda), ldu, Uk.data()+(piv + 0*ldu), ldu);
+                    reference::swap(n, Uk.data() + (k + 0 * lda), ldu, Uk.data() + (piv + 0 * ldu),
+                                    ldu);
                 auto U_temp = U;
-                reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, n, n, n, 1.0, U_temp.data(), ldu, Uk.data(), ldu, 0.0, U.data(), ldu);
+                reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans,
+                                n, n, n, 1.0, U_temp.data(), ldu, Uk.data(), ldu, 0.0, U.data(),
+                                ldu);
 
                 D[k + (k)*ldd] = A[k + (k)*lda];
                 k += 1;
+            }
+            else { /* 2x2 block case */
 
-            } else { /* 2x2 block case */
-
-                auto piv = -ipiv[k]-1;
-                for(int64_t i = k+2; i < n; i++) {
-                    Uk[i + k*ldu] = A[i + k*lda];
-                    Uk[i + (k+1)*ldu] = A[i + (k+1)*lda];
+                auto piv = -ipiv[k] - 1;
+                for (int64_t i = k + 2; i < n; i++) {
+                    Uk[i + k * ldu] = A[i + k * lda];
+                    Uk[i + (k + 1) * ldu] = A[i + (k + 1) * lda];
                 }
                 if (piv != k)
-                    reference::swap(n, Uk.data()+(k+1 + 0*ldu), ldu, Uk.data()+(piv + 0*ldu), ldu);
+                    reference::swap(n, Uk.data() + (k + 1 + 0 * ldu), ldu,
+                                    Uk.data() + (piv + 0 * ldu), ldu);
                 auto U_temp = U;
-                reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, n, n, n, 1.0, U_temp.data(), ldu, Uk.data(), ldu, 0.0, U.data(), ldu);
+                reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans,
+                                n, n, n, 1.0, U_temp.data(), ldu, Uk.data(), ldu, 0.0, U.data(),
+                                ldu);
 
-                D[k   +     k*ldd] = A[k   +     k*lda];
-                D[k+1 + (k+1)*ldd] = A[k+1 + (k+1)*lda];
-                D[k+1 +     k*ldd] = A[k+1 +     k*lda];
-                D[k   + (k+1)*ldd] = A[k+1 + k*lda];
+                D[k + k * ldd] = A[k + k * lda];
+                D[k + 1 + (k + 1) * ldd] = A[k + 1 + (k + 1) * lda];
+                D[k + 1 + k * ldd] = A[k + 1 + k * lda];
+                D[k + (k + 1) * ldd] = A[k + 1 + k * lda];
                 k += 2;
             }
         }
     }
 
-
     /* |A - UDU'| < |A| O(eps) */
-    std::vector<fp> UD(n*n);
+    std::vector<fp> UD(n * n);
     int64_t ldud = n;
-    reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, n, n, n, 1.0, U.data(), ldu, D.data(), ldd, 0.0, UD.data(), ldud);
+    reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, n, n, n,
+                    1.0, U.data(), ldu, D.data(), ldd, 0.0, UD.data(), ldud);
 
-    std::vector<fp> UDU(n*n);
+    std::vector<fp> UDU(n * n);
     int64_t ldudu = n;
-    reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::trans, n, n, n, 1.0, UD.data(), ldud, U.data(), ldu, 0.0, UDU.data(), ldudu);
+    reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::trans, n, n, n, 1.0,
+                    UD.data(), ldud, U.data(), ldu, 0.0, UDU.data(), ldudu);
 
-    if(!rel_mat_err_check(n, n, UDU.data(), ldudu, A_initial.data(), lda)) {
+    if (!rel_mat_err_check(n, n, UDU.data(), ldudu, A_initial.data(), lda)) {
         global::log << "\tFactorization check failed" << std::endl;
         result = false;
     }
@@ -189,12 +207,13 @@ const char* dependency_input = R"(
 )";
 
 template <typename mem_T>
-bool usm_dependency(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t n, int64_t lda, uint64_t seed) {
+bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_t lda,
+                    uint64_t seed) {
     using fp = typename mem_T_info<mem_T>::value_type;
     using fp_real = typename complex_info<fp>::real_type;
 
     /* Initialize */
-    std::vector<fp> A(lda*n);
+    std::vector<fp> A(lda * n);
     std::vector<int64_t> ipiv(n);
     rand_symmetric_matrix(seed, uplo, n, A, lda);
 
@@ -203,15 +222,17 @@ bool usm_dependency(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t n, 
     /* Compute on device */
     bool result;
     {
-        sycl::queue queue{dev};
+        sycl::queue queue{ dev };
 
-        auto A_dev    = device_alloc<mem_T>(queue, A.size());
-        auto ipiv_dev = device_alloc<mem_T,int64_t>(queue, ipiv.size());
+        auto A_dev = device_alloc<mem_T>(queue, A.size());
+        auto ipiv_dev = device_alloc<mem_T, int64_t>(queue, ipiv.size());
 #ifdef CALL_RT_API
-        const auto scratchpad_size = oneapi::mkl::lapack::sytrf_scratchpad_size<fp>(queue, uplo, n, lda);
+        const auto scratchpad_size =
+            oneapi::mkl::lapack::sytrf_scratchpad_size<fp>(queue, uplo, n, lda);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::sytrf_scratchpad_size<fp>, uplo, n, lda);
+        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::sytrf_scratchpad_size<fp>,
+                           uplo, n, lda);
 #endif
         auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
 
@@ -222,10 +243,14 @@ bool usm_dependency(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t n, 
         /* Check dependency handling */
         auto in_event = create_dependent_event(queue);
 #ifdef CALL_RT_API
-        sycl::event func_event = oneapi::mkl::lapack::sytrf(queue, uplo, n, A_dev, lda, ipiv_dev, scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+        sycl::event func_event = oneapi::mkl::lapack::sytrf(
+            queue, uplo, n, A_dev, lda, ipiv_dev, scratchpad_dev, scratchpad_size,
+            sycl::vector_class<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::sytrf, uplo, n, A_dev, lda, ipiv_dev, scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::sytrf, uplo, n,
+                           A_dev, lda, ipiv_dev, scratchpad_dev, scratchpad_size,
+                           sycl::vector_class<sycl::event>{ in_event });
 #endif
         result = check_dependency(in_event, func_event);
 
@@ -238,14 +263,14 @@ bool usm_dependency(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t n, 
     return result;
 }
 
-InputTestController<decltype(::accuracy<void>)> accuracy_controller{accuracy_input};
-InputTestController<decltype(::usm_dependency<void>)> dependency_controller{dependency_input};
+InputTestController<decltype(::accuracy<void>)> accuracy_controller{ accuracy_input };
+InputTestController<decltype(::usm_dependency<void>)> dependency_controller{ dependency_input };
 
 } /* unnamed namespace */
 
 #ifdef STANDALONE
 int main() {
-    sycl::device dev = sycl::device { sycl::host_selector{} };
+    sycl::device dev = sycl::device{ sycl::host_selector{} };
     int64_t res = 0;
     res += !accuracy_controller.run(::accuracy<RealSinglePrecisionUsm>, dev);
     res += !accuracy_controller.run(::accuracy<RealDoublePrecisionUsm>, dev);
@@ -265,6 +290,7 @@ int main() {
 #include <gtest/gtest.h>
 extern std::vector<sycl::device*> devices;
 class SytrfTests : public ::testing::TestWithParam<sycl::device*> {};
-INSTANTIATE_TEST_SUITE_P(SytrfTestSuite, SytrfTests, ::testing::ValuesIn(devices), DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(SytrfTestSuite, SytrfTests, ::testing::ValuesIn(devices),
+                         DeviceNamePrint());
 RUN_SUITE(Sytrf)
 #endif

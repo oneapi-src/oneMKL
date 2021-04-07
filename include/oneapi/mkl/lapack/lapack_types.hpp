@@ -29,30 +29,63 @@ namespace mkl {
 namespace lapack {
 namespace internal {
 
-    // auxilary type aliases and forward declarations
-    template <bool, typename T=void> struct enable_if;
-    template <typename T> struct is_fp;
-    template <typename T> struct is_rfp;
-    template <typename T> struct is_cfp;
+// auxilary type aliases and forward declarations
+template <bool, typename T = void>
+struct enable_if;
+template <typename T>
+struct is_fp;
+template <typename T>
+struct is_rfp;
+template <typename T>
+struct is_cfp;
 
-    // auxilary typechecking templates
-    template<typename T>
-    struct enable_if<true,T> { using type = T; };
+// auxilary typechecking templates
+template <typename T>
+struct enable_if<true, T> {
+    using type = T;
+};
 
-    template<> struct is_fp<float>                { static constexpr bool value{true}; };
-    template<> struct is_fp<double>               { static constexpr bool value{true}; };
-    template<> struct is_fp<std::complex<float>>  { static constexpr bool value{true}; };
-    template<> struct is_fp<std::complex<double>> { static constexpr bool value{true}; };
+template <>
+struct is_fp<float> {
+    static constexpr bool value{ true };
+};
+template <>
+struct is_fp<double> {
+    static constexpr bool value{ true };
+};
+template <>
+struct is_fp<std::complex<float>> {
+    static constexpr bool value{ true };
+};
+template <>
+struct is_fp<std::complex<double>> {
+    static constexpr bool value{ true };
+};
 
-    template<> struct is_rfp<float>  { static constexpr bool value{true}; };
-    template<> struct is_rfp<double> { static constexpr bool value{true}; };
+template <>
+struct is_rfp<float> {
+    static constexpr bool value{ true };
+};
+template <>
+struct is_rfp<double> {
+    static constexpr bool value{ true };
+};
 
-    template<> struct is_cfp<std::complex<float>>  { static constexpr bool value{true}; };
-    template<> struct is_cfp<std::complex<double>> { static constexpr bool value{true}; };
+template <>
+struct is_cfp<std::complex<float>> {
+    static constexpr bool value{ true };
+};
+template <>
+struct is_cfp<std::complex<double>> {
+    static constexpr bool value{ true };
+};
 
-    template <typename fp> using is_floating_point         = typename enable_if<is_fp<fp>::value>::type*;
-    template <typename fp> using is_real_floating_point    = typename enable_if<is_rfp<fp>::value>::type*;
-    template <typename fp> using is_complex_floating_point = typename enable_if<is_cfp<fp>::value>::type*;
+template <typename fp>
+using is_floating_point = typename enable_if<is_fp<fp>::value>::type*;
+template <typename fp>
+using is_real_floating_point = typename enable_if<is_rfp<fp>::value>::type*;
+template <typename fp>
+using is_complex_floating_point = typename enable_if<is_cfp<fp>::value>::type*;
 
 } // namespace internal
 } // namespace lapack

@@ -36,7 +36,6 @@ enum class offset : char { row = 0, column = 1, fix = 2, R = 0, C = 1, F = 2 };
 
 enum class layout : char { column_major = 0, row_major = 1, C = 0, R = 1 };
 
-
 enum class index_base : char {
     zero = 0,
     one = 1,
@@ -67,16 +66,7 @@ enum class jobsvd : char {
     O = 2,
     S = 3
 };
-enum class generate : char {
-    q = 0,
-    p = 1,
-    none = 2,
-    both = 3,
-    Q = 0,
-    P = 1,
-    N = 2,
-    V = 3
-};
+enum class generate : char { q = 0, p = 1, none = 2, both = 3, Q = 0, P = 1, N = 2, V = 3 };
 enum class compz : char {
     novectors = 0,
     vectors = 1,

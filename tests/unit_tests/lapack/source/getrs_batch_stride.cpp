@@ -35,40 +35,47 @@ const char* accuracy_input = R"(
 )";
 
 template <typename mem_T>
-bool accuracy(const sycl::device &dev, oneapi::mkl::transpose trans, int64_t n, int64_t nrhs, int64_t lda, int64_t stride_a, int64_t stride_ipiv, int64_t ldb, int64_t stride_b, int64_t batch_size, uint64_t seed) {
+bool accuracy(const sycl::device& dev, oneapi::mkl::transpose trans, int64_t n, int64_t nrhs,
+              int64_t lda, int64_t stride_a, int64_t stride_ipiv, int64_t ldb, int64_t stride_b,
+              int64_t batch_size, uint64_t seed) {
     using fp = typename mem_T_info<mem_T>::value_type;
 
-    std::vector<fp> A_initial(stride_a*batch_size);
-    std::vector<fp> B_initial(stride_b*batch_size);
-    std::vector<int64_t> ipiv(stride_ipiv*batch_size);
+    std::vector<fp> A_initial(stride_a * batch_size);
+    std::vector<fp> B_initial(stride_b * batch_size);
+    std::vector<int64_t> ipiv(stride_ipiv * batch_size);
     for (int64_t i = 0; i < batch_size; i++) {
-        rand_matrix(seed, oneapi::mkl::transpose::nontrans, n, n, A_initial, lda, i*stride_a);
-        rand_matrix(seed, oneapi::mkl::transpose::nontrans, nrhs, n, B_initial, ldb, i*stride_b);
+        rand_matrix(seed, oneapi::mkl::transpose::nontrans, n, n, A_initial, lda, i * stride_a);
+        rand_matrix(seed, oneapi::mkl::transpose::nontrans, nrhs, n, B_initial, ldb, i * stride_b);
     }
 
     std::vector<fp> A = A_initial;
     std::vector<fp> B = B_initial;
 
     for (int64_t i = 0; i < batch_size; i++) {
-        auto info = reference::getrf(n, n, A.data()+i*stride_a, lda, ipiv.data()+i*stride_ipiv);
-        if( 0 != info) {
-            global::log << "\tbatch routine index " << i << ": reference getrf failed with info: " << info << std::endl;
+        auto info =
+            reference::getrf(n, n, A.data() + i * stride_a, lda, ipiv.data() + i * stride_ipiv);
+        if (0 != info) {
+            global::log << "\tbatch routine index " << i
+                        << ": reference getrf failed with info: " << info << std::endl;
             return false;
         }
     }
 
     /* Compute on device */
     {
-        sycl::queue queue{dev};
+        sycl::queue queue{ dev };
 
         auto A_dev = device_alloc<mem_T>(queue, A.size());
         auto B_dev = device_alloc<mem_T>(queue, B.size());
         auto ipiv_dev = device_alloc<mem_T, int64_t>(queue, ipiv.size());
 #ifdef CALL_RT_API
-        const auto scratchpad_size = oneapi::mkl::lapack::getrs_batch_scratchpad_size<fp>(queue, trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
+        const auto scratchpad_size = oneapi::mkl::lapack::getrs_batch_scratchpad_size<fp>(
+            queue, trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::getrs_batch_scratchpad_size<fp>, trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
+        TEST_RUN_CT_SELECT(queue,
+                           scratchpad_size = oneapi::mkl::lapack::getrs_batch_scratchpad_size<fp>,
+                           trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
 #endif
         auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
 
@@ -78,9 +85,13 @@ bool accuracy(const sycl::device &dev, oneapi::mkl::transpose trans, int64_t n, 
         queue.wait_and_throw();
 
 #ifdef CALL_RT_API
-        oneapi::mkl::lapack::getrs_batch(queue, trans, n, nrhs, A_dev, lda, stride_a, ipiv_dev, stride_ipiv, B_dev, ldb, stride_b, batch_size, scratchpad_dev, scratchpad_size);
+        oneapi::mkl::lapack::getrs_batch(queue, trans, n, nrhs, A_dev, lda, stride_a, ipiv_dev,
+                                         stride_ipiv, B_dev, ldb, stride_b, batch_size,
+                                         scratchpad_dev, scratchpad_size);
 #else
-        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::getrs_batch, trans, n, nrhs, A_dev, lda, stride_a, ipiv_dev, stride_ipiv, B_dev, ldb, stride_b, batch_size, scratchpad_dev, scratchpad_size);
+        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::getrs_batch, trans, n, nrhs, A_dev, lda,
+                           stride_a, ipiv_dev, stride_ipiv, B_dev, ldb, stride_b, batch_size,
+                           scratchpad_dev, scratchpad_size);
 #endif
         queue.wait_and_throw();
 
@@ -95,10 +106,13 @@ bool accuracy(const sycl::device &dev, oneapi::mkl::transpose trans, int64_t n, 
 
     bool result = true;
     for (int64_t i = 0; i < batch_size; i++)
-       if(!check_getrs_accuracy(trans, n, nrhs, A.data()+i*stride_a, lda, ipiv.data()+i*stride_ipiv, B.data()+i*stride_b, ldb, A_initial.data()+i*stride_a, B_initial.data()+i*stride_b) ) {
-           global::log << "\tbatch routine index " << i << " failed" << std::endl;
-           result = false;
-       }
+        if (!check_getrs_accuracy(trans, n, nrhs, A.data() + i * stride_a, lda,
+                                  ipiv.data() + i * stride_ipiv, B.data() + i * stride_b, ldb,
+                                  A_initial.data() + i * stride_a,
+                                  B_initial.data() + i * stride_b)) {
+            global::log << "\tbatch routine index " << i << " failed" << std::endl;
+            result = false;
+        }
 
     return result;
 }
@@ -108,24 +122,28 @@ const char* dependency_input = R"(
 )";
 
 template <typename mem_T>
-bool usm_dependency(const sycl::device &dev, oneapi::mkl::transpose trans, int64_t n, int64_t nrhs, int64_t lda, int64_t stride_a, int64_t stride_ipiv, int64_t ldb, int64_t stride_b, int64_t batch_size, uint64_t seed) {
+bool usm_dependency(const sycl::device& dev, oneapi::mkl::transpose trans, int64_t n, int64_t nrhs,
+                    int64_t lda, int64_t stride_a, int64_t stride_ipiv, int64_t ldb,
+                    int64_t stride_b, int64_t batch_size, uint64_t seed) {
     using fp = typename mem_T_info<mem_T>::value_type;
 
-    std::vector<fp> A_initial(stride_a*batch_size);
-    std::vector<fp> B_initial(stride_b*batch_size);
-    std::vector<int64_t> ipiv(stride_ipiv*batch_size);
-    for (auto i=0; i<batch_size; ++i){
-        rand_matrix(seed, oneapi::mkl::transpose::nontrans, n, n, A_initial, lda, i*stride_a);
-        rand_matrix(seed, oneapi::mkl::transpose::nontrans, nrhs, n, B_initial, ldb, i*stride_b);
+    std::vector<fp> A_initial(stride_a * batch_size);
+    std::vector<fp> B_initial(stride_b * batch_size);
+    std::vector<int64_t> ipiv(stride_ipiv * batch_size);
+    for (auto i = 0; i < batch_size; ++i) {
+        rand_matrix(seed, oneapi::mkl::transpose::nontrans, n, n, A_initial, lda, i * stride_a);
+        rand_matrix(seed, oneapi::mkl::transpose::nontrans, nrhs, n, B_initial, ldb, i * stride_b);
     }
 
     std::vector<fp> A = A_initial;
     std::vector<fp> B = B_initial;
 
     for (int64_t i = 0; i < batch_size; i++) {
-        auto info = reference::getrf(n, n, A.data()+i*stride_a, lda, ipiv.data()+i*stride_ipiv);
-        if( 0 != info) {
-            global::log << "\tbatch routine index " << i << ": reference getrf failed with info: " << info << std::endl;
+        auto info =
+            reference::getrf(n, n, A.data() + i * stride_a, lda, ipiv.data() + i * stride_ipiv);
+        if (0 != info) {
+            global::log << "\tbatch routine index " << i
+                        << ": reference getrf failed with info: " << info << std::endl;
             return false;
         }
     }
@@ -133,16 +151,19 @@ bool usm_dependency(const sycl::device &dev, oneapi::mkl::transpose trans, int64
     /* Compute on device */
     bool result;
     {
-        sycl::queue queue{dev};
+        sycl::queue queue{ dev };
 
         auto A_dev = device_alloc<mem_T>(queue, A.size());
         auto B_dev = device_alloc<mem_T>(queue, B.size());
         auto ipiv_dev = device_alloc<mem_T, int64_t>(queue, ipiv.size());
 #ifdef CALL_RT_API
-        const auto scratchpad_size = oneapi::mkl::lapack::getrs_batch_scratchpad_size<fp>(queue, trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
+        const auto scratchpad_size = oneapi::mkl::lapack::getrs_batch_scratchpad_size<fp>(
+            queue, trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::getrs_batch_scratchpad_size<fp>, trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
+        TEST_RUN_CT_SELECT(queue,
+                           scratchpad_size = oneapi::mkl::lapack::getrs_batch_scratchpad_size<fp>,
+                           trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
 #endif
         auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
 
@@ -154,10 +175,16 @@ bool usm_dependency(const sycl::device &dev, oneapi::mkl::transpose trans, int64
         /* Check dependency handling */
         auto in_event = create_dependent_event(queue);
 #ifdef CALL_RT_API
-        sycl::event func_event = oneapi::mkl::lapack::getrs_batch(queue, trans, n, nrhs, A_dev, lda, stride_a, ipiv_dev, stride_ipiv, B_dev, ldb, stride_b, batch_size, scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+        sycl::event func_event = oneapi::mkl::lapack::getrs_batch(
+            queue, trans, n, nrhs, A_dev, lda, stride_a, ipiv_dev, stride_ipiv, B_dev, ldb,
+            stride_b, batch_size, scratchpad_dev, scratchpad_size,
+            sycl::vector_class<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::getrs_batch, trans, n, nrhs, A_dev, lda, stride_a, ipiv_dev, stride_ipiv, B_dev, ldb, stride_b, batch_size, scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::getrs_batch, trans,
+                           n, nrhs, A_dev, lda, stride_a, ipiv_dev, stride_ipiv, B_dev, ldb,
+                           stride_b, batch_size, scratchpad_dev, scratchpad_size,
+                           sycl::vector_class<sycl::event>{ in_event });
 #endif
         result = check_dependency(in_event, func_event);
 
@@ -171,14 +198,14 @@ bool usm_dependency(const sycl::device &dev, oneapi::mkl::transpose trans, int64
     return result;
 }
 
-InputTestController<decltype(::accuracy<void>)> accuracy_controller{accuracy_input};
-InputTestController<decltype(::usm_dependency<void>)> dependency_controller{dependency_input};
+InputTestController<decltype(::accuracy<void>)> accuracy_controller{ accuracy_input };
+InputTestController<decltype(::usm_dependency<void>)> dependency_controller{ dependency_input };
 
 } /* unnamed namespace */
 
 #ifdef STANDALONE
 int main() {
-    sycl::device dev = sycl::device { sycl::host_selector{} };
+    sycl::device dev = sycl::device{ sycl::host_selector{} };
     int64_t res = 0;
     res += !accuracy_controller.run(::accuracy<RealSinglePrecisionUsm>, dev);
     res += !accuracy_controller.run(::accuracy<RealDoublePrecisionUsm>, dev);
@@ -198,6 +225,7 @@ int main() {
 #include <gtest/gtest.h>
 extern std::vector<sycl::device*> devices;
 class GetrsBatchStrideTests : public ::testing::TestWithParam<sycl::device*> {};
-INSTANTIATE_TEST_SUITE_P(GetrsBatchStrideTestSuite, GetrsBatchStrideTests, ::testing::ValuesIn(devices), DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(GetrsBatchStrideTestSuite, GetrsBatchStrideTests,
+                         ::testing::ValuesIn(devices), DeviceNamePrint());
 RUN_SUITE_REAL(GetrsBatchStride)
 #endif

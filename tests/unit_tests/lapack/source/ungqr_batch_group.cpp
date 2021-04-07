@@ -37,23 +37,23 @@ const char* accuracy_input = R"(
 )";
 
 template <typename fp>
-bool accuracy(const sycl::device &dev, uint64_t seed) {
+bool accuracy(const sycl::device& dev, uint64_t seed) {
     using fp_real = typename complex_info<fp>::real_type;
 
     /* Test Parameters */
-    std::vector<int64_t>           m_vec = {5, 5};
-    std::vector<int64_t>           n_vec = {3, 4};
-    std::vector<int64_t>           k_vec = {2, 4};
-    std::vector<int64_t>         lda_vec = {5, 6};
-    std::vector<int64_t> group_sizes_vec = {2, 2};
+    std::vector<int64_t> m_vec = { 5, 5 };
+    std::vector<int64_t> n_vec = { 3, 4 };
+    std::vector<int64_t> k_vec = { 2, 4 };
+    std::vector<int64_t> lda_vec = { 5, 6 };
+    std::vector<int64_t> group_sizes_vec = { 2, 2 };
 
     int64_t group_count = group_sizes_vec.size();
     int64_t batch_size = std::accumulate(group_sizes_vec.begin(), group_sizes_vec.end(), 0);
 
-    std::list< std::vector<fp> > A_list;
-    std::list< std::vector<fp> > tau_list;
+    std::list<std::vector<fp>> A_list;
+    std::list<std::vector<fp>> tau_list;
 
-    for( int64_t group_id = 0; group_id < group_count; group_id++ ) {
+    for (int64_t group_id = 0; group_id < group_count; group_id++) {
         auto m = m_vec[group_id];
         auto n = n_vec[group_id];
         auto k = k_vec[group_id];
@@ -61,73 +61,84 @@ bool accuracy(const sycl::device &dev, uint64_t seed) {
         auto group_size = group_sizes_vec[group_id];
 
         /* Allocate and Initialize on host */
-        for ( int64_t local_id = 0; local_id < group_size; local_id++ ) {
-            A_list.emplace_back(lda*n);
+        for (int64_t local_id = 0; local_id < group_size; local_id++) {
+            A_list.emplace_back(lda * n);
             auto& A = A_list.back();
             rand_matrix(seed, oneapi::mkl::transpose::nontrans, m, n, A, lda);
 
             tau_list.emplace_back(k);
             auto& tau = tau_list.back();
             auto info = reference::geqrf(m, k, A.data(), lda, tau.data());
-            if( 0 != info ) {
+            if (0 != info) {
                 global::log << "\treference geqrf failed with info = " << info << std::endl;
                 return false;
             }
         }
     }
 
-
     /* Compute on device */
     {
-        sycl::queue queue{dev};
+        sycl::queue queue{ dev };
 
-        std::list< std::vector<fp, sycl::usm_allocator<fp, sycl::usm::alloc::shared> > > A_dev_list;
-        std::list< std::vector<fp, sycl::usm_allocator<fp, sycl::usm::alloc::shared> > > tau_dev_list;
-        std::vector< fp* > A_dev_ptrs(batch_size, nullptr);
-        std::vector< fp* > tau_dev_ptrs(batch_size, nullptr);
+        std::list<std::vector<fp, sycl::usm_allocator<fp, sycl::usm::alloc::shared>>> A_dev_list;
+        std::list<std::vector<fp, sycl::usm_allocator<fp, sycl::usm::alloc::shared>>> tau_dev_list;
+        std::vector<fp*> A_dev_ptrs(batch_size, nullptr);
+        std::vector<fp*> tau_dev_ptrs(batch_size, nullptr);
 
         /* Allocate on device */
-        sycl::usm_allocator<fp, sycl::usm::alloc::shared> usm_fp_allocator{queue.get_context(), dev};
+        sycl::usm_allocator<fp, sycl::usm::alloc::shared> usm_fp_allocator{ queue.get_context(),
+                                                                            dev };
         auto A_iter = A_list.begin();
         auto tau_iter = tau_list.begin();
-        for ( int64_t global_id = 0; global_id < batch_size; global_id++, A_iter++, tau_iter++ ) {
+        for (int64_t global_id = 0; global_id < batch_size; global_id++, A_iter++, tau_iter++) {
             A_dev_list.emplace_back(A_iter->size(), usm_fp_allocator);
             tau_dev_list.emplace_back(tau_iter->size(), usm_fp_allocator);
         }
 
 #ifdef CALL_RT_API
-        const auto scratchpad_size = oneapi::mkl::lapack::ungqr_batch_scratchpad_size<fp>(queue, m_vec.data(), n_vec.data(), k_vec.data(), lda_vec.data(), group_count, group_sizes_vec.data());
+        const auto scratchpad_size = oneapi::mkl::lapack::ungqr_batch_scratchpad_size<fp>(
+            queue, m_vec.data(), n_vec.data(), k_vec.data(), lda_vec.data(), group_count,
+            group_sizes_vec.data());
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::ungqr_batch_scratchpad_size<fp>, m_vec.data(), n_vec.data(), k_vec.data(), lda_vec.data(), group_count, group_sizes_vec.data());
+        TEST_RUN_CT_SELECT(queue,
+                           scratchpad_size = oneapi::mkl::lapack::ungqr_batch_scratchpad_size<fp>,
+                           m_vec.data(), n_vec.data(), k_vec.data(), lda_vec.data(), group_count,
+                           group_sizes_vec.data());
 #endif
         auto scratchpad_dev = device_alloc<fp>(queue, scratchpad_size);
 
         auto A_dev_iter = A_dev_list.begin();
         auto tau_dev_iter = tau_dev_list.begin();
-        for ( int64_t global_id = 0; global_id < batch_size; global_id++, A_dev_iter++, tau_dev_iter++ ) {
+        for (int64_t global_id = 0; global_id < batch_size;
+             global_id++, A_dev_iter++, tau_dev_iter++) {
             A_dev_ptrs[global_id] = A_dev_iter->data();
             tau_dev_ptrs[global_id] = tau_dev_iter->data();
         }
 
         A_iter = A_list.begin();
         tau_iter = tau_list.begin();
-        for ( int64_t global_id = 0; global_id < batch_size; global_id++, A_iter++, tau_iter++ ) {
+        for (int64_t global_id = 0; global_id < batch_size; global_id++, A_iter++, tau_iter++) {
             host_to_device_copy(queue, A_iter->data(), A_dev_ptrs[global_id], A_iter->size());
             host_to_device_copy(queue, tau_iter->data(), tau_dev_ptrs[global_id], tau_iter->size());
         }
         queue.wait_and_throw();
 
 #ifdef CALL_RT_API
-        oneapi::mkl::lapack::ungqr_batch(queue, m_vec.data(), n_vec.data(), k_vec.data(), A_dev_ptrs.data(), lda_vec.data(), tau_dev_ptrs.data(), group_count, group_sizes_vec.data(), scratchpad_dev, scratchpad_size);
+        oneapi::mkl::lapack::ungqr_batch(queue, m_vec.data(), n_vec.data(), k_vec.data(),
+                                         A_dev_ptrs.data(), lda_vec.data(), tau_dev_ptrs.data(),
+                                         group_count, group_sizes_vec.data(), scratchpad_dev,
+                                         scratchpad_size);
 #else
-        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::ungqr_batch, m_vec.data(), n_vec.data(), k_vec.data(), A_dev_ptrs.data(), lda_vec.data(), tau_dev_ptrs.data(), group_count, group_sizes_vec.data(), scratchpad_dev, scratchpad_size);
+        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::ungqr_batch, m_vec.data(), n_vec.data(),
+                           k_vec.data(), A_dev_ptrs.data(), lda_vec.data(), tau_dev_ptrs.data(),
+                           group_count, group_sizes_vec.data(), scratchpad_dev, scratchpad_size);
 #endif
         queue.wait_and_throw();
 
         A_iter = A_list.begin();
-        for ( int64_t global_id = 0; global_id < batch_size; global_id++, A_iter++ ) {
-            device_to_host_copy(queue,   A_dev_ptrs[global_id],   A_iter->data(),   A_iter->size());
+        for (int64_t global_id = 0; global_id < batch_size; global_id++, A_iter++) {
+            device_to_host_copy(queue, A_dev_ptrs[global_id], A_iter->data(), A_iter->size());
         }
         queue.wait_and_throw();
     }
@@ -137,14 +148,16 @@ bool accuracy(const sycl::device &dev, uint64_t seed) {
     int64_t global_id = 0;
     auto A_iter = A_list.begin();
     auto tau_iter = tau_list.begin();
-    for( int64_t group_id = 0; group_id < group_count; group_id++ ) {
+    for (int64_t group_id = 0; group_id < group_count; group_id++) {
         auto m = m_vec[group_id];
         auto n = n_vec[group_id];
         auto lda = lda_vec[group_id];
         auto group_size = group_sizes_vec[group_id];
-        for ( int64_t local_id = 0; local_id < group_size; local_id++, global_id++, A_iter++, tau_iter++ ) {
-            if( !check_or_un_gqr_accuracy(m, n, A_iter->data(), lda) ) {
-                global::log << "\tbatch routine (" << global_id << ", " << group_id << ", " << local_id << ") (global_id, group_id, local_id) failed" << std::endl;
+        for (int64_t local_id = 0; local_id < group_size;
+             local_id++, global_id++, A_iter++, tau_iter++) {
+            if (!check_or_un_gqr_accuracy(m, n, A_iter->data(), lda)) {
+                global::log << "\tbatch routine (" << global_id << ", " << group_id << ", "
+                            << local_id << ") (global_id, group_id, local_id) failed" << std::endl;
                 result = false;
             }
         }
@@ -153,29 +166,28 @@ bool accuracy(const sycl::device &dev, uint64_t seed) {
     return result;
 }
 
-
 const char* dependency_input = R"(
 1
 )";
 
 template <typename fp>
-bool usm_dependency(const sycl::device &dev, uint64_t seed) {
+bool usm_dependency(const sycl::device& dev, uint64_t seed) {
     using fp_real = typename complex_info<fp>::real_type;
 
     /* Test Parameters */
-    std::vector<int64_t>           m_vec = {1};
-    std::vector<int64_t>           n_vec = {1};
-    std::vector<int64_t>           k_vec = {1};
-    std::vector<int64_t>         lda_vec = {1};
-    std::vector<int64_t> group_sizes_vec = {1};
+    std::vector<int64_t> m_vec = { 1 };
+    std::vector<int64_t> n_vec = { 1 };
+    std::vector<int64_t> k_vec = { 1 };
+    std::vector<int64_t> lda_vec = { 1 };
+    std::vector<int64_t> group_sizes_vec = { 1 };
 
     int64_t group_count = group_sizes_vec.size();
     int64_t batch_size = std::accumulate(group_sizes_vec.begin(), group_sizes_vec.end(), 0);
 
-    std::list< std::vector<fp> > A_list;
-    std::list< std::vector<fp> > tau_list;
+    std::list<std::vector<fp>> A_list;
+    std::list<std::vector<fp>> tau_list;
 
-    for( int64_t group_id = 0; group_id < group_count; group_id++ ) {
+    for (int64_t group_id = 0; group_id < group_count; group_id++) {
         auto m = m_vec[group_id];
         auto n = n_vec[group_id];
         auto k = k_vec[group_id];
@@ -183,59 +195,65 @@ bool usm_dependency(const sycl::device &dev, uint64_t seed) {
         auto group_size = group_sizes_vec[group_id];
 
         /* Allocate and Initialize on host */
-        for ( int64_t local_id = 0; local_id < group_size; local_id++ ) {
-            A_list.emplace_back(lda*n);
+        for (int64_t local_id = 0; local_id < group_size; local_id++) {
+            A_list.emplace_back(lda * n);
             auto& A = A_list.back();
             rand_matrix(seed, oneapi::mkl::transpose::nontrans, m, n, A, lda);
 
             tau_list.emplace_back(k);
             auto& tau = tau_list.back();
             auto info = reference::geqrf(m, k, A.data(), lda, tau.data());
-            if( 0 != info ) {
+            if (0 != info) {
                 global::log << "\treference geqrf failed with info = " << info << std::endl;
                 return false;
             }
         }
     }
 
-
     /* Compute on device */
     bool result;
     {
-        sycl::queue queue{dev};
+        sycl::queue queue{ dev };
 
-        std::list< std::vector<fp, sycl::usm_allocator<fp, sycl::usm::alloc::shared> > > A_dev_list;
-        std::list< std::vector<fp, sycl::usm_allocator<fp, sycl::usm::alloc::shared> > > tau_dev_list;
-        std::vector< fp* > A_dev_ptrs(batch_size, nullptr);
-        std::vector< fp* > tau_dev_ptrs(batch_size, nullptr);
+        std::list<std::vector<fp, sycl::usm_allocator<fp, sycl::usm::alloc::shared>>> A_dev_list;
+        std::list<std::vector<fp, sycl::usm_allocator<fp, sycl::usm::alloc::shared>>> tau_dev_list;
+        std::vector<fp*> A_dev_ptrs(batch_size, nullptr);
+        std::vector<fp*> tau_dev_ptrs(batch_size, nullptr);
 
         /* Allocate on device */
-        sycl::usm_allocator<fp, sycl::usm::alloc::shared> usm_fp_allocator{queue.get_context(), dev};
+        sycl::usm_allocator<fp, sycl::usm::alloc::shared> usm_fp_allocator{ queue.get_context(),
+                                                                            dev };
         auto A_iter = A_list.begin();
         auto tau_iter = tau_list.begin();
-        for ( int64_t global_id = 0; global_id < batch_size; global_id++, A_iter++, tau_iter++ ) {
+        for (int64_t global_id = 0; global_id < batch_size; global_id++, A_iter++, tau_iter++) {
             A_dev_list.emplace_back(A_iter->size(), usm_fp_allocator);
             tau_dev_list.emplace_back(tau_iter->size(), usm_fp_allocator);
         }
 
 #ifdef CALL_RT_API
-        const auto scratchpad_size = oneapi::mkl::lapack::ungqr_batch_scratchpad_size<fp>(queue, m_vec.data(), n_vec.data(), k_vec.data(), lda_vec.data(), group_count, group_sizes_vec.data());
+        const auto scratchpad_size = oneapi::mkl::lapack::ungqr_batch_scratchpad_size<fp>(
+            queue, m_vec.data(), n_vec.data(), k_vec.data(), lda_vec.data(), group_count,
+            group_sizes_vec.data());
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::ungqr_batch_scratchpad_size<fp>, m_vec.data(), n_vec.data(), k_vec.data(), lda_vec.data(), group_count, group_sizes_vec.data());
+        TEST_RUN_CT_SELECT(queue,
+                           scratchpad_size = oneapi::mkl::lapack::ungqr_batch_scratchpad_size<fp>,
+                           m_vec.data(), n_vec.data(), k_vec.data(), lda_vec.data(), group_count,
+                           group_sizes_vec.data());
 #endif
         auto scratchpad_dev = device_alloc<fp>(queue, scratchpad_size);
 
         auto A_dev_iter = A_dev_list.begin();
         auto tau_dev_iter = tau_dev_list.begin();
-        for ( int64_t global_id = 0; global_id < batch_size; global_id++, A_dev_iter++, tau_dev_iter++ ) {
+        for (int64_t global_id = 0; global_id < batch_size;
+             global_id++, A_dev_iter++, tau_dev_iter++) {
             A_dev_ptrs[global_id] = A_dev_iter->data();
             tau_dev_ptrs[global_id] = tau_dev_iter->data();
         }
 
         A_iter = A_list.begin();
         tau_iter = tau_list.begin();
-        for ( int64_t global_id = 0; global_id < batch_size; global_id++, A_iter++, tau_iter++ ) {
+        for (int64_t global_id = 0; global_id < batch_size; global_id++, A_iter++, tau_iter++) {
             host_to_device_copy(queue, A_iter->data(), A_dev_ptrs[global_id], A_iter->size());
             host_to_device_copy(queue, tau_iter->data(), tau_dev_ptrs[global_id], tau_iter->size());
         }
@@ -244,10 +262,17 @@ bool usm_dependency(const sycl::device &dev, uint64_t seed) {
         /* Check dependency handling */
         auto in_event = create_dependent_event(queue);
 #ifdef CALL_RT_API
-        sycl::event func_event = oneapi::mkl::lapack::ungqr_batch(queue, m_vec.data(), n_vec.data(), k_vec.data(), A_dev_ptrs.data(), lda_vec.data(), tau_dev_ptrs.data(), group_count, group_sizes_vec.data(), scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+        sycl::event func_event = oneapi::mkl::lapack::ungqr_batch(
+            queue, m_vec.data(), n_vec.data(), k_vec.data(), A_dev_ptrs.data(), lda_vec.data(),
+            tau_dev_ptrs.data(), group_count, group_sizes_vec.data(), scratchpad_dev,
+            scratchpad_size, sycl::vector_class<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::ungqr_batch, m_vec.data(), n_vec.data(), k_vec.data(), A_dev_ptrs.data(), lda_vec.data(), tau_dev_ptrs.data(), group_count, group_sizes_vec.data(), scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::ungqr_batch,
+                           m_vec.data(), n_vec.data(), k_vec.data(), A_dev_ptrs.data(),
+                           lda_vec.data(), tau_dev_ptrs.data(), group_count, group_sizes_vec.data(),
+                           scratchpad_dev, scratchpad_size,
+                           sycl::vector_class<sycl::event>{ in_event });
 #endif
         result = check_dependency(in_event, func_event);
 
@@ -257,14 +282,14 @@ bool usm_dependency(const sycl::device &dev, uint64_t seed) {
     return result;
 }
 
-InputTestController<decltype(::accuracy<void>)> accuracy_controller{accuracy_input};
-InputTestController<decltype(::usm_dependency<void>)> dependency_controller{dependency_input};
+InputTestController<decltype(::accuracy<void>)> accuracy_controller{ accuracy_input };
+InputTestController<decltype(::usm_dependency<void>)> dependency_controller{ dependency_input };
 
 } /* unnamed namespace */
 
 #ifdef STANDALONE
 int main() {
-    sycl::device dev = sycl::device { sycl::host_selector{} };
+    sycl::device dev = sycl::device{ sycl::host_selector{} };
     int64_t res = 0;
     res += !accuracy_controller.run(::accuracy<ComplexSinglePrecisionUsm>, dev);
     res += !accuracy_controller.run(::accuracy<ComplexDoublePrecisionUsm>, dev);
@@ -276,6 +301,7 @@ int main() {
 #include <gtest/gtest.h>
 extern std::vector<sycl::device*> devices;
 class UngqrBatchGroupTests : public ::testing::TestWithParam<sycl::device*> {};
-INSTANTIATE_TEST_SUITE_P(UngqrBatchGroupTestSuite, UngqrBatchGroupTests, ::testing::ValuesIn(devices), DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(UngqrBatchGroupTestSuite, UngqrBatchGroupTests,
+                         ::testing::ValuesIn(devices), DeviceNamePrint());
 RUN_SUITE_COMPLEX_USM(UngqrBatchGroup)
 #endif

@@ -37,7 +37,7 @@ namespace oneapi {
 namespace mkl {
 
 enum class device : uint16_t { x86cpu, intelgpu, nvidiagpu };
-enum class domain : uint16_t { blas, lapack,  rng };
+enum class domain : uint16_t { blas, lapack, rng };
 
 static std::map<domain, std::map<device, std::vector<const char*>>> libraries = {
     { domain::blas,
@@ -75,7 +75,7 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
 #ifdef ENABLE_MKLGPU_BACKEND
               LIB_NAME("lapack_mklgpu")
 #endif
-          } } } }, 
+          } } } },
 
     { domain::rng,
       { { device::x86cpu,

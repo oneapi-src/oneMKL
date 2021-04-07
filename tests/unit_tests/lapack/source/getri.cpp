@@ -46,21 +46,21 @@ bool accuracy(const sycl::device& dev, int64_t n, int64_t lda, uint64_t seed) {
     using fp_real = typename complex_info<fp>::real_type;
 
     /* Initialize */
-    std::vector<fp> A_initial(lda*n);
+    std::vector<fp> A_initial(lda * n);
     rand_matrix(seed, oneapi::mkl::transpose::nontrans, n, n, A_initial, lda);
 
     std::vector<fp> A = A_initial;
     std::vector<int64_t> ipiv(n);
 
     auto info = reference::getrf(n, n, A.data(), lda, ipiv.data());
-    if ( info != 0 ) {
+    if (info != 0) {
         global::log << "\tReference getrf failed with info = " << info << std::endl;
         return false;
     }
 
     /* Compute on device */
     {
-        sycl::queue queue{dev};
+        sycl::queue queue{ dev };
 
         auto A_dev = device_alloc<mem_T>(queue, A.size());
         auto ipiv_dev = device_alloc<mem_T, int64_t>(queue, ipiv.size());
@@ -68,7 +68,8 @@ bool accuracy(const sycl::device& dev, int64_t n, int64_t lda, uint64_t seed) {
         const auto scratchpad_size = oneapi::mkl::lapack::getri_scratchpad_size<fp>(queue, n, lda);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::getri_scratchpad_size<fp>, n, lda);
+        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::getri_scratchpad_size<fp>,
+                           n, lda);
 #endif
         auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
 
@@ -79,11 +80,12 @@ bool accuracy(const sycl::device& dev, int64_t n, int64_t lda, uint64_t seed) {
 #ifdef CALL_RT_API
         oneapi::mkl::lapack::getri(queue, n, A_dev, lda, ipiv_dev, scratchpad_dev, scratchpad_size);
 #else
-        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::getri, n, A_dev, lda, ipiv_dev, scratchpad_dev, scratchpad_size);
+        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::getri, n, A_dev, lda, ipiv_dev,
+                           scratchpad_dev, scratchpad_size);
 #endif
         queue.wait_and_throw();
 
-        device_to_host_copy(queue, A_dev,    A.data(),    A.size());
+        device_to_host_copy(queue, A_dev, A.data(), A.size());
         queue.wait_and_throw();
 
         device_free(queue, A_dev);
@@ -104,7 +106,7 @@ bool usm_dependency(const sycl::device& dev, int64_t n, int64_t lda, uint64_t se
     using fp_real = typename complex_info<fp>::real_type;
 
     /* Initialize */
-    std::vector<fp> A_initial(lda*n);
+    std::vector<fp> A_initial(lda * n);
     rand_matrix(seed, oneapi::mkl::transpose::nontrans, n, n, A_initial, lda);
 
     std::vector<fp> A = A_initial;
@@ -112,7 +114,7 @@ bool usm_dependency(const sycl::device& dev, int64_t n, int64_t lda, uint64_t se
 
     int64_t info = 0;
     info = reference::getrf(n, n, A.data(), lda, ipiv.data());
-    if ( info != 0 ) {
+    if (info != 0) {
         global::log << "\tReference getrf failed with info = " << info << std::endl;
         return false;
     }
@@ -120,7 +122,7 @@ bool usm_dependency(const sycl::device& dev, int64_t n, int64_t lda, uint64_t se
     /* Compute on device */
     bool result;
     {
-        sycl::queue queue{dev};
+        sycl::queue queue{ dev };
 
         auto A_dev = device_alloc<mem_T>(queue, A.size());
         auto ipiv_dev = device_alloc<mem_T, int64_t>(queue, ipiv.size());
@@ -128,7 +130,8 @@ bool usm_dependency(const sycl::device& dev, int64_t n, int64_t lda, uint64_t se
         const auto scratchpad_size = oneapi::mkl::lapack::getri_scratchpad_size<fp>(queue, n, lda);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::getri_scratchpad_size<fp>, n, lda);
+        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::getri_scratchpad_size<fp>,
+                           n, lda);
 #endif
         auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
 
@@ -139,10 +142,14 @@ bool usm_dependency(const sycl::device& dev, int64_t n, int64_t lda, uint64_t se
         /* Check dependency handling */
         auto in_event = create_dependent_event(queue);
 #ifdef CALL_RT_API
-        sycl::event func_event = oneapi::mkl::lapack::getri(queue, n, A_dev, lda, ipiv_dev, scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+        sycl::event func_event = oneapi::mkl::lapack::getri(
+            queue, n, A_dev, lda, ipiv_dev, scratchpad_dev, scratchpad_size,
+            sycl::vector_class<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::getri, n, A_dev, lda, ipiv_dev, scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::getri, n, A_dev,
+                           lda, ipiv_dev, scratchpad_dev, scratchpad_size,
+                           sycl::vector_class<sycl::event>{ in_event });
 #endif
         result = check_dependency(in_event, func_event);
 
@@ -155,14 +162,14 @@ bool usm_dependency(const sycl::device& dev, int64_t n, int64_t lda, uint64_t se
     return result;
 }
 
-InputTestController<decltype(::accuracy<void>)> accuracy_controller{accuracy_input};
-InputTestController<decltype(::usm_dependency<void>)> dependency_controller{dependency_input};
+InputTestController<decltype(::accuracy<void>)> accuracy_controller{ accuracy_input };
+InputTestController<decltype(::usm_dependency<void>)> dependency_controller{ dependency_input };
 
 } /* unnamed namespace */
 
 #ifdef STANDALONE
 int main() {
-    sycl::device dev = sycl::device { sycl::host_selector{} };
+    sycl::device dev = sycl::device{ sycl::host_selector{} };
     int64_t res = 0;
     res += !accuracy_controller.run(::accuracy<RealSinglePrecisionUsm>, dev);
     res += !accuracy_controller.run(::accuracy<RealDoublePrecisionUsm>, dev);
@@ -182,6 +189,7 @@ int main() {
 #include <gtest/gtest.h>
 extern std::vector<sycl::device*> devices;
 class GetriTests : public ::testing::TestWithParam<sycl::device*> {};
-INSTANTIATE_TEST_SUITE_P(GetriTestSuite, GetriTests, ::testing::ValuesIn(devices), DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(GetriTestSuite, GetriTests, ::testing::ValuesIn(devices),
+                         DeviceNamePrint());
 RUN_SUITE(Getri)
 #endif

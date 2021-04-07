@@ -27,42 +27,42 @@
 sycl::event create_dependent_event(sycl::queue queue) {
     auto sleep_duration = std::chrono::milliseconds(10);
     return queue.submit([&](sycl::handler &cgh) {
-        cgh.codeplay_host_task([=](){
-            std::this_thread::sleep_for(2*sleep_duration);
-        });
+        cgh.codeplay_host_task([=]() { std::this_thread::sleep_for(2 * sleep_duration); });
     });
 }
 
+Dependency_Result get_result(sycl::info::event_command_status in_status,
+                             sycl::info::event_command_status func_status) {
+    /*   in\func | submitted | running  | complete */
+    /* submitted |   inc.    |   fail   |  fail    */
+    /* running   |   pass    |   fail   |  fail    */
+    /* complete  |   inc.    |   inc.   |  inc.    */
+    if (in_status == sycl::info::event_command_status::submitted) {
+        if (func_status == sycl::info::event_command_status::submitted)
+            return Dependency_Result::inconclusive;
+        else if (func_status == sycl::info::event_command_status::running)
+            return Dependency_Result::fail;
+        else if (func_status == sycl::info::event_command_status::complete)
+            return Dependency_Result::fail;
+    }
+    else if (in_status == sycl::info::event_command_status::running) {
+        if (func_status == sycl::info::event_command_status::submitted)
+            return Dependency_Result::pass;
+        else if (func_status == sycl::info::event_command_status::running)
+            return Dependency_Result::fail;
+        else if (func_status == sycl::info::event_command_status::complete)
+            return Dependency_Result::fail;
+    }
+    else if (in_status == sycl::info::event_command_status::complete) {
+        if (func_status == sycl::info::event_command_status::submitted)
+            return Dependency_Result::inconclusive;
+        else if (func_status == sycl::info::event_command_status::running)
+            return Dependency_Result::inconclusive;
+        else if (func_status == sycl::info::event_command_status::complete)
+            return Dependency_Result::inconclusive;
+    }
 
-Dependency_Result get_result(sycl::info::event_command_status in_status, sycl::info::event_command_status func_status) {
-        /*   in\func | submitted | running  | complete */
-        /* submitted |   inc.    |   fail   |  fail    */
-        /* running   |   pass    |   fail   |  fail    */
-        /* complete  |   inc.    |   inc.   |  inc.    */
-        if ( in_status == sycl::info::event_command_status::submitted ) {
-            if ( func_status == sycl::info::event_command_status::submitted )
-                return Dependency_Result::inconclusive;
-            else if ( func_status == sycl::info::event_command_status::running )
-                return Dependency_Result::fail;
-            else if ( func_status == sycl::info::event_command_status::complete )
-                return Dependency_Result::fail;
-        } else if ( in_status == sycl::info::event_command_status::running ) {
-            if ( func_status == sycl::info::event_command_status::submitted )
-                return Dependency_Result::pass;
-            else if ( func_status == sycl::info::event_command_status::running )
-                return Dependency_Result::fail;
-            else if ( func_status == sycl::info::event_command_status::complete )
-                return Dependency_Result::fail;
-        } else if ( in_status == sycl::info::event_command_status::complete ) {
-            if ( func_status == sycl::info::event_command_status::submitted )
-                return Dependency_Result::inconclusive;
-            else if ( func_status == sycl::info::event_command_status::running )
-                return Dependency_Result::inconclusive;
-            else if ( func_status == sycl::info::event_command_status::complete )
-                return Dependency_Result::inconclusive;
-        }
-
-        return Dependency_Result::unknown;
+    return Dependency_Result::unknown;
 }
 
 bool check_dependency(sycl::event in_event, sycl::event func_event) {
@@ -73,19 +73,20 @@ bool check_dependency(sycl::event in_event, sycl::event func_event) {
     do {
         in_status = in_event.get_info<sycl::info::event::command_execution_status>();
         func_status = func_event.get_info<sycl::info::event::command_execution_status>();
-        
+
         auto temp_result = get_result(in_status, func_status);
         if (temp_result == Dependency_Result::pass || temp_result == Dependency_Result::fail)
             result = temp_result;
 
-    } while ( in_status != sycl::info::event_command_status::complete && result != Dependency_Result::fail );
+    } while (in_status != sycl::info::event_command_status::complete &&
+             result != Dependency_Result::fail);
 
     /* Print results */
-    if ( result == Dependency_Result::pass )
+    if (result == Dependency_Result::pass)
         global::log << "Dependency Test: Successful" << std::endl;
-    if ( result == Dependency_Result::inconclusive )
+    if (result == Dependency_Result::inconclusive)
         global::log << "Dependency Test: Inconclusive" << std::endl;
-    if ( result == Dependency_Result::fail )
+    if (result == Dependency_Result::fail)
         global::log << "Dependency Test: Failed" << std::endl;
 
     global::log << "\tin_event command execution status: " << static_cast<int64_t>(in_status);
@@ -108,5 +109,6 @@ bool check_dependency(sycl::event in_event, sycl::event func_event) {
     else
         global::log << " (status unknown)" << std::endl;
 
-    return (result == Dependency_Result::pass || result == Dependency_Result::inconclusive)? true: false;
+    return (result == Dependency_Result::pass || result == Dependency_Result::inconclusive) ? true
+                                                                                            : false;
 }

@@ -35,7 +35,8 @@ const char* accuracy_input = R"(
 )";
 
 template <typename mem_T>
-bool accuracy(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t m, int64_t n, int64_t lda, int64_t ldc, uint64_t seed) {
+bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t m, int64_t n, int64_t lda,
+              int64_t ldc, uint64_t seed) {
     using fp = typename mem_T_info<mem_T>::value_type;
     using fp_real = typename complex_info<fp>::real_type;
 
@@ -43,34 +44,36 @@ bool accuracy(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t m, int64_
     oneapi::mkl::side side = oneapi::mkl::side::right;
     oneapi::mkl::transpose trans = oneapi::mkl::transpose::nontrans;
 
-    std::vector<fp> A(n*lda);
+    std::vector<fp> A(n * lda);
     rand_matrix(seed, oneapi::mkl::transpose::nontrans, n, n, A, lda);
 
     std::vector<fp> tau(n);
     std::vector<fp_real> d(n);
     std::vector<fp_real> e(n);
     auto info = reference::sytrd(uplo, n, A.data(), lda, d.data(), e.data(), tau.data());
-    if( 0 != info) {
+    if (0 != info) {
         global::log << "\treference sytrd failed with info = " << info << std::endl;
         return false;
     }
 
-    std::vector<fp> C(n*ldc);
+    std::vector<fp> C(n * ldc);
     rand_matrix(seed, oneapi::mkl::transpose::nontrans, m, n, C, ldc);
     std::vector<fp> C_initial = C;
 
     /* Compute on device */
     {
-        sycl::queue queue{dev};
+        sycl::queue queue{ dev };
 
-        auto A_dev   = device_alloc<mem_T>(queue, A.size());
+        auto A_dev = device_alloc<mem_T>(queue, A.size());
         auto tau_dev = device_alloc<mem_T>(queue, tau.size());
-        auto C_dev   = device_alloc<mem_T>(queue, C.size());
+        auto C_dev = device_alloc<mem_T>(queue, C.size());
 #ifdef CALL_RT_API
-        const auto scratchpad_size = oneapi::mkl::lapack::ormtr_scratchpad_size<fp>(queue, side, uplo, trans, m,  n, lda, ldc);
+        const auto scratchpad_size = oneapi::mkl::lapack::ormtr_scratchpad_size<fp>(
+            queue, side, uplo, trans, m, n, lda, ldc);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::ormtr_scratchpad_size<fp>, side, uplo, trans, m,  n, lda, ldc);
+        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::ormtr_scratchpad_size<fp>,
+                           side, uplo, trans, m, n, lda, ldc);
 #endif
         auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
 
@@ -80,9 +83,11 @@ bool accuracy(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t m, int64_
         queue.wait_and_throw();
 
 #ifdef CALL_RT_API
-        oneapi::mkl::lapack::ormtr(queue, side, uplo, trans, m , n, A_dev, lda, tau_dev, C_dev, ldc, scratchpad_dev, scratchpad_size);
+        oneapi::mkl::lapack::ormtr(queue, side, uplo, trans, m, n, A_dev, lda, tau_dev, C_dev, ldc,
+                                   scratchpad_dev, scratchpad_size);
 #else
-        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::ormtr, side, uplo, trans, m , n, A_dev, lda, tau_dev, C_dev, ldc, scratchpad_dev, scratchpad_size);
+        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::ormtr, side, uplo, trans, m, n, A_dev, lda,
+                           tau_dev, C_dev, ldc, scratchpad_dev, scratchpad_size);
 #endif
         queue.wait_and_throw();
 
@@ -99,11 +104,11 @@ bool accuracy(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t m, int64_
 
     auto& C_ref = C_initial;
     info = reference::ormtr(side, uplo, trans, m, n, A.data(), lda, tau.data(), C_ref.data(), ldc);
-    if( 0 != info) {
+    if (0 != info) {
         global::log << "\treference ormtr failed with info = " << info << std::endl;
         return false;
     }
-    if( !rel_mat_err_check(m, n, C.data(), ldc, C_ref.data(), ldc) ) {
+    if (!rel_mat_err_check(m, n, C.data(), ldc, C_ref.data(), ldc)) {
         global::log << "\tMultiplication check failed" << std::endl;
         result = false;
     }
@@ -116,7 +121,8 @@ const char* dependency_input = R"(
 )";
 
 template <typename mem_T>
-bool usm_dependency(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t m, int64_t n, int64_t lda, int64_t ldc, uint64_t seed) {
+bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t m, int64_t n,
+                    int64_t lda, int64_t ldc, uint64_t seed) {
     using fp = typename mem_T_info<mem_T>::value_type;
     using fp_real = typename complex_info<fp>::real_type;
 
@@ -124,35 +130,37 @@ bool usm_dependency(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t m, 
     oneapi::mkl::side side = oneapi::mkl::side::right;
     oneapi::mkl::transpose trans = oneapi::mkl::transpose::nontrans;
 
-    std::vector<fp> A(n*lda);
+    std::vector<fp> A(n * lda);
     rand_matrix(seed, oneapi::mkl::transpose::nontrans, n, n, A, lda);
 
     std::vector<fp> tau(n);
     std::vector<fp_real> d(n);
     std::vector<fp_real> e(n);
     auto info = reference::sytrd(uplo, n, A.data(), lda, d.data(), e.data(), tau.data());
-    if( 0 != info) {
+    if (0 != info) {
         global::log << "\treference sytrd failed with info = " << info << std::endl;
         return false;
     }
 
-    std::vector<fp> C(n*ldc);
+    std::vector<fp> C(n * ldc);
     rand_matrix(seed, oneapi::mkl::transpose::nontrans, m, n, C, ldc);
     std::vector<fp> C_initial = C;
 
     /* Compute on device */
     bool result;
     {
-        sycl::queue queue{dev};
+        sycl::queue queue{ dev };
 
-        auto A_dev   = device_alloc<mem_T>(queue, A.size());
+        auto A_dev = device_alloc<mem_T>(queue, A.size());
         auto tau_dev = device_alloc<mem_T>(queue, tau.size());
-        auto C_dev   = device_alloc<mem_T>(queue, C.size());
+        auto C_dev = device_alloc<mem_T>(queue, C.size());
 #ifdef CALL_RT_API
-        const auto scratchpad_size = oneapi::mkl::lapack::ormtr_scratchpad_size<fp>(queue, side, uplo, trans, m,  n, lda, ldc);
+        const auto scratchpad_size = oneapi::mkl::lapack::ormtr_scratchpad_size<fp>(
+            queue, side, uplo, trans, m, n, lda, ldc);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::ormtr_scratchpad_size<fp>, side, uplo, trans, m,  n, lda, ldc);
+        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::ormtr_scratchpad_size<fp>,
+                           side, uplo, trans, m, n, lda, ldc);
 #endif
         auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
 
@@ -164,10 +172,14 @@ bool usm_dependency(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t m, 
         /* Check dependency handling */
         auto in_event = create_dependent_event(queue);
 #ifdef CALL_RT_API
-        sycl::event func_event = oneapi::mkl::lapack::ormtr(queue, side, uplo, trans, m , n, A_dev, lda, tau_dev, C_dev, ldc, scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+        sycl::event func_event = oneapi::mkl::lapack::ormtr(
+            queue, side, uplo, trans, m, n, A_dev, lda, tau_dev, C_dev, ldc, scratchpad_dev,
+            scratchpad_size, sycl::vector_class<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::ormtr, side, uplo, trans, m , n, A_dev, lda, tau_dev, C_dev, ldc, scratchpad_dev, scratchpad_size, sycl::vector_class<sycl::event>{in_event});
+        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::ormtr, side, uplo,
+                           trans, m, n, A_dev, lda, tau_dev, C_dev, ldc, scratchpad_dev,
+                           scratchpad_size, sycl::vector_class<sycl::event>{ in_event });
 #endif
         result = check_dependency(in_event, func_event);
         queue.wait_and_throw();
@@ -181,14 +193,14 @@ bool usm_dependency(const sycl::device &dev, oneapi::mkl::uplo uplo, int64_t m, 
     return result;
 }
 
-InputTestController<decltype(::accuracy<void>)> accuracy_controller{accuracy_input};
-InputTestController<decltype(::usm_dependency<void>)> dependency_controller{dependency_input};
+InputTestController<decltype(::accuracy<void>)> accuracy_controller{ accuracy_input };
+InputTestController<decltype(::usm_dependency<void>)> dependency_controller{ dependency_input };
 
 } /* unnamed namespace */
 
 #ifdef STANDALONE
 int main() {
-    sycl::device dev = sycl::device { sycl::host_selector{} };
+    sycl::device dev = sycl::device{ sycl::host_selector{} };
     int64_t res = 0;
     res += !accuracy_controller.run(::accuracy<RealSinglePrecisionUsm>, dev);
     res += !accuracy_controller.run(::accuracy<RealDoublePrecisionUsm>, dev);
@@ -202,6 +214,7 @@ int main() {
 #include <gtest/gtest.h>
 extern std::vector<sycl::device*> devices;
 class OrmtrTests : public ::testing::TestWithParam<sycl::device*> {};
-INSTANTIATE_TEST_SUITE_P(OrmtrTestSuite, OrmtrTests, ::testing::ValuesIn(devices), DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(OrmtrTestSuite, OrmtrTests, ::testing::ValuesIn(devices),
+                         DeviceNamePrint());
 RUN_SUITE_REAL(Ormtr)
 #endif
