@@ -153,11 +153,16 @@ struct InputTestController {
     void log_result(size_t input_file_line, test_result result, const ArgTuple_T& args = {},
                     std::index_sequence<I...> = std::make_index_sequence<0>{}) {
         std::cout.clear();
-        std::cout << "[" << input_file_line << "]: ";
+        std::cout << global::pad << "[" << input_file_line << "]: ";
         (..., (std::cout << std::get<I>(args) << " "));
         std::cout << "# " << result << std::endl;
-        if (global::log.rdbuf()->in_avail()) /* check if stream is non-empty */
-            std::cout << global::log.rdbuf();
+        if (global::log.rdbuf()->in_avail()) { /* check if stream is non-empty */
+            while (global::log.good()) {
+                std::string line;
+                std::getline(global::log, line);
+                std::cout << global::pad << line << std::endl;
+            }
+        }
         global::log.str("");
         global::log.clear();
     }
@@ -268,56 +273,68 @@ using ComplexDoublePrecisionUsm = std::complex<double>;
 
 #define RUN_SUITE_REAL_USM(SUITE)                                                             \
     TEST_P(SUITE##Tests, AccuracyRealSinglePrecisionUsm) {                                    \
+        global::pad.resize(13, ' ');                                                          \
         EXPECT_TRUE(accuracy_controller.run_print_on_fail(::accuracy<RealSinglePrecisionUsm>, \
                                                           *GetParam()));                      \
     }                                                                                         \
     TEST_P(SUITE##Tests, AccuracyRealDoublePrecisionUsm) {                                    \
+        global::pad.resize(13, ' ');                                                          \
         EXPECT_TRUE(accuracy_controller.run_print_on_fail(::accuracy<RealDoublePrecisionUsm>, \
                                                           *GetParam()));                      \
     }                                                                                         \
     TEST_P(SUITE##Tests, DependencyRealSinglePrecisionUsm) {                                  \
+        global::pad.resize(13, ' ');                                                          \
         EXPECT_TRUE(dependency_controller.run_print_on_fail(                                  \
             ::usm_dependency<RealSinglePrecisionUsm>, *GetParam()));                          \
     }                                                                                         \
     TEST_P(SUITE##Tests, DependencyRealDoublePrecisionUsm) {                                  \
+        global::pad.resize(13, ' ');                                                          \
         EXPECT_TRUE(dependency_controller.run_print_on_fail(                                  \
             ::usm_dependency<RealDoublePrecisionUsm>, *GetParam()));                          \
     }
 
 #define RUN_SUITE_REAL_BUFFER(SUITE)                                                             \
     TEST_P(SUITE##Tests, AccuracyRealSinglePrecisionBuffer) {                                    \
+        global::pad.resize(13, ' ');                                                             \
         EXPECT_TRUE(accuracy_controller.run_print_on_fail(::accuracy<RealSinglePrecisionBuffer>, \
                                                           *GetParam()));                         \
     }                                                                                            \
     TEST_P(SUITE##Tests, AccuracyRealDoublePrecisionBuffer) {                                    \
+        global::pad.resize(13, ' ');                                                             \
         EXPECT_TRUE(accuracy_controller.run_print_on_fail(::accuracy<RealDoublePrecisionBuffer>, \
                                                           *GetParam()));                         \
     }
 
 #define RUN_SUITE_COMPLEX_USM(SUITE)                                                             \
     TEST_P(SUITE##Tests, AccuracyComplexSinglePrecisionUsm) {                                    \
+        global::pad.resize(13, ' ');                                                             \
         EXPECT_TRUE(accuracy_controller.run_print_on_fail(::accuracy<ComplexSinglePrecisionUsm>, \
                                                           *GetParam()));                         \
     }                                                                                            \
     TEST_P(SUITE##Tests, AccuracyComplexDoublePrecisionUsm) {                                    \
+        global::pad.resize(13, ' ');                                                             \
         EXPECT_TRUE(accuracy_controller.run_print_on_fail(::accuracy<ComplexDoublePrecisionUsm>, \
                                                           *GetParam()));                         \
     }                                                                                            \
     TEST_P(SUITE##Tests, DependencyComplexSinglePrecisionUsm) {                                  \
+        global::pad.resize(13, ' ');                                                             \
         EXPECT_TRUE(dependency_controller.run_print_on_fail(                                     \
             ::usm_dependency<ComplexSinglePrecisionUsm>, *GetParam()));                          \
     }                                                                                            \
     TEST_P(SUITE##Tests, DependencyComplexDoublePrecisionUsm) {                                  \
+        global::pad.resize(13, ' ');                                                             \
         EXPECT_TRUE(dependency_controller.run_print_on_fail(                                     \
             ::usm_dependency<ComplexDoublePrecisionUsm>, *GetParam()));                          \
     }
 
 #define RUN_SUITE_COMPLEX_BUFFER(SUITE)                              \
     TEST_P(SUITE##Tests, AccuracyComplexSinglePrecisionBuffer) {     \
+        global::pad.resize(13, ' ');                                 \
         EXPECT_TRUE(accuracy_controller.run_print_on_fail(           \
             ::accuracy<ComplexSinglePrecisionBuffer>, *GetParam())); \
     }                                                                \
     TEST_P(SUITE##Tests, AccuracyComplexDoublePrecisionBuffer) {     \
+        global::pad.resize(13, ' ');                                 \
         EXPECT_TRUE(accuracy_controller.run_print_on_fail(           \
             ::accuracy<ComplexDoublePrecisionBuffer>, *GetParam())); \
     }

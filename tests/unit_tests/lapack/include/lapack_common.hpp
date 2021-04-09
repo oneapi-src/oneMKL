@@ -35,6 +35,7 @@
 namespace global {
 extern std::stringstream log;
 extern std::array<char, 1024> buffer;
+extern std::string pad;
 } // namespace global
 
 template <typename T>
