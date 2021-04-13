@@ -56,6 +56,7 @@ inline void asum(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<
             cublasStatus_t err;
             // ASUM does not support negative index
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, std::abs(incx), res_);
+            cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
         });
     });
 }
@@ -160,6 +161,7 @@ inline void rotg(Func func, cl::sycl::queue &queue, cl::sycl::buffer<T1, 1> &a,
             auto s_ = sc.get_mem<cuDataType1 *>(ih, s_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, a_, b_, c_, s_);
+            cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
         });
     });
 }
@@ -201,6 +203,7 @@ inline void rotm(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<
             auto param_ = sc.get_mem<cuDataType *>(ih, param_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, incx, y_, incy, param_);
+            cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
         });
     });
 }
@@ -270,6 +273,7 @@ inline void dot(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T
             auto res_ = sc.get_mem<cuDataType *>(ih, res_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, incx, y_, incy, res_);
+            cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
         });
     });
 }
@@ -351,6 +355,7 @@ void sdsdot(cl::sycl::queue &queue, int64_t n, float sb, cl::sycl::buffer<float,
             auto res_ = sc.get_mem<float *>(ih, res_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(cublasSdot, err, handle, n, x_, incx, y_, incy, res_);
+            cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
         });
     });
     // Since SB is a host pointer we need to bring the result back to the host and
@@ -391,6 +396,7 @@ inline void rotmg(Func func, cl::sycl::queue &queue, cl::sycl::buffer<T, 1> &d1,
             auto param_ = sc.get_mem<cuDataType *>(ih, param_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, d1_, d2_, x1_, y1_, param_);
+            cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
         });
     });
 }
@@ -437,6 +443,7 @@ inline void iamax(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer
             // For negative incx, iamax returns 0. This behaviour is similar to that of
             // reference netlib BLAS.
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, incx, int_res_);
+            cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
         });
     });
     // This requires to bring the data to host, copy it, and return it back to
@@ -519,6 +526,7 @@ inline void iamin(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer
             // For negative incx, iamin returns 0. This behaviour is similar to that of
             // implemented as a reference IAMIN.
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, incx, int_res_);
+            cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
         });
     });
     result.template get_access<cl::sycl::access::mode::write>()[0] =
@@ -561,6 +569,7 @@ inline void nrm2(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<
             cublasStatus_t err;
             // NRM2 does not support negative index
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, std::abs(incx), res_);
+            cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
         });
     });
 }
