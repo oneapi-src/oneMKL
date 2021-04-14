@@ -49,7 +49,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
     rand_matrix(seed, oneapi::mkl::transpose::nontrans, n, n, A, lda);
     auto info = reference::hetrd(uplo, n, A.data(), lda, d.data(), e.data(), tau.data());
     if (0 != info) {
-        global::log << "\treference hetrd failed with info = " << info << std::endl;
+        global::log << "reference hetrd failed with info = " << info << std::endl;
         return false;
     }
 
@@ -112,7 +112,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, 
     rand_matrix(seed, oneapi::mkl::transpose::nontrans, n, n, A, lda);
     auto info = reference::hetrd(uplo, n, A.data(), lda, d.data(), e.data(), tau.data());
     if (0 != info) {
-        global::log << "\treference hetrd failed with info = " << info << std::endl;
+        global::log << "reference hetrd failed with info = " << info << std::endl;
         return false;
     }
 

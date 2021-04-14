@@ -113,7 +113,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::mkl::jo
         reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, m, n, n,
                         1.0, US.data(), ldus, Vt.data(), ldvt, 0.0, USV.data(), ldusv);
         if (!rel_mat_err_check(m, n, A_initial.data(), lda, USV.data(), ldusv)) {
-            global::log << "\tFactorization check failed" << std::endl;
+            global::log << "Factorization check failed" << std::endl;
             result = false;
         }
     }
@@ -131,7 +131,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::mkl::jo
         reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, ucols,
                         ucols, m, 1.0, U.data(), ldu, U.data(), ldu, 0.0, UU.data(), lduu);
         if (!rel_id_err_check(ucols, UU.data(), lduu)) {
-            global::log << "\tU Orthogonality check failed" << std::endl;
+            global::log << "U Orthogonality check failed" << std::endl;
             result = false;
         }
     }
@@ -144,7 +144,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::mkl::jo
         reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::conjtrans, vtrows,
                         vtrows, n, 1.0, Vt.data(), ldvt, Vt.data(), ldvt, 0.0, VV.data(), ldvv);
         if (!rel_id_err_check(vtrows, VV.data(), ldvv)) {
-            global::log << "\tV Orthogonality check failed" << std::endl;
+            global::log << "V Orthogonality check failed" << std::endl;
             result = false;
         }
     }

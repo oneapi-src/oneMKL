@@ -52,7 +52,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::transpose trans, int64_t n, 
 
     auto info = reference::getrf(n, n, A.data(), lda, ipiv.data());
     if (info != 0) {
-        global::log << "\tReference getrf failed with info = " << info << std::endl;
+        global::log << "Reference getrf failed with info = " << info << std::endl;
         return false;
     }
 
@@ -125,7 +125,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::transpose trans, int64
     int64_t info = 0;
     info = reference::getrf(n, n, A.data(), lda, ipiv.data());
     if (info != 0) {
-        global::log << "\tReference getrf failed with info = " << info << std::endl;
+        global::log << "Reference getrf failed with info = " << info << std::endl;
         return false;
     }
 

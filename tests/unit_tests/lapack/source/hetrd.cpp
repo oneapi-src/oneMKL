@@ -115,7 +115,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
                          A.data(), lda, tau.data(), QTQ.data(), ldqtq);
 
     if (!rel_mat_err_check(n, n, QTQ.data(), ldqtq, A_initial.data(), lda)) {
-        global::log << "\tFactorization check failed" << std::endl;
+        global::log << "Factorization check failed" << std::endl;
         result = false;
     }
 
@@ -131,11 +131,11 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
 
     auto ulp = reference::lamch<fp_real>('P');
     if (reference::lange('I', n, 1, d.data(), n) > 10.0 * ulp) {
-        global::log << "\tDiagonal check failed" << std::endl;
+        global::log << "Diagonal check failed" << std::endl;
         result = false;
     }
     if (reference::lange('I', n - 1, 1, e.data(), n - 1) > 10.0 * ulp) {
-        global::log << "\tOff-diagonal check failed" << std::endl;
+        global::log << "Off-diagonal check failed" << std::endl;
         result = false;
     }
 

@@ -104,7 +104,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
     reference::hegvd(itype, oneapi::mkl::job::novec, uplo, n, std::vector<fp>(A_initial).data(),
                      lda, std::vector<fp>(B_initial).data(), ldb, D_ref.data());
     if (!rel_vec_err_check(n, D_ref.data(), D.data(), 10.0)) {
-        global::log << "\tEigenvalue check failed" << std::endl;
+        global::log << "Eigenvalue check failed" << std::endl;
         result = false;
     }
 
@@ -128,7 +128,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
                     BZD[row + col * ldbzd] = BZ[row + col * ldbz] * D[col];
 
             if (!rel_mat_err_check(n, n, AZ.data(), ldaz, BZD.data(), ldbzd)) {
-                global::log << "\tFactorization check failed" << std::endl;
+                global::log << "Factorization check failed" << std::endl;
                 result = false;
             }
 
@@ -138,7 +138,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
             reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n,
                             n, n, 1.0, Z.data(), ldz, BZ.data(), ldbz, 0.0, ZBZ.data(), ldzbz);
             if (!rel_id_err_check(n, ZBZ.data(), ldzbz)) {
-                global::log << "\tOrthogonality check failed" << std::endl;
+                global::log << "Orthogonality check failed" << std::endl;
                 result = false;
             }
         }
@@ -162,7 +162,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
                     ZD[row + col * ldzd] = Z[row + col * ldz] * D[col];
 
             if (!rel_mat_err_check(n, n, ABZ.data(), ldabz, ZD.data(), ldbz)) {
-                global::log << "\tFactorization check failed" << std::endl;
+                global::log << "Factorization check failed" << std::endl;
                 result = false;
             }
 
@@ -172,7 +172,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
             reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n,
                             n, n, 1.0, Z.data(), ldz, BZ.data(), ldbz, 0.0, ZBZ.data(), ldzbz);
             if (!rel_id_err_check(n, ZBZ.data(), ldzbz)) {
-                global::log << "\tOrthogonality check failed" << std::endl;
+                global::log << "Orthogonality check failed" << std::endl;
                 result = false;
             }
         }
@@ -189,7 +189,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
             reference::lacpy('A', n, n, Z.data(), ldz, C.data(), ldc);
             auto info = reference::potrs(uplo, n, n, B.data(), ldb, C.data(), ldc);
             if (0 != info) {
-                global::log << "\treference potrs failed with info = " << info << std::endl;
+                global::log << "reference potrs failed with info = " << info << std::endl;
                 return false;
             }
 
@@ -200,7 +200,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
                     CD[row + col * ldcd] = C[row + col * ldc] * D[col];
 
             if (!rel_mat_err_check(n, n, AZ.data(), ldaz, CD.data(), ldcd)) {
-                global::log << "\tFactorization check failed" << std::endl;
+                global::log << "Factorization check failed" << std::endl;
                 result = false;
             }
 
@@ -210,7 +210,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
             reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n,
                             n, n, 1.0, Z.data(), ldz, C.data(), ldc, 0.0, ZhC.data(), ldzhc);
             if (!rel_id_err_check(n, ZhC.data(), ldzhc)) {
-                global::log << "\tOrthogonality check failed" << std::endl;
+                global::log << "Orthogonality check failed" << std::endl;
                 result = false;
             }
         }

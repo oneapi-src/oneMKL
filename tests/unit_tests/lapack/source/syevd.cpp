@@ -94,7 +94,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::job jobz, oneapi::mkl::uplo 
     reference::syevd(oneapi::mkl::job::novec, uplo, n, std::vector<fp>(A_initial).data(), lda,
                      D_ref.data());
     if (!rel_vec_err_check(n, D_ref.data(), D.data(), 10.0)) {
-        global::log << "\tEigenvalue check failed" << std::endl;
+        global::log << "Eigenvalue check failed" << std::endl;
         result = false;
     }
 
@@ -111,7 +111,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::job jobz, oneapi::mkl::uplo 
                         n, 1.0, ZD.data(), ldzd, Z.data(), ldz, 0.0, ZDZ.data(), ldzdz);
 
         if (!rel_mat_err_check(n, n, A_initial.data(), lda, ZDZ.data(), ldzdz)) {
-            global::log << "\tFactorization check failed" << std::endl;
+            global::log << "Factorization check failed" << std::endl;
             result = false;
         }
 
@@ -122,7 +122,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::job jobz, oneapi::mkl::uplo 
                             Z.data(), ldz, 0.0, ZZ.data(), ldzz);
         hermitian_to_full(oneapi::mkl::uplo::upper, n, ZZ, ldzz);
         if (!rel_id_err_check(n, ZZ.data(), ldzz)) {
-            global::log << "\tOrthogonality check failed" << std::endl;
+            global::log << "Orthogonality check failed" << std::endl;
             result = false;
         }
     }

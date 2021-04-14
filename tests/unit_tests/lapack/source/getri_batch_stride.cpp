@@ -50,7 +50,7 @@ bool accuracy(const sycl::device& dev, int64_t n, int64_t lda, int64_t stride_a,
         auto info =
             reference::getrf(n, n, A.data() + i * stride_a, lda, ipiv.data() + i * stride_ipiv);
         if (0 != info) {
-            global::log << "\tbatch routine index " << i
+            global::log << "batch routine index " << i
                         << ": reference getrf failed with info: " << info << std::endl;
             return false;
         }
@@ -98,7 +98,7 @@ bool accuracy(const sycl::device& dev, int64_t n, int64_t lda, int64_t stride_a,
     for (int64_t i = 0; i < batch_size; i++)
         if (!check_getri_accuracy(n, A.data() + i * stride_a, lda, ipiv.data() + i * stride_ipiv,
                                   A_initial.data() + i * stride_a)) {
-            global::log << "\tbatch routine index " << i << " failed" << std::endl;
+            global::log << "batch routine index " << i << " failed" << std::endl;
             result = false;
         }
 
@@ -125,7 +125,7 @@ bool usm_dependency(const sycl::device& dev, int64_t n, int64_t lda, int64_t str
         auto info =
             reference::getrf(n, n, A.data() + i * stride_a, lda, ipiv.data() + i * stride_ipiv);
         if (0 != info) {
-            global::log << "\tbatch routine index " << i
+            global::log << "batch routine index " << i
                         << ": reference getrf failed with info: " << info << std::endl;
             return false;
         }

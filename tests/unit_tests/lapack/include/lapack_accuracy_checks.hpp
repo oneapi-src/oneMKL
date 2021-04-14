@@ -52,10 +52,10 @@ bool rel_mat_err_check(int64_t m, int64_t n, const fp* A, int64_t lda, const fp*
     bool result = rel_err < threshold;
     if (!result) {
         snprintf(global::buffer.data(), global::buffer.size(),
-                 "\t|A - Ref| / (|Ref| min(m,n) eps) = |%e| / (|%e| %d * %e) = %e\n", norm_residual,
+                 "|A - Ref| / (|Ref| min(m,n) eps) = |%e| / (|%e| %d * %e) = %e\n", norm_residual,
                  norm_Ref, static_cast<int>(std::min(m, n)), ulp, rel_err);
         global::log << global::buffer.data();
-        global::log << "\tthreshold = " << threshold << std::endl;
+        global::log << "threshold = " << threshold << std::endl;
     }
     return result;
 }
@@ -82,10 +82,10 @@ bool rel_id_err_check(int64_t n, const fp* A, int64_t lda, float threshold = 10.
     bool result = rel_err < threshold;
     if (!result) {
         snprintf(global::buffer.data(), global::buffer.size(),
-                 "\t|A - I| / (|I| n eps) = |%e| / (|%d| %d * %e) = %e\n", norm_residual,
+                 "|A - I| / (|I| n eps) = |%e| / (|%d| %d * %e) = %e\n", norm_residual,
                  static_cast<int>(n), static_cast<int>(n), ulp, rel_err);
         global::log << global::buffer.data();
-        global::log << "\tthreshold = " << threshold << std::endl;
+        global::log << "threshold = " << threshold << std::endl;
     }
     return result;
 }
@@ -112,10 +112,10 @@ bool rel_vec_err_check(int64_t n, const fp* A, const fp* Ref, float threshold = 
     bool result = rel_err < threshold;
     if (!result) {
         snprintf(global::buffer.data(), global::buffer.size(),
-                 "\t|V - Ref| / (|Ref| eps) = |%e| / (|%e| %e) = %e\n", norm_residual, norm_Ref,
-                 ulp, rel_err);
+                 "|V - Ref| / (|Ref| eps) = |%e| / (|%e| %e) = %e\n", norm_residual, norm_Ref, ulp,
+                 rel_err);
         global::log << global::buffer.data();
-        global::log << "\tthreshold = " << threshold << std::endl;
+        global::log << "threshold = " << threshold << std::endl;
     }
     return result;
 }
@@ -137,7 +137,7 @@ bool check_or_un_gbr_accuracy(oneapi::mkl::generate vect, int64_t m, int64_t n, 
         hermitian_to_full(oneapi::mkl::uplo::upper, cols_Q, QQ, ldqq);
 
         if (!rel_id_err_check(cols_Q, QQ.data(), ldqq)) {
-            global::log << "\tQ Orthogonality check failed" << std::endl;
+            global::log << "Q Orthogonality check failed" << std::endl;
             result = false;
         }
     }
@@ -154,7 +154,7 @@ bool check_or_un_gbr_accuracy(oneapi::mkl::generate vect, int64_t m, int64_t n, 
                             cols_P, 1.0, P, ldp, 0.0, PP.data(), ldpp);
         hermitian_to_full(oneapi::mkl::uplo::upper, rows_P, PP, ldpp);
         if (!rel_id_err_check(rows_P, PP.data(), ldpp)) {
-            global::log << "\tP^t Orthogonality check failed" << std::endl;
+            global::log << "P^t Orthogonality check failed" << std::endl;
             result = false;
         }
     }
@@ -172,7 +172,7 @@ bool check_or_un_gqr_accuracy(int64_t m, int64_t n, const fp* Q, int64_t ldq) {
     hermitian_to_full(oneapi::mkl::uplo::upper, n, QQ, n);
 
     if (!rel_id_err_check(n, QQ.data(), n)) {
-        global::log << "\tOrthogonality check failed" << std::endl;
+        global::log << "Orthogonality check failed" << std::endl;
         result = false;
     }
     return result;
@@ -189,7 +189,7 @@ bool check_or_un_gtr_accuracy(int64_t n, const fp* Q, int64_t ldq) {
     hermitian_to_full(oneapi::mkl::uplo::upper, n, QQ, n);
 
     if (!rel_id_err_check(n, QQ.data(), n)) {
-        global::log << "\tOrthogonality check failed" << std::endl;
+        global::log << "Orthogonality check failed" << std::endl;
         result = false;
     }
     return result;
@@ -207,13 +207,13 @@ bool check_geqrf_accuracy(const fp* A, const fp* A_initial, const fp* tau, int64
     auto info = reference::or_un_mqr(oneapi::mkl::side::left, oneapi::mkl::transpose::nontrans, m,
                                      n, std::min(m, n), A, lda, tau, R.data(), ldr);
     if (0 != info) {
-        global::log << "\treference ormqr/unmqr failed with info = " << info << std::endl;
+        global::log << "reference ormqr/unmqr failed with info = " << info << std::endl;
         return false;
     }
     const auto& QR = R;
     auto ldqr = ldr;
     if (!rel_mat_err_check(m, n, QR.data(), ldqr, A_initial, lda)) {
-        global::log << "\tFactorization check failed" << std::endl;
+        global::log << "Factorization check failed" << std::endl;
         result = false;
     }
 
@@ -223,7 +223,7 @@ bool check_geqrf_accuracy(const fp* A, const fp* A_initial, const fp* tau, int64
     reference::lacpy('L', m - 1, n, A + 1, lda, Q.data() + 1, ldq);
     info = reference::or_un_gqr(m, m, std::min(m, n), Q.data(), ldq, tau);
     if (0 != info) {
-        global::log << "\treference org/ungqr failed with info = " << info << std::endl;
+        global::log << "reference org/ungqr failed with info = " << info << std::endl;
         return false;
     }
     std::vector<fp> QQ(m * m);
@@ -232,7 +232,7 @@ bool check_geqrf_accuracy(const fp* A, const fp* A_initial, const fp* tau, int64
                         Q.data(), ldq, 0.0, QQ.data(), ldqq);
     hermitian_to_full(oneapi::mkl::uplo::upper, m, QQ, m);
     if (!rel_id_err_check(m, QQ.data(), m)) {
-        global::log << "\tOrthogonality check failed" << std::endl;
+        global::log << "Orthogonality check failed" << std::endl;
         result = false;
     }
 
@@ -281,10 +281,10 @@ bool check_getrf_accuracy(int64_t m, int64_t n, const fp* A, int64_t lda, const 
     bool result = rel_err < threshold;
     if (!result) {
         snprintf(global::buffer.data(), global::buffer.size(),
-                 "\t| L * U - A | / ( |A| * min(m,n) * ulp ) = |%e| / (|%e| %d * %e) = %e",
+                 "| L * U - A | / ( |A| * min(m,n) * ulp ) = |%e| / (|%e| %d * %e) = %e",
                  norm_residual, norm_A, static_cast<int>(std::min(m, n)), ulp, rel_err);
         global::log << global::buffer.data();
-        global::log << "\tthreshold = " << threshold << std::endl;
+        global::log << "threshold = " << threshold << std::endl;
     }
 
     return result;
@@ -321,7 +321,7 @@ bool check_potrf_accuracy(const fp* init, const fp* sol, oneapi::mkl::uplo uplo,
         }
     }
     if (!result)
-        global::log << "\tTolerance exceded, max_error = " << max_error << std::endl;
+        global::log << "Tolerance exceded, max_error = " << max_error << std::endl;
 
     return result;
 }
@@ -352,10 +352,10 @@ bool check_getri_accuracy(int64_t n, fp* A, int64_t lda, int64_t* ipiv, fp* A_in
     bool result = rel_err < threshold;
     if (!result) {
         snprintf(global::buffer.data(), global::buffer.size(),
-                 "\t| I - inv(A) A | / ( |A| |inv(A)| n ulp ) = |%e| / ( |%e| |%e| %d * %e ) = %e",
+                 "| I - inv(A) A | / ( |A| |inv(A)| n ulp ) = |%e| / ( |%e| |%e| %d * %e ) = %e",
                  norm_residual, norm_A, norm_invA, static_cast<int>(n), ulp, rel_err);
         global::log << global::buffer.data();
-        global::log << "\tthreshold = " << threshold << std::endl;
+        global::log << "threshold = " << threshold << std::endl;
     }
 
     /* Compute | I - A*inv(A) |. Store in residual */
@@ -369,10 +369,10 @@ bool check_getri_accuracy(int64_t n, fp* A, int64_t lda, int64_t* ipiv, fp* A_in
     result = rel_err < threshold;
     if (!result) {
         snprintf(global::buffer.data(), global::buffer.size(),
-                 "\t| I - inv(A) A | / ( |A| |inv(A)| n ulp ) = |%e | / ( |%e| |%e| %d * %e) = %e",
+                 "| I - inv(A) A | / ( |A| |inv(A)| n ulp ) = |%e | / ( |%e| |%e| %d * %e) = %e",
                  norm_residual, norm_A, norm_invA, static_cast<int>(n), ulp, rel_err);
         global::log << global::buffer.data();
-        global::log << "\tthreshold = " << threshold << std::endl;
+        global::log << "threshold = " << threshold << std::endl;
     }
 
     return result;
@@ -403,10 +403,10 @@ bool check_getrs_accuracy(oneapi::mkl::transpose transa, int64_t n, int64_t nrhs
     bool result = rel_err < threshold;
     if (!result) {
         snprintf(global::buffer.data(), global::buffer.size(),
-                 "\t| AX - B | / ( |A| |X| n ulp ) = |%e| / ( |%e| |%e| %d * %e ) = %e",
+                 "| AX - B | / ( |A| |X| n ulp ) = |%e| / ( |%e| |%e| %d * %e ) = %e",
                  norm_residual, norm_A, norm_B, static_cast<int>(n), ulp, rel_err);
         global::log << global::buffer.data();
-        global::log << "\tthreshold = " << threshold << std::endl;
+        global::log << "threshold = " << threshold << std::endl;
     }
 
     return result;
@@ -437,10 +437,10 @@ bool check_potrs_accuracy(oneapi::mkl::uplo uplo, int64_t n, int64_t nrhs, fp* A
     bool result = rel_err < threshold;
     if (!result) {
         snprintf(global::buffer.data(), global::buffer.size(),
-                 "\t| AX - B | / ( |A| |X| n ulp ) = |%e| / ( |%e| |%e| %d * %e ) = %e",
+                 "| AX - B | / ( |A| |X| n ulp ) = |%e| / ( |%e| |%e| %d * %e ) = %e",
                  norm_residual, norm_A, norm_B, static_cast<int>(n), ulp, rel_err);
         global::log << global::buffer.data();
-        global::log << "\tthreshold = " << threshold << std::endl;
+        global::log << "threshold = " << threshold << std::endl;
     }
 
     return result;
@@ -466,11 +466,11 @@ bool check_gerqf_accuracy(fp* A, fp* A_initial, fp* tau, int64_t m, int64_t n, i
                                          m, n, std::min(m, n), Q.data(), ldq, tau, R.data(), ldr);
         /* auto info = reference::or_un_mrq(oneapi::mkl::side::right, oneapi::mkl::transpose::nontrans, m, n, std::min(m,n), A+std::max<int64_t>(0,(m-n+0*lda)), lda, tau, R.data(), ldr); */
         if (0 != info) {
-            global::log << "\treference ormqr/unmqr failed with info = " << info << std::endl;
+            global::log << "reference ormqr/unmqr failed with info = " << info << std::endl;
             return false;
         }
         if (!rel_mat_err_check(m, n, R.data(), ldr, A_initial, lda)) {
-            global::log << "\tFactorization check failed" << std::endl;
+            global::log << "Factorization check failed" << std::endl;
             result = false;
         }
     }
@@ -491,11 +491,11 @@ bool check_gerqf_accuracy(fp* A, fp* A_initial, fp* tau, int64_t m, int64_t n, i
         auto info = reference::or_un_mrq(oneapi::mkl::side::right, oneapi::mkl::transpose::nontrans,
                                          m, n, n, Q.data(), ldq, tau2.data(), R.data(), ldr);
         if (0 != info) {
-            global::log << "\treference ormqr/unmqr failed with info = " << info << std::endl;
+            global::log << "reference ormqr/unmqr failed with info = " << info << std::endl;
             return false;
         }
         if (!rel_mat_err_check(m, n, R.data(), ldr, A_initial, lda)) {
-            global::log << "\tFactorization check failed" << std::endl;
+            global::log << "Factorization check failed" << std::endl;
             result = false;
         }
     }
@@ -509,7 +509,7 @@ bool check_gerqf_accuracy(fp* A, fp* A_initial, fp* tau, int64_t m, int64_t n, i
         reference::lacpy('A', n, n, A + ((m - n) + 0 * lda), lda, Q.data(), ldq);
     auto info = reference::or_un_grq(std::min(m, n), n, std::min(m, n), Q.data(), ldq, tau);
     if (0 != info) {
-        global::log << "\treference orgqr/ungqr failed with info = " << info << std::endl;
+        global::log << "reference orgqr/ungqr failed with info = " << info << std::endl;
         return false;
     }
 
@@ -520,7 +520,7 @@ bool check_gerqf_accuracy(fp* A, fp* A_initial, fp* tau, int64_t m, int64_t n, i
     hermitian_to_full(oneapi::mkl::uplo::upper, std::min(m, n), I, ldi);
 
     if (!rel_id_err_check(std::min(m, n), I.data(), ldi)) {
-        global::log << "\tOrthogonality check failed" << std::endl;
+        global::log << "Orthogonality check failed" << std::endl;
         result = false;
     }
 
@@ -582,11 +582,11 @@ bool check_trtrs_accuracy(oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
     bool result = rel_err < threshold;
     if (!result) {
         snprintf(global::buffer.data(), global::buffer.size(),
-                 "\t|Ax - b| / (|A| |x| cond(A) eps) = |%e| / (|%e| |%e| %e * %e) = %e\n",
+                 "|Ax - b| / (|A| |x| cond(A) eps) = |%e| / (|%e| |%e| %e * %e) = %e\n",
                  norm_residual, norm_A, norm_x, cond_A, ulp, rel_err);
         global::log << global::buffer.data();
-        global::log << "\tthreshold = " << threshold << std::endl;
-        global::log << "\tSolve check failed" << std::endl;
+        global::log << "threshold = " << threshold << std::endl;
+        global::log << "Solve check failed" << std::endl;
     }
 
     return result;

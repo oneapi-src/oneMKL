@@ -54,7 +54,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
     for (int64_t i = 0; i < batch_size; i++) {
         auto info = reference::potrf(uplo, n, A.data() + i * stride_a, lda);
         if (0 != info) {
-            global::log << "\tbatch routine index " << i
+            global::log << "batch routine index " << i
                         << ": reference potrf failed with info: " << info << std::endl;
             return false;
         }
@@ -104,7 +104,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
         if (!check_potrs_accuracy(uplo, n, nrhs, A.data() + i * stride_a, lda,
                                   B.data() + i * stride_b, ldb, A_initial.data() + i * stride_a,
                                   B_initial.data() + i * stride_b)) {
-            global::log << "\tbatch routine index " << i << " failed" << std::endl;
+            global::log << "batch routine index " << i << " failed" << std::endl;
             result = false;
         }
 
@@ -136,7 +136,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, 
     for (int64_t i = 0; i < batch_size; i++) {
         auto info = reference::potrf(uplo, n, A.data() + i * stride_a, lda);
         if (0 != info) {
-            global::log << "\tbatch routine index " << i
+            global::log << "batch routine index " << i
                         << ": reference potrf failed with info: " << info << std::endl;
             return false;
         }

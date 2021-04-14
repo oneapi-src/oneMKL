@@ -86,7 +86,7 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
 
             auto info = reference::getrf(n, n, A.data(), lda, ipiv.data());
             if (info != 0) {
-                global::log << "\tReference getrf failed with info = " << info << std::endl;
+                global::log << "Reference getrf failed with info = " << info << std::endl;
                 return false;
             }
         }
@@ -195,7 +195,7 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
             if (!check_getrs_accuracy(trans, n, nrhs, A_iter->data(), lda, ipiv_iter->data(),
                                       B_iter->data(), ldb, A_initial_iter->data(),
                                       B_initial_iter->data())) {
-                global::log << "\tbatch routine (" << global_id << ", " << group_id << ", "
+                global::log << "batch routine (" << global_id << ", " << group_id << ", "
                             << local_id << ") (global_id, group_id, local_id) failed" << std::endl;
                 result = false;
             }
@@ -259,7 +259,7 @@ bool usm_dependency(const sycl::device& dev, uint64_t seed) {
 
             auto info = reference::getrf(n, n, A.data(), lda, ipiv.data());
             if (info != 0) {
-                global::log << "\tReference getrf failed with info = " << info << std::endl;
+                global::log << "Reference getrf failed with info = " << info << std::endl;
                 return false;
             }
         }

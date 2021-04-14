@@ -91,7 +91,7 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, int64_
     for (int64_t i = 0; i < batch_size; i++)
         if (!check_geqrf_accuracy(A.data() + i * stride_a, A_initial.data() + i * stride_a,
                                   tau.data() + i * stride_tau, m, n, lda)) {
-            global::log << "\tbatch routine index " << i << " failed" << std::endl;
+            global::log << "batch routine index " << i << " failed" << std::endl;
             result = false;
         }
 

@@ -52,7 +52,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t m, int64_
     std::vector<fp_real> e(n);
     auto info = reference::sytrd(uplo, n, A.data(), lda, d.data(), e.data(), tau.data());
     if (0 != info) {
-        global::log << "\treference sytrd failed with info = " << info << std::endl;
+        global::log << "reference sytrd failed with info = " << info << std::endl;
         return false;
     }
 
@@ -105,11 +105,11 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t m, int64_
     auto& C_ref = C_initial;
     info = reference::ormtr(side, uplo, trans, m, n, A.data(), lda, tau.data(), C_ref.data(), ldc);
     if (0 != info) {
-        global::log << "\treference ormtr failed with info = " << info << std::endl;
+        global::log << "reference ormtr failed with info = " << info << std::endl;
         return false;
     }
     if (!rel_mat_err_check(m, n, C.data(), ldc, C_ref.data(), ldc)) {
-        global::log << "\tMultiplication check failed" << std::endl;
+        global::log << "Multiplication check failed" << std::endl;
         result = false;
     }
 
@@ -138,7 +138,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t m, 
     std::vector<fp_real> e(n);
     auto info = reference::sytrd(uplo, n, A.data(), lda, d.data(), e.data(), tau.data());
     if (0 != info) {
-        global::log << "\treference sytrd failed with info = " << info << std::endl;
+        global::log << "reference sytrd failed with info = " << info << std::endl;
         return false;
     }
 

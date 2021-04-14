@@ -48,7 +48,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::side left_right, oneapi::mkl
     int64_t nq;
     if (left_right == oneapi::mkl::side::left) {
         if (k > m) {
-            global::log << "\tBad test input, side == left and k > m (" << k << " > " << m << ")"
+            global::log << "Bad test input, side == left and k > m (" << k << " > " << m << ")"
                         << std::endl;
             return false;
         }
@@ -56,7 +56,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::side left_right, oneapi::mkl
     }
     else {
         if (k > n) {
-            global::log << "\tBad test input, side == right and k > n (" << k << " > " << n << ")"
+            global::log << "Bad test input, side == right and k > n (" << k << " > " << n << ")"
                         << std::endl;
             return false;
         }
@@ -69,7 +69,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::side left_right, oneapi::mkl
 
     auto info = reference::gerqf(nq, k, A.data(), lda, tau.data());
     if (0 != info) {
-        global::log << "\treference gerqf failed with info = " << info << std::endl;
+        global::log << "reference gerqf failed with info = " << info << std::endl;
         return false;
     }
 
@@ -120,11 +120,11 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::side left_right, oneapi::mkl
     info = reference::or_un_mrq(left_right, trans, m, n, k, A.data(), lda, tau.data(),
                                 QC_ref.data(), ldqc);
     if (0 != info) {
-        global::log << "\treference unmrq failed with info = " << info << std::endl;
+        global::log << "reference unmrq failed with info = " << info << std::endl;
         return false;
     }
     if (!rel_mat_err_check(m, n, QC.data(), ldqc, QC_ref.data(), ldqc, 1.0)) {
-        global::log << "\tMultiplication check failed" << std::endl;
+        global::log << "Multiplication check failed" << std::endl;
         result = false;
     }
     return result;
@@ -153,7 +153,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::side left_right,
 
     auto info = reference::gerqf(nq, k, A.data(), lda, tau.data());
     if (0 != info) {
-        global::log << "\treference gerqf failed with info = " << info << std::endl;
+        global::log << "reference gerqf failed with info = " << info << std::endl;
         return false;
     }
 

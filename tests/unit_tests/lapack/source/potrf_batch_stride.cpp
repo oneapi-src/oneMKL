@@ -86,7 +86,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
     for (int64_t i = 0; i < batch_size; i++)
         if (!check_potrf_accuracy(A_initial.data() + i * stride_a, A.data() + i * stride_a, uplo, n,
                                   lda)) {
-            global::log << "\tbatch routine index " << i << " failed" << std::endl;
+            global::log << "batch routine index " << i << " failed" << std::endl;
             result = false;
         }
 

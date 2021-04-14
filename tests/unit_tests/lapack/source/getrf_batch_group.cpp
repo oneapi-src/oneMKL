@@ -154,7 +154,7 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
              local_id++, global_id++, A_iter++, ipiv_iter++, A_initial_iter++) {
             if (!check_getrf_accuracy(m, n, A_iter->data(), lda, ipiv_iter->data(),
                                       A_initial_iter->data())) {
-                global::log << "\tbatch routine (" << global_id << ", " << group_id << ", "
+                global::log << "batch routine (" << global_id << ", " << group_id << ", "
                             << local_id << ") (global_id, group_id, local_id) failed" << std::endl;
                 result = false;
             }
