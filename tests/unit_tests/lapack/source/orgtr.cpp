@@ -166,23 +166,9 @@ InputTestController<decltype(::usm_dependency<void>)> dependency_controller{ dep
 
 } /* unnamed namespace */
 
-#ifdef STANDALONE
-int main() {
-    sycl::device dev = sycl::device{ sycl::host_selector{} };
-    int64_t res = 0;
-    res += !accuracy_controller.run(::accuracy<RealSinglePrecisionUsm>, dev);
-    res += !accuracy_controller.run(::accuracy<RealDoublePrecisionUsm>, dev);
-    res += !accuracy_controller.run(::accuracy<RealSinglePrecisionBuffer>, dev);
-    res += !accuracy_controller.run(::accuracy<RealDoublePrecisionBuffer>, dev);
-    res += !dependency_controller.run(::usm_dependency<RealSinglePrecisionUsm>, dev);
-    res += !dependency_controller.run(::usm_dependency<RealDoublePrecisionUsm>, dev);
-    return res;
-}
-#else
 #include <gtest/gtest.h>
 extern std::vector<sycl::device*> devices;
 class OrgtrTests : public ::testing::TestWithParam<sycl::device*> {};
 INSTANTIATE_TEST_SUITE_P(OrgtrTestSuite, OrgtrTests, ::testing::ValuesIn(devices),
                          DeviceNamePrint());
 RUN_SUITE_REAL(Orgtr)
-#endif
