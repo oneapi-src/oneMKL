@@ -39,10 +39,10 @@ const char* accuracy_input = R"(
 200 180 160 220 27182
 )";
 
-template <typename mem_T>
+template <typename data_T>
 bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t k, int64_t lda,
               uint64_t seed) {
-    using fp = typename mem_T_info<mem_T>::value_type;
+    using fp = typename data_T_info<data_T>::value_type;
     using fp_real = typename complex_info<fp>::real_type;
 
     /* Initialize */
@@ -59,8 +59,8 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t k, int64_t 
     /* Compute on device */
     {
         sycl::queue queue{ dev };
-        auto A_dev = device_alloc<mem_T>(queue, A.size());
-        auto tau_dev = device_alloc<mem_T>(queue, tau.size());
+        auto A_dev = device_alloc<data_T>(queue, A.size());
+        auto tau_dev = device_alloc<data_T>(queue, tau.size());
 #ifdef CALL_RT_API
         const auto scratchpad_size =
             oneapi::mkl::lapack::orgqr_scratchpad_size<fp>(queue, m, n, k, lda);
@@ -69,7 +69,7 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t k, int64_t 
         TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::orgqr_scratchpad_size<fp>,
                            m, n, k, lda);
 #endif
-        auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
+        auto scratchpad_dev = device_alloc<data_T>(queue, scratchpad_size);
 
         host_to_device_copy(queue, A.data(), A_dev, A.size());
         host_to_device_copy(queue, tau.data(), tau_dev, tau.size());
@@ -99,10 +99,10 @@ const char* dependency_input = R"(
 1 1 1 1 1 1 1 1
 )";
 
-template <typename mem_T>
+template <typename data_T>
 bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t k, int64_t lda,
                     uint64_t seed) {
-    using fp = typename mem_T_info<mem_T>::value_type;
+    using fp = typename data_T_info<data_T>::value_type;
     using fp_real = typename complex_info<fp>::real_type;
 
     /* Initialize */
@@ -120,8 +120,8 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t k, in
     bool result;
     {
         sycl::queue queue{ dev };
-        auto A_dev = device_alloc<mem_T>(queue, A.size());
-        auto tau_dev = device_alloc<mem_T>(queue, tau.size());
+        auto A_dev = device_alloc<data_T>(queue, A.size());
+        auto tau_dev = device_alloc<data_T>(queue, tau.size());
 #ifdef CALL_RT_API
         const auto scratchpad_size =
             oneapi::mkl::lapack::orgqr_scratchpad_size<fp>(queue, m, n, k, lda);
@@ -130,7 +130,7 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t k, in
         TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::orgqr_scratchpad_size<fp>,
                            m, n, k, lda);
 #endif
-        auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
+        auto scratchpad_dev = device_alloc<data_T>(queue, scratchpad_size);
 
         host_to_device_copy(queue, A.data(), A_dev, A.size());
         host_to_device_copy(queue, tau.data(), tau_dev, tau.size());

@@ -34,11 +34,11 @@ const char* accuracy_input = R"(
 0 6 10 7 70 10 12 120 3 27182
 )";
 
-template <typename mem_T>
+template <typename data_T>
 bool accuracy(const sycl::device& dev, oneapi::mkl::transpose trans, int64_t n, int64_t nrhs,
               int64_t lda, int64_t stride_a, int64_t stride_ipiv, int64_t ldb, int64_t stride_b,
               int64_t batch_size, uint64_t seed) {
-    using fp = typename mem_T_info<mem_T>::value_type;
+    using fp = typename data_T_info<data_T>::value_type;
 
     std::vector<fp> A_initial(stride_a * batch_size);
     std::vector<fp> B_initial(stride_b * batch_size);
@@ -65,9 +65,9 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::transpose trans, int64_t n, 
     {
         sycl::queue queue{ dev };
 
-        auto A_dev = device_alloc<mem_T>(queue, A.size());
-        auto B_dev = device_alloc<mem_T>(queue, B.size());
-        auto ipiv_dev = device_alloc<mem_T, int64_t>(queue, ipiv.size());
+        auto A_dev = device_alloc<data_T>(queue, A.size());
+        auto B_dev = device_alloc<data_T>(queue, B.size());
+        auto ipiv_dev = device_alloc<data_T, int64_t>(queue, ipiv.size());
 #ifdef CALL_RT_API
         const auto scratchpad_size = oneapi::mkl::lapack::getrs_batch_scratchpad_size<fp>(
             queue, trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
@@ -77,7 +77,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::transpose trans, int64_t n, 
                            scratchpad_size = oneapi::mkl::lapack::getrs_batch_scratchpad_size<fp>,
                            trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
 #endif
-        auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
+        auto scratchpad_dev = device_alloc<data_T>(queue, scratchpad_size);
 
         host_to_device_copy(queue, A.data(), A_dev, A.size());
         host_to_device_copy(queue, B.data(), B_dev, B.size());
@@ -121,11 +121,11 @@ const char* dependency_input = R"(
 1 1 1 1 1 1 1 1 1 1
 )";
 
-template <typename mem_T>
+template <typename data_T>
 bool usm_dependency(const sycl::device& dev, oneapi::mkl::transpose trans, int64_t n, int64_t nrhs,
                     int64_t lda, int64_t stride_a, int64_t stride_ipiv, int64_t ldb,
                     int64_t stride_b, int64_t batch_size, uint64_t seed) {
-    using fp = typename mem_T_info<mem_T>::value_type;
+    using fp = typename data_T_info<data_T>::value_type;
 
     std::vector<fp> A_initial(stride_a * batch_size);
     std::vector<fp> B_initial(stride_b * batch_size);
@@ -153,9 +153,9 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::transpose trans, int64
     {
         sycl::queue queue{ dev };
 
-        auto A_dev = device_alloc<mem_T>(queue, A.size());
-        auto B_dev = device_alloc<mem_T>(queue, B.size());
-        auto ipiv_dev = device_alloc<mem_T, int64_t>(queue, ipiv.size());
+        auto A_dev = device_alloc<data_T>(queue, A.size());
+        auto B_dev = device_alloc<data_T>(queue, B.size());
+        auto ipiv_dev = device_alloc<data_T, int64_t>(queue, ipiv.size());
 #ifdef CALL_RT_API
         const auto scratchpad_size = oneapi::mkl::lapack::getrs_batch_scratchpad_size<fp>(
             queue, trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
@@ -165,7 +165,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::transpose trans, int64
                            scratchpad_size = oneapi::mkl::lapack::getrs_batch_scratchpad_size<fp>,
                            trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
 #endif
-        auto scratchpad_dev = device_alloc<mem_T>(queue, scratchpad_size);
+        auto scratchpad_dev = device_alloc<data_T>(queue, scratchpad_size);
 
         host_to_device_copy(queue, A.data(), A_dev, A.size());
         host_to_device_copy(queue, B.data(), B_dev, B.size());

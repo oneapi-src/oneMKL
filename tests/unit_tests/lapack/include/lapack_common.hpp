@@ -173,28 +173,29 @@ struct is_buf<cl::sycl::buffer<T, dimensions, AllocatorT, void>> {
     static constexpr bool value{ true };
 };
 
-template <typename mem_T>
-using is_buffer_type = typename std::enable_if<is_buf<mem_T>::value>::type*;
-template <typename mem_T>
-using is_not_buffer_type = typename std::enable_if<!is_buf<mem_T>::value>::type*;
+template <typename data_T>
+using is_buffer_type = typename std::enable_if<is_buf<data_T>::value>::type*;
+template <typename data_T>
+using is_not_buffer_type = typename std::enable_if<!is_buf<data_T>::value>::type*;
 
-template <typename mem_T, typename = void*>
-struct mem_T_info {};
-template <typename mem_T>
-struct mem_T_info<mem_T, is_buffer_type<mem_T>> {
-    using value_type = typename mem_T::value_type;
+template <typename data_T, typename = void*>
+struct data_T_info {};
+template <typename data_T>
+struct data_T_info<data_T, is_buffer_type<data_T>> {
+    using value_type = typename data_T::value_type;
 };
-template <typename mem_T>
-struct mem_T_info<mem_T, is_not_buffer_type<mem_T>> {
-    using value_type = mem_T;
+template <typename data_T>
+struct data_T_info<data_T, is_not_buffer_type<data_T>> {
+    using value_type = data_T;
 };
 
-template <typename mem_T, typename T = typename mem_T::value_type, is_buffer_type<mem_T> = nullptr>
+template <typename data_T, typename T = typename data_T::value_type,
+          is_buffer_type<data_T> = nullptr>
 sycl::buffer<T, 1> device_alloc(sycl::queue queue, size_t count, size_t alignment = 4096) {
     sycl::buffer<T, 1> buf{ sycl::range<1>(count) };
     return buf;
 }
-template <typename mem_T, typename T = mem_T, is_not_buffer_type<mem_T> = nullptr>
+template <typename data_T, typename T = data_T, is_not_buffer_type<data_T> = nullptr>
 T* device_alloc(sycl::queue queue, size_t count, size_t alignment = 4096) {
     const sycl::device dev = queue.get_device();
     const sycl::context ctx = queue.get_context();
@@ -202,16 +203,16 @@ T* device_alloc(sycl::queue queue, size_t count, size_t alignment = 4096) {
     return dev_ptr;
 }
 
-template <typename mem_T, is_buffer_type<mem_T> = nullptr>
-void device_free(sycl::queue queue, mem_T buf) {}
-template <typename mem_T, is_not_buffer_type<mem_T> = nullptr>
-void device_free(sycl::queue queue, mem_T* dev_ptr) {
+template <typename data_T, is_buffer_type<data_T> = nullptr>
+void device_free(sycl::queue queue, data_T buf) {}
+template <typename data_T, is_not_buffer_type<data_T> = nullptr>
+void device_free(sycl::queue queue, data_T* dev_ptr) {
     const sycl::context ctx = queue.get_context();
     oneapi::mkl::free_shared(dev_ptr, ctx);
 }
 
-template <typename mem_T, is_buffer_type<mem_T> = nullptr>
-void host_to_device_copy(sycl::queue queue, typename mem_T::value_type* source, mem_T dest,
+template <typename data_T, is_buffer_type<data_T> = nullptr>
+void host_to_device_copy(sycl::queue queue, typename data_T::value_type* source, data_T dest,
                          size_t count) {
     queue.submit([&](sycl::handler& cgh) {
         auto dest_accessor =
@@ -219,13 +220,13 @@ void host_to_device_copy(sycl::queue queue, typename mem_T::value_type* source, 
         cgh.copy(source, dest_accessor);
     });
 }
-template <typename mem_T, is_not_buffer_type<mem_T> = nullptr>
-sycl::event host_to_device_copy(sycl::queue queue, mem_T* source, mem_T* dest, size_t count) {
-    return queue.memcpy(dest, source, count * sizeof(mem_T));
+template <typename data_T, is_not_buffer_type<data_T> = nullptr>
+sycl::event host_to_device_copy(sycl::queue queue, data_T* source, data_T* dest, size_t count) {
+    return queue.memcpy(dest, source, count * sizeof(data_T));
 }
 
-template <typename mem_T, is_buffer_type<mem_T> = nullptr>
-void device_to_host_copy(sycl::queue queue, mem_T source, typename mem_T::value_type* dest,
+template <typename data_T, is_buffer_type<data_T> = nullptr>
+void device_to_host_copy(sycl::queue queue, data_T source, typename data_T::value_type* dest,
                          size_t count) {
     queue.submit([&](sycl::handler& cgh) {
         auto source_accessor =
@@ -233,9 +234,9 @@ void device_to_host_copy(sycl::queue queue, mem_T source, typename mem_T::value_
         cgh.copy(source_accessor, dest);
     });
 }
-template <typename mem_T, is_not_buffer_type<mem_T> = nullptr>
-sycl::event device_to_host_copy(sycl::queue queue, mem_T* source, mem_T* dest, size_t count) {
-    return queue.memcpy(dest, source, count * sizeof(mem_T));
+template <typename data_T, is_not_buffer_type<data_T> = nullptr>
+sycl::event device_to_host_copy(sycl::queue queue, data_T* source, data_T* dest, size_t count) {
+    return queue.memcpy(dest, source, count * sizeof(data_T));
 }
 
 enum class Dependency_Result { fail, pass, inconclusive, unknown };
