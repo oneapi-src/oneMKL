@@ -24,11 +24,15 @@
 #include "lapack_common.hpp"
 #include "lapack_test_controller.hpp"
 
+namespace global {
+std::vector<int64_t> host_data(1024);
+int64_t* device_data = nullptr;
+} // namespace global
+
 sycl::event create_dependent_event(sycl::queue queue) {
-    auto sleep_duration = std::chrono::milliseconds(10);
-    return queue.submit([&](sycl::handler &cgh) {
-        cgh.codeplay_host_task([=]() { std::this_thread::sleep_for(2 * sleep_duration); });
-    });
+    global::device_data = device_alloc<int64_t>(queue, global::host_data.size());
+    return host_to_device_copy(queue, global::host_data.data(), global::device_data,
+                               global::host_data.size());
 }
 
 Dependency_Result get_result(sycl::info::event_command_status in_status,
@@ -65,7 +69,20 @@ Dependency_Result get_result(sycl::info::event_command_status in_status,
     return Dependency_Result::unknown;
 }
 
-bool check_dependency(sycl::event in_event, sycl::event func_event) {
+void print_status(const char* name, sycl::info::event_command_status status) {
+    global::log << name << " command execution status: ";
+    if (sycl::info::event_command_status::submitted == status)
+        global::log << "submitted";
+    else if (sycl::info::event_command_status::running == status)
+        global::log << "running";
+    else if (sycl::info::event_command_status::complete == status)
+        global::log << "complete";
+    else
+        global::log << "status unknown";
+    global::log << " (" << static_cast<int64_t>(status) << ")" << std::endl;
+}
+
+bool check_dependency(sycl::queue queue, sycl::event in_event, sycl::event func_event) {
     auto result = Dependency_Result::inconclusive;
     sycl::info::event_command_status in_status;
     sycl::info::event_command_status func_status;
@@ -88,27 +105,10 @@ bool check_dependency(sycl::event in_event, sycl::event func_event) {
         global::log << "Dependency Test: Inconclusive" << std::endl;
     if (result == Dependency_Result::fail)
         global::log << "Dependency Test: Failed" << std::endl;
+    print_status("in_event", in_status);
+    print_status("func_event", func_status);
 
-    global::log << "\tin_event command execution status: " << static_cast<int64_t>(in_status);
-    if (sycl::info::event_command_status::submitted == in_status)
-        global::log << " (submitted)" << std::endl;
-    else if (sycl::info::event_command_status::running == in_status)
-        global::log << " (running)" << std::endl;
-    else if (sycl::info::event_command_status::complete == in_status)
-        global::log << " (complete)" << std::endl;
-    else
-        global::log << " (status unknown)" << std::endl;
-
-    global::log << "\tfunction command execution status: " << static_cast<int64_t>(func_status);
-    if (sycl::info::event_command_status::submitted == func_status)
-        global::log << " (submitted)" << std::endl;
-    else if (sycl::info::event_command_status::running == func_status)
-        global::log << " (running)" << std::endl;
-    else if (sycl::info::event_command_status::complete == func_status)
-        global::log << " (complete)" << std::endl;
-    else
-        global::log << " (status unknown)" << std::endl;
-
+    device_free(queue, global::device_data);
     return (result == Dependency_Result::pass || result == Dependency_Result::inconclusive) ? true
                                                                                             : false;
 }

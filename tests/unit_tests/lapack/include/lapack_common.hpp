@@ -220,8 +220,8 @@ void host_to_device_copy(sycl::queue queue, typename mem_T::value_type* source, 
     });
 }
 template <typename mem_T, is_not_buffer_type<mem_T> = nullptr>
-void host_to_device_copy(sycl::queue queue, mem_T* source, mem_T* dest, size_t count) {
-    queue.memcpy(dest, source, count * sizeof(mem_T));
+sycl::event host_to_device_copy(sycl::queue queue, mem_T* source, mem_T* dest, size_t count) {
+    return queue.memcpy(dest, source, count * sizeof(mem_T));
 }
 
 template <typename mem_T, is_buffer_type<mem_T> = nullptr>
@@ -234,12 +234,12 @@ void device_to_host_copy(sycl::queue queue, mem_T source, typename mem_T::value_
     });
 }
 template <typename mem_T, is_not_buffer_type<mem_T> = nullptr>
-void device_to_host_copy(sycl::queue queue, mem_T* source, mem_T* dest, size_t count) {
-    queue.memcpy(dest, source, count * sizeof(mem_T));
+sycl::event device_to_host_copy(sycl::queue queue, mem_T* source, mem_T* dest, size_t count) {
+    return queue.memcpy(dest, source, count * sizeof(mem_T));
 }
 
 enum class Dependency_Result { fail, pass, inconclusive, unknown };
 
 sycl::event create_dependent_event(sycl::queue queue);
-bool check_dependency(sycl::event in_event, sycl::event func_event);
+bool check_dependency(sycl::queue, sycl::event in_event, sycl::event func_event);
 #endif // _LAPACK_COMMON_HPP__

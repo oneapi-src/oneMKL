@@ -280,7 +280,7 @@ bool usm_dependency(const sycl::device& dev, uint64_t seed) {
                            group_count, group_sizes_vec.data(), scratchpad_dev, scratchpad_size,
                            sycl::vector_class<sycl::event>{ in_event });
 #endif
-        result = check_dependency(in_event, func_event);
+        result = check_dependency(queue, in_event, func_event);
 
         queue.wait_and_throw();
     }

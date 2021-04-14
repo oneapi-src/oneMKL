@@ -151,7 +151,7 @@ bool usm_dependency(const sycl::device& dev, int64_t n, int64_t lda, uint64_t se
                            lda, ipiv_dev, scratchpad_dev, scratchpad_size,
                            sycl::vector_class<sycl::event>{ in_event });
 #endif
-        result = check_dependency(in_event, func_event);
+        result = check_dependency(queue, in_event, func_event);
 
         queue.wait_and_throw();
         device_free(queue, A_dev);
