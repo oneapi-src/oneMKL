@@ -84,7 +84,7 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, uint64
 #endif
         queue.wait_and_throw();
 
-        /* device_to_host_copy(queue, A_dev, A.data(), A.size()); */
+        device_to_host_copy(queue, A_dev, A.data(), A.size());
         device_to_host_copy(queue, d_dev, d.data(), d.size());
         device_to_host_copy(queue, e_dev, e.data(), e.size());
         device_to_host_copy(queue, tauq_dev, tauq.data(), tauq.size());
