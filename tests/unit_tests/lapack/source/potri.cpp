@@ -34,8 +34,6 @@ namespace {
 const char* accuracy_input = R"(
 0 30 42 27182
 0 33 33 27182
-1 31 41 27182
-1 45 45 27182
 )";
 
 template <typename data_T>
