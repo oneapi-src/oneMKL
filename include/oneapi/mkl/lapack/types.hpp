@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright 2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,8 +17,7 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _LAPACK_TYPES_HPP_
-#define _LAPACK_TYPES_HPP_
+#pragma once
 
 #include <CL/sycl.hpp>
 #include <complex>
@@ -91,5 +90,3 @@ using is_complex_floating_point = typename enable_if<is_cfp<fp>::value>::type*;
 } // namespace lapack
 } // namespace mkl
 } // namespace oneapi
-
-#endif //_LAPACK_TYPES_HPP_

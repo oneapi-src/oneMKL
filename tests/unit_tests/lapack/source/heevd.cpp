@@ -21,11 +21,12 @@
 #include <vector>
 
 #include <CL/sycl.hpp>
+
 #include "oneapi/mkl.hpp"
 #include "lapack_common.hpp"
 #include "lapack_test_controller.hpp"
 #include "lapack_accuracy_checks.hpp"
-#include "reference_lapack_wrappers.hpp"
+#include "lapack_reference_wrappers.hpp"
 #include "test_helper.hpp"
 
 namespace {
@@ -49,7 +50,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::job jobz, oneapi::mkl::uplo 
 
     /* Compute on device */
     {
-        sycl::queue queue{ dev };
+        sycl::queue queue{ dev, async_error_handler };
         auto A_dev = device_alloc<data_T>(queue, A.size());
         auto w_dev = device_alloc<data_T, fp_real>(queue, w.size());
 #ifdef CALL_RT_API
@@ -149,7 +150,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::job jobz, oneapi::mkl:
     /* Compute on device */
     bool result;
     {
-        sycl::queue queue{ dev };
+        sycl::queue queue{ dev, async_error_handler };
         auto A_dev = device_alloc<data_T>(queue, A.size());
         auto w_dev = device_alloc<data_T, fp_real>(queue, w.size());
 #ifdef CALL_RT_API

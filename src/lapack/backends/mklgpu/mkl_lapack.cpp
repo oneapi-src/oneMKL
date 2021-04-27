@@ -20,9 +20,9 @@
 #include <CL/sycl.hpp>
 
 #include "oneapi/mkl/types.hpp"
-#include "oneapi/mkl/lapack/lapack_types.hpp"
+#include "oneapi/mkl/lapack/types.hpp"
 #include "oneapi/mkl/lapack/detail/mklgpu/onemkl_lapack_mklgpu.hpp"
-#include "../mkl_common/mkl_lapack.hpp"
+#include "../mkl_common/mkl_lapack_backend.hpp"
 
 namespace oneapi {
 namespace mkl {

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright 2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _MKL_LAPACK_HPP_
-#define _MKL_LAPACK_HPP_
+#pragma once
 
 #include <complex>
+
 #include "oneapi/mkl/types.hpp"
-#include "oneapi/mkl/lapack/lapack_types.hpp"
+#include "oneapi/mkl/lapack/types.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -1304,5 +1304,3 @@ std::int64_t ungqr_batch_scratchpad_size(sycl::queue &queue, std::int64_t *m, st
 } // namespace lapack
 } // namespace mkl
 } // namespace oneapi
-
-#endif // _MKL_LAPACK_HPP_

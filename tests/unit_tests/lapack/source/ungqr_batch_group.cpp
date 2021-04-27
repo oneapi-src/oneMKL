@@ -23,11 +23,12 @@
 #include <vector>
 
 #include <CL/sycl.hpp>
+
 #include "oneapi/mkl.hpp"
 #include "lapack_common.hpp"
 #include "lapack_test_controller.hpp"
 #include "lapack_accuracy_checks.hpp"
-#include "reference_lapack_wrappers.hpp"
+#include "lapack_reference_wrappers.hpp"
 #include "test_helper.hpp"
 
 namespace {
@@ -78,7 +79,7 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
 
     /* Compute on device */
     {
-        sycl::queue queue{ dev };
+        sycl::queue queue{ dev, async_error_handler };
 
         std::list<std::vector<fp, sycl::usm_allocator<fp, sycl::usm::alloc::shared>>> A_dev_list;
         std::list<std::vector<fp, sycl::usm_allocator<fp, sycl::usm::alloc::shared>>> tau_dev_list;
@@ -213,7 +214,7 @@ bool usm_dependency(const sycl::device& dev, uint64_t seed) {
     /* Compute on device */
     bool result;
     {
-        sycl::queue queue{ dev };
+        sycl::queue queue{ dev, async_error_handler };
 
         std::list<std::vector<fp, sycl::usm_allocator<fp, sycl::usm::alloc::shared>>> A_dev_list;
         std::list<std::vector<fp, sycl::usm_allocator<fp, sycl::usm::alloc::shared>>> tau_dev_list;

@@ -21,11 +21,12 @@
 #include <vector>
 
 #include <CL/sycl.hpp>
+
 #include "oneapi/mkl.hpp"
 #include "lapack_common.hpp"
 #include "lapack_test_controller.hpp"
 #include "lapack_accuracy_checks.hpp"
-#include "reference_lapack_wrappers.hpp"
+#include "lapack_reference_wrappers.hpp"
 #include "test_helper.hpp"
 
 namespace {
@@ -56,7 +57,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::generate vect, int64_t m, in
 
     std::vector<fp> A(lda * n);
     std::vector<fp_real> d(min_mn_A);
-    std::vector<fp_real> e(min_mn_A - 1);
+    std::vector<fp_real> e(std::max<int64_t>(min_mn_A - 1, 1));
     std::vector<fp> tauq(min_mn_A);
     std::vector<fp> taup(min_mn_A);
 
@@ -67,7 +68,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::generate vect, int64_t m, in
 
     /* Compute on device */
     {
-        sycl::queue queue{ dev };
+        sycl::queue queue{ dev, async_error_handler };
 
         auto A_dev = device_alloc<data_T>(queue, A.size());
         auto tau_dev = device_alloc<data_T>(queue, tau.size());
@@ -129,7 +130,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::generate vect, int64_t
 
     std::vector<fp> A(lda * n);
     std::vector<fp_real> d(min_mn_A);
-    std::vector<fp_real> e(min_mn_A - 1);
+    std::vector<fp_real> e(std::max<int64_t>(min_mn_A - 1, 1));
     std::vector<fp> tauq(min_mn_A);
     std::vector<fp> taup(min_mn_A);
 
@@ -141,7 +142,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::generate vect, int64_t
     /* Compute on device */
     bool result;
     {
-        sycl::queue queue{ dev };
+        sycl::queue queue{ dev, async_error_handler };
 
         auto A_dev = device_alloc<data_T>(queue, A.size());
         auto tau_dev = device_alloc<data_T>(queue, tau.size());

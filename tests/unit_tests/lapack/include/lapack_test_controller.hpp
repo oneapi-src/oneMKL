@@ -17,12 +17,14 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _LAPACK_TEST_CONTROLLER_HPP_
-#define _LAPACK_TEST_CONTROLLER_HPP_
+#pragma once
 
+#include <complex>
 #include <sstream>
 #include <string>
 #include <vector>
+
+#include <CL/sycl.hpp>
 
 #include "lapack_common.hpp"
 #include "oneapi/mkl/exceptions.hpp"
@@ -338,5 +340,3 @@ using ComplexDoublePrecisionUsm = std::complex<double>;
         EXPECT_TRUE(accuracy_controller.run_print_on_fail(           \
             ::accuracy<ComplexDoublePrecisionBuffer>, *GetParam())); \
     }
-
-#endif // _LAPACK_TEST_CONTROLLER_HPP_

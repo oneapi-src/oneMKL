@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright 2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -18,22 +18,22 @@
 *******************************************************************************/
 
 #include <CL/sycl.hpp>
-#include <chrono>
-#include <thread>
 
 #include "lapack_common.hpp"
-#include "lapack_test_controller.hpp"
 
-namespace global {
-std::vector<int64_t> host_data(1024);
-int64_t* device_data = nullptr;
-} // namespace global
+namespace {
+
+static std::vector<int64_t> host_data(1024);
+static int64_t* device_data = nullptr;
+
+} // namespace
 
 sycl::event create_dependent_event(sycl::queue queue) {
-    global::device_data = device_alloc<int64_t>(queue, global::host_data.size());
-    return host_to_device_copy(queue, global::host_data.data(), global::device_data,
-                               global::host_data.size());
+    ::device_data = device_alloc<int64_t>(queue, ::host_data.size());
+    return host_to_device_copy(queue, ::host_data.data(), ::device_data, ::host_data.size());
 }
+
+enum class Dependency_Result { fail, pass, inconclusive, unknown };
 
 Dependency_Result get_result(sycl::info::event_command_status in_status,
                              sycl::info::event_command_status func_status) {
@@ -108,7 +108,7 @@ bool check_dependency(sycl::queue queue, sycl::event in_event, sycl::event func_
     print_status("in_event", in_status);
     print_status("func_event", func_status);
 
-    device_free(queue, global::device_data);
+    device_free(queue, ::device_data);
     return (result == Dependency_Result::pass || result == Dependency_Result::inconclusive) ? true
                                                                                             : false;
 }

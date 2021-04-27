@@ -17,26 +17,42 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _LAPACK_COMMON_HPP__
-#define _LAPACK_COMMON_HPP__
+#pragma once
 
-#include <CL/sycl.hpp>
-#include <chrono>
 #include <complex>
-#include <iostream>
 #include <random>
 #include <sstream>
-#include <thread>
+#include <stdexcept>
 #include <type_traits>
+
+#include <CL/sycl.hpp>
 
 #include "oneapi/mkl/types.hpp"
 #include "test_helper.hpp"
 
 namespace global {
+
 extern std::stringstream log;
 extern std::array<char, 1024> buffer;
 extern std::string pad;
+
 } // namespace global
+
+inline void async_error_handler(sycl::exception_list exceptions) {
+    if (exceptions.size()) {
+        for (auto const& e : exceptions) {
+            try {
+                std::rethrow_exception(e);
+            }
+            catch (std::exception const& e) {
+                global::log << e.what() << std::endl;
+            }
+        }
+        std::string message{ std::to_string(exceptions.size()) +
+                             " exception(s) caught during asynchronous operation" };
+        throw std::runtime_error(message);
+    }
+}
 
 template <typename T>
 struct complex_info {
@@ -239,8 +255,5 @@ sycl::event device_to_host_copy(sycl::queue queue, data_T* source, data_T* dest,
     return queue.memcpy(dest, source, count * sizeof(data_T));
 }
 
-enum class Dependency_Result { fail, pass, inconclusive, unknown };
-
 sycl::event create_dependent_event(sycl::queue queue);
 bool check_dependency(sycl::queue, sycl::event in_event, sycl::event func_event);
-#endif // _LAPACK_COMMON_HPP__

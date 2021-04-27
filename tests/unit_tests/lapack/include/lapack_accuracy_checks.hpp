@@ -17,15 +17,14 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _LAPACK_ACCURACY_CHECKS_TPP_
-#define _LAPACK_ACCURACY_CHECKS_TPP_
+#pragma once
 
 #include <cstdio>
 #include <complex>
 #include <vector>
 
 #include "lapack_common.hpp"
-#include "reference_lapack_wrappers.hpp"
+#include "lapack_reference_wrappers.hpp"
 
 /* computes |A - Ref| / (|Ref| min(m,n) eps) < threshold */
 template <typename fp>
@@ -52,9 +51,9 @@ bool rel_mat_err_check(int64_t m, int64_t n, const fp* A, int64_t lda, const fp*
     bool result = rel_err < threshold;
     if (!result) {
         snprintf(global::buffer.data(), global::buffer.size(),
-                 "|A - Ref| / (|Ref| min(m,n) eps) = |%e| / (|%e| %d * %e) = %e\n", norm_residual,
+                 "|A - Ref| / (|Ref| min(m,n) eps) = |%e| / (|%e| %d * %e) = %e", norm_residual,
                  norm_Ref, static_cast<int>(std::min(m, n)), ulp, rel_err);
-        global::log << global::buffer.data();
+        global::log << global::buffer.data() << std::endl;
         global::log << "threshold = " << threshold << std::endl;
     }
     return result;
@@ -82,9 +81,9 @@ bool rel_id_err_check(int64_t n, const fp* A, int64_t lda, float threshold = 10.
     bool result = rel_err < threshold;
     if (!result) {
         snprintf(global::buffer.data(), global::buffer.size(),
-                 "|A - I| / (|I| n eps) = |%e| / (|%d| %d * %e) = %e\n", norm_residual,
+                 "|A - I| / (|I| n eps) = |%e| / (|%d| %d * %e) = %e", norm_residual,
                  static_cast<int>(n), static_cast<int>(n), ulp, rel_err);
-        global::log << global::buffer.data();
+        global::log << global::buffer.data() << std::endl;
         global::log << "threshold = " << threshold << std::endl;
     }
     return result;
@@ -112,9 +111,9 @@ bool rel_vec_err_check(int64_t n, const fp* A, const fp* Ref, float threshold = 
     bool result = rel_err < threshold;
     if (!result) {
         snprintf(global::buffer.data(), global::buffer.size(),
-                 "|V - Ref| / (|Ref| eps) = |%e| / (|%e| %e) = %e\n", norm_residual, norm_Ref, ulp,
+                 "|V - Ref| / (|Ref| eps) = |%e| / (|%e| %e) = %e", norm_residual, norm_Ref, ulp,
                  rel_err);
-        global::log << global::buffer.data();
+        global::log << global::buffer.data() << std::endl;
         global::log << "threshold = " << threshold << std::endl;
     }
     return result;
@@ -283,7 +282,7 @@ bool check_getrf_accuracy(int64_t m, int64_t n, const fp* A, int64_t lda, const 
         snprintf(global::buffer.data(), global::buffer.size(),
                  "| L * U - A | / ( |A| * min(m,n) * ulp ) = |%e| / (|%e| %d * %e) = %e",
                  norm_residual, norm_A, static_cast<int>(std::min(m, n)), ulp, rel_err);
-        global::log << global::buffer.data();
+        global::log << global::buffer.data() << std::endl;
         global::log << "threshold = " << threshold << std::endl;
     }
 
@@ -354,7 +353,7 @@ bool check_getri_accuracy(int64_t n, fp* A, int64_t lda, int64_t* ipiv, fp* A_in
         snprintf(global::buffer.data(), global::buffer.size(),
                  "| I - inv(A) A | / ( |A| |inv(A)| n ulp ) = |%e| / ( |%e| |%e| %d * %e ) = %e",
                  norm_residual, norm_A, norm_invA, static_cast<int>(n), ulp, rel_err);
-        global::log << global::buffer.data();
+        global::log << global::buffer.data() << std::endl;
         global::log << "threshold = " << threshold << std::endl;
     }
 
@@ -371,7 +370,7 @@ bool check_getri_accuracy(int64_t n, fp* A, int64_t lda, int64_t* ipiv, fp* A_in
         snprintf(global::buffer.data(), global::buffer.size(),
                  "| I - inv(A) A | / ( |A| |inv(A)| n ulp ) = |%e | / ( |%e| |%e| %d * %e) = %e",
                  norm_residual, norm_A, norm_invA, static_cast<int>(n), ulp, rel_err);
-        global::log << global::buffer.data();
+        global::log << global::buffer.data() << std::endl;
         global::log << "threshold = " << threshold << std::endl;
     }
 
@@ -405,7 +404,7 @@ bool check_getrs_accuracy(oneapi::mkl::transpose transa, int64_t n, int64_t nrhs
         snprintf(global::buffer.data(), global::buffer.size(),
                  "| AX - B | / ( |A| |X| n ulp ) = |%e| / ( |%e| |%e| %d * %e ) = %e",
                  norm_residual, norm_A, norm_B, static_cast<int>(n), ulp, rel_err);
-        global::log << global::buffer.data();
+        global::log << global::buffer.data() << std::endl;
         global::log << "threshold = " << threshold << std::endl;
     }
 
@@ -439,7 +438,7 @@ bool check_potrs_accuracy(oneapi::mkl::uplo uplo, int64_t n, int64_t nrhs, fp* A
         snprintf(global::buffer.data(), global::buffer.size(),
                  "| AX - B | / ( |A| |X| n ulp ) = |%e| / ( |%e| |%e| %d * %e ) = %e",
                  norm_residual, norm_A, norm_B, static_cast<int>(n), ulp, rel_err);
-        global::log << global::buffer.data();
+        global::log << global::buffer.data() << std::endl;
         global::log << "threshold = " << threshold << std::endl;
     }
 
@@ -582,14 +581,12 @@ bool check_trtrs_accuracy(oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
     bool result = rel_err < threshold;
     if (!result) {
         snprintf(global::buffer.data(), global::buffer.size(),
-                 "|Ax - b| / (|A| |x| cond(A) eps) = |%e| / (|%e| |%e| %e * %e) = %e\n",
+                 "|Ax - b| / (|A| |x| cond(A) eps) = |%e| / (|%e| |%e| %e * %e) = %e",
                  norm_residual, norm_A, norm_x, cond_A, ulp, rel_err);
-        global::log << global::buffer.data();
+        global::log << global::buffer.data() << std::endl;
         global::log << "threshold = " << threshold << std::endl;
         global::log << "Solve check failed" << std::endl;
     }
 
     return result;
 }
-
-#endif // _LAPACK_ACCURACY_CHECKS_TPP_

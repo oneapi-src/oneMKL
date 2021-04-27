@@ -17,16 +17,14 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_LAPACK_LOADER_HPP_
-#define _ONEMKL_LAPACK_LOADER_HPP_
+#pragma once
 
 #include <complex>
 #include <cstdint>
 #include <CL/sycl.hpp>
 
 #include "oneapi/mkl/types.hpp"
-#include "oneapi/mkl/lapack/lapack_types.hpp"
-
+#include "oneapi/mkl/lapack/types.hpp"
 #include "oneapi/mkl/detail/export.hpp"
 #include "oneapi/mkl/detail/get_device_id.hpp"
 
@@ -1681,5 +1679,3 @@ std::int64_t ungqr_batch_scratchpad_size(oneapi::mkl::device libkey, sycl::queue
 } //namespace lapack
 } //namespace mkl
 } //namespace oneapi
-
-#endif //_ONEMKL_LAPACK_LOADER_HPP_

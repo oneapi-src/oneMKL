@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright 2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,12 +17,13 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _LAPACK_FUNCTION_TABLE_HPP_
-#define _LAPACK_FUNCTION_TABLE_HPP_
+#pragma once
 
 #include <complex>
 #include <cstdint>
+
 #include <CL/sycl.hpp>
+
 #include "oneapi/mkl/types.hpp"
 
 typedef struct {
@@ -1832,4 +1833,3 @@ typedef struct {
                                                       std::int64_t *group_sizes);
 
 } lapack_function_table_t;
-#endif //_LAPACK_FUNCTION_TABLE_HPP_

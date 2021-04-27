@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright 2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,14 +17,13 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_LAPACK_MKLCPU_HPP_
-#define _ONEMKL_LAPACK_MKLCPU_HPP_
+#pragma once
 
 #include <cstdint>
 #include <complex>
 #include <CL/sycl.hpp>
 #include "oneapi/mkl/types.hpp"
-#include "oneapi/mkl/lapack/lapack_types.hpp"
+#include "oneapi/mkl/lapack/types.hpp"
 #include "oneapi/mkl/detail/export.hpp"
 
 namespace oneapi {
@@ -38,5 +37,3 @@ namespace mklcpu {
 } //namespace lapack
 } //namespace mkl
 } //namespace oneapi
-
-#endif //_ONEMKL_LAPACK_MKLCPU_HPP_

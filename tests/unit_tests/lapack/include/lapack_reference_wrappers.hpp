@@ -17,8 +17,7 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _REFERENCE_LAPACK_WRAPPERS_HPP__
-#define _REFERENCE_LAPACK_WRAPPERS_HPP__
+#pragma once
 
 #ifndef lapack_int
 #define lapack_int int64_t
@@ -899,5 +898,3 @@ inline int64_t trtrs(oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans, oneap
 }
 
 } //namespace reference
-
-#endif // _REFERENCE_LAPACK_WRAPPERS_HPP__
