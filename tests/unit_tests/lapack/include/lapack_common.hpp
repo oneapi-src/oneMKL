@@ -28,7 +28,6 @@
 #include <CL/sycl.hpp>
 
 #include "oneapi/mkl/types.hpp"
-#include "test_helper.hpp"
 
 namespace global {
 
@@ -213,9 +212,7 @@ sycl::buffer<T, 1> device_alloc(sycl::queue queue, size_t count, size_t alignmen
 }
 template <typename data_T, typename T = data_T, is_not_buffer_type<data_T> = nullptr>
 T* device_alloc(sycl::queue queue, size_t count, size_t alignment = 4096) {
-    const sycl::device dev = queue.get_device();
-    const sycl::context ctx = queue.get_context();
-    T* dev_ptr = (T*)oneapi::mkl::malloc_shared(alignment, count * sizeof(T), dev, ctx);
+    T* dev_ptr = (T*)sycl::malloc_device(count * sizeof(T), queue);
     return dev_ptr;
 }
 
@@ -224,7 +221,7 @@ void device_free(sycl::queue queue, data_T buf) {}
 template <typename data_T, is_not_buffer_type<data_T> = nullptr>
 void device_free(sycl::queue queue, data_T* dev_ptr) {
     const sycl::context ctx = queue.get_context();
-    oneapi::mkl::free_shared(dev_ptr, ctx);
+    sycl::free(dev_ptr, ctx);
 }
 
 template <typename data_T, is_buffer_type<data_T> = nullptr>
