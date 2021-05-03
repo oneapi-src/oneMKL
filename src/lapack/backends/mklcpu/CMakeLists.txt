@@ -20,6 +20,7 @@
 set(LIB_NAME onemkl_lapack_mklcpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
+set(USE_DPCPP_API ON)
 find_package(MKL REQUIRED)
 
 add_library(${LIB_NAME})
