@@ -228,11 +228,8 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::m
 InputTestController<decltype(::accuracy<void>)> accuracy_controller{ accuracy_input };
 InputTestController<decltype(::usm_dependency<void>)> dependency_controller{ dependency_input };
 
-} /* unnamed namespace */
+} /* anonymous namespace */
 
-#include <gtest/gtest.h>
-extern std::vector<sycl::device*> devices;
-class GesvdTests : public ::testing::TestWithParam<sycl::device*> {};
-INSTANTIATE_TEST_SUITE_P(GesvdTestSuite, GesvdTests, ::testing::ValuesIn(devices),
-                         DeviceNamePrint());
-RUN_SUITE(Gesvd)
+#include "lapack_gtest_suite.hpp"
+INSTANTIATE_GTEST_SUITE_ACCURACY(Gesvd);
+INSTANTIATE_GTEST_SUITE_DEPENDENCY(Gesvd);

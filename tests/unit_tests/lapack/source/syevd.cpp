@@ -192,11 +192,8 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::job jobz, oneapi::mkl:
 InputTestController<decltype(::accuracy<void>)> accuracy_controller{ accuracy_input };
 InputTestController<decltype(::usm_dependency<void>)> dependency_controller{ dependency_input };
 
-} /* unnamed namespace */
+} /* anonymous namespace */
 
-#include <gtest/gtest.h>
-extern std::vector<sycl::device*> devices;
-class SyevdTests : public ::testing::TestWithParam<sycl::device*> {};
-INSTANTIATE_TEST_SUITE_P(SyevdTestSuite, SyevdTests, ::testing::ValuesIn(devices),
-                         DeviceNamePrint());
-RUN_SUITE_REAL(Syevd)
+#include "lapack_gtest_suite.hpp"
+INSTANTIATE_GTEST_SUITE_ACCURACY_REAL(Syevd);
+INSTANTIATE_GTEST_SUITE_DEPENDENCY_REAL(Syevd);

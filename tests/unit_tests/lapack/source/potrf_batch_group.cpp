@@ -249,11 +249,8 @@ bool usm_dependency(const sycl::device& dev, uint64_t seed) {
 InputTestController<decltype(::accuracy<void>)> accuracy_controller{ accuracy_input };
 InputTestController<decltype(::usm_dependency<void>)> dependency_controller{ dependency_input };
 
-} /* unnamed namespace */
+} /* anonymous namespace */
 
-#include <gtest/gtest.h>
-extern std::vector<sycl::device*> devices;
-class PotrfBatchGroupTests : public ::testing::TestWithParam<sycl::device*> {};
-INSTANTIATE_TEST_SUITE_P(PotrfBatchGroupTestSuite, PotrfBatchGroupTests,
-                         ::testing::ValuesIn(devices), DeviceNamePrint());
-RUN_SUITE_USM(PotrfBatchGroup)
+#include "lapack_gtest_suite.hpp"
+INSTANTIATE_GTEST_SUITE_ACCURACY_USM(PotrfBatchGroup);
+INSTANTIATE_GTEST_SUITE_DEPENDENCY(PotrfBatchGroup);

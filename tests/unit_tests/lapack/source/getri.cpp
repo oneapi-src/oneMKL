@@ -166,11 +166,8 @@ bool usm_dependency(const sycl::device& dev, int64_t n, int64_t lda, uint64_t se
 InputTestController<decltype(::accuracy<void>)> accuracy_controller{ accuracy_input };
 InputTestController<decltype(::usm_dependency<void>)> dependency_controller{ dependency_input };
 
-} /* unnamed namespace */
+} /* anonymous namespace */
 
-#include <gtest/gtest.h>
-extern std::vector<sycl::device*> devices;
-class GetriTests : public ::testing::TestWithParam<sycl::device*> {};
-INSTANTIATE_TEST_SUITE_P(GetriTestSuite, GetriTests, ::testing::ValuesIn(devices),
-                         DeviceNamePrint());
-RUN_SUITE(Getri)
+#include "lapack_gtest_suite.hpp"
+INSTANTIATE_GTEST_SUITE_ACCURACY(Getri);
+INSTANTIATE_GTEST_SUITE_DEPENDENCY(Getri);

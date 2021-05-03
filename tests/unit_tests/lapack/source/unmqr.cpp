@@ -198,11 +198,8 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::side left_right,
 InputTestController<decltype(::accuracy<void>)> accuracy_controller{ accuracy_input };
 InputTestController<decltype(::usm_dependency<void>)> dependency_controller{ dependency_input };
 
-} /* unnamed namespace */
+} /* anonymous namespace */
 
-#include <gtest/gtest.h>
-extern std::vector<sycl::device*> devices;
-class UnmqrTests : public ::testing::TestWithParam<sycl::device*> {};
-INSTANTIATE_TEST_SUITE_P(UnmqrTestSuite, UnmqrTests, ::testing::ValuesIn(devices),
-                         DeviceNamePrint());
-RUN_SUITE_COMPLEX(Unmqr)
+#include "lapack_gtest_suite.hpp"
+INSTANTIATE_GTEST_SUITE_ACCURACY_COMPLEX(Unmqr);
+INSTANTIATE_GTEST_SUITE_DEPENDENCY_COMPLEX(Unmqr);
