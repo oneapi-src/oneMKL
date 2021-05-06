@@ -1847,79 +1847,79 @@ sycl::event ungqr_batch(sycl::queue &queue, std::int64_t *m, std::int64_t *n, st
 }
 
 template <>
-ONEMKL_EXPORT std::int64_t gebrd_scratchpad_size<float>(sycl::queue &queue, std::int64_t m,
+std::int64_t gebrd_scratchpad_size<float>(sycl::queue &queue, std::int64_t m,
                                                         std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::gebrd_scratchpad_size<float>(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gebrd_scratchpad_size<double>(sycl::queue &queue, std::int64_t m,
+std::int64_t gebrd_scratchpad_size<double>(sycl::queue &queue, std::int64_t m,
                                                          std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::gebrd_scratchpad_size<double>(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gebrd_scratchpad_size<std::complex<float>>(sycl::queue &queue,
+std::int64_t gebrd_scratchpad_size<std::complex<float>>(sycl::queue &queue,
                                                                       std::int64_t m,
                                                                       std::int64_t n,
                                                                       std::int64_t lda) {
     return ::oneapi::mkl::lapack::gebrd_scratchpad_size<std::complex<float>>(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gebrd_scratchpad_size<std::complex<double>>(sycl::queue &queue,
+std::int64_t gebrd_scratchpad_size<std::complex<double>>(sycl::queue &queue,
                                                                        std::int64_t m,
                                                                        std::int64_t n,
                                                                        std::int64_t lda) {
     return ::oneapi::mkl::lapack::gebrd_scratchpad_size<std::complex<double>>(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gerqf_scratchpad_size<float>(sycl::queue &queue, std::int64_t m,
+std::int64_t gerqf_scratchpad_size<float>(sycl::queue &queue, std::int64_t m,
                                                         std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::gerqf_scratchpad_size<float>(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gerqf_scratchpad_size<double>(sycl::queue &queue, std::int64_t m,
+std::int64_t gerqf_scratchpad_size<double>(sycl::queue &queue, std::int64_t m,
                                                          std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::gerqf_scratchpad_size<double>(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gerqf_scratchpad_size<std::complex<float>>(sycl::queue &queue,
+std::int64_t gerqf_scratchpad_size<std::complex<float>>(sycl::queue &queue,
                                                                       std::int64_t m,
                                                                       std::int64_t n,
                                                                       std::int64_t lda) {
     return ::oneapi::mkl::lapack::gerqf_scratchpad_size<std::complex<float>>(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gerqf_scratchpad_size<std::complex<double>>(sycl::queue &queue,
+std::int64_t gerqf_scratchpad_size<std::complex<double>>(sycl::queue &queue,
                                                                        std::int64_t m,
                                                                        std::int64_t n,
                                                                        std::int64_t lda) {
     return ::oneapi::mkl::lapack::gerqf_scratchpad_size<std::complex<double>>(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_scratchpad_size<float>(sycl::queue &queue, std::int64_t m,
+std::int64_t geqrf_scratchpad_size<float>(sycl::queue &queue, std::int64_t m,
                                                         std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::geqrf_scratchpad_size<float>(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_scratchpad_size<double>(sycl::queue &queue, std::int64_t m,
+std::int64_t geqrf_scratchpad_size<double>(sycl::queue &queue, std::int64_t m,
                                                          std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::geqrf_scratchpad_size<double>(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_scratchpad_size<std::complex<float>>(sycl::queue &queue,
+std::int64_t geqrf_scratchpad_size<std::complex<float>>(sycl::queue &queue,
                                                                       std::int64_t m,
                                                                       std::int64_t n,
                                                                       std::int64_t lda) {
     return ::oneapi::mkl::lapack::geqrf_scratchpad_size<std::complex<float>>(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_scratchpad_size<std::complex<double>>(sycl::queue &queue,
+std::int64_t geqrf_scratchpad_size<std::complex<double>>(sycl::queue &queue,
                                                                        std::int64_t m,
                                                                        std::int64_t n,
                                                                        std::int64_t lda) {
     return ::oneapi::mkl::lapack::geqrf_scratchpad_size<std::complex<double>>(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gesvd_scratchpad_size<float>(sycl::queue &queue,
+std::int64_t gesvd_scratchpad_size<float>(sycl::queue &queue,
                                                         oneapi::mkl::jobsvd jobu,
                                                         oneapi::mkl::jobsvd jobvt, std::int64_t m,
                                                         std::int64_t n, std::int64_t lda,
@@ -1928,7 +1928,7 @@ ONEMKL_EXPORT std::int64_t gesvd_scratchpad_size<float>(sycl::queue &queue,
                                                                ldvt);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gesvd_scratchpad_size<double>(sycl::queue &queue,
+std::int64_t gesvd_scratchpad_size<double>(sycl::queue &queue,
                                                          oneapi::mkl::jobsvd jobu,
                                                          oneapi::mkl::jobsvd jobvt, std::int64_t m,
                                                          std::int64_t n, std::int64_t lda,
@@ -1937,95 +1937,95 @@ ONEMKL_EXPORT std::int64_t gesvd_scratchpad_size<double>(sycl::queue &queue,
                                                                 ldvt);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gesvd_scratchpad_size<std::complex<float>>(
+std::int64_t gesvd_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, oneapi::mkl::jobsvd jobu, oneapi::mkl::jobsvd jobvt, std::int64_t m,
     std::int64_t n, std::int64_t lda, std::int64_t ldu, std::int64_t ldvt) {
     return ::oneapi::mkl::lapack::gesvd_scratchpad_size<std::complex<float>>(queue, jobu, jobvt, m,
                                                                              n, lda, ldu, ldvt);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gesvd_scratchpad_size<std::complex<double>>(
+std::int64_t gesvd_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, oneapi::mkl::jobsvd jobu, oneapi::mkl::jobsvd jobvt, std::int64_t m,
     std::int64_t n, std::int64_t lda, std::int64_t ldu, std::int64_t ldvt) {
     return ::oneapi::mkl::lapack::gesvd_scratchpad_size<std::complex<double>>(queue, jobu, jobvt, m,
                                                                               n, lda, ldu, ldvt);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_scratchpad_size<float>(sycl::queue &queue, std::int64_t m,
+std::int64_t getrf_scratchpad_size<float>(sycl::queue &queue, std::int64_t m,
                                                         std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::getrf_scratchpad_size<float>(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_scratchpad_size<double>(sycl::queue &queue, std::int64_t m,
+std::int64_t getrf_scratchpad_size<double>(sycl::queue &queue, std::int64_t m,
                                                          std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::getrf_scratchpad_size<double>(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_scratchpad_size<std::complex<float>>(sycl::queue &queue,
+std::int64_t getrf_scratchpad_size<std::complex<float>>(sycl::queue &queue,
                                                                       std::int64_t m,
                                                                       std::int64_t n,
                                                                       std::int64_t lda) {
     return ::oneapi::mkl::lapack::getrf_scratchpad_size<std::complex<float>>(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_scratchpad_size<std::complex<double>>(sycl::queue &queue,
+std::int64_t getrf_scratchpad_size<std::complex<double>>(sycl::queue &queue,
                                                                        std::int64_t m,
                                                                        std::int64_t n,
                                                                        std::int64_t lda) {
     return ::oneapi::mkl::lapack::getrf_scratchpad_size<std::complex<double>>(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_scratchpad_size<float>(sycl::queue &queue, std::int64_t n,
+std::int64_t getri_scratchpad_size<float>(sycl::queue &queue, std::int64_t n,
                                                         std::int64_t lda) {
     return ::oneapi::mkl::lapack::getri_scratchpad_size<float>(queue, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_scratchpad_size<double>(sycl::queue &queue, std::int64_t n,
+std::int64_t getri_scratchpad_size<double>(sycl::queue &queue, std::int64_t n,
                                                          std::int64_t lda) {
     return ::oneapi::mkl::lapack::getri_scratchpad_size<double>(queue, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_scratchpad_size<std::complex<float>>(sycl::queue &queue,
+std::int64_t getri_scratchpad_size<std::complex<float>>(sycl::queue &queue,
                                                                       std::int64_t n,
                                                                       std::int64_t lda) {
     return ::oneapi::mkl::lapack::getri_scratchpad_size<std::complex<float>>(queue, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_scratchpad_size<std::complex<double>>(sycl::queue &queue,
+std::int64_t getri_scratchpad_size<std::complex<double>>(sycl::queue &queue,
                                                                        std::int64_t n,
                                                                        std::int64_t lda) {
     return ::oneapi::mkl::lapack::getri_scratchpad_size<std::complex<double>>(queue, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_scratchpad_size<float>(sycl::queue &queue,
+std::int64_t getrs_scratchpad_size<float>(sycl::queue &queue,
                                                         oneapi::mkl::transpose trans,
                                                         std::int64_t n, std::int64_t nrhs,
                                                         std::int64_t lda, std::int64_t ldb) {
     return ::oneapi::mkl::lapack::getrs_scratchpad_size<float>(queue, trans, n, nrhs, lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_scratchpad_size<double>(sycl::queue &queue,
+std::int64_t getrs_scratchpad_size<double>(sycl::queue &queue,
                                                          oneapi::mkl::transpose trans,
                                                          std::int64_t n, std::int64_t nrhs,
                                                          std::int64_t lda, std::int64_t ldb) {
     return ::oneapi::mkl::lapack::getrs_scratchpad_size<double>(queue, trans, n, nrhs, lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_scratchpad_size<std::complex<float>>(
+std::int64_t getrs_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs,
     std::int64_t lda, std::int64_t ldb) {
     return ::oneapi::mkl::lapack::getrs_scratchpad_size<std::complex<float>>(queue, trans, n, nrhs,
                                                                              lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_scratchpad_size<std::complex<double>>(
+std::int64_t getrs_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs,
     std::int64_t lda, std::int64_t ldb) {
     return ::oneapi::mkl::lapack::getrs_scratchpad_size<std::complex<double>>(queue, trans, n, nrhs,
                                                                               lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t heevd_scratchpad_size<std::complex<float>>(sycl::queue &queue,
+std::int64_t heevd_scratchpad_size<std::complex<float>>(sycl::queue &queue,
                                                                       oneapi::mkl::job jobz,
                                                                       oneapi::mkl::uplo uplo,
                                                                       std::int64_t n,
@@ -2034,7 +2034,7 @@ ONEMKL_EXPORT std::int64_t heevd_scratchpad_size<std::complex<float>>(sycl::queu
                                                                              lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t heevd_scratchpad_size<std::complex<double>>(sycl::queue &queue,
+std::int64_t heevd_scratchpad_size<std::complex<double>>(sycl::queue &queue,
                                                                        oneapi::mkl::job jobz,
                                                                        oneapi::mkl::uplo uplo,
                                                                        std::int64_t n,
@@ -2043,85 +2043,85 @@ ONEMKL_EXPORT std::int64_t heevd_scratchpad_size<std::complex<double>>(sycl::que
                                                                               lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t hegvd_scratchpad_size<std::complex<float>>(
+std::int64_t hegvd_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, std::int64_t itype, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,
     std::int64_t n, std::int64_t lda, std::int64_t ldb) {
     return ::oneapi::mkl::lapack::hegvd_scratchpad_size<std::complex<float>>(queue, itype, jobz,
                                                                              uplo, n, lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t hegvd_scratchpad_size<std::complex<double>>(
+std::int64_t hegvd_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, std::int64_t itype, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,
     std::int64_t n, std::int64_t lda, std::int64_t ldb) {
     return ::oneapi::mkl::lapack::hegvd_scratchpad_size<std::complex<double>>(queue, itype, jobz,
                                                                               uplo, n, lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t hetrd_scratchpad_size<std::complex<float>>(sycl::queue &queue,
+std::int64_t hetrd_scratchpad_size<std::complex<float>>(sycl::queue &queue,
                                                                       oneapi::mkl::uplo uplo,
                                                                       std::int64_t n,
                                                                       std::int64_t lda) {
     return ::oneapi::mkl::lapack::hetrd_scratchpad_size<std::complex<float>>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t hetrd_scratchpad_size<std::complex<double>>(sycl::queue &queue,
+std::int64_t hetrd_scratchpad_size<std::complex<double>>(sycl::queue &queue,
                                                                        oneapi::mkl::uplo uplo,
                                                                        std::int64_t n,
                                                                        std::int64_t lda) {
     return ::oneapi::mkl::lapack::hetrd_scratchpad_size<std::complex<double>>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t hetrf_scratchpad_size<std::complex<float>>(sycl::queue &queue,
+std::int64_t hetrf_scratchpad_size<std::complex<float>>(sycl::queue &queue,
                                                                       oneapi::mkl::uplo uplo,
                                                                       std::int64_t n,
                                                                       std::int64_t lda) {
     return ::oneapi::mkl::lapack::hetrf_scratchpad_size<std::complex<float>>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t hetrf_scratchpad_size<std::complex<double>>(sycl::queue &queue,
+std::int64_t hetrf_scratchpad_size<std::complex<double>>(sycl::queue &queue,
                                                                        oneapi::mkl::uplo uplo,
                                                                        std::int64_t n,
                                                                        std::int64_t lda) {
     return ::oneapi::mkl::lapack::hetrf_scratchpad_size<std::complex<double>>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgbr_scratchpad_size<float>(sycl::queue &queue,
+std::int64_t orgbr_scratchpad_size<float>(sycl::queue &queue,
                                                         oneapi::mkl::generate vect, std::int64_t m,
                                                         std::int64_t n, std::int64_t k,
                                                         std::int64_t lda) {
     return ::oneapi::mkl::lapack::orgbr_scratchpad_size<float>(queue, vect, m, n, k, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgbr_scratchpad_size<double>(sycl::queue &queue,
+std::int64_t orgbr_scratchpad_size<double>(sycl::queue &queue,
                                                          oneapi::mkl::generate vect, std::int64_t m,
                                                          std::int64_t n, std::int64_t k,
                                                          std::int64_t lda) {
     return ::oneapi::mkl::lapack::orgbr_scratchpad_size<double>(queue, vect, m, n, k, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgtr_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::uplo uplo,
+std::int64_t orgtr_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                         std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::orgtr_scratchpad_size<float>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgtr_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::uplo uplo,
+std::int64_t orgtr_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                          std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::orgtr_scratchpad_size<double>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgqr_scratchpad_size<float>(sycl::queue &queue, std::int64_t m,
+std::int64_t orgqr_scratchpad_size<float>(sycl::queue &queue, std::int64_t m,
                                                         std::int64_t n, std::int64_t k,
                                                         std::int64_t lda) {
     return ::oneapi::mkl::lapack::orgqr_scratchpad_size<float>(queue, m, n, k, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgqr_scratchpad_size<double>(sycl::queue &queue, std::int64_t m,
+std::int64_t orgqr_scratchpad_size<double>(sycl::queue &queue, std::int64_t m,
                                                          std::int64_t n, std::int64_t k,
                                                          std::int64_t lda) {
     return ::oneapi::mkl::lapack::orgqr_scratchpad_size<double>(queue, m, n, k, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ormrq_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::side side,
+std::int64_t ormrq_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::side side,
                                                         oneapi::mkl::transpose trans,
                                                         std::int64_t m, std::int64_t n,
                                                         std::int64_t k, std::int64_t lda,
@@ -2130,7 +2130,7 @@ ONEMKL_EXPORT std::int64_t ormrq_scratchpad_size<float>(sycl::queue &queue, onea
                                                                ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ormrq_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::side side,
+std::int64_t ormrq_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::side side,
                                                          oneapi::mkl::transpose trans,
                                                          std::int64_t m, std::int64_t n,
                                                          std::int64_t k, std::int64_t lda,
@@ -2139,7 +2139,7 @@ ONEMKL_EXPORT std::int64_t ormrq_scratchpad_size<double>(sycl::queue &queue, one
                                                                 ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ormqr_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::side side,
+std::int64_t ormqr_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::side side,
                                                         oneapi::mkl::transpose trans,
                                                         std::int64_t m, std::int64_t n,
                                                         std::int64_t k, std::int64_t lda,
@@ -2148,7 +2148,7 @@ ONEMKL_EXPORT std::int64_t ormqr_scratchpad_size<float>(sycl::queue &queue, onea
                                                                ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ormqr_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::side side,
+std::int64_t ormqr_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::side side,
                                                          oneapi::mkl::transpose trans,
                                                          std::int64_t m, std::int64_t n,
                                                          std::int64_t k, std::int64_t lda,
@@ -2157,7 +2157,7 @@ ONEMKL_EXPORT std::int64_t ormqr_scratchpad_size<double>(sycl::queue &queue, one
                                                                 ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ormtr_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::side side,
+std::int64_t ormtr_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::side side,
                                                         oneapi::mkl::uplo uplo,
                                                         oneapi::mkl::transpose trans,
                                                         std::int64_t m, std::int64_t n,
@@ -2166,7 +2166,7 @@ ONEMKL_EXPORT std::int64_t ormtr_scratchpad_size<float>(sycl::queue &queue, onea
                                                                ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ormtr_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::side side,
+std::int64_t ormtr_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::side side,
                                                          oneapi::mkl::uplo uplo,
                                                          oneapi::mkl::transpose trans,
                                                          std::int64_t m, std::int64_t n,
@@ -2175,117 +2175,117 @@ ONEMKL_EXPORT std::int64_t ormtr_scratchpad_size<double>(sycl::queue &queue, one
                                                                 ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::uplo uplo,
+std::int64_t potrf_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                         std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::potrf_scratchpad_size<float>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::uplo uplo,
+std::int64_t potrf_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                          std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::potrf_scratchpad_size<double>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_scratchpad_size<std::complex<float>>(sycl::queue &queue,
+std::int64_t potrf_scratchpad_size<std::complex<float>>(sycl::queue &queue,
                                                                       oneapi::mkl::uplo uplo,
                                                                       std::int64_t n,
                                                                       std::int64_t lda) {
     return ::oneapi::mkl::lapack::potrf_scratchpad_size<std::complex<float>>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_scratchpad_size<std::complex<double>>(sycl::queue &queue,
+std::int64_t potrf_scratchpad_size<std::complex<double>>(sycl::queue &queue,
                                                                        oneapi::mkl::uplo uplo,
                                                                        std::int64_t n,
                                                                        std::int64_t lda) {
     return ::oneapi::mkl::lapack::potrf_scratchpad_size<std::complex<double>>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::uplo uplo,
+std::int64_t potrs_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                         std::int64_t n, std::int64_t nrhs,
                                                         std::int64_t lda, std::int64_t ldb) {
     return ::oneapi::mkl::lapack::potrs_scratchpad_size<float>(queue, uplo, n, nrhs, lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::uplo uplo,
+std::int64_t potrs_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                          std::int64_t n, std::int64_t nrhs,
                                                          std::int64_t lda, std::int64_t ldb) {
     return ::oneapi::mkl::lapack::potrs_scratchpad_size<double>(queue, uplo, n, nrhs, lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_scratchpad_size<std::complex<float>>(
+std::int64_t potrs_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs, std::int64_t lda,
     std::int64_t ldb) {
     return ::oneapi::mkl::lapack::potrs_scratchpad_size<std::complex<float>>(queue, uplo, n, nrhs,
                                                                              lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_scratchpad_size<std::complex<double>>(
+std::int64_t potrs_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs, std::int64_t lda,
     std::int64_t ldb) {
     return ::oneapi::mkl::lapack::potrs_scratchpad_size<std::complex<double>>(queue, uplo, n, nrhs,
                                                                               lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potri_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::uplo uplo,
+std::int64_t potri_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                         std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::potri_scratchpad_size<float>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potri_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::uplo uplo,
+std::int64_t potri_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                          std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::potri_scratchpad_size<double>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potri_scratchpad_size<std::complex<float>>(sycl::queue &queue,
+std::int64_t potri_scratchpad_size<std::complex<float>>(sycl::queue &queue,
                                                                       oneapi::mkl::uplo uplo,
                                                                       std::int64_t n,
                                                                       std::int64_t lda) {
     return ::oneapi::mkl::lapack::potri_scratchpad_size<std::complex<float>>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potri_scratchpad_size<std::complex<double>>(sycl::queue &queue,
+std::int64_t potri_scratchpad_size<std::complex<double>>(sycl::queue &queue,
                                                                        oneapi::mkl::uplo uplo,
                                                                        std::int64_t n,
                                                                        std::int64_t lda) {
     return ::oneapi::mkl::lapack::potri_scratchpad_size<std::complex<double>>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t sytrf_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::uplo uplo,
+std::int64_t sytrf_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                         std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::sytrf_scratchpad_size<float>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t sytrf_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::uplo uplo,
+std::int64_t sytrf_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                          std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::sytrf_scratchpad_size<double>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t sytrf_scratchpad_size<std::complex<float>>(sycl::queue &queue,
+std::int64_t sytrf_scratchpad_size<std::complex<float>>(sycl::queue &queue,
                                                                       oneapi::mkl::uplo uplo,
                                                                       std::int64_t n,
                                                                       std::int64_t lda) {
     return ::oneapi::mkl::lapack::sytrf_scratchpad_size<std::complex<float>>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t sytrf_scratchpad_size<std::complex<double>>(sycl::queue &queue,
+std::int64_t sytrf_scratchpad_size<std::complex<double>>(sycl::queue &queue,
                                                                        oneapi::mkl::uplo uplo,
                                                                        std::int64_t n,
                                                                        std::int64_t lda) {
     return ::oneapi::mkl::lapack::sytrf_scratchpad_size<std::complex<double>>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t syevd_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::job jobz,
+std::int64_t syevd_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::job jobz,
                                                         oneapi::mkl::uplo uplo, std::int64_t n,
                                                         std::int64_t lda) {
     return ::oneapi::mkl::lapack::syevd_scratchpad_size<float>(queue, jobz, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t syevd_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::job jobz,
+std::int64_t syevd_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::job jobz,
                                                          oneapi::mkl::uplo uplo, std::int64_t n,
                                                          std::int64_t lda) {
     return ::oneapi::mkl::lapack::syevd_scratchpad_size<double>(queue, jobz, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t sygvd_scratchpad_size<float>(sycl::queue &queue, std::int64_t itype,
+std::int64_t sygvd_scratchpad_size<float>(sycl::queue &queue, std::int64_t itype,
                                                         oneapi::mkl::job jobz,
                                                         oneapi::mkl::uplo uplo, std::int64_t n,
                                                         std::int64_t lda, std::int64_t ldb) {
@@ -2293,7 +2293,7 @@ ONEMKL_EXPORT std::int64_t sygvd_scratchpad_size<float>(sycl::queue &queue, std:
                                                                ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t sygvd_scratchpad_size<double>(sycl::queue &queue, std::int64_t itype,
+std::int64_t sygvd_scratchpad_size<double>(sycl::queue &queue, std::int64_t itype,
                                                          oneapi::mkl::job jobz,
                                                          oneapi::mkl::uplo uplo, std::int64_t n,
                                                          std::int64_t lda, std::int64_t ldb) {
@@ -2301,17 +2301,17 @@ ONEMKL_EXPORT std::int64_t sygvd_scratchpad_size<double>(sycl::queue &queue, std
                                                                 ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t sytrd_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::uplo uplo,
+std::int64_t sytrd_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                         std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::sytrd_scratchpad_size<float>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t sytrd_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::uplo uplo,
+std::int64_t sytrd_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                          std::int64_t n, std::int64_t lda) {
     return ::oneapi::mkl::lapack::sytrd_scratchpad_size<double>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t trtrs_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::uplo uplo,
+std::int64_t trtrs_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                         oneapi::mkl::transpose trans,
                                                         oneapi::mkl::diag diag, std::int64_t n,
                                                         std::int64_t nrhs, std::int64_t lda,
@@ -2320,7 +2320,7 @@ ONEMKL_EXPORT std::int64_t trtrs_scratchpad_size<float>(sycl::queue &queue, onea
                                                                lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t trtrs_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::uplo uplo,
+std::int64_t trtrs_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                          oneapi::mkl::transpose trans,
                                                          oneapi::mkl::diag diag, std::int64_t n,
                                                          std::int64_t nrhs, std::int64_t lda,
@@ -2329,87 +2329,87 @@ ONEMKL_EXPORT std::int64_t trtrs_scratchpad_size<double>(sycl::queue &queue, one
                                                                 lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t trtrs_scratchpad_size<std::complex<float>>(
+std::int64_t trtrs_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
     oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs, std::int64_t lda, std::int64_t ldb) {
     return ::oneapi::mkl::lapack::trtrs_scratchpad_size<std::complex<float>>(
         queue, uplo, trans, diag, n, nrhs, lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t trtrs_scratchpad_size<std::complex<double>>(
+std::int64_t trtrs_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
     oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs, std::int64_t lda, std::int64_t ldb) {
     return ::oneapi::mkl::lapack::trtrs_scratchpad_size<std::complex<double>>(
         queue, uplo, trans, diag, n, nrhs, lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungbr_scratchpad_size<std::complex<float>>(
+std::int64_t ungbr_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, oneapi::mkl::generate vect, std::int64_t m, std::int64_t n, std::int64_t k,
     std::int64_t lda) {
     return ::oneapi::mkl::lapack::ungbr_scratchpad_size<std::complex<float>>(queue, vect, m, n, k,
                                                                              lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungbr_scratchpad_size<std::complex<double>>(
+std::int64_t ungbr_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, oneapi::mkl::generate vect, std::int64_t m, std::int64_t n, std::int64_t k,
     std::int64_t lda) {
     return ::oneapi::mkl::lapack::ungbr_scratchpad_size<std::complex<double>>(queue, vect, m, n, k,
                                                                               lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungqr_scratchpad_size<std::complex<float>>(
+std::int64_t ungqr_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda) {
     return ::oneapi::mkl::lapack::ungqr_scratchpad_size<std::complex<float>>(queue, m, n, k, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungqr_scratchpad_size<std::complex<double>>(
+std::int64_t ungqr_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda) {
     return ::oneapi::mkl::lapack::ungqr_scratchpad_size<std::complex<double>>(queue, m, n, k, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungtr_scratchpad_size<std::complex<float>>(sycl::queue &queue,
+std::int64_t ungtr_scratchpad_size<std::complex<float>>(sycl::queue &queue,
                                                                       oneapi::mkl::uplo uplo,
                                                                       std::int64_t n,
                                                                       std::int64_t lda) {
     return ::oneapi::mkl::lapack::ungtr_scratchpad_size<std::complex<float>>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungtr_scratchpad_size<std::complex<double>>(sycl::queue &queue,
+std::int64_t ungtr_scratchpad_size<std::complex<double>>(sycl::queue &queue,
                                                                        oneapi::mkl::uplo uplo,
                                                                        std::int64_t n,
                                                                        std::int64_t lda) {
     return ::oneapi::mkl::lapack::ungtr_scratchpad_size<std::complex<double>>(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t unmrq_scratchpad_size<std::complex<float>>(
+std::int64_t unmrq_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m,
     std::int64_t n, std::int64_t k, std::int64_t lda, std::int64_t ldc) {
     return ::oneapi::mkl::lapack::unmrq_scratchpad_size<std::complex<float>>(queue, side, trans, m,
                                                                              n, k, lda, ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t unmrq_scratchpad_size<std::complex<double>>(
+std::int64_t unmrq_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m,
     std::int64_t n, std::int64_t k, std::int64_t lda, std::int64_t ldc) {
     return ::oneapi::mkl::lapack::unmrq_scratchpad_size<std::complex<double>>(queue, side, trans, m,
                                                                               n, k, lda, ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t unmqr_scratchpad_size<std::complex<float>>(
+std::int64_t unmqr_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m,
     std::int64_t n, std::int64_t k, std::int64_t lda, std::int64_t ldc) {
     return ::oneapi::mkl::lapack::unmqr_scratchpad_size<std::complex<float>>(queue, side, trans, m,
                                                                              n, k, lda, ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t unmqr_scratchpad_size<std::complex<double>>(
+std::int64_t unmqr_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m,
     std::int64_t n, std::int64_t k, std::int64_t lda, std::int64_t ldc) {
     return ::oneapi::mkl::lapack::unmqr_scratchpad_size<std::complex<double>>(queue, side, trans, m,
                                                                               n, k, lda, ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t unmtr_scratchpad_size<std::complex<float>>(
+std::int64_t unmtr_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::uplo uplo,
     oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t lda,
     std::int64_t ldc) {
@@ -2417,7 +2417,7 @@ ONEMKL_EXPORT std::int64_t unmtr_scratchpad_size<std::complex<float>>(
                                                                              trans, m, n, lda, ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t unmtr_scratchpad_size<std::complex<double>>(
+std::int64_t unmtr_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::uplo uplo,
     oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t lda,
     std::int64_t ldc) {
@@ -2425,7 +2425,7 @@ ONEMKL_EXPORT std::int64_t unmtr_scratchpad_size<std::complex<double>>(
         queue, side, uplo, trans, m, n, lda, ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<float>(sycl::queue &queue, std::int64_t m,
+std::int64_t getrf_batch_scratchpad_size<float>(sycl::queue &queue, std::int64_t m,
                                                               std::int64_t n, std::int64_t lda,
                                                               std::int64_t stride_a,
                                                               std::int64_t stride_ipiv,
@@ -2434,7 +2434,7 @@ ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<float>(sycl::queue &queue
                                                                      stride_ipiv, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<double>(sycl::queue &queue, std::int64_t m,
+std::int64_t getrf_batch_scratchpad_size<double>(sycl::queue &queue, std::int64_t m,
                                                                std::int64_t n, std::int64_t lda,
                                                                std::int64_t stride_a,
                                                                std::int64_t stride_ipiv,
@@ -2443,21 +2443,21 @@ ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<double>(sycl::queue &queu
                                                                       stride_ipiv, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<std::complex<float>>(
+std::int64_t getrf_batch_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t lda, std::int64_t stride_a,
     std::int64_t stride_ipiv, std::int64_t batch_size) {
     return ::oneapi::mkl::lapack::getrf_batch_scratchpad_size<std::complex<float>>(
         queue, m, n, lda, stride_a, stride_ipiv, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<std::complex<double>>(
+std::int64_t getrf_batch_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t lda, std::int64_t stride_a,
     std::int64_t stride_ipiv, std::int64_t batch_size) {
     return ::oneapi::mkl::lapack::getrf_batch_scratchpad_size<std::complex<double>>(
         queue, m, n, lda, stride_a, stride_ipiv, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<float>(sycl::queue &queue, std::int64_t n,
+std::int64_t getri_batch_scratchpad_size<float>(sycl::queue &queue, std::int64_t n,
                                                               std::int64_t lda,
                                                               std::int64_t stride_a,
                                                               std::int64_t stride_ipiv,
@@ -2466,7 +2466,7 @@ ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<float>(sycl::queue &queue
                                                                      stride_ipiv, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<double>(sycl::queue &queue, std::int64_t n,
+std::int64_t getri_batch_scratchpad_size<double>(sycl::queue &queue, std::int64_t n,
                                                                std::int64_t lda,
                                                                std::int64_t stride_a,
                                                                std::int64_t stride_ipiv,
@@ -2475,21 +2475,21 @@ ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<double>(sycl::queue &queu
                                                                       stride_ipiv, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<std::complex<float>>(
+std::int64_t getri_batch_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, std::int64_t n, std::int64_t lda, std::int64_t stride_a,
     std::int64_t stride_ipiv, std::int64_t batch_size) {
     return ::oneapi::mkl::lapack::getri_batch_scratchpad_size<std::complex<float>>(
         queue, n, lda, stride_a, stride_ipiv, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<std::complex<double>>(
+std::int64_t getri_batch_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, std::int64_t n, std::int64_t lda, std::int64_t stride_a,
     std::int64_t stride_ipiv, std::int64_t batch_size) {
     return ::oneapi::mkl::lapack::getri_batch_scratchpad_size<std::complex<double>>(
         queue, n, lda, stride_a, stride_ipiv, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<float>(
+std::int64_t getrs_batch_scratchpad_size<float>(
     sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs,
     std::int64_t lda, std::int64_t stride_a, std::int64_t stride_ipiv, std::int64_t ldb,
     std::int64_t stride_b, std::int64_t batch_size) {
@@ -2497,7 +2497,7 @@ ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<float>(
         queue, trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<double>(
+std::int64_t getrs_batch_scratchpad_size<double>(
     sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs,
     std::int64_t lda, std::int64_t stride_a, std::int64_t stride_ipiv, std::int64_t ldb,
     std::int64_t stride_b, std::int64_t batch_size) {
@@ -2505,7 +2505,7 @@ ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<double>(
         queue, trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<std::complex<float>>(
+std::int64_t getrs_batch_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs,
     std::int64_t lda, std::int64_t stride_a, std::int64_t stride_ipiv, std::int64_t ldb,
     std::int64_t stride_b, std::int64_t batch_size) {
@@ -2513,7 +2513,7 @@ ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<std::complex<float>>(
         queue, trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<std::complex<double>>(
+std::int64_t getrs_batch_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs,
     std::int64_t lda, std::int64_t stride_a, std::int64_t stride_ipiv, std::int64_t ldb,
     std::int64_t stride_b, std::int64_t batch_size) {
@@ -2521,7 +2521,7 @@ ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<std::complex<double>>(
         queue, trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<float>(sycl::queue &queue, std::int64_t m,
+std::int64_t geqrf_batch_scratchpad_size<float>(sycl::queue &queue, std::int64_t m,
                                                               std::int64_t n, std::int64_t lda,
                                                               std::int64_t stride_a,
                                                               std::int64_t stride_tau,
@@ -2530,7 +2530,7 @@ ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<float>(sycl::queue &queue
                                                                      stride_tau, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<double>(sycl::queue &queue, std::int64_t m,
+std::int64_t geqrf_batch_scratchpad_size<double>(sycl::queue &queue, std::int64_t m,
                                                                std::int64_t n, std::int64_t lda,
                                                                std::int64_t stride_a,
                                                                std::int64_t stride_tau,
@@ -2539,21 +2539,21 @@ ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<double>(sycl::queue &queu
                                                                       stride_tau, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<std::complex<float>>(
+std::int64_t geqrf_batch_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t lda, std::int64_t stride_a,
     std::int64_t stride_tau, std::int64_t batch_size) {
     return ::oneapi::mkl::lapack::geqrf_batch_scratchpad_size<std::complex<float>>(
         queue, m, n, lda, stride_a, stride_tau, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<std::complex<double>>(
+std::int64_t geqrf_batch_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t lda, std::int64_t stride_a,
     std::int64_t stride_tau, std::int64_t batch_size) {
     return ::oneapi::mkl::lapack::geqrf_batch_scratchpad_size<std::complex<double>>(
         queue, m, n, lda, stride_a, stride_tau, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<float>(sycl::queue &queue,
+std::int64_t potrf_batch_scratchpad_size<float>(sycl::queue &queue,
                                                               oneapi::mkl::uplo uplo,
                                                               std::int64_t n, std::int64_t lda,
                                                               std::int64_t stride_a,
@@ -2562,7 +2562,7 @@ ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<float>(sycl::queue &queue
                                                                      batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<double>(sycl::queue &queue,
+std::int64_t potrf_batch_scratchpad_size<double>(sycl::queue &queue,
                                                                oneapi::mkl::uplo uplo,
                                                                std::int64_t n, std::int64_t lda,
                                                                std::int64_t stride_a,
@@ -2571,77 +2571,77 @@ ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<double>(sycl::queue &queu
                                                                       batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<std::complex<float>>(
+std::int64_t potrf_batch_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
     std::int64_t stride_a, std::int64_t batch_size) {
     return ::oneapi::mkl::lapack::potrf_batch_scratchpad_size<std::complex<float>>(
         queue, uplo, n, lda, stride_a, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<std::complex<double>>(
+std::int64_t potrf_batch_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
     std::int64_t stride_a, std::int64_t batch_size) {
     return ::oneapi::mkl::lapack::potrf_batch_scratchpad_size<std::complex<double>>(
         queue, uplo, n, lda, stride_a, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<float>(
+std::int64_t potrs_batch_scratchpad_size<float>(
     sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs, std::int64_t lda,
     std::int64_t stride_a, std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
     return ::oneapi::mkl::lapack::potrs_batch_scratchpad_size<float>(
         queue, uplo, n, nrhs, lda, stride_a, ldb, stride_b, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<double>(
+std::int64_t potrs_batch_scratchpad_size<double>(
     sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs, std::int64_t lda,
     std::int64_t stride_a, std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
     return ::oneapi::mkl::lapack::potrs_batch_scratchpad_size<double>(
         queue, uplo, n, nrhs, lda, stride_a, ldb, stride_b, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<std::complex<float>>(
+std::int64_t potrs_batch_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs, std::int64_t lda,
     std::int64_t stride_a, std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
     return ::oneapi::mkl::lapack::potrs_batch_scratchpad_size<std::complex<float>>(
         queue, uplo, n, nrhs, lda, stride_a, ldb, stride_b, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<std::complex<double>>(
+std::int64_t potrs_batch_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs, std::int64_t lda,
     std::int64_t stride_a, std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
     return ::oneapi::mkl::lapack::potrs_batch_scratchpad_size<std::complex<double>>(
         queue, uplo, n, nrhs, lda, stride_a, ldb, stride_b, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgqr_batch_scratchpad_size<float>(
+std::int64_t orgqr_batch_scratchpad_size<float>(
     sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
     std::int64_t stride_a, std::int64_t stride_tau, std::int64_t batch_size) {
     return ::oneapi::mkl::lapack::orgqr_batch_scratchpad_size<float>(queue, m, n, k, lda, stride_a,
                                                                      stride_tau, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgqr_batch_scratchpad_size<double>(
+std::int64_t orgqr_batch_scratchpad_size<double>(
     sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
     std::int64_t stride_a, std::int64_t stride_tau, std::int64_t batch_size) {
     return ::oneapi::mkl::lapack::orgqr_batch_scratchpad_size<double>(queue, m, n, k, lda, stride_a,
                                                                       stride_tau, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungqr_batch_scratchpad_size<std::complex<float>>(
+std::int64_t ungqr_batch_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
     std::int64_t stride_a, std::int64_t stride_tau, std::int64_t batch_size) {
     return ::oneapi::mkl::lapack::ungqr_batch_scratchpad_size<std::complex<float>>(
         queue, m, n, k, lda, stride_a, stride_tau, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungqr_batch_scratchpad_size<std::complex<double>>(
+std::int64_t ungqr_batch_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
     std::int64_t stride_a, std::int64_t stride_tau, std::int64_t batch_size) {
     return ::oneapi::mkl::lapack::ungqr_batch_scratchpad_size<std::complex<double>>(
         queue, m, n, k, lda, stride_a, stride_tau, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<float>(sycl::queue &queue, std::int64_t *m,
+std::int64_t getrf_batch_scratchpad_size<float>(sycl::queue &queue, std::int64_t *m,
                                                               std::int64_t *n, std::int64_t *lda,
                                                               std::int64_t group_count,
                                                               std::int64_t *group_sizes) {
@@ -2649,7 +2649,7 @@ ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<float>(sycl::queue &queue
                                                                      group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<double>(sycl::queue &queue, std::int64_t *m,
+std::int64_t getrf_batch_scratchpad_size<double>(sycl::queue &queue, std::int64_t *m,
                                                                std::int64_t *n, std::int64_t *lda,
                                                                std::int64_t group_count,
                                                                std::int64_t *group_sizes) {
@@ -2657,21 +2657,21 @@ ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<double>(sycl::queue &queu
                                                                       group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<std::complex<float>>(
+std::int64_t getrf_batch_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, std::int64_t *m, std::int64_t *n, std::int64_t *lda,
     std::int64_t group_count, std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::getrf_batch_scratchpad_size<std::complex<float>>(
         queue, m, n, lda, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<std::complex<double>>(
+std::int64_t getrf_batch_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, std::int64_t *m, std::int64_t *n, std::int64_t *lda,
     std::int64_t group_count, std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::getrf_batch_scratchpad_size<std::complex<double>>(
         queue, m, n, lda, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<float>(sycl::queue &queue, std::int64_t *n,
+std::int64_t getri_batch_scratchpad_size<float>(sycl::queue &queue, std::int64_t *n,
                                                               std::int64_t *lda,
                                                               std::int64_t group_count,
                                                               std::int64_t *group_sizes) {
@@ -2679,7 +2679,7 @@ ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<float>(sycl::queue &queue
                                                                      group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<double>(sycl::queue &queue, std::int64_t *n,
+std::int64_t getri_batch_scratchpad_size<double>(sycl::queue &queue, std::int64_t *n,
                                                                std::int64_t *lda,
                                                                std::int64_t group_count,
                                                                std::int64_t *group_sizes) {
@@ -2687,49 +2687,49 @@ ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<double>(sycl::queue &queu
                                                                       group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<std::complex<float>>(
+std::int64_t getri_batch_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, std::int64_t *n, std::int64_t *lda, std::int64_t group_count,
     std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::getri_batch_scratchpad_size<std::complex<float>>(
         queue, n, lda, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<std::complex<double>>(
+std::int64_t getri_batch_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, std::int64_t *n, std::int64_t *lda, std::int64_t group_count,
     std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::getri_batch_scratchpad_size<std::complex<double>>(
         queue, n, lda, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<float>(
+std::int64_t getrs_batch_scratchpad_size<float>(
     sycl::queue &queue, oneapi::mkl::transpose *trans, std::int64_t *n, std::int64_t *nrhs,
     std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count, std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::getrs_batch_scratchpad_size<float>(queue, trans, n, nrhs, lda,
                                                                      ldb, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<double>(
+std::int64_t getrs_batch_scratchpad_size<double>(
     sycl::queue &queue, oneapi::mkl::transpose *trans, std::int64_t *n, std::int64_t *nrhs,
     std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count, std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::getrs_batch_scratchpad_size<double>(
         queue, trans, n, nrhs, lda, ldb, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<std::complex<float>>(
+std::int64_t getrs_batch_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, oneapi::mkl::transpose *trans, std::int64_t *n, std::int64_t *nrhs,
     std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count, std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::getrs_batch_scratchpad_size<std::complex<float>>(
         queue, trans, n, nrhs, lda, ldb, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<std::complex<double>>(
+std::int64_t getrs_batch_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, oneapi::mkl::transpose *trans, std::int64_t *n, std::int64_t *nrhs,
     std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count, std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::getrs_batch_scratchpad_size<std::complex<double>>(
         queue, trans, n, nrhs, lda, ldb, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<float>(sycl::queue &queue, std::int64_t *m,
+std::int64_t geqrf_batch_scratchpad_size<float>(sycl::queue &queue, std::int64_t *m,
                                                               std::int64_t *n, std::int64_t *lda,
                                                               std::int64_t group_count,
                                                               std::int64_t *group_sizes) {
@@ -2737,7 +2737,7 @@ ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<float>(sycl::queue &queue
                                                                      group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<double>(sycl::queue &queue, std::int64_t *m,
+std::int64_t geqrf_batch_scratchpad_size<double>(sycl::queue &queue, std::int64_t *m,
                                                                std::int64_t *n, std::int64_t *lda,
                                                                std::int64_t group_count,
                                                                std::int64_t *group_sizes) {
@@ -2745,21 +2745,21 @@ ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<double>(sycl::queue &queu
                                                                       group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<std::complex<float>>(
+std::int64_t geqrf_batch_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, std::int64_t *m, std::int64_t *n, std::int64_t *lda,
     std::int64_t group_count, std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::geqrf_batch_scratchpad_size<std::complex<float>>(
         queue, m, n, lda, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<std::complex<double>>(
+std::int64_t geqrf_batch_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, std::int64_t *m, std::int64_t *n, std::int64_t *lda,
     std::int64_t group_count, std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::geqrf_batch_scratchpad_size<std::complex<double>>(
         queue, m, n, lda, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgqr_batch_scratchpad_size<float>(sycl::queue &queue, std::int64_t *m,
+std::int64_t orgqr_batch_scratchpad_size<float>(sycl::queue &queue, std::int64_t *m,
                                                               std::int64_t *n, std::int64_t *k,
                                                               std::int64_t *lda,
                                                               std::int64_t group_count,
@@ -2768,7 +2768,7 @@ ONEMKL_EXPORT std::int64_t orgqr_batch_scratchpad_size<float>(sycl::queue &queue
                                                                      group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgqr_batch_scratchpad_size<double>(sycl::queue &queue, std::int64_t *m,
+std::int64_t orgqr_batch_scratchpad_size<double>(sycl::queue &queue, std::int64_t *m,
                                                                std::int64_t *n, std::int64_t *k,
                                                                std::int64_t *lda,
                                                                std::int64_t group_count,
@@ -2777,7 +2777,7 @@ ONEMKL_EXPORT std::int64_t orgqr_batch_scratchpad_size<double>(sycl::queue &queu
                                                                       group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<float>(sycl::queue &queue,
+std::int64_t potrf_batch_scratchpad_size<float>(sycl::queue &queue,
                                                               oneapi::mkl::uplo *uplo,
                                                               std::int64_t *n, std::int64_t *lda,
                                                               std::int64_t group_count,
@@ -2786,7 +2786,7 @@ ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<float>(sycl::queue &queue
                                                                      group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<double>(sycl::queue &queue,
+std::int64_t potrf_batch_scratchpad_size<double>(sycl::queue &queue,
                                                                oneapi::mkl::uplo *uplo,
                                                                std::int64_t *n, std::int64_t *lda,
                                                                std::int64_t group_count,
@@ -2795,56 +2795,56 @@ ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<double>(sycl::queue &queu
                                                                       group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<std::complex<float>>(
+std::int64_t potrf_batch_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n, std::int64_t *lda,
     std::int64_t group_count, std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::potrf_batch_scratchpad_size<std::complex<float>>(
         queue, uplo, n, lda, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<std::complex<double>>(
+std::int64_t potrf_batch_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n, std::int64_t *lda,
     std::int64_t group_count, std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::potrf_batch_scratchpad_size<std::complex<double>>(
         queue, uplo, n, lda, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<float>(
+std::int64_t potrs_batch_scratchpad_size<float>(
     sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n, std::int64_t *nrhs,
     std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count, std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::potrs_batch_scratchpad_size<float>(queue, uplo, n, nrhs, lda, ldb,
                                                                      group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<double>(
+std::int64_t potrs_batch_scratchpad_size<double>(
     sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n, std::int64_t *nrhs,
     std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count, std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::potrs_batch_scratchpad_size<double>(
         queue, uplo, n, nrhs, lda, ldb, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<std::complex<float>>(
+std::int64_t potrs_batch_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n, std::int64_t *nrhs,
     std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count, std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::potrs_batch_scratchpad_size<std::complex<float>>(
         queue, uplo, n, nrhs, lda, ldb, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<std::complex<double>>(
+std::int64_t potrs_batch_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n, std::int64_t *nrhs,
     std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count, std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::potrs_batch_scratchpad_size<std::complex<double>>(
         queue, uplo, n, nrhs, lda, ldb, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungqr_batch_scratchpad_size<std::complex<float>>(
+std::int64_t ungqr_batch_scratchpad_size<std::complex<float>>(
     sycl::queue &queue, std::int64_t *m, std::int64_t *n, std::int64_t *k, std::int64_t *lda,
     std::int64_t group_count, std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::ungqr_batch_scratchpad_size<std::complex<float>>(
         queue, m, n, k, lda, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungqr_batch_scratchpad_size<std::complex<double>>(
+std::int64_t ungqr_batch_scratchpad_size<std::complex<double>>(
     sycl::queue &queue, std::int64_t *m, std::int64_t *n, std::int64_t *k, std::int64_t *lda,
     std::int64_t group_count, std::int64_t *group_sizes) {
     return ::oneapi::mkl::lapack::ungqr_batch_scratchpad_size<std::complex<double>>(

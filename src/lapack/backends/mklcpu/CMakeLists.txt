@@ -36,7 +36,7 @@ target_include_directories(${LIB_OBJ}
           ${MKL_INCLUDE}
 )
 
-target_compile_options(${LIB_OBJ} PRIVATE ${MKL_COPT})
+target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT} ${MKL_COPT})
 
 target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ${MKL_LINK_SYCL})
 
@@ -45,7 +45,7 @@ set_target_properties(${LIB_OBJ} PROPERTIES
 )
 target_link_libraries(${LIB_NAME} PUBLIC ${LIB_OBJ})
 
-#Set libraries as not transitive for dynamic
+#Set MKL libraries as not transitive for dynamic
 if(BUILD_SHARED_LIBS)
   set_target_properties(${LIB_NAME} PROPERTIES
     INTERFACE_LINK_LIBRARIES ONEMKL::SYCL::SYCL

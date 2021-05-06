@@ -1997,19 +1997,19 @@ sycl::event ungqr_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
 }
 
 template <>
-ONEMKL_EXPORT std::int64_t gebrd_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t gebrd_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, std::int64_t m,
                                                         std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].sgebrd_scratchpad_size_sycl(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gebrd_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t gebrd_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, std::int64_t m,
                                                          std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].dgebrd_scratchpad_size_sycl(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gebrd_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
+std::int64_t gebrd_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
                                                                       sycl::queue &queue,
                                                                       std::int64_t m,
                                                                       std::int64_t n,
@@ -2017,7 +2017,7 @@ ONEMKL_EXPORT std::int64_t gebrd_scratchpad_size<std::complex<float>>(oneapi::mk
     return function_tables[libkey].cgebrd_scratchpad_size_sycl(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gebrd_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
+std::int64_t gebrd_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
                                                                        sycl::queue &queue,
                                                                        std::int64_t m,
                                                                        std::int64_t n,
@@ -2025,19 +2025,19 @@ ONEMKL_EXPORT std::int64_t gebrd_scratchpad_size<std::complex<double>>(oneapi::m
     return function_tables[libkey].zgebrd_scratchpad_size_sycl(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gerqf_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t gerqf_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, std::int64_t m,
                                                         std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].sgerqf_scratchpad_size_sycl(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gerqf_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t gerqf_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, std::int64_t m,
                                                          std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].dgerqf_scratchpad_size_sycl(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gerqf_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
+std::int64_t gerqf_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
                                                                       sycl::queue &queue,
                                                                       std::int64_t m,
                                                                       std::int64_t n,
@@ -2045,7 +2045,7 @@ ONEMKL_EXPORT std::int64_t gerqf_scratchpad_size<std::complex<float>>(oneapi::mk
     return function_tables[libkey].cgerqf_scratchpad_size_sycl(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gerqf_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
+std::int64_t gerqf_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
                                                                        sycl::queue &queue,
                                                                        std::int64_t m,
                                                                        std::int64_t n,
@@ -2053,19 +2053,19 @@ ONEMKL_EXPORT std::int64_t gerqf_scratchpad_size<std::complex<double>>(oneapi::m
     return function_tables[libkey].zgerqf_scratchpad_size_sycl(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t geqrf_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, std::int64_t m,
                                                         std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].sgeqrf_scratchpad_size_sycl(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t geqrf_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, std::int64_t m,
                                                          std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].dgeqrf_scratchpad_size_sycl(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
+std::int64_t geqrf_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
                                                                       sycl::queue &queue,
                                                                       std::int64_t m,
                                                                       std::int64_t n,
@@ -2073,7 +2073,7 @@ ONEMKL_EXPORT std::int64_t geqrf_scratchpad_size<std::complex<float>>(oneapi::mk
     return function_tables[libkey].cgeqrf_scratchpad_size_sycl(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
+std::int64_t geqrf_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
                                                                        sycl::queue &queue,
                                                                        std::int64_t m,
                                                                        std::int64_t n,
@@ -2081,7 +2081,7 @@ ONEMKL_EXPORT std::int64_t geqrf_scratchpad_size<std::complex<double>>(oneapi::m
     return function_tables[libkey].zgeqrf_scratchpad_size_sycl(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gesvd_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t gesvd_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue,
                                                         oneapi::mkl::jobsvd jobu,
                                                         oneapi::mkl::jobsvd jobvt, std::int64_t m,
@@ -2091,7 +2091,7 @@ ONEMKL_EXPORT std::int64_t gesvd_scratchpad_size<float>(oneapi::mkl::device libk
                                                                ldvt);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gesvd_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t gesvd_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue,
                                                          oneapi::mkl::jobsvd jobu,
                                                          oneapi::mkl::jobsvd jobvt, std::int64_t m,
@@ -2101,7 +2101,7 @@ ONEMKL_EXPORT std::int64_t gesvd_scratchpad_size<double>(oneapi::mkl::device lib
                                                                ldvt);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gesvd_scratchpad_size<std::complex<float>>(
+std::int64_t gesvd_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::jobsvd jobu,
     oneapi::mkl::jobsvd jobvt, std::int64_t m, std::int64_t n, std::int64_t lda, std::int64_t ldu,
     std::int64_t ldvt) {
@@ -2109,7 +2109,7 @@ ONEMKL_EXPORT std::int64_t gesvd_scratchpad_size<std::complex<float>>(
                                                                ldvt);
 }
 template <>
-ONEMKL_EXPORT std::int64_t gesvd_scratchpad_size<std::complex<double>>(
+std::int64_t gesvd_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::jobsvd jobu,
     oneapi::mkl::jobsvd jobvt, std::int64_t m, std::int64_t n, std::int64_t lda, std::int64_t ldu,
     std::int64_t ldvt) {
@@ -2117,19 +2117,19 @@ ONEMKL_EXPORT std::int64_t gesvd_scratchpad_size<std::complex<double>>(
                                                                ldvt);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t getrf_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, std::int64_t m,
                                                         std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].sgetrf_scratchpad_size_sycl(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t getrf_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, std::int64_t m,
                                                          std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].dgetrf_scratchpad_size_sycl(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
+std::int64_t getrf_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
                                                                       sycl::queue &queue,
                                                                       std::int64_t m,
                                                                       std::int64_t n,
@@ -2137,7 +2137,7 @@ ONEMKL_EXPORT std::int64_t getrf_scratchpad_size<std::complex<float>>(oneapi::mk
     return function_tables[libkey].cgetrf_scratchpad_size_sycl(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
+std::int64_t getrf_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
                                                                        sycl::queue &queue,
                                                                        std::int64_t m,
                                                                        std::int64_t n,
@@ -2145,33 +2145,33 @@ ONEMKL_EXPORT std::int64_t getrf_scratchpad_size<std::complex<double>>(oneapi::m
     return function_tables[libkey].zgetrf_scratchpad_size_sycl(queue, m, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t getri_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, std::int64_t n,
                                                         std::int64_t lda) {
     return function_tables[libkey].sgetri_scratchpad_size_sycl(queue, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t getri_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, std::int64_t n,
                                                          std::int64_t lda) {
     return function_tables[libkey].dgetri_scratchpad_size_sycl(queue, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
+std::int64_t getri_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
                                                                       sycl::queue &queue,
                                                                       std::int64_t n,
                                                                       std::int64_t lda) {
     return function_tables[libkey].cgetri_scratchpad_size_sycl(queue, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
+std::int64_t getri_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
                                                                        sycl::queue &queue,
                                                                        std::int64_t n,
                                                                        std::int64_t lda) {
     return function_tables[libkey].zgetri_scratchpad_size_sycl(queue, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t getrs_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue,
                                                         oneapi::mkl::transpose trans,
                                                         std::int64_t n, std::int64_t nrhs,
@@ -2179,7 +2179,7 @@ ONEMKL_EXPORT std::int64_t getrs_scratchpad_size<float>(oneapi::mkl::device libk
     return function_tables[libkey].sgetrs_scratchpad_size_sycl(queue, trans, n, nrhs, lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t getrs_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue,
                                                          oneapi::mkl::transpose trans,
                                                          std::int64_t n, std::int64_t nrhs,
@@ -2187,45 +2187,45 @@ ONEMKL_EXPORT std::int64_t getrs_scratchpad_size<double>(oneapi::mkl::device lib
     return function_tables[libkey].dgetrs_scratchpad_size_sycl(queue, trans, n, nrhs, lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_scratchpad_size<std::complex<float>>(
+std::int64_t getrs_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n,
     std::int64_t nrhs, std::int64_t lda, std::int64_t ldb) {
     return function_tables[libkey].cgetrs_scratchpad_size_sycl(queue, trans, n, nrhs, lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_scratchpad_size<std::complex<double>>(
+std::int64_t getrs_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n,
     std::int64_t nrhs, std::int64_t lda, std::int64_t ldb) {
     return function_tables[libkey].zgetrs_scratchpad_size_sycl(queue, trans, n, nrhs, lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t heevd_scratchpad_size<std::complex<float>>(
+std::int64_t heevd_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,
     std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].cheevd_scratchpad_size_sycl(queue, jobz, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t heevd_scratchpad_size<std::complex<double>>(
+std::int64_t heevd_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,
     std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].zheevd_scratchpad_size_sycl(queue, jobz, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t hegvd_scratchpad_size<std::complex<float>>(
+std::int64_t hegvd_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t itype, oneapi::mkl::job jobz,
     oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda, std::int64_t ldb) {
     return function_tables[libkey].chegvd_scratchpad_size_sycl(queue, itype, jobz, uplo, n, lda,
                                                                ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t hegvd_scratchpad_size<std::complex<double>>(
+std::int64_t hegvd_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t itype, oneapi::mkl::job jobz,
     oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda, std::int64_t ldb) {
     return function_tables[libkey].zhegvd_scratchpad_size_sycl(queue, itype, jobz, uplo, n, lda,
                                                                ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t hetrd_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
+std::int64_t hetrd_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
                                                                       sycl::queue &queue,
                                                                       oneapi::mkl::uplo uplo,
                                                                       std::int64_t n,
@@ -2233,7 +2233,7 @@ ONEMKL_EXPORT std::int64_t hetrd_scratchpad_size<std::complex<float>>(oneapi::mk
     return function_tables[libkey].chetrd_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t hetrd_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
+std::int64_t hetrd_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
                                                                        sycl::queue &queue,
                                                                        oneapi::mkl::uplo uplo,
                                                                        std::int64_t n,
@@ -2241,7 +2241,7 @@ ONEMKL_EXPORT std::int64_t hetrd_scratchpad_size<std::complex<double>>(oneapi::m
     return function_tables[libkey].zhetrd_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t hetrf_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
+std::int64_t hetrf_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
                                                                       sycl::queue &queue,
                                                                       oneapi::mkl::uplo uplo,
                                                                       std::int64_t n,
@@ -2249,7 +2249,7 @@ ONEMKL_EXPORT std::int64_t hetrf_scratchpad_size<std::complex<float>>(oneapi::mk
     return function_tables[libkey].chetrf_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t hetrf_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
+std::int64_t hetrf_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
                                                                        sycl::queue &queue,
                                                                        oneapi::mkl::uplo uplo,
                                                                        std::int64_t n,
@@ -2257,7 +2257,7 @@ ONEMKL_EXPORT std::int64_t hetrf_scratchpad_size<std::complex<double>>(oneapi::m
     return function_tables[libkey].zhetrf_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgbr_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t orgbr_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue,
                                                         oneapi::mkl::generate vect, std::int64_t m,
                                                         std::int64_t n, std::int64_t k,
@@ -2265,7 +2265,7 @@ ONEMKL_EXPORT std::int64_t orgbr_scratchpad_size<float>(oneapi::mkl::device libk
     return function_tables[libkey].sorgbr_scratchpad_size_sycl(queue, vect, m, n, k, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgbr_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t orgbr_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue,
                                                          oneapi::mkl::generate vect, std::int64_t m,
                                                          std::int64_t n, std::int64_t k,
@@ -2273,33 +2273,33 @@ ONEMKL_EXPORT std::int64_t orgbr_scratchpad_size<double>(oneapi::mkl::device lib
     return function_tables[libkey].dorgbr_scratchpad_size_sycl(queue, vect, m, n, k, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgtr_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t orgtr_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                         std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].sorgtr_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgtr_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t orgtr_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                          std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].dorgtr_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgqr_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t orgqr_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, std::int64_t m,
                                                         std::int64_t n, std::int64_t k,
                                                         std::int64_t lda) {
     return function_tables[libkey].sorgqr_scratchpad_size_sycl(queue, m, n, k, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgqr_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t orgqr_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, std::int64_t m,
                                                          std::int64_t n, std::int64_t k,
                                                          std::int64_t lda) {
     return function_tables[libkey].dorgqr_scratchpad_size_sycl(queue, m, n, k, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ormrq_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t ormrq_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, oneapi::mkl::side side,
                                                         oneapi::mkl::transpose trans,
                                                         std::int64_t m, std::int64_t n,
@@ -2309,7 +2309,7 @@ ONEMKL_EXPORT std::int64_t ormrq_scratchpad_size<float>(oneapi::mkl::device libk
                                                                ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ormrq_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t ormrq_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, oneapi::mkl::side side,
                                                          oneapi::mkl::transpose trans,
                                                          std::int64_t m, std::int64_t n,
@@ -2319,7 +2319,7 @@ ONEMKL_EXPORT std::int64_t ormrq_scratchpad_size<double>(oneapi::mkl::device lib
                                                                ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ormqr_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t ormqr_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, oneapi::mkl::side side,
                                                         oneapi::mkl::transpose trans,
                                                         std::int64_t m, std::int64_t n,
@@ -2329,7 +2329,7 @@ ONEMKL_EXPORT std::int64_t ormqr_scratchpad_size<float>(oneapi::mkl::device libk
                                                                ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ormqr_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t ormqr_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, oneapi::mkl::side side,
                                                          oneapi::mkl::transpose trans,
                                                          std::int64_t m, std::int64_t n,
@@ -2339,7 +2339,7 @@ ONEMKL_EXPORT std::int64_t ormqr_scratchpad_size<double>(oneapi::mkl::device lib
                                                                ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ormtr_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t ormtr_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, oneapi::mkl::side side,
                                                         oneapi::mkl::uplo uplo,
                                                         oneapi::mkl::transpose trans,
@@ -2349,7 +2349,7 @@ ONEMKL_EXPORT std::int64_t ormtr_scratchpad_size<float>(oneapi::mkl::device libk
                                                                ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ormtr_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t ormtr_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, oneapi::mkl::side side,
                                                          oneapi::mkl::uplo uplo,
                                                          oneapi::mkl::transpose trans,
@@ -2359,19 +2359,19 @@ ONEMKL_EXPORT std::int64_t ormtr_scratchpad_size<double>(oneapi::mkl::device lib
                                                                ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t potrf_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                         std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].spotrf_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t potrf_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                          std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].dpotrf_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
+std::int64_t potrf_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
                                                                       sycl::queue &queue,
                                                                       oneapi::mkl::uplo uplo,
                                                                       std::int64_t n,
@@ -2379,7 +2379,7 @@ ONEMKL_EXPORT std::int64_t potrf_scratchpad_size<std::complex<float>>(oneapi::mk
     return function_tables[libkey].cpotrf_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
+std::int64_t potrf_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
                                                                        sycl::queue &queue,
                                                                        oneapi::mkl::uplo uplo,
                                                                        std::int64_t n,
@@ -2387,45 +2387,45 @@ ONEMKL_EXPORT std::int64_t potrf_scratchpad_size<std::complex<double>>(oneapi::m
     return function_tables[libkey].zpotrf_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t potrs_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                         std::int64_t n, std::int64_t nrhs,
                                                         std::int64_t lda, std::int64_t ldb) {
     return function_tables[libkey].spotrs_scratchpad_size_sycl(queue, uplo, n, nrhs, lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t potrs_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                          std::int64_t n, std::int64_t nrhs,
                                                          std::int64_t lda, std::int64_t ldb) {
     return function_tables[libkey].dpotrs_scratchpad_size_sycl(queue, uplo, n, nrhs, lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_scratchpad_size<std::complex<float>>(
+std::int64_t potrs_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
     std::int64_t nrhs, std::int64_t lda, std::int64_t ldb) {
     return function_tables[libkey].cpotrs_scratchpad_size_sycl(queue, uplo, n, nrhs, lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_scratchpad_size<std::complex<double>>(
+std::int64_t potrs_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
     std::int64_t nrhs, std::int64_t lda, std::int64_t ldb) {
     return function_tables[libkey].zpotrs_scratchpad_size_sycl(queue, uplo, n, nrhs, lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potri_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t potri_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                         std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].spotri_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potri_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t potri_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                          std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].dpotri_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potri_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
+std::int64_t potri_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
                                                                       sycl::queue &queue,
                                                                       oneapi::mkl::uplo uplo,
                                                                       std::int64_t n,
@@ -2433,7 +2433,7 @@ ONEMKL_EXPORT std::int64_t potri_scratchpad_size<std::complex<float>>(oneapi::mk
     return function_tables[libkey].cpotri_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potri_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
+std::int64_t potri_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
                                                                        sycl::queue &queue,
                                                                        oneapi::mkl::uplo uplo,
                                                                        std::int64_t n,
@@ -2441,19 +2441,19 @@ ONEMKL_EXPORT std::int64_t potri_scratchpad_size<std::complex<double>>(oneapi::m
     return function_tables[libkey].zpotri_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t sytrf_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t sytrf_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                         std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].ssytrf_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t sytrf_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t sytrf_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                          std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].dsytrf_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t sytrf_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
+std::int64_t sytrf_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
                                                                       sycl::queue &queue,
                                                                       oneapi::mkl::uplo uplo,
                                                                       std::int64_t n,
@@ -2461,7 +2461,7 @@ ONEMKL_EXPORT std::int64_t sytrf_scratchpad_size<std::complex<float>>(oneapi::mk
     return function_tables[libkey].csytrf_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t sytrf_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
+std::int64_t sytrf_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
                                                                        sycl::queue &queue,
                                                                        oneapi::mkl::uplo uplo,
                                                                        std::int64_t n,
@@ -2469,21 +2469,21 @@ ONEMKL_EXPORT std::int64_t sytrf_scratchpad_size<std::complex<double>>(oneapi::m
     return function_tables[libkey].zsytrf_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t syevd_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t syevd_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, oneapi::mkl::job jobz,
                                                         oneapi::mkl::uplo uplo, std::int64_t n,
                                                         std::int64_t lda) {
     return function_tables[libkey].ssyevd_scratchpad_size_sycl(queue, jobz, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t syevd_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t syevd_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, oneapi::mkl::job jobz,
                                                          oneapi::mkl::uplo uplo, std::int64_t n,
                                                          std::int64_t lda) {
     return function_tables[libkey].dsyevd_scratchpad_size_sycl(queue, jobz, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t sygvd_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t sygvd_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, std::int64_t itype,
                                                         oneapi::mkl::job jobz,
                                                         oneapi::mkl::uplo uplo, std::int64_t n,
@@ -2492,7 +2492,7 @@ ONEMKL_EXPORT std::int64_t sygvd_scratchpad_size<float>(oneapi::mkl::device libk
                                                                ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t sygvd_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t sygvd_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, std::int64_t itype,
                                                          oneapi::mkl::job jobz,
                                                          oneapi::mkl::uplo uplo, std::int64_t n,
@@ -2501,19 +2501,19 @@ ONEMKL_EXPORT std::int64_t sygvd_scratchpad_size<double>(oneapi::mkl::device lib
                                                                ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t sytrd_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t sytrd_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                         std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].ssytrd_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t sytrd_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t sytrd_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                          std::int64_t n, std::int64_t lda) {
     return function_tables[libkey].dsytrd_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t trtrs_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t trtrs_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                         sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                         oneapi::mkl::transpose trans,
                                                         oneapi::mkl::diag diag, std::int64_t n,
@@ -2523,7 +2523,7 @@ ONEMKL_EXPORT std::int64_t trtrs_scratchpad_size<float>(oneapi::mkl::device libk
                                                                lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t trtrs_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t trtrs_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                          sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                          oneapi::mkl::transpose trans,
                                                          oneapi::mkl::diag diag, std::int64_t n,
@@ -2533,7 +2533,7 @@ ONEMKL_EXPORT std::int64_t trtrs_scratchpad_size<double>(oneapi::mkl::device lib
                                                                lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t trtrs_scratchpad_size<std::complex<float>>(
+std::int64_t trtrs_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
     oneapi::mkl::transpose trans, oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs,
     std::int64_t lda, std::int64_t ldb) {
@@ -2541,7 +2541,7 @@ ONEMKL_EXPORT std::int64_t trtrs_scratchpad_size<std::complex<float>>(
                                                                lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t trtrs_scratchpad_size<std::complex<double>>(
+std::int64_t trtrs_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
     oneapi::mkl::transpose trans, oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs,
     std::int64_t lda, std::int64_t ldb) {
@@ -2549,31 +2549,31 @@ ONEMKL_EXPORT std::int64_t trtrs_scratchpad_size<std::complex<double>>(
                                                                lda, ldb);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungbr_scratchpad_size<std::complex<float>>(
+std::int64_t ungbr_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::generate vect, std::int64_t m,
     std::int64_t n, std::int64_t k, std::int64_t lda) {
     return function_tables[libkey].cungbr_scratchpad_size_sycl(queue, vect, m, n, k, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungbr_scratchpad_size<std::complex<double>>(
+std::int64_t ungbr_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::generate vect, std::int64_t m,
     std::int64_t n, std::int64_t k, std::int64_t lda) {
     return function_tables[libkey].zungbr_scratchpad_size_sycl(queue, vect, m, n, k, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungqr_scratchpad_size<std::complex<float>>(
+std::int64_t ungqr_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k,
     std::int64_t lda) {
     return function_tables[libkey].cungqr_scratchpad_size_sycl(queue, m, n, k, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungqr_scratchpad_size<std::complex<double>>(
+std::int64_t ungqr_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k,
     std::int64_t lda) {
     return function_tables[libkey].zungqr_scratchpad_size_sycl(queue, m, n, k, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungtr_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
+std::int64_t ungtr_scratchpad_size<std::complex<float>>(oneapi::mkl::device libkey,
                                                                       sycl::queue &queue,
                                                                       oneapi::mkl::uplo uplo,
                                                                       std::int64_t n,
@@ -2581,7 +2581,7 @@ ONEMKL_EXPORT std::int64_t ungtr_scratchpad_size<std::complex<float>>(oneapi::mk
     return function_tables[libkey].cungtr_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungtr_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
+std::int64_t ungtr_scratchpad_size<std::complex<double>>(oneapi::mkl::device libkey,
                                                                        sycl::queue &queue,
                                                                        oneapi::mkl::uplo uplo,
                                                                        std::int64_t n,
@@ -2589,7 +2589,7 @@ ONEMKL_EXPORT std::int64_t ungtr_scratchpad_size<std::complex<double>>(oneapi::m
     return function_tables[libkey].zungtr_scratchpad_size_sycl(queue, uplo, n, lda);
 }
 template <>
-ONEMKL_EXPORT std::int64_t unmrq_scratchpad_size<std::complex<float>>(
+std::int64_t unmrq_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::side side,
     oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
     std::int64_t ldc) {
@@ -2597,7 +2597,7 @@ ONEMKL_EXPORT std::int64_t unmrq_scratchpad_size<std::complex<float>>(
                                                                ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t unmrq_scratchpad_size<std::complex<double>>(
+std::int64_t unmrq_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::side side,
     oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
     std::int64_t ldc) {
@@ -2605,7 +2605,7 @@ ONEMKL_EXPORT std::int64_t unmrq_scratchpad_size<std::complex<double>>(
                                                                ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t unmqr_scratchpad_size<std::complex<float>>(
+std::int64_t unmqr_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::side side,
     oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
     std::int64_t ldc) {
@@ -2613,7 +2613,7 @@ ONEMKL_EXPORT std::int64_t unmqr_scratchpad_size<std::complex<float>>(
                                                                ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t unmqr_scratchpad_size<std::complex<double>>(
+std::int64_t unmqr_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::side side,
     oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
     std::int64_t ldc) {
@@ -2621,7 +2621,7 @@ ONEMKL_EXPORT std::int64_t unmqr_scratchpad_size<std::complex<double>>(
                                                                ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t unmtr_scratchpad_size<std::complex<float>>(
+std::int64_t unmtr_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::uplo uplo,
     oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t lda,
     std::int64_t ldc) {
@@ -2629,7 +2629,7 @@ ONEMKL_EXPORT std::int64_t unmtr_scratchpad_size<std::complex<float>>(
                                                                ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t unmtr_scratchpad_size<std::complex<double>>(
+std::int64_t unmtr_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::uplo uplo,
     oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t lda,
     std::int64_t ldc) {
@@ -2637,63 +2637,63 @@ ONEMKL_EXPORT std::int64_t unmtr_scratchpad_size<std::complex<double>>(
                                                                ldc);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<float>(
+std::int64_t getrf_batch_scratchpad_size<float>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
     std::int64_t lda, std::int64_t stride_a, std::int64_t stride_ipiv, std::int64_t batch_size) {
     return function_tables[libkey].sgetrf_batch_scratchpad_size_sycl(queue, m, n, lda, stride_a,
                                                                      stride_ipiv, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<double>(
+std::int64_t getrf_batch_scratchpad_size<double>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
     std::int64_t lda, std::int64_t stride_a, std::int64_t stride_ipiv, std::int64_t batch_size) {
     return function_tables[libkey].dgetrf_batch_scratchpad_size_sycl(queue, m, n, lda, stride_a,
                                                                      stride_ipiv, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<std::complex<float>>(
+std::int64_t getrf_batch_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
     std::int64_t lda, std::int64_t stride_a, std::int64_t stride_ipiv, std::int64_t batch_size) {
     return function_tables[libkey].cgetrf_batch_scratchpad_size_sycl(queue, m, n, lda, stride_a,
                                                                      stride_ipiv, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<std::complex<double>>(
+std::int64_t getrf_batch_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
     std::int64_t lda, std::int64_t stride_a, std::int64_t stride_ipiv, std::int64_t batch_size) {
     return function_tables[libkey].zgetrf_batch_scratchpad_size_sycl(queue, m, n, lda, stride_a,
                                                                      stride_ipiv, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<float>(
+std::int64_t getri_batch_scratchpad_size<float>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t n, std::int64_t lda,
     std::int64_t stride_a, std::int64_t stride_ipiv, std::int64_t batch_size) {
     return function_tables[libkey].sgetri_batch_scratchpad_size_sycl(queue, n, lda, stride_a,
                                                                      stride_ipiv, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<double>(
+std::int64_t getri_batch_scratchpad_size<double>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t n, std::int64_t lda,
     std::int64_t stride_a, std::int64_t stride_ipiv, std::int64_t batch_size) {
     return function_tables[libkey].dgetri_batch_scratchpad_size_sycl(queue, n, lda, stride_a,
                                                                      stride_ipiv, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<std::complex<float>>(
+std::int64_t getri_batch_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t n, std::int64_t lda,
     std::int64_t stride_a, std::int64_t stride_ipiv, std::int64_t batch_size) {
     return function_tables[libkey].cgetri_batch_scratchpad_size_sycl(queue, n, lda, stride_a,
                                                                      stride_ipiv, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<std::complex<double>>(
+std::int64_t getri_batch_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t n, std::int64_t lda,
     std::int64_t stride_a, std::int64_t stride_ipiv, std::int64_t batch_size) {
     return function_tables[libkey].zgetri_batch_scratchpad_size_sycl(queue, n, lda, stride_a,
                                                                      stride_ipiv, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<float>(
+std::int64_t getrs_batch_scratchpad_size<float>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n,
     std::int64_t nrhs, std::int64_t lda, std::int64_t stride_a, std::int64_t stride_ipiv,
     std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
@@ -2701,7 +2701,7 @@ ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<float>(
         queue, trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<double>(
+std::int64_t getrs_batch_scratchpad_size<double>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n,
     std::int64_t nrhs, std::int64_t lda, std::int64_t stride_a, std::int64_t stride_ipiv,
     std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
@@ -2709,7 +2709,7 @@ ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<double>(
         queue, trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<std::complex<float>>(
+std::int64_t getrs_batch_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n,
     std::int64_t nrhs, std::int64_t lda, std::int64_t stride_a, std::int64_t stride_ipiv,
     std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
@@ -2717,7 +2717,7 @@ ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<std::complex<float>>(
         queue, trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<std::complex<double>>(
+std::int64_t getrs_batch_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n,
     std::int64_t nrhs, std::int64_t lda, std::int64_t stride_a, std::int64_t stride_ipiv,
     std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
@@ -2725,63 +2725,63 @@ ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<std::complex<double>>(
         queue, trans, n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<float>(
+std::int64_t geqrf_batch_scratchpad_size<float>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
     std::int64_t lda, std::int64_t stride_a, std::int64_t stride_tau, std::int64_t batch_size) {
     return function_tables[libkey].sgeqrf_batch_scratchpad_size_sycl(queue, m, n, lda, stride_a,
                                                                      stride_tau, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<double>(
+std::int64_t geqrf_batch_scratchpad_size<double>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
     std::int64_t lda, std::int64_t stride_a, std::int64_t stride_tau, std::int64_t batch_size) {
     return function_tables[libkey].dgeqrf_batch_scratchpad_size_sycl(queue, m, n, lda, stride_a,
                                                                      stride_tau, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<std::complex<float>>(
+std::int64_t geqrf_batch_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
     std::int64_t lda, std::int64_t stride_a, std::int64_t stride_tau, std::int64_t batch_size) {
     return function_tables[libkey].cgeqrf_batch_scratchpad_size_sycl(queue, m, n, lda, stride_a,
                                                                      stride_tau, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<std::complex<double>>(
+std::int64_t geqrf_batch_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
     std::int64_t lda, std::int64_t stride_a, std::int64_t stride_tau, std::int64_t batch_size) {
     return function_tables[libkey].zgeqrf_batch_scratchpad_size_sycl(queue, m, n, lda, stride_a,
                                                                      stride_tau, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<float>(
+std::int64_t potrf_batch_scratchpad_size<float>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
     std::int64_t lda, std::int64_t stride_a, std::int64_t batch_size) {
     return function_tables[libkey].spotrf_batch_scratchpad_size_sycl(queue, uplo, n, lda, stride_a,
                                                                      batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<double>(
+std::int64_t potrf_batch_scratchpad_size<double>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
     std::int64_t lda, std::int64_t stride_a, std::int64_t batch_size) {
     return function_tables[libkey].dpotrf_batch_scratchpad_size_sycl(queue, uplo, n, lda, stride_a,
                                                                      batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<std::complex<float>>(
+std::int64_t potrf_batch_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
     std::int64_t lda, std::int64_t stride_a, std::int64_t batch_size) {
     return function_tables[libkey].cpotrf_batch_scratchpad_size_sycl(queue, uplo, n, lda, stride_a,
                                                                      batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<std::complex<double>>(
+std::int64_t potrf_batch_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
     std::int64_t lda, std::int64_t stride_a, std::int64_t batch_size) {
     return function_tables[libkey].zpotrf_batch_scratchpad_size_sycl(queue, uplo, n, lda, stride_a,
                                                                      batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<float>(
+std::int64_t potrs_batch_scratchpad_size<float>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
     std::int64_t nrhs, std::int64_t lda, std::int64_t stride_a, std::int64_t ldb,
     std::int64_t stride_b, std::int64_t batch_size) {
@@ -2789,7 +2789,7 @@ ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<float>(
         queue, uplo, n, nrhs, lda, stride_a, ldb, stride_b, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<double>(
+std::int64_t potrs_batch_scratchpad_size<double>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
     std::int64_t nrhs, std::int64_t lda, std::int64_t stride_a, std::int64_t ldb,
     std::int64_t stride_b, std::int64_t batch_size) {
@@ -2797,7 +2797,7 @@ ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<double>(
         queue, uplo, n, nrhs, lda, stride_a, ldb, stride_b, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<std::complex<float>>(
+std::int64_t potrs_batch_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
     std::int64_t nrhs, std::int64_t lda, std::int64_t stride_a, std::int64_t ldb,
     std::int64_t stride_b, std::int64_t batch_size) {
@@ -2805,7 +2805,7 @@ ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<std::complex<float>>(
         queue, uplo, n, nrhs, lda, stride_a, ldb, stride_b, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<std::complex<double>>(
+std::int64_t potrs_batch_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
     std::int64_t nrhs, std::int64_t lda, std::int64_t stride_a, std::int64_t ldb,
     std::int64_t stride_b, std::int64_t batch_size) {
@@ -2813,35 +2813,35 @@ ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<std::complex<double>>(
         queue, uplo, n, nrhs, lda, stride_a, ldb, stride_b, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgqr_batch_scratchpad_size<float>(
+std::int64_t orgqr_batch_scratchpad_size<float>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k,
     std::int64_t lda, std::int64_t stride_a, std::int64_t stride_tau, std::int64_t batch_size) {
     return function_tables[libkey].sorgqr_batch_scratchpad_size_sycl(queue, m, n, k, lda, stride_a,
                                                                      stride_tau, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgqr_batch_scratchpad_size<double>(
+std::int64_t orgqr_batch_scratchpad_size<double>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k,
     std::int64_t lda, std::int64_t stride_a, std::int64_t stride_tau, std::int64_t batch_size) {
     return function_tables[libkey].dorgqr_batch_scratchpad_size_sycl(queue, m, n, k, lda, stride_a,
                                                                      stride_tau, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungqr_batch_scratchpad_size<std::complex<float>>(
+std::int64_t ungqr_batch_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k,
     std::int64_t lda, std::int64_t stride_a, std::int64_t stride_tau, std::int64_t batch_size) {
     return function_tables[libkey].cungqr_batch_scratchpad_size_sycl(queue, m, n, k, lda, stride_a,
                                                                      stride_tau, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungqr_batch_scratchpad_size<std::complex<double>>(
+std::int64_t ungqr_batch_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k,
     std::int64_t lda, std::int64_t stride_a, std::int64_t stride_tau, std::int64_t batch_size) {
     return function_tables[libkey].zungqr_batch_scratchpad_size_sycl(queue, m, n, k, lda, stride_a,
                                                                      stride_tau, batch_size);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t getrf_batch_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                               sycl::queue &queue, std::int64_t *m,
                                                               std::int64_t *n, std::int64_t *lda,
                                                               std::int64_t group_count,
@@ -2850,7 +2850,7 @@ ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<float>(oneapi::mkl::devic
                                                                      group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t getrf_batch_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                                sycl::queue &queue, std::int64_t *m,
                                                                std::int64_t *n, std::int64_t *lda,
                                                                std::int64_t group_count,
@@ -2859,21 +2859,21 @@ ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<double>(oneapi::mkl::devi
                                                                      group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<std::complex<float>>(
+std::int64_t getrf_batch_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t *m, std::int64_t *n,
     std::int64_t *lda, std::int64_t group_count, std::int64_t *group_sizes) {
     return function_tables[libkey].cgetrf_group_scratchpad_size_sycl(queue, m, n, lda, group_count,
                                                                      group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrf_batch_scratchpad_size<std::complex<double>>(
+std::int64_t getrf_batch_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t *m, std::int64_t *n,
     std::int64_t *lda, std::int64_t group_count, std::int64_t *group_sizes) {
     return function_tables[libkey].zgetrf_group_scratchpad_size_sycl(queue, m, n, lda, group_count,
                                                                      group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t getri_batch_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                               sycl::queue &queue, std::int64_t *n,
                                                               std::int64_t *lda,
                                                               std::int64_t group_count,
@@ -2882,7 +2882,7 @@ ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<float>(oneapi::mkl::devic
                                                                      group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t getri_batch_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                                sycl::queue &queue, std::int64_t *n,
                                                                std::int64_t *lda,
                                                                std::int64_t group_count,
@@ -2891,21 +2891,21 @@ ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<double>(oneapi::mkl::devi
                                                                      group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<std::complex<float>>(
+std::int64_t getri_batch_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t *n, std::int64_t *lda,
     std::int64_t group_count, std::int64_t *group_sizes) {
     return function_tables[libkey].cgetri_group_scratchpad_size_sycl(queue, n, lda, group_count,
                                                                      group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size<std::complex<double>>(
+std::int64_t getri_batch_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t *n, std::int64_t *lda,
     std::int64_t group_count, std::int64_t *group_sizes) {
     return function_tables[libkey].zgetri_group_scratchpad_size_sycl(queue, n, lda, group_count,
                                                                      group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<float>(
+std::int64_t getrs_batch_scratchpad_size<float>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::transpose *trans, std::int64_t *n,
     std::int64_t *nrhs, std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,
     std::int64_t *group_sizes) {
@@ -2913,7 +2913,7 @@ ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<float>(
                                                                      ldb, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<double>(
+std::int64_t getrs_batch_scratchpad_size<double>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::transpose *trans, std::int64_t *n,
     std::int64_t *nrhs, std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,
     std::int64_t *group_sizes) {
@@ -2921,7 +2921,7 @@ ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<double>(
                                                                      ldb, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<std::complex<float>>(
+std::int64_t getrs_batch_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::transpose *trans, std::int64_t *n,
     std::int64_t *nrhs, std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,
     std::int64_t *group_sizes) {
@@ -2929,7 +2929,7 @@ ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<std::complex<float>>(
                                                                      ldb, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<std::complex<double>>(
+std::int64_t getrs_batch_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::transpose *trans, std::int64_t *n,
     std::int64_t *nrhs, std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,
     std::int64_t *group_sizes) {
@@ -2937,7 +2937,7 @@ ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size<std::complex<double>>(
                                                                      ldb, group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<float>(oneapi::mkl::device libkey,
+std::int64_t geqrf_batch_scratchpad_size<float>(oneapi::mkl::device libkey,
                                                               sycl::queue &queue, std::int64_t *m,
                                                               std::int64_t *n, std::int64_t *lda,
                                                               std::int64_t group_count,
@@ -2946,7 +2946,7 @@ ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<float>(oneapi::mkl::devic
                                                                      group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<double>(oneapi::mkl::device libkey,
+std::int64_t geqrf_batch_scratchpad_size<double>(oneapi::mkl::device libkey,
                                                                sycl::queue &queue, std::int64_t *m,
                                                                std::int64_t *n, std::int64_t *lda,
                                                                std::int64_t group_count,
@@ -2955,63 +2955,63 @@ ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<double>(oneapi::mkl::devi
                                                                      group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<std::complex<float>>(
+std::int64_t geqrf_batch_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t *m, std::int64_t *n,
     std::int64_t *lda, std::int64_t group_count, std::int64_t *group_sizes) {
     return function_tables[libkey].cgeqrf_group_scratchpad_size_sycl(queue, m, n, lda, group_count,
                                                                      group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size<std::complex<double>>(
+std::int64_t geqrf_batch_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t *m, std::int64_t *n,
     std::int64_t *lda, std::int64_t group_count, std::int64_t *group_sizes) {
     return function_tables[libkey].zgeqrf_group_scratchpad_size_sycl(queue, m, n, lda, group_count,
                                                                      group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgqr_batch_scratchpad_size<float>(
+std::int64_t orgqr_batch_scratchpad_size<float>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t *m, std::int64_t *n,
     std::int64_t *k, std::int64_t *lda, std::int64_t group_count, std::int64_t *group_sizes) {
     return function_tables[libkey].sorgqr_group_scratchpad_size_sycl(queue, m, n, k, lda,
                                                                      group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t orgqr_batch_scratchpad_size<double>(
+std::int64_t orgqr_batch_scratchpad_size<double>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t *m, std::int64_t *n,
     std::int64_t *k, std::int64_t *lda, std::int64_t group_count, std::int64_t *group_sizes) {
     return function_tables[libkey].dorgqr_group_scratchpad_size_sycl(queue, m, n, k, lda,
                                                                      group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<float>(
+std::int64_t potrf_batch_scratchpad_size<float>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n,
     std::int64_t *lda, std::int64_t group_count, std::int64_t *group_sizes) {
     return function_tables[libkey].spotrf_group_scratchpad_size_sycl(queue, uplo, n, lda,
                                                                      group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<double>(
+std::int64_t potrf_batch_scratchpad_size<double>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n,
     std::int64_t *lda, std::int64_t group_count, std::int64_t *group_sizes) {
     return function_tables[libkey].dpotrf_group_scratchpad_size_sycl(queue, uplo, n, lda,
                                                                      group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<std::complex<float>>(
+std::int64_t potrf_batch_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n,
     std::int64_t *lda, std::int64_t group_count, std::int64_t *group_sizes) {
     return function_tables[libkey].cpotrf_group_scratchpad_size_sycl(queue, uplo, n, lda,
                                                                      group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrf_batch_scratchpad_size<std::complex<double>>(
+std::int64_t potrf_batch_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n,
     std::int64_t *lda, std::int64_t group_count, std::int64_t *group_sizes) {
     return function_tables[libkey].zpotrf_group_scratchpad_size_sycl(queue, uplo, n, lda,
                                                                      group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<float>(
+std::int64_t potrs_batch_scratchpad_size<float>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n,
     std::int64_t *nrhs, std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,
     std::int64_t *group_sizes) {
@@ -3019,7 +3019,7 @@ ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<float>(
                                                                      group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<double>(
+std::int64_t potrs_batch_scratchpad_size<double>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n,
     std::int64_t *nrhs, std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,
     std::int64_t *group_sizes) {
@@ -3027,7 +3027,7 @@ ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<double>(
                                                                      group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<std::complex<float>>(
+std::int64_t potrs_batch_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n,
     std::int64_t *nrhs, std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,
     std::int64_t *group_sizes) {
@@ -3035,7 +3035,7 @@ ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<std::complex<float>>(
                                                                      group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<std::complex<double>>(
+std::int64_t potrs_batch_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n,
     std::int64_t *nrhs, std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,
     std::int64_t *group_sizes) {
@@ -3043,14 +3043,14 @@ ONEMKL_EXPORT std::int64_t potrs_batch_scratchpad_size<std::complex<double>>(
                                                                      group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungqr_batch_scratchpad_size<std::complex<float>>(
+std::int64_t ungqr_batch_scratchpad_size<std::complex<float>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t *m, std::int64_t *n,
     std::int64_t *k, std::int64_t *lda, std::int64_t group_count, std::int64_t *group_sizes) {
     return function_tables[libkey].cungqr_group_scratchpad_size_sycl(queue, m, n, k, lda,
                                                                      group_count, group_sizes);
 }
 template <>
-ONEMKL_EXPORT std::int64_t ungqr_batch_scratchpad_size<std::complex<double>>(
+std::int64_t ungqr_batch_scratchpad_size<std::complex<double>>(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t *m, std::int64_t *n,
     std::int64_t *k, std::int64_t *lda, std::int64_t group_count, std::int64_t *group_sizes) {
     return function_tables[libkey].zungqr_group_scratchpad_size_sycl(queue, m, n, k, lda,

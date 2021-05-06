@@ -19,9 +19,10 @@
 
 #pragma once
 
-#include <CL/sycl.hpp>
 #include <complex>
 #include <cstdint>
+
+#include <CL/sycl.hpp>
 
 namespace oneapi {
 namespace mkl {
