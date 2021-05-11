@@ -48,7 +48,7 @@ option(BUILD_SHARED_LIBS "Build dynamic libraries" ON)
 
 # Override default CXX compile/link lines for Windows after project
 if(WIN32)
-  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD 17)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function -w")
   foreach (flag_var
            CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
