@@ -323,7 +323,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngUniform(VSL_RNG_METHOD_UNIFORM_STD, stream, n, r, distr.a(), distr.b());
             });
         });
@@ -335,7 +335,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngUniform(VSL_RNG_METHOD_UNIFORM_STD, stream, n, r, distr.a(), distr.b());
             });
         });
@@ -347,7 +347,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 viRngUniform(VSL_RNG_METHOD_UNIFORM_STD, stream, n, r, distr.a(), distr.b());
             });
         });
@@ -359,7 +359,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngUniform(VSL_RNG_METHOD_UNIFORM_STD_ACCURATE, stream, n, r, distr.a(),
                              distr.b());
             });
@@ -372,7 +372,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngUniform(VSL_RNG_METHOD_UNIFORM_STD_ACCURATE, stream, n, r, distr.a(),
                              distr.b());
             });
@@ -385,7 +385,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngGaussian(VSL_RNG_METHOD_GAUSSIAN_BOXMULLER2, stream, n, r, distr.mean(),
                               distr.stddev());
             });
@@ -398,7 +398,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_BOXMULLER2, stream, n, r, distr.mean(),
                               distr.stddev());
             });
@@ -411,7 +411,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, stream, n, r, distr.mean(),
                               distr.stddev());
             });
@@ -424,7 +424,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, stream, n, r, distr.mean(),
                               distr.stddev());
             });
@@ -437,7 +437,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngLognormal(VSL_RNG_METHOD_LOGNORMAL_BOXMULLER2, stream, n, r, distr.m(),
                                distr.s(), distr.displ(), distr.scale());
             });
@@ -450,7 +450,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngLognormal(VSL_RNG_METHOD_LOGNORMAL_BOXMULLER2, stream, n, r, distr.m(),
                                distr.s(), distr.displ(), distr.scale());
             });
@@ -463,7 +463,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngLognormal(VSL_RNG_METHOD_LOGNORMAL_ICDF, stream, n, r, distr.m(), distr.s(),
                                distr.displ(), distr.scale());
             });
@@ -476,7 +476,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngLognormal(VSL_RNG_METHOD_LOGNORMAL_ICDF, stream, n, r, distr.m(), distr.s(),
                                distr.displ(), distr.scale());
             });
@@ -489,7 +489,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 viRngBernoulli(VSL_RNG_METHOD_BERNOULLI_ICDF, stream, n, r, distr.p());
             });
         });
@@ -501,7 +501,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 viRngBernoulli(VSL_RNG_METHOD_BERNOULLI_ICDF, stream, n,
                                reinterpret_cast<int32_t*>(r), distr.p());
             });
@@ -514,7 +514,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 viRngPoisson(VSL_RNG_METHOD_POISSON_POISNORM, stream, n, r, distr.lambda());
             });
         });
@@ -526,7 +526,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
                 viRngPoisson(VSL_RNG_METHOD_POISSON_POISNORM, stream, n,
                              reinterpret_cast<int32_t*>(r), distr.lambda());
             });
@@ -539,7 +539,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(
+            host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(
                 cgh, [=]() { viRngUniformBits(VSL_RNG_METHOD_UNIFORMBITS_STD, stream, n, r); });
         });
     }
