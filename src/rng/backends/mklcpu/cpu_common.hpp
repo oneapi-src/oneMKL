@@ -47,6 +47,9 @@ static inline void host_task(H &cgh, F f) {
 template <typename Engine, typename Distr>
 class kernel_name {};
 
+template <typename Engine, typename Distr>
+class kernel_name_usm {};
+
 } // namespace mklcpu
 } // namespace rng
 } // namespace mkl
