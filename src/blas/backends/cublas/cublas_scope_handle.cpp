@@ -97,7 +97,8 @@ void ContextCallback(void *userData) {
 }
 
 cublasHandle_t CublasScopedContextHandler::get_handle(const cl::sycl::queue &queue) {
-    auto piPlacedContext_ = reinterpret_cast<pi_context>(placedContext_.get());
+    auto piPlacedContext_ =
+        reinterpret_cast<pi_context>(cl::sycl::get_native<cl::sycl::backend::cuda>(placedContext_));
     CUstream streamId = get_stream(queue);
     cublasStatus_t err;
     auto it = handle_helper.cublas_handle_mapper_.find(piPlacedContext_);
