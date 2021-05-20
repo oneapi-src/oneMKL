@@ -317,21 +317,11 @@ inline void rot(Func func, cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<T
         cgh.interop_task([=](cl::sycl::interop_handler ih) {
             auto sc = CublasScopedContextHandler(queue);
             auto handle = sc.get_handle(queue);
-            // By default the pointer mode is the CUBLAS_POINTER_MODE_HOST
-            // when the data is on buffer, it must be set to
-            // CUBLAS_POINTER_MODE_DEVICE mode otherwise it causes the segmentation
-            // fault. When it is set to device it is users responsibility to
-            // synchronise as the function is completely asynchronous.
-            cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
             auto x_ = sc.get_mem<cuDataType1 *>(ih, x_acc);
             auto y_ = sc.get_mem<cuDataType1 *>(ih, y_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, incx, y_, incy, (cuDataType2 *)&c,
                               (cuDataType3 *)&s);
-            // Higher level BLAS functions expect CUBLAS_POINTER_MODE_HOST
-            // to be set, therfore we need to reset this to the default value
-            // in order to avoid CUDA_ERROR_ILLEGAL_ADRESS errors
-            cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
         });
     });
 }
