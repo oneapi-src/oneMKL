@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright 2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,13 +17,25 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_HPP_
-#define _ONEMKL_HPP_
+#pragma once
+
+#include <CL/sycl.hpp>
+#include <complex>
+#include <cstdint>
 
 #include "oneapi/mkl/types.hpp"
+#include "oneapi/mkl/lapack/types.hpp"
+#include "oneapi/mkl/detail/backend_selector.hpp"
+#include "oneapi/mkl/lapack/detail/mklgpu/onemkl_lapack_mklgpu.hpp"
 
-#include "oneapi/mkl/blas.hpp"
-#include "oneapi/mkl/lapack.hpp"
-#include "oneapi/mkl/rng.hpp"
+namespace oneapi {
+namespace mkl {
+namespace lapack {
 
-#endif //_ONEMKL_HPP_
+#define LAPACK_BACKEND mklgpu
+#include "oneapi/mkl/lapack/detail/mkl_common/lapack_ct.hxx"
+#undef LAPACK_BACKEND
+
+} //namespace lapack
+} //namespace mkl
+} //namespace oneapi

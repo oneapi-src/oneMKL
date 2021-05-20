@@ -107,7 +107,7 @@ $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl_blas_mklcpu –lonemkl_blas_c
 
 ### Supported Configurations:
 
-Supported domains: BLAS, RNG
+Supported domains: BLAS, LAPACK, RNG
 
 #### Linux*
 
@@ -139,6 +139,16 @@ Supported domains: BLAS, RNG
         <tr>
             <td align="center">x86 CPU</td>
             <td align="center">NETLIB LAPACK</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td rowspan=2 align="center">LAPACK</td>
+            <td align="center">x86 CPU</td>
+            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">Intel GPU</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -184,6 +194,16 @@ Supported domains: BLAS, RNG
         <tr>
             <td align="center">x86 CPU</td>
             <td align="center">NETLIB LAPACK</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td rowspan=2 align="center">LAPACK</td>
+            <td align="center">x86 CPU</td>
+            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">Intel GPU</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -491,8 +511,9 @@ Then:
 # Inside <path to onemkl>
 mkdir build && cd build
 export CXX=<path_to_dpcpp_compiler>/bin/dpcpp;
-cmake .. [-DMKL_ROOT=<mkl_install_prefix>] \               # required only if environment variable MKLROOT is not set
-         [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] # required only for testing
+cmake .. [-DMKL_ROOT=<mkl_install_prefix>] \                    # required only if environment variable MKLROOT is not set
+         [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \    # required only for testing
+         [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]  # required only for testing
 cmake --build .
 ctest
 cmake --install . --prefix <path_to_install_dir>
@@ -502,8 +523,9 @@ cmake --install . --prefix <path_to_install_dir>
 # Inside <path to onemkl>
 md build && cd build
 cmake .. -G Ninja
-                  [-DMKL_ROOT=<mkl_install_prefix>] \                   # required only if environment variable MKLROOT is not set
-                  [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]     # required only for testing
+                  [-DMKL_ROOT=<mkl_install_prefix>] \                    # required only if environment variable MKLROOT is not set
+                  [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \    # required only for testing
+                  [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]  # required only for testing
 
 ninja 
 ctest

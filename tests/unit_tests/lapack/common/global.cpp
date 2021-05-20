@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright 2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,13 +17,14 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_HPP_
-#define _ONEMKL_HPP_
+#include <sstream>
+#include <array>
 
-#include "oneapi/mkl/types.hpp"
+namespace global {
 
-#include "oneapi/mkl/blas.hpp"
-#include "oneapi/mkl/lapack.hpp"
-#include "oneapi/mkl/rng.hpp"
+/* for logging results with InputTestController */
+std::stringstream log{};
+std::array<char, 1024> buffer{};
+std::string pad{};
 
-#endif //_ONEMKL_HPP_
+} // namespace global
