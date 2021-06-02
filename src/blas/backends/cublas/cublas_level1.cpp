@@ -923,6 +923,7 @@ cl::sycl::event sdsdot(cl::sycl::queue &queue, int64_t n, float sb, const float 
             CUBLAS_ERROR_FUNC(cublasSdot, err, handle, n, x_, incx, y_, incy, res_);
         });
     });
+    done.wait();
     result[0] = result[0] + sb;
     return done;
 }
