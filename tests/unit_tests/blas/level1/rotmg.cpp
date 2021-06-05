@@ -124,14 +124,16 @@ int test(device* dev, oneapi::mkl::layout layout) {
 
     // Compare the results of reference implementation and DPC++ implementation.
 
+    int error_mag = 50;
+
     auto d1_accessor = d1_buffer.template get_access<access::mode::read>();
-    bool good_d1 = check_equal(d1_accessor[0], d1_ref, 1, std::cout);
+    bool good_d1 = check_equal(d1_accessor[0], d1_ref, error_mag, std::cout);
     auto d2_accessor = d2_buffer.template get_access<access::mode::read>();
-    bool good_d2 = check_equal(d2_accessor[0], d2_ref, 1, std::cout);
+    bool good_d2 = check_equal(d2_accessor[0], d2_ref, error_mag, std::cout);
     auto x1_accessor = x1_buffer.template get_access<access::mode::read>();
-    bool good_x1 = check_equal(x1_accessor[0], x1_ref, 1, std::cout);
+    bool good_x1 = check_equal(x1_accessor[0], x1_ref, error_mag, std::cout);
     auto param_accessor = param_buffer.template get_access<access::mode::read>();
-    bool good_param = check_equal_vector(param_accessor, param_ref, 5, 1, 1, std::cout);
+    bool good_param = check_equal_vector(param_accessor, param_ref, 5, 1, error_mag, std::cout);
     bool good = good_d1 && good_d2 && good_x1 && good_param;
 
     return (int)good;

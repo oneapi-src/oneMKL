@@ -23,12 +23,16 @@ set(LIB_OBJ ${LIB_NAME}_obj)
 # Add third-party library 
 find_package(NETLIB REQUIRED)
 
-add_library(${LIB_NAME})
-add_library(${LIB_OBJ} OBJECT
-  netlib_common.hpp
+set(SOURCES netlib_common.hpp
   netlib_level1.cpp netlib_level2.cpp netlib_level3.cpp netlib_batch.cpp netlib_extensions.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: netlib_wrappers.cpp>
 )
+add_library(${LIB_NAME})
+add_library(${LIB_OBJ} OBJECT ${SOURCES})
+  
+if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+  add_sycl_to_target(TARGET ${LIB_OBJ} SOURCES ${SOURCES})
+endif()
 
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include

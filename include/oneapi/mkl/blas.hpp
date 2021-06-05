@@ -35,6 +35,9 @@
 #ifdef ENABLE_CUBLAS_BACKEND
 #include "oneapi/mkl/blas/detail/cublas/blas_ct.hpp"
 #endif
+#ifdef ENABLE_ROCBLAS_BACKEND
+#include "oneapi/mkl/blas/detail/rocblas/blas_ct.hpp"
+#endif
 #ifdef ENABLE_MKLCPU_BACKEND
 #include "oneapi/mkl/blas/detail/mklcpu/blas_ct.hpp"
 #endif

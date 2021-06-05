@@ -41,6 +41,9 @@ namespace column_major {
 #define BACKEND cublas
 #include "blas_ct_backends.hxx"
 #undef BACKEND
+#define BACKEND rocblas
+#include "blas_ct_backends.hxx"
+#undef BACKEND
 #define BACKEND netlib
 #include "blas_ct_backends.hxx"
 #undef BACKEND
@@ -55,6 +58,9 @@ namespace row_major {
 #include "blas_ct_backends.hxx"
 #undef BACKEND
 #define BACKEND cublas
+#include "blas_ct_backends.hxx"
+#undef BACKEND
+#define BACKEND rocblas
 #include "blas_ct_backends.hxx"
 #undef BACKEND
 #define BACKEND netlib

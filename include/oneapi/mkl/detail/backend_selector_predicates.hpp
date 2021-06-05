@@ -43,8 +43,8 @@ inline void backend_selector_precondition<backend::netlib>(cl::sycl::queue& queu
     }
 #endif
 }
-template <>
 
+template <>
 inline void backend_selector_precondition<backend::mklcpu>(cl::sycl::queue& queue) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     if (!(queue.is_host() || queue.get_device().is_cpu())) {
@@ -87,8 +87,21 @@ inline void backend_selector_precondition<backend::cusolver>(cl::sycl::queue& qu
     unsigned int vendor_id =
         static_cast<unsigned int>(queue.get_device().get_info<cl::sycl::info::device::vendor_id>());
     if (!(queue.get_device().is_gpu() && vendor_id == NVIDIA_ID)) {
+        throw unsupported_device(
+            "", "backend_selector<backend::" + backend_map[backend::cusolver] + ">",
+            queue.get_device());
+    }
+#endif
+}
+
+template <>
+inline void backend_selector_precondition<backend::rocblas>(cl::sycl::queue& queue) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    unsigned int vendor_id =
+        static_cast<unsigned int>(queue.get_device().get_info<cl::sycl::info::device::vendor_id>());
+    if (!(queue.get_device().is_gpu() && vendor_id == AMD_ID)) {
         throw unsupported_device("",
-                                 "backend_selector<backend::" + backend_map[backend::cusolver] + ">",
+                                 "backend_selector<backend::" + backend_map[backend::rocblas] + ">",
                                  queue.get_device());
     }
 #endif

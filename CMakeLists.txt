@@ -1,5 +1,6 @@
 #===============================================================================
 # Copyright 2020-2021 Intel Corporation
+# Copyright (C) 2022 Heidelberg University, Engineering Mathematics and Computing Lab (EMCL) and Computing Centre (URZ)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -49,6 +50,7 @@ option(ENABLE_CUBLAS_BACKEND "" OFF)
 
 option(ENABLE_CUSOLVER_BACKEND "" OFF)
 
+option(ENABLE_ROCBLAS_BACKEND "" OFF)
 option(ENABLE_CURAND_BACKEND "" OFF)
 option(ENABLE_NETLIB_BACKEND "" OFF)
 set(ONEMKL_SYCL_IMPLEMENTATION "dpc++" CACHE STRING "Name of the SYCL compiler")

@@ -32,3 +32,7 @@ endif()
 if(ENABLE_CUBLAS_BACKEND AND UNIX)
   add_subdirectory(cublas)
 endif()
+
+if(ENABLE_ROCBLAS_BACKEND AND UNIX)
+  add_subdirectory(rocblas)
+endif()
