@@ -60,12 +60,13 @@ set(LIB_NAME onemkl_rng_curand)
 set(LIB_OBJ ${LIB_NAME}_obj)
 find_package(cuRAND REQUIRED)
 
-add_library(${LIB_NAME})
-add_library(${LIB_OBJ} OBJECT
-  philox4x32x10.cpp
+set(SOURCES philox4x32x10.cpp
   mrg32k3a.cpp
-  $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_rng_curand_wrappers.cpp>
+  $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_rng_curand_wrappers.cpp>)
 )
+
+add_library(${LIB_NAME})
+add_library(${LIB_OBJ} OBJECT ${SOURCES})
 
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
@@ -81,7 +82,9 @@ set_target_properties(${LIB_OBJ} PROPERTIES
 )
 
 target_link_libraries(${LIB_NAME} PUBLIC ${LIB_OBJ})
-
+if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+  add_sycl_to_target(TARGET ${LIB_OBJ} SOURCES ${SOURCES})
+endif()
 # Add major version to the library
 set_target_properties(${LIB_NAME} PROPERTIES
   SOVERSION ${PROJECT_VERSION_MAJOR}

@@ -33,13 +33,13 @@ if(is_dpcpp)
   if(UNIX)
     set(UNIX_INTERFACE_COMPILE_OPTIONS -fsycl)
     set(UNIX_INTERFACE_LINK_OPTIONS -fsycl)
-    if(ENABLE_CURAND_BACKEND)
+    if(ENABLE_CURAND_BACKEND OR ENABLE_CUBLAS_BACKEND)
       list(APPEND UNIX_INTERFACE_COMPILE_OPTIONS
         -fsycl-targets=nvptx64-nvidia-cuda-sycldevice -fsycl-unnamed-lambda)
       list(APPEND UNIX_INTERFACE_LINK_OPTIONS
         -fsycl-targets=nvptx64-nvidia-cuda-sycldevice)
     endif()
-    if(ENABLE_CURAND_BACKEND)
+    if(ENABLE_CURAND_BACKEND OR ENABLE_CUBLAS_BACKEND)
       set_target_properties(ONEMKL::SYCL::SYCL PROPERTIES
         INTERFACE_COMPILE_OPTIONS "${UNIX_INTERFACE_COMPILE_OPTIONS}"
         INTERFACE_LINK_OPTIONS "${UNIX_INTERFACE_LINK_OPTIONS}"
