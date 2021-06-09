@@ -68,13 +68,13 @@ class CublasScopedContextHandler {
     CUcontext original_;
     cl::sycl::context placedContext_;
     bool needToRecover_;
-    cl::sycl::interop_handler& ih;
+    cl::sycl::interop_handler &ih;
     static thread_local cublas_handle handle_helper;
     CUstream get_stream(const cl::sycl::queue &queue);
     cl::sycl::context get_context(const cl::sycl::queue &queue);
 
 public:
-    CublasScopedContextHandler(cl::sycl::queue queue, cl::sycl::interop_handler& ih);
+    CublasScopedContextHandler(cl::sycl::queue queue, cl::sycl::interop_handler &ih);
 
     ~CublasScopedContextHandler() noexcept(false);
     /**
