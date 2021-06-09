@@ -71,7 +71,7 @@ int test(device* dev, oneapi::mkl::layout layout) {
             catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during ROTMG:\n"
                           << e.what() << std::endl
-                          << "OpenCL status: " << e.get_cl_code() << std::endl;
+                          << "OpenCL status: " << e.what() << std::endl;
             }
         }
     };
@@ -112,7 +112,7 @@ int test(device* dev, oneapi::mkl::layout layout) {
     catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during ROTMG:\n"
                   << e.what() << std::endl
-                  << "OpenCL status: " << e.get_cl_code() << std::endl;
+                  << "OpenCL status: " << e.what() << std::endl;
     }
 
     catch (const oneapi::mkl::unimplemented& e) {
