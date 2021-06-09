@@ -48,7 +48,7 @@ cublas_handle::~cublas_handle() noexcept(false) {
  */
 thread_local cublas_handle CublasScopedContextHandler::handle_helper = cublas_handle{};
 
-CublasScopedContextHandler::CublasScopedContextHandler(cl::sycl::queue queue) {
+CublasScopedContextHandler::CublasScopedContextHandler(cl::sycl::queue queue, cl::sycl::interop_handler& ih): ih(ih){
     placedContext_ = queue.get_context();
     auto device = queue.get_device();
     auto desired = cl::sycl::get_native<cl::sycl::backend::cuda>(placedContext_);
