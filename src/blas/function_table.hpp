@@ -569,17 +569,19 @@ typedef struct {
                                     cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc);
     void (*column_major_hgemm_sycl)(cl::sycl::queue &queue, oneapi::mkl::transpose transa,
                                     oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n,
-                                    std::int64_t k, half alpha, cl::sycl::buffer<half, 1> &a,
-                                    std::int64_t lda, cl::sycl::buffer<half, 1> &b,
-                                    std::int64_t ldb, half beta, cl::sycl::buffer<half, 1> &c,
+                                    std::int64_t k, cl::sycl::half alpha,
+                                    cl::sycl::buffer<cl::sycl::half, 1> &a, std::int64_t lda,
+                                    cl::sycl::buffer<cl::sycl::half, 1> &b, std::int64_t ldb,
+                                    cl::sycl::half beta, cl::sycl::buffer<cl::sycl::half, 1> &c,
                                     std::int64_t ldc);
     void (*column_major_gemm_f16f16f32_sycl)(cl::sycl::queue &queue, oneapi::mkl::transpose transa,
                                              oneapi::mkl::transpose transb, std::int64_t m,
                                              std::int64_t n, std::int64_t k, float alpha,
-                                             cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-                                             cl::sycl::buffer<half, 1> &b, std::int64_t ldb,
-                                             float beta, cl::sycl::buffer<float, 1> &c,
-                                             std::int64_t ldc);
+                                             cl::sycl::buffer<cl::sycl::half, 1> &a,
+                                             std::int64_t lda,
+                                             cl::sycl::buffer<cl::sycl::half, 1> &b,
+                                             std::int64_t ldb, float beta,
+                                             cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
     void (*column_major_chemm_sycl)(cl::sycl::queue &queue, oneapi::mkl::side left_right,
                                     oneapi::mkl::uplo upper_lower, std::int64_t m, std::int64_t n,
                                     std::complex<float> alpha,
@@ -2088,14 +2090,16 @@ typedef struct {
                                  cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc);
     void (*row_major_hgemm_sycl)(cl::sycl::queue &queue, oneapi::mkl::transpose transa,
                                  oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n,
-                                 std::int64_t k, half alpha, cl::sycl::buffer<half, 1> &a,
-                                 std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb,
-                                 half beta, cl::sycl::buffer<half, 1> &c, std::int64_t ldc);
+                                 std::int64_t k, cl::sycl::half alpha,
+                                 cl::sycl::buffer<cl::sycl::half, 1> &a, std::int64_t lda,
+                                 cl::sycl::buffer<cl::sycl::half, 1> &b, std::int64_t ldb,
+                                 cl::sycl::half beta, cl::sycl::buffer<cl::sycl::half, 1> &c,
+                                 std::int64_t ldc);
     void (*row_major_gemm_f16f16f32_sycl)(cl::sycl::queue &queue, oneapi::mkl::transpose transa,
                                           oneapi::mkl::transpose transb, std::int64_t m,
                                           std::int64_t n, std::int64_t k, float alpha,
-                                          cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-                                          cl::sycl::buffer<half, 1> &b, std::int64_t ldb,
+                                          cl::sycl::buffer<cl::sycl::half, 1> &a, std::int64_t lda,
+                                          cl::sycl::buffer<cl::sycl::half, 1> &b, std::int64_t ldb,
                                           float beta, cl::sycl::buffer<float, 1> &c,
                                           std::int64_t ldc);
     void (*row_major_chemm_sycl)(cl::sycl::queue &queue, oneapi::mkl::side left_right,

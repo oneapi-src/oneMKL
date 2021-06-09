@@ -398,13 +398,14 @@ ONEMKL_EXPORT void gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, tran
                         cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc);
 ONEMKL_EXPORT void gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
                         transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
-                        half alpha, cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
-                        cl::sycl::buffer<half, 1> &c, std::int64_t ldc);
+                        cl::sycl::half alpha, cl::sycl::buffer<cl::sycl::half, 1> &a,
+                        std::int64_t lda, cl::sycl::buffer<cl::sycl::half, 1> &b, std::int64_t ldb,
+                        cl::sycl::half beta, cl::sycl::buffer<cl::sycl::half, 1> &c,
+                        std::int64_t ldc);
 ONEMKL_EXPORT void gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
                         transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
-                        float alpha, cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<half, 1> &b, std::int64_t ldb, float beta,
+                        float alpha, cl::sycl::buffer<cl::sycl::half, 1> &a, std::int64_t lda,
+                        cl::sycl::buffer<cl::sycl::half, 1> &b, std::int64_t ldb, float beta,
                         cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
 
 ONEMKL_EXPORT void syr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,

@@ -142,8 +142,8 @@ uint8_t rand_scalar() {
 }
 
 template <>
-half rand_scalar() {
-    return half(std::rand() % 32000) / half(32000) - half(0.5);
+cl::sycl::half rand_scalar() {
+    return cl::sycl::half(std::rand() % 32000) / cl::sycl::half(32000) - cl::sycl::half(0.5);
 }
 
 template <typename fp>

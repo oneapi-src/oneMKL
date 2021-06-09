@@ -1519,20 +1519,22 @@ inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpo
 }
 
 inline void gemm_precondition(cl::sycl::queue &queue, transpose transa, transpose transb,
-                              std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
-                              cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-                              cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
-                              cl::sycl::buffer<half, 1> &c, std::int64_t ldc) {
+                              std::int64_t m, std::int64_t n, std::int64_t k, cl::sycl::half alpha,
+                              cl::sycl::buffer<cl::sycl::half, 1> &a, std::int64_t lda,
+                              cl::sycl::buffer<cl::sycl::half, 1> &b, std::int64_t ldb,
+                              cl::sycl::half beta, cl::sycl::buffer<cl::sycl::half, 1> &c,
+                              std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add prechecks to queue here for input args.  */
 #endif
 }
 
 inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpose transb,
-                               std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
-                               cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-                               cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
-                               cl::sycl::buffer<half, 1> &c, std::int64_t ldc) {
+                               std::int64_t m, std::int64_t n, std::int64_t k, cl::sycl::half alpha,
+                               cl::sycl::buffer<cl::sycl::half, 1> &a, std::int64_t lda,
+                               cl::sycl::buffer<cl::sycl::half, 1> &b, std::int64_t ldb,
+                               cl::sycl::half beta, cl::sycl::buffer<cl::sycl::half, 1> &c,
+                               std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add postchecks to queue here for input args.  */
 #endif
@@ -1540,8 +1542,8 @@ inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpo
 
 inline void gemm_precondition(cl::sycl::queue &queue, transpose transa, transpose transb,
                               std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-                              cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-                              cl::sycl::buffer<half, 1> &b, std::int64_t ldb, float beta,
+                              cl::sycl::buffer<cl::sycl::half, 1> &a, std::int64_t lda,
+                              cl::sycl::buffer<cl::sycl::half, 1> &b, std::int64_t ldb, float beta,
                               cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add prechecks to queue here for input args.  */
@@ -1550,14 +1552,13 @@ inline void gemm_precondition(cl::sycl::queue &queue, transpose transa, transpos
 
 inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpose transb,
                                std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-                               cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-                               cl::sycl::buffer<half, 1> &b, std::int64_t ldb, float beta,
+                               cl::sycl::buffer<cl::sycl::half, 1> &a, std::int64_t lda,
+                               cl::sycl::buffer<cl::sycl::half, 1> &b, std::int64_t ldb, float beta,
                                cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add postchecks to queue here for input args.  */
 #endif
 }
-
 inline void syr2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
                               cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<float, 1> &y, std::int64_t incy,
@@ -4749,11 +4750,11 @@ inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpo
     /* add postchecks to queue here for input args.  */
 #endif
 }
-
 inline void gemm_precondition(cl::sycl::queue &queue, transpose transa, transpose transb,
-                              std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
-                              const half *a, std::int64_t lda, const half *b, std::int64_t ldb,
-                              half beta, half *c, std::int64_t ldc,
+                              std::int64_t m, std::int64_t n, std::int64_t k, cl::sycl::half alpha,
+                              const cl::sycl::half *a, std::int64_t lda, const cl::sycl::half *b,
+                              std::int64_t ldb, cl::sycl::half beta, cl::sycl::half *c,
+                              std::int64_t ldc,
                               const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add prechecks to queue here for input args.  */
@@ -4761,9 +4762,10 @@ inline void gemm_precondition(cl::sycl::queue &queue, transpose transa, transpos
 }
 
 inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpose transb,
-                               std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
-                               const half *a, std::int64_t lda, const half *b, std::int64_t ldb,
-                               half beta, half *c, std::int64_t ldc,
+                               std::int64_t m, std::int64_t n, std::int64_t k, cl::sycl::half alpha,
+                               const cl::sycl::half *a, std::int64_t lda, const cl::sycl::half *b,
+                               std::int64_t ldb, cl::sycl::half beta, cl::sycl::half *c,
+                               std::int64_t ldc,
                                const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add postchecks to queue here for input args.  */
