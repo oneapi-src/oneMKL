@@ -44,6 +44,7 @@
 
 #define POISSON_ARGS 0.5
 
+using namespace cl;
 template <typename Distr, typename Engine>
 class statistics_test {
 public:
@@ -63,7 +64,7 @@ public:
         catch (sycl::exception const& e) {
             std::cout << "Caught synchronous SYCL exception during generation:\n"
                       << e.what() << std::endl
-                      << "OpenCL status: " << e.get_cl_code() << std::endl;
+                      << "OpenCL status: " << e.what() << std::endl;
         }
         catch (const oneapi::mkl::unimplemented& e) {
             status = test_skipped;
@@ -102,7 +103,7 @@ public:
         catch (sycl::exception const& e) {
             std::cout << "Caught synchronous SYCL exception during generation:\n"
                       << e.what() << std::endl
-                      << "OpenCL status: " << e.get_cl_code() << std::endl;
+                      << "OpenCL status: " << e.what() << std::endl;
         }
         catch (const oneapi::mkl::unimplemented& e) {
             status = test_skipped;

@@ -33,6 +33,8 @@ namespace mkl {
 namespace rng {
 namespace mklcpu {
 
+using namespace cl;
+
 class mrg32k3a_impl : public oneapi::mkl::rng::detail::engine_impl {
 public:
     mrg32k3a_impl(cl::sycl::queue queue, std::uint32_t seed)

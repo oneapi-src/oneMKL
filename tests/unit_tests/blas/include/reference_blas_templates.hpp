@@ -224,11 +224,10 @@ template <typename fp>
 static void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m,
                  const int *n, const int *k, const fp *alpha, const fp *a, const int *lda,
                  const fp *b, const int *ldb, const fp *beta, fp *c, const int *ldc);
-
 template <>
 void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m,
-          const int *n, const int *k, const half *alpha, const half *a, const int *lda,
-          const half *b, const int *ldb, const half *beta, half *c, const int *ldc) {
+          const int *n, const int *k, const cl::sycl::half *alpha, const cl::sycl::half *a, const int *lda,
+          const cl::sycl::half *b, const int *ldb, const cl::sycl::half *beta, cl::sycl::half *c, const int *ldc) {
     // Not supported in NETLIB. SGEMM is used as reference.
     int sizea, sizeb, sizec;
     const float alphaf = *alpha;
@@ -255,7 +254,6 @@ void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, c
     oneapi::mkl::aligned_free(bf);
     oneapi::mkl::aligned_free(cf);
 }
-
 template <>
 void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m,
           const int *n, const int *k, const float *alpha, const float *a, const int *lda,
@@ -291,11 +289,10 @@ template <typename fpa, typename fpc>
 static void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m,
                  const int *n, const int *k, const fpc *alpha, const fpa *a, const int *lda,
                  const fpa *b, const int *ldb, const fpc *beta, fpc *c, const int *ldc);
-
 template <>
 void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m,
-          const int *n, const int *k, const float *alpha, const half *a, const int *lda,
-          const half *b, const int *ldb, const float *beta, float *c, const int *ldc) {
+          const int *n, const int *k, const float *alpha, const cl::sycl::half *a, const int *lda,
+          const cl::sycl::half *b, const int *ldb, const float *beta, float *c, const int *ldc) {
     // Not supported in NETLIB. SGEMM is used as reference.
     int sizea, sizeb;
     if (layout == CblasColMajor) {
@@ -314,7 +311,6 @@ void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, c
     oneapi::mkl::aligned_free(af);
     oneapi::mkl::aligned_free(bf);
 }
-
 template <typename fp>
 static void symm(CBLAS_LAYOUT layout, CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m,
                  const int *n, const fp *alpha, const fp *a, const int *lda, const fp *b,

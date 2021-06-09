@@ -498,13 +498,13 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64
           cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc);
 
 void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-          std::int64_t n, std::int64_t k, half alpha, cl::sycl::buffer<half, 1> &a,
-          std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
-          cl::sycl::buffer<half, 1> &c, std::int64_t ldc);
+          std::int64_t n, std::int64_t k, cl::sycl::half alpha, cl::sycl::buffer<cl::sycl::half, 1> &a,
+          std::int64_t lda, cl::sycl::buffer<cl::sycl::half, 1> &b, std::int64_t ldb, cl::sycl::half beta,
+          cl::sycl::buffer<cl::sycl::half, 1> &c, std::int64_t ldc);
 
 void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-          std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<half, 1> &a,
-          std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb, float beta,
+          std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<cl::sycl::half, 1> &a,
+          std::int64_t lda, cl::sycl::buffer<cl::sycl::half, 1> &b, std::int64_t ldb, float beta,
           cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
 
 void hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,

@@ -416,14 +416,14 @@ static inline void gemm(backend_selector<backend::BACKEND> selector, transpose t
 
 static inline void gemm(backend_selector<backend::BACKEND> selector, transpose transa,
                         transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
-                        half alpha, cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
-                        cl::sycl::buffer<half, 1> &c, std::int64_t ldc);
+                        cl::sycl::half alpha, cl::sycl::buffer<cl::sycl::half, 1> &a, std::int64_t lda,
+                        cl::sycl::buffer<cl::sycl::half, 1> &b, std::int64_t ldb, cl::sycl::half beta,
+                        cl::sycl::buffer<cl::sycl::half, 1> &c, std::int64_t ldc);
 
 static inline void gemm(backend_selector<backend::BACKEND> selector, transpose transa,
                         transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
-                        float alpha, cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<half, 1> &b, std::int64_t ldb, float beta,
+                        float alpha, cl::sycl::buffer<cl::sycl::half, 1> &a, std::int64_t lda,
+                        cl::sycl::buffer<cl::sycl::half, 1> &b, std::int64_t ldb, float beta,
                         cl::sycl::buffer<float, 1> &c, std::int64_t ldc);
 
 static inline void herk(backend_selector<backend::BACKEND> selector, uplo upper_lower,

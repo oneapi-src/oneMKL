@@ -79,15 +79,15 @@ public:
     // method to call any tests, switch between rt and ct
     template <typename... Args>
     int operator()(cl::sycl::device* dev, Args... args) {
-        auto exception_handler = [](sycl::exception_list exceptions) {
+        auto exception_handler = [](cl::sycl::exception_list exceptions) {
             for (std::exception_ptr const& e : exceptions) {
                 try {
                     std::rethrow_exception(e);
                 }
-                catch (sycl::exception const& e) {
+                catch (cl::sycl::exception const& e) {
                     std::cout << "Caught asynchronous SYCL exception during ASUM:\n"
                               << e.what() << std::endl
-                              << "OpenCL status: " << e.get_cl_code() << std::endl;
+                              << "OpenCL status: " << e.what() << std::endl;
                 }
             }
         };

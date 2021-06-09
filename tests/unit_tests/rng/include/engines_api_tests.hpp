@@ -67,7 +67,7 @@ public:
         catch (cl::sycl::exception const& e) {
             std::cout << "SYCL exception during generation" << std::endl
                       << e.what() << std::endl
-                      << "OpenCL status: " << e.get_cl_code() << std::endl;
+                      << "OpenCL status: " << e.what() << std::endl;
             status = test_failed;
             return;
         }
@@ -123,7 +123,7 @@ public:
         catch (cl::sycl::exception const& e) {
             std::cout << "SYCL exception during generation" << std::endl
                       << e.what() << std::endl
-                      << "OpenCL status: " << e.get_cl_code() << std::endl;
+                      << "OpenCL status: " << e.what() << std::endl;
             status = test_failed;
             return;
         }
