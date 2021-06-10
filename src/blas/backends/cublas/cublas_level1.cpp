@@ -923,6 +923,7 @@ cl::sycl::event sdsdot(cl::sycl::queue &queue, int64_t n, float sb, const float 
             CUBLAS_ERROR_FUNC(cublasSdot, err, handle, n, x_, incx, y_, incy, res_);
         });
     });
+    done.wait();
     result[0] = result[0] + sb;
     return done;
 }
@@ -1079,6 +1080,7 @@ inline cl::sycl::event iamin(Func func, cl::sycl::queue &queue, int64_t n, const
             CUBLAS_ERROR_FUNC(func, err, handle, n, x_, incx, int_res_p_);
         });
     });
+    done.wait();
     result[0] = std::max((int64_t)(*int_res_p - 1), int64_t{ 0 });
     return done;
 }
