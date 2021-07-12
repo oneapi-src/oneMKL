@@ -61,6 +61,29 @@ void axpy(cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
     ::oneapi::mkl::gpu::zaxpy(queue, n, alpha, x, incx, y, incy);
 }
 
+void axpby(cl::sycl::queue &queue, std::int64_t n, float alpha, cl::sycl::buffer<float, 1> &x,
+           std::int64_t incx, float beta, cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
+    ::oneapi::mkl::gpu::saxpby_sycl(&queue, n, alpha, &x, incx, beta, &y, incy);
+}
+
+void axpby(cl::sycl::queue &queue, std::int64_t n, double alpha, cl::sycl::buffer<double, 1> &x,
+           std::int64_t incx, double beta, cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
+    ::oneapi::mkl::gpu::daxpby_sycl(&queue, n, alpha, &x, incx, beta, &y, incy);
+}
+
+void axpby(cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
+           cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx, std::complex<float> beta,
+           cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy) {
+    ::oneapi::mkl::gpu::caxpby_sycl(&queue, n, alpha, &x, incx, beta, &y, incy);
+}
+
+void axpby(cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
+           cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
+           std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &y,
+           std::int64_t incy) {
+    ::oneapi::mkl::gpu::zaxpby_sycl(&queue, n, alpha, &x, incx, beta, &y, incy);
+}
+
 void copy(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x, std::int64_t incx,
           cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
     ::oneapi::mkl::gpu::scopy(queue, n, x, incx, y, incy);
@@ -348,6 +371,32 @@ cl::sycl::event axpy(cl::sycl::queue &queue, std::int64_t n, std::complex<double
                      std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zaxpy_sycl(&queue, n, alpha, x, incx, y, incy, dependencies);
+}
+
+cl::sycl::event axpby(cl::sycl::queue &queue, std::int64_t n, float alpha, const float *x,
+                      std::int64_t incx, float beta, float *y, std::int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return ::oneapi::mkl::gpu::saxpby_sycl(&queue, n, alpha, x, incx, beta, y, incy, dependencies);
+}
+
+cl::sycl::event axpby(cl::sycl::queue &queue, std::int64_t n, double alpha, const double *x,
+                      std::int64_t incx, double beta, double *y, std::int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return ::oneapi::mkl::gpu::daxpby_sycl(&queue, n, alpha, x, incx, beta, y, incy, dependencies);
+}
+
+cl::sycl::event axpby(cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
+                      const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
+                      std::complex<float> *y, std::int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return ::oneapi::mkl::gpu::caxpby_sycl(&queue, n, alpha, x, incx, beta, y, incy, dependencies);
+}
+
+cl::sycl::event axpby(cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
+                      const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
+                      std::complex<double> *y, std::int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return ::oneapi::mkl::gpu::zaxpby_sycl(&queue, n, alpha, x, incx, beta, y, incy, dependencies);
 }
 
 cl::sycl::event copy(cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx,

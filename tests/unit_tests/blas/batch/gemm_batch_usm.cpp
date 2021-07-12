@@ -25,10 +25,10 @@
 #include <vector>
 
 #include <CL/sycl.hpp>
-#include "allocator_helper.hpp"
 #include "cblas.h"
-#include "oneapi/mkl/detail/config.hpp"
 #include "oneapi/mkl.hpp"
+#include "oneapi/mkl/detail/config.hpp"
+#include "allocator_helper.hpp"
 #include "onemkl_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
@@ -328,6 +328,10 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
 
 class GemmBatchUsmTests
         : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
+
+TEST_P(GemmBatchUsmTests, RealHalfPrecision) {
+    EXPECT_TRUEORSKIP(test<half>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
+}
 
 TEST_P(GemmBatchUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));

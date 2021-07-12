@@ -19,19 +19,14 @@
 
 #ifndef _ONEMKL_BLAS_MKLCPU_HPP_
 #define _ONEMKL_BLAS_MKLCPU_HPP_
-
 #include <CL/sycl.hpp>
-
 #include <complex>
 #include <cstdint>
-
 #include "oneapi/mkl/types.hpp"
-
 #include "oneapi/mkl/detail/export.hpp"
 
 namespace oneapi {
 namespace mkl {
-
 using oneapi::mkl::transpose;
 using oneapi::mkl::uplo;
 using oneapi::mkl::side;

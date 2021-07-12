@@ -20,6 +20,7 @@
 #include <CL/sycl.hpp>
 
 #include "netlib_common.hpp"
+#include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/blas/detail/netlib/onemkl_blas_netlib.hpp"
 
 inline float abs_val(float val) {
@@ -210,12 +211,16 @@ namespace blas {
 namespace netlib {
 namespace column_major {
 
+#define COLUMN_MAJOR
 #include "netlib_level1.cxx"
+#undef COLUMN_MAJOR
 
 } // namespace column_major
 namespace row_major {
 
+#define ROW_MAJOR
 #include "netlib_level1.cxx"
+#undef ROW_MAJOR
 
 } // namespace row_major
 } // namespace netlib

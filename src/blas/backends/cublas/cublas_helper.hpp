@@ -18,13 +18,15 @@
 **************************************************************************/
 
 /**
- * @file mkl_blas_cublas.cpp : contains the implementation of all the routines
+ * @file cublas_*.cpp : contain the implementation of all the routines
  * for CUDA backend
  */
-#ifndef _MKL_BLAS_CUBLAS_HELPER_HPP_
-#define _MKL_BLAS_CUBLAS_HELPER_HPP_
+#ifndef _CUBLAS_HELPER_HPP_
+#define _CUBLAS_HELPER_HPP_
+#include <CL/sycl.hpp>
 #include <cublas_v2.h>
 #include <cuda.h>
+#include <cuda_fp16.h>
 #include <complex>
 #include "oneapi/mkl/types.hpp"
 
@@ -206,11 +208,15 @@ inline cublasSideMode_t get_cublas_side_mode(oneapi::mkl::side lr) {
 }
 
 /*converting std::complex<T> to cu<T>Complex*/
+/*converting cl::sycl::half to __half*/
 template <typename T>
 struct CudaEquivalentType {
     using Type = T;
 };
-
+template <>
+struct CudaEquivalentType<half> {
+    using Type = __half;
+};
 template <>
 struct CudaEquivalentType<std::complex<float>> {
     using Type = cuComplex;
@@ -224,4 +230,4 @@ struct CudaEquivalentType<std::complex<double>> {
 } // namespace blas
 } // namespace mkl
 } // namespace oneapi
-#endif // _MKL_BLAS_CUBLAS_HELPER_HPP_
+#endif // _CUBLAS_HELPER_HPP_

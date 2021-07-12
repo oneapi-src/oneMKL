@@ -20,7 +20,6 @@
 #include <CL/sycl.hpp>
 
 #include "mklcpu_common.hpp"
-#include "fp16.hpp"
 #include "oneapi/mkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
 
 namespace oneapi {

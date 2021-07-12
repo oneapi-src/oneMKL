@@ -78,6 +78,66 @@ void axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
     function_tables[libkey].column_major_zaxpy_sycl(queue, n, alpha, x, incx, y, incy);
 }
 
+void axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float alpha,
+                cl::sycl::buffer<float, 1> &x, std::int64_t incx, std::int64_t stridex,
+                cl::sycl::buffer<float, 1> &y, std::int64_t incy, std::int64_t stridey,
+                std::int64_t batch_size) {
+    function_tables[libkey].column_major_saxpy_batch_strided_sycl(queue, n, alpha, x, incx, stridex,
+                                                                  y, incy, stridey, batch_size);
+}
+
+void axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double alpha,
+                cl::sycl::buffer<double, 1> &x, std::int64_t incx, std::int64_t stridex,
+                cl::sycl::buffer<double, 1> &y, std::int64_t incy, std::int64_t stridey,
+                std::int64_t batch_size) {
+    function_tables[libkey].column_major_daxpy_batch_strided_sycl(queue, n, alpha, x, incx, stridex,
+                                                                  y, incy, stridey, batch_size);
+}
+
+void axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &x,
+                std::int64_t incx, std::int64_t stridex,
+                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
+                std::int64_t stridey, std::int64_t batch_size) {
+    function_tables[libkey].column_major_caxpy_batch_strided_sycl(queue, n, alpha, x, incx, stridex,
+                                                                  y, incy, stridey, batch_size);
+}
+
+void axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &x,
+                std::int64_t incx, std::int64_t stridex,
+                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
+                std::int64_t stridey, std::int64_t batch_size) {
+    function_tables[libkey].column_major_zaxpy_batch_strided_sycl(queue, n, alpha, x, incx, stridex,
+                                                                  y, incy, stridey, batch_size);
+}
+
+void axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float alpha,
+           cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
+           cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
+    function_tables[libkey].column_major_saxpby_sycl(queue, n, alpha, x, incx, beta, y, incy);
+}
+
+void axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double alpha,
+           cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
+           cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
+    function_tables[libkey].column_major_daxpby_sycl(queue, n, alpha, x, incx, beta, y, incy);
+}
+
+void axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &x,
+           std::int64_t incx, std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &y,
+           std::int64_t incy) {
+    function_tables[libkey].column_major_caxpby_sycl(queue, n, alpha, x, incx, beta, y, incy);
+}
+
+void axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &x,
+           std::int64_t incx, std::complex<double> beta,
+           cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
+    function_tables[libkey].column_major_zaxpby_sycl(queue, n, alpha, x, incx, beta, y, incy);
+}
+
 void copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
           cl::sycl::buffer<float, 1> &x, std::int64_t incx, cl::sycl::buffer<float, 1> &y,
           std::int64_t incy) {
@@ -100,6 +160,38 @@ void copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
           cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
           cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
     function_tables[libkey].column_major_zcopy_sycl(queue, n, x, incx, y, incy);
+}
+
+void copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                cl::sycl::buffer<float, 1> &x, std::int64_t incx, std::int64_t stridex,
+                cl::sycl::buffer<float, 1> &y, std::int64_t incy, std::int64_t stridey,
+                std::int64_t batch_size) {
+    function_tables[libkey].column_major_scopy_batch_strided_sycl(queue, n, x, incx, stridex, y,
+                                                                  incy, stridey, batch_size);
+}
+
+void copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                cl::sycl::buffer<double, 1> &x, std::int64_t incx, std::int64_t stridex,
+                cl::sycl::buffer<double, 1> &y, std::int64_t incy, std::int64_t stridey,
+                std::int64_t batch_size) {
+    function_tables[libkey].column_major_dcopy_batch_strided_sycl(queue, n, x, incx, stridex, y,
+                                                                  incy, stridey, batch_size);
+}
+
+void copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
+                std::int64_t stridex, cl::sycl::buffer<std::complex<float>, 1> &y,
+                std::int64_t incy, std::int64_t stridey, std::int64_t batch_size) {
+    function_tables[libkey].column_major_ccopy_batch_strided_sycl(queue, n, x, incx, stridex, y,
+                                                                  incy, stridey, batch_size);
+}
+
+void copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
+                std::int64_t stridex, cl::sycl::buffer<std::complex<double>, 1> &y,
+                std::int64_t incy, std::int64_t stridey, std::int64_t batch_size) {
+    function_tables[libkey].column_major_zcopy_batch_strided_sycl(queue, n, x, incx, stridex, y,
+                                                                  incy, stridey, batch_size);
 }
 
 void dot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
@@ -420,6 +512,88 @@ void gemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, s
           std::int64_t incy) {
     function_tables[libkey].column_major_zgemv_sycl(queue, trans, m, n, alpha, a, lda, x, incx,
                                                     beta, y, incy);
+}
+
+void gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                std::int64_t n, float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
+                std::int64_t stridea, cl::sycl::buffer<float, 1> &x, std::int64_t incx,
+                std::int64_t stridex, float beta, cl::sycl::buffer<float, 1> &y, std::int64_t incy,
+                std::int64_t stridey, std::int64_t batch_size) {
+    function_tables[libkey].column_major_sgemv_batch_strided_sycl(queue, trans, m, n, alpha, a, lda,
+                                                                  stridea, x, incx, stridex, beta,
+                                                                  y, incy, stridey, batch_size);
+}
+
+void gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                std::int64_t n, double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
+                std::int64_t stridea, cl::sycl::buffer<double, 1> &x, std::int64_t incx,
+                std::int64_t stridex, double beta, cl::sycl::buffer<double, 1> &y,
+                std::int64_t incy, std::int64_t stridey, std::int64_t batch_size) {
+    function_tables[libkey].column_major_dgemv_batch_strided_sycl(queue, trans, m, n, alpha, a, lda,
+                                                                  stridea, x, incx, stridex, beta,
+                                                                  y, incy, stridey, batch_size);
+}
+
+void gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                std::int64_t n, std::complex<float> alpha,
+                cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda, std::int64_t stridea,
+                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
+                std::int64_t stridex, std::complex<float> beta,
+                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
+                std::int64_t stridey, std::int64_t batch_size) {
+    function_tables[libkey].column_major_cgemv_batch_strided_sycl(queue, trans, m, n, alpha, a, lda,
+                                                                  stridea, x, incx, stridex, beta,
+                                                                  y, incy, stridey, batch_size);
+}
+
+void gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                std::int64_t n, std::complex<double> alpha,
+                cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+                std::int64_t stridea, cl::sycl::buffer<std::complex<double>, 1> &x,
+                std::int64_t incx, std::int64_t stridex, std::complex<double> beta,
+                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
+                std::int64_t stridey, std::int64_t batch_size) {
+    function_tables[libkey].column_major_zgemv_batch_strided_sycl(queue, trans, m, n, alpha, a, lda,
+                                                                  stridea, x, incx, stridex, beta,
+                                                                  y, incy, stridey, batch_size);
+}
+
+void dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, std::int64_t m,
+                std::int64_t n, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
+                std::int64_t stridea, cl::sycl::buffer<float, 1> &x, std::int64_t incx,
+                std::int64_t stridex, cl::sycl::buffer<float, 1> &c, std::int64_t ldc,
+                std::int64_t stridec, std::int64_t batch_size) {
+    function_tables[libkey].column_major_sdgmm_batch_strided_sycl(
+        queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size);
+}
+
+void dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, std::int64_t m,
+                std::int64_t n, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
+                std::int64_t stridea, cl::sycl::buffer<double, 1> &x, std::int64_t incx,
+                std::int64_t stridex, cl::sycl::buffer<double, 1> &c, std::int64_t ldc,
+                std::int64_t stridec, std::int64_t batch_size) {
+    function_tables[libkey].column_major_ddgmm_batch_strided_sycl(
+        queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size);
+}
+
+void dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, std::int64_t m,
+                std::int64_t n, cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+                std::int64_t stridea, cl::sycl::buffer<std::complex<float>, 1> &x,
+                std::int64_t incx, std::int64_t stridex,
+                cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc, std::int64_t stridec,
+                std::int64_t batch_size) {
+    function_tables[libkey].column_major_cdgmm_batch_strided_sycl(
+        queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size);
+}
+
+void dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, std::int64_t m,
+                std::int64_t n, cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+                std::int64_t stridea, cl::sycl::buffer<std::complex<double>, 1> &x,
+                std::int64_t incx, std::int64_t stridex,
+                cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc,
+                std::int64_t stridec, std::int64_t batch_size) {
+    function_tables[libkey].column_major_zdgmm_batch_strided_sycl(
+        queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size);
 }
 
 void ger(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
@@ -894,6 +1068,14 @@ void gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, 
                                                              a, lda, b, ldb, beta, c, ldc);
 }
 
+void gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
+          std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+          cl::sycl::buffer<bfloat16, 1> &a, std::int64_t lda, cl::sycl::buffer<bfloat16, 1> &b,
+          std::int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
+    function_tables[libkey].column_major_gemm_bf16bf16f32_sycl(queue, transa, transb, m, n, k,
+                                                               alpha, a, lda, b, ldb, beta, c, ldc);
+}
+
 void hemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
           std::int64_t m, std::int64_t n, std::complex<float> alpha,
           cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
@@ -1008,6 +1190,48 @@ void syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, 
           cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
     function_tables[libkey].column_major_zsyrk_sycl(queue, upper_lower, trans, n, k, alpha, a, lda,
                                                     beta, c, ldc);
+}
+
+void syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
+                transpose trans, std::int64_t n, std::int64_t k, float alpha,
+                cl::sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a, float beta,
+                cl::sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
+                std::int64_t batch_size) {
+    function_tables[libkey].column_major_ssyrk_batch_strided_sycl(queue, upper_lower, trans, n, k,
+                                                                  alpha, a, lda, stride_a, beta, c,
+                                                                  ldc, stride_c, batch_size);
+}
+
+void syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
+                transpose trans, std::int64_t n, std::int64_t k, double alpha,
+                cl::sycl::buffer<double, 1> &a, std::int64_t lda, std::int64_t stride_a,
+                double beta, cl::sycl::buffer<double, 1> &c, std::int64_t ldc,
+                std::int64_t stride_c, std::int64_t batch_size) {
+    function_tables[libkey].column_major_dsyrk_batch_strided_sycl(queue, upper_lower, trans, n, k,
+                                                                  alpha, a, lda, stride_a, beta, c,
+                                                                  ldc, stride_c, batch_size);
+}
+
+void syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
+                transpose trans, std::int64_t n, std::int64_t k, std::complex<float> alpha,
+                cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+                std::int64_t stride_a, std::complex<float> beta,
+                cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc,
+                std::int64_t stride_c, std::int64_t batch_size) {
+    function_tables[libkey].column_major_csyrk_batch_strided_sycl(queue, upper_lower, trans, n, k,
+                                                                  alpha, a, lda, stride_a, beta, c,
+                                                                  ldc, stride_c, batch_size);
+}
+
+void syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
+                transpose trans, std::int64_t n, std::int64_t k, std::complex<double> alpha,
+                cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+                std::int64_t stride_a, std::complex<double> beta,
+                cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc,
+                std::int64_t stride_c, std::int64_t batch_size) {
+    function_tables[libkey].column_major_zsyrk_batch_strided_sycl(queue, upper_lower, trans, n, k,
+                                                                  alpha, a, lda, stride_a, beta, c,
+                                                                  ldc, stride_c, batch_size);
 }
 
 void syr2k(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
@@ -1157,6 +1381,17 @@ void gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose tr
         stride_c, batch_size);
 }
 
+void gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
+                cl::sycl::buffer<half, 1> &a, std::int64_t lda, std::int64_t stride_a,
+                cl::sycl::buffer<half, 1> &b, std::int64_t ldb, std::int64_t stride_b, half beta,
+                cl::sycl::buffer<half, 1> &c, std::int64_t ldc, std::int64_t stride_c,
+                std::int64_t batch_size) {
+    function_tables[libkey].column_major_hgemm_batch_strided_sycl(
+        queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
+        stride_c, batch_size);
+}
+
 void trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
                 uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
                 float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a,
@@ -1241,6 +1476,36 @@ void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose tra
                cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
                cl::sycl::buffer<int32_t, 1> &co) {
     function_tables[libkey].column_major_gemm_s8u8s32_bias_sycl(
+        queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co);
+}
+
+void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+               transpose transb, offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
+               float alpha, cl::sycl::buffer<int8_t, 1> &a, std::int64_t lda, int8_t ao,
+               cl::sycl::buffer<int8_t, 1> &b, std::int64_t ldb, int8_t bo, float beta,
+               cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
+               cl::sycl::buffer<int32_t, 1> &co) {
+    function_tables[libkey].column_major_gemm_s8s8s32_bias_sycl(
+        queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co);
+}
+
+void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+               transpose transb, offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
+               float alpha, cl::sycl::buffer<u_int8_t, 1> &a, std::int64_t lda, u_int8_t ao,
+               cl::sycl::buffer<int8_t, 1> &b, std::int64_t ldb, int8_t bo, float beta,
+               cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
+               cl::sycl::buffer<int32_t, 1> &co) {
+    function_tables[libkey].column_major_gemm_u8s8s32_bias_sycl(
+        queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co);
+}
+
+void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+               transpose transb, offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
+               float alpha, cl::sycl::buffer<u_int8_t, 1> &a, std::int64_t lda, u_int8_t ao,
+               cl::sycl::buffer<uint8_t, 1> &b, std::int64_t ldb, uint8_t bo, float beta,
+               cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
+               cl::sycl::buffer<int32_t, 1> &co) {
+    function_tables[libkey].column_major_gemm_u8u8s32_bias_sycl(
         queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co);
 }
 
@@ -1338,6 +1603,74 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
         queue, n, alpha, x, incx, y, incy, group_count, group_size, dependencies);
 }
 
+cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                           float alpha, const float *x, std::int64_t incx, std::int64_t stridex,
+                           float *y, std::int64_t incy, std::int64_t stridey,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_saxpy_batch_strided_usm_sycl(
+        queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+}
+
+cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                           double alpha, const double *x, std::int64_t incx, std::int64_t stridex,
+                           double *y, std::int64_t incy, std::int64_t stridey,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_daxpy_batch_strided_usm_sycl(
+        queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+}
+
+cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                           std::complex<float> alpha, const std::complex<float> *x,
+                           std::int64_t incx, std::int64_t stridex, std::complex<float> *y,
+                           std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_caxpy_batch_strided_usm_sycl(
+        queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+}
+
+cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                           std::complex<double> alpha, const std::complex<double> *x,
+                           std::int64_t incx, std::int64_t stridex, std::complex<double> *y,
+                           std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_zaxpy_batch_strided_usm_sycl(
+        queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+}
+
+cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                      float alpha, const float *x, std::int64_t incx, const float beta, float *y,
+                      std::int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_saxpby_usm_sycl(queue, n, alpha, x, incx, beta, y,
+                                                                incy, dependencies);
+}
+
+cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                      double alpha, const double *x, std::int64_t incx, const double beta,
+                      double *y, std::int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_daxpby_usm_sycl(queue, n, alpha, x, incx, beta, y,
+                                                                incy, dependencies);
+}
+
+cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                      std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
+                      const std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_caxpby_usm_sycl(queue, n, alpha, x, incx, beta, y,
+                                                                incy, dependencies);
+}
+
+cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                      std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
+                      const std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_zaxpby_usm_sycl(queue, n, alpha, x, incx, beta, y,
+                                                                incy, dependencies);
+}
+
 cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const float *x, std::int64_t incx, float *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
@@ -1366,6 +1699,74 @@ cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zcopy_usm_sycl(queue, n, x, incx, y, incy,
                                                                dependencies);
+}
+
+cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
+                           const float **x, std::int64_t *incx, float **y, std::int64_t *incy,
+                           std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_scopy_batch_group_usm_sycl(
+        queue, n, x, incx, y, incy, group_count, group_size, dependencies);
+}
+
+cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
+                           const double **x, std::int64_t *incx, double **y, std::int64_t *incy,
+                           std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_dcopy_batch_group_usm_sycl(
+        queue, n, x, incx, y, incy, group_count, group_size, dependencies);
+}
+
+cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
+                           const std::complex<float> **x, std::int64_t *incx,
+                           std::complex<float> **y, std::int64_t *incy, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_ccopy_batch_group_usm_sycl(
+        queue, n, x, incx, y, incy, group_count, group_size, dependencies);
+}
+
+cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
+                           const std::complex<double> **x, std::int64_t *incx,
+                           std::complex<double> **y, std::int64_t *incy, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_zcopy_batch_group_usm_sycl(
+        queue, n, x, incx, y, incy, group_count, group_size, dependencies);
+}
+
+cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                           const float *x, std::int64_t incx, std::int64_t stridex, float *y,
+                           std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_scopy_batch_strided_usm_sycl(
+        queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+}
+
+cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                           const double *x, std::int64_t incx, std::int64_t stridex, double *y,
+                           std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_dcopy_batch_strided_usm_sycl(
+        queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+}
+
+cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                           const std::complex<float> *x, std::int64_t incx, std::int64_t stridex,
+                           std::complex<float> *y, std::int64_t incy, std::int64_t stridey,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_ccopy_batch_strided_usm_sycl(
+        queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+}
+
+cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                           const std::complex<double> *x, std::int64_t incx, std::int64_t stridex,
+                           std::complex<double> *y, std::int64_t incy, std::int64_t stridey,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_zcopy_batch_strided_usm_sycl(
+        queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
 
 cl::sycl::event dot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
@@ -1739,6 +2140,180 @@ cl::sycl::event gemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zgemv_usm_sycl(queue, trans, m, n, alpha, a, lda, x,
                                                                incx, beta, y, incy, dependencies);
+}
+
+cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans,
+                           std::int64_t m, std::int64_t n, float alpha, const float *a,
+                           std::int64_t lda, std::int64_t stridea, const float *x,
+                           std::int64_t incx, std::int64_t stridex, float beta, float *y,
+                           std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_sgemv_batch_strided_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y, incy, stridey,
+        batch_size, dependencies);
+}
+
+cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans,
+                           std::int64_t m, std::int64_t n, double alpha, const double *a,
+                           std::int64_t lda, std::int64_t stridea, const double *x,
+                           std::int64_t incx, std::int64_t stridex, double beta, double *y,
+                           std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_dgemv_batch_strided_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y, incy, stridey,
+        batch_size, dependencies);
+}
+
+cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans,
+                           std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                           const std::complex<float> *a, std::int64_t lda, std::int64_t stridea,
+                           const std::complex<float> *x, std::int64_t incx, std::int64_t stridex,
+                           std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
+                           std::int64_t stridey, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_cgemv_batch_strided_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y, incy, stridey,
+        batch_size, dependencies);
+}
+
+cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans,
+                           std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                           const std::complex<double> *a, std::int64_t lda, std::int64_t stridea,
+                           const std::complex<double> *x, std::int64_t incx, std::int64_t stridex,
+                           std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
+                           std::int64_t stridey, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_zgemv_batch_strided_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y, incy, stridey,
+        batch_size, dependencies);
+}
+
+cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *trans,
+                           std::int64_t *m, std::int64_t *n, float *alpha, const float **a,
+                           std::int64_t *lda, const float **x, std::int64_t *incx, float *beta,
+                           float **y, std::int64_t *incy, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_sgemv_batch_group_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count, group_size,
+        dependencies);
+}
+
+cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *trans,
+                           std::int64_t *m, std::int64_t *n, double *alpha, const double **a,
+                           std::int64_t *lda, const double **x, std::int64_t *incx, double *beta,
+                           double **y, std::int64_t *incy, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_dgemv_batch_group_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count, group_size,
+        dependencies);
+}
+
+cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *trans,
+                           std::int64_t *m, std::int64_t *n, std::complex<float> *alpha,
+                           const std::complex<float> **a, std::int64_t *lda,
+                           const std::complex<float> **x, std::int64_t *incx,
+                           std::complex<float> *beta, std::complex<float> **y, std::int64_t *incy,
+                           std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_cgemv_batch_group_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count, group_size,
+        dependencies);
+}
+
+cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *trans,
+                           std::int64_t *m, std::int64_t *n, std::complex<double> *alpha,
+                           const std::complex<double> **a, std::int64_t *lda,
+                           const std::complex<double> **x, std::int64_t *incx,
+                           std::complex<double> *beta, std::complex<double> **y, std::int64_t *incy,
+                           std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_zgemv_batch_group_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count, group_size,
+        dependencies);
+}
+
+cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
+                           std::int64_t m, std::int64_t n, const float *a, std::int64_t lda,
+                           std::int64_t stridea, const float *x, std::int64_t incx,
+                           std::int64_t stridex, float *c, std::int64_t ldc, std::int64_t stridec,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_sdgmm_batch_strided_usm_sycl(
+        queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size,
+        dependencies);
+}
+
+cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
+                           std::int64_t m, std::int64_t n, const double *a, std::int64_t lda,
+                           std::int64_t stridea, const double *x, std::int64_t incx,
+                           std::int64_t stridex, double *c, std::int64_t ldc, std::int64_t stridec,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_ddgmm_batch_strided_usm_sycl(
+        queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size,
+        dependencies);
+}
+
+cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
+                           std::int64_t m, std::int64_t n, const std::complex<float> *a,
+                           std::int64_t lda, std::int64_t stridea, const std::complex<float> *x,
+                           std::int64_t incx, std::int64_t stridex, std::complex<float> *c,
+                           std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_cdgmm_batch_strided_usm_sycl(
+        queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size,
+        dependencies);
+}
+
+cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
+                           std::int64_t m, std::int64_t n, const std::complex<double> *a,
+                           std::int64_t lda, std::int64_t stridea, const std::complex<double> *x,
+                           std::int64_t incx, std::int64_t stridex, std::complex<double> *c,
+                           std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_zdgmm_batch_strided_usm_sycl(
+        queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size,
+        dependencies);
+}
+
+cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right,
+                           std::int64_t *m, std::int64_t *n, const float **a, std::int64_t *lda,
+                           const float **x, std::int64_t *incx, float **c, std::int64_t *ldc,
+                           std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_sdgmm_batch_group_usm_sycl(
+        queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count, group_size, dependencies);
+}
+
+cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right,
+                           std::int64_t *m, std::int64_t *n, const double **a, std::int64_t *lda,
+                           const double **x, std::int64_t *incx, double **c, std::int64_t *ldc,
+                           std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_ddgmm_batch_group_usm_sycl(
+        queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count, group_size, dependencies);
+}
+
+cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right,
+                           std::int64_t *m, std::int64_t *n, const std::complex<float> **a,
+                           std::int64_t *lda, const std::complex<float> **x, std::int64_t *incx,
+                           std::complex<float> **c, std::int64_t *ldc, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_cdgmm_batch_group_usm_sycl(
+        queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count, group_size, dependencies);
+}
+
+cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right,
+                           std::int64_t *m, std::int64_t *n, const std::complex<double> **a,
+                           std::int64_t *lda, const std::complex<double> **x, std::int64_t *incx,
+                           std::complex<double> **c, std::int64_t *ldc, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_zdgmm_batch_group_usm_sycl(
+        queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count, group_size, dependencies);
 }
 
 cl::sycl::event ger(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t m,
@@ -2260,6 +2835,33 @@ cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
 
+cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                     transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
+                     const half *a, std::int64_t lda, const half *b, std::int64_t ldb, half beta,
+                     half *c, std::int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_hgemm_usm_sycl(
+        queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                     transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                     const half *a, std::int64_t lda, const half *b, std::int64_t ldb, float beta,
+                     float *c, std::int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_gemm_f16f16f32_usm_sycl(
+        queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                     transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                     const bfloat16 *a, std::int64_t lda, const bfloat16 *b, std::int64_t ldb,
+                     float beta, float *c, std::int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_gemm_bf16bf16f32_usm_sycl(
+        queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
 cl::sycl::event hemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
                      uplo upper_lower, std::int64_t m, std::int64_t n, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
@@ -2389,6 +2991,94 @@ cl::sycl::event syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
         queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
 }
 
+cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo *upper_lower,
+                           transpose *trans, std::int64_t *n, std::int64_t *k, float *alpha,
+                           const float **a, std::int64_t *lda, float *beta, float **c,
+                           std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_ssyrk_batch_group_usm_sycl(
+        queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, group_count, group_size,
+        dependencies);
+}
+
+cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo *upper_lower,
+                           transpose *trans, std::int64_t *n, std::int64_t *k, double *alpha,
+                           const double **a, std::int64_t *lda, double *beta, double **c,
+                           std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_dsyrk_batch_group_usm_sycl(
+        queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, group_count, group_size,
+        dependencies);
+}
+
+cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo *upper_lower,
+                           transpose *trans, std::int64_t *n, std::int64_t *k,
+                           std::complex<float> *alpha, const std::complex<float> **a,
+                           std::int64_t *lda, std::complex<float> *beta, std::complex<float> **c,
+                           std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_csyrk_batch_group_usm_sycl(
+        queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, group_count, group_size,
+        dependencies);
+}
+
+cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo *upper_lower,
+                           transpose *trans, std::int64_t *n, std::int64_t *k,
+                           std::complex<double> *alpha, const std::complex<double> **a,
+                           std::int64_t *lda, std::complex<double> *beta, std::complex<double> **c,
+                           std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_zsyrk_batch_group_usm_sycl(
+        queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, group_count, group_size,
+        dependencies);
+}
+
+cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
+                           transpose trans, std::int64_t n, std::int64_t k, float alpha,
+                           const float *a, std::int64_t lda, std::int64_t stride_a, float beta,
+                           float *c, std::int64_t ldc, std::int64_t stride_c,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_ssyrk_batch_strided_usm_sycl(
+        queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc, stride_c,
+        batch_size, dependencies);
+}
+
+cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
+                           transpose trans, std::int64_t n, std::int64_t k, double alpha,
+                           const double *a, std::int64_t lda, std::int64_t stride_a, double beta,
+                           double *c, std::int64_t ldc, std::int64_t stride_c,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_dsyrk_batch_strided_usm_sycl(
+        queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc, stride_c,
+        batch_size, dependencies);
+}
+
+cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
+                           transpose trans, std::int64_t n, std::int64_t k,
+                           std::complex<float> alpha, const std::complex<float> *a,
+                           std::int64_t lda, std::int64_t stride_a, std::complex<float> beta,
+                           std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_csyrk_batch_strided_usm_sycl(
+        queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc, stride_c,
+        batch_size, dependencies);
+}
+
+cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
+                           transpose trans, std::int64_t n, std::int64_t k,
+                           std::complex<double> alpha, const std::complex<double> *a,
+                           std::int64_t lda, std::int64_t stride_a, std::complex<double> beta,
+                           std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_zsyrk_batch_strided_usm_sycl(
+        queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc, stride_c,
+        batch_size, dependencies);
+}
+
 cl::sycl::event syr2k(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                       transpose trans, std::int64_t n, std::int64_t k, float alpha, const float *a,
                       std::int64_t lda, const float *b, std::int64_t ldb, float beta, float *c,
@@ -2507,6 +3197,97 @@ cl::sycl::event trsm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                                                                lda, b, ldb, dependencies);
 }
 
+cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
+                           uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
+                           std::int64_t n, float alpha, const float *a, std::int64_t lda,
+                           std::int64_t stride_a, float *b, std::int64_t ldb, std::int64_t stride_b,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_strsm_batch_strided_usm_sycl(
+        queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, stride_a, b, ldb,
+        stride_b, batch_size, dependencies);
+}
+
+cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
+                           uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
+                           std::int64_t n, double alpha, const double *a, std::int64_t lda,
+                           std::int64_t stride_a, double *b, std::int64_t ldb,
+                           std::int64_t stride_b, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_dtrsm_batch_strided_usm_sycl(
+        queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, stride_a, b, ldb,
+        stride_b, batch_size, dependencies);
+}
+
+cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
+                           uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
+                           std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
+                           std::int64_t lda, std::int64_t stride_a, std::complex<float> *b,
+                           std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_ctrsm_batch_strided_usm_sycl(
+        queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, stride_a, b, ldb,
+        stride_b, batch_size, dependencies);
+}
+
+cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
+                           uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
+                           std::int64_t n, std::complex<double> alpha,
+                           const std::complex<double> *a, std::int64_t lda, std::int64_t stride_a,
+                           std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_ztrsm_batch_strided_usm_sycl(
+        queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, stride_a, b, ldb,
+        stride_b, batch_size, dependencies);
+}
+
+cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right,
+                           uplo *upper_lower, transpose *trans, diag *unit_diag, std::int64_t *m,
+                           std::int64_t *n, float *alpha, const float **a, std::int64_t *lda,
+                           float **b, std::int64_t *ldb, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_strsm_batch_group_usm_sycl(
+        queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb, group_count,
+        group_size, dependencies);
+}
+
+cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right,
+                           uplo *upper_lower, transpose *trans, diag *unit_diag, std::int64_t *m,
+                           std::int64_t *n, double *alpha, const double **a, std::int64_t *lda,
+                           double **b, std::int64_t *ldb, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_dtrsm_batch_group_usm_sycl(
+        queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb, group_count,
+        group_size, dependencies);
+}
+
+cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right,
+                           uplo *upper_lower, transpose *trans, diag *unit_diag, std::int64_t *m,
+                           std::int64_t *n, std::complex<float> *alpha,
+                           const std::complex<float> **a, std::int64_t *lda,
+                           std::complex<float> **b, std::int64_t *ldb, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_ctrsm_batch_group_usm_sycl(
+        queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb, group_count,
+        group_size, dependencies);
+}
+
+cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right,
+                           uplo *upper_lower, transpose *trans, diag *unit_diag, std::int64_t *m,
+                           std::int64_t *n, std::complex<double> *alpha,
+                           const std::complex<double> **a, std::int64_t *lda,
+                           std::complex<double> **b, std::int64_t *ldb, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_ztrsm_batch_group_usm_sycl(
+        queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb, group_count,
+        group_size, dependencies);
+}
+
 cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *transa,
                            transpose *transb, std::int64_t *m, std::int64_t *n, std::int64_t *k,
                            float *alpha, const float **a, std::int64_t *lda, const float **b,
@@ -2549,6 +3330,17 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t group_count, std::int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zgemm_batch_group_usm_sycl(
+        queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
+        group_size, dependencies);
+}
+
+cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *transa,
+                           transpose *transb, std::int64_t *m, std::int64_t *n, std::int64_t *k,
+                           half *alpha, const half **a, std::int64_t *lda, const half **b,
+                           std::int64_t *ldb, half *beta, half **c, std::int64_t *ldc,
+                           std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_hgemm_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
 }
@@ -2603,6 +3395,18 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
         stride_c, batch_size, dependencies);
 }
 
+cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                           transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+                           half alpha, const half *a, std::int64_t lda, std::int64_t stride_a,
+                           const half *b, std::int64_t ldb, std::int64_t stride_b, half beta,
+                           half *c, std::int64_t ldc, std::int64_t stride_c,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_hgemm_batch_strided_usm_sycl(
+        queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
+        stride_c, batch_size, dependencies);
+}
+
 cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                       transpose transa, transpose transb, std::int64_t n, std::int64_t k,
                       float alpha, const float *a, std::int64_t lda, const float *b,
@@ -2643,6 +3447,50 @@ cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
     return function_tables[libkey].column_major_zgemmt_usm_sycl(queue, upper_lower, transa, transb,
                                                                 n, k, alpha, a, lda, b, ldb, beta,
                                                                 c, ldc, dependencies);
+}
+
+cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                          transpose transb, offset offsetc, std::int64_t m, std::int64_t n,
+                          std::int64_t k, float alpha, const std::int8_t *a, std::int64_t lda,
+                          std::int8_t ao, const std::uint8_t *b, std::int64_t ldb, std::uint8_t bo,
+                          float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_gemm_s8u8s32_bias_usm_sycl(
+        queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co,
+        dependencies);
+}
+
+cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                          transpose transb, offset offsetc, std::int64_t m, std::int64_t n,
+                          std::int64_t k, float alpha, const std::int8_t *a, std::int64_t lda,
+                          std::int8_t ao, const std::int8_t *b, std::int64_t ldb, std::int8_t bo,
+                          float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_gemm_s8s8s32_bias_usm_sycl(
+        queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co,
+        dependencies);
+}
+
+cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                          transpose transb, offset offsetc, std::int64_t m, std::int64_t n,
+                          std::int64_t k, float alpha, const std::uint8_t *a, std::int64_t lda,
+                          std::uint8_t ao, const std::int8_t *b, std::int64_t ldb, std::int8_t bo,
+                          float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_gemm_u8s8s32_bias_usm_sycl(
+        queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co,
+        dependencies);
+}
+
+cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                          transpose transb, offset offsetc, std::int64_t m, std::int64_t n,
+                          std::int64_t k, float alpha, const std::uint8_t *a, std::int64_t lda,
+                          std::uint8_t ao, const std::uint8_t *b, std::int64_t ldb, std::uint8_t bo,
+                          float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_gemm_u8u8s32_bias_usm_sycl(
+        queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co,
+        dependencies);
 }
 
 } //namespace detail
@@ -2700,6 +3548,66 @@ void axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
     function_tables[libkey].row_major_zaxpy_sycl(queue, n, alpha, x, incx, y, incy);
 }
 
+void axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float alpha,
+                cl::sycl::buffer<float, 1> &x, std::int64_t incx, std::int64_t stridex,
+                cl::sycl::buffer<float, 1> &y, std::int64_t incy, std::int64_t stridey,
+                std::int64_t batch_size) {
+    function_tables[libkey].row_major_saxpy_batch_strided_sycl(queue, n, alpha, x, incx, stridex, y,
+                                                               incy, stridey, batch_size);
+}
+
+void axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double alpha,
+                cl::sycl::buffer<double, 1> &x, std::int64_t incx, std::int64_t stridex,
+                cl::sycl::buffer<double, 1> &y, std::int64_t incy, std::int64_t stridey,
+                std::int64_t batch_size) {
+    function_tables[libkey].row_major_daxpy_batch_strided_sycl(queue, n, alpha, x, incx, stridex, y,
+                                                               incy, stridey, batch_size);
+}
+
+void axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &x,
+                std::int64_t incx, std::int64_t stridex,
+                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
+                std::int64_t stridey, std::int64_t batch_size) {
+    function_tables[libkey].row_major_caxpy_batch_strided_sycl(queue, n, alpha, x, incx, stridex, y,
+                                                               incy, stridey, batch_size);
+}
+
+void axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &x,
+                std::int64_t incx, std::int64_t stridex,
+                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
+                std::int64_t stridey, std::int64_t batch_size) {
+    function_tables[libkey].row_major_zaxpy_batch_strided_sycl(queue, n, alpha, x, incx, stridex, y,
+                                                               incy, stridey, batch_size);
+}
+
+void axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float alpha,
+           cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
+           cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
+    function_tables[libkey].row_major_saxpby_sycl(queue, n, alpha, x, incx, beta, y, incy);
+}
+
+void axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double alpha,
+           cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
+           cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
+    function_tables[libkey].row_major_daxpby_sycl(queue, n, alpha, x, incx, beta, y, incy);
+}
+
+void axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &x,
+           std::int64_t incx, std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &y,
+           std::int64_t incy) {
+    function_tables[libkey].row_major_caxpby_sycl(queue, n, alpha, x, incx, beta, y, incy);
+}
+
+void axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &x,
+           std::int64_t incx, std::complex<double> beta,
+           cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
+    function_tables[libkey].row_major_zaxpby_sycl(queue, n, alpha, x, incx, beta, y, incy);
+}
+
 void copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
           cl::sycl::buffer<float, 1> &x, std::int64_t incx, cl::sycl::buffer<float, 1> &y,
           std::int64_t incy) {
@@ -2722,6 +3630,38 @@ void copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
           cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
           cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy) {
     function_tables[libkey].row_major_zcopy_sycl(queue, n, x, incx, y, incy);
+}
+
+void copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                cl::sycl::buffer<float, 1> &x, std::int64_t incx, std::int64_t stridex,
+                cl::sycl::buffer<float, 1> &y, std::int64_t incy, std::int64_t stridey,
+                std::int64_t batch_size) {
+    function_tables[libkey].row_major_scopy_batch_strided_sycl(queue, n, x, incx, stridex, y, incy,
+                                                               stridey, batch_size);
+}
+
+void copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                cl::sycl::buffer<double, 1> &x, std::int64_t incx, std::int64_t stridex,
+                cl::sycl::buffer<double, 1> &y, std::int64_t incy, std::int64_t stridey,
+                std::int64_t batch_size) {
+    function_tables[libkey].row_major_dcopy_batch_strided_sycl(queue, n, x, incx, stridex, y, incy,
+                                                               stridey, batch_size);
+}
+
+void copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
+                std::int64_t stridex, cl::sycl::buffer<std::complex<float>, 1> &y,
+                std::int64_t incy, std::int64_t stridey, std::int64_t batch_size) {
+    function_tables[libkey].row_major_ccopy_batch_strided_sycl(queue, n, x, incx, stridex, y, incy,
+                                                               stridey, batch_size);
+}
+
+void copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
+                std::int64_t stridex, cl::sycl::buffer<std::complex<double>, 1> &y,
+                std::int64_t incy, std::int64_t stridey, std::int64_t batch_size) {
+    function_tables[libkey].row_major_zcopy_batch_strided_sycl(queue, n, x, incx, stridex, y, incy,
+                                                               stridey, batch_size);
 }
 
 void dot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
@@ -3042,6 +3982,88 @@ void gemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, s
           std::int64_t incy) {
     function_tables[libkey].row_major_zgemv_sycl(queue, trans, m, n, alpha, a, lda, x, incx, beta,
                                                  y, incy);
+}
+
+void gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                std::int64_t n, float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
+                std::int64_t stridea, cl::sycl::buffer<float, 1> &x, std::int64_t incx,
+                std::int64_t stridex, float beta, cl::sycl::buffer<float, 1> &y, std::int64_t incy,
+                std::int64_t stridey, std::int64_t batch_size) {
+    function_tables[libkey].row_major_sgemv_batch_strided_sycl(queue, trans, m, n, alpha, a, lda,
+                                                               stridea, x, incx, stridex, beta, y,
+                                                               incy, stridey, batch_size);
+}
+
+void gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                std::int64_t n, double alpha, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
+                std::int64_t stridea, cl::sycl::buffer<double, 1> &x, std::int64_t incx,
+                std::int64_t stridex, double beta, cl::sycl::buffer<double, 1> &y,
+                std::int64_t incy, std::int64_t stridey, std::int64_t batch_size) {
+    function_tables[libkey].row_major_dgemv_batch_strided_sycl(queue, trans, m, n, alpha, a, lda,
+                                                               stridea, x, incx, stridex, beta, y,
+                                                               incy, stridey, batch_size);
+}
+
+void gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                std::int64_t n, std::complex<float> alpha,
+                cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda, std::int64_t stridea,
+                cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
+                std::int64_t stridex, std::complex<float> beta,
+                cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
+                std::int64_t stridey, std::int64_t batch_size) {
+    function_tables[libkey].row_major_cgemv_batch_strided_sycl(queue, trans, m, n, alpha, a, lda,
+                                                               stridea, x, incx, stridex, beta, y,
+                                                               incy, stridey, batch_size);
+}
+
+void gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                std::int64_t n, std::complex<double> alpha,
+                cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+                std::int64_t stridea, cl::sycl::buffer<std::complex<double>, 1> &x,
+                std::int64_t incx, std::int64_t stridex, std::complex<double> beta,
+                cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
+                std::int64_t stridey, std::int64_t batch_size) {
+    function_tables[libkey].row_major_zgemv_batch_strided_sycl(queue, trans, m, n, alpha, a, lda,
+                                                               stridea, x, incx, stridex, beta, y,
+                                                               incy, stridey, batch_size);
+}
+
+void dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, std::int64_t m,
+                std::int64_t n, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
+                std::int64_t stridea, cl::sycl::buffer<float, 1> &x, std::int64_t incx,
+                std::int64_t stridex, cl::sycl::buffer<float, 1> &c, std::int64_t ldc,
+                std::int64_t stridec, std::int64_t batch_size) {
+    function_tables[libkey].row_major_sdgmm_batch_strided_sycl(
+        queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size);
+}
+
+void dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, std::int64_t m,
+                std::int64_t n, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
+                std::int64_t stridea, cl::sycl::buffer<double, 1> &x, std::int64_t incx,
+                std::int64_t stridex, cl::sycl::buffer<double, 1> &c, std::int64_t ldc,
+                std::int64_t stridec, std::int64_t batch_size) {
+    function_tables[libkey].row_major_ddgmm_batch_strided_sycl(
+        queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size);
+}
+
+void dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, std::int64_t m,
+                std::int64_t n, cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+                std::int64_t stridea, cl::sycl::buffer<std::complex<float>, 1> &x,
+                std::int64_t incx, std::int64_t stridex,
+                cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc, std::int64_t stridec,
+                std::int64_t batch_size) {
+    function_tables[libkey].row_major_cdgmm_batch_strided_sycl(
+        queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size);
+}
+
+void dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, std::int64_t m,
+                std::int64_t n, cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+                std::int64_t stridea, cl::sycl::buffer<std::complex<double>, 1> &x,
+                std::int64_t incx, std::int64_t stridex,
+                cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc,
+                std::int64_t stridec, std::int64_t batch_size) {
+    function_tables[libkey].row_major_zdgmm_batch_strided_sycl(
+        queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size);
 }
 
 void ger(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
@@ -3512,6 +4534,14 @@ void gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, 
                                                           lda, b, ldb, beta, c, ldc);
 }
 
+void gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
+          std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+          cl::sycl::buffer<bfloat16, 1> &a, std::int64_t lda, cl::sycl::buffer<bfloat16, 1> &b,
+          std::int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
+    function_tables[libkey].row_major_gemm_bf16bf16f32_sycl(queue, transa, transb, m, n, k, alpha,
+                                                            a, lda, b, ldb, beta, c, ldc);
+}
+
 void hemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
           std::int64_t m, std::int64_t n, std::complex<float> alpha,
           cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
@@ -3626,6 +4656,48 @@ void syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, 
           cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
     function_tables[libkey].row_major_zsyrk_sycl(queue, upper_lower, trans, n, k, alpha, a, lda,
                                                  beta, c, ldc);
+}
+
+void syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
+                transpose trans, std::int64_t n, std::int64_t k, float alpha,
+                cl::sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a, float beta,
+                cl::sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
+                std::int64_t batch_size) {
+    function_tables[libkey].row_major_ssyrk_batch_strided_sycl(queue, upper_lower, trans, n, k,
+                                                               alpha, a, lda, stride_a, beta, c,
+                                                               ldc, stride_c, batch_size);
+}
+
+void syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
+                transpose trans, std::int64_t n, std::int64_t k, double alpha,
+                cl::sycl::buffer<double, 1> &a, std::int64_t lda, std::int64_t stride_a,
+                double beta, cl::sycl::buffer<double, 1> &c, std::int64_t ldc,
+                std::int64_t stride_c, std::int64_t batch_size) {
+    function_tables[libkey].row_major_dsyrk_batch_strided_sycl(queue, upper_lower, trans, n, k,
+                                                               alpha, a, lda, stride_a, beta, c,
+                                                               ldc, stride_c, batch_size);
+}
+
+void syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
+                transpose trans, std::int64_t n, std::int64_t k, std::complex<float> alpha,
+                cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+                std::int64_t stride_a, std::complex<float> beta,
+                cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc,
+                std::int64_t stride_c, std::int64_t batch_size) {
+    function_tables[libkey].row_major_csyrk_batch_strided_sycl(queue, upper_lower, trans, n, k,
+                                                               alpha, a, lda, stride_a, beta, c,
+                                                               ldc, stride_c, batch_size);
+}
+
+void syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
+                transpose trans, std::int64_t n, std::int64_t k, std::complex<double> alpha,
+                cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+                std::int64_t stride_a, std::complex<double> beta,
+                cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc,
+                std::int64_t stride_c, std::int64_t batch_size) {
+    function_tables[libkey].row_major_zsyrk_batch_strided_sycl(queue, upper_lower, trans, n, k,
+                                                               alpha, a, lda, stride_a, beta, c,
+                                                               ldc, stride_c, batch_size);
 }
 
 void syr2k(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
@@ -3775,6 +4847,17 @@ void gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose tr
         stride_c, batch_size);
 }
 
+void gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
+                cl::sycl::buffer<half, 1> &a, std::int64_t lda, std::int64_t stride_a,
+                cl::sycl::buffer<half, 1> &b, std::int64_t ldb, std::int64_t stride_b, half beta,
+                cl::sycl::buffer<half, 1> &c, std::int64_t ldc, std::int64_t stride_c,
+                std::int64_t batch_size) {
+    function_tables[libkey].row_major_hgemm_batch_strided_sycl(
+        queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
+        stride_c, batch_size);
+}
+
 void trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
                 uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
                 float alpha, cl::sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a,
@@ -3859,6 +4942,36 @@ void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose tra
                cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
                cl::sycl::buffer<int32_t, 1> &co) {
     function_tables[libkey].row_major_gemm_s8u8s32_bias_sycl(
+        queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co);
+}
+
+void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+               transpose transb, offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
+               float alpha, cl::sycl::buffer<int8_t, 1> &a, std::int64_t lda, int8_t ao,
+               cl::sycl::buffer<int8_t, 1> &b, std::int64_t ldb, int8_t bo, float beta,
+               cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
+               cl::sycl::buffer<int32_t, 1> &co) {
+    function_tables[libkey].row_major_gemm_s8s8s32_bias_sycl(
+        queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co);
+}
+
+void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+               transpose transb, offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
+               float alpha, cl::sycl::buffer<u_int8_t, 1> &a, std::int64_t lda, u_int8_t ao,
+               cl::sycl::buffer<int8_t, 1> &b, std::int64_t ldb, int8_t bo, float beta,
+               cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
+               cl::sycl::buffer<int32_t, 1> &co) {
+    function_tables[libkey].row_major_gemm_u8s8s32_bias_sycl(
+        queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co);
+}
+
+void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+               transpose transb, offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
+               float alpha, cl::sycl::buffer<u_int8_t, 1> &a, std::int64_t lda, u_int8_t ao,
+               cl::sycl::buffer<uint8_t, 1> &b, std::int64_t ldb, uint8_t bo, float beta,
+               cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
+               cl::sycl::buffer<int32_t, 1> &co) {
+    function_tables[libkey].row_major_gemm_u8u8s32_bias_sycl(
         queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co);
 }
 
@@ -3956,6 +5069,74 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
         queue, n, alpha, x, incx, y, incy, group_count, group_size, dependencies);
 }
 
+cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                           float alpha, const float *x, std::int64_t incx, std::int64_t stridex,
+                           float *y, std::int64_t incy, std::int64_t stridey,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_saxpy_batch_strided_usm_sycl(
+        queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+}
+
+cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                           double alpha, const double *x, std::int64_t incx, std::int64_t stridex,
+                           double *y, std::int64_t incy, std::int64_t stridey,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_daxpy_batch_strided_usm_sycl(
+        queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+}
+
+cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                           std::complex<float> alpha, const std::complex<float> *x,
+                           std::int64_t incx, std::int64_t stridex, std::complex<float> *y,
+                           std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_caxpy_batch_strided_usm_sycl(
+        queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+}
+
+cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                           std::complex<double> alpha, const std::complex<double> *x,
+                           std::int64_t incx, std::int64_t stridex, std::complex<double> *y,
+                           std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_zaxpy_batch_strided_usm_sycl(
+        queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+}
+
+cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                      float alpha, const float *x, std::int64_t incx, const float beta, float *y,
+                      std::int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_saxpby_usm_sycl(queue, n, alpha, x, incx, beta, y,
+                                                             incy, dependencies);
+}
+
+cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                      double alpha, const double *x, std::int64_t incx, const double beta,
+                      double *y, std::int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_daxpby_usm_sycl(queue, n, alpha, x, incx, beta, y,
+                                                             incy, dependencies);
+}
+
+cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                      std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
+                      const std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_caxpby_usm_sycl(queue, n, alpha, x, incx, beta, y,
+                                                             incy, dependencies);
+}
+
+cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                      std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
+                      const std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_zaxpby_usm_sycl(queue, n, alpha, x, incx, beta, y,
+                                                             incy, dependencies);
+}
+
 cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const float *x, std::int64_t incx, float *y, std::int64_t incy,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
@@ -3984,6 +5165,74 @@ cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zcopy_usm_sycl(queue, n, x, incx, y, incy,
                                                             dependencies);
+}
+
+cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
+                           const float **x, std::int64_t *incx, float **y, std::int64_t *incy,
+                           std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_scopy_batch_group_usm_sycl(
+        queue, n, x, incx, y, incy, group_count, group_size, dependencies);
+}
+
+cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
+                           const double **x, std::int64_t *incx, double **y, std::int64_t *incy,
+                           std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_dcopy_batch_group_usm_sycl(
+        queue, n, x, incx, y, incy, group_count, group_size, dependencies);
+}
+
+cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
+                           const std::complex<float> **x, std::int64_t *incx,
+                           std::complex<float> **y, std::int64_t *incy, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_ccopy_batch_group_usm_sycl(
+        queue, n, x, incx, y, incy, group_count, group_size, dependencies);
+}
+
+cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
+                           const std::complex<double> **x, std::int64_t *incx,
+                           std::complex<double> **y, std::int64_t *incy, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_zcopy_batch_group_usm_sycl(
+        queue, n, x, incx, y, incy, group_count, group_size, dependencies);
+}
+
+cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                           const float *x, std::int64_t incx, std::int64_t stridex, float *y,
+                           std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_scopy_batch_strided_usm_sycl(
+        queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+}
+
+cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                           const double *x, std::int64_t incx, std::int64_t stridex, double *y,
+                           std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_dcopy_batch_strided_usm_sycl(
+        queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+}
+
+cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                           const std::complex<float> *x, std::int64_t incx, std::int64_t stridex,
+                           std::complex<float> *y, std::int64_t incy, std::int64_t stridey,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_ccopy_batch_strided_usm_sycl(
+        queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+}
+
+cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
+                           const std::complex<double> *x, std::int64_t incx, std::int64_t stridex,
+                           std::complex<double> *y, std::int64_t incy, std::int64_t stridey,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_zcopy_batch_strided_usm_sycl(
+        queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
 
 cl::sycl::event dot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
@@ -4353,6 +5602,180 @@ cl::sycl::event gemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zgemv_usm_sycl(queue, trans, m, n, alpha, a, lda, x,
                                                             incx, beta, y, incy, dependencies);
+}
+
+cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans,
+                           std::int64_t m, std::int64_t n, float alpha, const float *a,
+                           std::int64_t lda, std::int64_t stridea, const float *x,
+                           std::int64_t incx, std::int64_t stridex, float beta, float *y,
+                           std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_sgemv_batch_strided_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y, incy, stridey,
+        batch_size, dependencies);
+}
+
+cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans,
+                           std::int64_t m, std::int64_t n, double alpha, const double *a,
+                           std::int64_t lda, std::int64_t stridea, const double *x,
+                           std::int64_t incx, std::int64_t stridex, double beta, double *y,
+                           std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_dgemv_batch_strided_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y, incy, stridey,
+        batch_size, dependencies);
+}
+
+cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans,
+                           std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                           const std::complex<float> *a, std::int64_t lda, std::int64_t stridea,
+                           const std::complex<float> *x, std::int64_t incx, std::int64_t stridex,
+                           std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
+                           std::int64_t stridey, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_cgemv_batch_strided_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y, incy, stridey,
+        batch_size, dependencies);
+}
+
+cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans,
+                           std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                           const std::complex<double> *a, std::int64_t lda, std::int64_t stridea,
+                           const std::complex<double> *x, std::int64_t incx, std::int64_t stridex,
+                           std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
+                           std::int64_t stridey, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_zgemv_batch_strided_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y, incy, stridey,
+        batch_size, dependencies);
+}
+
+cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *trans,
+                           std::int64_t *m, std::int64_t *n, float *alpha, const float **a,
+                           std::int64_t *lda, const float **x, std::int64_t *incx, float *beta,
+                           float **y, std::int64_t *incy, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_sgemv_batch_group_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count, group_size,
+        dependencies);
+}
+
+cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *trans,
+                           std::int64_t *m, std::int64_t *n, double *alpha, const double **a,
+                           std::int64_t *lda, const double **x, std::int64_t *incx, double *beta,
+                           double **y, std::int64_t *incy, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_dgemv_batch_group_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count, group_size,
+        dependencies);
+}
+
+cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *trans,
+                           std::int64_t *m, std::int64_t *n, std::complex<float> *alpha,
+                           const std::complex<float> **a, std::int64_t *lda,
+                           const std::complex<float> **x, std::int64_t *incx,
+                           std::complex<float> *beta, std::complex<float> **y, std::int64_t *incy,
+                           std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_cgemv_batch_group_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count, group_size,
+        dependencies);
+}
+
+cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *trans,
+                           std::int64_t *m, std::int64_t *n, std::complex<double> *alpha,
+                           const std::complex<double> **a, std::int64_t *lda,
+                           const std::complex<double> **x, std::int64_t *incx,
+                           std::complex<double> *beta, std::complex<double> **y, std::int64_t *incy,
+                           std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_zgemv_batch_group_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count, group_size,
+        dependencies);
+}
+
+cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
+                           std::int64_t m, std::int64_t n, const float *a, std::int64_t lda,
+                           std::int64_t stridea, const float *x, std::int64_t incx,
+                           std::int64_t stridex, float *c, std::int64_t ldc, std::int64_t stridec,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_sdgmm_batch_strided_usm_sycl(
+        queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size,
+        dependencies);
+}
+
+cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
+                           std::int64_t m, std::int64_t n, const double *a, std::int64_t lda,
+                           std::int64_t stridea, const double *x, std::int64_t incx,
+                           std::int64_t stridex, double *c, std::int64_t ldc, std::int64_t stridec,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_ddgmm_batch_strided_usm_sycl(
+        queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size,
+        dependencies);
+}
+
+cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
+                           std::int64_t m, std::int64_t n, const std::complex<float> *a,
+                           std::int64_t lda, std::int64_t stridea, const std::complex<float> *x,
+                           std::int64_t incx, std::int64_t stridex, std::complex<float> *c,
+                           std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_cdgmm_batch_strided_usm_sycl(
+        queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size,
+        dependencies);
+}
+
+cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
+                           std::int64_t m, std::int64_t n, const std::complex<double> *a,
+                           std::int64_t lda, std::int64_t stridea, const std::complex<double> *x,
+                           std::int64_t incx, std::int64_t stridex, std::complex<double> *c,
+                           std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_zdgmm_batch_strided_usm_sycl(
+        queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size,
+        dependencies);
+}
+
+cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right,
+                           std::int64_t *m, std::int64_t *n, const float **a, std::int64_t *lda,
+                           const float **x, std::int64_t *incx, float **c, std::int64_t *ldc,
+                           std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_sdgmm_batch_group_usm_sycl(
+        queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count, group_size, dependencies);
+}
+
+cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right,
+                           std::int64_t *m, std::int64_t *n, const double **a, std::int64_t *lda,
+                           const double **x, std::int64_t *incx, double **c, std::int64_t *ldc,
+                           std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_ddgmm_batch_group_usm_sycl(
+        queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count, group_size, dependencies);
+}
+
+cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right,
+                           std::int64_t *m, std::int64_t *n, const std::complex<float> **a,
+                           std::int64_t *lda, const std::complex<float> **x, std::int64_t *incx,
+                           std::complex<float> **c, std::int64_t *ldc, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_cdgmm_batch_group_usm_sycl(
+        queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count, group_size, dependencies);
+}
+
+cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right,
+                           std::int64_t *m, std::int64_t *n, const std::complex<double> **a,
+                           std::int64_t *lda, const std::complex<double> **x, std::int64_t *incx,
+                           std::complex<double> **c, std::int64_t *ldc, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_zdgmm_batch_group_usm_sycl(
+        queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count, group_size, dependencies);
 }
 
 cl::sycl::event ger(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t m,
@@ -4874,6 +6297,33 @@ cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
 
+cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                     transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
+                     const half *a, std::int64_t lda, const half *b, std::int64_t ldb, half beta,
+                     half *c, std::int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_hgemm_usm_sycl(
+        queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                     transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                     const half *a, std::int64_t lda, const half *b, std::int64_t ldb, float beta,
+                     float *c, std::int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_gemm_f16f16f32_usm_sycl(
+        queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
+cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                     transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                     const bfloat16 *a, std::int64_t lda, const bfloat16 *b, std::int64_t ldb,
+                     float beta, float *c, std::int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_gemm_bf16bf16f32_usm_sycl(
+        queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
+}
+
 cl::sycl::event hemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
                      uplo upper_lower, std::int64_t m, std::int64_t n, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
@@ -5003,6 +6453,94 @@ cl::sycl::event syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                                                             a, lda, beta, c, ldc, dependencies);
 }
 
+cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo *upper_lower,
+                           transpose *trans, std::int64_t *n, std::int64_t *k, float *alpha,
+                           const float **a, std::int64_t *lda, float *beta, float **c,
+                           std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_ssyrk_batch_group_usm_sycl(
+        queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, group_count, group_size,
+        dependencies);
+}
+
+cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo *upper_lower,
+                           transpose *trans, std::int64_t *n, std::int64_t *k, double *alpha,
+                           const double **a, std::int64_t *lda, double *beta, double **c,
+                           std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_dsyrk_batch_group_usm_sycl(
+        queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, group_count, group_size,
+        dependencies);
+}
+
+cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo *upper_lower,
+                           transpose *trans, std::int64_t *n, std::int64_t *k,
+                           std::complex<float> *alpha, const std::complex<float> **a,
+                           std::int64_t *lda, std::complex<float> *beta, std::complex<float> **c,
+                           std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_csyrk_batch_group_usm_sycl(
+        queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, group_count, group_size,
+        dependencies);
+}
+
+cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo *upper_lower,
+                           transpose *trans, std::int64_t *n, std::int64_t *k,
+                           std::complex<double> *alpha, const std::complex<double> **a,
+                           std::int64_t *lda, std::complex<double> *beta, std::complex<double> **c,
+                           std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_zsyrk_batch_group_usm_sycl(
+        queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, group_count, group_size,
+        dependencies);
+}
+
+cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
+                           transpose trans, std::int64_t n, std::int64_t k, float alpha,
+                           const float *a, std::int64_t lda, std::int64_t stride_a, float beta,
+                           float *c, std::int64_t ldc, std::int64_t stride_c,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_ssyrk_batch_strided_usm_sycl(
+        queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc, stride_c,
+        batch_size, dependencies);
+}
+
+cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
+                           transpose trans, std::int64_t n, std::int64_t k, double alpha,
+                           const double *a, std::int64_t lda, std::int64_t stride_a, double beta,
+                           double *c, std::int64_t ldc, std::int64_t stride_c,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_dsyrk_batch_strided_usm_sycl(
+        queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc, stride_c,
+        batch_size, dependencies);
+}
+
+cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
+                           transpose trans, std::int64_t n, std::int64_t k,
+                           std::complex<float> alpha, const std::complex<float> *a,
+                           std::int64_t lda, std::int64_t stride_a, std::complex<float> beta,
+                           std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_csyrk_batch_strided_usm_sycl(
+        queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc, stride_c,
+        batch_size, dependencies);
+}
+
+cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
+                           transpose trans, std::int64_t n, std::int64_t k,
+                           std::complex<double> alpha, const std::complex<double> *a,
+                           std::int64_t lda, std::int64_t stride_a, std::complex<double> beta,
+                           std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_zsyrk_batch_strided_usm_sycl(
+        queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc, stride_c,
+        batch_size, dependencies);
+}
+
 cl::sycl::event syr2k(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                       transpose trans, std::int64_t n, std::int64_t k, float alpha, const float *a,
                       std::int64_t lda, const float *b, std::int64_t ldb, float beta, float *c,
@@ -5121,6 +6659,97 @@ cl::sycl::event trsm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                                                             dependencies);
 }
 
+cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
+                           uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
+                           std::int64_t n, float alpha, const float *a, std::int64_t lda,
+                           std::int64_t stride_a, float *b, std::int64_t ldb, std::int64_t stride_b,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_strsm_batch_strided_usm_sycl(
+        queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, stride_a, b, ldb,
+        stride_b, batch_size, dependencies);
+}
+
+cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
+                           uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
+                           std::int64_t n, double alpha, const double *a, std::int64_t lda,
+                           std::int64_t stride_a, double *b, std::int64_t ldb,
+                           std::int64_t stride_b, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_dtrsm_batch_strided_usm_sycl(
+        queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, stride_a, b, ldb,
+        stride_b, batch_size, dependencies);
+}
+
+cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
+                           uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
+                           std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
+                           std::int64_t lda, std::int64_t stride_a, std::complex<float> *b,
+                           std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_ctrsm_batch_strided_usm_sycl(
+        queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, stride_a, b, ldb,
+        stride_b, batch_size, dependencies);
+}
+
+cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right,
+                           uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
+                           std::int64_t n, std::complex<double> alpha,
+                           const std::complex<double> *a, std::int64_t lda, std::int64_t stride_a,
+                           std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_ztrsm_batch_strided_usm_sycl(
+        queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, stride_a, b, ldb,
+        stride_b, batch_size, dependencies);
+}
+
+cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right,
+                           uplo *upper_lower, transpose *trans, diag *unit_diag, std::int64_t *m,
+                           std::int64_t *n, float *alpha, const float **a, std::int64_t *lda,
+                           float **b, std::int64_t *ldb, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_strsm_batch_group_usm_sycl(
+        queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb, group_count,
+        group_size, dependencies);
+}
+
+cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right,
+                           uplo *upper_lower, transpose *trans, diag *unit_diag, std::int64_t *m,
+                           std::int64_t *n, double *alpha, const double **a, std::int64_t *lda,
+                           double **b, std::int64_t *ldb, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_dtrsm_batch_group_usm_sycl(
+        queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb, group_count,
+        group_size, dependencies);
+}
+
+cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right,
+                           uplo *upper_lower, transpose *trans, diag *unit_diag, std::int64_t *m,
+                           std::int64_t *n, std::complex<float> *alpha,
+                           const std::complex<float> **a, std::int64_t *lda,
+                           std::complex<float> **b, std::int64_t *ldb, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_ctrsm_batch_group_usm_sycl(
+        queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb, group_count,
+        group_size, dependencies);
+}
+
+cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right,
+                           uplo *upper_lower, transpose *trans, diag *unit_diag, std::int64_t *m,
+                           std::int64_t *n, std::complex<double> *alpha,
+                           const std::complex<double> **a, std::int64_t *lda,
+                           std::complex<double> **b, std::int64_t *ldb, std::int64_t group_count,
+                           std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_ztrsm_batch_group_usm_sycl(
+        queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb, group_count,
+        group_size, dependencies);
+}
+
 cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *transa,
                            transpose *transb, std::int64_t *m, std::int64_t *n, std::int64_t *k,
                            float *alpha, const float **a, std::int64_t *lda, const float **b,
@@ -5163,6 +6792,17 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t group_count, std::int64_t *group_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zgemm_batch_group_usm_sycl(
+        queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
+        group_size, dependencies);
+}
+
+cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *transa,
+                           transpose *transb, std::int64_t *m, std::int64_t *n, std::int64_t *k,
+                           half *alpha, const half **a, std::int64_t *lda, const half **b,
+                           std::int64_t *ldb, half *beta, half **c, std::int64_t *ldc,
+                           std::int64_t group_count, std::int64_t *group_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_hgemm_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
 }
@@ -5217,6 +6857,18 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
         stride_c, batch_size, dependencies);
 }
 
+cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                           transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+                           half alpha, const half *a, std::int64_t lda, std::int64_t stride_a,
+                           const half *b, std::int64_t ldb, std::int64_t stride_b, half beta,
+                           half *c, std::int64_t ldc, std::int64_t stride_c,
+                           std::int64_t batch_size,
+                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_hgemm_batch_strided_usm_sycl(
+        queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
+        stride_c, batch_size, dependencies);
+}
+
 cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                       transpose transa, transpose transb, std::int64_t n, std::int64_t k,
                       float alpha, const float *a, std::int64_t lda, const float *b,
@@ -5257,6 +6909,50 @@ cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
     return function_tables[libkey].row_major_zgemmt_usm_sycl(queue, upper_lower, transa, transb, n,
                                                              k, alpha, a, lda, b, ldb, beta, c, ldc,
                                                              dependencies);
+}
+
+cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                          transpose transb, offset offsetc, std::int64_t m, std::int64_t n,
+                          std::int64_t k, float alpha, const std::int8_t *a, std::int64_t lda,
+                          std::int8_t ao, const std::uint8_t *b, std::int64_t ldb, std::uint8_t bo,
+                          float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_gemm_s8u8s32_bias_usm_sycl(
+        queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co,
+        dependencies);
+}
+
+cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                          transpose transb, offset offsetc, std::int64_t m, std::int64_t n,
+                          std::int64_t k, float alpha, const std::int8_t *a, std::int64_t lda,
+                          std::int8_t ao, const std::int8_t *b, std::int64_t ldb, std::int8_t bo,
+                          float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_gemm_s8s8s32_bias_usm_sycl(
+        queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co,
+        dependencies);
+}
+
+cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                          transpose transb, offset offsetc, std::int64_t m, std::int64_t n,
+                          std::int64_t k, float alpha, const std::uint8_t *a, std::int64_t lda,
+                          std::uint8_t ao, const std::int8_t *b, std::int64_t ldb, std::int8_t bo,
+                          float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_gemm_u8s8s32_bias_usm_sycl(
+        queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co,
+        dependencies);
+}
+
+cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
+                          transpose transb, offset offsetc, std::int64_t m, std::int64_t n,
+                          std::int64_t k, float alpha, const std::uint8_t *a, std::int64_t lda,
+                          std::uint8_t ao, const std::uint8_t *b, std::int64_t ldb, std::uint8_t bo,
+                          float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
+                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_gemm_u8u8s32_bias_usm_sycl(
+        queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co,
+        dependencies);
 }
 
 } //namespace detail

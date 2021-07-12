@@ -113,6 +113,13 @@ GEMM_EX_LAUNCHER(half, half, half, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_
 
 #undef GEMM_EX_LAUNCHER
 
+void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+          int64_t k, float alpha, cl::sycl::buffer<bfloat16, 1> &a, int64_t lda,
+          cl::sycl::buffer<bfloat16, 1> &b, int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c,
+          int64_t ldc) {
+    throw unimplemented("blas", "gemm", "for column_major layout");
+}
+
 template <typename Func, typename T>
 inline void symm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
                  int64_t n, T alpha, cl::sycl::buffer<T, 1> &a, int64_t lda,
@@ -455,9 +462,56 @@ GEMM_LAUNCHER_USM(std::complex<double>, cublasZgemm)
 
 #undef GEMM_LAUNCHER_USM
 
-cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                     std::int64_t n, std::int64_t k, half alpha, const half *a, std::int64_t lda,
-                     const half *b, std::int64_t ldb, half beta, half *c, std::int64_t ldc,
+template <typename Func, typename T_A, typename T_B, typename T_C, typename DATATYPE_A,
+          typename DATATYPE_B, typename DATATYPE_C>
+inline cl::sycl::event gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
+                            cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                            int64_t n, int64_t k, T_C alpha, const T_A *a, int64_t lda,
+                            const T_B *b, int64_t ldb, T_C beta, T_C *c, int64_t ldc,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    using cuDataType_A = typename CudaEquivalentType<T_A>::Type;
+    using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
+    using cuDataType_C = typename CudaEquivalentType<T_C>::Type;
+    overflow_check(m, n, k, lda, ldb, ldc);
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        cgh.interop_task([=](cl::sycl::interop_handler ih) {
+            auto sc = CublasScopedContextHandler(queue);
+            auto handle = sc.get_handle(queue);
+            auto a_ = reinterpret_cast<const cuDataType_A *>(a);
+            auto b_ = reinterpret_cast<const cuDataType_B *>(b);
+            auto c_ = reinterpret_cast<cuDataType_C *>(c);
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_operation(transa),
+                              get_cublas_operation(transb), m, n, k, (cuDataType_C *)&alpha, a_,
+                              DT_A, lda, b_, DT_B, ldb, (cuDataType_C *)&beta, c_, DT_C, ldc, DT_C,
+                              CUBLAS_GEMM_DEFAULT);
+        });
+    });
+    return done;
+}
+
+#define GEMM_EX_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, CUBLAS_ROUTINE, CUDADATATYPE_A,               \
+                             CUDADATATYPE_B, CUDADATATYPE_C)                                       \
+    cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,    \
+                         int64_t n, int64_t k, TYPE_C alpha, const TYPE_A *a, int64_t lda,         \
+                         const TYPE_B *b, int64_t ldb, TYPE_C beta, TYPE_C *c, int64_t ldc,        \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {            \
+        return gemm(CUBLAS_ROUTINE, CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa, \
+                    transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);           \
+    }
+
+GEMM_EX_LAUNCHER_USM(half, half, float, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
+GEMM_EX_LAUNCHER_USM(half, half, half, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
+
+#undef GEMM_EX_LAUNCHER_USM
+
+cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                     int64_t n, int64_t k, float alpha, const bfloat16 *a, int64_t lda,
+                     const bfloat16 *b, int64_t ldb, float beta, float *c, int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "gemm", "for column_major layout");
 }
@@ -847,6 +901,13 @@ GEMM_EX_LAUNCHER(half, half, half, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_
 
 #undef GEMM_EX_LAUNCHER
 
+void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+          int64_t k, float alpha, cl::sycl::buffer<bfloat16, 1> &a, int64_t lda,
+          cl::sycl::buffer<bfloat16, 1> &b, int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c,
+          int64_t ldc) {
+    throw unimplemented("blas", "gemm", "for row_major layout");
+}
+
 template <typename Func, typename T>
 inline void symm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
                  int64_t n, T alpha, cl::sycl::buffer<T, 1> &a, int64_t lda,
@@ -1047,9 +1108,34 @@ GEMM_LAUNCHER_USM(std::complex<double>, cublasZgemm)
 
 #undef GEMM_LAUNCHER_USM
 
-cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                     std::int64_t n, std::int64_t k, half alpha, const half *a, std::int64_t lda,
-                     const half *b, std::int64_t ldb, half beta, half *c, std::int64_t ldc,
+template <typename Func, typename T_A, typename T_B, typename T_C, typename DATATYPE_A,
+          typename DATATYPE_B, typename DATATYPE_C>
+inline cl::sycl::event gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
+                            cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                            int64_t n, int64_t k, T_C alpha, const T_A *a, int64_t lda,
+                            const T_B *b, int64_t ldb, T_C beta, T_C *c, int64_t ldc,
+                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    throw unimplemented("blas", "gemm", "for row_major layout");
+}
+
+#define GEMM_EX_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, CUBLAS_ROUTINE, CUDADATATYPE_A,               \
+                             CUDADATATYPE_B, CUDADATATYPE_C)                                       \
+    cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,    \
+                         int64_t n, int64_t k, TYPE_C alpha, const TYPE_A *a, int64_t lda,         \
+                         const TYPE_B *b, int64_t ldb, TYPE_C beta, TYPE_C *c, int64_t ldc,        \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {            \
+        return gemm(CUBLAS_ROUTINE, CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa, \
+                    transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);           \
+    }
+
+GEMM_EX_LAUNCHER_USM(half, half, float, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
+GEMM_EX_LAUNCHER_USM(half, half, half, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
+
+#undef GEMM_EX_LAUNCHER_USM
+
+cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                     int64_t n, int64_t k, float alpha, const bfloat16 *a, int64_t lda,
+                     const bfloat16 *b, int64_t ldb, float beta, float *c, int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "gemm", "for row_major layout");
 }

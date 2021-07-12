@@ -119,6 +119,64 @@ void axpy(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
     });
 }
 
+void axpby(cl::sycl::queue &queue, int64_t n, float alpha, cl::sycl::buffer<float, 1> &x,
+           int64_t incx, float beta, cl::sycl::buffer<float, 1> &y, int64_t incy) {
+    queue.submit([&](cl::sycl::handler &cgh) {
+        auto accessor_x = x.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        host_task<class mkl_kernel_saxpby>(cgh, [=]() {
+            ::cblas_saxpby(n, alpha, accessor_x.get_pointer(), incx, beta, accessor_y.get_pointer(),
+                           incy);
+        });
+    });
+}
+
+void axpby(cl::sycl::queue &queue, int64_t n, double alpha, cl::sycl::buffer<double, 1> &x,
+           int64_t incx, double beta, cl::sycl::buffer<double, 1> &y, int64_t incy) {
+    queue.submit([&](cl::sycl::handler &cgh) {
+        auto accessor_x = x.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        host_task<class mkl_kernel_daxpby>(cgh, [=]() {
+            ::cblas_daxpby(n, alpha, accessor_x.get_pointer(), incx, beta, accessor_y.get_pointer(),
+                           incy);
+        });
+    });
+}
+
+void axpby(cl::sycl::queue &queue, int64_t n, std::complex<float> alpha,
+           cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx, std::complex<float> beta,
+           cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy) {
+    queue.submit([&](cl::sycl::handler &cgh) {
+        auto accessor_x = x.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        float alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        float beta_real = beta.real(), beta_imag = beta.imag();
+        host_task<class mkl_kernel_caxpby>(cgh, [=]() {
+            MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
+            MKL_Complex8 beta_ = { beta_real, beta_imag };
+            ::cblas_caxpby(n, (const void *)&alpha_, accessor_x.get_pointer(), incx,
+                           (const void *)&beta_, accessor_y.get_pointer(), incy);
+        });
+    });
+}
+
+void axpby(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
+           cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx, std::complex<double> beta,
+           cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy) {
+    queue.submit([&](cl::sycl::handler &cgh) {
+        auto accessor_x = x.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_y = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        double alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        double beta_real = beta.real(), beta_imag = beta.imag();
+        host_task<class mkl_kernel_zaxpby>(cgh, [=]() {
+            MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
+            MKL_Complex16 beta_ = { beta_real, beta_imag };
+            ::cblas_zaxpby(n, (const void *)&alpha_, accessor_x.get_pointer(), incx,
+                           (const void *)&beta_, accessor_y.get_pointer(), incy);
+        });
+    });
+}
+
 void copy(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int64_t incx,
           cl::sycl::buffer<float, 1> &y, int64_t incy) {
     queue.submit([&](cl::sycl::handler &cgh) {
@@ -799,6 +857,71 @@ cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, std::complex<double> alp
         host_task<class mkl_kernel_zaxpy_usm>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
             ::cblas_zaxpy(n, (const void *)&alpha_, x, incx, y, incy);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, float alpha, const float *x, int64_t incx,
+                      float beta, float *y, int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        host_task<class mkl_kernel_saxpby_usm>(
+            cgh, [=]() { ::cblas_saxpby(n, alpha, x, incx, beta, y, incy); });
+    });
+    return done;
+}
+cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, double alpha, const double *x,
+                      int64_t incx, double beta, double *y, int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        host_task<class mkl_kernel_daxpby_usm>(
+            cgh, [=]() { ::cblas_daxpby(n, alpha, x, incx, beta, y, incy); });
+    });
+    return done;
+}
+cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, std::complex<float> alpha,
+                      const std::complex<float> *x, int64_t incx, std::complex<float> beta,
+                      std::complex<float> *y, int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        float alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        float beta_real = beta.real(), beta_imag = beta.imag();
+        host_task<class mkl_kernel_caxpby_usm>(cgh, [=]() {
+            MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
+            MKL_Complex8 beta_ = { beta_real, beta_imag };
+            ::cblas_caxpby(n, (const void *)&alpha_, x, incx, (const void *)&beta_, y, incy);
+        });
+    });
+    return done;
+}
+cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
+                      const std::complex<double> *x, int64_t incx, std::complex<double> beta,
+                      std::complex<double> *y, int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        double alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        double beta_real = beta.real(), beta_imag = beta.imag();
+        host_task<class mkl_kernel_zaxpby_usm>(cgh, [=]() {
+            MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
+            MKL_Complex16 beta_ = { beta_real, beta_imag };
+            ::cblas_zaxpby(n, (const void *)&alpha_, x, incx, (const void *)&beta_, y, incy);
         });
     });
     return done;

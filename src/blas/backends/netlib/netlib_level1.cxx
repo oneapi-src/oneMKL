@@ -117,6 +117,48 @@ void axpy(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
     });
 }
 
+void axpby(cl::sycl::queue &queue, int64_t n, float alpha, cl::sycl::buffer<float, 1> &x,
+           int64_t incx, float beta, cl::sycl::buffer<float, 1> &y, int64_t incy) {
+#ifdef COLUMN_MAJOR
+    throw unimplemented("blas", "axpby", "for column_major layout");
+#endif
+#ifdef ROW_MAJOR
+    throw unimplemented("blas", "axpby", "for row_major layout");
+#endif
+}
+
+void axpby(cl::sycl::queue &queue, int64_t n, double alpha, cl::sycl::buffer<double, 1> &x,
+           int64_t incx, double beta, cl::sycl::buffer<double, 1> &y, int64_t incy) {
+#ifdef COLUMN_MAJOR
+    throw unimplemented("blas", "axpby", "for column_major layout");
+#endif
+#ifdef ROW_MAJOR
+    throw unimplemented("blas", "axpby", "for row_major layout");
+#endif
+}
+
+void axpby(cl::sycl::queue &queue, int64_t n, std::complex<float> alpha,
+           cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx, std::complex<float> beta,
+           cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy) {
+#ifdef COLUMN_MAJOR
+    throw unimplemented("blas", "axpby", "for column_major layout");
+#endif
+#ifdef ROW_MAJOR
+    throw unimplemented("blas", "axpby", "for row_major layout");
+#endif
+}
+
+void axpby(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
+           cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx, std::complex<double> beta,
+           cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy) {
+#ifdef COLUMN_MAJOR
+    throw unimplemented("blas", "axpby", "for column_major layout");
+#endif
+#ifdef ROW_MAJOR
+    throw unimplemented("blas", "axpby", "for row_major layout");
+#endif
+}
+
 void copy(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int64_t incx,
           cl::sycl::buffer<float, 1> &y, int64_t incy) {
     queue.submit([&](cl::sycl::handler &cgh) {
@@ -811,6 +853,52 @@ cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, std::complex<double> alp
         });
     });
     return done;
+}
+
+cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, float alpha, const float *x, int64_t incx,
+                      float beta, float *y, int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+#ifdef COLUMN_MAJOR
+    throw unimplemented("blas", "axpby", "for column_major layout");
+#endif
+#ifdef ROW_MAJOR
+    throw unimplemented("blas", "axpby", "for row_major layout");
+#endif
+}
+
+cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, double alpha, const double *x,
+                      int64_t incx, double beta, double *y, int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+#ifdef COLUMN_MAJOR
+    throw unimplemented("blas", "axpby", "for column_major layout");
+#endif
+#ifdef ROW_MAJOR
+    throw unimplemented("blas", "axpby", "for row_major layout");
+#endif
+}
+
+cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, std::complex<float> alpha,
+                      const std::complex<float> *x, int64_t incx, std::complex<float> beta,
+                      std::complex<float> *y, int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+#ifdef COLUMN_MAJOR
+    throw unimplemented("blas", "axpby", "for column_major layout");
+#endif
+#ifdef ROW_MAJOR
+    throw unimplemented("blas", "axpby", "for row_major layout");
+#endif
+}
+
+cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
+                      const std::complex<double> *x, int64_t incx, std::complex<double> beta,
+                      std::complex<double> *y, int64_t incy,
+                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+#ifdef COLUMN_MAJOR
+    throw unimplemented("blas", "axpby", "for column_major layout");
+#endif
+#ifdef ROW_MAJOR
+    throw unimplemented("blas", "axpby", "for row_major layout");
+#endif
 }
 
 cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, float *y,

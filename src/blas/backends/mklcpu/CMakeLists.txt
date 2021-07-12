@@ -24,7 +24,7 @@ find_package(MKL REQUIRED)
 
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
-  fp16.hpp mklcpu_common.hpp
+  mklcpu_common.hpp
   mklcpu_level1.cpp mklcpu_level2.cpp mklcpu_level3.cpp mklcpu_batch.cpp mklcpu_extensions.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mklcpu_wrappers.cpp>
 )

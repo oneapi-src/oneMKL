@@ -20,6 +20,8 @@
 #ifndef _ONEMKL_TYPES_HPP_
 #define _ONEMKL_TYPES_HPP_
 
+#include "oneapi/mkl/bfloat16.hpp"
+
 namespace oneapi {
 namespace mkl {
 

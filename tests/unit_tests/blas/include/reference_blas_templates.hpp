@@ -315,6 +315,30 @@ void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, c
     oneapi::mkl::aligned_free(bf);
 }
 
+template <>
+void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m,
+          const int *n, const int *k, const float *alpha, const oneapi::mkl::bfloat16 *a,
+          const int *lda, const oneapi::mkl::bfloat16 *b, const int *ldb, const float *beta,
+          float *c, const int *ldc) {
+    // Not supported in NETLIB. SGEMM is used as reference.
+    int sizea, sizeb;
+    if (layout == CblasColMajor) {
+        sizea = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
+        sizeb = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
+    }
+    else {
+        sizea = (transa == CblasNoTrans) ? *lda * *m : *lda * *k;
+        sizeb = (transb == CblasNoTrans) ? *ldb * *k : *ldb * *n;
+    }
+    float *af = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizea);
+    float *bf = (float *)oneapi::mkl::aligned_alloc(64, sizeof(float) * sizeb);
+    copy_mat(a, layout, transa, *m, *k, *lda, af);
+    copy_mat(b, layout, transb, *k, *n, *ldb, bf);
+    cblas_sgemm(layout, transa, transb, *m, *n, *k, *alpha, af, *lda, bf, *ldb, *beta, c, *ldc);
+    oneapi::mkl::aligned_free(af);
+    oneapi::mkl::aligned_free(bf);
+}
+
 template <typename fp>
 static void symm(CBLAS_LAYOUT layout, CBLAS_SIDE left_right, CBLAS_UPLO uplo, const int *m,
                  const int *n, const fp *alpha, const fp *a, const int *lda, const fp *b,
@@ -1511,12 +1535,92 @@ int iamin(const int *n, const std::complex<double> *x, const int *incx) {
 
 /* Extensions */
 
+template <typename fp>
+static void axpby(const int *n, const fp *alpha, const fp *x, const int *incx, const fp *beta,
+                  fp *y, const int *incy);
+
+template <>
+void axpby(const int *n, const float *alpha, const float *x, const int *incx, const float *beta,
+           float *y, const int *incy) {
+    // Not supported in NETLIB. Reference C++ implementation is used.
+    int idx = (*incx) > 0 ? 0 : (1 - *n) * (*incx);
+    int idy = (*incy) > 0 ? 0 : (1 - *n) * (*incy);
+    for (int i = 0; i < *n; i++)
+        y[idy + i * (*incy)] = *alpha * x[idx + i * (*incx)] + (*beta) * y[idy + i * (*incy)];
+}
+
+template <>
+void axpby(const int *n, const double *alpha, const double *x, const int *incx, const double *beta,
+           double *y, const int *incy) {
+    // Not supported in NETLIB. Reference C++ implementation is used.
+    int idx = (*incx) > 0 ? 0 : (1 - *n) * (*incx);
+    int idy = (*incy) > 0 ? 0 : (1 - *n) * (*incy);
+    for (int i = 0; i < *n; i++)
+        y[idy + i * (*incy)] = *alpha * x[idx + i * (*incx)] + (*beta) * y[idy + i * (*incy)];
+}
+
+template <>
+void axpby(const int *n, const std::complex<float> *alpha, const std::complex<float> *x,
+           const int *incx, const std::complex<float> *beta, std::complex<float> *y,
+           const int *incy) {
+    // Not supported in NETLIB. Reference C++ implementation is used.
+    int idx = (*incx) > 0 ? 0 : (1 - *n) * (*incx);
+    int idy = (*incy) > 0 ? 0 : (1 - *n) * (*incy);
+    for (int i = 0; i < *n; i++)
+        y[idy + i * (*incy)] = *alpha * x[idx + i * (*incx)] + (*beta) * y[idy + i * (*incy)];
+}
+
+template <>
+void axpby(const int *n, const std::complex<double> *alpha, const std::complex<double> *x,
+           const int *incx, const std::complex<double> *beta, std::complex<double> *y,
+           const int *incy) {
+    // Not supported in NETLIB. Reference C++ implementation is used.
+    int idx = (*incx) > 0 ? 0 : (1 - *n) * (*incx);
+    int idy = (*incy) > 0 ? 0 : (1 - *n) * (*incy);
+    for (int i = 0; i < *n; i++)
+        y[idy + i * (*incy)] = *alpha * x[idx + i * (*incx)] + (*beta) * y[idy + i * (*incy)];
+}
+
 template <typename fps, typename fpa, typename fpb, typename fpc>
 static void gemm_bias(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb,
                       CBLAS_OFFSET offsetc, const int *m, const int *n, const int *k,
                       const fps *alpha, const fpa *a, const int *lda, const fpa *ao, const fpb *b,
                       const int *ldb, const fpb *bo, const fps *beta, fpc *c, const int *ldc,
                       const fpc *co);
+
+template <>
+void gemm_bias(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb,
+               CBLAS_OFFSET offsetc, const int *m, const int *n, const int *k, const float *alpha,
+               const int8_t *a, const int *lda, const int8_t *ao, const int8_t *b, const int *ldb,
+               const int8_t *bo, const float *beta, int32_t *c, const int *ldc, const int32_t *co) {
+    // Not supported in NETLIB. DGEMM is used as reference.
+    int sizea, sizeb, sizec;
+    if (layout == CblasColMajor) {
+        sizea = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
+        sizeb = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
+        sizec = *ldc * *n;
+    }
+    else {
+        sizea = (transa == CblasNoTrans) ? *lda * *m : *lda * *k;
+        sizeb = (transb == CblasNoTrans) ? *ldb * *k : *ldb * *n;
+        sizec = *ldc * *m;
+    }
+    double *ad = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizea);
+    double *bd = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizeb);
+    double *cd = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizec);
+    double alphad = *alpha;
+    double betad = *beta;
+    double aod = *ao;
+    double bod = *bo;
+    copy_mat(a, layout, transa, *m, *k, *lda, aod, ad);
+    copy_mat(b, layout, transb, *k, *n, *ldb, bod, bd);
+    copy_mat(c, layout, CblasNoTrans, *m, *n, *ldc, 0.0, cd);
+    cblas_dgemm(layout, transa, transb, *m, *n, *k, alphad, ad, *lda, bd, *ldb, betad, cd, *ldc);
+    copy_mat(cd, layout, *m, *n, *ldc, offsetc, co, c);
+    oneapi::mkl::aligned_free(ad);
+    oneapi::mkl::aligned_free(bd);
+    oneapi::mkl::aligned_free(cd);
+}
 
 template <>
 void gemm_bias(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb,
@@ -1558,6 +1662,41 @@ void gemm_bias(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE tran
                CBLAS_OFFSET offsetc, const int *m, const int *n, const int *k, const float *alpha,
                const uint8_t *a, const int *lda, const uint8_t *ao, const int8_t *b, const int *ldb,
                const int8_t *bo, const float *beta, int32_t *c, const int *ldc, const int32_t *co) {
+    // Not supported in NETLIB. DGEMM is used as reference.
+    int sizea, sizeb, sizec;
+    if (layout == CblasColMajor) {
+        sizea = (transa == CblasNoTrans) ? *lda * *k : *lda * *m;
+        sizeb = (transb == CblasNoTrans) ? *ldb * *n : *ldb * *k;
+        sizec = *ldc * *n;
+    }
+    else {
+        sizea = (transa == CblasNoTrans) ? *lda * *m : *lda * *k;
+        sizeb = (transb == CblasNoTrans) ? *ldb * *k : *ldb * *n;
+        sizec = *ldc * *m;
+    }
+    double *ad = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizea);
+    double *bd = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizeb);
+    double *cd = (double *)oneapi::mkl::aligned_alloc(64, sizeof(double) * sizec);
+    double alphad = *alpha;
+    double betad = *beta;
+    double aod = *ao;
+    double bod = *bo;
+    copy_mat(a, layout, transa, *m, *k, *lda, aod, ad);
+    copy_mat(b, layout, transb, *k, *n, *ldb, bod, bd);
+    copy_mat(c, layout, CblasNoTrans, *m, *n, *ldc, 0.0, cd);
+    cblas_dgemm(layout, transa, transb, *m, *n, *k, alphad, ad, *lda, bd, *ldb, betad, cd, *ldc);
+    copy_mat(cd, layout, *m, *n, *ldc, offsetc, co, c);
+    oneapi::mkl::aligned_free(ad);
+    oneapi::mkl::aligned_free(bd);
+    oneapi::mkl::aligned_free(cd);
+}
+
+template <>
+void gemm_bias(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb,
+               CBLAS_OFFSET offsetc, const int *m, const int *n, const int *k, const float *alpha,
+               const uint8_t *a, const int *lda, const uint8_t *ao, const uint8_t *b,
+               const int *ldb, const uint8_t *bo, const float *beta, int32_t *c, const int *ldc,
+               const int32_t *co) {
     // Not supported in NETLIB. DGEMM is used as reference.
     int sizea, sizeb, sizec;
     if (layout == CblasColMajor) {
@@ -1655,6 +1794,180 @@ void gemmt(CBLAS_LAYOUT layout, CBLAS_UPLO upper_lower, CBLAS_TRANSPOSE transa,
     cblas_zgemm(layout, transa, transb, *n, *n, *k, alpha, a, *lda, b, *ldb, beta, cf, *ldc);
     update_c(cf, layout, upper_lower, *n, *n, *ldc, c);
     oneapi::mkl::aligned_free(cf);
+}
+
+template <typename fp>
+static void dgmm(CBLAS_LAYOUT layout, CBLAS_SIDE left_right, const int *m, const int *n,
+                 const fp *a, const int *lda, const fp *x, const int *incx, fp *c, const int *ldc);
+
+template <>
+void dgmm(CBLAS_LAYOUT layout, CBLAS_SIDE left_right, const int *m, const int *n, const float *a,
+          const int *lda, const float *x, const int *incx, float *c, const int *ldc) {
+    // Not supported in NETLIB. Reference C++ implementation is used.
+    float tmp;
+    int size_x = (left_right == CblasLeft) ? *m : *n;
+    int idx = (*incx) > 0 ? 0 : (1 - size_x) * (*incx);
+
+    if (left_right == CblasRight) {
+        for (int i = 0; i < *n; i++) {
+            tmp = x[idx + i * (*incx)];
+            for (int j = 0; j < *m; j++) {
+                if (layout == CblasColMajor)
+                    c[j + i * (*ldc)] = tmp * a[j + i * (*lda)];
+                else
+                    c[i + j * (*ldc)] = tmp * a[i + j * (*lda)];
+            }
+        }
+    }
+    else {
+        for (int i = 0; i < *m; i++) {
+            tmp = x[idx + i * (*incx)];
+            for (int j = 0; j < *n; j++) {
+                if (layout == CblasColMajor)
+                    c[i + j * (*ldc)] = tmp * a[i + j * (*lda)];
+                else
+                    c[j + i * (*ldc)] = tmp * a[j + i * (*lda)];
+            }
+        }
+    }
+}
+
+template <>
+void dgmm(CBLAS_LAYOUT layout, CBLAS_SIDE left_right, const int *m, const int *n, const double *a,
+          const int *lda, const double *x, const int *incx, double *c, const int *ldc) {
+    // Not supported in NETLIB. Reference C++ implementation is used.
+    double tmp;
+    int size_x = (left_right == CblasLeft) ? *m : *n;
+    int idx = (*incx) > 0 ? 0 : (1 - size_x) * (*incx);
+
+    if (left_right == CblasRight) {
+        for (int i = 0; i < *n; i++) {
+            tmp = x[idx + i * (*incx)];
+            for (int j = 0; j < *m; j++) {
+                if (layout == CblasColMajor)
+                    c[j + i * (*ldc)] = tmp * a[j + i * (*lda)];
+                else
+                    c[i + j * (*ldc)] = tmp * a[i + j * (*lda)];
+            }
+        }
+    }
+    else {
+        for (int i = 0; i < *m; i++) {
+            tmp = x[idx + i * (*incx)];
+            for (int j = 0; j < *n; j++) {
+                if (layout == CblasColMajor)
+                    c[i + j * (*ldc)] = tmp * a[i + j * (*lda)];
+                else
+                    c[j + i * (*ldc)] = tmp * a[j + i * (*lda)];
+            }
+        }
+    }
+}
+
+template <>
+void dgmm(CBLAS_LAYOUT layout, CBLAS_SIDE left_right, const int *m, const int *n,
+          const std::complex<float> *a, const int *lda, const std::complex<float> *x,
+          const int *incx, std::complex<float> *c, const int *ldc) {
+    // Not supported in NETLIB. Reference C++ implementation is used.
+    std::complex<float> tmp;
+    int size_x = (left_right == CblasLeft) ? *m : *n;
+    int idx = (*incx) > 0 ? 0 : (1 - size_x) * (*incx);
+
+    if (left_right == CblasRight) {
+        for (int i = 0; i < *n; i++) {
+            tmp = x[idx + i * (*incx)];
+            for (int j = 0; j < *m; j++) {
+                if (layout == CblasColMajor) {
+                    c[j + i * (*ldc)] =
+                        std::complex<float>((tmp.real() * a[j + i * (*lda)].real() -
+                                             tmp.imag() * a[j + i * (*lda)].imag()),
+                                            (tmp.real() * a[j + i * (*lda)].imag() +
+                                             tmp.imag() * a[j + i * (*lda)].real()));
+                }
+                else {
+                    c[i + j * (*ldc)] =
+                        std::complex<float>((tmp.real() * a[i + j * (*lda)].real() -
+                                             tmp.imag() * a[i + j * (*lda)].imag()),
+                                            (tmp.real() * a[i + j * (*lda)].imag() +
+                                             tmp.imag() * a[i + j * (*lda)].real()));
+                }
+            }
+        }
+    }
+    else {
+        for (int i = 0; i < *m; i++) {
+            tmp = x[idx + i * (*incx)];
+            for (int j = 0; j < *n; j++) {
+                if (layout == CblasColMajor) {
+                    c[i + j * (*ldc)] =
+                        std::complex<float>((tmp.real() * a[i + j * (*lda)].real() -
+                                             tmp.imag() * a[i + j * (*lda)].imag()),
+                                            (tmp.real() * a[i + j * (*lda)].imag() +
+                                             tmp.imag() * a[i + j * (*lda)].real()));
+                }
+                else {
+                    c[j + i * (*ldc)] =
+                        std::complex<float>((tmp.real() * a[j + i * (*lda)].real() -
+                                             tmp.imag() * a[j + i * (*lda)].imag()),
+                                            (tmp.real() * a[j + i * (*lda)].imag() +
+                                             tmp.imag() * a[j + i * (*lda)].real()));
+                }
+            }
+        }
+    }
+}
+
+template <>
+void dgmm(CBLAS_LAYOUT layout, CBLAS_SIDE left_right, const int *m, const int *n,
+          const std::complex<double> *a, const int *lda, const std::complex<double> *x,
+          const int *incx, std::complex<double> *c, const int *ldc) {
+    // Not supported in NETLIB. Reference C++ implementation is used.
+    std::complex<double> tmp;
+    int size_x = (left_right == CblasLeft) ? *m : *n;
+    int idx = (*incx) > 0 ? 0 : (1 - size_x) * (*incx);
+
+    if (left_right == CblasRight) {
+        for (int i = 0; i < *n; i++) {
+            tmp = x[idx + i * (*incx)];
+            for (int j = 0; j < *m; j++) {
+                if (layout == CblasColMajor) {
+                    c[j + i * (*ldc)] =
+                        std::complex<double>((tmp.real() * a[j + i * (*lda)].real() -
+                                              tmp.imag() * a[j + i * (*lda)].imag()),
+                                             (tmp.real() * a[j + i * (*lda)].imag() +
+                                              tmp.imag() * a[j + i * (*lda)].real()));
+                }
+                else {
+                    c[i + j * (*ldc)] =
+                        std::complex<double>((tmp.real() * a[i + j * (*lda)].real() -
+                                              tmp.imag() * a[i + j * (*lda)].imag()),
+                                             (tmp.real() * a[i + j * (*lda)].imag() +
+                                              tmp.imag() * a[i + j * (*lda)].real()));
+                }
+            }
+        }
+    }
+    else {
+        for (int i = 0; i < *m; i++) {
+            tmp = x[idx + i * (*incx)];
+            for (int j = 0; j < *n; j++) {
+                if (layout == CblasColMajor) {
+                    c[i + j * (*ldc)] =
+                        std::complex<double>((tmp.real() * a[i + j * (*lda)].real() -
+                                              tmp.imag() * a[i + j * (*lda)].imag()),
+                                             (tmp.real() * a[i + j * (*lda)].imag() +
+                                              tmp.imag() * a[i + j * (*lda)].real()));
+                }
+                else {
+                    c[j + i * (*ldc)] =
+                        std::complex<double>((tmp.real() * a[j + i * (*lda)].real() -
+                                              tmp.imag() * a[j + i * (*lda)].imag()),
+                                             (tmp.real() * a[j + i * (*lda)].imag() +
+                                              tmp.imag() * a[j + i * (*lda)].real()));
+                }
+            }
+        }
+    }
 }
 
 #endif /* header guard */
