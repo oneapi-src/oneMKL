@@ -745,17 +745,16 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
         host_task<class mkl_kernel_hgemm_batch_strided>(cgh, [=]() {
             int64_t totalsize_a, totalsize_b, totalsize_c;
             int64_t size_a, size_b, size_c;
-            if (MKLMAJOR == MKL_COL_MAJOR) {
-                size_a = (transa == transpose::N) ? lda * k : lda * m;
-                size_b = (transb == transpose::N) ? ldb * n : ldb * k;
-                size_c = ldc * n;
-            }
-            else {
-                size_a = (transa == transpose::N) ? lda * m : lda * k;
-                size_b = (transb == transpose::N) ? ldb * k : ldb * n;
-                size_c = ldc * m;
-            }
-
+#ifdef COLUMN_MAJOR
+            size_a = (transa == transpose::N) ? lda * k : lda * m;
+            size_b = (transb == transpose::N) ? ldb * n : ldb * k;
+            size_c = ldc * n;
+#endif
+#ifdef ROW_MAJOR
+            size_a = (transa == transpose::N) ? lda * m : lda * k;
+            size_b = (transb == transpose::N) ? ldb * k : ldb * n;
+            size_c = ldc * m;
+#endif
             totalsize_a = (batch_size - 1) * stride_a + size_a;
             totalsize_b = (batch_size - 1) * stride_b + size_b;
             totalsize_c = (batch_size - 1) * stride_c + size_c;
@@ -2211,16 +2210,16 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
             int64_t sizea, sizeb, sizec, idx;
             half co = 0.0f;
             for (int64_t i = 0, idx = 0; i < group_count; i++) {
-                if (MKLMAJOR == MKL_COL_MAJOR) {
-                    sizea = (transa[i] == transpose::N) ? lda[i] * k[i] : lda[i] * m[i];
-                    sizeb = (transb[i] == transpose::N) ? ldb[i] * n[i] : ldb[i] * k[i];
-                    sizec = ldc[i] * n[i];
-                }
-                else {
-                    sizea = (transa[i] == transpose::N) ? lda[i] * m[i] : lda[i] * k[i];
-                    sizeb = (transb[i] == transpose::N) ? ldb[i] * k[i] : ldb[i] * n[i];
-                    sizec = ldc[i] * m[i];
-                }
+#ifdef COLUMN_MAJOR
+                sizea = (transa[i] == transpose::N) ? lda[i] * k[i] : lda[i] * m[i];
+                sizeb = (transb[i] == transpose::N) ? ldb[i] * n[i] : ldb[i] * k[i];
+                sizec = ldc[i] * n[i];
+#endif
+#ifdef ROW_MAJOR
+                sizea = (transa[i] == transpose::N) ? lda[i] * m[i] : lda[i] * k[i];
+                sizeb = (transb[i] == transpose::N) ? ldb[i] * k[i] : ldb[i] * n[i];
+                sizec = ldc[i] * m[i];
+#endif
                 for (int64_t j = 0; j < groupsize[i]; j++, idx++) {
                     a_array[idx] = (float *)::malloc(sizeof(float) * sizea);
                     b_array[idx] = (float *)::malloc(sizeof(float) * sizeb);
@@ -2484,17 +2483,16 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
         host_task<class mkl_kernel_hgemm_batch_strided_usm>(cgh, [=]() {
             int64_t totalsize_a, totalsize_b, totalsize_c;
             int64_t size_a, size_b, size_c;
-            if (MKLMAJOR == MKL_COL_MAJOR) {
-                size_a = (transa == transpose::N) ? lda * k : lda * m;
-                size_b = (transb == transpose::N) ? ldb * n : ldb * k;
-                size_c = ldc * n;
-            }
-            else {
-                size_a = (transa == transpose::N) ? lda * m : lda * k;
-                size_b = (transb == transpose::N) ? ldb * k : ldb * n;
-                size_c = ldc * m;
-            }
-
+#ifdef COLUMN_MAJOR
+            size_a = (transa == transpose::N) ? lda * k : lda * m;
+            size_b = (transb == transpose::N) ? ldb * n : ldb * k;
+            size_c = ldc * n;
+#endif
+#ifdef ROW_MAJOR
+            size_a = (transa == transpose::N) ? lda * m : lda * k;
+            size_b = (transb == transpose::N) ? ldb * k : ldb * n;
+            size_c = ldc * m;
+#endif
             totalsize_a = (batch_size - 1) * stride_a + size_a;
             totalsize_b = (batch_size - 1) * stride_b + size_b;
             totalsize_c = (batch_size - 1) * stride_c + size_c;

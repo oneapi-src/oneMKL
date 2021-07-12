@@ -31,16 +31,16 @@ void gemm_bias_fallback(cl::sycl::queue &queue, MKL_LAYOUT layout, transpose tra
         auto transb_ = cblas_convert(transb);
         auto offsetc_ = cblas_convert(offsetc);
         int64_t sizea, sizeb, sizec;
-        if (layout == MKL_COL_MAJOR) {
-            sizea = (transa == transpose::nontrans) ? lda * k : lda * m;
-            sizeb = (transb == transpose::nontrans) ? ldb * n : ldb * k;
-            sizec = ldc * n;
-        }
-        else {
-            sizea = (transa == transpose::nontrans) ? lda * m : lda * k;
-            sizeb = (transb == transpose::nontrans) ? ldb * k : ldb * n;
-            sizec = ldc * m;
-        }
+#ifdef COLUMN_MAJOR
+        sizea = (transa == transpose::nontrans) ? lda * k : lda * m;
+        sizeb = (transb == transpose::nontrans) ? ldb * n : ldb * k;
+        sizec = ldc * n;
+#endif
+#ifdef ROW_MAJOR
+        sizea = (transa == transpose::nontrans) ? lda * m : lda * k;
+        sizeb = (transb == transpose::nontrans) ? ldb * k : ldb * n;
+        sizec = ldc * m;
+#endif
         auto accessor_a = a.template get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_b = b.template get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_c = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
@@ -82,7 +82,8 @@ void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offse
                int64_t lda, int8_t ao, cl::sycl::buffer<uint8_t, 1> &b, int64_t ldb, uint8_t bo,
                float beta, cl::sycl::buffer<int32_t, 1> &c, int64_t ldc,
                cl::sycl::buffer<int32_t, 1> &co) {
-    if (MKLMAJOR == MKL_COL_MAJOR && is_int8(-int(ao)) && is_int8(-int(bo))) {
+#ifdef COLUMN_MAJOR
+    if (is_int8(-int(ao)) && is_int8(-int(bo))) {
         queue.submit([&](cl::sycl::handler &cgh) {
             CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
             CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
@@ -108,6 +109,13 @@ void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offse
     else
         gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b,
                            ldb, bo, beta, c, ldc, co);
+#endif
+#ifdef ROW_MAJOR
+    gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b,
+                       ldb, bo, beta, c, ldc, co);
+
+
+#endif
 }
 
 void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
@@ -115,7 +123,13 @@ void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offse
                int64_t lda, uint8_t ao, cl::sycl::buffer<int8_t, 1> &b, int64_t ldb, int8_t bo,
                float beta, cl::sycl::buffer<int32_t, 1> &c, int64_t ldc,
                cl::sycl::buffer<int32_t, 1> &co) {
-    if (MKLMAJOR == MKL_ROW_MAJOR && is_int8(-int(ao)) && is_int8(-int(bo))) {
+#ifdef COLUMN_MAJOR
+    gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b,
+                       ldb, bo, beta, c, ldc, co);
+
+#endif
+#ifdef ROW_MAJOR
+    if (is_int8(-int(ao)) && is_int8(-int(bo))) {
         queue.submit([&](cl::sycl::handler &cgh) {
             CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
             CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
@@ -141,6 +155,7 @@ void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offse
     else
         gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b,
                            ldb, bo, beta, c, ldc, co);
+#endif
 }
 
 void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
@@ -254,16 +269,16 @@ cl::sycl::event gemm_bias_fallback(cl::sycl::queue &queue, MKL_LAYOUT layout, tr
         auto transb_ = cblas_convert(transb);
         auto offsetc_ = cblas_convert(offsetc);
         int64_t sizea, sizeb, sizec;
-        if (layout == MKL_COL_MAJOR) {
-            sizea = (transa == transpose::nontrans) ? lda * k : lda * m;
-            sizeb = (transb == transpose::nontrans) ? ldb * n : ldb * k;
-            sizec = ldc * n;
-        }
-        else {
-            sizea = (transa == transpose::nontrans) ? lda * m : lda * k;
-            sizeb = (transb == transpose::nontrans) ? ldb * k : ldb * n;
-            sizec = ldc * m;
-        }
+#ifdef COLUMN_MAJOR
+        sizea = (transa == transpose::nontrans) ? lda * k : lda * m;
+        sizeb = (transb == transpose::nontrans) ? ldb * n : ldb * k;
+        sizec = ldc * n;
+#endif
+#ifdef ROW_MAJOR
+        sizea = (transa == transpose::nontrans) ? lda * m : lda * k;
+        sizeb = (transb == transpose::nontrans) ? ldb * k : ldb * n;
+        sizec = ldc * m;
+#endif
         host_task<class mkl_kernel_gemm_bias_fallback_usm>(cgh, [=]() {
             double *ad = (double *)malloc(sizeof(double) * sizea);
             double *bd = (double *)malloc(sizeof(double) * sizeb);
@@ -298,7 +313,8 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
                           const int8_t *a, int64_t lda, int8_t ao, const uint8_t *b, int64_t ldb,
                           uint8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    if (MKLMAJOR == MKL_COL_MAJOR && is_int8(-int(ao)) && is_int8(-int(bo))) {
+#ifdef COLUMN_MAJOR
+    if (is_int8(-int(ao)) && is_int8(-int(bo))) {
         auto done = queue.submit([&](cl::sycl::handler &cgh) {
             int64_t num_events = dependencies.size();
             for (int64_t i = 0; i < num_events; i++) {
@@ -321,6 +337,11 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
     else
         return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda,
                                   ao, b, ldb, bo, beta, c, ldc, co, dependencies);
+#endif
+#ifdef ROW_MAJOR
+    return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda,
+                              ao, b, ldb, bo, beta, c, ldc, co, dependencies);
+#endif
 }
 
 cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb,
@@ -328,7 +349,12 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
                           const uint8_t *a, int64_t lda, uint8_t ao, const int8_t *b, int64_t ldb,
                           int8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
-    if (MKLMAJOR == MKL_ROW_MAJOR && is_int8(-int(ao)) && is_int8(-int(bo))) {
+#ifdef COLUMN_MAJOR
+        return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda,
+                                  ao, b, ldb, bo, beta, c, ldc, co, dependencies);
+#endif
+#ifdef ROW_MAJOR
+    if (is_int8(-int(ao)) && is_int8(-int(bo))) {
         auto done = queue.submit([&](cl::sycl::handler &cgh) {
             int64_t num_events = dependencies.size();
             for (int64_t i = 0; i < num_events; i++) {
@@ -351,6 +377,7 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
     else
         return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda,
                                   ao, b, ldb, bo, beta, c, ldc, co, dependencies);
+#endif
 }
 
 cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb,

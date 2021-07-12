@@ -111,16 +111,16 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
         auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_hgemm>(cgh, [=]() {
             int64_t sizea, sizeb, sizec;
-            if (MKLMAJOR == MKL_COL_MAJOR) {
-                sizea = (transa == transpose::N) ? lda * k : lda * m;
-                sizeb = (transb == transpose::N) ? ldb * n : ldb * k;
-                sizec = ldc * n;
-            }
-            else {
-                sizea = (transa == transpose::N) ? lda * m : lda * k;
-                sizeb = (transb == transpose::N) ? ldb * k : ldb * n;
-                sizec = ldc * m;
-            }
+#ifdef COLUMN_MAJOR
+            sizea = (transa == transpose::N) ? lda * k : lda * m;
+            sizeb = (transb == transpose::N) ? ldb * n : ldb * k;
+            sizec = ldc * n;
+#endif
+#ifdef ROW_MAJOR
+            sizea = (transa == transpose::N) ? lda * m : lda * k;
+            sizeb = (transb == transpose::N) ? ldb * k : ldb * n;
+            sizec = ldc * m;
+#endif
             // copy A, B and C to float
             float *f32_a = (float *)::malloc(sizeof(float) * sizea);
             float *f32_b = (float *)::malloc(sizeof(float) * sizeb);
@@ -152,10 +152,14 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
         auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_gemm_f16f16f32>(cgh, [=]() {
             int64_t sizea, sizeb;
-            sizea = (MKLMAJOR == MKL_COL_MAJOR) ? (transa == transpose::N) ? lda * k : lda * m
-                                                : (transa == transpose::N) ? lda * m : lda * k;
-            sizeb = (MKLMAJOR == MKL_COL_MAJOR) ? (transb == transpose::N) ? ldb * n : ldb * k
-                                                : (transb == transpose::N) ? ldb * k : ldb * n;
+#ifdef COLUMN_MAJOR 
+            sizea = (transa == transpose::N) ? lda * k : lda * m;
+            sizeb = (transb == transpose::N) ? ldb * n : ldb * k;
+#endif
+#ifdef ROW_MAJOR 
+            sizea = (transa == transpose::N) ? lda * m : lda * k;
+            sizeb = (transb == transpose::N) ? ldb * k : ldb * n;
+#endif
             // copy A and B to float
             float *f32_a = (float *)::malloc(sizeof(float) * sizea);
             float *f32_b = (float *)::malloc(sizeof(float) * sizeb);
@@ -782,16 +786,16 @@ cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
         float f32_beta = (float)beta;
         host_task<class mkl_kernel_hgemm_usm>(cgh, [=]() {
             int64_t sizea, sizeb, sizec;
-            if (MKLMAJOR == MKL_COL_MAJOR) {
-                sizea = (transa == transpose::N) ? lda * k : lda * m;
-                sizeb = (transb == transpose::N) ? ldb * n : ldb * k;
-                sizec = ldc * n;
-            }
-            else {
-                sizea = (transa == transpose::N) ? lda * m : lda * k;
-                sizeb = (transb == transpose::N) ? ldb * k : ldb * n;
-                sizec = ldc * m;
-            }
+#ifdef COLUMN_MAJOR
+            sizea = (transa == transpose::N) ? lda * k : lda * m;
+            sizeb = (transb == transpose::N) ? ldb * n : ldb * k;
+            sizec = ldc * n;
+#endif
+#ifdef ROW_MAJOR
+            sizea = (transa == transpose::N) ? lda * m : lda * k;
+            sizeb = (transb == transpose::N) ? ldb * k : ldb * n;
+            sizec = ldc * m;
+#endif
             // copy A, B and C to float
             float *f32_a = (float *)::malloc(sizeof(float) * sizea);
             float *f32_b = (float *)::malloc(sizeof(float) * sizeb);
@@ -827,14 +831,14 @@ cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
         float f32_beta = (float)beta;
         host_task<class mkl_kernel_gemm_f16f16f32_usm>(cgh, [=]() {
             int64_t sizea, sizeb, sizec;
-            if (MKLMAJOR == MKL_COL_MAJOR) {
-                sizea = (transa == transpose::N) ? lda * k : lda * m;
-                sizeb = (transb == transpose::N) ? ldb * n : ldb * k;
-            }
-            else {
-                sizea = (transa == transpose::N) ? lda * m : lda * k;
-                sizeb = (transb == transpose::N) ? ldb * k : ldb * n;
-            }
+#ifdef COLUMN_MAJOR
+            sizea = (transa == transpose::N) ? lda * k : lda * m;
+            sizeb = (transb == transpose::N) ? ldb * n : ldb * k;
+#endif
+#ifdef ROW_MAJOR
+            sizea = (transa == transpose::N) ? lda * m : lda * k;
+            sizeb = (transb == transpose::N) ? ldb * k : ldb * n;
+#endif
             // copy A, B to float
             float *f32_a = (float *)::malloc(sizeof(float) * sizea);
             float *f32_b = (float *)::malloc(sizeof(float) * sizeb);
