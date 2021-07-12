@@ -1491,7 +1491,7 @@ void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose tra
 
 void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
                transpose transb, offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
-               float alpha, cl::sycl::buffer<u_int8_t, 1> &a, std::int64_t lda, u_int8_t ao,
+               float alpha, cl::sycl::buffer<uint8_t, 1> &a, std::int64_t lda, uint8_t ao,
                cl::sycl::buffer<int8_t, 1> &b, std::int64_t ldb, int8_t bo, float beta,
                cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
                cl::sycl::buffer<int32_t, 1> &co) {
@@ -1501,7 +1501,7 @@ void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose tra
 
 void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
                transpose transb, offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
-               float alpha, cl::sycl::buffer<u_int8_t, 1> &a, std::int64_t lda, u_int8_t ao,
+               float alpha, cl::sycl::buffer<uint8_t, 1> &a, std::int64_t lda, uint8_t ao,
                cl::sycl::buffer<uint8_t, 1> &b, std::int64_t ldb, uint8_t bo, float beta,
                cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
                cl::sycl::buffer<int32_t, 1> &co) {
@@ -4957,7 +4957,7 @@ void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose tra
 
 void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
                transpose transb, offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
-               float alpha, cl::sycl::buffer<u_int8_t, 1> &a, std::int64_t lda, u_int8_t ao,
+               float alpha, cl::sycl::buffer<uint8_t, 1> &a, std::int64_t lda, uint8_t ao,
                cl::sycl::buffer<int8_t, 1> &b, std::int64_t ldb, int8_t bo, float beta,
                cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
                cl::sycl::buffer<int32_t, 1> &co) {
@@ -4967,7 +4967,7 @@ void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose tra
 
 void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa,
                transpose transb, offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
-               float alpha, cl::sycl::buffer<u_int8_t, 1> &a, std::int64_t lda, u_int8_t ao,
+               float alpha, cl::sycl::buffer<uint8_t, 1> &a, std::int64_t lda, uint8_t ao,
                cl::sycl::buffer<uint8_t, 1> &b, std::int64_t ldb, uint8_t bo, float beta,
                cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
                cl::sycl::buffer<int32_t, 1> &co) {
