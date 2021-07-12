@@ -975,13 +975,13 @@ typedef struct {
     void (*column_major_gemm_u8s8s32_bias_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
         oneapi::mkl::offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-        cl::sycl::buffer<u_int8_t, 1> &a, std::int64_t lda, u_int8_t ao,
+        cl::sycl::buffer<uint8_t, 1> &a, std::int64_t lda, uint8_t ao,
         cl::sycl::buffer<int8_t, 1> &b, std::int64_t ldb, int8_t bo, float beta,
         cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc, cl::sycl::buffer<int32_t, 1> &co);
     void (*column_major_gemm_u8u8s32_bias_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
         oneapi::mkl::offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-        cl::sycl::buffer<u_int8_t, 1> &a, std::int64_t lda, u_int8_t ao,
+        cl::sycl::buffer<uint8_t, 1> &a, std::int64_t lda, uint8_t ao,
         cl::sycl::buffer<uint8_t, 1> &b, std::int64_t ldb, uint8_t bo, float beta,
         cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc, cl::sycl::buffer<int32_t, 1> &co);
 
@@ -2954,13 +2954,13 @@ typedef struct {
     void (*row_major_gemm_u8s8s32_bias_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
         oneapi::mkl::offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-        cl::sycl::buffer<u_int8_t, 1> &a, std::int64_t lda, u_int8_t ao,
+        cl::sycl::buffer<uint8_t, 1> &a, std::int64_t lda, uint8_t ao,
         cl::sycl::buffer<int8_t, 1> &b, std::int64_t ldb, int8_t bo, float beta,
         cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc, cl::sycl::buffer<int32_t, 1> &co);
     void (*row_major_gemm_u8u8s32_bias_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
         oneapi::mkl::offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-        cl::sycl::buffer<u_int8_t, 1> &a, std::int64_t lda, u_int8_t ao,
+        cl::sycl::buffer<uint8_t, 1> &a, std::int64_t lda, uint8_t ao,
         cl::sycl::buffer<uint8_t, 1> &b, std::int64_t ldb, uint8_t bo, float beta,
         cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc, cl::sycl::buffer<int32_t, 1> &co);
 
