@@ -1,5 +1,5 @@
 #===============================================================================
-# Copyright 2020 Intel Corporation
+# Copyright 2020-2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ set_target_properties(${LIB_OBJ} PROPERTIES
 )
 target_link_libraries(${LIB_NAME} PUBLIC ${LIB_OBJ})
 
-#Set libraries as not transitive for dynamic
+#Set oneMKL libraries as not transitive for dynamic
 if(BUILD_SHARED_LIBS)
   set_target_properties(${LIB_NAME} PROPERTIES
     INTERFACE_LINK_LIBRARIES ONEMKL::SYCL::SYCL
