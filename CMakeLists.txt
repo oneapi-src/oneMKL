@@ -59,6 +59,9 @@ if(WIN32)
   set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> -fsycl /nologo <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
 endif()
 
+# Temporary disable sycl 2020 deprecations warnings
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSYCL2020_DISABLE_DEPRECATION_WARNINGS")
+
 ## Backends
 option(ENABLE_MKLCPU_BACKEND "" ON)
 option(ENABLE_MKLGPU_BACKEND "" ON)
