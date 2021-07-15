@@ -30,7 +30,11 @@ if(BUILD_SHARED_LIBS)
       PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
       PUBLIC ${CMAKE_BINARY_DIR}/bin
   )
-  target_link_libraries(rng_service_rt PUBLIC ONEMKL::SYCL::SYCL)
+  if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+    add_sycl_to_target(TARGET rng_service_rt SOURCES ${SERVICE_TESTS_SOURCES})
+  else()
+    target_link_libraries(rng_service_rt PUBLIC ONEMKL::SYCL::SYCL)
+  endif()
 endif()
 
 add_library(rng_service_ct OBJECT ${SERVICE_TESTS_SOURCES})
@@ -43,3 +47,8 @@ target_include_directories(rng_service_ct
     PUBLIC ${CMAKE_BINARY_DIR}/bin
 )
 target_link_libraries(rng_service_ct PUBLIC ONEMKL::SYCL::SYCL)
+if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+  add_sycl_to_target(TARGET rng_service_ct SOURCES ${SERVICE_TESTS_SOURCES})
+else()
+  target_link_libraries(rng_service_ct PUBLIC ONEMKL::SYCL::SYCL)
+endif()

@@ -20,17 +20,16 @@
 set(LIB_NAME onemkl_blas_cublas)
 set(LIB_OBJ ${LIB_NAME}_obj)
 find_package(cuBLAS REQUIRED)
-
+set(SOURCES cublas_level1.cpp 
+                cublas_level2.cpp 
+                cublas_level3.cpp 
+                cublas_batch.cpp 
+                cublas_extensions.cpp 
+                cublas_scope_handle.cpp 
+                $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_blas_cublas_wrappers.cpp>)
 add_library(${LIB_NAME})
-add_library(${LIB_OBJ} OBJECT
-  cublas_level1.cpp
-  cublas_level2.cpp
-  cublas_level3.cpp
-  cublas_batch.cpp
-  cublas_extensions.cpp
-  cublas_scope_handle.cpp
-  $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_blas_cublas_wrappers.cpp>
-)
+add_library(${LIB_OBJ} OBJECT ${SOURCES})
+
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
           ${PROJECT_SOURCE_DIR}/src
@@ -42,7 +41,9 @@ set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries(${LIB_NAME} PUBLIC ${LIB_OBJ})
-
+if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+  add_sycl_to_target(TARGET ${LIB_OBJ} SOURCES ${SOURCES})
+endif()
 # Add major version to the library
 set_target_properties(${LIB_NAME} PROPERTIES
   SOVERSION ${PROJECT_VERSION_MAJOR}

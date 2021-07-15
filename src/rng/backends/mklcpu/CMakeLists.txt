@@ -22,14 +22,14 @@ set(LIB_OBJ ${LIB_NAME}_obj)
 
 find_package(MKL REQUIRED)
 
-add_library(${LIB_NAME})
-add_library(${LIB_OBJ} OBJECT
-  cpu_common.hpp
+set(SOURCES cpu_common.hpp
   philox4x32x10.cpp
   mrg32k3a.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_rng_cpu_wrappers.cpp>
 )
 
+add_library(${LIB_NAME})
+add_library(${LIB_OBJ} OBJECT ${SOURCES})
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
           ${PROJECT_SOURCE_DIR}/src
@@ -38,7 +38,9 @@ target_include_directories(${LIB_OBJ}
 )
 
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT} ${MKL_COPT})
-
+if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+  add_sycl_to_target(TARGET ${LIB_OBJ} SOURCES ${SOURCES})
+endif()
 target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ${MKL_LINK_C})
 
 set_target_properties(${LIB_OBJ} PROPERTIES

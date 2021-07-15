@@ -30,7 +30,11 @@ if(BUILD_SHARED_LIBS)
       PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
       PUBLIC ${CMAKE_BINARY_DIR}/bin
   )
-  target_link_libraries(rng_statistics_rt PUBLIC ONEMKL::SYCL::SYCL)
+  if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+    add_sycl_to_target(TARGET rng_statistics_rt SOURCES ${STATS_CHECK_SOURCES})
+  else()
+    target_link_libraries(rng_statistics_rt PUBLIC ONEMKL::SYCL::SYCL)
+  endif()
 endif()
 
 add_library(rng_statistics_ct OBJECT ${STATS_CHECK_SOURCES})
@@ -42,4 +46,8 @@ target_include_directories(rng_statistics_ct
     PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
     PUBLIC ${CMAKE_BINARY_DIR}/bin
 )
-target_link_libraries(rng_statistics_ct PUBLIC ONEMKL::SYCL::SYCL)
+if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+  add_sycl_to_target(TARGET rng_statistics_ct SOURCES ${STATS_CHECK_SOURCES})
+else()
+  target_link_libraries(rng_statistics_ct PUBLIC ONEMKL::SYCL::SYCL)
+endif()

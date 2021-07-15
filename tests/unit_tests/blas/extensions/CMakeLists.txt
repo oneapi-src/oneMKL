@@ -32,6 +32,11 @@ if(BUILD_SHARED_LIBS)
       PUBLIC ${CBLAS_INCLUDE}
   )
   target_link_libraries(blas_extensions_rt PUBLIC ONEMKL::SYCL::SYCL)
+  if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+    add_sycl_to_target(TARGET blas_extensions_rt SOURCES ${EXTENSIONS_SOURCES})
+  else()
+    target_link_libraries(blas_extensions_rt PUBLIC ONEMKL::SYCL::SYCL)
+  endif()
 endif()
 
 add_library(blas_extensions_ct OBJECT ${EXTENSIONS_SOURCES})
@@ -45,3 +50,8 @@ target_include_directories(blas_extensions_ct
     PUBLIC ${CBLAS_INCLUDE}
 )
 target_link_libraries(blas_extensions_ct PUBLIC ONEMKL::SYCL::SYCL)
+if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+  add_sycl_to_target(TARGET blas_extensions_ct  SOURCES ${EXTENSIONS_SOURCES})
+else()
+  target_link_libraries(blas_extensions_ct PUBLIC ONEMKL::SYCL::SYCL)
+endif()

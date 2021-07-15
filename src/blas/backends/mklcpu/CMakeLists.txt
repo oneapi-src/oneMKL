@@ -21,13 +21,14 @@ set(LIB_NAME onemkl_blas_mklcpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
 find_package(MKL REQUIRED)
-
-add_library(${LIB_NAME})
-add_library(${LIB_OBJ} OBJECT
-  fp16.hpp mklcpu_common.hpp
+set(SOURCES fp16.hpp mklcpu_common.hpp
   mklcpu_level1.cpp mklcpu_level2.cpp mklcpu_level3.cpp mklcpu_batch.cpp mklcpu_extensions.cpp
-  $<$<BOOL:${BUILD_SHARED_LIBS}>: mklcpu_wrappers.cpp>
-)
+  $<$<BOOL:${BUILD_SHARED_LIBS}>: mklcpu_wrappers.cpp>)
+add_library(${LIB_NAME})
+add_library(${LIB_OBJ} OBJECT ${SOURCES})
+if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+  add_sycl_to_target(TARGET ${LIB_OBJ} SOURCES ${SOURCES})
+endif()
 
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
