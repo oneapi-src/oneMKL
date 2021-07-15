@@ -745,9 +745,8 @@ void gemm(backend_selector<backend::cublas> selector, transpose transa, transpos
 }
 
 void gemm(backend_selector<backend::cublas> selector, transpose transa, transpose transb,
-          std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
-          cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-          cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
+          std::int64_t m, std::int64_t n, std::int64_t k, half alpha, cl::sycl::buffer<half, 1> &a,
+          std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
           cl::sycl::buffer<half, 1> &c, std::int64_t ldc) {
     gemm_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
                       ldc);
@@ -758,9 +757,8 @@ void gemm(backend_selector<backend::cublas> selector, transpose transa, transpos
 }
 
 void gemm(backend_selector<backend::cublas> selector, transpose transa, transpose transb,
-          std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-          cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-          cl::sycl::buffer<half, 1> &b, std::int64_t ldb, float beta,
+          std::int64_t m, std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<half, 1> &a,
+          std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb, float beta,
           cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
     gemm_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
                       ldc);

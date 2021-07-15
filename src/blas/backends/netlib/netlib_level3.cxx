@@ -92,9 +92,8 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
 }
 
 void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-          std::int64_t n, std::int64_t k, half alpha,
-          cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-          cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
+          std::int64_t n, std::int64_t k, half alpha, cl::sycl::buffer<half, 1> &a,
+          std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
           cl::sycl::buffer<half, 1> &c, std::int64_t ldc) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemm", "for column_major layout");
@@ -106,8 +105,8 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64
 
 void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
           int64_t k, float alpha, cl::sycl::buffer<half, 1> &a, int64_t lda,
-          cl::sycl::buffer<half, 1> &b, int64_t ldb, float beta,
-          cl::sycl::buffer<float, 1> &c, int64_t ldc) {
+          cl::sycl::buffer<half, 1> &b, int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c,
+          int64_t ldc) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemm", "for column_major layout");
 #endif

@@ -99,8 +99,8 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
 
 void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
           int64_t k, half alpha, cl::sycl::buffer<half, 1> &a, int64_t lda,
-          cl::sycl::buffer<half, 1> &b, int64_t ldb, half beta,
-          cl::sycl::buffer<half, 1> &c, int64_t ldc) {
+          cl::sycl::buffer<half, 1> &b, int64_t ldb, half beta, cl::sycl::buffer<half, 1> &c,
+          int64_t ldc) {
     auto a_fp16 = a.reinterpret<fp16, 1>(a.get_range());
     auto b_fp16 = b.reinterpret<fp16, 1>(b.get_range());
     auto c_fp16 = c.reinterpret<fp16, 1>(c.get_range());
@@ -143,8 +143,8 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
 
 void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
           int64_t k, float alpha, cl::sycl::buffer<half, 1> &a, int64_t lda,
-          cl::sycl::buffer<half, 1> &b, int64_t ldb, float beta,
-          cl::sycl::buffer<float, 1> &c, int64_t ldc) {
+          cl::sycl::buffer<half, 1> &b, int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c,
+          int64_t ldc) {
     auto a_fp16 = a.reinterpret<fp16, 1>(a.get_range());
     auto b_fp16 = b.reinterpret<fp16, 1>(b.get_range());
     queue.submit([&](cl::sycl::handler &cgh) {

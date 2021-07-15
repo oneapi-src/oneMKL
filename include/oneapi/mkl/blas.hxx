@@ -263,11 +263,9 @@ static inline void gemm(cl::sycl::queue &queue, transpose transa, transpose tran
 }
 
 static inline void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                        std::int64_t n, std::int64_t k, half alpha,
-                        cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<half, 1> &b, std::int64_t ldb,
-                        half beta, cl::sycl::buffer<half, 1> &c,
-                        std::int64_t ldc) {
+                        std::int64_t n, std::int64_t k, half alpha, cl::sycl::buffer<half, 1> &a,
+                        std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
+                        cl::sycl::buffer<half, 1> &c, std::int64_t ldc) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
     detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
                  c, ldc);
@@ -275,10 +273,9 @@ static inline void gemm(cl::sycl::queue &queue, transpose transa, transpose tran
 }
 
 static inline void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                        std::int64_t n, std::int64_t k, float alpha,
-                        cl::sycl::buffer<half, 1> &a, std::int64_t lda,
-                        cl::sycl::buffer<half, 1> &b, std::int64_t ldb, float beta,
-                        cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
+                        std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<half, 1> &a,
+                        std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb,
+                        float beta, cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
     detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
                  c, ldc);
