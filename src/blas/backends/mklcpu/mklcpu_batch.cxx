@@ -161,18 +161,10 @@ void gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, int64_t n, 
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = a_acc.get_pointer();
-                    x_array[0] = x_acc.get_pointer();
-                    y_array[0] = y_acc.get_pointer();
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    x_array[i] = x_array[i - 1] + stride_x;
-                    y_array[i] = y_array[i - 1] + stride_y;
-                }
+                a_array[i] = a_acc.get_pointer() + i * stride_a;
+                x_array[i] = x_acc.get_pointer() + i * stride_x;
+                y_array[i] = y_acc.get_pointer() + i * stride_y;
             }
-
             ::cblas_sgemv_batch(CBLASMAJOR, &transa_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                                 &alpha, (const float **)a_array, (const MKL_INT *)&lda,
                                 (const float **)x_array, (const MKL_INT *)&incx, &beta,
@@ -209,18 +201,10 @@ void gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, int64_t n, 
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = a_acc.get_pointer();
-                    x_array[0] = x_acc.get_pointer();
-                    y_array[0] = y_acc.get_pointer();
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    x_array[i] = x_array[i - 1] + stride_x;
-                    y_array[i] = y_array[i - 1] + stride_y;
-                }
+                a_array[i] = a_acc.get_pointer() + i * stride_a;
+                x_array[i] = x_acc.get_pointer() + i * stride_x;
+                y_array[i] = y_acc.get_pointer() + i * stride_y;
             }
-
             ::cblas_dgemv_batch(CBLASMAJOR, &transa_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                                 &alpha, (const double **)a_array, (const MKL_INT *)&lda,
                                 (const double **)x_array, (const MKL_INT *)&incx, &beta,
@@ -258,18 +242,10 @@ void gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, int64_t n,
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = a_acc.get_pointer();
-                    x_array[0] = x_acc.get_pointer();
-                    y_array[0] = y_acc.get_pointer();
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    x_array[i] = x_array[i - 1] + stride_x;
-                    y_array[i] = y_array[i - 1] + stride_y;
-                }
+                a_array[i] = a_acc.get_pointer() + i * stride_a;
+                x_array[i] = x_acc.get_pointer() + i * stride_x;
+                y_array[i] = y_acc.get_pointer() + i * stride_y;
             }
-
             ::cblas_cgemv_batch(CBLASMAJOR, &transa_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                                 &alpha, (const void **)a_array, (const MKL_INT *)&lda,
                                 (const void **)x_array, (const MKL_INT *)&incx, &beta,
@@ -310,18 +286,10 @@ void gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, int64_t n,
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = a_acc.get_pointer();
-                    x_array[0] = x_acc.get_pointer();
-                    y_array[0] = y_acc.get_pointer();
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    x_array[i] = x_array[i - 1] + stride_x;
-                    y_array[i] = y_array[i - 1] + stride_y;
-                }
+                a_array[i] = a_acc.get_pointer() + i * stride_a;
+                x_array[i] = x_acc.get_pointer() + i * stride_x;
+                y_array[i] = y_acc.get_pointer() + i * stride_y;
             }
-
             ::cblas_zgemv_batch(CBLASMAJOR, &transa_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                                 &alpha, (const void **)a_array, (const MKL_INT *)&lda,
                                 (const void **)x_array, (const MKL_INT *)&incx, &beta,
@@ -357,18 +325,10 @@ void dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = a_acc.get_pointer();
-                    x_array[0] = x_acc.get_pointer();
-                    c_array[0] = c_acc.get_pointer();
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    x_array[i] = x_array[i - 1] + stride_x;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = a_acc.get_pointer() + i * stride_a;
+                x_array[i] = x_acc.get_pointer() + i * stride_x;
+                c_array[i] = c_acc.get_pointer() + i * stride_c;
             }
-
             ::cblas_sdgmm_batch(CBLASMAJOR, &left_right_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                                 (const float **)a_array, (const MKL_INT *)&lda,
                                 (const float **)x_array, (const MKL_INT *)&incx, (float **)c_array,
@@ -403,18 +363,10 @@ void dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = a_acc.get_pointer();
-                    x_array[0] = x_acc.get_pointer();
-                    c_array[0] = c_acc.get_pointer();
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    x_array[i] = x_array[i - 1] + stride_x;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = a_acc.get_pointer() + i * stride_a;
+                x_array[i] = x_acc.get_pointer() + i * stride_x;
+                c_array[i] = c_acc.get_pointer() + i * stride_c;
             }
-
             ::cblas_ddgmm_batch(CBLASMAJOR, &left_right_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                                 (const double **)a_array, (const MKL_INT *)&lda,
                                 (const double **)x_array, (const MKL_INT *)&incx,
@@ -451,18 +403,10 @@ void dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = a_acc.get_pointer();
-                    x_array[0] = x_acc.get_pointer();
-                    c_array[0] = c_acc.get_pointer();
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    x_array[i] = x_array[i - 1] + stride_x;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = a_acc.get_pointer() + i * stride_a;
+                x_array[i] = x_acc.get_pointer() + i * stride_x;
+                c_array[i] = c_acc.get_pointer() + i * stride_c;
             }
-
             ::cblas_cdgmm_batch(CBLASMAJOR, &left_right_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                                 (const void **)a_array, (const MKL_INT *)&lda,
                                 (const void **)x_array, (const MKL_INT *)&incx, (void **)c_array,
@@ -501,18 +445,10 @@ void dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = a_acc.get_pointer();
-                    x_array[0] = x_acc.get_pointer();
-                    c_array[0] = c_acc.get_pointer();
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    x_array[i] = x_array[i - 1] + stride_x;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = a_acc.get_pointer() + i * stride_a;
+                x_array[i] = x_acc.get_pointer() + i * stride_x;
+                c_array[i] = c_acc.get_pointer() + i * stride_c;
             }
-
             ::cblas_zdgmm_batch(CBLASMAJOR, &left_right_, (const MKL_INT *)&m, (const MKL_INT *)&n,
 
                                 (const void **)a_array, (const MKL_INT *)&lda,
@@ -549,20 +485,11 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
                 ::free(c_array);
                 return;
             }
-
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = a_acc.get_pointer();
-                    b_array[0] = b_acc.get_pointer();
-                    c_array[0] = c_acc.get_pointer();
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = a_acc.get_pointer() + i * stride_a;
+                b_array[i] = b_acc.get_pointer() + i * stride_b;
+                c_array[i] = c_acc.get_pointer() + i * stride_c;
             }
-
             ::cblas_sgemm_batch(
                 CBLASMAJOR, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                 (const MKL_INT *)&k, &alpha, (const float **)a_array, (const MKL_INT *)&lda,
@@ -599,20 +526,11 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
                 ::free(c_array);
                 return;
             }
-
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = a_acc.get_pointer();
-                    b_array[0] = b_acc.get_pointer();
-                    c_array[0] = c_acc.get_pointer();
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = a_acc.get_pointer() + i * stride_a;
+                b_array[i] = b_acc.get_pointer() + i * stride_b;
+                c_array[i] = c_acc.get_pointer() + i * stride_c;
             }
-
             ::cblas_dgemm_batch(
                 CBLASMAJOR, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                 (const MKL_INT *)&k, &alpha, (const double **)a_array, (const MKL_INT *)&lda,
@@ -650,20 +568,11 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
                 ::free(c_array);
                 return;
             }
-
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = a_acc.get_pointer();
-                    b_array[0] = b_acc.get_pointer();
-                    c_array[0] = c_acc.get_pointer();
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = a_acc.get_pointer() + i * stride_a;
+                b_array[i] = b_acc.get_pointer() + i * stride_b;
+                c_array[i] = c_acc.get_pointer() + i * stride_c;
             }
-
             ::cblas_cgemm_batch(
                 CBLASMAJOR, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                 (const MKL_INT *)&k, &alpha, (const void **)a_array, (const MKL_INT *)&lda,
@@ -704,20 +613,11 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
                 ::free(c_array);
                 return;
             }
-
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = a_acc.get_pointer();
-                    b_array[0] = b_acc.get_pointer();
-                    c_array[0] = c_acc.get_pointer();
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = a_acc.get_pointer() + i * stride_a;
+                b_array[i] = b_acc.get_pointer() + i * stride_b;
+                c_array[i] = c_acc.get_pointer() + i * stride_c;
             }
-
             ::cblas_zgemm_batch(
                 CBLASMAJOR, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                 (const MKL_INT *)&k, &alpha, (const void **)a_array, (const MKL_INT *)&lda,
@@ -771,16 +671,9 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
             copy_mat(c_acc, MKL_COL_MAJOR, transpose::N, totalsize_c, 1, totalsize_c, 0.0f, f32_c);
             float alphaf = (float)alpha, betaf = (float)beta;
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = f32_a;
-                    b_array[0] = f32_b;
-                    c_array[0] = f32_c;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = f32_a + i * stride_a;
+                b_array[i] = f32_b + i * stride_b;
+                c_array[i] = f32_c + i * stride_c;
             }
             ::cblas_sgemm_batch(
                 CBLASMAJOR, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
@@ -822,18 +715,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 ::free(b_array);
                 return;
             }
-
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = a_acc.get_pointer();
-                    b_array[0] = b_acc.get_pointer();
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                }
+                a_array[i] = a_acc.get_pointer() + i * stride_a;
+                b_array[i] = b_acc.get_pointer() + i * stride_b;
             }
-
             ::cblas_strsm_batch(CBLASMAJOR, &side_, &uplo_, &trans_, &diag_, (const MKL_INT *)&m,
                                 (const MKL_INT *)&n, &alpha, (const float **)a_array,
                                 (const MKL_INT *)&lda, (float **)b_array, (const MKL_INT *)&ldb,
@@ -866,16 +751,9 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 ::free(b_array);
                 return;
             }
-
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = a_acc.get_pointer();
-                    b_array[0] = b_acc.get_pointer();
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                }
+                a_array[i] = a_acc.get_pointer() + i * stride_a;
+                b_array[i] = b_acc.get_pointer() + i * stride_b;
             }
 
             ::cblas_dtrsm_batch(CBLASMAJOR, &side_, &uplo_, &trans_, &diag_, (const MKL_INT *)&m,
@@ -912,18 +790,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 ::free(b_array);
                 return;
             }
-
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = a_acc.get_pointer();
-                    b_array[0] = b_acc.get_pointer();
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                }
+                a_array[i] = a_acc.get_pointer() + i * stride_a;
+                b_array[i] = b_acc.get_pointer() + i * stride_b;
             }
-
             ::cblas_ctrsm_batch(CBLASMAJOR, &side_, &uplo_, &trans_, &diag_, (const MKL_INT *)&m,
                                 (const MKL_INT *)&n, &alpha, (const void **)a_array,
                                 (const MKL_INT *)&lda, (void **)b_array, (const MKL_INT *)&ldb, one,
@@ -959,18 +829,10 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
                 ::free(b_array);
                 return;
             }
-
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = a_acc.get_pointer();
-                    b_array[0] = b_acc.get_pointer();
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                }
+                a_array[i] = a_acc.get_pointer() + i * stride_a;
+                b_array[i] = b_acc.get_pointer() + i * stride_b;
             }
-
             ::cblas_ztrsm_batch(CBLASMAJOR, &side_, &uplo_, &trans_, &diag_, (const MKL_INT *)&m,
                                 (const MKL_INT *)&n, &alpha, (const void **)a_array,
                                 (const MKL_INT *)&lda, (void **)b_array, (const MKL_INT *)&ldb, one,
@@ -1386,16 +1248,9 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, 
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (float *)a;
-                    x_array[0] = (float *)x;
-                    y_array[0] = (float *)y;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    x_array[i] = x_array[i - 1] + stride_x;
-                    y_array[i] = y_array[i - 1] + stride_y;
-                }
+                a_array[i] = (float *)a + i * stride_a;
+                x_array[i] = (float *)x + i * stride_x;
+                y_array[i] = (float *)y + i * stride_y;
             }
             ::cblas_sgemv_batch(CBLASMAJOR, &transa_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                                 &alpha, (const float **)a_array, (const MKL_INT *)&lda,
@@ -1435,16 +1290,9 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, 
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (double *)a;
-                    x_array[0] = (double *)x;
-                    y_array[0] = (double *)y;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    x_array[i] = x_array[i - 1] + stride_x;
-                    y_array[i] = y_array[i - 1] + stride_y;
-                }
+                a_array[i] = (double *)a + i * stride_a;
+                x_array[i] = (double *)x + i * stride_x;
+                y_array[i] = (double *)y + i * stride_y;
             }
             ::cblas_dgemv_batch(CBLASMAJOR, &transa_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                                 &alpha, (const double **)a_array, (const MKL_INT *)&lda,
@@ -1488,16 +1336,9 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, 
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (std::complex<float> *)a;
-                    x_array[0] = (std::complex<float> *)x;
-                    y_array[0] = (std::complex<float> *)y;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    x_array[i] = x_array[i - 1] + stride_x;
-                    y_array[i] = y_array[i - 1] + stride_y;
-                }
+                a_array[i] = (std::complex<float> *)a + i * stride_a;
+                x_array[i] = (std::complex<float> *)x + i * stride_x;
+                y_array[i] = (std::complex<float> *)y + i * stride_y;
             }
             ::cblas_cgemv_batch(CBLASMAJOR, &transa_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                                 &alpha, (const void **)a_array, (const MKL_INT *)&lda,
@@ -1541,16 +1382,9 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, 
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (std::complex<double> *)a;
-                    x_array[0] = (std::complex<double> *)x;
-                    y_array[0] = (std::complex<double> *)y;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    x_array[i] = x_array[i - 1] + stride_x;
-                    y_array[i] = y_array[i - 1] + stride_y;
-                }
+                a_array[i] = (std::complex<double> *)a + i * stride_a;
+                x_array[i] = (std::complex<double> *)x + i * stride_x;
+                y_array[i] = (std::complex<double> *)y + i * stride_y;
             }
             ::cblas_zgemv_batch(CBLASMAJOR, &transa_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                                 &alpha, (const void **)a_array, (const MKL_INT *)&lda,
@@ -1716,16 +1550,9 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (float *)a;
-                    x_array[0] = (float *)x;
-                    c_array[0] = (float *)c;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    x_array[i] = x_array[i - 1] + stride_x;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = (float *)a + i * stride_a;
+                x_array[i] = (float *)x + i * stride_x;
+                c_array[i] = (float *)c + i * stride_c;
             }
             ::cblas_sdgmm_batch(CBLASMAJOR, &left_right_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                                 (const float **)a_array, (const MKL_INT *)&lda,
@@ -1764,19 +1591,11 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (double *)a;
-                    x_array[0] = (double *)x;
-                    c_array[0] = (double *)c;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    x_array[i] = x_array[i - 1] + stride_x;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = (double *)a + i * stride_a;
+                x_array[i] = (double *)x + i * stride_x;
+                c_array[i] = (double *)c + i * stride_c;
             }
             ::cblas_ddgmm_batch(CBLASMAJOR, &left_right_, (const MKL_INT *)&m, (const MKL_INT *)&n,
-
                                 (const double **)a_array, (const MKL_INT *)&lda,
                                 (const double **)x_array, (const MKL_INT *)&incx,
                                 (double **)c_array, (const MKL_INT *)&ldc, one,
@@ -1818,19 +1637,11 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (std::complex<float> *)a;
-                    x_array[0] = (std::complex<float> *)x;
-                    c_array[0] = (std::complex<float> *)c;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    x_array[i] = x_array[i - 1] + stride_x;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = (std::complex<float> *)a + i * stride_a;
+                x_array[i] = (std::complex<float> *)x + i * stride_x;
+                c_array[i] = (std::complex<float> *)c + i * stride_c;
             }
             ::cblas_cdgmm_batch(CBLASMAJOR, &left_right_, (const MKL_INT *)&m, (const MKL_INT *)&n,
-
                                 (const void **)a_array, (const MKL_INT *)&lda,
                                 (const void **)x_array, (const MKL_INT *)&incx, (void **)c_array,
                                 (const MKL_INT *)&ldc, one, (const MKL_INT *)&batch_size);
@@ -1871,16 +1682,9 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (std::complex<double> *)a;
-                    x_array[0] = (std::complex<double> *)x;
-                    c_array[0] = (std::complex<double> *)c;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    x_array[i] = x_array[i - 1] + stride_x;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = (std::complex<double> *)a + i * stride_a;
+                x_array[i] = (std::complex<double> *)x + i * stride_x;
+                c_array[i] = (std::complex<double> *)c + i * stride_c;
             }
             ::cblas_zdgmm_batch(CBLASMAJOR, &left_right_, (const MKL_INT *)&m, (const MKL_INT *)&n,
                                 (const void **)a_array, (const MKL_INT *)&lda,
@@ -2281,16 +2085,9 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (float *)a;
-                    b_array[0] = (float *)b;
-                    c_array[0] = (float *)c;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = (float *)a + i * stride_a;
+                b_array[i] = (float *)b + i * stride_b;
+                c_array[i] = (float *)c + i * stride_c;
             }
             ::cblas_sgemm_batch(
                 CBLASMAJOR, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
@@ -2332,16 +2129,9 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (double *)a;
-                    b_array[0] = (double *)b;
-                    c_array[0] = (double *)c;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = (double *)a + i * stride_a;
+                b_array[i] = (double *)b + i * stride_b;
+                c_array[i] = (double *)c + i * stride_c;
             }
             ::cblas_dgemm_batch(
                 CBLASMAJOR, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
@@ -2387,16 +2177,9 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (std::complex<float> *)a;
-                    b_array[0] = (std::complex<float> *)b;
-                    c_array[0] = (std::complex<float> *)c;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = (std::complex<float> *)a + i * stride_a;
+                b_array[i] = (std::complex<float> *)b + i * stride_b;
+                c_array[i] = (std::complex<float> *)c + i * stride_c;
             }
             ::cblas_cgemm_batch(
                 CBLASMAJOR, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
@@ -2442,16 +2225,9 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (std::complex<double> *)a;
-                    b_array[0] = (std::complex<double> *)b;
-                    c_array[0] = (std::complex<double> *)c;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = (std::complex<double> *)a + i * stride_a;
+                b_array[i] = (std::complex<double> *)b + i * stride_b;
+                c_array[i] = (std::complex<double> *)c + i * stride_c;
             }
             ::cblas_zgemm_batch(
                 CBLASMAJOR, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
@@ -2524,16 +2300,9 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (float *)f32_a;
-                    b_array[0] = (float *)f32_b;
-                    c_array[0] = (float *)f32_c;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                    c_array[i] = c_array[i - 1] + stride_c;
-                }
+                a_array[i] = (float *)f32_a + i * stride_a;
+                b_array[i] = (float *)f32_b + i * stride_b;
+                c_array[i] = (float *)f32_c + i * stride_c;
             }
             ::cblas_sgemm_batch(
                 CBLASMAJOR, &transa_, &transb_, (const MKL_INT *)&m, (const MKL_INT *)&n,
@@ -2579,14 +2348,8 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_l
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (float *)a;
-                    b_array[0] = (float *)b;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                }
+                a_array[i] = (float *)a + i * stride_a;
+                b_array[i] = (float *)b + i * stride_b;
             }
             ::cblas_strsm_batch(CBLASMAJOR, &side_, &uplo_, &trans_, &diag_, (const MKL_INT *)&m,
                                 (const MKL_INT *)&n, &alpha, (const float **)a_array,
@@ -2624,14 +2387,8 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_l
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (double *)a;
-                    b_array[0] = (double *)b;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                }
+                a_array[i] = (double *)a + i * stride_a;
+                b_array[i] = (double *)b + i * stride_b;
             }
             ::cblas_dtrsm_batch(CBLASMAJOR, &side_, &uplo_, &trans_, &diag_, (const MKL_INT *)&m,
                                 (const MKL_INT *)&n, &alpha, (const double **)a_array,
@@ -2672,14 +2429,8 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_l
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (std::complex<float> *)a;
-                    b_array[0] = (std::complex<float> *)b;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                }
+                a_array[i] = (std::complex<float> *)a + i * stride_a;
+                b_array[i] = (std::complex<float> *)b + i * stride_b;
             }
             ::cblas_ctrsm_batch(CBLASMAJOR, &side_, &uplo_, &trans_, &diag_, (const MKL_INT *)&m,
                                 (const MKL_INT *)&n, &alpha, (const void **)a_array,
@@ -2720,14 +2471,8 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_l
                 return;
             }
             for (int64_t i = 0; i < batch_size; i++) {
-                if (i == 0) {
-                    a_array[0] = (std::complex<double> *)a;
-                    b_array[0] = (std::complex<double> *)b;
-                }
-                else {
-                    a_array[i] = a_array[i - 1] + stride_a;
-                    b_array[i] = b_array[i - 1] + stride_b;
-                }
+                a_array[i] = (std::complex<double> *)a + i * stride_a;
+                b_array[i] = (std::complex<double> *)b + i * stride_b;
             }
             ::cblas_ztrsm_batch(CBLASMAJOR, &side_, &uplo_, &trans_, &diag_, (const MKL_INT *)&m,
                                 (const MKL_INT *)&n, &alpha, (const void **)a_array,
