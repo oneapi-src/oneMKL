@@ -23,7 +23,6 @@
 #include <cstdint>
 #include <string>
 #include "oneapi/mkl/types.hpp"
-#include "oneapi/mkl/detail/config.hpp"
 
 namespace oneapi {
 namespace mkl {
