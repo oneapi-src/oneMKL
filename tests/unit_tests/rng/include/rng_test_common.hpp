@@ -86,8 +86,8 @@ public:
                 }
                 catch (sycl::exception const& e) {
                     std::cout << "Caught asynchronous SYCL exception during ASUM:\n"
-                              << e.what() << std::endl
-                              << "OpenCL status: " << e.what() << std::endl;
+                              << e.what() << std::endl;
+                    print_error_code(e);
                 }
             }
         };
