@@ -110,9 +110,9 @@ inline void gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
              transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);                              \
     }
 
-GEMM_EX_LAUNCHER(cl::sycl::half, cl::sycl::half, float, cublasGemmEx, CUDA_R_16F, CUDA_R_16F,
+GEMM_EX_LAUNCHER(half, half, float, cublasGemmEx, CUDA_R_16F, CUDA_R_16F,
                  CUDA_R_32F)
-GEMM_EX_LAUNCHER(cl::sycl::half, cl::sycl::half, cl::sycl::half, cublasGemmEx, CUDA_R_16F,
+GEMM_EX_LAUNCHER(half, half, half, cublasGemmEx, CUDA_R_16F,
                  CUDA_R_16F, CUDA_R_16F)
 
 #undef GEMM_EX_LAUNCHER
@@ -469,9 +469,9 @@ GEMM_LAUNCHER_USM(std::complex<double>, cublasZgemm)
 #undef GEMM_LAUNCHER_USM
 
 cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                     std::int64_t n, std::int64_t k, cl::sycl::half alpha, const cl::sycl::half *a,
-                     std::int64_t lda, const cl::sycl::half *b, std::int64_t ldb,
-                     cl::sycl::half beta, cl::sycl::half *c, std::int64_t ldc,
+                     std::int64_t n, std::int64_t k, half alpha, const half *a,
+                     std::int64_t lda, const half *b, std::int64_t ldb,
+                     half beta, half *c, std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "gemm", "for column_major layout");
 }
@@ -864,9 +864,9 @@ inline void gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
              transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);                              \
     }
 
-GEMM_EX_LAUNCHER(cl::sycl::half, cl::sycl::half, float, cublasGemmEx, CUDA_R_16F, CUDA_R_16F,
+GEMM_EX_LAUNCHER(half, half, float, cublasGemmEx, CUDA_R_16F, CUDA_R_16F,
                  CUDA_R_32F)
-GEMM_EX_LAUNCHER(cl::sycl::half, cl::sycl::half, cl::sycl::half, cublasGemmEx, CUDA_R_16F,
+GEMM_EX_LAUNCHER(half, half, half, cublasGemmEx, CUDA_R_16F,
                  CUDA_R_16F, CUDA_R_16F)
 
 #undef GEMM_EX_LAUNCHER
@@ -1072,9 +1072,9 @@ GEMM_LAUNCHER_USM(std::complex<double>, cublasZgemm)
 #undef GEMM_LAUNCHER_USM
 
 cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                     std::int64_t n, std::int64_t k, cl::sycl::half alpha, const cl::sycl::half *a,
-                     std::int64_t lda, const cl::sycl::half *b, std::int64_t ldb,
-                     cl::sycl::half beta, cl::sycl::half *c, std::int64_t ldc,
+                     std::int64_t n, std::int64_t k, half alpha, const half *a,
+                     std::int64_t lda, const half *b, std::int64_t ldb,
+                     half beta, half *c, std::int64_t ldc,
                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "gemm", "for row_major layout");
 }
