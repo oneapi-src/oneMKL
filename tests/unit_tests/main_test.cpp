@@ -20,6 +20,7 @@
 #include <gtest/gtest.h>
 #include <CL/sycl.hpp>
 #include <string>
+#include "test_helper.hpp"
 #include "oneapi/mkl/detail/config.hpp"
 #include "oneapi/mkl.hpp"
 
@@ -75,6 +76,14 @@ private:
 }; // class TersePrinter
 
 } // anonymous namespace
+
+void print_error_code(cl::sycl::exception const& e){
+#ifdef __HIPSYCL__
+    std::cout << "Backend status: " << e.code() << std::endl;
+#else
+    std::cout << "OpenCL status: " << e.get_cl_code() << std::endl;
+#endif
+}
 
 int main(int argc, char** argv) {
     std::set<std::string> unique_devices;

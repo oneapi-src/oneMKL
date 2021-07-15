@@ -24,6 +24,7 @@
 #include <string>
 #include <tuple>
 #include <gtest/gtest.h>
+#include <CL/sycl.hpp>
 
 #include "oneapi/mkl.hpp"
 #include "oneapi/mkl/detail/config.hpp"
@@ -95,6 +96,8 @@
             }                                                                  \
         }                                                                      \
     } while (0);
+
+void print_error_code(cl::sycl::exception const& e);
 
 class DeviceNamePrint {
 public:

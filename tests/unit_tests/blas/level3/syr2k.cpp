@@ -73,8 +73,8 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
             }
             catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during SYR2K:\n"
-                          << e.what() << std::endl
-                          << "OpenCL status: " << e.what() << std::endl;
+                          << e.what() << std::endl;
+                print_error_code(e);
             }
         }
     };
@@ -118,8 +118,8 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     }
     catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during SYR2K:\n"
-                  << e.what() << std::endl
-                  << "OpenCL status: " << e.what() << std::endl;
+                  << e.what() << std::endl;
+        print_error_code(e);
     }
 
     catch (const oneapi::mkl::unimplemented& e) {
