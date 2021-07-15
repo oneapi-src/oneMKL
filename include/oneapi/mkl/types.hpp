@@ -20,6 +20,9 @@
 #ifndef _ONEMKL_TYPES_HPP_
 #define _ONEMKL_TYPES_HPP_
 
+#include <CL/sycl.hpp>
+#include <type_traits>
+
 namespace oneapi {
 namespace mkl {
 
@@ -101,6 +104,26 @@ enum class order : char {
     B = 0,
     E = 1,
 };
+
+// Utility function to verify that a given set of types is supported by the
+// device compiler combintiation
+template<typename verify_type, typename T, typename... Ts>
+bool verify_support(cl::sycl::queue q, cl::sycl::aspect aspect){
+    bool has_aspect = q.get_device().has(aspect);
+    if constexpr (sizeof...(Ts) > 0){
+        if constexpr (std::is_same_v<verify_type, T>){
+            return has_aspect && verify_support<verify_type, Ts...>(q, aspect);
+        }else{
+            return true && verify_support<verify_type, Ts...>(q, aspect);
+        }
+    }else {
+        if constexpr (std::is_same_v<verify_type, T>){
+            return has_aspect;
+        }else{
+            return true;
+        }
+    }
+}
 
 } //namespace mkl
 } //namespace oneapi
