@@ -29,8 +29,8 @@
 #include <CL/sycl.hpp>
 
 namespace std {
-static cl::sycl::half abs(cl::sycl::half v) {
-    if (v < cl::sycl::half(0))
+static half abs(half v) {
+    if (v < half(0))
         return -v;
     else
         return v;

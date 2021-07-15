@@ -33,6 +33,8 @@ namespace mkl {
 namespace rng {
 namespace mklcpu {
 
+using namespace cl;
+
 class philox4x32x10_impl : public oneapi::mkl::rng::detail::engine_impl {
 public:
     philox4x32x10_impl(cl::sycl::queue queue, std::uint64_t seed)

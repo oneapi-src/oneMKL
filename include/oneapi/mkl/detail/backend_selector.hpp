@@ -27,6 +27,8 @@
 namespace oneapi {
 namespace mkl {
 
+using namespace cl;
+
 template <backend Backend>
 class backend_selector {
 public:
