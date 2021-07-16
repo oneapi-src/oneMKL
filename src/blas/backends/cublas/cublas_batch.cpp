@@ -641,8 +641,7 @@ inline cl::sycl::event trsm_batch(Func func, cl::sycl::queue &queue, side *left_
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int64_t offset = 0;
             cublasStatus_t err;
