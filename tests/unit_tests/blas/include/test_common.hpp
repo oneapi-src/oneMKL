@@ -442,11 +442,12 @@ bool check_equal_trsm(fp x, fp x_ref, int error_mag) {
     using fp_real = typename complex_info<fp>::real_type;
     fp_real bound = std::max(fp_real(5e-5), (error_mag * num_components<fp>() *
                                              std::numeric_limits<fp_real>::epsilon()));
-    bool ok;
+    fp zero = fp(0);
+    bool ok, check_rerr = (x_ref != zero);
 
     fp_real aerr = std::abs(x - x_ref);
-    fp_real rerr = aerr / std::abs(x_ref);
-    ok = (rerr <= bound) || (aerr <= bound);
+    fp_real rerr = check_rerr ? aerr / std::abs(x_ref) : 0.0;
+    ok = check_rerr ? ((rerr <= bound) || (aerr <= bound)) : (aerr <= bound);
     if (!ok)
         std::cout << "relative error = " << rerr << " absolute error = " << aerr
                   << " limit = " << bound << std::endl;
@@ -460,6 +461,23 @@ bool check_equal(fp x, fp x_ref, int error_mag, std::ostream &out) {
     if (!good) {
         out << "Difference in result: DPC++ " << x << " vs. Reference " << x_ref << std::endl;
     }
+    return good;
+}
+
+template <typename fp>
+bool check_equal_vector(fp *v, fp *v_ref, int n, int inc, int error_mag, std::ostream &out) {
+    int abs_inc = std::abs(inc);
+    bool good = true;
+
+    for (int i = 0; i < n; i++) {
+        if (!check_equal(v[i * abs_inc], v_ref[i * abs_inc], error_mag)) {
+            int i_actual = (inc > 0) ? i : n - i;
+            std::cout << "Difference in entry " << i_actual << ": DPC++ " << v[i * abs_inc]
+                      << " vs. Reference " << v_ref[i * abs_inc] << std::endl;
+            good = false;
+        }
+    }
+
     return good;
 }
 

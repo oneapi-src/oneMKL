@@ -34,15 +34,15 @@ namespace column_major {
 #include "mklgpu_batch.cxx"
 #undef MAJOR
 
-} //namespace column_major
+} // namespace column_major
 namespace row_major {
 
 #define MAJOR MKL_ROW_MAJOR
 #include "mklgpu_batch.cxx"
 #undef MAJOR
 
-} //namespace row_major
-} //namespace mklgpu
+} // namespace row_major
+} // namespace mklgpu
 } // namespace blas
-} //namespace mkl
-} //namespace oneapi
+} // namespace mkl
+} // namespace oneapi

@@ -16,8 +16,8 @@
 *  limitations under the License.
 *
 **************************************************************************/
-#ifndef _MKL_BLAS_CUBLAS_SCOPED_HANDLE_HPP_
-#define _MKL_BLAS_CUBLAS_SCOPED_HANDLE_HPP_
+#ifndef _CUBLAS_SCOPED_HANDLE_HPP_
+#define _CUBLAS_SCOPED_HANDLE_HPP_
 #include <CL/sycl.hpp>
 #include <CL/sycl/backend/cuda.hpp>
 #include <CL/sycl/context.hpp>
@@ -98,4 +98,4 @@ public:
 } // namespace blas
 } // namespace mkl
 } // namespace oneapi
-#endif //_MKL_BLAS_CUBLAS_SCOPED_HANDLE_HPP_
+#endif //_CUBLAS_SCOPED_HANDLE_HPP_

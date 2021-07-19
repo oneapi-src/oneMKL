@@ -31,22 +31,18 @@ namespace mklgpu {
 namespace column_major {
 
 #define MAJOR MKL_COL_MAJOR
-#define COLUMN_MAJOR
 #include "mklgpu_extensions.cxx"
 #undef MAJOR
-#undef COLUMN_MAJOR
 
-} //namespace column_major
+} // namespace column_major
 namespace row_major {
 
 #define MAJOR MKL_ROW_MAJOR
-#define ROW_MAJOR
 #include "mklgpu_extensions.cxx"
 #undef MAJOR
-#undef ROW_MAJOR
 
-} //namespace row_major
-} //namespace mklgpu
-} //namespace blas
-} //namespace mkl
-} //namespace oneapi
+} // namespace row_major
+} // namespace mklgpu
+} // namespace blas
+} // namespace mkl
+} // namespace oneapi

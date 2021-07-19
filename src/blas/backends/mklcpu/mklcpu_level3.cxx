@@ -101,27 +101,26 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
           int64_t k, half alpha, cl::sycl::buffer<half, 1> &a, int64_t lda,
           cl::sycl::buffer<half, 1> &b, int64_t ldb, half beta, cl::sycl::buffer<half, 1> &c,
           int64_t ldc) {
-    auto a_fp16 = a.reinterpret<fp16, 1>(a.get_range());
-    auto b_fp16 = b.reinterpret<fp16, 1>(b.get_range());
-    auto c_fp16 = c.reinterpret<fp16, 1>(c.get_range());
-
     queue.submit([&](cl::sycl::handler &cgh) {
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         float f32_alpha = (float)alpha;
         float f32_beta = (float)beta;
-        auto accessor_a = a_fp16.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b_fp16.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c_fp16.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_hgemm>(cgh, [=]() {
             int64_t sizea, sizeb, sizec;
-            sizea = (MKLMAJOR == MKL_COL_MAJOR) ? (transa == transpose::N) ? lda * k : lda * m
-                    : (transa == transpose::N)  ? lda * m
-                                                : lda * k;
-            sizeb = (MKLMAJOR == MKL_COL_MAJOR) ? (transb == transpose::N) ? ldb * n : ldb * k
-                    : (transb == transpose::N)  ? ldb * k
-                                                : ldb * n;
+#ifdef COLUMN_MAJOR
+            sizea = (transa == transpose::N) ? lda * k : lda * m;
+            sizeb = (transb == transpose::N) ? ldb * n : ldb * k;
             sizec = ldc * n;
+#endif
+#ifdef ROW_MAJOR
+            sizea = (transa == transpose::N) ? lda * m : lda * k;
+            sizeb = (transb == transpose::N) ? ldb * k : ldb * n;
+            sizec = ldc * m;
+#endif
             // copy A, B and C to float
             float *f32_a = (float *)::malloc(sizeof(float) * sizea);
             float *f32_b = (float *)::malloc(sizeof(float) * sizeb);
@@ -132,8 +131,8 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
             ::cblas_sgemm(CBLASMAJOR, transa_, transb_, m, n, k, f32_alpha, f32_a, lda, f32_b, ldb,
                           f32_beta, f32_c, ldc);
             // copy C back to half
-            fp16 co = 0.0f;
-            copy_mat(f32_c, MKLMAJOR, m, n, ldc, offset::F, &co, accessor_c);
+            half co = 0.0f;
+            copy_mat(f32_c, MKLMAJOR, m, n, ldc, offset::F, &co, (half *)accessor_c.get_pointer());
             ::free(f32_a);
             ::free(f32_b);
             ::free(f32_c);
@@ -145,22 +144,22 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
           int64_t k, float alpha, cl::sycl::buffer<half, 1> &a, int64_t lda,
           cl::sycl::buffer<half, 1> &b, int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c,
           int64_t ldc) {
-    auto a_fp16 = a.reinterpret<fp16, 1>(a.get_range());
-    auto b_fp16 = b.reinterpret<fp16, 1>(b.get_range());
     queue.submit([&](cl::sycl::handler &cgh) {
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
-        auto accessor_a = a_fp16.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b_fp16.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
         auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_gemm_f16f16f32>(cgh, [=]() {
             int64_t sizea, sizeb;
-            sizea = (MKLMAJOR == MKL_COL_MAJOR) ? (transa == transpose::N) ? lda * k : lda * m
-                    : (transa == transpose::N)  ? lda * m
-                                                : lda * k;
-            sizeb = (MKLMAJOR == MKL_COL_MAJOR) ? (transb == transpose::N) ? ldb * n : ldb * k
-                    : (transb == transpose::N)  ? ldb * k
-                                                : ldb * n;
+#ifdef COLUMN_MAJOR 
+            sizea = (transa == transpose::N) ? lda * k : lda * m;
+            sizeb = (transb == transpose::N) ? ldb * n : ldb * k;
+#endif
+#ifdef ROW_MAJOR 
+            sizea = (transa == transpose::N) ? lda * m : lda * k;
+            sizeb = (transb == transpose::N) ? ldb * k : ldb * n;
+#endif
             // copy A and B to float
             float *f32_a = (float *)::malloc(sizeof(float) * sizea);
             float *f32_b = (float *)::malloc(sizeof(float) * sizeb);
@@ -170,6 +169,25 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                           beta, accessor_c.get_pointer(), ldc);
             ::free(f32_a);
             ::free(f32_b);
+        });
+    });
+}
+
+void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+          int64_t k, float alpha, cl::sycl::buffer<bfloat16, 1> &a, int64_t lda,
+          cl::sycl::buffer<bfloat16, 1> &b, int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c,
+          int64_t ldc) {
+    queue.submit([&](cl::sycl::handler &cgh) {
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
+        auto accessor_a = a.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_b = b.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_c = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        host_task<class mkl_kernel_gemm_bf16bf16f32>(cgh, [=]() {
+            auto a_mat = (MKL_BF16 *)static_cast<void *>(accessor_a.get_pointer());
+            auto b_mat = (MKL_BF16 *)static_cast<void *>(accessor_b.get_pointer());
+            ::cblas_gemm_bf16bf16f32(CBLASMAJOR, transa_, transb_, m, n, k, alpha, a_mat, lda,
+                                     b_mat, ldb, beta, accessor_c.get_pointer(), ldc);
         });
     });
 }
@@ -748,6 +766,107 @@ cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
             MKL_Complex16 beta_ = { beta_real, beta_imag };
             ::cblas_zgemm(CBLASMAJOR, transa_, transb_, m, n, k, (const void *)&alpha_, a, lda, b,
                           ldb, (const void *)&beta_, c, ldc);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                     int64_t n, int64_t k, half alpha, const half *a, int64_t lda, const half *b,
+                     int64_t ldb, half beta, half *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
+        float f32_alpha = (float)alpha;
+        float f32_beta = (float)beta;
+        host_task<class mkl_kernel_hgemm_usm>(cgh, [=]() {
+            int64_t sizea, sizeb, sizec;
+#ifdef COLUMN_MAJOR
+            sizea = (transa == transpose::N) ? lda * k : lda * m;
+            sizeb = (transb == transpose::N) ? ldb * n : ldb * k;
+            sizec = ldc * n;
+#endif
+#ifdef ROW_MAJOR
+            sizea = (transa == transpose::N) ? lda * m : lda * k;
+            sizeb = (transb == transpose::N) ? ldb * k : ldb * n;
+            sizec = ldc * m;
+#endif
+            // copy A, B and C to float
+            float *f32_a = (float *)::malloc(sizeof(float) * sizea);
+            float *f32_b = (float *)::malloc(sizeof(float) * sizeb);
+            float *f32_c = (float *)::malloc(sizeof(float) * sizec);
+            copy_mat(a, MKLMAJOR, transa, m, k, lda, 0.0f, f32_a);
+            copy_mat(b, MKLMAJOR, transb, k, n, ldb, 0.0f, f32_b);
+            copy_mat(c, MKLMAJOR, transpose::N, m, n, ldc, 0.0f, f32_c);
+            ::cblas_sgemm(CBLASMAJOR, transa_, transb_, m, n, k, f32_alpha, f32_a, lda, f32_b, ldb,
+                          f32_beta, f32_c, ldc);
+            // copy C back to half
+            half co = 0.0f;
+            copy_mat(f32_c, MKLMAJOR, m, n, ldc, offset::F, &co, c);
+            ::free(f32_a);
+            ::free(f32_b);
+            ::free(f32_c);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                     int64_t n, int64_t k, float alpha, const half *a, int64_t lda, const half *b,
+                     int64_t ldb, float beta, float *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
+        float f32_alpha = (float)alpha;
+        float f32_beta = (float)beta;
+        host_task<class mkl_kernel_gemm_f16f16f32_usm>(cgh, [=]() {
+            int64_t sizea, sizeb, sizec;
+#ifdef COLUMN_MAJOR
+            sizea = (transa == transpose::N) ? lda * k : lda * m;
+            sizeb = (transb == transpose::N) ? ldb * n : ldb * k;
+#endif
+#ifdef ROW_MAJOR
+            sizea = (transa == transpose::N) ? lda * m : lda * k;
+            sizeb = (transb == transpose::N) ? ldb * k : ldb * n;
+#endif
+            // copy A, B to float
+            float *f32_a = (float *)::malloc(sizeof(float) * sizea);
+            float *f32_b = (float *)::malloc(sizeof(float) * sizeb);
+            copy_mat(a, MKLMAJOR, transa, m, k, lda, 0.0f, f32_a);
+            copy_mat(b, MKLMAJOR, transb, k, n, ldb, 0.0f, f32_b);
+            ::cblas_sgemm(CBLASMAJOR, transa_, transb_, m, n, k, f32_alpha, f32_a, lda, f32_b, ldb,
+                          f32_beta, c, ldc);
+            ::free(f32_a);
+            ::free(f32_b);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                     int64_t n, int64_t k, float alpha, const bfloat16 *a, int64_t lda,
+                     const bfloat16 *b, int64_t ldb, float beta, float *c, int64_t ldc,
+                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
+        host_task<class mkl_kernel_gemm_bf16bf16f32_usm>(cgh, [=]() {
+            ::cblas_gemm_bf16bf16f32(CBLASMAJOR, transa_, transb_, m, n, k, alpha, (MKL_BF16 *)a,
+                                     lda, (MKL_BF16 *)b, ldb, beta, c, ldc);
         });
     });
     return done;

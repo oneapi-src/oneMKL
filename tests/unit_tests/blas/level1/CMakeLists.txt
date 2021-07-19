@@ -18,7 +18,7 @@
 #===============================================================================
 
 # Build object from all test sources
-set(L1_SOURCES "nrm2.cpp" "iamin.cpp" "iamax.cpp" "dotu.cpp" "dot.cpp" "dotc.cpp" "copy.cpp" "axpy.cpp" "asum.cpp" "swap.cpp" "sdsdot.cpp" "scal.cpp" "rotmg.cpp" "rotm.cpp" "rotg.cpp" "rot.cpp" "nrm2_usm.cpp" "iamin_usm.cpp" "iamax_usm.cpp" "dotu_usm.cpp" "dot_usm.cpp" "dotc_usm.cpp" "copy_usm.cpp" "axpy_usm.cpp" "asum_usm.cpp" "swap_usm.cpp" "sdsdot_usm.cpp" "scal_usm.cpp" "rotmg_usm.cpp" "rotm_usm.cpp" "rotg_usm.cpp" "rot_usm.cpp")
+set(L1_SOURCES "nrm2.cpp" "iamin.cpp" "iamax.cpp" "dotu.cpp" "dot.cpp" "dotc.cpp" "copy.cpp" "axpy.cpp" "axpby.cpp" "asum.cpp" "swap.cpp" "sdsdot.cpp" "scal.cpp" "rotmg.cpp" "rotm.cpp" "rotg.cpp" "rot.cpp" "nrm2_usm.cpp" "iamin_usm.cpp" "iamax_usm.cpp" "dotu_usm.cpp" "dot_usm.cpp" "dotc_usm.cpp" "copy_usm.cpp" "axpy_usm.cpp" "axpby_usm.cpp" "asum_usm.cpp" "swap_usm.cpp" "sdsdot_usm.cpp" "scal_usm.cpp" "rotmg_usm.cpp" "rotm_usm.cpp" "rotg_usm.cpp" "rot_usm.cpp")
 
 if(BUILD_SHARED_LIBS)
   add_library(blas_level1_rt OBJECT ${L1_SOURCES})
