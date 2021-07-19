@@ -135,8 +135,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
             }
             catch (exception const &e) {
                 std::cout << "Caught asynchronous SYCL exception during GEMM_BATCH_STRIDE:\n"
-                          << e.what() << std::endl
-                          << "OpenCL status: " << e.get_cl_code() << std::endl;
+                          << e.what() << std::endl;
+                print_error_code(e);
             }
         }
     };
@@ -180,8 +180,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     }
     catch (exception const &e) {
         std::cout << "Caught synchronous SYCL exception during GEMM_BATCH_STRIDE:\n"
-                  << e.what() << std::endl
-                  << "OpenCL status: " << e.get_cl_code() << std::endl;
+                  << e.what() << std::endl;
+        print_error_code(e);
     }
 
     catch (const oneapi::mkl::unimplemented &e) {
