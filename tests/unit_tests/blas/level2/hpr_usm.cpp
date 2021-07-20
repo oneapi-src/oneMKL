@@ -112,8 +112,7 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
 #endif
     }
     catch (exception const &e) {
-        std::cout << "Caught synchronous SYCL exception during HPR:\n"
-                  << e.what() << std::endl;
+        std::cout << "Caught synchronous SYCL exception during HPR:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 

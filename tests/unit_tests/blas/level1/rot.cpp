@@ -107,8 +107,7 @@ int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp_
 #endif
     }
     catch (exception const &e) {
-        std::cout << "Caught synchronous SYCL exception during ROT:\n"
-                  << e.what() << std::endl;
+        std::cout << "Caught synchronous SYCL exception during ROT:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 

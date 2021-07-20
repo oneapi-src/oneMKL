@@ -121,8 +121,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
 #endif
     }
     catch (exception const& e) {
-        std::cout << "Caught synchronous SYCL exception during SYMM:\n"
-                  << e.what() << std::endl;
+        std::cout << "Caught synchronous SYCL exception during SYMM:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 

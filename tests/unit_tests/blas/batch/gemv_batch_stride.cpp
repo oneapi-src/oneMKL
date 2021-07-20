@@ -163,7 +163,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t incx, int64_t incy, in
     catch (exception const &e) {
         std::cout << "Caught synchronous SYCL exception during GEMV_BATCH_STRIDE:\n"
                   << e.what() << std::endl;
-                  print_error_code(e);
+        print_error_code(e);
     }
 
     catch (const oneapi::mkl::unimplemented &e) {

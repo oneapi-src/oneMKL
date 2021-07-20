@@ -109,8 +109,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
 #endif
     }
     catch (exception const& e) {
-        std::cout << "Caught synchronous SYCL exception during DOT:\n"
-                  << e.what() << std::endl;
+        std::cout << "Caught synchronous SYCL exception during DOT:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 

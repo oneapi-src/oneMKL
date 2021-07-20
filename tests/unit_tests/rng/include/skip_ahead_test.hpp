@@ -74,8 +74,7 @@ public:
             return;
         }
         catch (cl::sycl::exception const& e) {
-            std::cout << "SYCL exception during generation" << std::endl
-                      << e.what() << std::endl;
+            std::cout << "SYCL exception during generation" << std::endl << e.what() << std::endl;
             print_error_code(e);
             status = test_failed;
             return;
@@ -121,8 +120,7 @@ public:
             return;
         }
         catch (cl::sycl::exception const& e) {
-            std::cout << "SYCL exception during generation" << std::endl
-                      << e.what() << std::endl;
+            std::cout << "SYCL exception during generation" << std::endl << e.what() << std::endl;
             print_error_code(e);
             status = test_failed;
             return;

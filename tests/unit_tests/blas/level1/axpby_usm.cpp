@@ -110,9 +110,8 @@ int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp 
 #endif
     }
     catch (exception const &e) {
-        std::cout << "Caught synchronous SYCL exception during AXPBY:\n"
-                  << e.what() << std::endl;
-                  print_error_code(e);
+        std::cout << "Caught synchronous SYCL exception during AXPBY:\n" << e.what() << std::endl;
+        print_error_code(e);
     }
 
     catch (const oneapi::mkl::unimplemented &e) {

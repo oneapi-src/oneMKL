@@ -77,7 +77,7 @@ private:
 
 } // anonymous namespace
 
-void print_error_code(cl::sycl::exception const& e){
+void print_error_code(cl::sycl::exception const& e) {
 #ifdef __HIPSYCL__
     std::cout << "Backend status: " << e.code() << std::endl;
 #else

@@ -97,7 +97,7 @@
         }                                                                      \
     } while (0);
 
-void print_error_code(cl::sycl::exception const& e);
+void print_error_code(cl::sycl::exception const &e);
 
 class DeviceNamePrint {
 public:
