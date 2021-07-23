@@ -79,6 +79,17 @@ public:
     // method to call any tests, switch between rt and ct
     template <typename... Args>
     int operator()(cl::sycl::device* dev, Args... args) {
+        static sycl::device* previous_device = nullptr;
+        static sycl::context* context = nullptr;
+
+        if((previous_device != dev)) {
+            previous_device = dev;
+            if(context != nullptr) {
+                delete context;
+            }
+            context = new sycl::context(*dev);
+        }
+
         auto exception_handler = [](sycl::exception_list exceptions) {
             for (std::exception_ptr const& e : exceptions) {
                 try {
@@ -92,7 +103,7 @@ public:
             }
         };
 
-        cl::sycl::queue queue(*dev, exception_handler);
+        cl::sycl::queue queue(*context, *dev, exception_handler);
 
 #ifdef CALL_RT_API
         test_(queue, args...);
