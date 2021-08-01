@@ -92,7 +92,22 @@ public:
             }
         };
 
+#ifdef ENABLE_CURAND_BACKEND // w/a for cuda backend hangs when there are several queues with different contexts
+        static sycl::device* previous_device = nullptr;
+        static sycl::context* context = nullptr;
+
+        if ((previous_device != dev)) {
+            previous_device = dev;
+            if (context != nullptr) {
+                delete context;
+            }
+            context = new sycl::context(*dev);
+        }
+
+        cl::sycl::queue queue(*context, *dev, exception_handler);
+#else
         cl::sycl::queue queue(*dev, exception_handler);
+#endif
 
 #ifdef CALL_RT_API
         test_(queue, args...);
