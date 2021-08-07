@@ -1,2 +1,1 @@
-conan-center https://api.bintray.com/conan/conan/conan-center True
-conan-community https://api.bintray.com/conan/conan-community/conan True
+conan-center https://center.conan.io True
