@@ -148,8 +148,7 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
         auto group_size = group_sizes_vec[group_id];
         for (int64_t local_id = 0; local_id < group_size;
              local_id++, global_id++, A_iter++, tau_iter++, A_initial_iter++) {
-            if (!check_geqrf_accuracy(A_iter->data(), A_initial_iter->data(), tau_iter->data(), m,
-                                      n, lda)) {
+            if (!check_geqrf_accuracy(m, n, *A_iter, lda, *tau_iter, *A_initial_iter)) {
                 global::log << "batch routine (" << global_id << ", " << group_id << ", "
                             << local_id << ") (global_id, group_id, local_id) failed" << std::endl;
                 result = false;
@@ -244,7 +243,7 @@ bool usm_dependency(const sycl::device& dev, uint64_t seed) {
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::geqrf_batch(
             queue, m_vec.data(), n_vec.data(), A_dev_ptrs.data(), lda_vec.data(),

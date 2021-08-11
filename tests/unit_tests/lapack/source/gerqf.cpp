@@ -87,7 +87,7 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, uint64
         device_free(queue, scratchpad_dev);
     }
 
-    return check_gerqf_accuracy(A.data(), A_initial.data(), tau.data(), m, n, lda);
+    return check_gerqf_accuracy(A, A_initial, tau, m, n, lda);
 }
 
 const char* dependency_input = R"(
@@ -127,7 +127,7 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, 
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::gerqf(
             queue, m, n, A_dev, lda, tau_dev, scratchpad_dev, scratchpad_size,

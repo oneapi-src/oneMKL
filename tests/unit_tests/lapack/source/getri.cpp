@@ -94,7 +94,7 @@ bool accuracy(const sycl::device& dev, int64_t n, int64_t lda, uint64_t seed) {
         device_free(queue, scratchpad_dev);
     }
 
-    return check_getri_accuracy(n, A.data(), lda, ipiv.data(), A_initial.data());
+    return check_getri_accuracy(n, A, lda, ipiv, A_initial);
 }
 
 const char* dependency_input = R"(
@@ -141,7 +141,7 @@ bool usm_dependency(const sycl::device& dev, int64_t n, int64_t lda, uint64_t se
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::getri(
             queue, n, A_dev, lda, ipiv_dev, scratchpad_dev, scratchpad_size,
