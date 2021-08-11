@@ -93,8 +93,8 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
         device_free(queue, scratchpad_dev);
     }
 
-    return check_potrs_accuracy(uplo, n, nrhs, A.data(), lda, B.data(), ldb, A_initial.data(),
-                                B_initial.data());
+    return check_potrs_accuracy(uplo, n, nrhs, B, ldb, A_initial, lda,
+                                B_initial);
 }
 
 const char* dependency_input = R"(
@@ -144,7 +144,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, 
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::potrs(
             queue, uplo, n, nrhs, A_dev, lda, B_dev, ldb, scratchpad_dev, scratchpad_size,

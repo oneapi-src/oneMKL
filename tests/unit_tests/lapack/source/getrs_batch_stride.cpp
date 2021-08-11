@@ -46,7 +46,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::transpose trans, int64_t n, 
     std::vector<int64_t> ipiv(stride_ipiv * batch_size);
     for (int64_t i = 0; i < batch_size; i++) {
         rand_matrix(seed, oneapi::mkl::transpose::nontrans, n, n, A_initial, lda, i * stride_a);
-        rand_matrix(seed, oneapi::mkl::transpose::nontrans, nrhs, n, B_initial, ldb, i * stride_b);
+        rand_matrix(seed, oneapi::mkl::transpose::nontrans, n, nrhs, B_initial, ldb, i * stride_b);
     }
 
     std::vector<fp> A = A_initial;
@@ -106,14 +106,15 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::transpose trans, int64_t n, 
     }
 
     bool result = true;
-    for (int64_t i = 0; i < batch_size; i++)
-        if (!check_getrs_accuracy(trans, n, nrhs, A.data() + i * stride_a, lda,
-                                  ipiv.data() + i * stride_ipiv, B.data() + i * stride_b, ldb,
-                                  A_initial.data() + i * stride_a,
-                                  B_initial.data() + i * stride_b)) {
+    for (int64_t i = 0; i < batch_size; i++) {
+        auto B_ = copy_vector(B, ldb*nrhs, i*stride_b);
+        auto A_initial_ = copy_vector(A_initial, lda*n, i*stride_a);
+        auto B_initial_ = copy_vector(B_initial, ldb*nrhs, i*stride_b);
+        if (!check_getrs_accuracy(trans, n, nrhs, B_, ldb, A_initial_, lda, B_initial_)) {
             global::log << "batch routine index " << i << " failed" << std::endl;
             result = false;
         }
+    }
 
     return result;
 }
@@ -174,7 +175,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::transpose trans, int64
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::getrs_batch(
             queue, trans, n, nrhs, A_dev, lda, stride_a, ipiv_dev, stride_ipiv, B_dev, ldb,

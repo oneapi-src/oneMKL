@@ -92,7 +92,7 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t k, int64_t 
         device_free(queue, scratchpad_dev);
     }
 
-    return check_or_un_gqr_accuracy(m, n, A.data(), lda);
+    return check_or_un_gqr_accuracy(m, n, A, lda);
 }
 
 const char* dependency_input = R"(
@@ -137,7 +137,7 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t k, in
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::ungqr(
             queue, m, n, k, A_dev, lda, tau_dev, scratchpad_dev, scratchpad_size,

@@ -22,15 +22,14 @@
 #ifndef lapack_int
 #define lapack_int int64_t
 #endif
-
-#ifdef __cplusplus
-extern "C" {
+#ifndef WeirdNEC
+#define WeirdNEC
 #endif
+
+extern "C" {
 #include "cblas.h"
 #include "lapacke.h"
-#ifdef __cplusplus
 } // extern "C"
-#endif
 
 namespace reference {
 inline CBLAS_TRANSPOSE cblas_trans(oneapi::mkl::transpose t) {

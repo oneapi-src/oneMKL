@@ -104,7 +104,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
     std::vector<fp_real> D_ref(n);
     reference::hegvd(itype, oneapi::mkl::job::novec, uplo, n, std::vector<fp>(A_initial).data(),
                      lda, std::vector<fp>(B_initial).data(), ldb, D_ref.data());
-    if (!rel_vec_err_check(n, D_ref.data(), D.data(), 10.0)) {
+    if (!rel_vec_err_check(n, D_ref, D, 10.0)) {
         global::log << "Eigenvalue check failed" << std::endl;
         result = false;
     }
@@ -128,7 +128,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
                 for (int64_t row = 0; row < n; row++)
                     BZD[row + col * ldbzd] = BZ[row + col * ldbz] * D[col];
 
-            if (!rel_mat_err_check(n, n, AZ.data(), ldaz, BZD.data(), ldbzd)) {
+            if (!rel_mat_err_check(n, n, AZ, ldaz, BZD, ldbzd)) {
                 global::log << "Factorization check failed" << std::endl;
                 result = false;
             }
@@ -138,7 +138,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
             int64_t ldzbz = n;
             reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n,
                             n, n, 1.0, Z.data(), ldz, BZ.data(), ldbz, 0.0, ZBZ.data(), ldzbz);
-            if (!rel_id_err_check(n, ZBZ.data(), ldzbz)) {
+            if (!rel_id_err_check(n, ZBZ, ldzbz)) {
                 global::log << "Orthogonality check failed" << std::endl;
                 result = false;
             }
@@ -162,7 +162,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
                 for (int64_t row = 0; row < n; row++)
                     ZD[row + col * ldzd] = Z[row + col * ldz] * D[col];
 
-            if (!rel_mat_err_check(n, n, ABZ.data(), ldabz, ZD.data(), ldbz)) {
+            if (!rel_mat_err_check(n, n, ABZ, ldabz, ZD, ldbz)) {
                 global::log << "Factorization check failed" << std::endl;
                 result = false;
             }
@@ -172,7 +172,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
             int64_t ldzbz = n;
             reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n,
                             n, n, 1.0, Z.data(), ldz, BZ.data(), ldbz, 0.0, ZBZ.data(), ldzbz);
-            if (!rel_id_err_check(n, ZBZ.data(), ldzbz)) {
+            if (!rel_id_err_check(n, ZBZ, ldzbz)) {
                 global::log << "Orthogonality check failed" << std::endl;
                 result = false;
             }
@@ -200,7 +200,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
                 for (int64_t row = 0; row < n; row++)
                     CD[row + col * ldcd] = C[row + col * ldc] * D[col];
 
-            if (!rel_mat_err_check(n, n, AZ.data(), ldaz, CD.data(), ldcd)) {
+            if (!rel_mat_err_check(n, n, AZ, ldaz, CD, ldcd)) {
                 global::log << "Factorization check failed" << std::endl;
                 result = false;
             }
@@ -210,7 +210,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
             int64_t ldzhc = n;
             reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n,
                             n, n, 1.0, Z.data(), ldz, C.data(), ldc, 0.0, ZhC.data(), ldzhc);
-            if (!rel_id_err_check(n, ZhC.data(), ldzhc)) {
+            if (!rel_id_err_check(n, ZhC, ldzhc)) {
                 global::log << "Orthogonality check failed" << std::endl;
                 result = false;
             }
@@ -261,7 +261,7 @@ bool usm_dependency(const sycl::device& dev, int64_t itype, oneapi::mkl::job job
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::hegvd(
             queue, itype, jobz, uplo, n, A_dev, lda, B_dev, ldb, w_dev, scratchpad_dev,

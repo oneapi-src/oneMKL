@@ -115,7 +115,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
     reference::or_un_mtr(oneapi::mkl::side::right, uplo, oneapi::mkl::transpose::trans, n, n,
                          A.data(), lda, tau.data(), QTQ.data(), ldqtq);
 
-    if (!rel_mat_err_check(n, n, QTQ.data(), ldqtq, A_initial.data(), lda)) {
+    if (!rel_mat_err_check(n, n, QTQ, ldqtq, A_initial, lda)) {
         global::log << "Factorization check failed" << std::endl;
         result = false;
     }
@@ -187,7 +187,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, 
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::sytrd(
             queue, uplo, n, A_dev, lda, d_dev, e_dev, tau_dev, scratchpad_dev, scratchpad_size,

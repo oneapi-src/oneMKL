@@ -101,13 +101,15 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
     }
 
     bool result = true;
-    for (int64_t i = 0; i < batch_size; i++)
-        if (!check_potrs_accuracy(uplo, n, nrhs, A.data() + i * stride_a, lda,
-                                  B.data() + i * stride_b, ldb, A_initial.data() + i * stride_a,
-                                  B_initial.data() + i * stride_b)) {
+    for (int64_t i = 0; i < batch_size; i++) {
+        auto B_ = copy_vector(B, ldb*nrhs, i*stride_b);
+        auto A_initial_ = copy_vector(A_initial, lda*n, i*stride_a);
+        auto B_initial_ = copy_vector(B_initial, ldb*nrhs, i*stride_b);
+        if (!check_potrs_accuracy(uplo, n, nrhs, B_, ldb, A_initial_, lda, B_initial_)) {
             global::log << "batch routine index " << i << " failed" << std::endl;
             result = false;
         }
+    }
 
     return result;
 }
@@ -166,7 +168,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, 
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::potrs_batch(
             queue, uplo, n, nrhs, A_dev, lda, stride_a, B_dev, ldb, stride_b, batch_size,
