@@ -124,7 +124,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::side left_right, oneapi::mkl
         global::log << "reference unmrq failed with info = " << info << std::endl;
         return false;
     }
-    if (!rel_mat_err_check(m, n, QC.data(), ldqc, QC_ref.data(), ldqc, 1.0)) {
+    if (!rel_mat_err_check(m, n, QC, ldqc, QC_ref, ldqc, 1.0)) {
         global::log << "Multiplication check failed" << std::endl;
         result = false;
     }
@@ -181,7 +181,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::side left_right,
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::unmrq(
             queue, left_right, trans, m, n, k, A_dev, lda, tau_dev, C_dev, ldc, scratchpad_dev,

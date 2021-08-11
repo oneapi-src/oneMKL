@@ -20,9 +20,9 @@
 # Build object from all test sources
 
 # The following tests are skipped on windows, see docs for more info
-# geqrf geqrf_Batch_group geqrf_Batch_stride gerqf getrf getrf_Batch_group getrf_Batch_stride trtrs
+# geqrf geqrf_batch_group geqrf_batch_stride gerqf getrf getrf_batch_group getrf_batch_stride trtrs
 if(WIN32)
-set(LAPACK_SOURCES 
+set(LAPACK_SOURCES
 "gebrd.cpp"
 "gesvd.cpp"
 "getri.cpp"
@@ -65,9 +65,16 @@ set(LAPACK_SOURCES
 )
 
 else()
-set(LAPACK_SOURCES 
+set(LAPACK_SOURCES
 "gebrd.cpp"
+"geqrf.cpp"
+"geqrf_batch_group.cpp"
+"geqrf_batch_stride.cpp"
+"gerqf.cpp"
 "gesvd.cpp"
+"getrf.cpp"
+"getrf_batch_group.cpp"
+"getrf_batch_stride.cpp"
 "getri.cpp"
 "getri_batch_group.cpp"
 "getri_batch_stride.cpp"
@@ -97,6 +104,7 @@ set(LAPACK_SOURCES
 "sygvd.cpp"
 "sytrd.cpp"
 "sytrf.cpp"
+"trtrs.cpp"
 "ungbr.cpp"
 "ungqr.cpp"
 "ungqr_batch_group.cpp"

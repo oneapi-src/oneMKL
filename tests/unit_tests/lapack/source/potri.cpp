@@ -34,6 +34,8 @@ namespace {
 const char* accuracy_input = R"(
 0 30 42 27182
 0 33 33 27182
+1 31 41 27182
+1 45 45 27182
 )";
 
 template <typename data_T>
@@ -154,7 +156,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, 
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event =
             oneapi::mkl::lapack::potri(queue, uplo, n, A_dev, lda, scratchpad_dev, scratchpad_size,

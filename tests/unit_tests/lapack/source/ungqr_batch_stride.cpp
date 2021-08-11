@@ -96,11 +96,13 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t k, int64_t 
     }
 
     bool result = true;
-    for (int64_t i = 0; i < batch_size; i++)
-        if (!check_or_un_gqr_accuracy(m, n, A.data() + i * stride_a, lda)) {
+    for (int64_t i = 0; i < batch_size; i++) {
+        auto A_ = copy_vector(A, lda*n, i*stride_a);
+        if (!check_or_un_gqr_accuracy(m, n, A_, lda)) {
             global::log << "batch routine index " << i << " failed" << std::endl;
             result = false;
         }
+    }
 
     return result;
 }
@@ -153,7 +155,7 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t k, in
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::ungqr_batch(
             queue, m, n, k, A_dev, lda, stride_a, tau_dev, stride_tau, batch_size, scratchpad_dev,

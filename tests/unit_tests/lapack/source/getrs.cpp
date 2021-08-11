@@ -88,9 +88,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::transpose trans, int64_t n, 
 #endif
         queue.wait_and_throw();
 
-        device_to_host_copy(queue, A_dev, A.data(), A.size());
         device_to_host_copy(queue, B_dev, B.data(), B.size());
-        device_to_host_copy(queue, ipiv_dev, ipiv.data(), ipiv.size());
         queue.wait_and_throw();
 
         device_free(queue, A_dev);
@@ -99,8 +97,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::transpose trans, int64_t n, 
         device_free(queue, scratchpad_dev);
     }
 
-    return check_getrs_accuracy(trans, n, nrhs, A.data(), lda, ipiv.data(), B.data(), ldb,
-                                A_initial.data(), B_initial.data());
+    return check_getrs_accuracy(trans, n, nrhs, B, ldb, A_initial, lda, B_initial);
 }
 
 const char* dependency_input = R"(
@@ -154,7 +151,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::transpose trans, int64
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::getrs(
             queue, trans, n, nrhs, A_dev, lda, ipiv_dev, B_dev, ldb, scratchpad_dev,

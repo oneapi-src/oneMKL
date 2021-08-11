@@ -84,12 +84,14 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
     }
 
     bool result = true;
-    for (int64_t i = 0; i < batch_size; i++)
-        if (!check_potrf_accuracy(A_initial.data() + i * stride_a, A.data() + i * stride_a, uplo, n,
-                                  lda)) {
+    for (int64_t i = 0; i < batch_size; i++) {
+        auto A_ = copy_vector(A, lda*n, i*stride_a);
+        auto A_initial_ = copy_vector(A_initial, lda*n, i*stride_a);
+        if (!check_potrf_accuracy(A_initial_, A_, uplo, n, lda)) {
             global::log << "batch routine index " << i << " failed" << std::endl;
             result = false;
         }
+    }
 
     return result;
 }
@@ -132,7 +134,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, 
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::potrf_batch(
             queue, uplo, n, A_dev, lda, stride_a, batch_size, scratchpad_dev, scratchpad_size,

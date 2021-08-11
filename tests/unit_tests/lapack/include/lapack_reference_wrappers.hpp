@@ -26,7 +26,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef WeirdNEC
+#define WeirdNEC
 #include "cblas.h"
+#endif
 #include "lapacke.h"
 #ifdef __cplusplus
 } // extern "C"

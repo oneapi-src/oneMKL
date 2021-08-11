@@ -28,6 +28,7 @@
 #include <CL/sycl.hpp>
 
 #include "oneapi/mkl/types.hpp"
+#include "oneapi/mkl/lapack/types.hpp"
 
 namespace global {
 
@@ -98,10 +99,9 @@ inline std::complex<double> rand_scalar(uint64_t& seed) {
     return std::complex<double>(rand_scalar<double>(seed), rand_scalar<double>(seed));
 }
 
-template <typename vec>
-void rand_matrix(uint64_t& seed, oneapi::mkl::transpose trans, int64_t m, int64_t n, vec& M,
+template <typename fp>
+void rand_matrix(uint64_t& seed, oneapi::mkl::transpose trans, int64_t m, int64_t n, std::vector<fp>& M,
                  int64_t ld, int64_t offset = 0) {
-    using fp = typename vec::value_type;
     if (trans == oneapi::mkl::transpose::nontrans)
         for (int64_t col = 0; col < n; col++)
             for (int64_t row = 0; row < m; row++)
@@ -112,10 +112,9 @@ void rand_matrix(uint64_t& seed, oneapi::mkl::transpose trans, int64_t m, int64_
                 M[offset + col + row * ld] = rand_scalar<fp>(seed);
 }
 
-template <typename vec>
-void rand_symmetric_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, vec& M, int64_t ld,
+template <typename fp>
+void rand_symmetric_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, std::vector<fp>& M, int64_t ld,
                            int64_t offset = 0) {
-    using fp = typename vec::value_type;
     using fp_real = typename complex_info<fp>::real_type;
 
     if (uplo == oneapi::mkl::uplo::upper)
@@ -128,10 +127,9 @@ void rand_symmetric_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, ve
                 M[offset + row + col * ld] = rand_scalar<fp>(seed);
 }
 
-template <typename vec>
-void rand_hermitian_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, vec& M, int64_t ld,
+template <typename fp>
+void rand_hermitian_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, std::vector<fp>& M, int64_t ld,
                            int64_t offset = 0) {
-    using fp = typename vec::value_type;
     using fp_real = typename complex_info<fp>::real_type;
 
     rand_symmetric_matrix(seed, uplo, n, M, ld, offset);
@@ -139,10 +137,9 @@ void rand_hermitian_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, ve
         M[offset + diag + diag * ld] = rand_scalar<fp_real>(seed);
 }
 
-template <typename vec>
-void rand_pos_def_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, vec& M, int64_t ld,
+template <typename fp>
+void rand_pos_def_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, std::vector<fp>& M, int64_t ld,
                          int64_t offset = 0) {
-    using fp = typename vec::value_type;
     using fp_real = typename complex_info<fp>::real_type;
 
     rand_hermitian_matrix(seed, uplo, n, M, ld, offset);
@@ -151,8 +148,8 @@ void rand_pos_def_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, vec&
     return;
 }
 
-template <typename T>
-void symmetric_to_full(oneapi::mkl::uplo uplo, int64_t n, T& A, int64_t lda) {
+template <typename fp>
+void symmetric_to_full(oneapi::mkl::uplo uplo, int64_t n, std::vector<fp>& A, int64_t lda) {
     if (oneapi::mkl::uplo::upper == uplo)
         for (int64_t col = 0; col < n; col++)
             for (int64_t row = col + 1; row < n; row++)
@@ -164,8 +161,8 @@ void symmetric_to_full(oneapi::mkl::uplo uplo, int64_t n, T& A, int64_t lda) {
     return;
 }
 
-template <typename T>
-void hermitian_to_full(oneapi::mkl::uplo uplo, int64_t n, T& A, int64_t lda) {
+template <typename fp>
+void hermitian_to_full(oneapi::mkl::uplo uplo, int64_t n, std::vector<fp>& A, int64_t lda) {
     for (int64_t diag = 0; diag < n; diag++)
         A[diag + diag * lda] = get_real(A[diag + diag * lda]);
     if (oneapi::mkl::uplo::upper == uplo)
@@ -178,6 +175,12 @@ void hermitian_to_full(oneapi::mkl::uplo uplo, int64_t n, T& A, int64_t lda) {
                 A[row + col * lda] = get_conj(A[col + row * lda]);
     return;
 }
+
+template <typename T>
+std::vector<T> copy_vector(const std::vector<T>& vec, int64_t count, int64_t offset) {
+    return std::vector<T>(vec.begin() + offset, vec.begin() + offset + count);
+}
+
 
 template <typename buffer_T>
 struct is_buf {
@@ -252,5 +255,5 @@ sycl::event device_to_host_copy(sycl::queue queue, data_T* source, data_T* dest,
     return queue.memcpy(dest, source, count * sizeof(data_T));
 }
 
-sycl::event create_dependent_event(sycl::queue queue);
+sycl::event create_dependency(sycl::queue queue);
 bool check_dependency(sycl::queue, sycl::event in_event, sycl::event func_event);

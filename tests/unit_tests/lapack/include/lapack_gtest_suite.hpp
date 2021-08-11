@@ -83,48 +83,48 @@ using ComplexDoublePrecisionUsm = std::complex<double>;
 #define DEFINE_TEST_ACCURACY_USM_REAL(SUITE)                                                  \
     TEST_P(SUITE##AccuracyUsm, RealSinglePrecision) {                                         \
         global::pad = "[          ] ";                                                        \
-        EXPECT_TRUE(accuracy_controller.run_print_on_fail(::accuracy<RealSinglePrecisionUsm>, \
+        EXPECT_TRUE(accuracy_controller.run(::accuracy<RealSinglePrecisionUsm>, \
                                                           *GetParam()));                      \
     }                                                                                         \
     TEST_P(SUITE##AccuracyUsm, RealDoublePrecision) {                                         \
         global::pad = "[          ] ";                                                        \
-        EXPECT_TRUE(accuracy_controller.run_print_on_fail(::accuracy<RealDoublePrecisionUsm>, \
+        EXPECT_TRUE(accuracy_controller.run(::accuracy<RealDoublePrecisionUsm>, \
                                                           *GetParam()));                      \
     }
 
 #define DEFINE_TEST_ACCURACY_USM_COMPLEX(SUITE)                                                  \
     TEST_P(SUITE##AccuracyUsm, ComplexSinglePrecision) {                                         \
         global::pad = "[          ] ";                                                           \
-        EXPECT_TRUE(accuracy_controller.run_print_on_fail(::accuracy<ComplexSinglePrecisionUsm>, \
+        EXPECT_TRUE(accuracy_controller.run(::accuracy<ComplexSinglePrecisionUsm>, \
                                                           *GetParam()));                         \
     }                                                                                            \
     TEST_P(SUITE##AccuracyUsm, ComplexDoublePrecision) {                                         \
         global::pad = "[          ] ";                                                           \
-        EXPECT_TRUE(accuracy_controller.run_print_on_fail(::accuracy<ComplexDoublePrecisionUsm>, \
+        EXPECT_TRUE(accuracy_controller.run(::accuracy<ComplexDoublePrecisionUsm>, \
                                                           *GetParam()));                         \
     }
 
 #define DEFINE_TEST_ACCURACY_BUFFER_REAL(SUITE)                                                  \
     TEST_P(SUITE##AccuracyBuffer, RealSinglePrecision) {                                         \
         global::pad = "[          ] ";                                                           \
-        EXPECT_TRUE(accuracy_controller.run_print_on_fail(::accuracy<RealSinglePrecisionBuffer>, \
+        EXPECT_TRUE(accuracy_controller.run(::accuracy<RealSinglePrecisionBuffer>, \
                                                           *GetParam()));                         \
     }                                                                                            \
     TEST_P(SUITE##AccuracyBuffer, RealDoublePrecision) {                                         \
         global::pad = "[          ] ";                                                           \
-        EXPECT_TRUE(accuracy_controller.run_print_on_fail(::accuracy<RealDoublePrecisionBuffer>, \
+        EXPECT_TRUE(accuracy_controller.run(::accuracy<RealDoublePrecisionBuffer>, \
                                                           *GetParam()));                         \
     }
 
 #define DEFINE_TEST_ACCURACY_BUFFER_COMPLEX(SUITE)                   \
     TEST_P(SUITE##AccuracyBuffer, ComplexSinglePrecision) {          \
         global::pad = "[          ] ";                               \
-        EXPECT_TRUE(accuracy_controller.run_print_on_fail(           \
+        EXPECT_TRUE(accuracy_controller.run(           \
             ::accuracy<ComplexSinglePrecisionBuffer>, *GetParam())); \
     }                                                                \
     TEST_P(SUITE##AccuracyBuffer, ComplexDoublePrecision) {          \
         global::pad = "[          ] ";                               \
-        EXPECT_TRUE(accuracy_controller.run_print_on_fail(           \
+        EXPECT_TRUE(accuracy_controller.run(           \
             ::accuracy<ComplexDoublePrecisionBuffer>, *GetParam())); \
     }
 
@@ -147,23 +147,23 @@ using ComplexDoublePrecisionUsm = std::complex<double>;
 #define DEFINE_TEST_DEPENDENCY_REAL(SUITE)                           \
     TEST_P(SUITE##DependencyUsm, RealSinglePrecision) {              \
         global::pad = "[          ] ";                               \
-        EXPECT_TRUE(dependency_controller.run_print_on_fail(         \
+        EXPECT_TRUE(dependency_controller.run(         \
             ::usm_dependency<RealSinglePrecisionUsm>, *GetParam())); \
     }                                                                \
     TEST_P(SUITE##DependencyUsm, RealDoublePrecision) {              \
         global::pad = "[          ] ";                               \
-        EXPECT_TRUE(dependency_controller.run_print_on_fail(         \
+        EXPECT_TRUE(dependency_controller.run(         \
             ::usm_dependency<RealDoublePrecisionUsm>, *GetParam())); \
     }
 
 #define DEFINE_TEST_DEPENDENCY_COMPLEX(SUITE)                           \
     TEST_P(SUITE##DependencyUsm, ComplexSinglePrecision) {              \
         global::pad = "[          ] ";                                  \
-        EXPECT_TRUE(dependency_controller.run_print_on_fail(            \
+        EXPECT_TRUE(dependency_controller.run(            \
             ::usm_dependency<ComplexSinglePrecisionUsm>, *GetParam())); \
     }                                                                   \
     TEST_P(SUITE##DependencyUsm, ComplexDoublePrecision) {              \
         global::pad = "[          ] ";                                  \
-        EXPECT_TRUE(dependency_controller.run_print_on_fail(            \
+        EXPECT_TRUE(dependency_controller.run(            \
             ::usm_dependency<ComplexDoublePrecisionUsm>, *GetParam())); \
     }\
