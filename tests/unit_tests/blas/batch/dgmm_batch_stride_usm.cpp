@@ -54,8 +54,8 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right, 
             }
             catch (exception const &e) {
                 std::cout << "Caught asynchronous SYCL exception during DGMM_BATCH_STRIDE:\n"
-                          << e.what() << std::endl
-                          << "OpenCL status: " << e.get_cl_code() << std::endl;
+                          << e.what() << std::endl;
+                print_error_code(e);
             }
         }
     };

@@ -54,8 +54,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t incx, int64_t incy, fp
             }
             catch (exception const &e) {
                 std::cout << "Caught asynchronous SYCL exception during AXPY_BATCH_STRIDE:\n"
-                          << e.what() << std::endl
-                          << "OpenCL status: " << e.get_cl_code() << std::endl;
+                          << e.what() << std::endl;
+                print_error_code(e);
             }
         }
     };
