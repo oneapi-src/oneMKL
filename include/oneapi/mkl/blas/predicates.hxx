@@ -1557,6 +1557,7 @@ inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpo
     /* add postchecks to queue here for input args.  */
 #endif
 }
+
 inline void syr2_precondition(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
                               cl::sycl::buffer<float, 1> &x, std::int64_t incx,
                               cl::sycl::buffer<float, 1> &y, std::int64_t incy,
@@ -4748,6 +4749,7 @@ inline void gemm_postcondition(cl::sycl::queue &queue, transpose transa, transpo
     /* add postchecks to queue here for input args.  */
 #endif
 }
+
 inline void gemm_precondition(cl::sycl::queue &queue, transpose transa, transpose transb,
                               std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
                               const half *a, std::int64_t lda, const half *b, std::int64_t ldb,

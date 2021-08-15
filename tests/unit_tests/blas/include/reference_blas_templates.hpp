@@ -291,6 +291,7 @@ template <typename fpa, typename fpc>
 static void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m,
                  const int *n, const int *k, const fpc *alpha, const fpa *a, const int *lda,
                  const fpa *b, const int *ldb, const fpc *beta, fpc *c, const int *ldc);
+
 template <>
 void gemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE transa, CBLAS_TRANSPOSE transb, const int *m,
           const int *n, const int *k, const float *alpha, const half *a, const int *lda,
