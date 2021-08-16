@@ -636,6 +636,11 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
                 cl::sycl::buffer<half, 1> &b, int64_t ldb, int64_t stride_b, half beta,
                 cl::sycl::buffer<half, 1> &c, int64_t ldc, int64_t stride_c, int64_t batch_size) {
     queue.submit([&](cl::sycl::handler &cgh) {
+        if (!verify_support<cl::sycl::half, cl::sycl::half>(queue, cl::sycl::aspect::fp16)) {
+            throw oneapi::mkl::unimplemented(
+                "blas", "cl::sycl::half",
+                "half is not supported by the device or the sycl compiler");
+        }
         auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
@@ -1974,6 +1979,11 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
                            int64_t group_count, int64_t *groupsize,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        if (!verify_support<cl::sycl::half, cl::sycl::half>(queue, cl::sycl::aspect::fp16)) {
+            throw oneapi::mkl::unimplemented(
+                "blas", "cl::sycl::half",
+                "half is not supported by the device or the sycl compiler");
+        }
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2249,6 +2259,11 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                            half beta, half *c, int64_t ldc, int64_t stride_c, int64_t batch_size,
                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        if (!verify_support<cl::sycl::half, cl::sycl::half>(queue, cl::sycl::aspect::fp16)) {
+            throw oneapi::mkl::unimplemented(
+                "blas", "cl::sycl::half",
+                "half is not supported by the device or the sycl compiler");
+        }
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
