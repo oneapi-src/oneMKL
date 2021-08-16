@@ -24,7 +24,7 @@
 #include <type_traits>
 
 // Utility function to verify that a given set of types is supported by the
-// device compiler combintiation
+// device compiler combination
 template <typename verify_type, typename T, typename... Ts>
 bool verify_support(cl::sycl::queue q, cl::sycl::aspect aspect) {
     bool has_aspect = q.get_device().has(aspect);
