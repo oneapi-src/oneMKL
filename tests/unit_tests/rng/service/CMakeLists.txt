@@ -46,7 +46,6 @@ target_include_directories(rng_service_ct
     PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
     PUBLIC ${CMAKE_BINARY_DIR}/bin
 )
-target_link_libraries(rng_service_ct PUBLIC ONEMKL::SYCL::SYCL)
 if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
   add_sycl_to_target(TARGET rng_service_ct SOURCES ${SERVICE_TESTS_SOURCES})
 else()
