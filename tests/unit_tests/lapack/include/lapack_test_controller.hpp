@@ -29,6 +29,8 @@
 #include "lapack_common.hpp"
 #include "oneapi/mkl/exceptions.hpp"
 
+static const size_t max_size_input_buffer = 10000;
+
 template <class T>
 std::istream& operator>>(std::istream& is, T& t) {
     int64_t i;
@@ -146,8 +148,10 @@ struct InputTestController {
                 store_input(input_stream, std::make_index_sequence<arg_count>());
         }
         else { /* search for input file */
-            const char* input = std::getenv("IN");
-            std::ifstream input_stream(input);
+            std::array<char, max_size_input_buffer> input_buffer;
+            size_t input_file_length = 0;
+            getenv_s(&input_file_length, input_buffer.data(), input_buffer.size(), "IN");
+            std::ifstream input_stream(input_buffer.data());
             if (input_stream.fail())
                 std::cout << "Failed to open input file: \'" << input << "\'" << std::endl;
             else
