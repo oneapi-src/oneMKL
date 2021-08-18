@@ -53,8 +53,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
             }
             catch (exception const &e) {
                 std::cout << "Caught asynchronous SYCL exception during SYRK_BATCH_STRIDE:\n"
-                          << e.what() << std::endl
-                          << "OpenCL status: " << e.get_cl_code() << std::endl;
+                          << e.what() << std::endl;
+                print_error_code(e);
             }
         }
     };
@@ -82,9 +82,9 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     beta = rand_scalar<fp>();
     upper_lower = (oneapi::mkl::uplo)(std::rand() % 2);
     if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
-        trans = (std::rand() % 2) == 0 ? oneapi::mkl::transpose::nontrans
-                                       : (std::rand() % 2) == 0 ? oneapi::mkl::transpose::trans
-                                                                : oneapi::mkl::transpose::conjtrans;
+        trans = (std::rand() % 2) == 0   ? oneapi::mkl::transpose::nontrans
+                : (std::rand() % 2) == 0 ? oneapi::mkl::transpose::trans
+                                         : oneapi::mkl::transpose::conjtrans;
     }
     else {
         trans = (std::rand() % 2) == 0 ? oneapi::mkl::transpose::nontrans
@@ -189,8 +189,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     }
     catch (exception const &e) {
         std::cout << "Caught synchronous SYCL exception during SYRK_BATCH_STRIDE:\n"
-                  << e.what() << std::endl
-                  << "OpenCL status: " << e.get_cl_code() << std::endl;
+                  << e.what() << std::endl;
+        print_error_code(e);
     }
 
     catch (const oneapi::mkl::unimplemented &e) {
