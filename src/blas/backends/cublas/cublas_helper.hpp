@@ -28,7 +28,9 @@
 #include <cuda.h>
 #include <cuda_fp16.h>
 #include <complex>
+
 #include "oneapi/mkl/types.hpp"
+#include "runtime_support_helper.hpp"
 
 namespace oneapi {
 namespace mkl {

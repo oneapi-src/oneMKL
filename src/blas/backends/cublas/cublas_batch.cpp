@@ -151,6 +151,11 @@ inline void gemm_batch(Func func, cl::sycl::queue &queue, transpose transa, tran
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, ldb, ldc, stride_a, stride_b, stride_c, batch_size);
     queue.submit([&](cl::sycl::handler &cgh) {
+        if (!verify_support<cl::sycl::half, T>(queue, cl::sycl::aspect::fp16)) {
+            throw oneapi::mkl::unimplemented(
+                "blas", "cl::sycl::half",
+                "half is not supported by the device or the sycl compiler");
+        }
         auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
@@ -502,6 +507,11 @@ inline cl::sycl::event gemm_batch(Func func, cl::sycl::queue &queue, transpose t
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, ldb, ldc, stride_a, stride_b, stride_c, batch_size);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        if (!verify_support<cl::sycl::half, T>(queue, cl::sycl::aspect::fp16)) {
+            throw oneapi::mkl::unimplemented(
+                "blas", "cl::sycl::half",
+                "half is not supported by the device or the sycl compiler");
+        }
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -550,6 +560,11 @@ inline cl::sycl::event gemm_batch(Func func, cl::sycl::queue &queue, transpose *
         overflow_check(m[i], n[i], k[i], lda[i], ldb[i], ldc[i], group_size[i]);
     }
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        if (!verify_support<cl::sycl::half, T>(queue, cl::sycl::aspect::fp16)) {
+            throw oneapi::mkl::unimplemented(
+                "blas", "cl::sycl::half",
+                "half is not supported by the device or the sycl compiler");
+        }
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
