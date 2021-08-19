@@ -17,3 +17,5 @@
 
 # Build
 build/
+docs/_build/
+CMakeCache.txt

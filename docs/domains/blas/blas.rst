@@ -13,5 +13,3 @@ oneMKL provides DPC++ interfaces to the Basic Linear Algebra Subprograms (BLAS) 
     blas-level-3-routines.rst
     blas-like-extensions.rst
 
-
-**Parent topic:** :ref:`onemkl_dense_linear_algebra`
