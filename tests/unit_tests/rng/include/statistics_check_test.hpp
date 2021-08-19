@@ -44,6 +44,7 @@
 
 #define POISSON_ARGS 0.5
 
+using namespace cl;
 template <typename Distr, typename Engine>
 class statistics_test {
 public:
