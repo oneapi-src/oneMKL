@@ -37,6 +37,10 @@ target_compile_options(onemkl_blas PRIVATE ${ONEMKL_BUILD_COPT})
 set_target_properties(onemkl_blas PROPERTIES
   POSITION_INDEPENDENT_CODE ON
 )
-target_link_libraries(onemkl_blas PUBLIC ONEMKL::SYCL::SYCL)
+if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+  add_sycl_to_target(TARGET onemkl_blas SOURCES blas_loader.cpp)
+else()
+  target_link_libraries(onemkl_blas PUBLIC ONEMKL::SYCL::SYCL)
 endif()
 
+endif()
