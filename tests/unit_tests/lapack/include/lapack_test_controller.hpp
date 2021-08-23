@@ -66,23 +66,25 @@ inline std::ostream& operator<<(std::ostream& os, const oneapi::mkl::generate& t
 }
 
 class result_T {
-    public:
-        enum class result { fail, pass, exception };
+public:
+    enum class result { fail, pass, exception };
 
-        result_T() : result_{ result::pass } {}
-        result_T(bool b) : result_{ b ? result::pass : result::fail } {}
-        result_T(const std::exception& e, result t = result::exception) : result_{t}, what_{ e.what() } {}
+    result_T() : result_{ result::pass } {}
+    result_T(bool b) : result_{ b ? result::pass : result::fail } {}
+    result_T(const std::exception& e, result t = result::exception)
+            : result_{ t },
+              what_{ e.what() } {}
 
-        operator bool() const& {
-            return result_ == result::pass;
-        }
+    operator bool() const& {
+        return result_ == result::pass;
+    }
 
-        friend bool operator==(const result_T& lhs, const result_T& rhs);
-        friend std::ostream& operator<<(std::ostream& os, result_T result);
+    friend bool operator==(const result_T& lhs, const result_T& rhs);
+    friend std::ostream& operator<<(std::ostream& os, result_T result);
 
-    private:
-        result result_;
-        std::string what_;
+private:
+    result result_;
+    std::string what_;
 };
 
 inline bool operator==(const result_T& lhs, const result_T& rhs) {
@@ -107,9 +109,15 @@ inline void print_device_info(const sycl::device& device) {
     std::cout << global::pad << "Device Info" << std::endl;
     std::cout << global::pad << device.get_info<sycl::info::device::name>() << std::endl;
     std::cout << global::pad << platform.get_info<sycl::info::platform::name>() << std::endl;
-    std::cout << global::pad << "device version : " << platform.get_info<sycl::info::platform::version>() << std::endl;
-    std::cout << global::pad << "driver version : " << device.get_info<sycl::info::device::driver_version>() << std::endl;
-    std::cout << global::pad << "vendor         : " << platform.get_info<sycl::info::platform::vendor>() << std::endl;
+    std::cout << global::pad
+              << "device version : " << platform.get_info<sycl::info::platform::version>()
+              << std::endl;
+    std::cout << global::pad
+              << "driver version : " << device.get_info<sycl::info::device::driver_version>()
+              << std::endl;
+    std::cout << global::pad
+              << "vendor         : " << platform.get_info<sycl::info::platform::vendor>()
+              << std::endl;
     std::cout << global::pad << std::endl;
 }
 
@@ -170,7 +178,7 @@ struct InputTestController {
 
     template <size_t... I>
     void print_log(size_t input_file_line, result_T result, const ArgTuple_T& args = {},
-                    std::index_sequence<I...> = std::make_index_sequence<0>{}) {
+                   std::index_sequence<I...> = std::make_index_sequence<0>{}) {
         std::cout.clear();
         std::cout << global::pad << "[" << input_file_line << "]: ";
         (..., (std::cout << std::get<I>(args) << " "));
@@ -252,8 +260,7 @@ struct InputTestController {
                 input_file_line++;
                 result_T result = call_test(tp, dev, args);
                 if (!result) {
-                    print_log(input_file_line, result, args,
-                               std::make_index_sequence<arg_count>());
+                    print_log(input_file_line, result, args, std::make_index_sequence<arg_count>());
                 }
                 else {
                     global::log.str("");

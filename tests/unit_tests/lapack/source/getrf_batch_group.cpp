@@ -153,8 +153,7 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
         auto group_size = group_sizes_vec[group_id];
         for (int64_t local_id = 0; local_id < group_size;
              local_id++, global_id++, A_iter++, ipiv_iter++, A_initial_iter++) {
-            if (!check_getrf_accuracy(m, n, *A_iter, lda, *ipiv_iter,
-                                      *A_initial_iter)) {
+            if (!check_getrf_accuracy(m, n, *A_iter, lda, *ipiv_iter, *A_initial_iter)) {
                 global::log << "batch routine (" << global_id << ", " << group_id << ", "
                             << local_id << ") (global_id, group_id, local_id) failed" << std::endl;
                 result = false;

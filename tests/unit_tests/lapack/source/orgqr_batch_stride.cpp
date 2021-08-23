@@ -97,7 +97,7 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t k, int64_t 
 
     bool result = true;
     for (int64_t i = 0; i < batch_size; i++) {
-        auto A_ = copy_vector(A, lda*n, i*stride_a);
+        auto A_ = copy_vector(A, lda * n, i * stride_a);
         if (!check_or_un_gqr_accuracy(m, n, A_, lda)) {
             global::log << "batch routine index " << i << " failed" << std::endl;
             result = false;

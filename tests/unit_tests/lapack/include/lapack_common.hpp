@@ -99,8 +99,8 @@ inline std::complex<double> rand_scalar(uint64_t& seed) {
 }
 
 template <typename fp>
-void rand_matrix(uint64_t& seed, oneapi::mkl::transpose trans, int64_t m, int64_t n, std::vector<fp>& M,
-                 int64_t ld, int64_t offset = 0) {
+void rand_matrix(uint64_t& seed, oneapi::mkl::transpose trans, int64_t m, int64_t n,
+                 std::vector<fp>& M, int64_t ld, int64_t offset = 0) {
     if (trans == oneapi::mkl::transpose::nontrans)
         for (int64_t col = 0; col < n; col++)
             for (int64_t row = 0; row < m; row++)
@@ -112,8 +112,8 @@ void rand_matrix(uint64_t& seed, oneapi::mkl::transpose trans, int64_t m, int64_
 }
 
 template <typename fp>
-void rand_symmetric_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, std::vector<fp>& M, int64_t ld,
-                           int64_t offset = 0) {
+void rand_symmetric_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, std::vector<fp>& M,
+                           int64_t ld, int64_t offset = 0) {
     using fp_real = typename complex_info<fp>::real_type;
 
     if (uplo == oneapi::mkl::uplo::upper)
@@ -127,8 +127,8 @@ void rand_symmetric_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, st
 }
 
 template <typename fp>
-void rand_hermitian_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, std::vector<fp>& M, int64_t ld,
-                           int64_t offset = 0) {
+void rand_hermitian_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, std::vector<fp>& M,
+                           int64_t ld, int64_t offset = 0) {
     using fp_real = typename complex_info<fp>::real_type;
 
     rand_symmetric_matrix(seed, uplo, n, M, ld, offset);
@@ -137,8 +137,8 @@ void rand_hermitian_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, st
 }
 
 template <typename fp>
-void rand_pos_def_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, std::vector<fp>& M, int64_t ld,
-                         int64_t offset = 0) {
+void rand_pos_def_matrix(uint64_t& seed, oneapi::mkl::uplo uplo, int64_t n, std::vector<fp>& M,
+                         int64_t ld, int64_t offset = 0) {
     using fp_real = typename complex_info<fp>::real_type;
 
     rand_hermitian_matrix(seed, uplo, n, M, ld, offset);
@@ -179,7 +179,6 @@ template <typename T>
 std::vector<T> copy_vector(const std::vector<T>& vec, int64_t count, int64_t offset) {
     return std::vector<T>(vec.begin() + offset, vec.begin() + offset + count);
 }
-
 
 template <typename buffer_T>
 struct is_buf {
