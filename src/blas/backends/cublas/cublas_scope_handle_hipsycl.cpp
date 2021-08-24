@@ -23,9 +23,11 @@ cublas_handle::~cublas_handle() noexcept(false) {
 
 thread_local cublas_handle CublasScopedContextHandler::handle_helper = cublas_handle{};
 
-CublasScopedContextHandler::CublasScopedContextHandler(cl::sycl::queue queue, cl::sycl::interop_handle& ih): interop_h(ih){}
+CublasScopedContextHandler::CublasScopedContextHandler(cl::sycl::queue queue,
+                                                       cl::sycl::interop_handle &ih)
+        : interop_h(ih) {}
 
-cublasHandle_t CublasScopedContextHandler::get_handle(const cl::sycl::queue &queue){
+cublasHandle_t CublasScopedContextHandler::get_handle(const cl::sycl::queue &queue) {
     cl::sycl::device device = queue.get_device();
     int current_device = interop_h.get_native_device<cl::sycl::backend::cuda>();
     CUstream streamId = get_stream(queue);
@@ -61,9 +63,8 @@ cublasHandle_t CublasScopedContextHandler::get_handle(const cl::sycl::queue &que
 }
 
 CUstream CublasScopedContextHandler::get_stream(const cl::sycl::queue &queue) {
-        return interop_h.get_native_queue<cl::sycl::backend::cuda>();
-    }
-
+    return interop_h.get_native_queue<cl::sycl::backend::cuda>();
+}
 
 } // namespace cublas
 } // namespace blas

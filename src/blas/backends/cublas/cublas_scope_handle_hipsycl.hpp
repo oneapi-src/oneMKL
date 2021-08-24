@@ -29,7 +29,7 @@ namespace blas {
 namespace cublas {
 
 struct cublas_handle {
-    using handle_container_t = std::unordered_map<int, std::atomic<cublasHandle_t>* >;
+    using handle_container_t = std::unordered_map<int, std::atomic<cublasHandle_t> *>;
     handle_container_t cublas_handle_mapper_{};
     ~cublas_handle() noexcept(false);
 };
@@ -66,14 +66,14 @@ class CublasScopedContextHandler {
     CUstream get_stream(const cl::sycl::queue &queue);
 
 public:
-    CublasScopedContextHandler(cl::sycl::queue queue, cl::sycl::interop_handle& ih);
+    CublasScopedContextHandler(cl::sycl::queue queue, cl::sycl::interop_handle &ih);
 
     cublasHandle_t get_handle(const cl::sycl::queue &queue);
 
     // This is a work-around function for reinterpret_casting the memory. This
     // will be fixed when SYCL-2020 has been implemented for Pi backend.
-    template<typename T, typename U>
-    inline T get_mem( U acc) {
+    template <typename T, typename U>
+    inline T get_mem(U acc) {
         return reinterpret_cast<T>(interop_h.get_native_mem<cl::sycl::backend::cuda>(acc));
     }
 };
