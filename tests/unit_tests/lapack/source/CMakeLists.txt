@@ -114,6 +114,7 @@ set(LAPACK_SOURCES
 "unmrq.cpp"
 "unmtr.cpp"
 )
+endif()
 
 if(BUILD_SHARED_LIBS)
   add_library(lapack_source_rt OBJECT ${LAPACK_SOURCES})
