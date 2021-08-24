@@ -113,7 +113,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::mkl::jo
         int64_t ldusv = m;
         reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, m, n, n,
                         1.0, US.data(), ldus, Vt.data(), ldvt, 0.0, USV.data(), ldusv);
-        if (rel_mat_err_check(m, n, A_initial, lda, USV, ldusv)) {
+        if (!rel_mat_err_check(m, n, A_initial, lda, USV, ldusv)) {
             global::log << "Factorization check failed" << std::endl;
             result = false;
         }

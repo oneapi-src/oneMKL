@@ -19,6 +19,52 @@
 
 # Build object from all test sources
 
+# The following tests are skipped on windows, see docs for more info
+# geqrf geqrf_Batch_group geqrf_Batch_stride gerqf getrf getrf_Batch_group getrf_Batch_stride trtrs
+if(WIN32)
+set(LAPACK_SOURCES 
+"gebrd.cpp"
+"gesvd.cpp"
+"getri.cpp"
+"getri_batch_group.cpp"
+"getri_batch_stride.cpp"
+"getrs.cpp"
+"getrs_batch_group.cpp"
+"getrs_batch_stride.cpp"
+"heevd.cpp"
+"hegvd.cpp"
+"hetrd.cpp"
+"hetrf.cpp"
+"orgbr.cpp"
+"orgqr.cpp"
+"orgqr_batch_group.cpp"
+"orgqr_batch_stride.cpp"
+"orgtr.cpp"
+"ormqr.cpp"
+"ormrq.cpp"
+"ormtr.cpp"
+"potrf.cpp"
+"potrf_batch_group.cpp"
+"potrf_batch_stride.cpp"
+"potri.cpp"
+"potrs.cpp"
+"potrs_batch_group.cpp"
+"potrs_batch_stride.cpp"
+"syevd.cpp"
+"sygvd.cpp"
+"sytrd.cpp"
+"sytrf.cpp"
+"ungbr.cpp"
+"ungqr.cpp"
+"ungqr_batch_group.cpp"
+"ungqr_batch_stride.cpp"
+"ungtr.cpp"
+"unmqr.cpp"
+"unmrq.cpp"
+"unmtr.cpp"
+)
+
+else()
 set(LAPACK_SOURCES
 "gebrd.cpp"
 "geqrf.cpp"
