@@ -5,11 +5,11 @@ dotu
 
 Computes the dot product of two complex vectors.
 
-.. _onemkl_blas_dotu_description:
 
-.. rubric:: Description
+Description
+***********
 
-The ``dotu`` routines perform a dot product between two complex vectors:
+The ``dotu`` routines perform a ``dot`` product between two complex vectors:
 
 .. math::
 
@@ -17,19 +17,19 @@ The ``dotu`` routines perform a dot product between two complex vectors:
 
 ``dotu`` supports the following precisions.
 
-   .. list-table:: 
-      :header-rows: 1
+.. list-table::
+   :header-rows: 1
 
-      * -  T 
-      * -  ``std::complex<float>`` 
-      * -  ``std::complex<double>`` 
+   * -  T
+   * -  ``std::complex<float>``
+   * -  ``std::complex<double>``
 
-.. _onemkl_blas_dotu_buffer:
 
 dotu (Buffer Version)
----------------------
+*********************
 
-.. rubric:: Syntax
+Syntax
+------
 
 .. code-block:: cpp
 
@@ -54,47 +54,41 @@ dotu (Buffer Version)
                  sycl::buffer<T,1> &result)
    }
 
-.. container:: section
 
-   .. rubric:: Input Parameters
+Input Parameters
+----------------
 
-   queue
-      The queue where the routine should be executed.
+queue
+   The queue where the routine should be executed.
 
-   n
-      Number of elements in vectors ``x`` and ``y``.
+n
+   Number of elements in vectors ``x`` and ``y``.
 
-   x
-      Buffer holding input vector ``x``. The buffer must be of size at
-      least (1 + (``n`` - 1)*abs(``incx``)). See :ref:`matrix-storage` for
-      more details.
+x
+   Buffer holding input vector ``x``. The buffer must be of size at least (1 + (``n`` - 1)*abs(``incx``)). See :ref:`matrix-storage` for more details.
 
-   incx
-      Stride of vector ``x``.
+incx
+   Stride of vector ``x``.
 
-   y
-      Buffer holding input vector ``y``. The buffer must be of size at
-      least (1 + (``n`` - 1)*abs(``incy``)). See :ref:`matrix-storage` for
-      more details.
+y
+   Buffer holding input vector ``y``. The buffer must be of size at least (1 + (``n`` - 1)*abs(``incy``)). See :ref:`matrix-storage` for more details.
 
-   incy
-      Stride of vector ``y``.
+incy
+   Stride of vector ``y``.
 
 
-.. container:: section
+Output Parameters
+-----------------
 
-   .. rubric:: Output Parameters
+result
+   Buffer where the result (a scalar) is stored.
 
-   result
-      Buffer where the result (a scalar) is stored.
-
-
-.. _onemkl_blas_dotu_usm:
 
 dotu (USM Version)
-------------------
+******************
 
-.. rubric:: Syntax
+Syntax
+------
 
 .. code-block:: cpp
 
@@ -121,50 +115,40 @@ dotu (USM Version)
                         const sycl::vector_class<sycl::event> &dependencies = {})
    }
 
-.. container:: section
 
-   .. rubric:: Input Parameters
+Input Parameters
+----------------
 
-   queue
-      The queue where the routine should be executed.
+queue
+   The queue where the routine should be executed.
 
-   n
-      Number of elements in vectors ``x`` and ``y``.
+n
+   Number of elements in vectors ``x`` and ``y``.
 
-   x
-      Pointer to the input vector ``x``. The array holding input
-      vector ``x`` must be of size at least (1 + (``n`` -
-      1)*abs(``incx``)). See :ref:`matrix-storage` for
-      more details.
+x
+   Pointer to the input vector ``x``. The array holding input vector ``x`` must be of size at least (1 + (``n`` - 1)*abs(``incx``)). See :ref:`matrix-storage` for more details.
 
-   incx
-      Stride of vector ``x``.
+incx
+   Stride of vector ``x``.
 
-   y
-      Pointer to input vector ``y``. The array holding input vector
-      ``y`` must be of size at least (1 + (``n`` - 1)*abs(``incy``)).
-      See :ref:`matrix-storage` for
-      more details.
+y
+   Pointer to input vector ``y``. The array holding input vector ``y`` must be of size at least (1 + (``n`` - 1)*abs(``incy``)). See :ref:`matrix-storage` for more details.
 
-   incy
-      Stride of vector ``y``.
+incy
+   Stride of vector ``y``.
 
-   dependencies
-      List of events to wait for before starting computation, if any.
-      If omitted, defaults to no dependencies.
-
-.. container:: section
-
-   .. rubric:: Output Parameters
-
-   result
-      Pointer to where the result (a scalar) is stored.
-
-.. container:: section
-
-   .. rubric:: Return Values
-
-   Output event to wait on to ensure computation is complete.
+dependencies
+   List of events to wait for before starting computation, if any. If omitted, defaults to no dependencies.
 
 
-   **Parent topic:** :ref:`blas-level-1-routines`
+Output Parameters
+-----------------
+
+result
+   Pointer to where the result (a scalar) is stored.
+
+
+Return Values
+-------------
+
+Output event to wait on to ensure computation is complete.

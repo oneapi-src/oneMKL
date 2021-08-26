@@ -5,9 +5,8 @@ axpy
 
 Computes a vector-scalar product and adds the result to a vector.
 
-.. _onemkl_blas_axpy_description:
-      
-.. rubric:: Description
+Description
+***********
 
 The ``axpy`` routines compute a scalar-vector product and add the result
 to a vector:
@@ -18,27 +17,28 @@ to a vector:
 
 where:
 
-``x`` and ``y`` are vectors of ``n`` elements,
+- ``x`` and ``y`` are vectors of ``n`` elements,
 
-``alpha`` is a scalar.
+- ``alpha`` is a scalar.
 
 ``axpy`` supports the following precisions.
 
-   .. list-table:: 
-      :header-rows: 1
+.. list-table::
+   :header-rows: 1
 
-      * -  T 
-      * -  ``float`` 
-      * -  ``double`` 
-      * -  ``std::complex<float>`` 
-      * -  ``std::complex<double>`` 
+   * -  T
+   * -  ``float``
+   * -  ``double``
+   * -  ``std::complex<float>``
+   * -  ``std::complex<double>``
 
-.. _onemkl_blas_axpy_buffer:
+
 
 axpy (Buffer Version)
----------------------
+*********************
 
-.. rubric:: Syntax
+Syntax
+------
 
 .. code-block:: cpp
 
@@ -63,49 +63,44 @@ axpy (Buffer Version)
                  std::int64_t incy)
    }
 
-.. container:: section
+Input Parameters
+----------------
 
-   .. rubric:: Input Parameters
+queue
+   The queue where the routine should be executed.
 
-   queue
-      The queue where the routine should be executed.
+n
+   Number of elements in vector ``x``.
 
-   n
-      Number of elements in vector ``x``.
+alpha
+   Specifies the scalar alpha.
 
-   alpha
-      Specifies the scalar alpha.
+x
+   Buffer holding input vector ``x``. The buffer must be of size at least (1 + (``n`` – 1)*abs(``incx``)). See :ref:`matrix-storage` for more details.
 
-   x
-      Buffer holding input vector ``x``. The buffer must be of size at least
-      (1 + (``n`` – 1)*abs(``incx``)). See :ref:`matrix-storage` for
-      more details.
+incx
+   Stride of vector ``x``.
 
-   incx
-      Stride of vector ``x``.
+y
+   Buffer holding input vector ``y``. The buffer must be of size at least (1 + (``n`` – 1)*abs(``incy``)). See :ref:`matrix-storage` for more details.
 
-   y
-      Buffer holding input vector ``y``. The buffer must be of size at least
-      (1 + (``n`` – 1)*abs(``incy``)). See :ref:`matrix-storage` for
-      more details.
-
-   incy
-      Stride of vector ``y``.
-
-.. container:: section
-
-   .. rubric:: Output Parameters
-
-   y
-      Buffer holding the updated vector ``y``.
+incy
+   Stride of vector ``y``.
 
 
-.. _onemkl_blas_axpy_usm:
+Output Parameters
+-----------------
+
+y
+   Buffer holding the updated vector ``y``.
+
+
 
 axpy (USM Version)
-------------------
+******************
 
-.. rubric:: Syntax
+Syntax
+------
 
 .. code-block:: cpp
 
@@ -132,53 +127,44 @@ axpy (USM Version)
                         const sycl::vector_class<sycl::event> &dependencies = {})
    }
 
-.. container:: section
 
-   .. rubric:: Input Parameters
+Input Parameters
+----------------
 
-   queue
-      The queue where the routine should be executed.
+queue
+   The queue where the routine should be executed.
 
-   n
-      Number of elements in vector ``x``.
+n
+   Number of elements in vector ``x``.
 
-   alpha
-      Specifies the scalar alpha.
+alpha
+   Specifies the scalar alpha.
 
-   x
-      Pointer to the input vector ``x``. The array holding the vector
-      ``x`` must be of size at least (1 + (``n`` – 1)*abs(``incx``)). See
-      :ref:`matrix-storage` for
-      more details.
+x
+   Pointer to the input vector ``x``. The array holding the vector ``x`` must be of size at least (1 + (``n`` – 1)*abs(``incx``)). See :ref:`matrix-storage` for more details.
 
-   incx
-      Stride of vector ``x``.
+incx
+   Stride of vector ``x``.
 
-   y
-      Pointer to the input vector ``y``. The array holding the vector
-      ``y`` must be of size at least (1 + (``n`` – 1)*abs(``incy``)). See
-      :ref:`matrix-storage` for
-      more details.
+y
+   Pointer to the input vector ``y``. The array holding the vector ``y`` must be of size at least (1 + (``n`` – 1)*abs(``incy``)). See :ref:`matrix-storage` for more details.
 
-   incy
-      Stride of vector ``y``.
+incy
+   Stride of vector ``y``.
 
-   dependencies
-      List of events to wait for before starting computation, if any.
-      If omitted, defaults to no dependencies.
-
-.. container:: section
-
-   .. rubric:: Output Parameters
-
-   y
-      Pointer to the updated vector ``y``.
-
-.. container:: section
-
-   .. rubric:: Return Values
-
-   Output event to wait on to ensure computation is complete.
+dependencies
+   List of events to wait for before starting computation, if any.
+   If omitted, defaults to no dependencies.
 
 
-   **Parent topic:** :ref:`blas-level-1-routines`
+Output Parameters
+-----------------
+
+y
+   Pointer to the updated vector ``y``.
+
+
+Return Values
+-------------
+
+Output event to wait on to ensure computation is complete.

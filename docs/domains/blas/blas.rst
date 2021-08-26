@@ -1,7 +1,7 @@
 .. _onemkl_blas:
 
 BLAS Routines
-+++++++++++++
+=============
 
 oneMKL provides DPC++ interfaces to the Basic Linear Algebra Subprograms (BLAS) routines (Level1, Level2, Level3), as well as several BLAS-like extension routines.
 
