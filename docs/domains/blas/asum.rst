@@ -5,9 +5,8 @@ asum
 
 Computes the sum of magnitudes of the vector elements.
 
-.. _onemkl_blas_asum_description:
-
-.. rubric:: Description
+Description
+***********
 
 The ``asum`` routine computes the sum of the magnitudes of elements of a
 real vector, or the sum of magnitudes of the real and imaginary parts
@@ -15,32 +14,32 @@ of elements of a complex vector:
 
 .. math::
 
-   result = \sum_{i=1}^{n}(|Re(x_i)| + |Im(x_i)|) 
-   
+   result = \sum_{i=1}^{n}(|Re(x_i)| + |Im(x_i)|)
+
 where ``x`` is a vector with ``n`` elements.
 
 ``asum`` supports the following precisions for data:
 
-   .. list-table:: 
-      :header-rows: 1
+.. list-table::
+   :header-rows: 1
 
-      * -  T 
-        -  T_res 
-      * -  ``float`` 
-        -  ``float`` 
-      * -  ``double`` 
-        -  ``double`` 
-      * -  ``std::complex<float>`` 
-        -  ``float`` 
-      * -  ``std::complex<double>`` 
-        -  ``double`` 
+   * -  T
+     -  T_res
+   * -  ``float``
+     -  ``float``
+   * -  ``double``
+     -  ``double``
+   * -  ``std::complex<float>``
+     -  ``float``
+   * -  ``std::complex<double>``
+     -  ``double``
 
-.. _onemkl_blas_asum_buffer:
 
 asum (Buffer Version)
----------------------
+*********************
 
-.. rubric:: Syntax
+Syntax
+------
 
 .. code-block:: cpp
 
@@ -61,39 +60,36 @@ asum (Buffer Version)
                  sycl::buffer<T_res,1> &result)
    }
 
-.. container:: section
 
-   .. rubric:: Input Parameters
-   
-   queue
-      The queue where the routine should be executed.
+Input Parameters
+----------------
 
-   n
-      Number of elements in vector ``x``.
+queue
+   The queue where the routine should be executed.
 
-   x
-      Buffer holding input vector ``x``. The buffer must be of size at
-      least (1 + (``n`` - 1)*abs(``incx``)). See :ref:`matrix-storage` for
-      more details.
+n
+   Number of elements in vector ``x``.
 
-   incx
-      Stride of vector ``x``.
+x
+   Buffer holding input vector ``x``. The buffer must be of size at least (1 + (``n`` - 1)*abs(``incx``)). See :ref:`matrix-storage` for more details.
 
-.. container:: section
-
-   .. rubric:: Output Parameters
-
-   result
-      Buffer where the scalar result is stored (the sum of magnitudes of
-      the real and imaginary parts of all elements of the vector).
+incx
+   Stride of vector ``x``.
 
 
-.. _onemkl_blas_asum_usm:
+Output Parameters
+-----------------
+
+result
+   Buffer where the scalar result is stored (the sum of magnitudes of the real and imaginary parts of all elements of the vector).
+
+
 
 asum (USM Version)
-------------------
+******************
 
-.. rubric:: Syntax
+Syntax
+------
 
 .. code-block:: cpp
 
@@ -116,43 +112,38 @@ asum (USM Version)
                         const sycl::vector_class<sycl::event> &dependencies = {})
    }
 
-.. container:: section
 
-   .. rubric:: Input Parameters
+Input Parameters
+----------------
 
-   queue
-      The queue where the routine should be executed.
+queue
+   The queue where the routine should be executed.
 
-   n
-      Number of elements in vector ``x``.
+n
+   Number of elements in vector ``x``.
 
-   x
-      Pointer to input vector ``x``. The array holding the vector
-      ``x`` must be of size at least (1 + (``n`` - 1)*abs(``incx``)).
-      See :ref:`matrix-storage` for
-      more details.
+x
+   Pointer to input vector ``x``. The array holding the vector ``x`` must be of size at least (1 + (``n`` - 1)*abs(``incx``)). See :ref:`matrix-storage` for more details.
 
-   incx
-      Stride of vector ``x``.
+incx
+   Stride of vector ``x``.
 
-   dependencies
-      List of events to wait for before starting computation, if any.
-      If omitted, defaults to no dependencies.
-
-.. container:: section
-
-   .. rubric:: Output Parameters
-
-   result
-      Pointer to the output matrix where the scalar result is stored
-      (the sum of magnitudes of the real and imaginary parts of all
-      elements of the vector).
-
-.. container:: section
-
-   .. rubric:: Return Values
-
-   Output event to wait on to ensure computation is complete.
+dependencies
+   List of events to wait for before starting computation, if any.
+   If omitted, defaults to no dependencies.
 
 
-   **Parent topic:** :ref:`blas-level-1-routines`
+Output Parameters
+-----------------
+
+result
+   Pointer to the output matrix where the scalar result is stored
+   (the sum of magnitudes of the real and imaginary parts of all
+   elements of the vector).
+
+
+Return Values
+-------------
+
+Output event to wait on to ensure computation is complete.
+
