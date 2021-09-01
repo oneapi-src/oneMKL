@@ -69,13 +69,12 @@ GEMM_LAUNCHER(std::complex<double>, cublasZgemm)
 
 #undef GEMM_LAUNCHER
 
-template <typename Func, typename T_A, typename T_B, typename T_C, typename DATATYPE_A,
-          typename DATATYPE_B, typename DATATYPE_C>
-inline void gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
-                 cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                 int64_t k, T_C alpha, cl::sycl::buffer<T_A, 1> &a, int64_t lda,
-                 cl::sycl::buffer<T_B, 1> &b, int64_t ldb, T_C beta, cl::sycl::buffer<T_C, 1> &c,
-                 int64_t ldc) {
+template <typename T_A, typename T_B, typename T_C, typename DATATYPE_A, typename DATATYPE_B,
+          typename DATATYPE_C>
+inline void gemm_ex(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C, cl::sycl::queue &queue,
+                    transpose transa, transpose transb, int64_t m, int64_t n, int64_t k, T_C alpha,
+                    cl::sycl::buffer<T_A, 1> &a, int64_t lda, cl::sycl::buffer<T_B, 1> &b,
+                    int64_t ldb, T_C beta, cl::sycl::buffer<T_C, 1> &c, int64_t ldc) {
     using cuDataType_A = typename CudaEquivalentType<T_A>::Type;
     using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
     using cuDataType_C = typename CudaEquivalentType<T_C>::Type;
@@ -95,7 +94,7 @@ inline void gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
             auto b_ = sc.get_mem<cuDataType_B *>(b_acc);
             auto c_ = sc.get_mem<cuDataType_C *>(c_acc);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_operation(transa),
+            CUBLAS_ERROR_FUNC(cublasGemmEx, err, handle, get_cublas_operation(transa),
                               get_cublas_operation(transb), m, n, k, (cuDataType_C *)&alpha, a_,
                               DT_A, lda, b_, DT_B, ldb, (cuDataType_C *)&beta, c_, DT_C, ldc, DT_C,
                               CUBLAS_GEMM_DEFAULT);
@@ -103,18 +102,17 @@ inline void gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
     });
 }
 
-#define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, CUBLAS_ROUTINE, CUDADATATYPE_A, CUDADATATYPE_B, \
-                         CUDADATATYPE_C)                                                         \
+#define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C) \
     void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,  \
               int64_t k, TYPE_C alpha, cl::sycl::buffer<TYPE_A, 1> &a, int64_t lda,              \
               cl::sycl::buffer<TYPE_B, 1> &b, int64_t ldb, TYPE_C beta,                          \
               cl::sycl::buffer<TYPE_C, 1> &c, int64_t ldc) {                                     \
-        gemm(CUBLAS_ROUTINE, CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa,      \
-             transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);                              \
+        gemm_ex(CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa, transb, m, n, k,  \
+                alpha, a, lda, b, ldb, beta, c, ldc);                                            \
     }
 
-GEMM_EX_LAUNCHER(half, half, float, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
-GEMM_EX_LAUNCHER(half, half, half, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
+GEMM_EX_LAUNCHER(half, half, float, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
+GEMM_EX_LAUNCHER(half, half, half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
 
 #undef GEMM_EX_LAUNCHER
 
@@ -467,13 +465,14 @@ GEMM_LAUNCHER_USM(std::complex<double>, cublasZgemm)
 
 #undef GEMM_LAUNCHER_USM
 
-template <typename Func, typename T_A, typename T_B, typename T_C, typename DATATYPE_A,
-          typename DATATYPE_B, typename DATATYPE_C>
-inline cl::sycl::event gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
-                            cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
-                            int64_t n, int64_t k, T_C alpha, const T_A *a, int64_t lda,
-                            const T_B *b, int64_t ldb, T_C beta, T_C *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+template <typename T_A, typename T_B, typename T_C, typename DATATYPE_A, typename DATATYPE_B,
+          typename DATATYPE_C>
+inline cl::sycl::event gemm_ex_usm(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
+                                   cl::sycl::queue &queue, transpose transa, transpose transb,
+                                   int64_t m, int64_t n, int64_t k, T_C alpha, const T_A *a,
+                                   int64_t lda, const T_B *b, int64_t ldb, T_C beta, T_C *c,
+                                   int64_t ldc,
+                                   const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     using cuDataType_A = typename CudaEquivalentType<T_A>::Type;
     using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
     using cuDataType_C = typename CudaEquivalentType<T_C>::Type;
@@ -489,7 +488,7 @@ inline cl::sycl::event gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYP
             auto b_ = reinterpret_cast<const cuDataType_B *>(b);
             auto c_ = reinterpret_cast<cuDataType_C *>(c);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_operation(transa),
+            CUBLAS_ERROR_FUNC(cublasGemmEx, err, handle, get_cublas_operation(transa),
                               get_cublas_operation(transb), m, n, k, (cuDataType_C *)&alpha, a_,
                               DT_A, lda, b_, DT_B, ldb, (cuDataType_C *)&beta, c_, DT_C, ldc, DT_C,
                               CUBLAS_GEMM_DEFAULT);
@@ -498,18 +497,18 @@ inline cl::sycl::event gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYP
     return done;
 }
 
-#define GEMM_EX_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, CUBLAS_ROUTINE, CUDADATATYPE_A,               \
-                             CUDADATATYPE_B, CUDADATATYPE_C)                                       \
-    cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,    \
-                         int64_t n, int64_t k, TYPE_C alpha, const TYPE_A *a, int64_t lda,         \
-                         const TYPE_B *b, int64_t ldb, TYPE_C beta, TYPE_C *c, int64_t ldc,        \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {            \
-        return gemm(CUBLAS_ROUTINE, CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa, \
-                    transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);           \
+#define GEMM_EX_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, CUDADATATYPE_A, CUDADATATYPE_B,              \
+                             CUDADATATYPE_C)                                                      \
+    cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,   \
+                         int64_t n, int64_t k, TYPE_C alpha, const TYPE_A *a, int64_t lda,        \
+                         const TYPE_B *b, int64_t ldb, TYPE_C beta, TYPE_C *c, int64_t ldc,       \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+        return gemm_ex_usm(CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa, transb, \
+                           m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);           \
     }
 
-GEMM_EX_LAUNCHER_USM(half, half, float, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
-GEMM_EX_LAUNCHER_USM(half, half, half, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
+GEMM_EX_LAUNCHER_USM(half, half, float, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
+GEMM_EX_LAUNCHER_USM(half, half, half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
 
 #undef GEMM_EX_LAUNCHER_USM
 
@@ -880,28 +879,26 @@ GEMM_LAUNCHER(std::complex<double>, cublasZgemm)
 
 #undef GEMM_LAUNCHER
 
-template <typename Func, typename T_A, typename T_B, typename T_C, typename DATATYPE_A,
-          typename DATATYPE_B, typename DATATYPE_C>
-inline void gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
-                 cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                 int64_t k, T_C alpha, cl::sycl::buffer<T_A, 1> &a, int64_t lda,
-                 cl::sycl::buffer<T_B, 1> &b, int64_t ldb, T_C beta, cl::sycl::buffer<T_C, 1> &c,
-                 int64_t ldc) {
+template <typename T_A, typename T_B, typename T_C, typename DATATYPE_A, typename DATATYPE_B,
+          typename DATATYPE_C>
+inline void gemm_ex(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C, cl::sycl::queue &queue,
+                    transpose transa, transpose transb, int64_t m, int64_t n, int64_t k, T_C alpha,
+                    cl::sycl::buffer<T_A, 1> &a, int64_t lda, cl::sycl::buffer<T_B, 1> &b,
+                    int64_t ldb, T_C beta, cl::sycl::buffer<T_C, 1> &c, int64_t ldc) {
     throw unimplemented("blas", "gemm", "for row_major layout");
 }
 
-#define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, CUBLAS_ROUTINE, CUDADATATYPE_A, CUDADATATYPE_B, \
-                         CUDADATATYPE_C)                                                         \
+#define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C) \
     void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,  \
               int64_t k, TYPE_C alpha, cl::sycl::buffer<TYPE_A, 1> &a, int64_t lda,              \
               cl::sycl::buffer<TYPE_B, 1> &b, int64_t ldb, TYPE_C beta,                          \
               cl::sycl::buffer<TYPE_C, 1> &c, int64_t ldc) {                                     \
-        gemm(CUBLAS_ROUTINE, CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa,      \
-             transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);                              \
+        gemm_ex(CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa, transb, m, n, k,  \
+                alpha, a, lda, b, ldb, beta, c, ldc);                                            \
     }
 
-GEMM_EX_LAUNCHER(half, half, float, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
-GEMM_EX_LAUNCHER(half, half, half, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
+GEMM_EX_LAUNCHER(half, half, float, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
+GEMM_EX_LAUNCHER(half, half, half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
 
 #undef GEMM_EX_LAUNCHER
 
@@ -1112,28 +1109,29 @@ GEMM_LAUNCHER_USM(std::complex<double>, cublasZgemm)
 
 #undef GEMM_LAUNCHER_USM
 
-template <typename Func, typename T_A, typename T_B, typename T_C, typename DATATYPE_A,
-          typename DATATYPE_B, typename DATATYPE_C>
-inline cl::sycl::event gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
-                            cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
-                            int64_t n, int64_t k, T_C alpha, const T_A *a, int64_t lda,
-                            const T_B *b, int64_t ldb, T_C beta, T_C *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+template <typename T_A, typename T_B, typename T_C, typename DATATYPE_A, typename DATATYPE_B,
+          typename DATATYPE_C>
+inline cl::sycl::event gemm_ex_usm(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
+                                   cl::sycl::queue &queue, transpose transa, transpose transb,
+                                   int64_t m, int64_t n, int64_t k, T_C alpha, const T_A *a,
+                                   int64_t lda, const T_B *b, int64_t ldb, T_C beta, T_C *c,
+                                   int64_t ldc,
+                                   const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "gemm", "for row_major layout");
 }
 
-#define GEMM_EX_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, CUBLAS_ROUTINE, CUDADATATYPE_A,               \
-                             CUDADATATYPE_B, CUDADATATYPE_C)                                       \
-    cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,    \
-                         int64_t n, int64_t k, TYPE_C alpha, const TYPE_A *a, int64_t lda,         \
-                         const TYPE_B *b, int64_t ldb, TYPE_C beta, TYPE_C *c, int64_t ldc,        \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {            \
-        return gemm(CUBLAS_ROUTINE, CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa, \
-                    transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);           \
+#define GEMM_EX_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, CUDADATATYPE_A, CUDADATATYPE_B,              \
+                             CUDADATATYPE_C)                                                      \
+    cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,   \
+                         int64_t n, int64_t k, TYPE_C alpha, const TYPE_A *a, int64_t lda,        \
+                         const TYPE_B *b, int64_t ldb, TYPE_C beta, TYPE_C *c, int64_t ldc,       \
+                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+        return gemm_ex_usm(CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa, transb, \
+                           m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);           \
     }
 
-GEMM_EX_LAUNCHER_USM(half, half, float, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
-GEMM_EX_LAUNCHER_USM(half, half, half, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
+GEMM_EX_LAUNCHER_USM(half, half, float, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
+GEMM_EX_LAUNCHER_USM(half, half, half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
 
 #undef GEMM_EX_LAUNCHER_USM
 
