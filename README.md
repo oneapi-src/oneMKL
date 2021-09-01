@@ -504,7 +504,7 @@ conan build ..
 
 2. Build and install all required [dependencies](#software-requirements). 
 
-Then:
+### Building for MKL
 
 - On Linux*
 ```bash
@@ -531,6 +531,36 @@ ninja
 ctest
 cmake --install . --prefix <path_to_install_dir>
 ```
+
+### Building for CUDA
+
+- On Linux*
+
+With the CUBLAS backend:
+
+```bash
+# Inside <path to onemkl>
+mkdir build && cd build
+export CXX=<path_to_dpcpp_compiler>/bin/dpcpp;
+cmake .. -DENABLE_CUBLAS_BACKEND=ON   \
+         -DENABLE_MKLCPU_BACKEND=OFF  \ # disable Intel MKL CPU backend
+         -DENABLE_MKLGPU_BACKEND=OFF    # disable Intel MKL GPU backend
+cmake --build .
+cmake --install . --prefix <path_to_install_dir>
+```
+
+To build with the CURAND backend instead simply replace:
+```bash
+-DENABLE_CUBLAS_BACKEND=ON   \
+```
+
+With:
+```bash
+-DENABLE_CURAND_BACKEND=ON   \
+```
+
+Note that enabling both the CUBLAS and CURAND backends breaks building the
+tests.
 
 ### Build Options
 All options specified in the Conan section are available to CMake. You can specify these options using `-D<cmake_option>=<value>`.
