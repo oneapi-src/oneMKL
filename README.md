@@ -536,7 +536,7 @@ cmake --install . --prefix <path_to_install_dir>
 
 - On Linux*
 
-With the CUBLAS backend:
+With the cuBLAS backend:
 
 ```bash
 # Inside <path to onemkl>
@@ -549,7 +549,7 @@ cmake --build .
 cmake --install . --prefix <path_to_install_dir>
 ```
 
-To build with the CURAND backend instead simply replace:
+To build with the cuRAND backend instead simply replace:
 ```bash
 -DENABLE_CUBLAS_BACKEND=ON   \
 ```
@@ -559,7 +559,7 @@ With:
 -DENABLE_CURAND_BACKEND=ON   \
 ```
 
-Note that enabling both the CUBLAS and CURAND backends breaks building the
+Note that enabling both the cuBLAS and cuRAND backends breaks building the
 tests.
 
 ### Build Options
