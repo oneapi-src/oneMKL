@@ -504,7 +504,7 @@ conan build ..
 
 2. Build and install all required [dependencies](#software-requirements). 
 
-### Building for MKL
+### Building for oneMKL
 
 - On Linux*
 ```bash
