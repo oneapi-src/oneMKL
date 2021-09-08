@@ -546,7 +546,6 @@ cmake .. -DENABLE_CUBLAS_BACKEND=True                      \
          -DENABLE_MKLCPU_BACKEND=False                     \   # disable Intel MKL CPU backend
          -DENABLE_MKLGPU_BACKEND=False                     \   # disable Intel MKL GPU backend
          [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \   # required only for testing
-         [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>] # required only for testing
 cmake --build .
 ctest
 cmake --install . --prefix <path_to_install_dir>
