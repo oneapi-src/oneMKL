@@ -561,9 +561,6 @@ With:
 -DENABLE_CURAND_BACKEND=True   \
 ```
 
-Note that enabling both the cuBLAS and cuRAND backends breaks building the
-tests.
-
 ### Build Options
 All options specified in the Conan section are available to CMake. You can specify these options using `-D<cmake_option>=<value>`.
 
