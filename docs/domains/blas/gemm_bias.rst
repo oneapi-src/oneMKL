@@ -1,3 +1,7 @@
+.. SPDX-FileCopyrightText: 2019-2020 Intel Corporation
+..
+.. SPDX-License-Identifier: CC-BY-4.0
+
 .. _onemkl_blas_gemm_bias:
 
 gemm_bias
@@ -46,8 +50,20 @@ op(``A``) is ``m`` x ``k``, op(``B``) is ``k`` x ``n``, and
        -  Tb 
        -  Tc 
      * -  ``float`` 
+       -  ``std::uint8_t`` 
+       -  ``std::uint8_t`` 
+       -  ``std::int32_t`` 
+     * -  ``float`` 
        -  ``std::int8_t`` 
        -  ``std::uint8_t`` 
+       -  ``std::int32_t`` 
+     * -  ``float`` 
+       -  ``std::uint8_t`` 
+       -  ``std::int8_t`` 
+       -  ``std::int32_t`` 
+     * -  ``float`` 
+       -  ``std::int8_t`` 
+       -  ``std::int8_t`` 
        -  ``std::int32_t`` 
 
 .. _onemkl_blas_gemm_bias_buffer:
@@ -267,5 +283,276 @@ gemm_bias (Buffer Version)
    If ``beta`` = 0, matrix ``C`` does not need to be initialized
    before calling ``gemm_bias``.
 
+.. container:: section
+
+   .. rubric:: Throws
+
+   This routine shall throw the following exceptions if the associated condition is detected. An implementation may throw additional implementation-specific exception(s) in case of error conditions not covered here.
+
+   :ref:`oneapi::mkl::invalid_argument<onemkl_exception_invalid_argument>`
+       
+   
+   :ref:`oneapi::mkl::unsupported_device<onemkl_exception_unsupported_device>`
+       
+
+   :ref:`oneapi::mkl::host_bad_alloc<onemkl_exception_host_bad_alloc>`
+       
+
+   :ref:`oneapi::mkl::device_bad_alloc<onemkl_exception_device_bad_alloc>`
+       
+
+   :ref:`oneapi::mkl::unimplemented<onemkl_exception_unimplemented>`
+      
+
+.. _onemkl_blas_gemm_bias_usm:
+
+gemm_bias (USM Version)
+-----------------------
+
+.. rubric:: Syntax
+      
+.. code-block:: cpp
+
+   namespace oneapi::mkl::blas::column_major {
+       sycl::event gemm_bias(sycl::queue &queue,
+                             onemkl::transpose transa,
+                             onemkl::transpose transb,
+                             onemkl::offset offset_type,
+                             std::int64_t m,
+                             std::int64_t n,
+                             std::int64_t k,
+                             Ts alpha,
+                             const Ta *a,
+                             std::int64_t lda,
+                             Ta ao,
+                             const Tb *b,
+                             std::int64_t ldb,
+                             Tb bo,
+                             Ts beta,
+                             Tc *c,
+                             std::int64_t ldc,
+                             const Tc *co,
+                             const sycl::vector_class<sycl::event> &dependencies = {})
+   }
+.. code-block:: cpp
+
+   namespace oneapi::mkl::blas::row_major {
+       sycl::event gemm_bias(sycl::queue &queue,
+                             onemkl::transpose transa,
+                             onemkl::transpose transb,
+                             onemkl::offset offset_type,
+                             std::int64_t m,
+                             std::int64_t n,
+                             std::int64_t k,
+                             Ts alpha,
+                             const Ta *a,
+                             std::int64_t lda,
+                             Ta ao,
+                             const Tb *b,
+                             std::int64_t ldb,
+                             Tb bo,
+                             Ts beta,
+                             Tc *c,
+                             std::int64_t ldc,
+                             const Tc *co,
+                             const sycl::vector_class<sycl::event> &dependencies = {})
+   }
+      
+.. container:: section
+   
+   .. rubric:: Input Parameters
+ 
+   queue
+      The queue where the routine should be executed.
+ 
+   transa
+      Specifies op(``A``), the transposition operation applied to
+      ``A``. See
+      :ref:`onemkl_datatypes` for
+      more details.
+ 
+   transb
+      Specifies op(``B``), the transposition operation applied to
+      ``B``. See
+      :ref:`onemkl_datatypes` for
+      more details.
+ 
+   offset_type
+      Specifies the form of ``C_offset`` used in the matrix
+      multiplication. See
+      :ref:`onemkl_datatypes` for
+      more details.
+ 
+   m
+      Number of rows of op(``A``) and ``C``. Must be at least zero.
+ 
+   n
+      Number of columns of op(``B``) and ``C``. Must be at least
+      zero.
+ 
+   k
+      Number of columns of op(``A``) and rows of op(``B``). Must be
+      at least zero.
+ 
+   alpha
+      Scaling factor for the matrix-matrix product.
+ 
+   a
+      Pointer to input matrix ``A``.
+ 
+      .. list-table::
+         :header-rows: 1
+
+         * -
+           - ``A`` not transposed
+           - ``A`` transposed
+         * - Column major
+           - ``A`` is an ``m``-by-``k`` matrix so the array ``a``
+             must have size at least ``lda``\ \*\ ``k``.
+           - ``A`` is an ``k``-by-``m`` matrix so the array ``a``
+             must have size at least ``lda``\ \*\ ``m``
+         * - Row major
+           - ``A`` is an ``m``-by-``k`` matrix so the array ``a``
+             must have size at least ``lda``\ \*\ ``m``.
+           - ``A`` is an ``k``-by-``m`` matrix so the array ``a``
+             must have size at least ``lda``\ \*\ ``k``
+ 
+      See :ref:`matrix-storage` for more details.
+ 
+   lda
+      The leading dimension of ``A``. It must be positive.
+
+      .. list-table::
+         :header-rows: 1
+
+         * -
+           - ``A`` not transposed
+           - ``A`` transposed
+         * - Column major
+           - ``lda`` must be at least ``m``.
+           - ``lda`` must be at least ``k``.
+         * - Row major
+           - ``lda`` must be at least ``k``.
+           - ``lda`` must be at least ``m``.
+ 
+   ao
+      Specifies the scalar offset value for matrix ``A``.
+ 
+   b
+      Pointer to input matrix ``B``.
+ 
+      .. list-table::
+         :header-rows: 1
+
+         * -
+           - ``B`` not transposed
+           - ``B`` transposed
+         * - Column major
+           - ``B`` is an ``k``-by-``n`` matrix so the array ``b``
+             must have size at least ``ldb``\ \*\ ``n``.
+           - ``B`` is an ``n``-by-``k`` matrix so the array ``b``
+             must have size at least ``ldb``\ \*\ ``k``
+         * - Row major
+           - ``B`` is an ``k``-by-``n`` matrix so the array ``b``
+             must have size at least ``ldb``\ \*\ ``k``.
+           - ``B`` is an ``n``-by-``k`` matrix so the array ``b``
+             must have size at least ``ldb``\ \*\ ``n``
+ 
+      See :ref:`matrix-storage` for more details.
+ 
+   ldb
+      The leading dimension of ``B``. It must be positive.
+
+      .. list-table::
+         :header-rows: 1
+
+         * -
+           - ``B`` not transposed
+           - ``B`` transposed
+         * - Column major
+           - ``ldb`` must be at least ``k``.
+           - ``ldb`` must be at least ``n``.
+         * - Row major
+           - ``ldb`` must be at least ``n``.
+           - ``ldb`` must be at least ``k``.
+ 
+   bo 
+      Specifies the scalar offset value for matrix ``B``.
+ 
+   beta
+      Scaling factor for matrix ``C``.
+ 
+   c
+      Pointer to input/output matrix ``C``. It must have a
+      size of at least ``ldc``\ \*\ ``n`` if column major layout is
+      used to store matrices or at least ``ldc``\ \*\ ``m`` if row
+      major layout is used to store matrices . See :ref:`matrix-storage` for more details.
+ 
+   ldc
+      The leading dimension of ``C``. It must be positive and at least
+      ``m`` if column major layout is used to store matrices or at
+      least ``n`` if column major layout is used to store matrices.
+
+   co
+      Pointer to offset values for matrix ``C``.
+ 
+ 
+      If ``offset_type`` = ``offset::fix``, the ``co`` array must have
+      size at least 1.
+ 
+ 
+      If ``offset_type`` = ``offset::col``, the ``co`` array must have
+      size at least ``max(1,m)``.
+ 
+ 
+      If ``offset_type`` = ``offset::row``, the ``co`` array must have
+      size at least ``max(1,n)``.
+
+   dependencies
+      List of events to wait for before starting computation, if any.
+      If omitted, defaults to no dependencies.
+ 
+.. container:: section
+ 
+   .. rubric:: Output Parameters
+ 
+   c
+      Pointer to the output matrix, overwritten by ``alpha`` * (op(``A``) -
+      ``A_offset``)*(op(``B``) - ``B_offset``) + ``beta`` * ``C`` + ``C_offset``.
+ 
+.. container:: section
+ 
+   .. rubric:: Notes
+ 
+   If ``beta`` = 0, matrix ``C`` does not need to be initialized
+   before calling ``gemm_bias``.
+
+.. container:: section
+
+   .. rubric:: Return Values
+
+   Output event to wait on to ensure computation is complete.
+
+.. container:: section
+
+   .. rubric:: Throws
+
+   This routine shall throw the following exceptions if the associated condition is detected. An implementation may throw additional implementation-specific exception(s) in case of error conditions not covered here.
+
+   :ref:`oneapi::mkl::invalid_argument<onemkl_exception_invalid_argument>`
+       
+       
+   
+   :ref:`oneapi::mkl::unsupported_device<onemkl_exception_unsupported_device>`
+       
+
+   :ref:`oneapi::mkl::host_bad_alloc<onemkl_exception_host_bad_alloc>`
+       
+
+   :ref:`oneapi::mkl::device_bad_alloc<onemkl_exception_device_bad_alloc>`
+       
+
+   :ref:`oneapi::mkl::unimplemented<onemkl_exception_unimplemented>`
+      
 
    **Parent topic:** :ref:`blas-like-extensions`

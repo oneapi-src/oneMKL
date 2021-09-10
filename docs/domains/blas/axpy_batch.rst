@@ -1,3 +1,7 @@
+.. SPDX-FileCopyrightText: 2019-2020 Intel Corporation
+..
+.. SPDX-License-Identifier: CC-BY-4.0
+
 .. _onemkl_blas_axpy_batch:
 
 axpy_batch
@@ -23,6 +27,129 @@ operation adds a scalar-vector product to a vector.
       * -  ``double`` 
       * -  ``std::complex<float>`` 
       * -  ``std::complex<double>`` 
+
+.. _onemkl_blas_axpy_batch_buffer:
+
+axpy_batch (Buffer Version)
+---------------------------
+
+.. rubric:: Description
+
+The buffer version of ``axpy_batch`` supports only the strided API. 
+
+The strided API operation is defined as:
+::
+  
+   for i = 0 … batch_size – 1
+      X and Y are vectors at offset i * stridex, i * stridey in x and y
+      Y := alpha * X + Y
+   end for
+
+where:
+
+``alpha`` is scalar,
+
+``X`` and ``Y`` are vectors.
+   
+**Strided API**
+
+.. rubric:: Syntax
+ 
+.. code-block:: cpp
+
+   namespace oneapi::mkl::blas::column_major {
+       void axpy_batch(sycl::queue &queue,
+                       std::int64_t n,
+                       T alpha,
+                       sycl::buffer<T,
+                       1> &x,
+                       std::int64_t incx,
+                       std::int64_t stridex,
+                       sycl::buffer<T,
+                       1> &y,
+                       std::int64_t incy,
+                       std::int64_t stridey,
+                       std::int64_t batch_size)
+   }
+.. code-block:: cpp
+
+   namespace oneapi::mkl::blas::row_major {
+       void axpy_batch(sycl::queue &queue,
+                       std::int64_t n,
+                       T alpha,
+                       sycl::buffer<T,
+                       1> &x,
+                       std::int64_t incx,
+                       std::int64_t stridex,
+                       sycl::buffer<T,
+                       1> &y,
+                       std::int64_t incy,
+                       std::int64_t stridey,
+                       std::int64_t batch_size)
+   }
+
+.. container:: section
+
+   .. rubric:: Input Parameters
+
+   queue
+      The queue where the routine should be executed.
+
+   n
+      Number of elements in ``X`` and ``Y``.
+
+   alpha
+       Specifies the scalar ``alpha``.
+
+   x
+      Buffer holding input vectors ``X`` with size ``stridex`` * ``batch_size``.
+
+   incx 
+      Stride of vector ``X``.
+
+   stridex 
+      Stride between different ``X`` vectors.
+
+   y
+      Buffer holding input/output vectors ``Y`` with size ``stridey`` * ``batch_size``.
+
+   incy 
+      Stride of vector ``Y``.
+   
+   stridey 
+      Stride between different ``Y`` vectors.
+
+   batch_size 
+      Specifies the number of ``axpy`` operations to perform.
+
+.. container:: section
+
+   .. rubric:: Output Parameters
+
+   y
+      Output buffer, overwritten by ``batch_size`` ``axpy`` operations of the form 
+      ``alpha`` * ``X`` + ``Y``.
+
+.. container:: section
+
+   .. rubric:: Throws
+
+   This routine shall throw the following exceptions if the associated condition is detected. An implementation may throw additional implementation-specific exception(s) in case of error conditions not covered here.
+
+   :ref:`oneapi::mkl::invalid_argument<onemkl_exception_invalid_argument>`
+       
+   
+   :ref:`oneapi::mkl::unsupported_device<onemkl_exception_unsupported_device>`
+       
+
+   :ref:`oneapi::mkl::host_bad_alloc<onemkl_exception_host_bad_alloc>`
+       
+
+   :ref:`oneapi::mkl::device_bad_alloc<onemkl_exception_device_bad_alloc>`
+       
+
+   :ref:`oneapi::mkl::unimplemented<onemkl_exception_unimplemented>`
+      
 
 .. _onemkl_blas_axpy_batch_usm:
 
@@ -243,5 +370,26 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
 
    Output event to wait on to ensure computation is complete.
 
+.. container:: section
+
+   .. rubric:: Throws
+
+   This routine shall throw the following exceptions if the associated condition is detected. An implementation may throw additional implementation-specific exception(s) in case of error conditions not covered here.
+
+   :ref:`oneapi::mkl::invalid_argument<onemkl_exception_invalid_argument>`
+       
+       
+   
+   :ref:`oneapi::mkl::unsupported_device<onemkl_exception_unsupported_device>`
+       
+
+   :ref:`oneapi::mkl::host_bad_alloc<onemkl_exception_host_bad_alloc>`
+       
+
+   :ref:`oneapi::mkl::device_bad_alloc<onemkl_exception_device_bad_alloc>`
+       
+
+   :ref:`oneapi::mkl::unimplemented<onemkl_exception_unimplemented>`
+      
 
    **Parent topic:**:ref:`blas-like-extensions`

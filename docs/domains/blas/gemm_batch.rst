@@ -1,3 +1,7 @@
+.. SPDX-FileCopyrightText: 2019-2020 Intel Corporation
+..
+.. SPDX-License-Identifier: CC-BY-4.0
+
 .. _onemkl_blas_gemm_batch:
 
 gemm_batch
@@ -186,7 +190,7 @@ of matrices in ``a``, ``b`` and ``c`` buffers is given by the ``batch_size`` par
       Buffer holding input/output matrices ``C`` with size ``stridec`` * ``batch_size``.
 
    ldc
-      The leading dimension of the mattrices ``C``. It must be positive and at least
+      The leading dimension of the matrices ``C``. It must be positive and at least
       ``m`` if column major layout is used to store matrices or at
       least ``n`` if column major layout is used to store matrices.
 
@@ -212,6 +216,25 @@ of matrices in ``a``, ``b`` and ``c`` buffers is given by the ``batch_size`` par
    If ``beta`` = 0, matrix ``C`` does not need to be initialized before
    calling ``gemm_batch``.
 
+.. container:: section
+
+   .. rubric:: Throws
+
+   This routine shall throw the following exceptions if the associated condition is detected. An implementation may throw additional implementation-specific exception(s) in case of error conditions not covered here.
+
+   :ref:`oneapi::mkl::invalid_argument<onemkl_exception_invalid_argument>`
+       
+   
+   :ref:`oneapi::mkl::unsupported_device<onemkl_exception_unsupported_device>`
+       
+
+   :ref:`oneapi::mkl::host_bad_alloc<onemkl_exception_host_bad_alloc>`
+       
+
+   :ref:`oneapi::mkl::device_bad_alloc<onemkl_exception_device_bad_alloc>`
+       
+
+   :ref:`oneapi::mkl::unimplemented<onemkl_exception_unimplemented>`
       
 
 .. _onemkl_blas_gemm_batch_usm:
@@ -568,7 +591,7 @@ in ``a``, ``b`` and ``c`` are given by the ``batch_size`` parameter.
       Pointer to input/output matrices ``C`` with size ``stridec`` * ``batch_size``.
 
    ldc
-      The leading dimension of the mattrices ``C``. It must be positive and at least
+      The leading dimension of the matrices ``C``. It must be positive and at least
       ``m`` if column major layout is used to store matrices or at
       least ``n`` if column major layout is used to store matrices.
 
@@ -603,5 +626,26 @@ in ``a``, ``b`` and ``c`` are given by the ``batch_size`` parameter.
 
    Output event to wait on to ensure computation is complete.
 
+.. container:: section
+
+   .. rubric:: Throws
+
+   This routine shall throw the following exceptions if the associated condition is detected. An implementation may throw additional implementation-specific exception(s) in case of error conditions not covered here.
+
+   :ref:`oneapi::mkl::invalid_argument<onemkl_exception_invalid_argument>`
+       
+       
+   
+   :ref:`oneapi::mkl::unsupported_device<onemkl_exception_unsupported_device>`
+       
+
+   :ref:`oneapi::mkl::host_bad_alloc<onemkl_exception_host_bad_alloc>`
+       
+
+   :ref:`oneapi::mkl::device_bad_alloc<onemkl_exception_device_bad_alloc>`
+       
+
+   :ref:`oneapi::mkl::unimplemented<onemkl_exception_unimplemented>`
+      
 
    **Parent topic:** :ref:`blas-like-extensions`
