@@ -28,8 +28,9 @@
 
 /* computes |A - Ref| / (|Ref| min(m,n) eps) < threshold */
 template <typename fp>
-bool rel_mat_err_check(int64_t m, int64_t n, const std::vector<fp>& A, int64_t lda, const std::vector<fp>& Ref, int64_t ldr,
-                       float threshold = 10.0, char norm_type = '1') {
+bool rel_mat_err_check(int64_t m, int64_t n, const std::vector<fp>& A, int64_t lda,
+                       const std::vector<fp>& Ref, int64_t ldr, float threshold = 10.0,
+                       char norm_type = '1') {
     using fp_real = typename complex_info<fp>::real_type;
 
     std::vector<fp> residual(m * n);
@@ -91,8 +92,8 @@ bool rel_id_err_check(int64_t n, const std::vector<fp>& A, int64_t lda, float th
 
 /* computes |V - Ref| / (|Ref| eps) < threshold */
 template <typename fp>
-bool rel_vec_err_check(int64_t n, const std::vector<fp>& A, const std::vector<fp>& Ref, float threshold = 10.0,
-                       char norm_type = '1') {
+bool rel_vec_err_check(int64_t n, const std::vector<fp>& A, const std::vector<fp>& Ref,
+                       float threshold = 10.0, char norm_type = '1') {
     using fp_real = typename complex_info<fp>::real_type;
 
     std::vector<fp> residual(n);
@@ -120,7 +121,8 @@ bool rel_vec_err_check(int64_t n, const std::vector<fp>& A, const std::vector<fp
 }
 
 template <typename fp>
-bool check_geqrf_accuracy(int64_t m, int64_t n, const std::vector<fp>& A, int64_t lda, const std::vector<fp>& tau, const std::vector<fp>& A_initial) {
+bool check_geqrf_accuracy(int64_t m, int64_t n, const std::vector<fp>& A, int64_t lda,
+                          const std::vector<fp>& tau, const std::vector<fp>& A_initial) {
     bool result = true;
     /* |A - Q R| < |A| O(eps) */
     std::vector<fp> R(m * n);
@@ -151,7 +153,8 @@ bool check_geqrf_accuracy(int64_t m, int64_t n, const std::vector<fp>& A, int64_
     }
     std::vector<fp> QQ(m * m);
     int64_t ldqq = m;
-    reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::conjtrans, m, m, m, 1.0, Q.data(), ldq, Q.data(), ldq, 0.0, QQ.data(), ldqq);
+    reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::conjtrans, m, m, m,
+                    1.0, Q.data(), ldq, Q.data(), ldq, 0.0, QQ.data(), ldqq);
     if (!rel_id_err_check(m, QQ, ldqq)) {
         global::log << "Orthogonality check failed" << std::endl;
         result = false;
@@ -161,7 +164,8 @@ bool check_geqrf_accuracy(int64_t m, int64_t n, const std::vector<fp>& A, int64_
 }
 
 template <typename fp>
-bool check_gerqf_accuracy(const std::vector<fp>& A, const std::vector<fp>& A_initial, const std::vector<fp>& tau, int64_t m, int64_t n, int64_t lda) {
+bool check_gerqf_accuracy(const std::vector<fp>& A, const std::vector<fp>& A_initial,
+                          const std::vector<fp>& tau, int64_t m, int64_t n, int64_t lda) {
     bool result = true;
 
     /* |A - R Q| < |A| O(eps) */
@@ -176,7 +180,9 @@ bool check_gerqf_accuracy(const std::vector<fp>& A, const std::vector<fp>& A_ini
         int64_t ldq = n;
         reference::lacpy('A', n, n, A.data() + ((m - n) + 0 * lda), lda, Q.data(), ldq);
 
-        auto info = reference::or_un_mrq(oneapi::mkl::side::right, oneapi::mkl::transpose::nontrans, m, n, std::min(m, n), Q.data(), ldq, tau.data(), R.data(), ldr);
+        auto info =
+            reference::or_un_mrq(oneapi::mkl::side::right, oneapi::mkl::transpose::nontrans, m, n,
+                                 std::min(m, n), Q.data(), ldq, tau.data(), R.data(), ldr);
         if (0 != info) {
             global::log << "reference ormqr/unmqr failed with info = " << info << std::endl;
             return false;
@@ -227,7 +233,9 @@ bool check_gerqf_accuracy(const std::vector<fp>& A, const std::vector<fp>& A_ini
 
     std::vector<fp> QQ(std::min(m, n) * std::min(m, n));
     int64_t ldqq = std::min(m, n);
-    reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::conjtrans, std::min(m,n), std::min(m,n), n, 1.0, Q.data(), ldq, Q.data(), ldq, 0.0, QQ.data(), ldqq);
+    reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::conjtrans,
+                    std::min(m, n), std::min(m, n), n, 1.0, Q.data(), ldq, Q.data(), ldq, 0.0,
+                    QQ.data(), ldqq);
 
     if (!rel_id_err_check(std::min(m, n), QQ, ldqq)) {
         global::log << "Orthogonality check failed" << std::endl;
@@ -238,8 +246,8 @@ bool check_gerqf_accuracy(const std::vector<fp>& A, const std::vector<fp>& A_ini
 }
 
 template <typename fp>
-bool check_getrf_accuracy(int64_t m, int64_t n, const std::vector<fp>& A, int64_t lda, const std::vector<int64_t>& ipiv,
-                          const std::vector<fp>& A_initial) {
+bool check_getrf_accuracy(int64_t m, int64_t n, const std::vector<fp>& A, int64_t lda,
+                          const std::vector<int64_t>& ipiv, const std::vector<fp>& A_initial) {
     using fp_real = typename complex_info<fp>::real_type;
 
     std::vector<fp> residual(m * n);
@@ -249,16 +257,16 @@ bool check_getrf_accuracy(int64_t m, int64_t n, const std::vector<fp>& A, int64_
     if (m < n) {
         reference::lacpy(oneapi::mkl::uplo::upper, m, n, A.data(), lda, residual.data(), m);
         reference::trmm(oneapi::mkl::side::left, oneapi::mkl::uplo::lower,
-                        oneapi::mkl::transpose::nontrans, oneapi::mkl::diag::unit, m, n, 1.0, A.data(),
-                        lda, residual.data(), m);
+                        oneapi::mkl::transpose::nontrans, oneapi::mkl::diag::unit, m, n, 1.0,
+                        A.data(), lda, residual.data(), m);
     }
     else {
         reference::lacpy(oneapi::mkl::uplo::lower, m, n, A.data(), lda, residual.data(), m);
         for (int64_t diag = 0; diag < n; diag++)
             residual[diag + diag * m] = 1.0;
         reference::trmm(oneapi::mkl::side::right, oneapi::mkl::uplo::upper,
-                        oneapi::mkl::transpose::nontrans, oneapi::mkl::diag::nonunit, m, n, 1.0, A.data(),
-                        lda, residual.data(), m);
+                        oneapi::mkl::transpose::nontrans, oneapi::mkl::diag::nonunit, m, n, 1.0,
+                        A.data(), lda, residual.data(), m);
     }
     reference::laswp(n, residual.data(), m, 1, std::min(m, n), ipiv.data(), -1);
 
@@ -289,7 +297,8 @@ bool check_getrf_accuracy(int64_t m, int64_t n, const std::vector<fp>& A, int64_
 }
 
 template <typename fp>
-bool check_getri_accuracy(int64_t n, std::vector<fp> A, int64_t lda, std::vector<int64_t>& ipiv, const std::vector<fp>& A_initial) {
+bool check_getri_accuracy(int64_t n, std::vector<fp> A, int64_t lda, std::vector<int64_t>& ipiv,
+                          const std::vector<fp>& A_initial) {
     using fp_real = typename complex_info<fp>::real_type;
 
     // Norms of original matrix A matrix and inv(A) for error analysis
@@ -341,14 +350,14 @@ bool check_getri_accuracy(int64_t n, std::vector<fp> A, int64_t lda, std::vector
 }
 
 template <typename fp>
-bool check_getrs_accuracy(oneapi::mkl::transpose transa, int64_t n, int64_t
-                          nrhs, const std::vector<fp>& B, int64_t ldb, const std::vector<fp>& A_initial, int64_t lda,
-                          std::vector<fp> B_initial) {
+bool check_getrs_accuracy(oneapi::mkl::transpose transa, int64_t n, int64_t nrhs,
+                          const std::vector<fp>& B, int64_t ldb, const std::vector<fp>& A_initial,
+                          int64_t lda, std::vector<fp> B_initial) {
     using fp_real = typename complex_info<fp>::real_type;
 
     // Compute A*X - B. Store result in B_initial
-    reference::gemm(transa, oneapi::mkl::transpose::nontrans, n, nrhs, n, -1.0, A_initial.data(), lda, B.data(),
-                    ldb, 1.0, B_initial.data(), ldb);
+    reference::gemm(transa, oneapi::mkl::transpose::nontrans, n, nrhs, n, -1.0, A_initial.data(),
+                    lda, B.data(), ldb, 1.0, B_initial.data(), ldb);
 
     // Compute norm residual |A*X - B|
     fp_real norm_residual = reference::lange('1', n, nrhs, B_initial.data(), ldb);
@@ -386,7 +395,8 @@ bool check_or_un_gbr_accuracy(oneapi::mkl::generate vect, int64_t m, int64_t n, 
         /* | I - Q'Q | < m O(eps) */
         std::vector<fp> QQ(cols_Q * cols_Q);
         int64_t ldqq = cols_Q;
-        reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, cols_Q, cols_Q, rows_Q, 1.0, Q.data(), ldq, Q.data(), ldq, 0.0, QQ.data(), ldqq);
+        reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, cols_Q,
+                        cols_Q, rows_Q, 1.0, Q.data(), ldq, Q.data(), ldq, 0.0, QQ.data(), ldqq);
         if (!rel_id_err_check(cols_Q, QQ, ldqq)) {
             global::log << "Q Orthogonality check failed" << std::endl;
             result = false;
@@ -401,7 +411,8 @@ bool check_or_un_gbr_accuracy(oneapi::mkl::generate vect, int64_t m, int64_t n, 
         /* | I - (P')(P')' | < m O(eps) */
         std::vector<fp> PP(rows_P * rows_P);
         int64_t ldpp = rows_P;
-        reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::conjtrans, rows_P, rows_P, cols_P, 1.0, P.data(), ldp, P.data(), ldp, 0.0, PP.data(), ldpp);
+        reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::conjtrans, rows_P,
+                        rows_P, cols_P, 1.0, P.data(), ldp, P.data(), ldp, 0.0, PP.data(), ldpp);
         if (!rel_id_err_check(rows_P, PP, ldpp)) {
             global::log << "P^t Orthogonality check failed" << std::endl;
             result = false;
@@ -417,7 +428,8 @@ bool check_or_un_gqr_accuracy(int64_t m, int64_t n, const std::vector<fp>& Q, in
     /* | I - Q'Q | < m O(eps) */
     std::vector<fp> QQ(n * n);
     int64_t ldqq = n;
-    reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n, n, m, 1.0, Q.data(), ldq, Q.data(), ldq, 0.0, QQ.data(), ldqq);
+    reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n, n, m,
+                    1.0, Q.data(), ldq, Q.data(), ldq, 0.0, QQ.data(), ldqq);
     if (!rel_id_err_check(n, QQ, n)) {
         global::log << "Orthogonality check failed" << std::endl;
         result = false;
@@ -432,7 +444,8 @@ bool check_or_un_gtr_accuracy(int64_t n, const std::vector<fp>& Q, int64_t ldq) 
     /* | I - Q'Q | < m O(eps) */
     std::vector<fp> QQ(n * n);
     int64_t ldqq = n;
-    reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n, n, n, 1.0, Q.data(), ldq, Q.data(), ldq, 0.0, QQ.data(), ldqq);
+    reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n, n, n,
+                    1.0, Q.data(), ldq, Q.data(), ldq, 0.0, QQ.data(), ldqq);
     if (!rel_id_err_check(n, QQ, n)) {
         global::log << "Orthogonality check failed" << std::endl;
         result = false;
@@ -441,8 +454,8 @@ bool check_or_un_gtr_accuracy(int64_t n, const std::vector<fp>& Q, int64_t ldq) 
 }
 
 template <typename fp>
-bool check_potrf_accuracy(const std::vector<fp>& init, const std::vector<fp>& sol, oneapi::mkl::uplo uplo, int64_t n,
-                          int64_t lda) {
+bool check_potrf_accuracy(const std::vector<fp>& init, const std::vector<fp>& sol,
+                          oneapi::mkl::uplo uplo, int64_t n, int64_t lda) {
     using fp_real = typename complex_info<fp>::real_type;
 
     std::vector<fp> ref(init);
@@ -477,8 +490,9 @@ bool check_potrf_accuracy(const std::vector<fp>& init, const std::vector<fp>& so
 }
 
 template <typename fp>
-bool check_potrs_accuracy(oneapi::mkl::uplo uplo, int64_t n, int64_t nrhs,
-                          const std::vector<fp>& B, int64_t ldb, std::vector<fp> A_initial, int64_t lda, std::vector<fp> B_initial) {
+bool check_potrs_accuracy(oneapi::mkl::uplo uplo, int64_t n, int64_t nrhs, const std::vector<fp>& B,
+                          int64_t ldb, std::vector<fp> A_initial, int64_t lda,
+                          std::vector<fp> B_initial) {
     using fp_real = typename complex_info<fp>::real_type;
 
     hermitian_to_full(uplo, n, A_initial, lda);
@@ -511,7 +525,10 @@ bool check_potrs_accuracy(oneapi::mkl::uplo uplo, int64_t n, int64_t nrhs,
 }
 
 template <typename fp>
-bool check_sy_he_evd_accuracy(oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, int64_t n, const std::vector<fp>& A, int64_t lda, const std::vector<typename complex_info<fp>::real_type>& w, std::vector<fp> A_initial) {
+bool check_sy_he_evd_accuracy(oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, int64_t n,
+                              const std::vector<fp>& A, int64_t lda,
+                              const std::vector<typename complex_info<fp>::real_type>& w,
+                              std::vector<fp> A_initial) {
     using fp_real = typename complex_info<fp>::real_type;
     const auto& Z = A;
     auto ldz = lda;
@@ -522,10 +539,12 @@ bool check_sy_he_evd_accuracy(oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, int
     /* |D_ref - D| < |D_ref| O(eps) */
     std::vector<fp_real> D_ref(n);
 
-    if constexpr (complex_info<fp>::is_complex) 
-        reference::heevd(oneapi::mkl::job::novec, uplo, n, std::vector<fp>(A_initial).data(), lda, D_ref.data());
+    if constexpr (complex_info<fp>::is_complex)
+        reference::heevd(oneapi::mkl::job::novec, uplo, n, std::vector<fp>(A_initial).data(), lda,
+                         D_ref.data());
     else
-        reference::syevd(oneapi::mkl::job::novec, uplo, n, std::vector<fp>(A_initial).data(), lda, D_ref.data());
+        reference::syevd(oneapi::mkl::job::novec, uplo, n, std::vector<fp>(A_initial).data(), lda,
+                         D_ref.data());
 
     if (!rel_vec_err_check(n, D_ref, D, 10.0)) {
         global::log << "Eigenvalue check failed" << std::endl;
@@ -565,8 +584,9 @@ bool check_sy_he_evd_accuracy(oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, int
 
 template <typename fp>
 bool check_trtrs_accuracy(oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
-                          oneapi::mkl::diag diag, int64_t n, int64_t nrhs, std::vector<fp> A, int64_t lda,
-                          const std::vector<fp>& B, int64_t ldb, const std::vector<fp>& B_initial) {
+                          oneapi::mkl::diag diag, int64_t n, int64_t nrhs, std::vector<fp> A,
+                          int64_t lda, const std::vector<fp>& B, int64_t ldb,
+                          const std::vector<fp>& B_initial) {
     using fp_real = typename complex_info<fp>::real_type;
     fp_real threshold = 10.0;
 
@@ -606,8 +626,8 @@ bool check_trtrs_accuracy(oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
 
     std::vector<fp> residual(n * nrhs);
     int64_t ldr = n;
-    reference::gemm(trans, oneapi::mkl::transpose::nontrans, n, nrhs, n, 1.0, A.data(), lda, B.data(), ldb, 0.0,
-                    residual.data(), ldr);
+    reference::gemm(trans, oneapi::mkl::transpose::nontrans, n, nrhs, n, 1.0, A.data(), lda,
+                    B.data(), ldb, 0.0, residual.data(), ldr);
     for (int64_t col = 0; col < nrhs; col++)
         for (int64_t row = 0; row < n; row++)
             residual[row + col * ldr] -= B_initial[row + col * ldb];

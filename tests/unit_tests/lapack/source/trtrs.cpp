@@ -96,8 +96,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, oneapi::mkl::tran
         device_free(queue, scratchpad_dev);
     }
 
-    return check_trtrs_accuracy(uplo, trans, diag, n, nrhs, A, lda, B, ldb,
-                                B_initial);
+    return check_trtrs_accuracy(uplo, trans, diag, n, nrhs, A, lda, B, ldb, B_initial);
 }
 
 const char* dependency_input = R"(

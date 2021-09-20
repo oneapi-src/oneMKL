@@ -93,8 +93,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
         device_free(queue, scratchpad_dev);
     }
 
-    return check_potrs_accuracy(uplo, n, nrhs, B, ldb, A_initial, lda,
-                                B_initial);
+    return check_potrs_accuracy(uplo, n, nrhs, B, ldb, A_initial, lda, B_initial);
 }
 
 const char* dependency_input = R"(

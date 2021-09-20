@@ -90,9 +90,9 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, int64_
 
     bool result = true;
     for (int64_t i = 0; i < batch_size; i++) {
-        auto A_ = copy_vector(A, lda*n, i*stride_a);
-        auto tau_ = copy_vector(tau, std::min(m,n), i*stride_tau);
-        auto A_initial_ = copy_vector(A_initial, lda*n, i*stride_a);
+        auto A_ = copy_vector(A, lda * n, i * stride_a);
+        auto tau_ = copy_vector(tau, std::min(m, n), i * stride_tau);
+        auto A_initial_ = copy_vector(A_initial, lda * n, i * stride_a);
         if (!check_geqrf_accuracy(m, n, A_, lda, tau_, A_initial_)) {
             global::log << "batch routine index " << i << " failed" << std::endl;
             result = false;

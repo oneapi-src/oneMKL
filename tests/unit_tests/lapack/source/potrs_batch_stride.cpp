@@ -102,9 +102,9 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
 
     bool result = true;
     for (int64_t i = 0; i < batch_size; i++) {
-        auto B_ = copy_vector(B, ldb*nrhs, i*stride_b);
-        auto A_initial_ = copy_vector(A_initial, lda*n, i*stride_a);
-        auto B_initial_ = copy_vector(B_initial, ldb*nrhs, i*stride_b);
+        auto B_ = copy_vector(B, ldb * nrhs, i * stride_b);
+        auto A_initial_ = copy_vector(A_initial, lda * n, i * stride_a);
+        auto B_initial_ = copy_vector(B_initial, ldb * nrhs, i * stride_b);
         if (!check_potrs_accuracy(uplo, n, nrhs, B_, ldb, A_initial_, lda, B_initial_)) {
             global::log << "batch routine index " << i << " failed" << std::endl;
             result = false;

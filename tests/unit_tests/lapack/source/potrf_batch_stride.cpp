@@ -85,8 +85,8 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
 
     bool result = true;
     for (int64_t i = 0; i < batch_size; i++) {
-        auto A_ = copy_vector(A, lda*n, i*stride_a);
-        auto A_initial_ = copy_vector(A_initial, lda*n, i*stride_a);
+        auto A_ = copy_vector(A, lda * n, i * stride_a);
+        auto A_initial_ = copy_vector(A_initial, lda * n, i * stride_a);
         if (!check_potrf_accuracy(A_initial_, A_, uplo, n, lda)) {
             global::log << "batch routine index " << i << " failed" << std::endl;
             result = false;
