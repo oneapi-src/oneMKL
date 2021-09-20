@@ -22,18 +22,15 @@
 #ifndef lapack_int
 #define lapack_int int64_t
 #endif
-
-#ifdef __cplusplus
+#ifndef CBLAS_INT
+#define CBLAS_INT int64_t
+#endif
 extern "C" {
-#endif
-#ifndef WeirdNEC
-#define WeirdNEC
 #include "cblas.h"
-#endif
 #include "lapacke.h"
-#ifdef __cplusplus
-} // extern "C"
-#endif
+}
+static_assert(sizeof(lapack_int) == 8);
+static_assert(sizeof(CBLAS_INT) == 8);
 
 namespace reference {
 inline CBLAS_TRANSPOSE cblas_trans(oneapi::mkl::transpose t) {

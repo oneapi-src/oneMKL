@@ -136,7 +136,7 @@ struct InputTestController {
     static constexpr size_t arg_count = function_info<T>::arg_count;
     std::vector<ArgTuple_T> vargs;
 
-    InputTestController(const char* input = nullptr) {
+    InputTestController(const char* input) {
         if constexpr (arg_count == 0) /* test does not take input */
             return;
 
@@ -148,14 +148,7 @@ struct InputTestController {
                 store_input(input_stream, std::make_index_sequence<arg_count>());
         }
         else { /* search for input file */
-            std::array<char, max_size_input_buffer> input_buffer;
-            size_t input_file_length = 0;
-            getenv_s(&input_file_length, input_buffer.data(), input_buffer.size(), "IN");
-            std::ifstream input_stream(input_buffer.data());
-            if (input_stream.fail())
-                std::cout << "Failed to open input file: \'" << input << "\'" << std::endl;
-            else
-                store_input(input_stream, std::make_index_sequence<arg_count>());
+            std::cout << "Test parameters not found" << std::endl;
         }
     }
 
