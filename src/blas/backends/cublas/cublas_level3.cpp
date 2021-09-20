@@ -81,6 +81,11 @@ inline void gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
     using cuDataType_C = typename CudaEquivalentType<T_C>::Type;
     overflow_check(m, n, k, lda, ldb, ldc);
     queue.submit([&](cl::sycl::handler &cgh) {
+        if (!verify_support<cl::sycl::half, T_A, T_B, T_C>(queue, cl::sycl::aspect::fp16)) {
+            throw oneapi::mkl::unimplemented(
+                "blas", "cl::sycl::half",
+                "half is not supported by the device or the sycl compiler");
+        }
         auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);

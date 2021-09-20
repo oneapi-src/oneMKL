@@ -77,8 +77,8 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
             }
             catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during HEMM:\n"
-                          << e.what() << std::endl
-                          << "OpenCL status: " << e.get_cl_code() << std::endl;
+                          << e.what() << std::endl;
+                print_error_code(e);
             }
         }
     };
@@ -121,9 +121,8 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
 #endif
     }
     catch (exception const& e) {
-        std::cout << "Caught synchronous SYCL exception during HEMM:\n"
-                  << e.what() << std::endl
-                  << "OpenCL status: " << e.get_cl_code() << std::endl;
+        std::cout << "Caught synchronous SYCL exception during HEMM:\n" << e.what() << std::endl;
+        print_error_code(e);
     }
 
     catch (const oneapi::mkl::unimplemented& e) {

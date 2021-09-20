@@ -31,7 +31,11 @@ if(BUILD_SHARED_LIBS)
       PUBLIC ${CMAKE_BINARY_DIR}/bin
       PUBLIC ${CBLAS_INCLUDE}
   )
-  target_link_libraries(blas_batch_rt PUBLIC ONEMKL::SYCL::SYCL)
+  if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+    add_sycl_to_target(TARGET blas_batch_rt SOURCES ${BATCH_SOURCES})
+  else()
+    target_link_libraries(blas_batch_rt PUBLIC ONEMKL::SYCL::SYCL)
+  endif()
 endif()
 
 add_library(blas_batch_ct OBJECT ${BATCH_SOURCES})
@@ -44,4 +48,8 @@ target_include_directories(blas_batch_ct
     PUBLIC ${CMAKE_BINARY_DIR}/bin
     PUBLIC ${CBLAS_INCLUDE}
 )
-target_link_libraries(blas_batch_ct PUBLIC ONEMKL::SYCL::SYCL)
+if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+  add_sycl_to_target(TARGET blas_batch_ct SOURCES ${BATCH_SOURCES})
+else()
+  target_link_libraries(blas_batch_ct PUBLIC ONEMKL::SYCL::SYCL)
+endif()

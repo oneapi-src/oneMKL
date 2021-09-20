@@ -31,6 +31,7 @@
 
 #include "oneapi/mkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
 #include "oneapi/mkl/types.hpp"
+#include "runtime_support_helper.hpp"
 
 namespace oneapi {
 namespace mkl {
