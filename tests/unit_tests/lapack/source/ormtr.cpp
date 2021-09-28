@@ -109,7 +109,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t m, int64_
         global::log << "reference ormtr failed with info = " << info << std::endl;
         return false;
     }
-    if (!rel_mat_err_check(m, n, C.data(), ldc, C_ref.data(), ldc)) {
+    if (!rel_mat_err_check(m, n, C, ldc, C_ref, ldc)) {
         global::log << "Multiplication check failed" << std::endl;
         result = false;
     }
@@ -171,7 +171,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t m, 
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::ormtr(
             queue, side, uplo, trans, m, n, A_dev, lda, tau_dev, C_dev, ldc, scratchpad_dev,

@@ -113,7 +113,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::mkl::jo
         int64_t ldusv = m;
         reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, m, n, n,
                         1.0, US.data(), ldus, Vt.data(), ldvt, 0.0, USV.data(), ldusv);
-        if (!rel_mat_err_check(m, n, A_initial.data(), lda, USV.data(), ldusv)) {
+        if (!rel_mat_err_check(m, n, A_initial, lda, USV, ldusv)) {
             global::log << "Factorization check failed" << std::endl;
             result = false;
         }
@@ -131,7 +131,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::mkl::jo
         int64_t lduu = ucols;
         reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, ucols,
                         ucols, m, 1.0, U.data(), ldu, U.data(), ldu, 0.0, UU.data(), lduu);
-        if (!rel_id_err_check(ucols, UU.data(), lduu)) {
+        if (!rel_id_err_check(ucols, UU, lduu)) {
             global::log << "U Orthogonality check failed" << std::endl;
             result = false;
         }
@@ -144,7 +144,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::mkl::jo
         int64_t ldvv = vtrows;
         reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::conjtrans, vtrows,
                         vtrows, n, 1.0, Vt.data(), ldvt, Vt.data(), ldvt, 0.0, VV.data(), ldvv);
-        if (!rel_id_err_check(vtrows, VV.data(), ldvv)) {
+        if (!rel_id_err_check(vtrows, VV, ldvv)) {
             global::log << "V Orthogonality check failed" << std::endl;
             result = false;
         }
@@ -201,7 +201,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::m
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::gesvd(
             queue, jobu, jobvt, m, n, A_dev, lda, s_dev, U_dev, ldu, Vt_dev, ldvt, scratchpad_dev,

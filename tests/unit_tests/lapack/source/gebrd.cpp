@@ -102,7 +102,7 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, uint64
     }
 
     reference::gebrd(m, n, A_initial.data(), lda, d.data(), e.data(), tauq.data(), taup.data());
-    return rel_mat_err_check<fp>(m, n, A.data(), lda, A_initial.data(), lda, 30.0);
+    return rel_mat_err_check<fp>(m, n, A, lda, A_initial, lda, 30.0);
 }
 
 const char* dependency_input = R"(
@@ -151,7 +151,7 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, 
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::gebrd(
             queue, m, n, A_dev, lda, d_dev, e_dev, tauq_dev, taup_dev, scratchpad_dev,

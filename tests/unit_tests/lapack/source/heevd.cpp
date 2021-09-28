@@ -84,50 +84,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::job jobz, oneapi::mkl::uplo 
         device_free(queue, scratchpad_dev);
     }
 
-    const auto& Z = A;
-    auto ldz = lda;
-    const auto& D = w;
-    hermitian_to_full(uplo, n, A_initial, lda);
-    bool result = true;
-
-    /* |D_ref - D| < |D_ref| O(eps) */
-    std::vector<fp_real> D_ref(n);
-    reference::heevd(oneapi::mkl::job::novec, uplo, n, std::vector<fp>(A_initial).data(), lda,
-                     D_ref.data());
-    if (!rel_vec_err_check(n, D_ref.data(), D.data(), 10.0)) {
-        global::log << "Eigenvalue check failed" << std::endl;
-        result = false;
-    }
-
-    if (oneapi::mkl::job::vec == jobz) {
-        /* |A - Z D Z'| < |A| O(eps) */
-        std::vector<fp> ZD(n * n);
-        int64_t ldzd = n;
-        std::vector<fp> ZDZ(n * n);
-        int64_t ldzdz = n;
-        for (int64_t col = 0; col < n; col++)
-            for (int64_t row = 0; row < n; row++)
-                ZD[row + col * ldzd] = Z[row + col * ldz] * D[col];
-        reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::conjtrans, n, n,
-                        n, 1.0, ZD.data(), ldzd, Z.data(), ldz, 0.0, ZDZ.data(), ldzdz);
-
-        if (!rel_mat_err_check(n, n, A_initial.data(), lda, ZDZ.data(), ldzdz)) {
-            global::log << "Factorization check failed" << std::endl;
-            result = false;
-        }
-
-        /* |I - Z Z'| < n O(eps) */
-        std::vector<fp> ZZ(n * n);
-        int64_t ldzz = n;
-        reference::sy_he_rk(oneapi::mkl::uplo::upper, oneapi::mkl::transpose::nontrans, n, n, 1.0,
-                            Z.data(), ldz, 0.0, ZZ.data(), ldzz);
-        hermitian_to_full(oneapi::mkl::uplo::upper, n, ZZ, ldzz);
-        if (!rel_id_err_check(n, ZZ.data(), ldzz)) {
-            global::log << "Orthogonality check failed" << std::endl;
-            result = false;
-        }
-    }
-    return result;
+    return check_sy_he_evd_accuracy(jobz, uplo, n, A, lda, w, A_initial);
 }
 
 const char* dependency_input = R"(
@@ -167,7 +124,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::job jobz, oneapi::mkl:
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::heevd(
             queue, jobz, uplo, n, A_dev, lda, w_dev, scratchpad_dev, scratchpad_size,

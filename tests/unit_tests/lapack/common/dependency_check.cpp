@@ -23,50 +23,14 @@
 
 namespace {
 
-static std::vector<int64_t> host_data(1024);
-static int64_t* device_data = nullptr;
+std::vector<int64_t> host_data(1024);
+int64_t* device_data = nullptr;
 
 } // namespace
 
-sycl::event create_dependent_event(sycl::queue queue) {
+sycl::event create_dependency(sycl::queue queue) {
     ::device_data = device_alloc<int64_t>(queue, ::host_data.size());
     return host_to_device_copy(queue, ::host_data.data(), ::device_data, ::host_data.size());
-}
-
-enum class Dependency_Result { fail, pass, inconclusive, unknown };
-
-Dependency_Result get_result(sycl::info::event_command_status in_status,
-                             sycl::info::event_command_status func_status) {
-    /*   in\func | submitted | running  | complete */
-    /* submitted |   inc.    |   fail   |  fail    */
-    /* running   |   pass    |   fail   |  fail    */
-    /* complete  |   inc.    |   inc.   |  inc.    */
-    if (in_status == sycl::info::event_command_status::submitted) {
-        if (func_status == sycl::info::event_command_status::submitted)
-            return Dependency_Result::inconclusive;
-        else if (func_status == sycl::info::event_command_status::running)
-            return Dependency_Result::fail;
-        else if (func_status == sycl::info::event_command_status::complete)
-            return Dependency_Result::fail;
-    }
-    else if (in_status == sycl::info::event_command_status::running) {
-        if (func_status == sycl::info::event_command_status::submitted)
-            return Dependency_Result::pass;
-        else if (func_status == sycl::info::event_command_status::running)
-            return Dependency_Result::fail;
-        else if (func_status == sycl::info::event_command_status::complete)
-            return Dependency_Result::fail;
-    }
-    else if (in_status == sycl::info::event_command_status::complete) {
-        if (func_status == sycl::info::event_command_status::submitted)
-            return Dependency_Result::inconclusive;
-        else if (func_status == sycl::info::event_command_status::running)
-            return Dependency_Result::inconclusive;
-        else if (func_status == sycl::info::event_command_status::complete)
-            return Dependency_Result::inconclusive;
-    }
-
-    return Dependency_Result::unknown;
 }
 
 void print_status(const char* name, sycl::info::event_command_status status) {
@@ -83,32 +47,22 @@ void print_status(const char* name, sycl::info::event_command_status status) {
 }
 
 bool check_dependency(sycl::queue queue, sycl::event in_event, sycl::event func_event) {
-    auto result = Dependency_Result::inconclusive;
     sycl::info::event_command_status in_status;
     sycl::info::event_command_status func_status;
 
     do {
-        in_status = in_event.get_info<sycl::info::event::command_execution_status>();
         func_status = func_event.get_info<sycl::info::event::command_execution_status>();
-
-        auto temp_result = get_result(in_status, func_status);
-        if (temp_result == Dependency_Result::pass || temp_result == Dependency_Result::fail)
-            result = temp_result;
-
-    } while (in_status != sycl::info::event_command_status::complete &&
-             result != Dependency_Result::fail);
+    } while (func_status != sycl::info::event_command_status::running &&
+             func_status != sycl::info::event_command_status::complete);
+    in_status = in_event.get_info<sycl::info::event::command_execution_status>();
 
     /* Print results */
-    if (result == Dependency_Result::pass)
-        global::log << "Dependency Test: Successful" << std::endl;
-    if (result == Dependency_Result::inconclusive)
-        global::log << "Dependency Test: Inconclusive" << std::endl;
-    if (result == Dependency_Result::fail)
-        global::log << "Dependency Test: Failed" << std::endl;
-    print_status("in_event", in_status);
-    print_status("func_event", func_status);
+    auto result = (in_status == sycl::info::event_command_status::complete);
+    if (!result) {
+        print_status("in_event", in_status);
+        print_status("func_event", func_status);
+    }
 
     device_free(queue, ::device_data);
-    return (result == Dependency_Result::pass || result == Dependency_Result::inconclusive) ? true
-                                                                                            : false;
+    return result;
 }

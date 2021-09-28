@@ -89,12 +89,15 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, int64_
     }
 
     bool result = true;
-    for (int64_t i = 0; i < batch_size; i++)
-        if (!check_geqrf_accuracy(A.data() + i * stride_a, A_initial.data() + i * stride_a,
-                                  tau.data() + i * stride_tau, m, n, lda)) {
+    for (int64_t i = 0; i < batch_size; i++) {
+        auto A_ = copy_vector(A, lda * n, i * stride_a);
+        auto tau_ = copy_vector(tau, std::min(m, n), i * stride_tau);
+        auto A_initial_ = copy_vector(A_initial, lda * n, i * stride_a);
+        if (!check_geqrf_accuracy(m, n, A_, lda, tau_, A_initial_)) {
             global::log << "batch routine index " << i << " failed" << std::endl;
             result = false;
         }
+    }
 
     return result;
 }
@@ -140,7 +143,7 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, 
         queue.wait_and_throw();
 
         /* Check dependency handling */
-        auto in_event = create_dependent_event(queue);
+        auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::geqrf_batch(
             queue, m, n, A_dev, lda, stride_a, tau_dev, stride_tau, batch_size, scratchpad_dev,
