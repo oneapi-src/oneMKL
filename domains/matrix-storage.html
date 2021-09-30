@@ -1,0 +1,1397 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Matrix Storage &#8212; oneAPI Math Kernel Library Interfaces 0.1 documentation</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favicons.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="BLAS Routines" href="blas/blas.html" />
+    <link rel="prev" title="Dense Linear Algebra" href="dense_linear_algebra.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+      <img src="../_static/oneAPI-rgb-rev-100.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">oneAPI Math Kernel Library Interfaces 0.1 documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <div class="bd-toc-item active">
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../onemkl-datatypes.html">
+   oneMKL defined datatypes
+  </a>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="dense_linear_algebra.html">
+   Dense Linear Algebra
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Matrix Storage
+    </a>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="blas/blas.html">
+     BLAS Routines
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+    <label for="toctree-checkbox-2">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3 has-children">
+      <a class="reference internal" href="blas/blas-level-1-routines.html">
+       BLAS Level 1 Routines
+      </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+      <label for="toctree-checkbox-3">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/asum.html">
+         asum
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/axpy.html">
+         axpy
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/copy.html">
+         copy
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/dot.html">
+         dot
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/sdsdot.html">
+         sdsdot
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/dotc.html">
+         dotc
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/dotu.html">
+         dotu
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/nrm2.html">
+         nrm2
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/rot.html">
+         rot
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/rotg.html">
+         rotg
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/rotm.html">
+         rotm
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/rotmg.html">
+         rotmg
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/scal.html">
+         scal
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/swap.html">
+         swap
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/iamax.html">
+         iamax
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/iamin.html">
+         iamin
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toctree-l3 has-children">
+      <a class="reference internal" href="blas/blas-level-2-routines.html">
+       BLAS Level 2 Routines
+      </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+      <label for="toctree-checkbox-4">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/gbmv.html">
+         gbmv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/gemv.html">
+         gemv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/ger.html">
+         ger
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/gerc.html">
+         gerc
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/geru.html">
+         geru
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/hbmv.html">
+         hbmv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/hemv.html">
+         hemv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/her.html">
+         her
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/her2.html">
+         her2
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/hpmv.html">
+         hpmv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/hpr.html">
+         hpr
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/hpr2.html">
+         hpr2
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/sbmv.html">
+         sbmv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/spmv.html">
+         spmv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/spr.html">
+         spr
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/spr2.html">
+         spr2
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/symv.html">
+         symv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/syr.html">
+         syr
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/syr2.html">
+         syr2
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/tbmv.html">
+         tbmv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/tbsv.html">
+         tbsv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/tpmv.html">
+         tpmv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/tpsv.html">
+         tpsv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/trmv.html">
+         trmv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/trsv.html">
+         trsv
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toctree-l3 has-children">
+      <a class="reference internal" href="blas/blas-level-3-routines.html">
+       BLAS Level 3 Routines
+      </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+      <label for="toctree-checkbox-5">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/gemm.html">
+         gemm
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/hemm.html">
+         hemm
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/herk.html">
+         herk
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/her2k.html">
+         her2k
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/symm.html">
+         symm
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/syrk.html">
+         syrk
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/syr2k.html">
+         syr2k
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/trmm.html">
+         trmm
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/trsm.html">
+         trsm
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toctree-l3 has-children">
+      <a class="reference internal" href="blas/blas-like-extensions.html">
+       BLAS-like Extensions
+      </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+      <label for="toctree-checkbox-6">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/axpy_batch.html">
+         axpy_batch
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/gemm_batch.html">
+         gemm_batch
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/trsm_batch.html">
+         trsm_batch
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/gemmt.html">
+         gemmt
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/gemm_bias.html">
+         gemm_bias
+        </a>
+       </li>
+      </ul>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Matrix Storage
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="blas/blas.html">
+   BLAS Routines
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+  <label for="toctree-checkbox-7">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="blas/blas-level-1-routines.html">
+     BLAS Level 1 Routines
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+    <label for="toctree-checkbox-8">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/asum.html">
+       asum
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/axpy.html">
+       axpy
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/copy.html">
+       copy
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/dot.html">
+       dot
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/sdsdot.html">
+       sdsdot
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/dotc.html">
+       dotc
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/dotu.html">
+       dotu
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/nrm2.html">
+       nrm2
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/rot.html">
+       rot
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/rotg.html">
+       rotg
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/rotm.html">
+       rotm
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/rotmg.html">
+       rotmg
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/scal.html">
+       scal
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/swap.html">
+       swap
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/iamax.html">
+       iamax
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/iamin.html">
+       iamin
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="blas/blas-level-2-routines.html">
+     BLAS Level 2 Routines
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+    <label for="toctree-checkbox-9">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/gbmv.html">
+       gbmv
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/gemv.html">
+       gemv
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/ger.html">
+       ger
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/gerc.html">
+       gerc
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/geru.html">
+       geru
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/hbmv.html">
+       hbmv
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/hemv.html">
+       hemv
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/her.html">
+       her
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/her2.html">
+       her2
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/hpmv.html">
+       hpmv
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/hpr.html">
+       hpr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/hpr2.html">
+       hpr2
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/sbmv.html">
+       sbmv
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/spmv.html">
+       spmv
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/spr.html">
+       spr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/spr2.html">
+       spr2
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/symv.html">
+       symv
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/syr.html">
+       syr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/syr2.html">
+       syr2
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/tbmv.html">
+       tbmv
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/tbsv.html">
+       tbsv
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/tpmv.html">
+       tpmv
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/tpsv.html">
+       tpsv
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/trmv.html">
+       trmv
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/trsv.html">
+       trsv
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="blas/blas-level-3-routines.html">
+     BLAS Level 3 Routines
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/>
+    <label for="toctree-checkbox-10">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/gemm.html">
+       gemm
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/hemm.html">
+       hemm
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/herk.html">
+       herk
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/her2k.html">
+       her2k
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/symm.html">
+       symm
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/syrk.html">
+       syrk
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/syr2k.html">
+       syr2k
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/trmm.html">
+       trmm
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/trsm.html">
+       trsm
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="blas/blas-like-extensions.html">
+     BLAS-like Extensions
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/>
+    <label for="toctree-checkbox-11">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/axpy_batch.html">
+       axpy_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/gemm_batch.html">
+       gemm_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/trsm_batch.html">
+       trsm_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/gemmt.html">
+       gemmt
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="blas/gemm_bias.html">
+       gemm_bias
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../create_new_backend.html">
+   Integrating a Third-party Library to oneAPI Math Kernel Library (oneMKL) Interfaces
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/domains/matrix-storage.rst.txt"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        
+        <a class="issues-button"
+            href="https://github.com/oneapi-src/oneMKL/issues/new?title=Issue%20on%20page%20%2Fdomains/matrix-storage.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/oneapi-src/oneMKL/edit/develop/docs/domains/matrix-storage.rst"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <section id="matrix-storage">
+<span id="id1"></span><h1>Matrix Storage<a class="headerlink" href="#matrix-storage" title="Permalink to this headline">¶</a></h1>
+<div class="docutils container">
+<p>The oneMKL BLAS and LAPACK routines for DPC++ use several matrix and
+vector storage formats. These are the same formats used in
+traditional Fortran BLAS/LAPACK.</p>
+<div class="section docutils container">
+<p class="sectiontitle rubric" id="general-matrix">General Matrix</p>
+<p>A general matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> of <code class="docutils literal notranslate"><span class="pre">m</span></code> rows and <code class="docutils literal notranslate"><span class="pre">n</span></code> columns with
+leading dimension <code class="docutils literal notranslate"><span class="pre">lda</span></code> is represented as a one dimensional
+array <code class="docutils literal notranslate"><span class="pre">a</span></code> of size of at least <code class="docutils literal notranslate"><span class="pre">lda</span></code> * <code class="docutils literal notranslate"><span class="pre">n</span></code> if column major
+layout is used and at least <code class="docutils literal notranslate"><span class="pre">lda</span></code> * <code class="docutils literal notranslate"><span class="pre">m</span></code> if row major layout
+is used.  Before entry in any BLAS function using a general
+matrix, the leading <code class="docutils literal notranslate"><span class="pre">m</span></code> by <code class="docutils literal notranslate"><span class="pre">n</span></code> part of the array <code class="docutils literal notranslate"><span class="pre">a</span></code> must
+contain the matrix <code class="docutils literal notranslate"><span class="pre">A</span></code>. For column (respectively row) major
+layout, the elements of each column (respectively row) are
+contiguous in memory while the elements of each row
+(respectively column) are at distance <code class="docutils literal notranslate"><span class="pre">lda</span></code> from the element
+in the same row (respectively column) and the previous column
+(respectively row).</p>
+<p>Visually, the matrix</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}A = \begin{bmatrix}
+    A_{11} &amp; A_{12} &amp; A_{13} &amp; \ldots &amp; A_{1n}\\
+    A_{21} &amp; A_{22} &amp; A_{23} &amp; \ldots &amp; A_{2n}\\
+    A_{31} &amp; A_{32} &amp; A_{33} &amp; \ldots &amp; A_{3n}\\
+    \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
+    A_{m1} &amp; A_{m2} &amp; A_{m3} &amp; \ldots &amp; A_{mn}
+    \end{bmatrix}\end{split}\]</div>
+<p>is stored in memory as an array</p>
+<ul class="simple">
+<li><p>For column major layout,</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\scriptstyle a =
+   [\underbrace{\underbrace{A_{11},A_{21},A_{31},...,A_{m1},*,...,*}_\text{lda},
+                \underbrace{A_{12},A_{22},A_{32},...,A_{m2},*,...,*}_\text{lda},
+                ...,
+                \underbrace{A_{1n},A_{2n},A_{3n},...,A_{mn},*,...,*}_\text{lda}}
+                _\text{lda x n}]\]</div>
+<ul class="simple">
+<li><p>For row major layout,</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\scriptstyle a =
+   [\underbrace{\underbrace{A_{11},A_{12},A_{13},...,A_{1n},*,...,*}_\text{lda},
+                \underbrace{A_{21},A_{22},A_{23},...,A_{2n},*,...,*}_\text{lda},
+                ...,
+                \underbrace{A_{m1},A_{m2},A_{m3},...,A_{mn},*,...,*}_\text{lda}}
+                _\text{m x lda}]\]</div>
+</div>
+<div class="section docutils container">
+<p class="sectiontitle rubric" id="triangular-matrix">Triangular Matrix</p>
+<p>A triangular matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> of <code class="docutils literal notranslate"><span class="pre">n</span></code> rows and <code class="docutils literal notranslate"><span class="pre">n</span></code> columns with
+leading dimension <code class="docutils literal notranslate"><span class="pre">lda</span></code> is represented as a one dimensional
+array <code class="docutils literal notranslate"><span class="pre">a</span></code>, of a size of at least <code class="docutils literal notranslate"><span class="pre">lda</span></code> * <code class="docutils literal notranslate"><span class="pre">n</span></code>. When column
+(respectively row) major layout is used, the elements of each
+column (respectively row) are contiguous in memory while the
+elements of each row (respectively column) are at distance
+<code class="docutils literal notranslate"><span class="pre">lda</span></code> from the element in the same row (respectively column)
+and the previous column (respectively row).</p>
+<p>Before entry in any BLAS function using a triangular matrix,</p>
+<ul>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">upper_lower</span> <span class="pre">=</span> <span class="pre">uplo::upper</span></code>, the leading <code class="docutils literal notranslate"><span class="pre">n</span></code> by <code class="docutils literal notranslate"><span class="pre">n</span></code>
+upper triangular part of the array <code class="docutils literal notranslate"><span class="pre">a</span></code> must contain the upper
+triangular part of the matrix <code class="docutils literal notranslate"><span class="pre">A</span></code>. The strictly lower
+triangular part of the array <code class="docutils literal notranslate"><span class="pre">a</span></code> is not referenced. In other
+words, the matrix</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}A = \begin{bmatrix}
+    A_{11} &amp; A_{12} &amp; A_{13} &amp; \ldots &amp; A_{1n}\\
+    *      &amp; A_{22} &amp; A_{23} &amp; \ldots &amp; A_{2n}\\
+    *      &amp; *      &amp; A_{33} &amp; \ldots &amp; A_{3n}\\
+    \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
+    *      &amp; *      &amp; *      &amp; \ldots &amp; A_{nn}
+    \end{bmatrix}\end{split}\]</div>
+<p>is stored in memory as the array</p>
+<ul class="simple">
+<li><p>For column major layout,</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\scriptstyle a =
+   [\underbrace{\underbrace{A_{11},*,...,*}_\text{lda},
+                \underbrace{A_{12},A_{22},*,...,*}_\text{lda},
+                ...,
+                \underbrace{A_{1n},A_{2n},A_{3n},...,A_{nn},*,...,*}_\text{lda}}
+                _\text{lda x n}]\]</div>
+<ul class="simple">
+<li><p>For row major layout,</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\scriptstyle a =
+   [\underbrace{\underbrace{A_{11},A_{12},A_{13},...,A_{1n},*,...,*}_\text{lda},
+                \underbrace{*,A_{22},A_{23},...,A_{2n},*,...,*}_\text{lda},
+                ...,
+                \underbrace{*,...,*,A_{nn},*,...,*}_\text{lda}}
+                _\text{lda x n}]\]</div>
+</li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">upper_lower</span> <span class="pre">=</span> <span class="pre">uplo::lower</span></code>, the leading <code class="docutils literal notranslate"><span class="pre">n</span></code> by <code class="docutils literal notranslate"><span class="pre">n</span></code>
+lower triangular part of the array <code class="docutils literal notranslate"><span class="pre">a</span></code> must contain the lower
+triangular part of the matrix <code class="docutils literal notranslate"><span class="pre">A</span></code>. The strictly upper
+triangular part of the array <code class="docutils literal notranslate"><span class="pre">a</span></code> is not referenced. That is,
+the matrix</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}A = \begin{bmatrix}
+    A_{11} &amp; *      &amp; *      &amp; \ldots &amp; *     \\
+    A_{21} &amp; A_{22} &amp; *      &amp; \ldots &amp; *     \\
+    A_{31} &amp; A_{32} &amp; A_{33} &amp; \ldots &amp; *     \\
+    \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
+    A_{n1} &amp; A_{n2} &amp; A_{n3} &amp; \ldots &amp; A_{nn}
+    \end{bmatrix}\end{split}\]</div>
+<p>is stored in memory as the array</p>
+<ul class="simple">
+<li><p>For column major layout,</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\scriptstyle a =
+   [\underbrace{\underbrace{A_{11},A_{21},A_{31},..,A_{n1},*,...,*}_\text{lda},
+                \underbrace{*,A_{22},A_{32},...,A_{n2},*,...,*}_\text{lda},
+                ...,
+                \underbrace{*,...,*,A_{nn},*,...,*}_\text{lda}}
+                _\text{lda x n}]\]</div>
+<ul class="simple">
+<li><p>For row major layout,</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\scriptstyle a =
+   [\underbrace{\underbrace{A_{11},*,...,*}_\text{lda},
+                \underbrace{A_{21},A_{22},*,...,*}_\text{lda},
+                ...,
+                \underbrace{A_{n1},A_{n2},A_{n3},...,A_{nn},*,...,*}_\text{lda}}
+                _\text{lda x n}]\]</div>
+</li>
+</ul>
+</div>
+<div class="section docutils container">
+<p class="sectiontitle rubric" id="band-matrix">Band Matrix</p>
+<p>A general band matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> of <code class="docutils literal notranslate"><span class="pre">m</span></code> rows and <code class="docutils literal notranslate"><span class="pre">n</span></code> columns with
+<code class="docutils literal notranslate"><span class="pre">kl</span></code> sub-diagonals, <code class="docutils literal notranslate"><span class="pre">ku</span></code> super-diagonals, and leading
+dimension <code class="docutils literal notranslate"><span class="pre">lda</span></code> is represented as a one dimensional array
+<code class="docutils literal notranslate"><span class="pre">a</span></code> of a size of at least <code class="docutils literal notranslate"><span class="pre">lda</span></code> * <code class="docutils literal notranslate"><span class="pre">n</span></code> (respectively
+<code class="docutils literal notranslate"><span class="pre">lda</span></code> * <code class="docutils literal notranslate"><span class="pre">m</span></code>) if column (respectively row) major layout is
+used.</p>
+<p>Before entry in any BLAS function using a general band matrix,
+the leading (<code class="docutils literal notranslate"><span class="pre">kl</span></code> + <code class="docutils literal notranslate"><span class="pre">ku</span></code> + 1<code class="docutils literal notranslate"><span class="pre">)</span></code> by <code class="docutils literal notranslate"><span class="pre">n</span></code> (respectively
+<code class="docutils literal notranslate"><span class="pre">m</span></code>) part of the array <code class="docutils literal notranslate"><span class="pre">a</span></code> must contain the matrix
+<code class="docutils literal notranslate"><span class="pre">A</span></code>. This matrix must be supplied column-by-column
+(respectively row-by-row), with the main diagonal of the matrix
+in row <code class="docutils literal notranslate"><span class="pre">ku</span></code> (respectively <code class="docutils literal notranslate"><span class="pre">kl</span></code>) of the array (0-based
+indexing), the first super-diagonal starting at position 1
+(respectively 0) in row (<code class="docutils literal notranslate"><span class="pre">ku</span></code> - 1) (respectively column
+(<code class="docutils literal notranslate"><span class="pre">kl</span></code> + 1)), the first sub-diagonal starting at position 0
+(respectively 1) in row (<code class="docutils literal notranslate"><span class="pre">ku</span></code> + 1) (respectively column
+(<code class="docutils literal notranslate"><span class="pre">kl</span></code> - 1)), and so on. Elements in the array <code class="docutils literal notranslate"><span class="pre">a</span></code> that do
+not correspond to elements in the band matrix (such as the top
+left <code class="docutils literal notranslate"><span class="pre">ku</span></code> by <code class="docutils literal notranslate"><span class="pre">ku</span></code> triangle) are not referenced.</p>
+<p>Visually, the matrix <code class="docutils literal notranslate"><span class="pre">A</span></code></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}A = \left[\begin{smallmatrix}
+    A_{11}     &amp; A_{12}     &amp; A_{13}     &amp; \ldots &amp; A_{1,ku+1} &amp; *          &amp; \ldots     &amp; \ldots     &amp; \ldots &amp; \ldots    &amp; \ldots    &amp; *         \\
+    A_{21}     &amp; A_{22}     &amp; A_{23}     &amp; A_{24} &amp; \ldots     &amp; A_{2,ku+2} &amp; *          &amp; \ldots     &amp; \ldots &amp; \ldots    &amp; \ldots    &amp; *         \\
+    A_{31}     &amp; A_{32}     &amp; A_{33}     &amp; A_{34} &amp; A_{35}     &amp; \ldots     &amp; A_{3,ku+3} &amp; *          &amp; \ldots &amp; \ldots    &amp; \ldots    &amp; *         \\
+    \vdots     &amp; A_{42}     &amp; A_{43}     &amp; \ddots &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; *      &amp; \ldots    &amp; \ldots    &amp; \vdots    \\
+    A_{kl+1,1} &amp; \vdots     &amp; A_{53}     &amp; \ddots &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots &amp; *         &amp; \ldots    &amp; \vdots    \\
+    *          &amp; A_{kl+2,2} &amp; \vdots     &amp; \ddots &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots &amp; \ddots    &amp; \ddots    &amp; \vdots    \\
+    \vdots     &amp; *          &amp; A_{kl+3,3} &amp; \ddots &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots &amp; \ddots    &amp; \ddots    &amp; *         \\
+    \vdots     &amp; \vdots     &amp; *          &amp; \ddots &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots &amp; \ddots    &amp; \ddots    &amp; A_{n-ku,n}\\
+    \vdots     &amp; \vdots     &amp; \vdots     &amp; *      &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots &amp; \ddots    &amp; \ddots    &amp; \vdots    \\
+    \vdots     &amp; \vdots     &amp; \vdots     &amp; \vdots &amp; *          &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots &amp; \ddots    &amp; \ddots    &amp; A_{m-2,n} \\
+    \vdots     &amp; \vdots     &amp; \vdots     &amp; \vdots &amp; \vdots     &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots &amp; \ddots    &amp; \ddots    &amp; A_{m-1,n} \\
+    *          &amp; *          &amp; *          &amp; \ldots &amp; \ldots     &amp; \ldots     &amp; *          &amp; A_{m,m-kl} &amp; \ldots &amp; A_{m,n-2} &amp; A_{m,n-1} &amp; A_{m,n}
+    \end{smallmatrix}\right]\end{split}\]</div>
+<p>is stored in memory as an array</p>
+<ul class="simple">
+<li><p>For column major layout,</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\scriptscriptstyle a =
+   [\underbrace{
+    \underbrace{\underbrace{*,...,*}_\text{ku},A_{11}, A_{12},...,A_{min(kl+1,m),1},*,...,*}_\text{lda},
+    \underbrace{\underbrace{*,...,*}_\text{ku-1},A_{max(1,2-ku),2},...,A_{min(kl+2,m),2},*,...*}_\text{lda},
+    ...,
+    \underbrace{\underbrace{*,...,*}_\text{max(0,ku-n+1)},A_{max(1,n-ku),n},...,A_{min(kl+n,m),n},*,...*}_\text{lda}
+    }_\text{lda x n}]\]</div>
+<ul class="simple">
+<li><p>For row major layout,</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\scriptscriptstyle a =
+   [\underbrace{
+    \underbrace{\underbrace{*,...,*}_\text{kl},A_{11}, A_{12},...,A_{1,min(ku+1,n)},*,...,*}_\text{lda},
+    \underbrace{\underbrace{*,...,*}_\text{kl-1},A_{2,max(1,2-kl)},...,A_{2,min(ku+2,n)},*,...*}_\text{lda},
+    ...,
+    \underbrace{\underbrace{*,...,*}_\text{max(0,kl-m+1)},A_{m,max(1,m-kl)},...,A_{m,min(ku+m,n)},*,...*}_\text{lda}
+    }_\text{lda x m}]\]</div>
+<p>The following program segment transfers a band matrix from
+conventional full matrix storage (variable <code class="docutils literal notranslate"><span class="pre">matrix</span></code>, with
+leading dimension <code class="docutils literal notranslate"><span class="pre">ldm</span></code>) to band storage (variable <code class="docutils literal notranslate"><span class="pre">a</span></code>, with
+leading dimension <code class="docutils literal notranslate"><span class="pre">lda</span></code>):</p>
+<ul class="simple">
+<li><p>Using matrices stored with column major layout,</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>for (j = 0; j &lt; n; j++) {
+    k = ku – j;
+    for (i = max(0, j – ku); i &lt; min(m, j + kl + 1); i++) {
+        a[(k + i) + j * lda] = matrix[i + j * ldm];
+    }
+}
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Using matrices stored with row major layout,</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>for (i = 0; i &lt; n; i++) {
+    k = kl – i;
+    for (j = max(0, i – kl); j &lt; min(n, i + ku + 1); j++) {
+        a[(k + j) + i * lda] = matrix[j + i * ldm];
+    }
+}
+</pre></div>
+</div>
+</div>
+<div class="section docutils container">
+<p class="sectiontitle rubric" id="triangular-band-matrix">Triangular Band Matrix</p>
+<p>A triangular band matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> of <code class="docutils literal notranslate"><span class="pre">n</span></code> rows and <code class="docutils literal notranslate"><span class="pre">n</span></code> columns
+with <code class="docutils literal notranslate"><span class="pre">k</span></code> sub/super-diagonals and leading dimension <code class="docutils literal notranslate"><span class="pre">lda</span></code> is
+represented as a one dimensional array <code class="docutils literal notranslate"><span class="pre">a</span></code> of size at least
+<code class="docutils literal notranslate"><span class="pre">lda</span></code> * <code class="docutils literal notranslate"><span class="pre">n</span></code>.</p>
+<p>Before entry in any BLAS function using a triangular band matrix,</p>
+<ul>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">upper_lower</span> <span class="pre">=</span> <span class="pre">uplo::upper</span></code>, the leading (<code class="docutils literal notranslate"><span class="pre">k</span></code> + 1) by <code class="docutils literal notranslate"><span class="pre">n</span></code>
+part of the array <code class="docutils literal notranslate"><span class="pre">a</span></code> must contain the upper
+triangular band part of the matrix <code class="docutils literal notranslate"><span class="pre">A</span></code>. When using column
+major layout, this matrix must be supplied column-by-column
+(respectively row-by-row) with the main diagonal of the
+matrix in row (<code class="docutils literal notranslate"><span class="pre">k</span></code>) (respectively column 0) of the array,
+the first super-diagonal starting at position 1
+(respectively 0) in row (<code class="docutils literal notranslate"><span class="pre">k</span></code> - 1) (respectively column 1),
+and so on. Elements in the array <code class="docutils literal notranslate"><span class="pre">a</span></code> that do not correspond
+to elements in the triangular band matrix (such as the top
+left <code class="docutils literal notranslate"><span class="pre">k</span></code> by <code class="docutils literal notranslate"><span class="pre">k</span></code> triangle) are not referenced.</p>
+<p>Visually, the matrix</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}A = \left[\begin{smallmatrix}
+    A_{11}     &amp; A_{12}     &amp; A_{13}     &amp; \ldots &amp; A_{1,k+1} &amp; *          &amp; \ldots      &amp; \ldots     &amp; \ldots &amp; \ldots    &amp; \ldots    &amp; *         \\
+    *          &amp; A_{22}     &amp; A_{23}     &amp; A_{24} &amp; \ldots     &amp; A_{2,k+2} &amp; *           &amp; \ldots     &amp; \ldots &amp; \ldots    &amp; \ldots    &amp; *         \\
+    \vdots     &amp; *          &amp; A_{33}     &amp; A_{34} &amp; A_{35}     &amp; \ldots     &amp; A_{3,k+3}  &amp; *          &amp; \ldots &amp; \ldots    &amp; \ldots    &amp; *         \\
+    \vdots     &amp; \vdots     &amp; *          &amp; \ddots &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; *      &amp; \ldots    &amp; \ldots    &amp; \vdots    \\
+    \vdots     &amp; \vdots     &amp; \vdots     &amp; \ddots &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots &amp; *         &amp; \ldots    &amp; \vdots    \\
+    \vdots     &amp; \vdots     &amp; \vdots     &amp; \vdots &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots &amp; \ddots    &amp; \ddots    &amp; \vdots    \\
+    \vdots     &amp; \vdots     &amp; \vdots     &amp; \vdots &amp; \vdots     &amp; \ddots     &amp; \ddots     &amp; \ddots     &amp; \ddots &amp; \ddots    &amp; \ddots    &amp; *         \\
+    \vdots     &amp; \vdots     &amp; \vdots     &amp; \vdots &amp; \vdots     &amp; \vdots     &amp; \ddots     &amp; \ddots     &amp; \ddots &amp; \ddots    &amp; \ddots    &amp; A_{n-k,n}\\
+    \vdots     &amp; \vdots     &amp; \vdots     &amp; \vdots &amp; \vdots     &amp; \vdots     &amp; \vdots     &amp; \ddots     &amp; \ddots &amp; \ddots    &amp; \ddots    &amp; \vdots    \\
+    \vdots     &amp; \vdots     &amp; \vdots     &amp; \vdots &amp; \vdots     &amp; \vdots     &amp; \vdots     &amp; \vdots     &amp; \ddots &amp; \ddots    &amp; \ddots    &amp; A_{n-2,n} \\
+    \vdots     &amp; \vdots     &amp; \vdots     &amp; \vdots &amp; \vdots     &amp; \vdots     &amp; \vdots     &amp; \vdots     &amp; \vdots &amp; \ddots    &amp; \ddots    &amp; A_{n-1,n} \\
+    *          &amp; *          &amp; *          &amp; \ldots &amp; \ldots     &amp; \ldots     &amp; \ldots     &amp; \ldots     &amp; \ldots &amp; \ldots    &amp; *         &amp; A_{n,n}
+    \end{smallmatrix}\right]\end{split}\]</div>
+<p>is stored as an array</p>
+</li>
+</ul>
+<div class="fignone docutils container">
+<ul>
+<li><p>For column major layout,</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\scriptstyle a =
+   [\underbrace{
+    \underbrace{\underbrace{*,...,*}_\text{ku},A_{11},*,...,*}_\text{lda},
+    \underbrace{\underbrace{*,...,*}_\text{ku-1},A_{max(1,2-k),2},...,A_{2,2},*,...*}_\text{lda},
+    ...,
+    \underbrace{\underbrace{*,...,*}_\text{max(0,k-n+1)},A_{max(1,n-k),n},...,A_{n,n},*,...*}_\text{lda}
+    }_\text{lda x n}]\]</div>
+</div></blockquote>
+</li>
+<li><p>For row major layout,</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\scriptstyle a =
+   [\underbrace{
+    \underbrace{A_{11},A_{21},...,A_{min(k+1,n),1},*,...,*}_\text{lda},
+    \underbrace{A_{2,2},...,A_{min(k+2,n),2},*,...,*}_\text{lda},
+    ...,
+    \underbrace{A_{n,n},*,...*}_\text{lda}
+    }_\text{lda x n}]\]</div>
+</div></blockquote>
+</li>
+</ul>
+<p>The following program segment transfers a band matrix from
+conventional full matrix storage (variable <code class="docutils literal notranslate"><span class="pre">matrix</span></code>, with
+leading dimension <code class="docutils literal notranslate"><span class="pre">ldm</span></code>) to band storage (variable <code class="docutils literal notranslate"><span class="pre">a</span></code>,
+with leading dimension <code class="docutils literal notranslate"><span class="pre">lda</span></code>):</p>
+<ul class="simple">
+<li><p>Using matrices stored with column major layout,</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>for (j = 0; j &lt; n; j++) {
+    m = k – j;
+    for (i = max(0, j – k); i &lt;= j; i++) {
+        a[(m + i) + j * lda] = matrix[i + j * ldm];
+    }
+}
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Using matrices stored with column major layout,</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>for (i = 0; i &lt; n; i++) {
+    m = –i;
+    for (j = i; j &lt; min(n, i + k + 1); j++) {
+        a[(m + j) + i * lda] = matrix[j + i * ldm];
+    }
+}
+</pre></div>
+</div>
+</div>
+<ul>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">upper_lower</span> <span class="pre">=</span> <span class="pre">uplo::lower</span></code>, the leading (<code class="docutils literal notranslate"><span class="pre">k</span></code> + 1) by <code class="docutils literal notranslate"><span class="pre">n</span></code>
+part of the array <code class="docutils literal notranslate"><span class="pre">a</span></code> must contain the upper triangular
+band part of the matrix <code class="docutils literal notranslate"><span class="pre">A</span></code>. This matrix must be supplied
+column-by-column with the main diagonal of the matrix in row 0
+of the array, the first sub-diagonal starting at position 0 in
+row 1, and so on. Elements in the array <code class="docutils literal notranslate"><span class="pre">a</span></code> that do not
+correspond to elements in the triangular band matrix (such as
+the bottom right <code class="docutils literal notranslate"><span class="pre">k</span></code> by <code class="docutils literal notranslate"><span class="pre">k</span></code> triangle) are not referenced.</p>
+<p>That is, the matrix</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}A = \left[\begin{smallmatrix}
+    A_{11}     &amp; *          &amp; \ldots     &amp; \ldots &amp; \ldots     &amp; \ldots    &amp; \ldots     &amp; \ldots     &amp; \ldots &amp; \ldots    &amp; \ldots    &amp; *         \\
+    A_{21}     &amp; A_{22}     &amp; *          &amp; \ldots &amp; \ldots     &amp; \ldots    &amp; \ldots     &amp; \ldots     &amp; \ldots &amp; \ldots    &amp; \ldots    &amp; *         \\
+    A_{31}     &amp; A_{32}     &amp; A_{33}     &amp; *      &amp; \ldots     &amp; \ldots    &amp; \ldots     &amp; \ldots     &amp; \ldots &amp; \ldots    &amp; \ldots    &amp; *         \\
+    \vdots     &amp; A_{42}     &amp; A_{43}     &amp; \ddots &amp; \ddots     &amp; \ldots    &amp; \ldots     &amp; \ldots     &amp; \ldots &amp; \ldots    &amp; \ldots    &amp; \vdots    \\
+    A_{k+1,1}  &amp; \vdots     &amp; A_{53}     &amp; \ddots &amp; \ddots     &amp; \ddots    &amp; \ldots     &amp; \ldots     &amp; \ldots &amp; \ldots    &amp; \ldots    &amp; \vdots    \\
+    *          &amp; A_{k+2,2}  &amp; \vdots     &amp; \ddots &amp; \ddots     &amp; \ddots    &amp; \ddots     &amp; \ldots     &amp; \ldots &amp; \ldots    &amp; \ldots    &amp; \vdots    \\
+    \vdots     &amp; *          &amp; A_{k+3,3}  &amp; \ddots &amp; \ddots     &amp; \ddots    &amp; \ddots     &amp; \ddots     &amp; \ldots &amp; \ldots    &amp; \ldots    &amp; \vdots    \\
+    \vdots     &amp; \vdots     &amp; *          &amp; \ddots &amp; \ddots     &amp; \ddots    &amp; \ddots     &amp; \ddots     &amp; \ddots &amp; \ldots    &amp; \ldots    &amp; \vdots    \\
+    \vdots     &amp; \vdots     &amp; \vdots     &amp; *      &amp; \ddots     &amp; \ddots    &amp; \ddots     &amp; \ddots     &amp; \ddots &amp; \ddots    &amp; \ldots    &amp; \vdots    \\
+    \vdots     &amp; \vdots     &amp; \vdots     &amp; \vdots &amp; *          &amp; \ddots    &amp; \ddots     &amp; \ddots     &amp; \ddots &amp; \ddots    &amp; \ddots    &amp; \vdots    \\
+    \vdots     &amp; \vdots     &amp; \vdots     &amp; \vdots &amp; \vdots     &amp; \ddots    &amp; \ddots     &amp; \ddots     &amp; \ddots &amp; \ddots    &amp; \ddots    &amp; *         \\
+    *          &amp; *          &amp; *          &amp; \ldots &amp; \ldots     &amp; \ldots    &amp; *          &amp; A_{n,n-k}  &amp; \ldots &amp; A_{n,n-2} &amp; A_{n,n-1} &amp; A_{n,n}
+    \end{smallmatrix}\right]\end{split}\]</div>
+<p>is stored as the array</p>
+</li>
+</ul>
+<div class="fignone docutils container">
+<ul>
+<li><p>For column major layout,</p>
+<div class="math notranslate nohighlight">
+\[\scriptstyle a =
+   [\underbrace{
+    \underbrace{A_{11},A_{21},...,A_{min(k+1,n),1},*,...,*}_\text{lda},
+    \underbrace{A_{2,2},...,A_{min(k+2,n),2},*,...,*}_\text{lda},
+    ...,
+    \underbrace{A_{n,n},*,...*}_\text{lda}
+    }_\text{lda x n}]\]</div>
+</li>
+<li><p>For row major layout,</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\scriptstyle a =
+   [\underbrace{
+    \underbrace{\underbrace{*,...,*}_\text{k},A_{11},*,...,*}_\text{lda},
+    \underbrace{\underbrace{*,...,*}_\text{k-1},A_{max(1,2-k),2},...,A_{2,2},*,...*}_\text{lda},
+    ...,
+    \underbrace{\underbrace{*,...,*}_\text{max(0,k-n+1)},A_{max(1,n-k),n},...,A_{n,n},*,...*}_\text{lda}
+    }_\text{lda x n}]\]</div>
+</div></blockquote>
+</li>
+</ul>
+<p>The following program segment transfers a band matrix from
+conventional full matrix storage (variable <code class="docutils literal notranslate"><span class="pre">matrix</span></code>, with
+leading dimension <code class="docutils literal notranslate"><span class="pre">ldm</span></code>) to band storage (variable <code class="docutils literal notranslate"><span class="pre">a</span></code>,
+with leading dimension <code class="docutils literal notranslate"><span class="pre">lda</span></code>):</p>
+<ul class="simple">
+<li><p>Using matrices stored with column major layout,</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>for (j = 0; j &lt; n; j++) {
+    m = –j;
+    for (i = j; i &lt; min(n, j + k + 1); i++) {
+        a[(m + i) + j * lda] = matrix[i + j * ldm];
+    }
+}
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Using matrices stored with row major layout,</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>for (i = 0; i &lt; n; i++) {
+    m = k – i;
+    for (j = max(0, i – k); j &lt;= i; j++) {
+        a[(m + j) + i * lda] = matrix[j + i * ldm];
+    }
+}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section docutils container">
+<p class="sectiontitle rubric" id="packed-triangular-matrix">Packed Triangular Matrix</p>
+<p>A triangular matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> of <code class="docutils literal notranslate"><span class="pre">n</span></code> rows and <code class="docutils literal notranslate"><span class="pre">n</span></code> columns is
+represented in packed format as a one dimensional array <code class="docutils literal notranslate"><span class="pre">a</span></code> of
+size at least (<code class="docutils literal notranslate"><span class="pre">n</span></code>*(<code class="docutils literal notranslate"><span class="pre">n</span></code> + 1))/2. All elements in the upper
+or lower part of the matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> are stored contiguously in the
+array <code class="docutils literal notranslate"><span class="pre">a</span></code>.</p>
+<p>Before entry in any BLAS function using a triangular packed
+matrix,</p>
+<ul>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">upper_lower</span> <span class="pre">=</span> <span class="pre">uplo::upper</span></code>, if column (respectively row)
+major layout is used, the first (<code class="docutils literal notranslate"><span class="pre">n</span></code>*(<code class="docutils literal notranslate"><span class="pre">n</span></code> + 1))/2
+elements in the array <code class="docutils literal notranslate"><span class="pre">a</span></code> must contain the upper triangular
+part of the matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> packed sequentially, column by column
+(respectively row by row) so that <code class="docutils literal notranslate"><span class="pre">a</span></code>[0] contains <code class="docutils literal notranslate"><span class="pre">A</span></code><sub>11</sub>, <code class="docutils literal notranslate"><span class="pre">a</span></code>[1] and <code class="docutils literal notranslate"><span class="pre">a</span></code>[2] contain <code class="docutils literal notranslate"><span class="pre">A</span></code><sub>12</sub>
+and <code class="docutils literal notranslate"><span class="pre">A</span></code><sub>22</sub> (respectively <code class="docutils literal notranslate"><span class="pre">A</span></code><sub>13</sub>)
+respectively, and so on. Hence, the matrix</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}A = \begin{bmatrix}
+    A_{11} &amp; A_{12} &amp; A_{13} &amp; \ldots &amp; A_{1n}\\
+    *      &amp; A_{22} &amp; A_{23} &amp; \ldots &amp; A_{2n}\\
+    *      &amp; *      &amp; A_{33} &amp; \ldots &amp; A_{3n}\\
+    \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
+    *      &amp; *      &amp; *      &amp; \ldots &amp; A_{nn}
+    \end{bmatrix}\end{split}\]</div>
+<p>is stored as the array</p>
+<ul>
+<li><p>For column major layout,</p>
+<div class="math notranslate nohighlight">
+\[\scriptstyle a = [A_{11},A_{12},A_{22},A_{13},A_{23},A_{33},...,A_{(n-1),n},A_{nn}]\]</div>
+</li>
+<li><p>For row major layout,</p>
+<div class="math notranslate nohighlight">
+\[\scriptstyle a = [A_{11},A_{12},A_{13},...,A_{1n},
+     A_{22},A_{23},...,A_{2n},...,
+     A_{(n-1),(n-1)},A_{(n-1),n},A_{nn}]\]</div>
+</li>
+</ul>
+</li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">upper_lower</span> <span class="pre">=</span> <span class="pre">uplo::lower</span></code>, if column (respectively row)
+major layout is used, the first (<code class="docutils literal notranslate"><span class="pre">n</span></code>*(<code class="docutils literal notranslate"><span class="pre">n</span></code> + 1))/2
+elements in the array <code class="docutils literal notranslate"><span class="pre">a</span></code> must contain the lower triangular
+part of the matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> packed sequentially, column by column
+(row by row) so that <code class="docutils literal notranslate"><span class="pre">a</span></code>[0] contains <code class="docutils literal notranslate"><span class="pre">A</span></code><sub>11</sub>,
+<code class="docutils literal notranslate"><span class="pre">a</span></code>[1] and <code class="docutils literal notranslate"><span class="pre">a</span></code>[2] contain <code class="docutils literal notranslate"><span class="pre">A</span></code><sub>21</sub> and <code class="docutils literal notranslate"><span class="pre">A</span></code><sub>31</sub> (respectively <code class="docutils literal notranslate"><span class="pre">A</span></code><sub>22</sub>) respectively, and so
+on. The matrix</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\begin{split}A = \begin{bmatrix}
+    A_{11} &amp; *      &amp; *      &amp; \ldots &amp; *     \\
+    A_{21} &amp; A_{22} &amp; *      &amp; \ldots &amp; *     \\
+    A_{31} &amp; A_{32} &amp; A_{33} &amp; \ldots &amp; *     \\
+    \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
+    A_{n1} &amp; A_{n2} &amp; A_{n3} &amp; \ldots &amp; A_{nn}
+    \end{bmatrix}\end{split}\]</div>
+<p>is stored as the array</p>
+<ul class="simple">
+<li><p>For column major layout,</p></li>
+</ul>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\scriptstyle a = [A_{11},A_{21},A_{31},...,A_{n1},
+     A_{22},A_{32},...,A_{n2},...,
+     A_{(n-1),(n-1)},A_{n,(n-1)},A_{nn}]\]</div>
+</div></blockquote>
+<ul class="simple">
+<li><p>For row major layout,</p></li>
+</ul>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\scriptstyle a = [A_{11},A_{21},A_{22},A_{31},A_{32},A_{33},...,A_{n,(n-1)},A_{nn}]\]</div>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section docutils container">
+<p class="sectiontitle rubric" id="vector">Vector</p>
+<p>A vector <code class="docutils literal notranslate"><span class="pre">X</span></code> of <code class="docutils literal notranslate"><span class="pre">n</span></code> elements with increment <code class="docutils literal notranslate"><span class="pre">incx</span></code> is
+represented as a one dimensional array <code class="docutils literal notranslate"><span class="pre">x</span></code> of size at least (1 +
+(<code class="docutils literal notranslate"><span class="pre">n</span></code> - 1) * abs(<code class="docutils literal notranslate"><span class="pre">incx</span></code>)).</p>
+<p>Visually, the vector</p>
+<div class="math notranslate nohighlight">
+\[X = (X_{1},X_{2}, X_{3},...,X_{n})\]</div>
+<p>is stored in memory as an array</p>
+<div class="math notranslate nohighlight">
+\[\scriptstyle x = [\underbrace{
+    \underbrace{X_{1},*,...,*}_\text{incx},
+    \underbrace{X_{2},*,...,*}_\text{incx},
+    ...,
+    \underbrace{X_{n-1},*,...,*}_\text{incx},X_{n}
+    }_\text{1 + (n-1) x incx}] \quad if \:incx \:&gt; \:0\]</div>
+<div class="math notranslate nohighlight">
+\[\scriptstyle x = [\underbrace{
+    \underbrace{X_{n},*,...,*}_\text{|incx|},
+    \underbrace{X_{n-1},*,...,*}_\text{|incx|},
+    ...,
+    \underbrace{X_{2},*,...,*}_\text{|incx|},X_{1}
+    }_\text{1 + (1-n) x incx}] \quad if \:incx \:&lt; \:0\]</div>
+</div>
+</div>
+</section>
+
+
+              </div>
+              
+        
+        <div class='prev-next-bottom'>
+            
+    <a class='left-prev' id="prev-link" href="dense_linear_algebra.html" title="previous page">Dense Linear Algebra</a>
+    <a class='right-next' id="next-link" href="blas/blas.html" title="next page">BLAS Routines</a>
+
+        </div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Intel Corporation<br/>
+        
+            &copy; Copyright 2020, Intel Corporation.<br/>
+          <div class="extra_footer">
+            <p align="right"><a href="https://www.intel.com/content/www/us/en/privacy/intel-cookie-notice.html">Cookies</a></p>
+          </div>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+
+  
+  </body>
+</html>
