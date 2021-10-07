@@ -625,7 +625,7 @@ NRM2_LAUNCHER(std::complex<double>, double, cublasDznrm2)
 template <typename Func, typename T1, typename T2>
 inline cl::sycl::event asum(Func func, cl::sycl::queue &queue, int64_t n, const T1 *x,
                             const int64_t incx, T2 *result,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType1 = typename CudaEquivalentType<T1>::Type;
     using cuDataType2 = typename CudaEquivalentType<T2>::Type;
     overflow_check(n, incx);
@@ -650,7 +650,7 @@ inline cl::sycl::event asum(Func func, cl::sycl::queue &queue, int64_t n, const 
 #define ASUM_LAUNCHER_USM(TYPE1, TYPE2, CUBLAS_ROUTINE)                                         \
     cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const TYPE1 *x, const int64_t incx, \
                          TYPE2 *result,                                                         \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {         \
+                         const std::vector<cl::sycl::event> &dependencies) {         \
         return asum(CUBLAS_ROUTINE, queue, n, x, incx, result, dependencies);                   \
     }
 ASUM_LAUNCHER_USM(float, float, cublasSasum)
@@ -661,7 +661,7 @@ ASUM_LAUNCHER_USM(std::complex<double>, double, cublasDzasum)
 
 template <typename Func, typename T1, typename T2>
 inline cl::sycl::event scal(Func func, cl::sycl::queue &queue, int64_t n, T1 a, T2 *x, int64_t incx,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType1 = typename CudaEquivalentType<T1>::Type;
     using cuDataType2 = typename CudaEquivalentType<T2>::Type;
     overflow_check(n, incx);
@@ -683,7 +683,7 @@ inline cl::sycl::event scal(Func func, cl::sycl::queue &queue, int64_t n, T1 a, 
 
 #define SCAL_LAUNCHER_USM(TYPE1, TYPE2, CUBLAS_ROUTINE)                                      \
     cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, TYPE1 a, TYPE2 *x, int64_t incx, \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {      \
+                         const std::vector<cl::sycl::event> &dependencies) {      \
         return scal(CUBLAS_ROUTINE, queue, n, a, x, incx, dependencies);                     \
     }
 SCAL_LAUNCHER_USM(float, float, cublasSscal)
@@ -697,7 +697,7 @@ SCAL_LAUNCHER_USM(double, std::complex<double>, cublasZdscal)
 template <typename Func, typename T>
 inline cl::sycl::event axpy(Func func, cl::sycl::queue &queue, int64_t n, T alpha, const T *x,
                             int64_t incx, T *y, int64_t incy,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, incx, incy);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -719,7 +719,7 @@ inline cl::sycl::event axpy(Func func, cl::sycl::queue &queue, int64_t n, T alph
 #define AXPY_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                         \
     cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, TYPE alpha, const TYPE *x,  \
                          int64_t incx, TYPE *y, int64_t incy,                           \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) { \
+                         const std::vector<cl::sycl::event> &dependencies) { \
         return axpy(CUBLAS_ROUTINE, queue, n, alpha, x, incx, y, incy, dependencies);   \
     }
 
@@ -731,30 +731,30 @@ AXPY_LAUNCHER_USM(std::complex<double>, cublasZaxpy)
 
 cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, float alpha, const float *x, int64_t incx,
                       float beta, float *y, int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpby", "for column_major layout");
 }
 cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, double alpha, const double *x,
                       int64_t incx, double beta, double *y, int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpby", "for column_major layout");
 }
 cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, std::complex<float> alpha,
                       const std::complex<float> *x, int64_t incx, std::complex<float> beta,
                       std::complex<float> *y, int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpby", "for column_major layout");
 }
 cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
                       const std::complex<double> *x, int64_t incx, std::complex<double> beta,
                       std::complex<double> *y, int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpby", "for column_major layout");
 }
 
 template <typename Func, typename T1, typename T2>
 inline cl::sycl::event rotg(Func func, cl::sycl::queue &queue, T1 *a, T1 *b, T2 *c, T1 *s,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType1 = typename CudaEquivalentType<T1>::Type;
     using cuDataType2 = typename CudaEquivalentType<T2>::Type;
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -777,7 +777,7 @@ inline cl::sycl::event rotg(Func func, cl::sycl::queue &queue, T1 *a, T1 *b, T2 
 
 #define ROTG_LAUNCHER_USM(TYPE1, TYPE2, CUBLAS_ROUTINE)                                  \
     cl::sycl::event rotg(cl::sycl::queue &queue, TYPE1 *a, TYPE1 *b, TYPE2 *c, TYPE1 *s, \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {  \
+                         const std::vector<cl::sycl::event> &dependencies) {  \
         return rotg(CUBLAS_ROUTINE, queue, a, b, c, s, dependencies);                    \
     }
 
@@ -790,7 +790,7 @@ ROTG_LAUNCHER_USM(std::complex<double>, double, cublasZrotg)
 template <typename Func, typename T>
 inline cl::sycl::event rotm(Func func, cl::sycl::queue &queue, int64_t n, T *x, int64_t incx, T *y,
                             int64_t incy, T *param,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, incx, incy);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -813,7 +813,7 @@ inline cl::sycl::event rotm(Func func, cl::sycl::queue &queue, int64_t n, T *x, 
 #define ROTM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
     cl::sycl::event rotm(cl::sycl::queue &queue, int64_t n, TYPE *x, int64_t incx, TYPE *y, \
                          int64_t incy, TYPE *param,                                         \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {     \
+                         const std::vector<cl::sycl::event> &dependencies) {     \
         return rotm(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, param, dependencies);       \
     }
 
@@ -824,7 +824,7 @@ ROTM_LAUNCHER_USM(double, cublasDrotm)
 template <typename Func, typename T>
 inline cl::sycl::event copy(Func func, cl::sycl::queue &queue, int64_t n, const T *x, int64_t incx,
                             T *y, int64_t incy,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, incx, incy);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -846,7 +846,7 @@ inline cl::sycl::event copy(Func func, cl::sycl::queue &queue, int64_t n, const 
 #define COPY_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
     cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const TYPE *x, int64_t incx, TYPE *y, \
                          int64_t incy,                                                            \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                         const std::vector<cl::sycl::event> &dependencies) {           \
         return copy(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, dependencies);                    \
     }
 
@@ -859,7 +859,7 @@ COPY_LAUNCHER_USM(std::complex<double>, cublasZcopy)
 template <typename Func, typename T>
 inline cl::sycl::event dot(Func func, cl::sycl::queue &queue, int64_t n, const T *x,
                            const int64_t incx, const T *y, int64_t incy, T *result,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, incx, incy);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -882,7 +882,7 @@ inline cl::sycl::event dot(Func func, cl::sycl::queue &queue, int64_t n, const T
 #define DOT_LAUNCHER_USM(EXT, TYPE, CUBLAS_ROUTINE)                                                \
     cl::sycl::event dot##EXT(cl::sycl::queue &queue, int64_t n, const TYPE *x, const int64_t incx, \
                              const TYPE *y, const int64_t incy, TYPE *result,                      \
-                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {        \
+                             const std::vector<cl::sycl::event> &dependencies) {        \
         return dot(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, result, dependencies);              \
     }
 DOT_LAUNCHER_USM(, float, cublasSdot)
@@ -896,7 +896,7 @@ DOT_LAUNCHER_USM(u, std::complex<double>, cublasZdotu)
 template <typename Func, typename T1, typename T2, typename T3>
 inline cl::sycl::event rot(Func func, cl::sycl::queue &queue, int64_t n, T1 *x, const int64_t incx,
                            T1 *y, int64_t incy, T2 c, T3 s,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType1 = typename CudaEquivalentType<T1>::Type;
     using cuDataType2 = typename CudaEquivalentType<T2>::Type;
     using cuDataType3 = typename CudaEquivalentType<T3>::Type;
@@ -921,7 +921,7 @@ inline cl::sycl::event rot(Func func, cl::sycl::queue &queue, int64_t n, T1 *x, 
 #define ROT_LAUNCHER_USM(TYPE1, TYPE2, TYPE3, CUBLAS_ROUTINE)                                      \
     cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, TYPE1 *x, const int64_t incx, TYPE1 *y, \
                         int64_t incy, TYPE2 c, TYPE3 s,                                            \
-                        const cl::sycl::vector_class<cl::sycl::event> &dependencies) {             \
+                        const std::vector<cl::sycl::event> &dependencies) {             \
         return rot(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, c, s, dependencies);                \
     }
 
@@ -933,7 +933,7 @@ ROT_LAUNCHER_USM(std::complex<double>, double, double, cublasZdrot)
 
 cl::sycl::event sdsdot(cl::sycl::queue &queue, int64_t n, float sb, const float *x, int64_t incx,
                        const float *y, int64_t incy, float *result,
-                       const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                       const std::vector<cl::sycl::event> &dependencies) {
     overflow_check(n, incx, incy);
     // cuBLAS does not support sdot so we need to mimic sdot.
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -957,13 +957,13 @@ cl::sycl::event sdsdot(cl::sycl::queue &queue, int64_t n, float sb, const float 
 
 cl::sycl::event dot(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, const float *y,
                     int64_t incy, double *result,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "dot", "for column_major layout");
 }
 
 template <typename Func, typename T>
 inline cl::sycl::event rotmg(Func func, cl::sycl::queue &queue, T *d1, T *d2, T *x1, T y1, T *param,
-                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                             const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
@@ -987,7 +987,7 @@ inline cl::sycl::event rotmg(Func func, cl::sycl::queue &queue, T *d1, T *d2, T 
 #define ROTMG_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                         \
     cl::sycl::event rotmg(cl::sycl::queue &queue, TYPE *d1, TYPE *d2, TYPE *x1, TYPE y1, \
                           TYPE *param,                                                   \
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) { \
+                          const std::vector<cl::sycl::event> &dependencies) { \
         return rotmg(CUBLAS_ROUTINE, queue, d1, d2, x1, y1, param, dependencies);        \
     }
 
@@ -998,7 +998,7 @@ ROTMG_LAUNCHER_USM(double, cublasDrotmg)
 template <typename Func, typename T>
 inline cl::sycl::event iamax(Func func, cl::sycl::queue &queue, int64_t n, const T *x,
                              const int64_t incx, int64_t *result,
-                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                             const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, incx);
     // cuBLAS does not support int64_t as return type for the data. So we need to
@@ -1031,7 +1031,7 @@ inline cl::sycl::event iamax(Func func, cl::sycl::queue &queue, int64_t n, const
 #define IAMAX_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                \
     cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const TYPE *x, const int64_t incx, \
                           int64_t *result,                                                      \
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {        \
+                          const std::vector<cl::sycl::event> &dependencies) {        \
         return iamax(CUBLAS_ROUTINE, queue, n, x, incx, result, dependencies);                  \
     }
 IAMAX_LAUNCHER_USM(float, cublasIsamax)
@@ -1043,7 +1043,7 @@ IAMAX_LAUNCHER_USM(std::complex<double>, cublasIzamax)
 template <typename Func, typename T>
 inline cl::sycl::event swap(Func func, cl::sycl::queue &queue, int64_t n, T *x, int64_t incx, T *y,
                             int64_t incy,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, incx, incy);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -1065,7 +1065,7 @@ inline cl::sycl::event swap(Func func, cl::sycl::queue &queue, int64_t n, T *x, 
 #define SWAP_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
     cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, TYPE *x, int64_t incx, TYPE *y, \
                          int64_t incy,                                                      \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {     \
+                         const std::vector<cl::sycl::event> &dependencies) {     \
         return swap(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, dependencies);              \
     }
 
@@ -1078,7 +1078,7 @@ SWAP_LAUNCHER_USM(std::complex<double>, cublasZswap)
 template <typename Func, typename T>
 inline cl::sycl::event iamin(Func func, cl::sycl::queue &queue, int64_t n, const T *x,
                              const int64_t incx, int64_t *result,
-                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                             const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, incx);
     // cuBLAS does not support int64_t as return type for the data. So we need to
@@ -1111,7 +1111,7 @@ inline cl::sycl::event iamin(Func func, cl::sycl::queue &queue, int64_t n, const
 #define IAMIN_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                \
     cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const TYPE *x, const int64_t incx, \
                           int64_t *result,                                                      \
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {        \
+                          const std::vector<cl::sycl::event> &dependencies) {        \
         return iamin(CUBLAS_ROUTINE, queue, n, x, incx, result, dependencies);                  \
     }
 IAMIN_LAUNCHER_USM(float, cublasIsamin)
@@ -1123,7 +1123,7 @@ IAMIN_LAUNCHER_USM(std::complex<double>, cublasIzamin)
 template <typename Func, typename T1, typename T2>
 inline cl::sycl::event nrm2(Func func, cl::sycl::queue &queue, int64_t n, const T1 *x,
                             const int64_t incx, T2 *result,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType1 = typename CudaEquivalentType<T1>::Type;
     using cuDataType2 = typename CudaEquivalentType<T2>::Type;
     overflow_check(n, incx);
@@ -1148,7 +1148,7 @@ inline cl::sycl::event nrm2(Func func, cl::sycl::queue &queue, int64_t n, const 
 #define NRM2_LAUNCHER_USM(TYPE1, TYPE2, CUBLAS_ROUTINE)                                         \
     cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const TYPE1 *x, const int64_t incx, \
                          TYPE2 *result,                                                         \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {         \
+                         const std::vector<cl::sycl::event> &dependencies) {         \
         return nrm2(CUBLAS_ROUTINE, queue, n, x, incx, result, dependencies);                   \
     }
 NRM2_LAUNCHER_USM(float, float, cublasSnrm2)
@@ -1437,14 +1437,14 @@ NRM2_LAUNCHER(std::complex<double>, double, cublasDznrm2)
 template <typename Func, typename T1, typename T2>
 inline cl::sycl::event asum(Func func, cl::sycl::queue &queue, int64_t n, const T1 *x,
                             const int64_t incx, T2 *result,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "asum", "for row_major layout");
 }
 
 #define ASUM_LAUNCHER_USM(TYPE1, TYPE2, CUBLAS_ROUTINE)                                         \
     cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const TYPE1 *x, const int64_t incx, \
                          TYPE2 *result,                                                         \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {         \
+                         const std::vector<cl::sycl::event> &dependencies) {         \
         return asum(CUBLAS_ROUTINE, queue, n, x, incx, result, dependencies);                   \
     }
 ASUM_LAUNCHER_USM(float, float, cublasSasum)
@@ -1455,13 +1455,13 @@ ASUM_LAUNCHER_USM(std::complex<double>, double, cublasDzasum)
 
 template <typename Func, typename T1, typename T2>
 inline cl::sycl::event scal(Func func, cl::sycl::queue &queue, int64_t n, T1 a, T2 *x, int64_t incx,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "scal", "for row_major layout");
 }
 
 #define SCAL_LAUNCHER_USM(TYPE1, TYPE2, CUBLAS_ROUTINE)                                      \
     cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, TYPE1 a, TYPE2 *x, int64_t incx, \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {      \
+                         const std::vector<cl::sycl::event> &dependencies) {      \
         return scal(CUBLAS_ROUTINE, queue, n, a, x, incx, dependencies);                     \
     }
 SCAL_LAUNCHER_USM(float, float, cublasSscal)
@@ -1475,14 +1475,14 @@ SCAL_LAUNCHER_USM(double, std::complex<double>, cublasZdscal)
 template <typename Func, typename T>
 inline cl::sycl::event axpy(Func func, cl::sycl::queue &queue, int64_t n, T alpha, const T *x,
                             int64_t incx, T *y, int64_t incy,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpy", "for row_major layout");
 }
 
 #define AXPY_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                         \
     cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, TYPE alpha, const TYPE *x,  \
                          int64_t incx, TYPE *y, int64_t incy,                           \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) { \
+                         const std::vector<cl::sycl::event> &dependencies) { \
         return axpy(CUBLAS_ROUTINE, queue, n, alpha, x, incx, y, incy, dependencies);   \
     }
 
@@ -1494,36 +1494,36 @@ AXPY_LAUNCHER_USM(std::complex<double>, cublasZaxpy)
 
 cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, float alpha, const float *x, int64_t incx,
                       float beta, float *y, int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpby", "for row_major layout");
 }
 cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, double alpha, const double *x,
                       int64_t incx, double beta, double *y, int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpby", "for row_major layout");
 }
 cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, std::complex<float> alpha,
                       const std::complex<float> *x, int64_t incx, std::complex<float> beta,
                       std::complex<float> *y, int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpby", "for row_major layout");
 }
 cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
                       const std::complex<double> *x, int64_t incx, std::complex<double> beta,
                       std::complex<double> *y, int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpby", "for row_major layout");
 }
 
 template <typename Func, typename T1, typename T2>
 inline cl::sycl::event rotg(Func func, cl::sycl::queue &queue, T1 *a, T1 *b, T2 *c, T1 *s,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "rotg", "for row_major layout");
 }
 
 #define ROTG_LAUNCHER_USM(TYPE1, TYPE2, CUBLAS_ROUTINE)                                  \
     cl::sycl::event rotg(cl::sycl::queue &queue, TYPE1 *a, TYPE1 *b, TYPE2 *c, TYPE1 *s, \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {  \
+                         const std::vector<cl::sycl::event> &dependencies) {  \
         return rotg(CUBLAS_ROUTINE, queue, a, b, c, s, dependencies);                    \
     }
 
@@ -1536,14 +1536,14 @@ ROTG_LAUNCHER_USM(std::complex<double>, double, cublasZrotg)
 template <typename Func, typename T>
 inline cl::sycl::event rotm(Func func, cl::sycl::queue &queue, int64_t n, T *x, int64_t incx, T *y,
                             int64_t incy, T *param,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "rotm", "for row_major layout");
 }
 
 #define ROTM_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
     cl::sycl::event rotm(cl::sycl::queue &queue, int64_t n, TYPE *x, int64_t incx, TYPE *y, \
                          int64_t incy, TYPE *param,                                         \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {     \
+                         const std::vector<cl::sycl::event> &dependencies) {     \
         return rotm(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, param, dependencies);       \
     }
 
@@ -1554,14 +1554,14 @@ ROTM_LAUNCHER_USM(double, cublasDrotm)
 template <typename Func, typename T>
 inline cl::sycl::event copy(Func func, cl::sycl::queue &queue, int64_t n, const T *x, int64_t incx,
                             T *y, int64_t incy,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "copy", "for row_major layout");
 }
 
 #define COPY_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
     cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const TYPE *x, int64_t incx, TYPE *y, \
                          int64_t incy,                                                            \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                         const std::vector<cl::sycl::event> &dependencies) {           \
         return copy(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, dependencies);                    \
     }
 
@@ -1574,14 +1574,14 @@ COPY_LAUNCHER_USM(std::complex<double>, cublasZcopy)
 template <typename Func, typename T>
 inline cl::sycl::event dot(Func func, cl::sycl::queue &queue, int64_t n, const T *x,
                            const int64_t incx, const T *y, int64_t incy, T *result,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "dot", "for row_major layout");
 }
 
 #define DOT_LAUNCHER_USM(EXT, TYPE, CUBLAS_ROUTINE)                                                \
     cl::sycl::event dot##EXT(cl::sycl::queue &queue, int64_t n, const TYPE *x, const int64_t incx, \
                              const TYPE *y, const int64_t incy, TYPE *result,                      \
-                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {        \
+                             const std::vector<cl::sycl::event> &dependencies) {        \
         return dot(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, result, dependencies);              \
     }
 DOT_LAUNCHER_USM(, float, cublasSdot)
@@ -1595,14 +1595,14 @@ DOT_LAUNCHER_USM(u, std::complex<double>, cublasZdotu)
 template <typename Func, typename T1, typename T2, typename T3>
 inline cl::sycl::event rot(Func func, cl::sycl::queue &queue, int64_t n, T1 *x, const int64_t incx,
                            T1 *y, int64_t incy, T2 c, T3 s,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "rot", "for row_major layout");
 }
 
 #define ROT_LAUNCHER_USM(TYPE1, TYPE2, TYPE3, CUBLAS_ROUTINE)                                      \
     cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, TYPE1 *x, const int64_t incx, TYPE1 *y, \
                         int64_t incy, TYPE2 c, TYPE3 s,                                            \
-                        const cl::sycl::vector_class<cl::sycl::event> &dependencies) {             \
+                        const std::vector<cl::sycl::event> &dependencies) {             \
         return rot(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, c, s, dependencies);                \
     }
 
@@ -1614,26 +1614,26 @@ ROT_LAUNCHER_USM(std::complex<double>, double, double, cublasZdrot)
 
 cl::sycl::event sdsdot(cl::sycl::queue &queue, int64_t n, float sb, const float *x, int64_t incx,
                        const float *y, int64_t incy, float *result,
-                       const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                       const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "sdsdot", "for row_major layout");
 }
 
 cl::sycl::event dot(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, const float *y,
                     int64_t incy, double *result,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "dot", "for row_major layout");
 }
 
 template <typename Func, typename T>
 inline cl::sycl::event rotmg(Func func, cl::sycl::queue &queue, T *d1, T *d2, T *x1, T y1, T *param,
-                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                             const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "rotmg", "for row_major layout");
 }
 
 #define ROTMG_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                         \
     cl::sycl::event rotmg(cl::sycl::queue &queue, TYPE *d1, TYPE *d2, TYPE *x1, TYPE y1, \
                           TYPE *param,                                                   \
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) { \
+                          const std::vector<cl::sycl::event> &dependencies) { \
         return rotmg(CUBLAS_ROUTINE, queue, d1, d2, x1, y1, param, dependencies);        \
     }
 
@@ -1644,14 +1644,14 @@ ROTMG_LAUNCHER_USM(double, cublasDrotmg)
 template <typename Func, typename T>
 inline cl::sycl::event iamax(Func func, cl::sycl::queue &queue, int64_t n, const T *x,
                              const int64_t incx, int64_t *result,
-                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                             const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "iamax", "for row_major layout");
 }
 
 #define IAMAX_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                \
     cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const TYPE *x, const int64_t incx, \
                           int64_t *result,                                                      \
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {        \
+                          const std::vector<cl::sycl::event> &dependencies) {        \
         return iamax(CUBLAS_ROUTINE, queue, n, x, incx, result, dependencies);                  \
     }
 IAMAX_LAUNCHER_USM(float, cublasIsamax)
@@ -1663,14 +1663,14 @@ IAMAX_LAUNCHER_USM(std::complex<double>, cublasIzamax)
 template <typename Func, typename T>
 inline cl::sycl::event swap(Func func, cl::sycl::queue &queue, int64_t n, T *x, int64_t incx, T *y,
                             int64_t incy,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "swap", "for row_major layout");
 }
 
 #define SWAP_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
     cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, TYPE *x, int64_t incx, TYPE *y, \
                          int64_t incy,                                                      \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {     \
+                         const std::vector<cl::sycl::event> &dependencies) {     \
         return swap(CUBLAS_ROUTINE, queue, n, x, incx, y, incy, dependencies);              \
     }
 
@@ -1683,14 +1683,14 @@ SWAP_LAUNCHER_USM(std::complex<double>, cublasZswap)
 template <typename Func, typename T>
 inline cl::sycl::event iamin(Func func, cl::sycl::queue &queue, int64_t n, const T *x,
                              const int64_t incx, int64_t *result,
-                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                             const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "iamin", "for row_major layout");
 }
 
 #define IAMIN_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                \
     cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const TYPE *x, const int64_t incx, \
                           int64_t *result,                                                      \
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {        \
+                          const std::vector<cl::sycl::event> &dependencies) {        \
         return iamin(CUBLAS_ROUTINE, queue, n, x, incx, result, dependencies);                  \
     }
 IAMIN_LAUNCHER_USM(float, cublasIsamin)
@@ -1702,14 +1702,14 @@ IAMIN_LAUNCHER_USM(std::complex<double>, cublasIzamin)
 template <typename Func, typename T1, typename T2>
 inline cl::sycl::event nrm2(Func func, cl::sycl::queue &queue, int64_t n, const T1 *x,
                             const int64_t incx, T2 *result,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "nrm2", "for row_major layout");
 }
 
 #define NRM2_LAUNCHER_USM(TYPE1, TYPE2, CUBLAS_ROUTINE)                                         \
     cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const TYPE1 *x, const int64_t incx, \
                          TYPE2 *result,                                                         \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {         \
+                         const std::vector<cl::sycl::event> &dependencies) {         \
         return nrm2(CUBLAS_ROUTINE, queue, n, x, incx, result, dependencies);                   \
     }
 NRM2_LAUNCHER_USM(float, float, cublasSnrm2)

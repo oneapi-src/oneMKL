@@ -273,13 +273,13 @@ bool usm_dependency(const sycl::device& dev, uint64_t seed) {
         sycl::event func_event = oneapi::mkl::lapack::getri_batch(
             queue, n_vec.data(), A_dev_ptrs.data(), lda_vec.data(), ipiv_dev_ptrs.data(),
             group_count, group_sizes_vec.data(), scratchpad_dev, scratchpad_size,
-            sycl::vector_class<sycl::event>{ in_event });
+            std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
         TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::getri_batch,
                            n_vec.data(), A_dev_ptrs.data(), lda_vec.data(), ipiv_dev_ptrs.data(),
                            group_count, group_sizes_vec.data(), scratchpad_dev, scratchpad_size,
-                           sycl::vector_class<sycl::event>{ in_event });
+                           std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);
 

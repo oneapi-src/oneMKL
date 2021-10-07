@@ -1513,42 +1513,42 @@ void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose tra
 
 cl::sycl::event asum(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<float> *x, std::int64_t incx, float *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_scasum_usm_sycl(queue, n, x, incx, result,
                                                                 dependencies);
 }
 
 cl::sycl::event asum(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<double> *x, std::int64_t incx, double *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dzasum_usm_sycl(queue, n, x, incx, result,
                                                                 dependencies);
 }
 
 cl::sycl::event asum(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const float *x, std::int64_t incx, float *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sasum_usm_sycl(queue, n, x, incx, result,
                                                                dependencies);
 }
 
 cl::sycl::event asum(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const double *x, std::int64_t incx, double *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dasum_usm_sycl(queue, n, x, incx, result,
                                                                dependencies);
 }
 
 cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      float alpha, const float *x, std::int64_t incx, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_saxpy_usm_sycl(queue, n, alpha, x, incx, y, incy,
                                                                dependencies);
 }
 
 cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      double alpha, const double *x, std::int64_t incx, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_daxpy_usm_sycl(queue, n, alpha, x, incx, y, incy,
                                                                dependencies);
 }
@@ -1556,7 +1556,7 @@ cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                      std::complex<float> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_caxpy_usm_sycl(queue, n, alpha, x, incx, y, incy,
                                                                dependencies);
 }
@@ -1564,7 +1564,7 @@ cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                      std::complex<double> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zaxpy_usm_sycl(queue, n, alpha, x, incx, y, incy,
                                                                dependencies);
 }
@@ -1572,7 +1572,7 @@ cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
                            float *alpha, const float **x, std::int64_t *incx, float **y,
                            std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_saxpy_batch_group_usm_sycl(
         queue, n, alpha, x, incx, y, incy, group_count, group_size, dependencies);
 }
@@ -1580,7 +1580,7 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
 cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
                            double *alpha, const double **x, std::int64_t *incx, double **y,
                            std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_daxpy_batch_group_usm_sycl(
         queue, n, alpha, x, incx, y, incy, group_count, group_size, dependencies);
 }
@@ -1589,7 +1589,7 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::complex<float> *alpha, const std::complex<float> **x,
                            std::int64_t *incx, std::complex<float> **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_caxpy_batch_group_usm_sycl(
         queue, n, alpha, x, incx, y, incy, group_count, group_size, dependencies);
 }
@@ -1598,7 +1598,7 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::complex<double> *alpha, const std::complex<double> **x,
                            std::int64_t *incx, std::complex<double> **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zaxpy_batch_group_usm_sycl(
         queue, n, alpha, x, incx, y, incy, group_count, group_size, dependencies);
 }
@@ -1607,7 +1607,7 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            float alpha, const float *x, std::int64_t incx, std::int64_t stridex,
                            float *y, std::int64_t incy, std::int64_t stridey,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_saxpy_batch_strided_usm_sycl(
         queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
@@ -1616,7 +1616,7 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            double alpha, const double *x, std::int64_t incx, std::int64_t stridex,
                            double *y, std::int64_t incy, std::int64_t stridey,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_daxpy_batch_strided_usm_sycl(
         queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
@@ -1625,7 +1625,7 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::complex<float> alpha, const std::complex<float> *x,
                            std::int64_t incx, std::int64_t stridex, std::complex<float> *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_caxpy_batch_strided_usm_sycl(
         queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
@@ -1634,7 +1634,7 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::complex<double> alpha, const std::complex<double> *x,
                            std::int64_t incx, std::int64_t stridex, std::complex<double> *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zaxpy_batch_strided_usm_sycl(
         queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
@@ -1642,7 +1642,7 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
 cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       float alpha, const float *x, std::int64_t incx, const float beta, float *y,
                       std::int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_saxpby_usm_sycl(queue, n, alpha, x, incx, beta, y,
                                                                 incy, dependencies);
 }
@@ -1650,7 +1650,7 @@ cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::i
 cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       double alpha, const double *x, std::int64_t incx, const double beta,
                       double *y, std::int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_daxpby_usm_sycl(queue, n, alpha, x, incx, beta, y,
                                                                 incy, dependencies);
 }
@@ -1658,7 +1658,7 @@ cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::i
 cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                       const std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_caxpby_usm_sycl(queue, n, alpha, x, incx, beta, y,
                                                                 incy, dependencies);
 }
@@ -1666,21 +1666,21 @@ cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::i
 cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                       const std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zaxpby_usm_sycl(queue, n, alpha, x, incx, beta, y,
                                                                 incy, dependencies);
 }
 
 cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const float *x, std::int64_t incx, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_scopy_usm_sycl(queue, n, x, incx, y, incy,
                                                                dependencies);
 }
 
 cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const double *x, std::int64_t incx, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dcopy_usm_sycl(queue, n, x, incx, y, incy,
                                                                dependencies);
 }
@@ -1688,7 +1688,7 @@ cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<float> *x, std::int64_t incx, std::complex<float> *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ccopy_usm_sycl(queue, n, x, incx, y, incy,
                                                                dependencies);
 }
@@ -1696,7 +1696,7 @@ cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<double> *x, std::int64_t incx, std::complex<double> *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zcopy_usm_sycl(queue, n, x, incx, y, incy,
                                                                dependencies);
 }
@@ -1704,7 +1704,7 @@ cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
                            const float **x, std::int64_t *incx, float **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_scopy_batch_group_usm_sycl(
         queue, n, x, incx, y, incy, group_count, group_size, dependencies);
 }
@@ -1712,7 +1712,7 @@ cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
 cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
                            const double **x, std::int64_t *incx, double **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dcopy_batch_group_usm_sycl(
         queue, n, x, incx, y, incy, group_count, group_size, dependencies);
 }
@@ -1721,7 +1721,7 @@ cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            const std::complex<float> **x, std::int64_t *incx,
                            std::complex<float> **y, std::int64_t *incy, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ccopy_batch_group_usm_sycl(
         queue, n, x, incx, y, incy, group_count, group_size, dependencies);
 }
@@ -1730,7 +1730,7 @@ cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            const std::complex<double> **x, std::int64_t *incx,
                            std::complex<double> **y, std::int64_t *incy, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zcopy_batch_group_usm_sycl(
         queue, n, x, incx, y, incy, group_count, group_size, dependencies);
 }
@@ -1738,7 +1738,7 @@ cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
 cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                            const float *x, std::int64_t incx, std::int64_t stridex, float *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_scopy_batch_strided_usm_sycl(
         queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
@@ -1746,7 +1746,7 @@ cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
 cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                            const double *x, std::int64_t incx, std::int64_t stridex, double *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dcopy_batch_strided_usm_sycl(
         queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
@@ -1755,7 +1755,7 @@ cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            const std::complex<float> *x, std::int64_t incx, std::int64_t stridex,
                            std::complex<float> *y, std::int64_t incy, std::int64_t stridey,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ccopy_batch_strided_usm_sycl(
         queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
@@ -1764,28 +1764,28 @@ cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            const std::complex<double> *x, std::int64_t incx, std::int64_t stridex,
                            std::complex<double> *y, std::int64_t incy, std::int64_t stridey,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zcopy_batch_strided_usm_sycl(
         queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
 
 cl::sycl::event dot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                     const float *x, std::int64_t incx, const float *y, std::int64_t incy,
-                    float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    float *result, const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sdot_usm_sycl(queue, n, x, incx, y, incy, result,
                                                               dependencies);
 }
 
 cl::sycl::event dot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                     const double *x, std::int64_t incx, const double *y, std::int64_t incy,
-                    double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    double *result, const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ddot_usm_sycl(queue, n, x, incx, y, incy, result,
                                                               dependencies);
 }
 
 cl::sycl::event dot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                     const float *x, std::int64_t incx, const float *y, std::int64_t incy,
-                    double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    double *result, const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dsdot_usm_sycl(queue, n, x, incx, y, incy, result,
                                                                dependencies);
 }
@@ -1793,7 +1793,7 @@ cl::sycl::event dot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int
 cl::sycl::event dotc(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
                      std::int64_t incy, std::complex<float> *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cdotc_usm_sycl(queue, n, x, incx, y, incy, result,
                                                                dependencies);
 }
@@ -1801,7 +1801,7 @@ cl::sycl::event dotc(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event dotc(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zdotc_usm_sycl(queue, n, x, incx, y, incy, result,
                                                                dependencies);
 }
@@ -1809,7 +1809,7 @@ cl::sycl::event dotc(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event dotu(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
                      std::int64_t incy, std::complex<float> *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cdotu_usm_sycl(queue, n, x, incx, y, incy, result,
                                                                dependencies);
 }
@@ -1817,91 +1817,91 @@ cl::sycl::event dotu(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event dotu(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zdotu_usm_sycl(queue, n, x, incx, y, incy, result,
                                                                dependencies);
 }
 
 cl::sycl::event iamin(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       const float *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_isamin_usm_sycl(queue, n, x, incx, result,
                                                                 dependencies);
 }
 
 cl::sycl::event iamin(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       const double *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_idamin_usm_sycl(queue, n, x, incx, result,
                                                                 dependencies);
 }
 
 cl::sycl::event iamin(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       const std::complex<float> *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_icamin_usm_sycl(queue, n, x, incx, result,
                                                                 dependencies);
 }
 
 cl::sycl::event iamin(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       const std::complex<double> *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_izamin_usm_sycl(queue, n, x, incx, result,
                                                                 dependencies);
 }
 
 cl::sycl::event iamax(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       const float *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_isamax_usm_sycl(queue, n, x, incx, result,
                                                                 dependencies);
 }
 
 cl::sycl::event iamax(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       const double *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_idamax_usm_sycl(queue, n, x, incx, result,
                                                                 dependencies);
 }
 
 cl::sycl::event iamax(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       const std::complex<float> *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_icamax_usm_sycl(queue, n, x, incx, result,
                                                                 dependencies);
 }
 
 cl::sycl::event iamax(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       const std::complex<double> *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_izamax_usm_sycl(queue, n, x, incx, result,
                                                                 dependencies);
 }
 
 cl::sycl::event nrm2(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<float> *x, std::int64_t incx, float *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_scnrm2_usm_sycl(queue, n, x, incx, result,
                                                                 dependencies);
 }
 
 cl::sycl::event nrm2(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<double> *x, std::int64_t incx, double *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dznrm2_usm_sycl(queue, n, x, incx, result,
                                                                 dependencies);
 }
 
 cl::sycl::event nrm2(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const float *x, std::int64_t incx, float *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_snrm2_usm_sycl(queue, n, x, incx, result,
                                                                dependencies);
 }
 
 cl::sycl::event nrm2(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const double *x, std::int64_t incx, double *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dnrm2_usm_sycl(queue, n, x, incx, result,
                                                                dependencies);
 }
@@ -1909,7 +1909,7 @@ cl::sycl::event nrm2(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event rot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                     std::complex<float> *x, std::int64_t incx, std::complex<float> *y,
                     std::int64_t incy, float c, float s,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_srot_usm_sycl(queue, n, x, incx, y, incy, c, s,
                                                               dependencies);
 }
@@ -1917,136 +1917,136 @@ cl::sycl::event rot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int
 cl::sycl::event rot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                     std::complex<double> *x, std::int64_t incx, std::complex<double> *y,
                     std::int64_t incy, double c, double s,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_drot_usm_sycl(queue, n, x, incx, y, incy, c, s,
                                                               dependencies);
 }
 
 cl::sycl::event rot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float *x,
                     std::int64_t incx, float *y, std::int64_t incy, float c, float s,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_csrot_usm_sycl(queue, n, x, incx, y, incy, c, s,
                                                                dependencies);
 }
 
 cl::sycl::event rot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double *x,
                     std::int64_t incx, double *y, std::int64_t incy, double c, double s,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zdrot_usm_sycl(queue, n, x, incx, y, incy, c, s,
                                                                dependencies);
 }
 
 cl::sycl::event rotg(oneapi::mkl::device libkey, cl::sycl::queue &queue, float *a, float *b,
                      float *c, float *s,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_srotg_usm_sycl(queue, a, b, c, s, dependencies);
 }
 
 cl::sycl::event rotg(oneapi::mkl::device libkey, cl::sycl::queue &queue, double *a, double *b,
                      double *c, double *s,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_drotg_usm_sycl(queue, a, b, c, s, dependencies);
 }
 
 cl::sycl::event rotg(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::complex<float> *a,
                      std::complex<float> *b, float *c, std::complex<float> *s,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_crotg_usm_sycl(queue, a, b, c, s, dependencies);
 }
 
 cl::sycl::event rotg(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::complex<double> *a,
                      std::complex<double> *b, double *c, std::complex<double> *s,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zrotg_usm_sycl(queue, a, b, c, s, dependencies);
 }
 
 cl::sycl::event rotm(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float *x,
                      std::int64_t incx, float *y, std::int64_t incy, float *param,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_srotm_usm_sycl(queue, n, x, incx, y, incy, param,
                                                                dependencies);
 }
 
 cl::sycl::event rotm(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double *x,
                      std::int64_t incx, double *y, std::int64_t incy, double *param,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_drotm_usm_sycl(queue, n, x, incx, y, incy, param,
                                                                dependencies);
 }
 
 cl::sycl::event rotmg(oneapi::mkl::device libkey, cl::sycl::queue &queue, float *d1, float *d2,
                       float *x1, float y1, float *param,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_srotmg_usm_sycl(queue, d1, d2, x1, y1, param,
                                                                 dependencies);
 }
 
 cl::sycl::event rotmg(oneapi::mkl::device libkey, cl::sycl::queue &queue, double *d1, double *d2,
                       double *x1, double y1, double *param,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_drotmg_usm_sycl(queue, d1, d2, x1, y1, param,
                                                                 dependencies);
 }
 
 cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      float alpha, float *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sscal_usm_sycl(queue, n, alpha, x, incx,
                                                                dependencies);
 }
 
 cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      double alpha, double *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dscal_usm_sycl(queue, n, alpha, x, incx,
                                                                dependencies);
 }
 
 cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      std::complex<float> alpha, std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cscal_usm_sycl(queue, n, alpha, x, incx,
                                                                dependencies);
 }
 
 cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      std::complex<double> alpha, std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_csscal_usm_sycl(queue, n, alpha, x, incx,
                                                                 dependencies);
 }
 
 cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      float alpha, std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zscal_usm_sycl(queue, n, alpha, x, incx,
                                                                dependencies);
 }
 
 cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      double alpha, std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zdscal_usm_sycl(queue, n, alpha, x, incx,
                                                                 dependencies);
 }
 
 cl::sycl::event sdsdot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float sb,
                        const float *x, std::int64_t incx, const float *y, std::int64_t incy,
-                       float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                       float *result, const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sdsdot_usm_sycl(queue, n, sb, x, incx, y, incy,
                                                                 result, dependencies);
 }
 
 cl::sycl::event swap(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float *x,
                      std::int64_t incx, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sswap_usm_sycl(queue, n, x, incx, y, incy,
                                                                dependencies);
 }
 
 cl::sycl::event swap(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double *x,
                      std::int64_t incx, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dswap_usm_sycl(queue, n, x, incx, y, incy,
                                                                dependencies);
 }
@@ -2054,7 +2054,7 @@ cl::sycl::event swap(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event swap(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      std::complex<float> *x, std::int64_t incx, std::complex<float> *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cswap_usm_sycl(queue, n, x, incx, y, incy,
                                                                dependencies);
 }
@@ -2062,7 +2062,7 @@ cl::sycl::event swap(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event swap(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      std::complex<double> *x, std::int64_t incx, std::complex<double> *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zswap_usm_sycl(queue, n, x, incx, y, incy,
                                                                dependencies);
 }
@@ -2071,7 +2071,7 @@ cl::sycl::event gbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      std::int64_t m, std::int64_t n, std::int64_t kl, std::int64_t ku, float alpha,
                      const float *a, std::int64_t lda, const float *x, std::int64_t incx,
                      float beta, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sgbmv_usm_sycl(
         queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy, dependencies);
 }
@@ -2080,7 +2080,7 @@ cl::sycl::event gbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      std::int64_t m, std::int64_t n, std::int64_t kl, std::int64_t ku, double alpha,
                      const double *a, std::int64_t lda, const double *x, std::int64_t incx,
                      double beta, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dgbmv_usm_sycl(
         queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy, dependencies);
 }
@@ -2090,7 +2090,7 @@ cl::sycl::event gbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
                      const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
                      std::complex<float> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cgbmv_usm_sycl(
         queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy, dependencies);
 }
@@ -2100,7 +2100,7 @@ cl::sycl::event gbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
                      const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
                      std::complex<double> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zgbmv_usm_sycl(
         queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy, dependencies);
 }
@@ -2108,7 +2108,7 @@ cl::sycl::event gbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
 cl::sycl::event gemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans,
                      std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda,
                      const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sgemv_usm_sycl(queue, trans, m, n, alpha, a, lda, x,
                                                                incx, beta, y, incy, dependencies);
 }
@@ -2117,7 +2117,7 @@ cl::sycl::event gemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      std::int64_t m, std::int64_t n, double alpha, const double *a,
                      std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dgemv_usm_sycl(queue, trans, m, n, alpha, a, lda, x,
                                                                incx, beta, y, incy, dependencies);
 }
@@ -2127,7 +2127,7 @@ cl::sycl::event gemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *x,
                      std::int64_t incx, std::complex<float> beta, std::complex<float> *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cgemv_usm_sycl(queue, trans, m, n, alpha, a, lda, x,
                                                                incx, beta, y, incy, dependencies);
 }
@@ -2137,7 +2137,7 @@ cl::sycl::event gemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *x,
                      std::int64_t incx, std::complex<double> beta, std::complex<double> *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zgemv_usm_sycl(queue, trans, m, n, alpha, a, lda, x,
                                                                incx, beta, y, incy, dependencies);
 }
@@ -2147,7 +2147,7 @@ cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t lda, std::int64_t stridea, const float *x,
                            std::int64_t incx, std::int64_t stridex, float beta, float *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sgemv_batch_strided_usm_sycl(
         queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y, incy, stridey,
         batch_size, dependencies);
@@ -2158,7 +2158,7 @@ cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t lda, std::int64_t stridea, const double *x,
                            std::int64_t incx, std::int64_t stridex, double beta, double *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dgemv_batch_strided_usm_sycl(
         queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y, incy, stridey,
         batch_size, dependencies);
@@ -2170,7 +2170,7 @@ cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            const std::complex<float> *x, std::int64_t incx, std::int64_t stridex,
                            std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
                            std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cgemv_batch_strided_usm_sycl(
         queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y, incy, stridey,
         batch_size, dependencies);
@@ -2182,7 +2182,7 @@ cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            const std::complex<double> *x, std::int64_t incx, std::int64_t stridex,
                            std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
                            std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zgemv_batch_strided_usm_sycl(
         queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y, incy, stridey,
         batch_size, dependencies);
@@ -2193,7 +2193,7 @@ cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t *lda, const float **x, std::int64_t *incx, float *beta,
                            float **y, std::int64_t *incy, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sgemv_batch_group_usm_sycl(
         queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count, group_size,
         dependencies);
@@ -2204,7 +2204,7 @@ cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t *lda, const double **x, std::int64_t *incx, double *beta,
                            double **y, std::int64_t *incy, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dgemv_batch_group_usm_sycl(
         queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count, group_size,
         dependencies);
@@ -2216,7 +2216,7 @@ cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            const std::complex<float> **x, std::int64_t *incx,
                            std::complex<float> *beta, std::complex<float> **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cgemv_batch_group_usm_sycl(
         queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count, group_size,
         dependencies);
@@ -2228,7 +2228,7 @@ cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            const std::complex<double> **x, std::int64_t *incx,
                            std::complex<double> *beta, std::complex<double> **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zgemv_batch_group_usm_sycl(
         queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count, group_size,
         dependencies);
@@ -2239,7 +2239,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t stridea, const float *x, std::int64_t incx,
                            std::int64_t stridex, float *c, std::int64_t ldc, std::int64_t stridec,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sdgmm_batch_strided_usm_sycl(
         queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size,
         dependencies);
@@ -2250,7 +2250,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t stridea, const double *x, std::int64_t incx,
                            std::int64_t stridex, double *c, std::int64_t ldc, std::int64_t stridec,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ddgmm_batch_strided_usm_sycl(
         queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size,
         dependencies);
@@ -2261,7 +2261,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t lda, std::int64_t stridea, const std::complex<float> *x,
                            std::int64_t incx, std::int64_t stridex, std::complex<float> *c,
                            std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cdgmm_batch_strided_usm_sycl(
         queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size,
         dependencies);
@@ -2272,7 +2272,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t lda, std::int64_t stridea, const std::complex<double> *x,
                            std::int64_t incx, std::int64_t stridex, std::complex<double> *c,
                            std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zdgmm_batch_strided_usm_sycl(
         queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size,
         dependencies);
@@ -2282,7 +2282,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t *m, std::int64_t *n, const float **a, std::int64_t *lda,
                            const float **x, std::int64_t *incx, float **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sdgmm_batch_group_usm_sycl(
         queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count, group_size, dependencies);
 }
@@ -2291,7 +2291,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t *m, std::int64_t *n, const double **a, std::int64_t *lda,
                            const double **x, std::int64_t *incx, double **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ddgmm_batch_group_usm_sycl(
         queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count, group_size, dependencies);
 }
@@ -2301,7 +2301,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t *lda, const std::complex<float> **x, std::int64_t *incx,
                            std::complex<float> **c, std::int64_t *ldc, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cdgmm_batch_group_usm_sycl(
         queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count, group_size, dependencies);
 }
@@ -2311,7 +2311,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t *lda, const std::complex<double> **x, std::int64_t *incx,
                            std::complex<double> **c, std::int64_t *ldc, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zdgmm_batch_group_usm_sycl(
         queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count, group_size, dependencies);
 }
@@ -2319,7 +2319,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
 cl::sycl::event ger(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t m,
                     std::int64_t n, float alpha, const float *x, std::int64_t incx, const float *y,
                     std::int64_t incy, float *a, std::int64_t lda,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sger_usm_sycl(queue, m, n, alpha, x, incx, y, incy,
                                                               a, lda, dependencies);
 }
@@ -2327,7 +2327,7 @@ cl::sycl::event ger(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int
 cl::sycl::event ger(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t m,
                     std::int64_t n, double alpha, const double *x, std::int64_t incx,
                     const double *y, std::int64_t incy, double *a, std::int64_t lda,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dger_usm_sycl(queue, m, n, alpha, x, incx, y, incy,
                                                               a, lda, dependencies);
 }
@@ -2336,7 +2336,7 @@ cl::sycl::event gerc(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *x,
                      std::int64_t incx, const std::complex<float> *y, std::int64_t incy,
                      std::complex<float> *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cgerc_usm_sycl(queue, m, n, alpha, x, incx, y, incy,
                                                                a, lda, dependencies);
 }
@@ -2345,7 +2345,7 @@ cl::sycl::event gerc(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *x,
                      std::int64_t incx, const std::complex<double> *y, std::int64_t incy,
                      std::complex<double> *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zgerc_usm_sycl(queue, m, n, alpha, x, incx, y, incy,
                                                                a, lda, dependencies);
 }
@@ -2354,7 +2354,7 @@ cl::sycl::event geru(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *x,
                      std::int64_t incx, const std::complex<float> *y, std::int64_t incy,
                      std::complex<float> *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cgeru_usm_sycl(queue, m, n, alpha, x, incx, y, incy,
                                                                a, lda, dependencies);
 }
@@ -2363,7 +2363,7 @@ cl::sycl::event geru(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *x,
                      std::int64_t incx, const std::complex<double> *y, std::int64_t incy,
                      std::complex<double> *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zgeru_usm_sycl(queue, m, n, alpha, x, incx, y, incy,
                                                                a, lda, dependencies);
 }
@@ -2373,7 +2373,7 @@ cl::sycl::event hbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *x,
                      std::int64_t incx, std::complex<float> beta, std::complex<float> *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_chbmv_usm_sycl(
         queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy, dependencies);
 }
@@ -2383,7 +2383,7 @@ cl::sycl::event hbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *x,
                      std::int64_t incx, std::complex<double> beta, std::complex<double> *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zhbmv_usm_sycl(
         queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy, dependencies);
 }
@@ -2392,7 +2392,7 @@ cl::sycl::event hemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                      std::int64_t lda, const std::complex<float> *x, std::int64_t incx,
                      std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_chemv_usm_sycl(
         queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
 }
@@ -2401,7 +2401,7 @@ cl::sycl::event hemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
                      std::int64_t lda, const std::complex<double> *x, std::int64_t incx,
                      std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zhemv_usm_sycl(
         queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
 }
@@ -2409,7 +2409,7 @@ cl::sycl::event hemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event her(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                     std::int64_t n, float alpha, const std::complex<float> *x, std::int64_t incx,
                     std::complex<float> *a, std::int64_t lda,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cher_usm_sycl(queue, upper_lower, n, alpha, x, incx,
                                                               a, lda, dependencies);
 }
@@ -2417,7 +2417,7 @@ cl::sycl::event her(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upp
 cl::sycl::event her(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                     std::int64_t n, double alpha, const std::complex<double> *x, std::int64_t incx,
                     std::complex<double> *a, std::int64_t lda,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zher_usm_sycl(queue, upper_lower, n, alpha, x, incx,
                                                               a, lda, dependencies);
 }
@@ -2426,7 +2426,7 @@ cl::sycl::event her2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *x,
                      std::int64_t incx, const std::complex<float> *y, std::int64_t incy,
                      std::complex<float> *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cher2_usm_sycl(queue, upper_lower, n, alpha, x,
                                                                incx, y, incy, a, lda, dependencies);
 }
@@ -2435,7 +2435,7 @@ cl::sycl::event her2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *x,
                      std::int64_t incx, const std::complex<double> *y, std::int64_t incy,
                      std::complex<double> *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zher2_usm_sycl(queue, upper_lower, n, alpha, x,
                                                                incx, y, incy, a, lda, dependencies);
 }
@@ -2444,7 +2444,7 @@ cl::sycl::event hpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                      const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
                      std::complex<float> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_chpmv_usm_sycl(queue, upper_lower, n, alpha, a, x,
                                                                incx, beta, y, incy, dependencies);
 }
@@ -2453,7 +2453,7 @@ cl::sycl::event hpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
                      const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
                      std::complex<double> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zhpmv_usm_sycl(queue, upper_lower, n, alpha, a, x,
                                                                incx, beta, y, incy, dependencies);
 }
@@ -2461,7 +2461,7 @@ cl::sycl::event hpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event hpr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                     std::int64_t n, float alpha, const std::complex<float> *x, std::int64_t incx,
                     std::complex<float> *a,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_chpr_usm_sycl(queue, upper_lower, n, alpha, x, incx,
                                                               a, dependencies);
 }
@@ -2469,7 +2469,7 @@ cl::sycl::event hpr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upp
 cl::sycl::event hpr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                     std::int64_t n, double alpha, const std::complex<double> *x, std::int64_t incx,
                     std::complex<double> *a,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zhpr_usm_sycl(queue, upper_lower, n, alpha, x, incx,
                                                               a, dependencies);
 }
@@ -2478,7 +2478,7 @@ cl::sycl::event hpr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *x,
                      std::int64_t incx, const std::complex<float> *y, std::int64_t incy,
                      std::complex<float> *a,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_chpr2_usm_sycl(queue, upper_lower, n, alpha, x,
                                                                incx, y, incy, a, dependencies);
 }
@@ -2487,7 +2487,7 @@ cl::sycl::event hpr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *x,
                      std::int64_t incx, const std::complex<double> *y, std::int64_t incy,
                      std::complex<double> *a,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zhpr2_usm_sycl(queue, upper_lower, n, alpha, x,
                                                                incx, y, incy, a, dependencies);
 }
@@ -2495,7 +2495,7 @@ cl::sycl::event hpr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event sbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda,
                      const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ssbmv_usm_sycl(
         queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy, dependencies);
 }
@@ -2504,7 +2504,7 @@ cl::sycl::event sbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::int64_t k, double alpha, const double *a,
                      std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dsbmv_usm_sycl(
         queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy, dependencies);
 }
@@ -2512,7 +2512,7 @@ cl::sycl::event sbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event spmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, float alpha, const float *a, const float *x, std::int64_t incx,
                      float beta, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sspmv_usm_sycl(queue, upper_lower, n, alpha, a, x,
                                                                incx, beta, y, incy, dependencies);
 }
@@ -2520,21 +2520,21 @@ cl::sycl::event spmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event spmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, double alpha, const double *a, const double *x,
                      std::int64_t incx, double beta, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dspmv_usm_sycl(queue, upper_lower, n, alpha, a, x,
                                                                incx, beta, y, incy, dependencies);
 }
 
 cl::sycl::event spr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                     std::int64_t n, float alpha, const float *x, std::int64_t incx, float *a,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sspr_usm_sycl(queue, upper_lower, n, alpha, x, incx,
                                                               a, dependencies);
 }
 
 cl::sycl::event spr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                     std::int64_t n, double alpha, const double *x, std::int64_t incx, double *a,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dspr_usm_sycl(queue, upper_lower, n, alpha, x, incx,
                                                               a, dependencies);
 }
@@ -2542,7 +2542,7 @@ cl::sycl::event spr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upp
 cl::sycl::event spr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, float alpha, const float *x, std::int64_t incx, const float *y,
                      std::int64_t incy, float *a,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sspr2_usm_sycl(queue, upper_lower, n, alpha, x,
                                                                incx, y, incy, a, dependencies);
 }
@@ -2550,7 +2550,7 @@ cl::sycl::event spr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event spr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, double alpha, const double *x, std::int64_t incx,
                      const double *y, std::int64_t incy, double *a,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dspr2_usm_sycl(queue, upper_lower, n, alpha, x,
                                                                incx, y, incy, a, dependencies);
 }
@@ -2558,7 +2558,7 @@ cl::sycl::event spr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event symv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, float alpha, const float *a, std::int64_t lda, const float *x,
                      std::int64_t incx, float beta, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ssymv_usm_sycl(
         queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
 }
@@ -2566,21 +2566,21 @@ cl::sycl::event symv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event symv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, double alpha, const double *a, std::int64_t lda,
                      const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dsymv_usm_sycl(
         queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
 }
 
 cl::sycl::event syr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                     std::int64_t n, float alpha, const float *x, std::int64_t incx, float *a,
-                    std::int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ssyr_usm_sycl(queue, upper_lower, n, alpha, x, incx,
                                                               a, lda, dependencies);
 }
 
 cl::sycl::event syr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                     std::int64_t n, double alpha, const double *x, std::int64_t incx, double *a,
-                    std::int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dsyr_usm_sycl(queue, upper_lower, n, alpha, x, incx,
                                                               a, lda, dependencies);
 }
@@ -2588,7 +2588,7 @@ cl::sycl::event syr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upp
 cl::sycl::event syr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, float alpha, const float *x, std::int64_t incx, const float *y,
                      std::int64_t incy, float *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ssyr2_usm_sycl(queue, upper_lower, n, alpha, x,
                                                                incx, y, incy, a, lda, dependencies);
 }
@@ -2596,7 +2596,7 @@ cl::sycl::event syr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event syr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, double alpha, const double *x, std::int64_t incx,
                      const double *y, std::int64_t incy, double *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dsyr2_usm_sycl(queue, upper_lower, n, alpha, x,
                                                                incx, y, incy, a, lda, dependencies);
 }
@@ -2604,7 +2604,7 @@ cl::sycl::event syr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
                      const float *a, std::int64_t lda, float *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_stbmv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, k, a, lda, x, incx, dependencies);
 }
@@ -2612,7 +2612,7 @@ cl::sycl::event tbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
                      const double *a, std::int64_t lda, double *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dtbmv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, k, a, lda, x, incx, dependencies);
 }
@@ -2621,7 +2621,7 @@ cl::sycl::event tbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
                      const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
                      std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ctbmv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, k, a, lda, x, incx, dependencies);
 }
@@ -2630,7 +2630,7 @@ cl::sycl::event tbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
                      const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
                      std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ztbmv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, k, a, lda, x, incx, dependencies);
 }
@@ -2638,7 +2638,7 @@ cl::sycl::event tbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tbsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
                      const float *a, std::int64_t lda, float *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_stbsv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, k, a, lda, x, incx, dependencies);
 }
@@ -2646,7 +2646,7 @@ cl::sycl::event tbsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tbsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
                      const double *a, std::int64_t lda, double *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dtbsv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, k, a, lda, x, incx, dependencies);
 }
@@ -2655,7 +2655,7 @@ cl::sycl::event tbsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
                      const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
                      std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ctbsv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, k, a, lda, x, incx, dependencies);
 }
@@ -2664,7 +2664,7 @@ cl::sycl::event tbsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
                      const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
                      std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ztbsv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, k, a, lda, x, incx, dependencies);
 }
@@ -2672,7 +2672,7 @@ cl::sycl::event tbsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const float *a, float *x,
                      std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_stpmv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, a, x, incx, dependencies);
 }
@@ -2680,7 +2680,7 @@ cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const double *a, double *x,
                      std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dtpmv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, a, x, incx, dependencies);
 }
@@ -2688,7 +2688,7 @@ cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const std::complex<float> *a,
                      std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ctpmv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, a, x, incx, dependencies);
 }
@@ -2696,7 +2696,7 @@ cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const std::complex<double> *a,
                      std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ztpmv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, a, x, incx, dependencies);
 }
@@ -2704,7 +2704,7 @@ cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const float *a, float *x,
                      std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_stpsv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, a, x, incx, dependencies);
 }
@@ -2712,7 +2712,7 @@ cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const double *a, double *x,
                      std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dtpsv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, a, x, incx, dependencies);
 }
@@ -2720,7 +2720,7 @@ cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const std::complex<float> *a,
                      std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ctpsv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, a, x, incx, dependencies);
 }
@@ -2728,7 +2728,7 @@ cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const std::complex<double> *a,
                      std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ztpsv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, a, x, incx, dependencies);
 }
@@ -2736,7 +2736,7 @@ cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const float *a,
                      std::int64_t lda, float *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_strmv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, a, lda, x, incx, dependencies);
 }
@@ -2744,7 +2744,7 @@ cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const double *a,
                      std::int64_t lda, double *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dtrmv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, a, lda, x, incx, dependencies);
 }
@@ -2752,7 +2752,7 @@ cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const std::complex<float> *a,
                      std::int64_t lda, std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ctrmv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, a, lda, x, incx, dependencies);
 }
@@ -2760,7 +2760,7 @@ cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ztrmv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, a, lda, x, incx, dependencies);
 }
@@ -2768,7 +2768,7 @@ cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const float *a,
                      std::int64_t lda, float *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_strsv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, a, lda, x, incx, dependencies);
 }
@@ -2776,7 +2776,7 @@ cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const double *a,
                      std::int64_t lda, double *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dtrsv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, a, lda, x, incx, dependencies);
 }
@@ -2784,7 +2784,7 @@ cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const std::complex<float> *a,
                      std::int64_t lda, std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ctrsv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, a, lda, x, incx, dependencies);
 }
@@ -2792,7 +2792,7 @@ cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ztrsv_usm_sycl(queue, upper_lower, trans, unit_diag,
                                                                n, a, lda, x, incx, dependencies);
 }
@@ -2801,7 +2801,7 @@ cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
                      const float *a, std::int64_t lda, const float *b, std::int64_t ldb, float beta,
                      float *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sgemm_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -2810,7 +2810,7 @@ cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, double alpha,
                      const double *a, std::int64_t lda, const double *b, std::int64_t ldb,
                      double beta, double *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dgemm_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -2820,7 +2820,7 @@ cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
                      const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
                      std::complex<float> *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cgemm_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -2830,7 +2830,7 @@ cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
                      const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
                      std::complex<double> *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zgemm_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -2839,7 +2839,7 @@ cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
                      const half *a, std::int64_t lda, const half *b, std::int64_t ldb, half beta,
                      half *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_hgemm_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -2848,7 +2848,7 @@ cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
                      const half *a, std::int64_t lda, const half *b, std::int64_t ldb, float beta,
                      float *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_gemm_f16f16f32_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -2857,7 +2857,7 @@ cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
                      const bfloat16 *a, std::int64_t lda, const bfloat16 *b, std::int64_t ldb,
                      float beta, float *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_gemm_bf16bf16f32_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -2867,7 +2867,7 @@ cl::sycl::event hemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                      std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
                      std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_chemm_usm_sycl(
         queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -2877,7 +2877,7 @@ cl::sycl::event hemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *b,
                      std::int64_t ldb, std::complex<double> beta, std::complex<double> *c,
                      std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zhemm_usm_sycl(
         queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -2886,7 +2886,7 @@ cl::sycl::event herk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      transpose trans, std::int64_t n, std::int64_t k, float alpha,
                      const std::complex<float> *a, std::int64_t lda, float beta,
                      std::complex<float> *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cherk_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
 }
@@ -2895,7 +2895,7 @@ cl::sycl::event herk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      transpose trans, std::int64_t n, std::int64_t k, double alpha,
                      const std::complex<double> *a, std::int64_t lda, double beta,
                      std::complex<double> *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zherk_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
 }
@@ -2904,7 +2904,7 @@ cl::sycl::event her2k(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       transpose trans, std::int64_t n, std::int64_t k, std::complex<float> alpha,
                       const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                       std::int64_t ldb, float beta, std::complex<float> *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cher2k_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -2914,7 +2914,7 @@ cl::sycl::event her2k(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       const std::complex<double> *a, std::int64_t lda,
                       const std::complex<double> *b, std::int64_t ldb, double beta,
                       std::complex<double> *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zher2k_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -2923,7 +2923,7 @@ cl::sycl::event symm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, std::int64_t m, std::int64_t n, float alpha, const float *a,
                      std::int64_t lda, const float *b, std::int64_t ldb, float beta, float *c,
                      std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ssymm_usm_sycl(
         queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -2932,7 +2932,7 @@ cl::sycl::event symm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, std::int64_t m, std::int64_t n, double alpha,
                      const double *a, std::int64_t lda, const double *b, std::int64_t ldb,
                      double beta, double *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dsymm_usm_sycl(
         queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -2942,7 +2942,7 @@ cl::sycl::event symm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                      std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
                      std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_csymm_usm_sycl(
         queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -2952,7 +2952,7 @@ cl::sycl::event symm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *b,
                      std::int64_t ldb, std::complex<double> beta, std::complex<double> *c,
                      std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zsymm_usm_sycl(
         queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -2960,7 +2960,7 @@ cl::sycl::event symm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
 cl::sycl::event syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, std::int64_t n, std::int64_t k, float alpha, const float *a,
                      std::int64_t lda, float beta, float *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ssyrk_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
 }
@@ -2968,7 +2968,7 @@ cl::sycl::event syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, std::int64_t n, std::int64_t k, double alpha, const double *a,
                      std::int64_t lda, double beta, double *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dsyrk_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
 }
@@ -2977,7 +2977,7 @@ cl::sycl::event syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      transpose trans, std::int64_t n, std::int64_t k, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, std::complex<float> beta,
                      std::complex<float> *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_csyrk_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
 }
@@ -2986,7 +2986,7 @@ cl::sycl::event syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      transpose trans, std::int64_t n, std::int64_t k, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, std::complex<double> beta,
                      std::complex<double> *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zsyrk_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
 }
@@ -2995,7 +2995,7 @@ cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, u
                            transpose *trans, std::int64_t *n, std::int64_t *k, float *alpha,
                            const float **a, std::int64_t *lda, float *beta, float **c,
                            std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ssyrk_batch_group_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, group_count, group_size,
         dependencies);
@@ -3005,7 +3005,7 @@ cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, u
                            transpose *trans, std::int64_t *n, std::int64_t *k, double *alpha,
                            const double **a, std::int64_t *lda, double *beta, double **c,
                            std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dsyrk_batch_group_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, group_count, group_size,
         dependencies);
@@ -3016,7 +3016,7 @@ cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, u
                            std::complex<float> *alpha, const std::complex<float> **a,
                            std::int64_t *lda, std::complex<float> *beta, std::complex<float> **c,
                            std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_csyrk_batch_group_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, group_count, group_size,
         dependencies);
@@ -3027,7 +3027,7 @@ cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, u
                            std::complex<double> *alpha, const std::complex<double> **a,
                            std::int64_t *lda, std::complex<double> *beta, std::complex<double> **c,
                            std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zsyrk_batch_group_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, group_count, group_size,
         dependencies);
@@ -3038,7 +3038,7 @@ cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, u
                            const float *a, std::int64_t lda, std::int64_t stride_a, float beta,
                            float *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ssyrk_batch_strided_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc, stride_c,
         batch_size, dependencies);
@@ -3049,7 +3049,7 @@ cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, u
                            const double *a, std::int64_t lda, std::int64_t stride_a, double beta,
                            double *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dsyrk_batch_strided_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc, stride_c,
         batch_size, dependencies);
@@ -3061,7 +3061,7 @@ cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, u
                            std::int64_t lda, std::int64_t stride_a, std::complex<float> beta,
                            std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_csyrk_batch_strided_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc, stride_c,
         batch_size, dependencies);
@@ -3073,7 +3073,7 @@ cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, u
                            std::int64_t lda, std::int64_t stride_a, std::complex<double> beta,
                            std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zsyrk_batch_strided_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc, stride_c,
         batch_size, dependencies);
@@ -3083,7 +3083,7 @@ cl::sycl::event syr2k(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       transpose trans, std::int64_t n, std::int64_t k, float alpha, const float *a,
                       std::int64_t lda, const float *b, std::int64_t ldb, float beta, float *c,
                       std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ssyr2k_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -3092,7 +3092,7 @@ cl::sycl::event syr2k(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       transpose trans, std::int64_t n, std::int64_t k, double alpha,
                       const double *a, std::int64_t lda, const double *b, std::int64_t ldb,
                       double beta, double *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dsyr2k_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -3102,7 +3102,7 @@ cl::sycl::event syr2k(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                       std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
                       std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_csyr2k_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -3112,7 +3112,7 @@ cl::sycl::event syr2k(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       const std::complex<double> *a, std::int64_t lda,
                       const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
                       std::complex<double> *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zsyr2k_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -3121,7 +3121,7 @@ cl::sycl::event trmm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
                      std::int64_t n, float alpha, const float *a, std::int64_t lda, float *b,
                      std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_strmm_usm_sycl(queue, left_right, upper_lower,
                                                                trans, unit_diag, m, n, alpha, a,
                                                                lda, b, ldb, dependencies);
@@ -3131,7 +3131,7 @@ cl::sycl::event trmm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
                      std::int64_t n, double alpha, const double *a, std::int64_t lda, double *b,
                      std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dtrmm_usm_sycl(queue, left_right, upper_lower,
                                                                trans, unit_diag, m, n, alpha, a,
                                                                lda, b, ldb, dependencies);
@@ -3141,7 +3141,7 @@ cl::sycl::event trmm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                      std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ctrmm_usm_sycl(queue, left_right, upper_lower,
                                                                trans, unit_diag, m, n, alpha, a,
                                                                lda, b, ldb, dependencies);
@@ -3151,7 +3151,7 @@ cl::sycl::event trmm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ztrmm_usm_sycl(queue, left_right, upper_lower,
                                                                trans, unit_diag, m, n, alpha, a,
                                                                lda, b, ldb, dependencies);
@@ -3161,7 +3161,7 @@ cl::sycl::event trsm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
                      std::int64_t n, float alpha, const float *a, std::int64_t lda, float *b,
                      std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_strsm_usm_sycl(queue, left_right, upper_lower,
                                                                trans, unit_diag, m, n, alpha, a,
                                                                lda, b, ldb, dependencies);
@@ -3171,7 +3171,7 @@ cl::sycl::event trsm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
                      std::int64_t n, double alpha, const double *a, std::int64_t lda, double *b,
                      std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dtrsm_usm_sycl(queue, left_right, upper_lower,
                                                                trans, unit_diag, m, n, alpha, a,
                                                                lda, b, ldb, dependencies);
@@ -3181,7 +3181,7 @@ cl::sycl::event trsm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                      std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ctrsm_usm_sycl(queue, left_right, upper_lower,
                                                                trans, unit_diag, m, n, alpha, a,
                                                                lda, b, ldb, dependencies);
@@ -3191,7 +3191,7 @@ cl::sycl::event trsm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ztrsm_usm_sycl(queue, left_right, upper_lower,
                                                                trans, unit_diag, m, n, alpha, a,
                                                                lda, b, ldb, dependencies);
@@ -3202,7 +3202,7 @@ cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t n, float alpha, const float *a, std::int64_t lda,
                            std::int64_t stride_a, float *b, std::int64_t ldb, std::int64_t stride_b,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_strsm_batch_strided_usm_sycl(
         queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, stride_a, b, ldb,
         stride_b, batch_size, dependencies);
@@ -3213,7 +3213,7 @@ cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t n, double alpha, const double *a, std::int64_t lda,
                            std::int64_t stride_a, double *b, std::int64_t ldb,
                            std::int64_t stride_b, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dtrsm_batch_strided_usm_sycl(
         queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, stride_a, b, ldb,
         stride_b, batch_size, dependencies);
@@ -3224,7 +3224,7 @@ cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                            std::int64_t lda, std::int64_t stride_a, std::complex<float> *b,
                            std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ctrsm_batch_strided_usm_sycl(
         queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, stride_a, b, ldb,
         stride_b, batch_size, dependencies);
@@ -3236,7 +3236,7 @@ cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            const std::complex<double> *a, std::int64_t lda, std::int64_t stride_a,
                            std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ztrsm_batch_strided_usm_sycl(
         queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, stride_a, b, ldb,
         stride_b, batch_size, dependencies);
@@ -3247,7 +3247,7 @@ cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t *n, float *alpha, const float **a, std::int64_t *lda,
                            float **b, std::int64_t *ldb, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_strsm_batch_group_usm_sycl(
         queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb, group_count,
         group_size, dependencies);
@@ -3258,7 +3258,7 @@ cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t *n, double *alpha, const double **a, std::int64_t *lda,
                            double **b, std::int64_t *ldb, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dtrsm_batch_group_usm_sycl(
         queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb, group_count,
         group_size, dependencies);
@@ -3270,7 +3270,7 @@ cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            const std::complex<float> **a, std::int64_t *lda,
                            std::complex<float> **b, std::int64_t *ldb, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ctrsm_batch_group_usm_sycl(
         queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb, group_count,
         group_size, dependencies);
@@ -3282,7 +3282,7 @@ cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            const std::complex<double> **a, std::int64_t *lda,
                            std::complex<double> **b, std::int64_t *ldb, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_ztrsm_batch_group_usm_sycl(
         queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb, group_count,
         group_size, dependencies);
@@ -3293,7 +3293,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            float *alpha, const float **a, std::int64_t *lda, const float **b,
                            std::int64_t *ldb, float *beta, float **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sgemm_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
@@ -3304,7 +3304,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            double *alpha, const double **a, std::int64_t *lda, const double **b,
                            std::int64_t *ldb, double *beta, double **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dgemm_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
@@ -3316,7 +3316,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t *lda, const std::complex<float> **b, std::int64_t *ldb,
                            std::complex<float> *beta, std::complex<float> **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cgemm_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
@@ -3328,7 +3328,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t *lda, const std::complex<double> **b, std::int64_t *ldb,
                            std::complex<double> *beta, std::complex<double> **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zgemm_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
@@ -3339,7 +3339,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            half *alpha, const half **a, std::int64_t *lda, const half **b,
                            std::int64_t *ldb, half *beta, half **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_hgemm_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
@@ -3351,7 +3351,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            const float *b, std::int64_t ldb, std::int64_t stride_b, float beta,
                            float *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sgemm_batch_strided_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size, dependencies);
@@ -3363,7 +3363,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            const double *b, std::int64_t ldb, std::int64_t stride_b, double beta,
                            double *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dgemm_batch_strided_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size, dependencies);
@@ -3376,7 +3376,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t ldb, std::int64_t stride_b, std::complex<float> beta,
                            std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cgemm_batch_strided_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size, dependencies);
@@ -3389,7 +3389,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t ldb, std::int64_t stride_b, std::complex<double> beta,
                            std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zgemm_batch_strided_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size, dependencies);
@@ -3401,7 +3401,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            const half *b, std::int64_t ldb, std::int64_t stride_b, half beta,
                            half *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_hgemm_batch_strided_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size, dependencies);
@@ -3411,7 +3411,7 @@ cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       transpose transa, transpose transb, std::int64_t n, std::int64_t k,
                       float alpha, const float *a, std::int64_t lda, const float *b,
                       std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_sgemmt_usm_sycl(queue, upper_lower, transa, transb,
                                                                 n, k, alpha, a, lda, b, ldb, beta,
                                                                 c, ldc, dependencies);
@@ -3421,7 +3421,7 @@ cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       transpose transa, transpose transb, std::int64_t n, std::int64_t k,
                       double alpha, const double *a, std::int64_t lda, const double *b,
                       std::int64_t ldb, double beta, double *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_dgemmt_usm_sycl(queue, upper_lower, transa, transb,
                                                                 n, k, alpha, a, lda, b, ldb, beta,
                                                                 c, ldc, dependencies);
@@ -3432,7 +3432,7 @@ cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
                       const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
                       std::complex<float> *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_cgemmt_usm_sycl(queue, upper_lower, transa, transb,
                                                                 n, k, alpha, a, lda, b, ldb, beta,
                                                                 c, ldc, dependencies);
@@ -3443,7 +3443,7 @@ cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
                       const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
                       std::complex<double> *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_zgemmt_usm_sycl(queue, upper_lower, transa, transb,
                                                                 n, k, alpha, a, lda, b, ldb, beta,
                                                                 c, ldc, dependencies);
@@ -3454,7 +3454,7 @@ cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, tr
                           std::int64_t k, float alpha, const std::int8_t *a, std::int64_t lda,
                           std::int8_t ao, const std::uint8_t *b, std::int64_t ldb, std::uint8_t bo,
                           float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_gemm_s8u8s32_bias_usm_sycl(
         queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co,
         dependencies);
@@ -3465,7 +3465,7 @@ cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, tr
                           std::int64_t k, float alpha, const std::int8_t *a, std::int64_t lda,
                           std::int8_t ao, const std::int8_t *b, std::int64_t ldb, std::int8_t bo,
                           float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_gemm_s8s8s32_bias_usm_sycl(
         queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co,
         dependencies);
@@ -3476,7 +3476,7 @@ cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, tr
                           std::int64_t k, float alpha, const std::uint8_t *a, std::int64_t lda,
                           std::uint8_t ao, const std::int8_t *b, std::int64_t ldb, std::int8_t bo,
                           float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_gemm_u8s8s32_bias_usm_sycl(
         queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co,
         dependencies);
@@ -3487,7 +3487,7 @@ cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, tr
                           std::int64_t k, float alpha, const std::uint8_t *a, std::int64_t lda,
                           std::uint8_t ao, const std::uint8_t *b, std::int64_t ldb, std::uint8_t bo,
                           float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].column_major_gemm_u8u8s32_bias_usm_sycl(
         queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co,
         dependencies);
@@ -4979,42 +4979,42 @@ void gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose tra
 
 cl::sycl::event asum(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<float> *x, std::int64_t incx, float *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_scasum_usm_sycl(queue, n, x, incx, result,
                                                              dependencies);
 }
 
 cl::sycl::event asum(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<double> *x, std::int64_t incx, double *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dzasum_usm_sycl(queue, n, x, incx, result,
                                                              dependencies);
 }
 
 cl::sycl::event asum(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const float *x, std::int64_t incx, float *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sasum_usm_sycl(queue, n, x, incx, result,
                                                             dependencies);
 }
 
 cl::sycl::event asum(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const double *x, std::int64_t incx, double *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dasum_usm_sycl(queue, n, x, incx, result,
                                                             dependencies);
 }
 
 cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      float alpha, const float *x, std::int64_t incx, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_saxpy_usm_sycl(queue, n, alpha, x, incx, y, incy,
                                                             dependencies);
 }
 
 cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      double alpha, const double *x, std::int64_t incx, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_daxpy_usm_sycl(queue, n, alpha, x, incx, y, incy,
                                                             dependencies);
 }
@@ -5022,7 +5022,7 @@ cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                      std::complex<float> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_caxpy_usm_sycl(queue, n, alpha, x, incx, y, incy,
                                                             dependencies);
 }
@@ -5030,7 +5030,7 @@ cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                      std::complex<double> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zaxpy_usm_sycl(queue, n, alpha, x, incx, y, incy,
                                                             dependencies);
 }
@@ -5038,7 +5038,7 @@ cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
                            float *alpha, const float **x, std::int64_t *incx, float **y,
                            std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_saxpy_batch_group_usm_sycl(
         queue, n, alpha, x, incx, y, incy, group_count, group_size, dependencies);
 }
@@ -5046,7 +5046,7 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
 cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
                            double *alpha, const double **x, std::int64_t *incx, double **y,
                            std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_daxpy_batch_group_usm_sycl(
         queue, n, alpha, x, incx, y, incy, group_count, group_size, dependencies);
 }
@@ -5055,7 +5055,7 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::complex<float> *alpha, const std::complex<float> **x,
                            std::int64_t *incx, std::complex<float> **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_caxpy_batch_group_usm_sycl(
         queue, n, alpha, x, incx, y, incy, group_count, group_size, dependencies);
 }
@@ -5064,7 +5064,7 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::complex<double> *alpha, const std::complex<double> **x,
                            std::int64_t *incx, std::complex<double> **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zaxpy_batch_group_usm_sycl(
         queue, n, alpha, x, incx, y, incy, group_count, group_size, dependencies);
 }
@@ -5073,7 +5073,7 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            float alpha, const float *x, std::int64_t incx, std::int64_t stridex,
                            float *y, std::int64_t incy, std::int64_t stridey,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_saxpy_batch_strided_usm_sycl(
         queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
@@ -5082,7 +5082,7 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            double alpha, const double *x, std::int64_t incx, std::int64_t stridex,
                            double *y, std::int64_t incy, std::int64_t stridey,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_daxpy_batch_strided_usm_sycl(
         queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
@@ -5091,7 +5091,7 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::complex<float> alpha, const std::complex<float> *x,
                            std::int64_t incx, std::int64_t stridex, std::complex<float> *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_caxpy_batch_strided_usm_sycl(
         queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
@@ -5100,7 +5100,7 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::complex<double> alpha, const std::complex<double> *x,
                            std::int64_t incx, std::int64_t stridex, std::complex<double> *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zaxpy_batch_strided_usm_sycl(
         queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
@@ -5108,7 +5108,7 @@ cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
 cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       float alpha, const float *x, std::int64_t incx, const float beta, float *y,
                       std::int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_saxpby_usm_sycl(queue, n, alpha, x, incx, beta, y,
                                                              incy, dependencies);
 }
@@ -5116,7 +5116,7 @@ cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::i
 cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       double alpha, const double *x, std::int64_t incx, const double beta,
                       double *y, std::int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_daxpby_usm_sycl(queue, n, alpha, x, incx, beta, y,
                                                              incy, dependencies);
 }
@@ -5124,7 +5124,7 @@ cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::i
 cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                       const std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_caxpby_usm_sycl(queue, n, alpha, x, incx, beta, y,
                                                              incy, dependencies);
 }
@@ -5132,21 +5132,21 @@ cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::i
 cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                       const std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zaxpby_usm_sycl(queue, n, alpha, x, incx, beta, y,
                                                              incy, dependencies);
 }
 
 cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const float *x, std::int64_t incx, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_scopy_usm_sycl(queue, n, x, incx, y, incy,
                                                             dependencies);
 }
 
 cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const double *x, std::int64_t incx, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dcopy_usm_sycl(queue, n, x, incx, y, incy,
                                                             dependencies);
 }
@@ -5154,7 +5154,7 @@ cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<float> *x, std::int64_t incx, std::complex<float> *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ccopy_usm_sycl(queue, n, x, incx, y, incy,
                                                             dependencies);
 }
@@ -5162,7 +5162,7 @@ cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<double> *x, std::int64_t incx, std::complex<double> *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zcopy_usm_sycl(queue, n, x, incx, y, incy,
                                                             dependencies);
 }
@@ -5170,7 +5170,7 @@ cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
                            const float **x, std::int64_t *incx, float **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_scopy_batch_group_usm_sycl(
         queue, n, x, incx, y, incy, group_count, group_size, dependencies);
 }
@@ -5178,7 +5178,7 @@ cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
 cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
                            const double **x, std::int64_t *incx, double **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dcopy_batch_group_usm_sycl(
         queue, n, x, incx, y, incy, group_count, group_size, dependencies);
 }
@@ -5187,7 +5187,7 @@ cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            const std::complex<float> **x, std::int64_t *incx,
                            std::complex<float> **y, std::int64_t *incy, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ccopy_batch_group_usm_sycl(
         queue, n, x, incx, y, incy, group_count, group_size, dependencies);
 }
@@ -5196,7 +5196,7 @@ cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            const std::complex<double> **x, std::int64_t *incx,
                            std::complex<double> **y, std::int64_t *incy, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zcopy_batch_group_usm_sycl(
         queue, n, x, incx, y, incy, group_count, group_size, dependencies);
 }
@@ -5204,7 +5204,7 @@ cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
 cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                            const float *x, std::int64_t incx, std::int64_t stridex, float *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_scopy_batch_strided_usm_sycl(
         queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
@@ -5212,7 +5212,7 @@ cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
 cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                            const double *x, std::int64_t incx, std::int64_t stridex, double *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dcopy_batch_strided_usm_sycl(
         queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
@@ -5221,7 +5221,7 @@ cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            const std::complex<float> *x, std::int64_t incx, std::int64_t stridex,
                            std::complex<float> *y, std::int64_t incy, std::int64_t stridey,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ccopy_batch_strided_usm_sycl(
         queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
@@ -5230,28 +5230,28 @@ cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            const std::complex<double> *x, std::int64_t incx, std::int64_t stridex,
                            std::complex<double> *y, std::int64_t incy, std::int64_t stridey,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zcopy_batch_strided_usm_sycl(
         queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
 }
 
 cl::sycl::event dot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                     const float *x, std::int64_t incx, const float *y, std::int64_t incy,
-                    float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    float *result, const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sdot_usm_sycl(queue, n, x, incx, y, incy, result,
                                                            dependencies);
 }
 
 cl::sycl::event dot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                     const double *x, std::int64_t incx, const double *y, std::int64_t incy,
-                    double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    double *result, const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ddot_usm_sycl(queue, n, x, incx, y, incy, result,
                                                            dependencies);
 }
 
 cl::sycl::event dot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                     const float *x, std::int64_t incx, const float *y, std::int64_t incy,
-                    double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    double *result, const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dsdot_usm_sycl(queue, n, x, incx, y, incy, result,
                                                             dependencies);
 }
@@ -5259,7 +5259,7 @@ cl::sycl::event dot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int
 cl::sycl::event dotc(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
                      std::int64_t incy, std::complex<float> *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cdotc_usm_sycl(queue, n, x, incx, y, incy, result,
                                                             dependencies);
 }
@@ -5267,7 +5267,7 @@ cl::sycl::event dotc(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event dotc(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zdotc_usm_sycl(queue, n, x, incx, y, incy, result,
                                                             dependencies);
 }
@@ -5275,7 +5275,7 @@ cl::sycl::event dotc(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event dotu(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
                      std::int64_t incy, std::complex<float> *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cdotu_usm_sycl(queue, n, x, incx, y, incy, result,
                                                             dependencies);
 }
@@ -5283,91 +5283,91 @@ cl::sycl::event dotu(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event dotu(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zdotu_usm_sycl(queue, n, x, incx, y, incy, result,
                                                             dependencies);
 }
 
 cl::sycl::event iamin(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       const float *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_isamin_usm_sycl(queue, n, x, incx, result,
                                                              dependencies);
 }
 
 cl::sycl::event iamin(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       const double *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_idamin_usm_sycl(queue, n, x, incx, result,
                                                              dependencies);
 }
 
 cl::sycl::event iamin(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       const std::complex<float> *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_icamin_usm_sycl(queue, n, x, incx, result,
                                                              dependencies);
 }
 
 cl::sycl::event iamin(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       const std::complex<double> *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_izamin_usm_sycl(queue, n, x, incx, result,
                                                              dependencies);
 }
 
 cl::sycl::event iamax(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       const float *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_isamax_usm_sycl(queue, n, x, incx, result,
                                                              dependencies);
 }
 
 cl::sycl::event iamax(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       const double *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_idamax_usm_sycl(queue, n, x, incx, result,
                                                              dependencies);
 }
 
 cl::sycl::event iamax(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       const std::complex<float> *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_icamax_usm_sycl(queue, n, x, incx, result,
                                                              dependencies);
 }
 
 cl::sycl::event iamax(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                       const std::complex<double> *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_izamax_usm_sycl(queue, n, x, incx, result,
                                                              dependencies);
 }
 
 cl::sycl::event nrm2(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<float> *x, std::int64_t incx, float *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_scnrm2_usm_sycl(queue, n, x, incx, result,
                                                              dependencies);
 }
 
 cl::sycl::event nrm2(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const std::complex<double> *x, std::int64_t incx, double *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dznrm2_usm_sycl(queue, n, x, incx, result,
                                                              dependencies);
 }
 
 cl::sycl::event nrm2(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const float *x, std::int64_t incx, float *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_snrm2_usm_sycl(queue, n, x, incx, result,
                                                             dependencies);
 }
 
 cl::sycl::event nrm2(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      const double *x, std::int64_t incx, double *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dnrm2_usm_sycl(queue, n, x, incx, result,
                                                             dependencies);
 }
@@ -5375,7 +5375,7 @@ cl::sycl::event nrm2(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event rot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                     std::complex<float> *x, std::int64_t incx, std::complex<float> *y,
                     std::int64_t incy, float c, float s,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_srot_usm_sycl(queue, n, x, incx, y, incy, c, s,
                                                            dependencies);
 }
@@ -5383,132 +5383,132 @@ cl::sycl::event rot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int
 cl::sycl::event rot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                     std::complex<double> *x, std::int64_t incx, std::complex<double> *y,
                     std::int64_t incy, double c, double s,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_drot_usm_sycl(queue, n, x, incx, y, incy, c, s,
                                                            dependencies);
 }
 
 cl::sycl::event rot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float *x,
                     std::int64_t incx, float *y, std::int64_t incy, float c, float s,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_csrot_usm_sycl(queue, n, x, incx, y, incy, c, s,
                                                             dependencies);
 }
 
 cl::sycl::event rot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double *x,
                     std::int64_t incx, double *y, std::int64_t incy, double c, double s,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zdrot_usm_sycl(queue, n, x, incx, y, incy, c, s,
                                                             dependencies);
 }
 
 cl::sycl::event rotg(oneapi::mkl::device libkey, cl::sycl::queue &queue, float *a, float *b,
                      float *c, float *s,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_srotg_usm_sycl(queue, a, b, c, s, dependencies);
 }
 
 cl::sycl::event rotg(oneapi::mkl::device libkey, cl::sycl::queue &queue, double *a, double *b,
                      double *c, double *s,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_drotg_usm_sycl(queue, a, b, c, s, dependencies);
 }
 
 cl::sycl::event rotg(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::complex<float> *a,
                      std::complex<float> *b, float *c, std::complex<float> *s,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_crotg_usm_sycl(queue, a, b, c, s, dependencies);
 }
 
 cl::sycl::event rotg(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::complex<double> *a,
                      std::complex<double> *b, double *c, std::complex<double> *s,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zrotg_usm_sycl(queue, a, b, c, s, dependencies);
 }
 
 cl::sycl::event rotm(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float *x,
                      std::int64_t incx, float *y, std::int64_t incy, float *param,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_srotm_usm_sycl(queue, n, x, incx, y, incy, param,
                                                             dependencies);
 }
 
 cl::sycl::event rotm(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double *x,
                      std::int64_t incx, double *y, std::int64_t incy, double *param,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_drotm_usm_sycl(queue, n, x, incx, y, incy, param,
                                                             dependencies);
 }
 
 cl::sycl::event rotmg(oneapi::mkl::device libkey, cl::sycl::queue &queue, float *d1, float *d2,
                       float *x1, float y1, float *param,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_srotmg_usm_sycl(queue, d1, d2, x1, y1, param,
                                                              dependencies);
 }
 
 cl::sycl::event rotmg(oneapi::mkl::device libkey, cl::sycl::queue &queue, double *d1, double *d2,
                       double *x1, double y1, double *param,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_drotmg_usm_sycl(queue, d1, d2, x1, y1, param,
                                                              dependencies);
 }
 
 cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      float alpha, float *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sscal_usm_sycl(queue, n, alpha, x, incx, dependencies);
 }
 
 cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      double alpha, double *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dscal_usm_sycl(queue, n, alpha, x, incx, dependencies);
 }
 
 cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      std::complex<float> alpha, std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cscal_usm_sycl(queue, n, alpha, x, incx, dependencies);
 }
 
 cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      std::complex<double> alpha, std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_csscal_usm_sycl(queue, n, alpha, x, incx,
                                                              dependencies);
 }
 
 cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      float alpha, std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zscal_usm_sycl(queue, n, alpha, x, incx, dependencies);
 }
 
 cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      double alpha, std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zdscal_usm_sycl(queue, n, alpha, x, incx,
                                                              dependencies);
 }
 
 cl::sycl::event sdsdot(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float sb,
                        const float *x, std::int64_t incx, const float *y, std::int64_t incy,
-                       float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                       float *result, const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sdsdot_usm_sycl(queue, n, sb, x, incx, y, incy, result,
                                                              dependencies);
 }
 
 cl::sycl::event swap(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float *x,
                      std::int64_t incx, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sswap_usm_sycl(queue, n, x, incx, y, incy,
                                                             dependencies);
 }
 
 cl::sycl::event swap(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double *x,
                      std::int64_t incx, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dswap_usm_sycl(queue, n, x, incx, y, incy,
                                                             dependencies);
 }
@@ -5516,7 +5516,7 @@ cl::sycl::event swap(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event swap(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      std::complex<float> *x, std::int64_t incx, std::complex<float> *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cswap_usm_sycl(queue, n, x, incx, y, incy,
                                                             dependencies);
 }
@@ -5524,7 +5524,7 @@ cl::sycl::event swap(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
 cl::sycl::event swap(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
                      std::complex<double> *x, std::int64_t incx, std::complex<double> *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zswap_usm_sycl(queue, n, x, incx, y, incy,
                                                             dependencies);
 }
@@ -5533,7 +5533,7 @@ cl::sycl::event gbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      std::int64_t m, std::int64_t n, std::int64_t kl, std::int64_t ku, float alpha,
                      const float *a, std::int64_t lda, const float *x, std::int64_t incx,
                      float beta, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sgbmv_usm_sycl(
         queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy, dependencies);
 }
@@ -5542,7 +5542,7 @@ cl::sycl::event gbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      std::int64_t m, std::int64_t n, std::int64_t kl, std::int64_t ku, double alpha,
                      const double *a, std::int64_t lda, const double *x, std::int64_t incx,
                      double beta, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dgbmv_usm_sycl(
         queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy, dependencies);
 }
@@ -5552,7 +5552,7 @@ cl::sycl::event gbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
                      const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
                      std::complex<float> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cgbmv_usm_sycl(
         queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy, dependencies);
 }
@@ -5562,7 +5562,7 @@ cl::sycl::event gbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
                      const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
                      std::complex<double> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zgbmv_usm_sycl(
         queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy, dependencies);
 }
@@ -5570,7 +5570,7 @@ cl::sycl::event gbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
 cl::sycl::event gemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans,
                      std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda,
                      const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sgemv_usm_sycl(queue, trans, m, n, alpha, a, lda, x,
                                                             incx, beta, y, incy, dependencies);
 }
@@ -5579,7 +5579,7 @@ cl::sycl::event gemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      std::int64_t m, std::int64_t n, double alpha, const double *a,
                      std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dgemv_usm_sycl(queue, trans, m, n, alpha, a, lda, x,
                                                             incx, beta, y, incy, dependencies);
 }
@@ -5589,7 +5589,7 @@ cl::sycl::event gemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *x,
                      std::int64_t incx, std::complex<float> beta, std::complex<float> *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cgemv_usm_sycl(queue, trans, m, n, alpha, a, lda, x,
                                                             incx, beta, y, incy, dependencies);
 }
@@ -5599,7 +5599,7 @@ cl::sycl::event gemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *x,
                      std::int64_t incx, std::complex<double> beta, std::complex<double> *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zgemv_usm_sycl(queue, trans, m, n, alpha, a, lda, x,
                                                             incx, beta, y, incy, dependencies);
 }
@@ -5609,7 +5609,7 @@ cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t lda, std::int64_t stridea, const float *x,
                            std::int64_t incx, std::int64_t stridex, float beta, float *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sgemv_batch_strided_usm_sycl(
         queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y, incy, stridey,
         batch_size, dependencies);
@@ -5620,7 +5620,7 @@ cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t lda, std::int64_t stridea, const double *x,
                            std::int64_t incx, std::int64_t stridex, double beta, double *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dgemv_batch_strided_usm_sycl(
         queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y, incy, stridey,
         batch_size, dependencies);
@@ -5632,7 +5632,7 @@ cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            const std::complex<float> *x, std::int64_t incx, std::int64_t stridex,
                            std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
                            std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cgemv_batch_strided_usm_sycl(
         queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y, incy, stridey,
         batch_size, dependencies);
@@ -5644,7 +5644,7 @@ cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            const std::complex<double> *x, std::int64_t incx, std::int64_t stridex,
                            std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
                            std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zgemv_batch_strided_usm_sycl(
         queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y, incy, stridey,
         batch_size, dependencies);
@@ -5655,7 +5655,7 @@ cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t *lda, const float **x, std::int64_t *incx, float *beta,
                            float **y, std::int64_t *incy, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sgemv_batch_group_usm_sycl(
         queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count, group_size,
         dependencies);
@@ -5666,7 +5666,7 @@ cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t *lda, const double **x, std::int64_t *incx, double *beta,
                            double **y, std::int64_t *incy, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dgemv_batch_group_usm_sycl(
         queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count, group_size,
         dependencies);
@@ -5678,7 +5678,7 @@ cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            const std::complex<float> **x, std::int64_t *incx,
                            std::complex<float> *beta, std::complex<float> **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cgemv_batch_group_usm_sycl(
         queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count, group_size,
         dependencies);
@@ -5690,7 +5690,7 @@ cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            const std::complex<double> **x, std::int64_t *incx,
                            std::complex<double> *beta, std::complex<double> **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zgemv_batch_group_usm_sycl(
         queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count, group_size,
         dependencies);
@@ -5701,7 +5701,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t stridea, const float *x, std::int64_t incx,
                            std::int64_t stridex, float *c, std::int64_t ldc, std::int64_t stridec,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sdgmm_batch_strided_usm_sycl(
         queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size,
         dependencies);
@@ -5712,7 +5712,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t stridea, const double *x, std::int64_t incx,
                            std::int64_t stridex, double *c, std::int64_t ldc, std::int64_t stridec,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ddgmm_batch_strided_usm_sycl(
         queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size,
         dependencies);
@@ -5723,7 +5723,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t lda, std::int64_t stridea, const std::complex<float> *x,
                            std::int64_t incx, std::int64_t stridex, std::complex<float> *c,
                            std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cdgmm_batch_strided_usm_sycl(
         queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size,
         dependencies);
@@ -5734,7 +5734,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t lda, std::int64_t stridea, const std::complex<double> *x,
                            std::int64_t incx, std::int64_t stridex, std::complex<double> *c,
                            std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zdgmm_batch_strided_usm_sycl(
         queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc, stridec, batch_size,
         dependencies);
@@ -5744,7 +5744,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t *m, std::int64_t *n, const float **a, std::int64_t *lda,
                            const float **x, std::int64_t *incx, float **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sdgmm_batch_group_usm_sycl(
         queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count, group_size, dependencies);
 }
@@ -5753,7 +5753,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t *m, std::int64_t *n, const double **a, std::int64_t *lda,
                            const double **x, std::int64_t *incx, double **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ddgmm_batch_group_usm_sycl(
         queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count, group_size, dependencies);
 }
@@ -5763,7 +5763,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t *lda, const std::complex<float> **x, std::int64_t *incx,
                            std::complex<float> **c, std::int64_t *ldc, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cdgmm_batch_group_usm_sycl(
         queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count, group_size, dependencies);
 }
@@ -5773,7 +5773,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t *lda, const std::complex<double> **x, std::int64_t *incx,
                            std::complex<double> **c, std::int64_t *ldc, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zdgmm_batch_group_usm_sycl(
         queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count, group_size, dependencies);
 }
@@ -5781,7 +5781,7 @@ cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
 cl::sycl::event ger(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t m,
                     std::int64_t n, float alpha, const float *x, std::int64_t incx, const float *y,
                     std::int64_t incy, float *a, std::int64_t lda,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sger_usm_sycl(queue, m, n, alpha, x, incx, y, incy, a,
                                                            lda, dependencies);
 }
@@ -5789,7 +5789,7 @@ cl::sycl::event ger(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int
 cl::sycl::event ger(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t m,
                     std::int64_t n, double alpha, const double *x, std::int64_t incx,
                     const double *y, std::int64_t incy, double *a, std::int64_t lda,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dger_usm_sycl(queue, m, n, alpha, x, incx, y, incy, a,
                                                            lda, dependencies);
 }
@@ -5798,7 +5798,7 @@ cl::sycl::event gerc(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *x,
                      std::int64_t incx, const std::complex<float> *y, std::int64_t incy,
                      std::complex<float> *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cgerc_usm_sycl(queue, m, n, alpha, x, incx, y, incy, a,
                                                             lda, dependencies);
 }
@@ -5807,7 +5807,7 @@ cl::sycl::event gerc(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *x,
                      std::int64_t incx, const std::complex<double> *y, std::int64_t incy,
                      std::complex<double> *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zgerc_usm_sycl(queue, m, n, alpha, x, incx, y, incy, a,
                                                             lda, dependencies);
 }
@@ -5816,7 +5816,7 @@ cl::sycl::event geru(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *x,
                      std::int64_t incx, const std::complex<float> *y, std::int64_t incy,
                      std::complex<float> *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cgeru_usm_sycl(queue, m, n, alpha, x, incx, y, incy, a,
                                                             lda, dependencies);
 }
@@ -5825,7 +5825,7 @@ cl::sycl::event geru(oneapi::mkl::device libkey, cl::sycl::queue &queue, std::in
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *x,
                      std::int64_t incx, const std::complex<double> *y, std::int64_t incy,
                      std::complex<double> *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zgeru_usm_sycl(queue, m, n, alpha, x, incx, y, incy, a,
                                                             lda, dependencies);
 }
@@ -5835,7 +5835,7 @@ cl::sycl::event hbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *x,
                      std::int64_t incx, std::complex<float> beta, std::complex<float> *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_chbmv_usm_sycl(queue, upper_lower, n, k, alpha, a, lda,
                                                             x, incx, beta, y, incy, dependencies);
 }
@@ -5845,7 +5845,7 @@ cl::sycl::event hbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *x,
                      std::int64_t incx, std::complex<double> beta, std::complex<double> *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zhbmv_usm_sycl(queue, upper_lower, n, k, alpha, a, lda,
                                                             x, incx, beta, y, incy, dependencies);
 }
@@ -5854,7 +5854,7 @@ cl::sycl::event hemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                      std::int64_t lda, const std::complex<float> *x, std::int64_t incx,
                      std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_chemv_usm_sycl(queue, upper_lower, n, alpha, a, lda, x,
                                                             incx, beta, y, incy, dependencies);
 }
@@ -5863,7 +5863,7 @@ cl::sycl::event hemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
                      std::int64_t lda, const std::complex<double> *x, std::int64_t incx,
                      std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zhemv_usm_sycl(queue, upper_lower, n, alpha, a, lda, x,
                                                             incx, beta, y, incy, dependencies);
 }
@@ -5871,7 +5871,7 @@ cl::sycl::event hemv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event her(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                     std::int64_t n, float alpha, const std::complex<float> *x, std::int64_t incx,
                     std::complex<float> *a, std::int64_t lda,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cher_usm_sycl(queue, upper_lower, n, alpha, x, incx, a,
                                                            lda, dependencies);
 }
@@ -5879,7 +5879,7 @@ cl::sycl::event her(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upp
 cl::sycl::event her(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                     std::int64_t n, double alpha, const std::complex<double> *x, std::int64_t incx,
                     std::complex<double> *a, std::int64_t lda,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zher_usm_sycl(queue, upper_lower, n, alpha, x, incx, a,
                                                            lda, dependencies);
 }
@@ -5888,7 +5888,7 @@ cl::sycl::event her2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *x,
                      std::int64_t incx, const std::complex<float> *y, std::int64_t incy,
                      std::complex<float> *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cher2_usm_sycl(queue, upper_lower, n, alpha, x, incx,
                                                             y, incy, a, lda, dependencies);
 }
@@ -5897,7 +5897,7 @@ cl::sycl::event her2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *x,
                      std::int64_t incx, const std::complex<double> *y, std::int64_t incy,
                      std::complex<double> *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zher2_usm_sycl(queue, upper_lower, n, alpha, x, incx,
                                                             y, incy, a, lda, dependencies);
 }
@@ -5906,7 +5906,7 @@ cl::sycl::event hpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                      const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
                      std::complex<float> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_chpmv_usm_sycl(queue, upper_lower, n, alpha, a, x,
                                                             incx, beta, y, incy, dependencies);
 }
@@ -5915,7 +5915,7 @@ cl::sycl::event hpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
                      const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
                      std::complex<double> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zhpmv_usm_sycl(queue, upper_lower, n, alpha, a, x,
                                                             incx, beta, y, incy, dependencies);
 }
@@ -5923,7 +5923,7 @@ cl::sycl::event hpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event hpr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                     std::int64_t n, float alpha, const std::complex<float> *x, std::int64_t incx,
                     std::complex<float> *a,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_chpr_usm_sycl(queue, upper_lower, n, alpha, x, incx, a,
                                                            dependencies);
 }
@@ -5931,7 +5931,7 @@ cl::sycl::event hpr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upp
 cl::sycl::event hpr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                     std::int64_t n, double alpha, const std::complex<double> *x, std::int64_t incx,
                     std::complex<double> *a,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zhpr_usm_sycl(queue, upper_lower, n, alpha, x, incx, a,
                                                            dependencies);
 }
@@ -5940,7 +5940,7 @@ cl::sycl::event hpr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *x,
                      std::int64_t incx, const std::complex<float> *y, std::int64_t incy,
                      std::complex<float> *a,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_chpr2_usm_sycl(queue, upper_lower, n, alpha, x, incx,
                                                             y, incy, a, dependencies);
 }
@@ -5949,7 +5949,7 @@ cl::sycl::event hpr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *x,
                      std::int64_t incx, const std::complex<double> *y, std::int64_t incy,
                      std::complex<double> *a,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zhpr2_usm_sycl(queue, upper_lower, n, alpha, x, incx,
                                                             y, incy, a, dependencies);
 }
@@ -5957,7 +5957,7 @@ cl::sycl::event hpr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event sbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda,
                      const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ssbmv_usm_sycl(queue, upper_lower, n, k, alpha, a, lda,
                                                             x, incx, beta, y, incy, dependencies);
 }
@@ -5966,7 +5966,7 @@ cl::sycl::event sbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      std::int64_t n, std::int64_t k, double alpha, const double *a,
                      std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y,
                      std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dsbmv_usm_sycl(queue, upper_lower, n, k, alpha, a, lda,
                                                             x, incx, beta, y, incy, dependencies);
 }
@@ -5974,7 +5974,7 @@ cl::sycl::event sbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event spmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, float alpha, const float *a, const float *x, std::int64_t incx,
                      float beta, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sspmv_usm_sycl(queue, upper_lower, n, alpha, a, x,
                                                             incx, beta, y, incy, dependencies);
 }
@@ -5982,21 +5982,21 @@ cl::sycl::event spmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event spmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, double alpha, const double *a, const double *x,
                      std::int64_t incx, double beta, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dspmv_usm_sycl(queue, upper_lower, n, alpha, a, x,
                                                             incx, beta, y, incy, dependencies);
 }
 
 cl::sycl::event spr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                     std::int64_t n, float alpha, const float *x, std::int64_t incx, float *a,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sspr_usm_sycl(queue, upper_lower, n, alpha, x, incx, a,
                                                            dependencies);
 }
 
 cl::sycl::event spr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                     std::int64_t n, double alpha, const double *x, std::int64_t incx, double *a,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dspr_usm_sycl(queue, upper_lower, n, alpha, x, incx, a,
                                                            dependencies);
 }
@@ -6004,7 +6004,7 @@ cl::sycl::event spr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upp
 cl::sycl::event spr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, float alpha, const float *x, std::int64_t incx, const float *y,
                      std::int64_t incy, float *a,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sspr2_usm_sycl(queue, upper_lower, n, alpha, x, incx,
                                                             y, incy, a, dependencies);
 }
@@ -6012,7 +6012,7 @@ cl::sycl::event spr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event spr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, double alpha, const double *x, std::int64_t incx,
                      const double *y, std::int64_t incy, double *a,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dspr2_usm_sycl(queue, upper_lower, n, alpha, x, incx,
                                                             y, incy, a, dependencies);
 }
@@ -6020,7 +6020,7 @@ cl::sycl::event spr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event symv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, float alpha, const float *a, std::int64_t lda, const float *x,
                      std::int64_t incx, float beta, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ssymv_usm_sycl(queue, upper_lower, n, alpha, a, lda, x,
                                                             incx, beta, y, incy, dependencies);
 }
@@ -6028,21 +6028,21 @@ cl::sycl::event symv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event symv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, double alpha, const double *a, std::int64_t lda,
                      const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dsymv_usm_sycl(queue, upper_lower, n, alpha, a, lda, x,
                                                             incx, beta, y, incy, dependencies);
 }
 
 cl::sycl::event syr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                     std::int64_t n, float alpha, const float *x, std::int64_t incx, float *a,
-                    std::int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ssyr_usm_sycl(queue, upper_lower, n, alpha, x, incx, a,
                                                            lda, dependencies);
 }
 
 cl::sycl::event syr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                     std::int64_t n, double alpha, const double *x, std::int64_t incx, double *a,
-                    std::int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dsyr_usm_sycl(queue, upper_lower, n, alpha, x, incx, a,
                                                            lda, dependencies);
 }
@@ -6050,7 +6050,7 @@ cl::sycl::event syr(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upp
 cl::sycl::event syr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, float alpha, const float *x, std::int64_t incx, const float *y,
                      std::int64_t incy, float *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ssyr2_usm_sycl(queue, upper_lower, n, alpha, x, incx,
                                                             y, incy, a, lda, dependencies);
 }
@@ -6058,7 +6058,7 @@ cl::sycl::event syr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event syr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      std::int64_t n, double alpha, const double *x, std::int64_t incx,
                      const double *y, std::int64_t incy, double *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dsyr2_usm_sycl(queue, upper_lower, n, alpha, x, incx,
                                                             y, incy, a, lda, dependencies);
 }
@@ -6066,7 +6066,7 @@ cl::sycl::event syr2(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
                      const float *a, std::int64_t lda, float *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_stbmv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             k, a, lda, x, incx, dependencies);
 }
@@ -6074,7 +6074,7 @@ cl::sycl::event tbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
                      const double *a, std::int64_t lda, double *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dtbmv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             k, a, lda, x, incx, dependencies);
 }
@@ -6083,7 +6083,7 @@ cl::sycl::event tbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
                      const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
                      std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ctbmv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             k, a, lda, x, incx, dependencies);
 }
@@ -6092,7 +6092,7 @@ cl::sycl::event tbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
                      const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
                      std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ztbmv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             k, a, lda, x, incx, dependencies);
 }
@@ -6100,7 +6100,7 @@ cl::sycl::event tbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tbsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
                      const float *a, std::int64_t lda, float *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_stbsv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             k, a, lda, x, incx, dependencies);
 }
@@ -6108,7 +6108,7 @@ cl::sycl::event tbsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tbsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
                      const double *a, std::int64_t lda, double *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dtbsv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             k, a, lda, x, incx, dependencies);
 }
@@ -6117,7 +6117,7 @@ cl::sycl::event tbsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
                      const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
                      std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ctbsv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             k, a, lda, x, incx, dependencies);
 }
@@ -6126,7 +6126,7 @@ cl::sycl::event tbsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
                      const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
                      std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ztbsv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             k, a, lda, x, incx, dependencies);
 }
@@ -6134,7 +6134,7 @@ cl::sycl::event tbsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const float *a, float *x,
                      std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_stpmv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             a, x, incx, dependencies);
 }
@@ -6142,7 +6142,7 @@ cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const double *a, double *x,
                      std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dtpmv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             a, x, incx, dependencies);
 }
@@ -6150,7 +6150,7 @@ cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const std::complex<float> *a,
                      std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ctpmv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             a, x, incx, dependencies);
 }
@@ -6158,7 +6158,7 @@ cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const std::complex<double> *a,
                      std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ztpmv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             a, x, incx, dependencies);
 }
@@ -6166,7 +6166,7 @@ cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const float *a, float *x,
                      std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_stpsv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             a, x, incx, dependencies);
 }
@@ -6174,7 +6174,7 @@ cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const double *a, double *x,
                      std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dtpsv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             a, x, incx, dependencies);
 }
@@ -6182,7 +6182,7 @@ cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const std::complex<float> *a,
                      std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ctpsv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             a, x, incx, dependencies);
 }
@@ -6190,7 +6190,7 @@ cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const std::complex<double> *a,
                      std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ztpsv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             a, x, incx, dependencies);
 }
@@ -6198,7 +6198,7 @@ cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const float *a,
                      std::int64_t lda, float *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_strmv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             a, lda, x, incx, dependencies);
 }
@@ -6206,7 +6206,7 @@ cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const double *a,
                      std::int64_t lda, double *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dtrmv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             a, lda, x, incx, dependencies);
 }
@@ -6214,7 +6214,7 @@ cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const std::complex<float> *a,
                      std::int64_t lda, std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ctrmv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             a, lda, x, incx, dependencies);
 }
@@ -6222,7 +6222,7 @@ cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ztrmv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             a, lda, x, incx, dependencies);
 }
@@ -6230,7 +6230,7 @@ cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const float *a,
                      std::int64_t lda, float *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_strsv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             a, lda, x, incx, dependencies);
 }
@@ -6238,7 +6238,7 @@ cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const double *a,
                      std::int64_t lda, double *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dtrsv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             a, lda, x, incx, dependencies);
 }
@@ -6246,7 +6246,7 @@ cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const std::complex<float> *a,
                      std::int64_t lda, std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ctrsv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             a, lda, x, incx, dependencies);
 }
@@ -6254,7 +6254,7 @@ cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t n, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ztrsv_usm_sycl(queue, upper_lower, trans, unit_diag, n,
                                                             a, lda, x, incx, dependencies);
 }
@@ -6263,7 +6263,7 @@ cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
                      const float *a, std::int64_t lda, const float *b, std::int64_t ldb, float beta,
                      float *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sgemm_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6272,7 +6272,7 @@ cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, double alpha,
                      const double *a, std::int64_t lda, const double *b, std::int64_t ldb,
                      double beta, double *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dgemm_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6282,7 +6282,7 @@ cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
                      const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
                      std::complex<float> *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cgemm_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6292,7 +6292,7 @@ cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
                      const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
                      std::complex<double> *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zgemm_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6301,7 +6301,7 @@ cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
                      const half *a, std::int64_t lda, const half *b, std::int64_t ldb, half beta,
                      half *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_hgemm_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6310,7 +6310,7 @@ cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
                      const half *a, std::int64_t lda, const half *b, std::int64_t ldb, float beta,
                      float *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_gemm_f16f16f32_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6319,7 +6319,7 @@ cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, transpo
                      transpose transb, std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
                      const bfloat16 *a, std::int64_t lda, const bfloat16 *b, std::int64_t ldb,
                      float beta, float *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_gemm_bf16bf16f32_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6329,7 +6329,7 @@ cl::sycl::event hemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                      std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
                      std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_chemm_usm_sycl(
         queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6339,7 +6339,7 @@ cl::sycl::event hemm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *b,
                      std::int64_t ldb, std::complex<double> beta, std::complex<double> *c,
                      std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zhemm_usm_sycl(
         queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6348,7 +6348,7 @@ cl::sycl::event herk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      transpose trans, std::int64_t n, std::int64_t k, float alpha,
                      const std::complex<float> *a, std::int64_t lda, float beta,
                      std::complex<float> *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cherk_usm_sycl(queue, upper_lower, trans, n, k, alpha,
                                                             a, lda, beta, c, ldc, dependencies);
 }
@@ -6357,7 +6357,7 @@ cl::sycl::event herk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      transpose trans, std::int64_t n, std::int64_t k, double alpha,
                      const std::complex<double> *a, std::int64_t lda, double beta,
                      std::complex<double> *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zherk_usm_sycl(queue, upper_lower, trans, n, k, alpha,
                                                             a, lda, beta, c, ldc, dependencies);
 }
@@ -6366,7 +6366,7 @@ cl::sycl::event her2k(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       transpose trans, std::int64_t n, std::int64_t k, std::complex<float> alpha,
                       const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                       std::int64_t ldb, float beta, std::complex<float> *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cher2k_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6376,7 +6376,7 @@ cl::sycl::event her2k(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       const std::complex<double> *a, std::int64_t lda,
                       const std::complex<double> *b, std::int64_t ldb, double beta,
                       std::complex<double> *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zher2k_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6385,7 +6385,7 @@ cl::sycl::event symm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, std::int64_t m, std::int64_t n, float alpha, const float *a,
                      std::int64_t lda, const float *b, std::int64_t ldb, float beta, float *c,
                      std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ssymm_usm_sycl(
         queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6394,7 +6394,7 @@ cl::sycl::event symm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, std::int64_t m, std::int64_t n, double alpha,
                      const double *a, std::int64_t lda, const double *b, std::int64_t ldb,
                      double beta, double *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dsymm_usm_sycl(
         queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6404,7 +6404,7 @@ cl::sycl::event symm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                      std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
                      std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_csymm_usm_sycl(
         queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6414,7 +6414,7 @@ cl::sycl::event symm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *b,
                      std::int64_t ldb, std::complex<double> beta, std::complex<double> *c,
                      std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zsymm_usm_sycl(
         queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6422,7 +6422,7 @@ cl::sycl::event symm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
 cl::sycl::event syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, std::int64_t n, std::int64_t k, float alpha, const float *a,
                      std::int64_t lda, float beta, float *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ssyrk_usm_sycl(queue, upper_lower, trans, n, k, alpha,
                                                             a, lda, beta, c, ldc, dependencies);
 }
@@ -6430,7 +6430,7 @@ cl::sycl::event syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
 cl::sycl::event syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower,
                      transpose trans, std::int64_t n, std::int64_t k, double alpha, const double *a,
                      std::int64_t lda, double beta, double *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dsyrk_usm_sycl(queue, upper_lower, trans, n, k, alpha,
                                                             a, lda, beta, c, ldc, dependencies);
 }
@@ -6439,7 +6439,7 @@ cl::sycl::event syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      transpose trans, std::int64_t n, std::int64_t k, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, std::complex<float> beta,
                      std::complex<float> *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_csyrk_usm_sycl(queue, upper_lower, trans, n, k, alpha,
                                                             a, lda, beta, c, ldc, dependencies);
 }
@@ -6448,7 +6448,7 @@ cl::sycl::event syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo up
                      transpose trans, std::int64_t n, std::int64_t k, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, std::complex<double> beta,
                      std::complex<double> *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zsyrk_usm_sycl(queue, upper_lower, trans, n, k, alpha,
                                                             a, lda, beta, c, ldc, dependencies);
 }
@@ -6457,7 +6457,7 @@ cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, u
                            transpose *trans, std::int64_t *n, std::int64_t *k, float *alpha,
                            const float **a, std::int64_t *lda, float *beta, float **c,
                            std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ssyrk_batch_group_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, group_count, group_size,
         dependencies);
@@ -6467,7 +6467,7 @@ cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, u
                            transpose *trans, std::int64_t *n, std::int64_t *k, double *alpha,
                            const double **a, std::int64_t *lda, double *beta, double **c,
                            std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dsyrk_batch_group_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, group_count, group_size,
         dependencies);
@@ -6478,7 +6478,7 @@ cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, u
                            std::complex<float> *alpha, const std::complex<float> **a,
                            std::int64_t *lda, std::complex<float> *beta, std::complex<float> **c,
                            std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_csyrk_batch_group_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, group_count, group_size,
         dependencies);
@@ -6489,7 +6489,7 @@ cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, u
                            std::complex<double> *alpha, const std::complex<double> **a,
                            std::int64_t *lda, std::complex<double> *beta, std::complex<double> **c,
                            std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zsyrk_batch_group_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, group_count, group_size,
         dependencies);
@@ -6500,7 +6500,7 @@ cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, u
                            const float *a, std::int64_t lda, std::int64_t stride_a, float beta,
                            float *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ssyrk_batch_strided_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc, stride_c,
         batch_size, dependencies);
@@ -6511,7 +6511,7 @@ cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, u
                            const double *a, std::int64_t lda, std::int64_t stride_a, double beta,
                            double *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dsyrk_batch_strided_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc, stride_c,
         batch_size, dependencies);
@@ -6523,7 +6523,7 @@ cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, u
                            std::int64_t lda, std::int64_t stride_a, std::complex<float> beta,
                            std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_csyrk_batch_strided_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc, stride_c,
         batch_size, dependencies);
@@ -6535,7 +6535,7 @@ cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, u
                            std::int64_t lda, std::int64_t stride_a, std::complex<double> beta,
                            std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zsyrk_batch_strided_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc, stride_c,
         batch_size, dependencies);
@@ -6545,7 +6545,7 @@ cl::sycl::event syr2k(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       transpose trans, std::int64_t n, std::int64_t k, float alpha, const float *a,
                       std::int64_t lda, const float *b, std::int64_t ldb, float beta, float *c,
                       std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ssyr2k_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6554,7 +6554,7 @@ cl::sycl::event syr2k(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       transpose trans, std::int64_t n, std::int64_t k, double alpha,
                       const double *a, std::int64_t lda, const double *b, std::int64_t ldb,
                       double beta, double *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dsyr2k_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6564,7 +6564,7 @@ cl::sycl::event syr2k(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                       std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
                       std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_csyr2k_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6574,7 +6574,7 @@ cl::sycl::event syr2k(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       const std::complex<double> *a, std::int64_t lda,
                       const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
                       std::complex<double> *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zsyr2k_usm_sycl(
         queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);
 }
@@ -6583,7 +6583,7 @@ cl::sycl::event trmm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
                      std::int64_t n, float alpha, const float *a, std::int64_t lda, float *b,
                      std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_strmm_usm_sycl(queue, left_right, upper_lower, trans,
                                                             unit_diag, m, n, alpha, a, lda, b, ldb,
                                                             dependencies);
@@ -6593,7 +6593,7 @@ cl::sycl::event trmm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
                      std::int64_t n, double alpha, const double *a, std::int64_t lda, double *b,
                      std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dtrmm_usm_sycl(queue, left_right, upper_lower, trans,
                                                             unit_diag, m, n, alpha, a, lda, b, ldb,
                                                             dependencies);
@@ -6603,7 +6603,7 @@ cl::sycl::event trmm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                      std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ctrmm_usm_sycl(queue, left_right, upper_lower, trans,
                                                             unit_diag, m, n, alpha, a, lda, b, ldb,
                                                             dependencies);
@@ -6613,7 +6613,7 @@ cl::sycl::event trmm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ztrmm_usm_sycl(queue, left_right, upper_lower, trans,
                                                             unit_diag, m, n, alpha, a, lda, b, ldb,
                                                             dependencies);
@@ -6623,7 +6623,7 @@ cl::sycl::event trsm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
                      std::int64_t n, float alpha, const float *a, std::int64_t lda, float *b,
                      std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_strsm_usm_sycl(queue, left_right, upper_lower, trans,
                                                             unit_diag, m, n, alpha, a, lda, b, ldb,
                                                             dependencies);
@@ -6633,7 +6633,7 @@ cl::sycl::event trsm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
                      std::int64_t n, double alpha, const double *a, std::int64_t lda, double *b,
                      std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dtrsm_usm_sycl(queue, left_right, upper_lower, trans,
                                                             unit_diag, m, n, alpha, a, lda, b, ldb,
                                                             dependencies);
@@ -6643,7 +6643,7 @@ cl::sycl::event trsm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                      std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ctrsm_usm_sycl(queue, left_right, upper_lower, trans,
                                                             unit_diag, m, n, alpha, a, lda, b, ldb,
                                                             dependencies);
@@ -6653,7 +6653,7 @@ cl::sycl::event trsm(oneapi::mkl::device libkey, cl::sycl::queue &queue, side le
                      uplo upper_lower, transpose trans, diag unit_diag, std::int64_t m,
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ztrsm_usm_sycl(queue, left_right, upper_lower, trans,
                                                             unit_diag, m, n, alpha, a, lda, b, ldb,
                                                             dependencies);
@@ -6664,7 +6664,7 @@ cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t n, float alpha, const float *a, std::int64_t lda,
                            std::int64_t stride_a, float *b, std::int64_t ldb, std::int64_t stride_b,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_strsm_batch_strided_usm_sycl(
         queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, stride_a, b, ldb,
         stride_b, batch_size, dependencies);
@@ -6675,7 +6675,7 @@ cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t n, double alpha, const double *a, std::int64_t lda,
                            std::int64_t stride_a, double *b, std::int64_t ldb,
                            std::int64_t stride_b, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dtrsm_batch_strided_usm_sycl(
         queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, stride_a, b, ldb,
         stride_b, batch_size, dependencies);
@@ -6686,7 +6686,7 @@ cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                            std::int64_t lda, std::int64_t stride_a, std::complex<float> *b,
                            std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ctrsm_batch_strided_usm_sycl(
         queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, stride_a, b, ldb,
         stride_b, batch_size, dependencies);
@@ -6698,7 +6698,7 @@ cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            const std::complex<double> *a, std::int64_t lda, std::int64_t stride_a,
                            std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ztrsm_batch_strided_usm_sycl(
         queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, stride_a, b, ldb,
         stride_b, batch_size, dependencies);
@@ -6709,7 +6709,7 @@ cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t *n, float *alpha, const float **a, std::int64_t *lda,
                            float **b, std::int64_t *ldb, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_strsm_batch_group_usm_sycl(
         queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb, group_count,
         group_size, dependencies);
@@ -6720,7 +6720,7 @@ cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            std::int64_t *n, double *alpha, const double **a, std::int64_t *lda,
                            double **b, std::int64_t *ldb, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dtrsm_batch_group_usm_sycl(
         queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb, group_count,
         group_size, dependencies);
@@ -6732,7 +6732,7 @@ cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            const std::complex<float> **a, std::int64_t *lda,
                            std::complex<float> **b, std::int64_t *ldb, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ctrsm_batch_group_usm_sycl(
         queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb, group_count,
         group_size, dependencies);
@@ -6744,7 +6744,7 @@ cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, s
                            const std::complex<double> **a, std::int64_t *lda,
                            std::complex<double> **b, std::int64_t *ldb, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_ztrsm_batch_group_usm_sycl(
         queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb, group_count,
         group_size, dependencies);
@@ -6755,7 +6755,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            float *alpha, const float **a, std::int64_t *lda, const float **b,
                            std::int64_t *ldb, float *beta, float **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sgemm_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
@@ -6766,7 +6766,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            double *alpha, const double **a, std::int64_t *lda, const double **b,
                            std::int64_t *ldb, double *beta, double **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dgemm_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
@@ -6778,7 +6778,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t *lda, const std::complex<float> **b, std::int64_t *ldb,
                            std::complex<float> *beta, std::complex<float> **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cgemm_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
@@ -6790,7 +6790,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t *lda, const std::complex<double> **b, std::int64_t *ldb,
                            std::complex<double> *beta, std::complex<double> **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zgemm_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
@@ -6801,7 +6801,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            half *alpha, const half **a, std::int64_t *lda, const half **b,
                            std::int64_t *ldb, half *beta, half **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_hgemm_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
@@ -6813,7 +6813,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            const float *b, std::int64_t ldb, std::int64_t stride_b, float beta,
                            float *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sgemm_batch_strided_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size, dependencies);
@@ -6825,7 +6825,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            const double *b, std::int64_t ldb, std::int64_t stride_b, double beta,
                            double *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dgemm_batch_strided_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size, dependencies);
@@ -6838,7 +6838,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t ldb, std::int64_t stride_b, std::complex<float> beta,
                            std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cgemm_batch_strided_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size, dependencies);
@@ -6851,7 +6851,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            std::int64_t ldb, std::int64_t stride_b, std::complex<double> beta,
                            std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zgemm_batch_strided_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size, dependencies);
@@ -6863,7 +6863,7 @@ cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue, t
                            const half *b, std::int64_t ldb, std::int64_t stride_b, half beta,
                            half *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_hgemm_batch_strided_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size, dependencies);
@@ -6873,7 +6873,7 @@ cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       transpose transa, transpose transb, std::int64_t n, std::int64_t k,
                       float alpha, const float *a, std::int64_t lda, const float *b,
                       std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_sgemmt_usm_sycl(queue, upper_lower, transa, transb, n,
                                                              k, alpha, a, lda, b, ldb, beta, c, ldc,
                                                              dependencies);
@@ -6883,7 +6883,7 @@ cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       transpose transa, transpose transb, std::int64_t n, std::int64_t k,
                       double alpha, const double *a, std::int64_t lda, const double *b,
                       std::int64_t ldb, double beta, double *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_dgemmt_usm_sycl(queue, upper_lower, transa, transb, n,
                                                              k, alpha, a, lda, b, ldb, beta, c, ldc,
                                                              dependencies);
@@ -6894,7 +6894,7 @@ cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
                       const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
                       std::complex<float> *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_cgemmt_usm_sycl(queue, upper_lower, transa, transb, n,
                                                              k, alpha, a, lda, b, ldb, beta, c, ldc,
                                                              dependencies);
@@ -6905,7 +6905,7 @@ cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo u
                       std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
                       const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
                       std::complex<double> *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zgemmt_usm_sycl(queue, upper_lower, transa, transb, n,
                                                              k, alpha, a, lda, b, ldb, beta, c, ldc,
                                                              dependencies);
@@ -6916,7 +6916,7 @@ cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, tr
                           std::int64_t k, float alpha, const std::int8_t *a, std::int64_t lda,
                           std::int8_t ao, const std::uint8_t *b, std::int64_t ldb, std::uint8_t bo,
                           float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_gemm_s8u8s32_bias_usm_sycl(
         queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co,
         dependencies);
@@ -6927,7 +6927,7 @@ cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, tr
                           std::int64_t k, float alpha, const std::int8_t *a, std::int64_t lda,
                           std::int8_t ao, const std::int8_t *b, std::int64_t ldb, std::int8_t bo,
                           float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_gemm_s8s8s32_bias_usm_sycl(
         queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co,
         dependencies);
@@ -6938,7 +6938,7 @@ cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, tr
                           std::int64_t k, float alpha, const std::uint8_t *a, std::int64_t lda,
                           std::uint8_t ao, const std::int8_t *b, std::int64_t ldb, std::int8_t bo,
                           float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_gemm_u8s8s32_bias_usm_sycl(
         queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co,
         dependencies);
@@ -6949,7 +6949,7 @@ cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue, tr
                           std::int64_t k, float alpha, const std::uint8_t *a, std::int64_t lda,
                           std::uint8_t ao, const std::uint8_t *b, std::int64_t ldb, std::uint8_t bo,
                           float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     return function_tables[libkey].row_major_gemm_u8u8s32_bias_usm_sycl(
         queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co,
         dependencies);

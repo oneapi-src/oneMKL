@@ -306,7 +306,7 @@ cl::sycl::event *coalesce_events(cl::sycl::queue &queue, std::vector<cl::sycl::e
 cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx,
                            std::int64_t stridex, float *y, int64_t incy, std::int64_t stridey,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::scopy_batch_sycl(&queue, n, x, incx, stridex, y, incy, stridey,
                                                 batch_size, dependencies);
 }
@@ -314,7 +314,7 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const float *x, in
 cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const double *x, int64_t incx,
                            std::int64_t stridex, double *y, int64_t incy, std::int64_t stridey,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::dcopy_batch_sycl(&queue, n, x, incx, stridex, y, incy, stridey,
                                                 batch_size, dependencies);
 }
@@ -322,7 +322,7 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const double *x, i
 cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const std::complex<float> *x,
                            int64_t incx, std::int64_t stridex, std::complex<float> *y, int64_t incy,
                            std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::ccopy_batch_sycl(&queue, n, x, incx, stridex, y, incy, stridey,
                                                 batch_size, dependencies);
 }
@@ -330,14 +330,14 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const std::complex
 cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const std::complex<double> *x,
                            int64_t incx, std::int64_t stridex, std::complex<double> *y,
                            int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zcopy_batch_sycl(&queue, n, x, incx, stridex, y, incy, stridey,
                                                 batch_size, dependencies);
 }
 
 cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t *n, const float **x, int64_t *incx,
                            float **y, int64_t *incy, int64_t group_count, int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_group_size = 0;
@@ -353,7 +353,7 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t *n, const float **x, 
 
 cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t *n, const double **x, int64_t *incx,
                            double **y, int64_t *incy, int64_t group_count, int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_group_size = 0;
@@ -370,7 +370,7 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t *n, const double **x,
 cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t *n, const std::complex<float> **x,
                            int64_t *incx, std::complex<float> **y, int64_t *incy,
                            int64_t group_count, int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_group_size = 0;
@@ -387,7 +387,7 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t *n, const std::comple
 cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t *n, const std::complex<double> **x,
                            int64_t *incx, std::complex<double> **y, int64_t *incy,
                            int64_t group_count, int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_group_size = 0;
@@ -404,7 +404,7 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t *n, const std::comple
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, float alpha, const float *x,
                            int64_t incx, int64_t stridex, float *y, int64_t incy, int64_t stridey,
                            int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::saxpy_batch_sycl(&queue, n, alpha, x, incx, stridex, y, incy,
                                                 stridey, batch_size, dependencies);
 }
@@ -412,7 +412,7 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, float alpha, const
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, double alpha, const double *x,
                            int64_t incx, int64_t stridex, double *y, int64_t incy, int64_t stridey,
                            int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::daxpy_batch_sycl(&queue, n, alpha, x, incx, stridex, y, incy,
                                                 stridey, batch_size, dependencies);
 }
@@ -421,7 +421,7 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, std::complex<float
                            const std::complex<float> *x, int64_t incx, int64_t stridex,
                            std::complex<float> *y, int64_t incy, int64_t stridey,
                            int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::caxpy_batch_sycl(&queue, n, alpha, x, incx, stridex, y, incy,
                                                 stridey, batch_size, dependencies);
 }
@@ -430,7 +430,7 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, std::complex<doubl
                            const std::complex<double> *x, int64_t incx, int64_t stridex,
                            std::complex<double> *y, int64_t incy, int64_t stridey,
                            int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zaxpy_batch_sycl(&queue, n, alpha, x, incx, stridex, y, incy,
                                                 stridey, batch_size, dependencies);
 }
@@ -438,7 +438,7 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, std::complex<doubl
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, float *alpha, const float **x,
                            int64_t *incx, float **y, int64_t *incy, int64_t group_count,
                            int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_group_size = 0;
@@ -455,7 +455,7 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, float *alpha, con
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, double *alpha, const double **x,
                            int64_t *incx, double **y, int64_t *incy, int64_t group_count,
                            int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_group_size = 0;
@@ -472,7 +472,7 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, double *alpha, co
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<float> *alpha,
                            const std::complex<float> **x, int64_t *incx, std::complex<float> **y,
                            int64_t *incy, int64_t group_count, int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_group_size = 0;
@@ -489,7 +489,7 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<floa
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<double> *alpha,
                            const std::complex<double> **x, int64_t *incx, std::complex<double> **y,
                            int64_t *incy, int64_t group_count, int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_group_size = 0;
@@ -507,7 +507,7 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, 
                            float alpha, const float *a, int64_t lda, int64_t stride_a,
                            const float *x, int64_t incx, int64_t stride_x, float beta, float *y,
                            int64_t incy, int64_t stride_y, int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::sgemv_batch_sycl(&queue, MAJOR, mkl_convert(transa), m, n, alpha, a,
                                                 lda, stride_a, x, incx, stride_x, beta, y, incy,
                                                 stride_y, batch_size, dependencies);
@@ -517,7 +517,7 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, 
                            double alpha, const double *a, int64_t lda, int64_t stride_a,
                            const double *x, int64_t incx, int64_t stride_x, double beta, double *y,
                            int64_t incy, int64_t stride_y, int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::dgemv_batch_sycl(&queue, MAJOR, mkl_convert(transa), m, n, alpha, a,
                                                 lda, stride_a, x, incx, stride_x, beta, y, incy,
                                                 stride_y, batch_size, dependencies);
@@ -528,7 +528,7 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, 
                            int64_t stride_a, const std::complex<float> *x, int64_t incx,
                            int64_t stride_x, std::complex<float> beta, std::complex<float> *y,
                            int64_t incy, int64_t stride_y, int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::cgemv_batch_sycl(&queue, MAJOR, mkl_convert(transa), m, n, alpha, a,
                                                 lda, stride_a, x, incx, stride_x, beta, y, incy,
                                                 stride_y, batch_size, dependencies);
@@ -539,7 +539,7 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, 
                            int64_t stride_a, const std::complex<double> *x, int64_t incx,
                            int64_t stride_x, std::complex<double> beta, std::complex<double> *y,
                            int64_t incy, int64_t stride_y, int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zgemv_batch_sycl(&queue, MAJOR, mkl_convert(transa), m, n, alpha, a,
                                                 lda, stride_a, x, incx, stride_x, beta, y, incy,
                                                 stride_y, batch_size, dependencies);
@@ -549,7 +549,7 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *transa, int64_t *m
                            float *alpha, const float **a, int64_t *lda, const float **x,
                            int64_t *incx, float *beta, float **y, int64_t *incy,
                            int64_t group_count, int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;
@@ -568,7 +568,7 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *transa, int64_t *m
                            double *alpha, const double **a, int64_t *lda, const double **x,
                            int64_t *incx, double *beta, double **y, int64_t *incy,
                            int64_t group_count, int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;
@@ -588,7 +588,7 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *transa, int64_t *m
                            const std::complex<float> **x, int64_t *incx, std::complex<float> *beta,
                            std::complex<float> **y, int64_t *incy, int64_t group_count,
                            int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;
@@ -608,7 +608,7 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *transa, int64_t *m
                            int64_t *lda, const std::complex<double> **x, int64_t *incx,
                            std::complex<double> *beta, std::complex<double> **y, int64_t *incy,
                            int64_t group_count, int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;
@@ -627,7 +627,7 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
                            const float *a, int64_t lda, int64_t stride_a, const float *x,
                            int64_t incx, int64_t stride_x, float *c, int64_t ldc, int64_t stride_c,
                            int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::sdgmm_batch_sycl(&queue, MAJOR, mkl_convert(left_right), m, n, a,
                                                 lda, stride_a, x, incx, stride_x, c, ldc, stride_c,
                                                 batch_size, dependencies);
@@ -637,7 +637,7 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
                            const double *a, int64_t lda, int64_t stride_a, const double *x,
                            int64_t incx, int64_t stride_x, double *c, int64_t ldc, int64_t stride_c,
                            int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::ddgmm_batch_sycl(&queue, MAJOR, mkl_convert(left_right), m, n, a,
                                                 lda, stride_a, x, incx, stride_x, c, ldc, stride_c,
                                                 batch_size, dependencies);
@@ -648,7 +648,7 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
                            const std::complex<float> *x, int64_t incx, int64_t stride_x,
                            std::complex<float> *c, int64_t ldc, int64_t stride_c,
                            int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::cdgmm_batch_sycl(&queue, MAJOR, mkl_convert(left_right), m, n, a,
                                                 lda, stride_a, x, incx, stride_x, c, ldc, stride_c,
                                                 batch_size, dependencies);
@@ -659,7 +659,7 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
                            const std::complex<double> *x, int64_t incx, int64_t stride_x,
                            std::complex<double> *c, int64_t ldc, int64_t stride_c,
                            int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zdgmm_batch_sycl(&queue, MAJOR, mkl_convert(left_right), m, n, a,
                                                 lda, stride_a, x, incx, stride_x, c, ldc, stride_c,
                                                 batch_size, dependencies);
@@ -668,7 +668,7 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
 cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, int64_t *m, int64_t *n,
                            const float **a, int64_t *lda, const float **x, int64_t *incx, float **c,
                            int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;
@@ -686,7 +686,7 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, int64_t *m,
 cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, int64_t *m, int64_t *n,
                            const double **a, int64_t *lda, const double **x, int64_t *incx,
                            double **c, int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;
@@ -705,7 +705,7 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, int64_t *m,
                            const std::complex<float> **a, int64_t *lda,
                            const std::complex<float> **x, int64_t *incx, std::complex<float> **c,
                            int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;
@@ -724,7 +724,7 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, int64_t *m,
                            const std::complex<double> **a, int64_t *lda,
                            const std::complex<double> **x, int64_t *incx, std::complex<double> **c,
                            int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;
@@ -743,7 +743,7 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                            int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
                            int64_t stride_a, const float *b, int64_t ldb, int64_t stride_b,
                            float beta, float *c, int64_t ldc, int64_t stride_c, int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::sgemm_batch_sycl(
         &queue, MAJOR, mkl_convert(transa), mkl_convert(transb), m, n, k, alpha, a, lda, stride_a,
         b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
@@ -754,7 +754,7 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                            int64_t stride_a, const double *b, int64_t ldb, int64_t stride_b,
                            double beta, double *c, int64_t ldc, int64_t stride_c,
                            int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::dgemm_batch_sycl(
         &queue, MAJOR, mkl_convert(transa), mkl_convert(transb), m, n, k, alpha, a, lda, stride_a,
         b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
@@ -766,7 +766,7 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                            const std::complex<float> *b, int64_t ldb, int64_t stride_b,
                            std::complex<float> beta, std::complex<float> *c, int64_t ldc,
                            int64_t stride_c, int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::cgemm_batch_sycl(
         &queue, MAJOR, mkl_convert(transa), mkl_convert(transb), m, n, k, alpha, a, lda, stride_a,
         b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
@@ -778,7 +778,7 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                            const std::complex<double> *b, int64_t ldb, int64_t stride_b,
                            std::complex<double> beta, std::complex<double> *c, int64_t ldc,
                            int64_t stride_c, int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zgemm_batch_sycl(
         &queue, MAJOR, mkl_convert(transa), mkl_convert(transb), m, n, k, alpha, a, lda, stride_a,
         b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
@@ -788,7 +788,7 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
                            int64_t n, int64_t k, half alpha, const half *a, int64_t lda,
                            int64_t stride_a, const half *b, int64_t ldb, int64_t stride_b,
                            half beta, half *c, int64_t ldc, int64_t stride_c, int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::hgemm_batch_sycl(
         &queue, MAJOR, mkl_convert(transa), mkl_convert(transb), m, n, k, alpha, a, lda, stride_a,
         b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
@@ -798,7 +798,7 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
                            int64_t *n, int64_t *k, float *alpha, const float **a, int64_t *lda,
                            const float **b, int64_t *ldb, float *beta, float **c, int64_t *ldc,
                            int64_t group_count, int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_group_size = 0;
@@ -818,7 +818,7 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
                            int64_t *n, int64_t *k, double *alpha, const double **a, int64_t *lda,
                            const double **b, int64_t *ldb, double *beta, double **c, int64_t *ldc,
                            int64_t group_count, int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_group_size = 0;
@@ -840,7 +840,7 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
                            const std::complex<float> **b, int64_t *ldb, std::complex<float> *beta,
                            std::complex<float> **c, int64_t *ldc, int64_t group_count,
                            int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_group_size = 0;
@@ -862,7 +862,7 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
                            const std::complex<double> **b, int64_t *ldb, std::complex<double> *beta,
                            std::complex<double> **c, int64_t *ldc, int64_t group_count,
                            int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_group_size = 0;
@@ -882,7 +882,7 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
                            int64_t *n, int64_t *k, half *alpha, const half **a, int64_t *lda,
                            const half **b, int64_t *ldb, half *beta, half **c, int64_t *ldc,
                            int64_t group_count, int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;
@@ -902,7 +902,7 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_l
                            transpose trans, diag unit_diag, int64_t m, int64_t n, float alpha,
                            const float *a, int64_t lda, int64_t stride_a, float *b, int64_t ldb,
                            int64_t stride_b, int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::strsm_batch_sycl(
         &queue, MAJOR, mkl_convert(left_right), mkl_convert(upper_lower), mkl_convert(trans),
         mkl_convert(unit_diag), m, n, alpha, a, lda, stride_a, b, ldb, stride_b, batch_size,
@@ -913,7 +913,7 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_l
                            transpose trans, diag unit_diag, int64_t m, int64_t n, double alpha,
                            const double *a, int64_t lda, int64_t stride_a, double *b, int64_t ldb,
                            int64_t stride_b, int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::dtrsm_batch_sycl(
         &queue, MAJOR, mkl_convert(left_right), mkl_convert(upper_lower), mkl_convert(trans),
         mkl_convert(unit_diag), m, n, alpha, a, lda, stride_a, b, ldb, stride_b, batch_size,
@@ -925,7 +925,7 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_l
                            std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
                            int64_t stride_a, std::complex<float> *b, int64_t ldb, int64_t stride_b,
                            int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::ctrsm_batch_sycl(
         &queue, MAJOR, mkl_convert(left_right), mkl_convert(upper_lower), mkl_convert(trans),
         mkl_convert(unit_diag), m, n, alpha, a, lda, stride_a, b, ldb, stride_b, batch_size,
@@ -937,7 +937,7 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_l
                            std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
                            int64_t stride_a, std::complex<double> *b, int64_t ldb, int64_t stride_b,
                            int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::ztrsm_batch_sycl(
         &queue, MAJOR, mkl_convert(left_right), mkl_convert(upper_lower), mkl_convert(trans),
         mkl_convert(unit_diag), m, n, alpha, a, lda, stride_a, b, ldb, stride_b, batch_size,
@@ -948,7 +948,7 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side *left_right, uplo *upper
                            transpose *trans, diag *unit_diag, int64_t *m, int64_t *n, float *alpha,
                            const float **a, int64_t *lda, float **b, int64_t *ldb,
                            int64_t group_count, int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;
@@ -968,7 +968,7 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side *left_right, uplo *upper
                            transpose *trans, diag *unit_diag, int64_t *m, int64_t *n, double *alpha,
                            const double **a, int64_t *lda, double **b, int64_t *ldb,
                            int64_t group_count, int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;
@@ -989,7 +989,7 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side *left_right, uplo *upper
                            std::complex<float> *alpha, const std::complex<float> **a, int64_t *lda,
                            std::complex<float> **b, int64_t *ldb, int64_t group_count,
                            int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;
@@ -1010,7 +1010,7 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side *left_right, uplo *upper
                            std::complex<double> *alpha, const std::complex<double> **a,
                            int64_t *lda, std::complex<double> **b, int64_t *ldb,
                            int64_t group_count, int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;
@@ -1029,7 +1029,7 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side *left_right, uplo *upper
 cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                            int64_t k, float alpha, const float *a, int64_t lda, int64_t stride_a,
                            float beta, float *c, int64_t ldc, int64_t stride_c, int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::ssyrk_batch_sycl(&queue, MAJOR, mkl_convert(upper_lower),
                                                 mkl_convert(trans), n, k, alpha, a, lda, stride_a,
                                                 beta, c, ldc, stride_c, batch_size, dependencies);
@@ -1039,7 +1039,7 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose t
                            int64_t k, double alpha, const double *a, int64_t lda, int64_t stride_a,
                            double beta, double *c, int64_t ldc, int64_t stride_c,
                            int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::dsyrk_batch_sycl(&queue, MAJOR, mkl_convert(upper_lower),
                                                 mkl_convert(trans), n, k, alpha, a, lda, stride_a,
                                                 beta, c, ldc, stride_c, batch_size, dependencies);
@@ -1050,7 +1050,7 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose t
                            int64_t lda, int64_t stride_a, std::complex<float> beta,
                            std::complex<float> *c, int64_t ldc, int64_t stride_c,
                            int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::csyrk_batch_sycl(&queue, MAJOR, mkl_convert(upper_lower),
                                                 mkl_convert(trans), n, k, alpha, a, lda, stride_a,
                                                 beta, c, ldc, stride_c, batch_size, dependencies);
@@ -1061,7 +1061,7 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose t
                            int64_t lda, int64_t stride_a, std::complex<double> beta,
                            std::complex<double> *c, int64_t ldc, int64_t stride_c,
                            int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zsyrk_batch_sycl(&queue, MAJOR, mkl_convert(upper_lower),
                                                 mkl_convert(trans), n, k, alpha, a, lda, stride_a,
                                                 beta, c, ldc, stride_c, batch_size, dependencies);
@@ -1070,7 +1070,7 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose t
 cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower, transpose *trans, int64_t *n,
                            int64_t *k, float *alpha, const float **a, int64_t *lda, float *beta,
                            float **c, int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;
@@ -1089,7 +1089,7 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower, transpose 
 cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower, transpose *trans, int64_t *n,
                            int64_t *k, double *alpha, const double **a, int64_t *lda, double *beta,
                            double **c, int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;
@@ -1109,7 +1109,7 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower, transpose 
                            int64_t *k, std::complex<float> *alpha, const std::complex<float> **a,
                            int64_t *lda, std::complex<float> *beta, std::complex<float> **c,
                            int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;
@@ -1129,7 +1129,7 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower, transpose 
                            int64_t *k, std::complex<double> *alpha, const std::complex<double> **a,
                            int64_t *lda, std::complex<double> *beta, std::complex<double> **c,
                            int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     std::vector<cl::sycl::event *> coalesced_events;
     coalesced_events.reserve(group_count);
     int64_t total_groupsize = 0;

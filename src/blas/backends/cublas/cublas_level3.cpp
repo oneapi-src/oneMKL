@@ -427,7 +427,7 @@ template <typename Func, typename T>
 inline cl::sycl::event gemm(Func func, cl::sycl::queue &queue, transpose transa, transpose transb,
                             int64_t m, int64_t n, int64_t k, T alpha, const T *a, int64_t lda,
                             const T *b, int64_t ldb, T beta, T *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, ldb, ldc);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -453,7 +453,7 @@ inline cl::sycl::event gemm(Func func, cl::sycl::queue &queue, transpose transa,
     cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,  \
                          int64_t n, int64_t k, TYPE alpha, const TYPE *a, int64_t lda,           \
                          const TYPE *b, int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,            \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {          \
         return gemm(CUBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, \
                     c, ldc, dependencies);                                                       \
     }
@@ -472,7 +472,7 @@ inline cl::sycl::event gemm_ex_usm(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C 
                                    int64_t m, int64_t n, int64_t k, T_C alpha, const T_A *a,
                                    int64_t lda, const T_B *b, int64_t ldb, T_C beta, T_C *c,
                                    int64_t ldc,
-                                   const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                                   const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType_A = typename CudaEquivalentType<T_A>::Type;
     using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
     using cuDataType_C = typename CudaEquivalentType<T_C>::Type;
@@ -502,7 +502,7 @@ inline cl::sycl::event gemm_ex_usm(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C 
     cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,   \
                          int64_t n, int64_t k, TYPE_C alpha, const TYPE_A *a, int64_t lda,        \
                          const TYPE_B *b, int64_t ldb, TYPE_C beta, TYPE_C *c, int64_t ldc,       \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                         const std::vector<cl::sycl::event> &dependencies) {           \
         return gemm_ex_usm(CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa, transb, \
                            m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);           \
     }
@@ -515,7 +515,7 @@ GEMM_EX_LAUNCHER_USM(half, half, half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
 cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                      int64_t n, int64_t k, float alpha, const bfloat16 *a, int64_t lda,
                      const bfloat16 *b, int64_t ldb, float beta, float *c, int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "gemm", "for column_major layout");
 }
 
@@ -523,7 +523,7 @@ template <typename Func, typename T>
 inline cl::sycl::event symm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             int64_t m, int64_t n, T alpha, const T *a, int64_t lda, const T *b,
                             int64_t ldb, T beta, T *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb, ldc);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -549,7 +549,7 @@ inline cl::sycl::event symm(Func func, cl::sycl::queue &queue, side left_right, 
     cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,   \
                          int64_t n, TYPE alpha, const TYPE *a, int64_t lda, const TYPE *b,       \
                          int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,                           \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {          \
         return symm(CUBLAS_ROUTINE, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, \
                     beta, c, ldc, dependencies);                                                 \
     }
@@ -565,7 +565,7 @@ template <typename Func, typename T>
 inline cl::sycl::event hemm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             int64_t m, int64_t n, T alpha, const T *a, int64_t lda, const T *b,
                             int64_t ldb, T beta, T *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb, ldc);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -591,7 +591,7 @@ inline cl::sycl::event hemm(Func func, cl::sycl::queue &queue, side left_right, 
     cl::sycl::event hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,   \
                          int64_t n, TYPE alpha, const TYPE *a, int64_t lda, const TYPE *b,       \
                          int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,                           \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {          \
         return hemm(CUBLAS_ROUTINE, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, \
                     beta, c, ldc, dependencies);                                                 \
     }
@@ -604,7 +604,7 @@ template <typename Func, typename T>
 inline cl::sycl::event syrk(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                             int64_t n, int64_t k, T alpha, const T *a, int64_t lda, T beta, T *c,
                             int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, k, lda, ldc);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -629,7 +629,7 @@ inline cl::sycl::event syrk(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
                          int64_t k, TYPE alpha, const TYPE *a, int64_t lda, TYPE beta, TYPE *c,   \
                          int64_t ldc,                                                             \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                         const std::vector<cl::sycl::event> &dependencies) {           \
         return syrk(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, \
                     dependencies);                                                                \
     }
@@ -645,7 +645,7 @@ template <typename Func, typename DataType, typename ScalarType>
 inline cl::sycl::event herk(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                             int64_t n, int64_t k, const ScalarType alpha, const DataType *a,
                             int64_t lda, const ScalarType beta, DataType *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<DataType>::Type;
     using cuScalarType = typename CudaEquivalentType<ScalarType>::Type;
     overflow_check(n, k, lda, ldc);
@@ -671,7 +671,7 @@ inline cl::sycl::event herk(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
                          int64_t k, const SCALAR_TYPE alpha, const DATA_TYPE *a, int64_t lda,     \
                          const SCALAR_TYPE beta, DATA_TYPE *c, int64_t ldc,                       \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                         const std::vector<cl::sycl::event> &dependencies) {           \
         return herk(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, \
                     dependencies);                                                                \
     }
@@ -685,7 +685,7 @@ template <typename Func, typename T>
 inline cl::sycl::event syr2k(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                              int64_t n, int64_t k, T alpha, const T *a, int64_t lda, const T *b,
                              int64_t ldb, T beta, T *c, int64_t ldc,
-                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                             const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, k, lda, ldb, ldc);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -711,7 +711,7 @@ inline cl::sycl::event syr2k(Func func, cl::sycl::queue &queue, uplo upper_lower
     cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
                           int64_t k, TYPE alpha, const TYPE *a, int64_t lda, const TYPE *b,        \
                           int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,                            \
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                          const std::vector<cl::sycl::event> &dependencies) {           \
         return syr2k(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, \
                      c, ldc, dependencies);                                                        \
     }
@@ -727,7 +727,7 @@ inline cl::sycl::event her2k(Func func, cl::sycl::queue &queue, uplo upper_lower
                              int64_t n, int64_t k, const DataType alpha, const DataType *a,
                              int64_t lda, const DataType *b, int64_t ldb, const ScalarType beta,
                              DataType *c, int64_t ldc,
-                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                             const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<DataType>::Type;
     using cuScalarType = typename CudaEquivalentType<ScalarType>::Type;
     overflow_check(n, k, lda, ldb, ldc);
@@ -755,7 +755,7 @@ inline cl::sycl::event her2k(Func func, cl::sycl::queue &queue, uplo upper_lower
                           int64_t k, const DATA_TYPE alpha, const DATA_TYPE *a, int64_t lda,       \
                           const DATA_TYPE *b, int64_t ldb, const SCALAR_TYPE beta, DATA_TYPE *c,   \
                           int64_t ldc,                                                             \
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                          const std::vector<cl::sycl::event> &dependencies) {           \
         return her2k(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, \
                      c, ldc, dependencies);                                                        \
     }
@@ -773,7 +773,7 @@ template <typename Func, typename T>
 inline cl::sycl::event trmm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha,
                             const T *a, int64_t lda, T *b, int64_t ldb,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -799,7 +799,7 @@ inline cl::sycl::event trmm(Func func, cl::sycl::queue &queue, side left_right, 
     cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower,                \
                          transpose trans, diag unit_diag, int64_t m, int64_t n, TYPE alpha,        \
                          const TYPE *a, int64_t lda, TYPE *b, int64_t ldb,                         \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {            \
+                         const std::vector<cl::sycl::event> &dependencies) {            \
         return trmm(CUBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, \
                     a, lda, b, ldb, dependencies);                                                 \
     }
@@ -814,7 +814,7 @@ template <typename Func, typename T>
 inline cl::sycl::event trsm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha,
                             const T *a, int64_t lda, T *b, int64_t ldb,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -840,7 +840,7 @@ inline cl::sycl::event trsm(Func func, cl::sycl::queue &queue, side left_right, 
     cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower,                \
                          transpose trans, diag unit_diag, int64_t m, int64_t n, TYPE alpha,        \
                          const TYPE *a, int64_t lda, TYPE *b, int64_t ldb,                         \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {            \
+                         const std::vector<cl::sycl::event> &dependencies) {            \
         return trsm(CUBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, \
                     a, lda, b, ldb, dependencies);                                                 \
     }
@@ -1089,7 +1089,7 @@ template <typename Func, typename T>
 inline cl::sycl::event gemm(Func func, cl::sycl::queue &queue, transpose transa, transpose transb,
                             int64_t m, int64_t n, int64_t k, T alpha, const T *a, int64_t lda,
                             const T *b, int64_t ldb, T beta, T *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "gemm", "for row_major layout");
 }
 
@@ -1097,7 +1097,7 @@ inline cl::sycl::event gemm(Func func, cl::sycl::queue &queue, transpose transa,
     cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,  \
                          int64_t n, int64_t k, TYPE alpha, const TYPE *a, int64_t lda,           \
                          const TYPE *b, int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,            \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {          \
         return gemm(CUBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, \
                     c, ldc, dependencies);                                                       \
     }
@@ -1116,7 +1116,7 @@ inline cl::sycl::event gemm_ex_usm(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C 
                                    int64_t m, int64_t n, int64_t k, T_C alpha, const T_A *a,
                                    int64_t lda, const T_B *b, int64_t ldb, T_C beta, T_C *c,
                                    int64_t ldc,
-                                   const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                                   const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "gemm", "for row_major layout");
 }
 
@@ -1125,7 +1125,7 @@ inline cl::sycl::event gemm_ex_usm(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C 
     cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,   \
                          int64_t n, int64_t k, TYPE_C alpha, const TYPE_A *a, int64_t lda,        \
                          const TYPE_B *b, int64_t ldb, TYPE_C beta, TYPE_C *c, int64_t ldc,       \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                         const std::vector<cl::sycl::event> &dependencies) {           \
         return gemm_ex_usm(CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa, transb, \
                            m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);           \
     }
@@ -1138,7 +1138,7 @@ GEMM_EX_LAUNCHER_USM(half, half, half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
 cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                      int64_t n, int64_t k, float alpha, const bfloat16 *a, int64_t lda,
                      const bfloat16 *b, int64_t ldb, float beta, float *c, int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "gemm", "for row_major layout");
 }
 
@@ -1146,7 +1146,7 @@ template <typename Func, typename T>
 inline cl::sycl::event symm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             int64_t m, int64_t n, T alpha, const T *a, int64_t lda, const T *b,
                             int64_t ldb, T beta, T *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "symm", "for row_major layout");
 }
 
@@ -1154,7 +1154,7 @@ inline cl::sycl::event symm(Func func, cl::sycl::queue &queue, side left_right, 
     cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,   \
                          int64_t n, TYPE alpha, const TYPE *a, int64_t lda, const TYPE *b,       \
                          int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,                           \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {          \
         return symm(CUBLAS_ROUTINE, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, \
                     beta, c, ldc, dependencies);                                                 \
     }
@@ -1170,7 +1170,7 @@ template <typename Func, typename T>
 inline cl::sycl::event hemm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             int64_t m, int64_t n, T alpha, const T *a, int64_t lda, const T *b,
                             int64_t ldb, T beta, T *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "hemm", "for row_major layout");
 }
 
@@ -1178,7 +1178,7 @@ inline cl::sycl::event hemm(Func func, cl::sycl::queue &queue, side left_right, 
     cl::sycl::event hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,   \
                          int64_t n, TYPE alpha, const TYPE *a, int64_t lda, const TYPE *b,       \
                          int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,                           \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {          \
         return hemm(CUBLAS_ROUTINE, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, \
                     beta, c, ldc, dependencies);                                                 \
     }
@@ -1191,7 +1191,7 @@ template <typename Func, typename T>
 inline cl::sycl::event syrk(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                             int64_t n, int64_t k, T alpha, const T *a, int64_t lda, T beta, T *c,
                             int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "syrk", "for row_major layout");
 }
 
@@ -1199,7 +1199,7 @@ inline cl::sycl::event syrk(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
                          int64_t k, TYPE alpha, const TYPE *a, int64_t lda, TYPE beta, TYPE *c,   \
                          int64_t ldc,                                                             \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                         const std::vector<cl::sycl::event> &dependencies) {           \
         return syrk(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, \
                     dependencies);                                                                \
     }
@@ -1215,7 +1215,7 @@ template <typename Func, typename DataType, typename ScalarType>
 inline cl::sycl::event herk(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                             int64_t n, int64_t k, const ScalarType alpha, const DataType *a,
                             int64_t lda, const ScalarType beta, DataType *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "herk", "for row_major layout");
 }
 
@@ -1223,7 +1223,7 @@ inline cl::sycl::event herk(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
                          int64_t k, const SCALAR_TYPE alpha, const DATA_TYPE *a, int64_t lda,     \
                          const SCALAR_TYPE beta, DATA_TYPE *c, int64_t ldc,                       \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                         const std::vector<cl::sycl::event> &dependencies) {           \
         return herk(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, \
                     dependencies);                                                                \
     }
@@ -1237,7 +1237,7 @@ template <typename Func, typename T>
 inline cl::sycl::event syr2k(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                              int64_t n, int64_t k, T alpha, const T *a, int64_t lda, const T *b,
                              int64_t ldb, T beta, T *c, int64_t ldc,
-                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                             const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "syr2k", "for row_major layout");
 }
 
@@ -1245,7 +1245,7 @@ inline cl::sycl::event syr2k(Func func, cl::sycl::queue &queue, uplo upper_lower
     cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
                           int64_t k, TYPE alpha, const TYPE *a, int64_t lda, const TYPE *b,        \
                           int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,                            \
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                          const std::vector<cl::sycl::event> &dependencies) {           \
         return syr2k(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, \
                      c, ldc, dependencies);                                                        \
     }
@@ -1261,7 +1261,7 @@ inline cl::sycl::event her2k(Func func, cl::sycl::queue &queue, uplo upper_lower
                              int64_t n, int64_t k, const DataType alpha, const DataType *a,
                              int64_t lda, const DataType *b, int64_t ldb, const ScalarType beta,
                              DataType *c, int64_t ldc,
-                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                             const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "her2k", "for row_major layout");
 }
 
@@ -1270,7 +1270,7 @@ inline cl::sycl::event her2k(Func func, cl::sycl::queue &queue, uplo upper_lower
                           int64_t k, const DATA_TYPE alpha, const DATA_TYPE *a, int64_t lda,       \
                           const DATA_TYPE *b, int64_t ldb, const SCALAR_TYPE beta, DATA_TYPE *c,   \
                           int64_t ldc,                                                             \
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                          const std::vector<cl::sycl::event> &dependencies) {           \
         return her2k(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, \
                      c, ldc, dependencies);                                                        \
     }
@@ -1288,7 +1288,7 @@ template <typename Func, typename T>
 inline cl::sycl::event trmm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha,
                             const T *a, int64_t lda, T *b, int64_t ldb,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "trmm", "for row_major layout");
 }
 
@@ -1296,7 +1296,7 @@ inline cl::sycl::event trmm(Func func, cl::sycl::queue &queue, side left_right, 
     cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower,                \
                          transpose trans, diag unit_diag, int64_t m, int64_t n, TYPE alpha,        \
                          const TYPE *a, int64_t lda, TYPE *b, int64_t ldb,                         \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {            \
+                         const std::vector<cl::sycl::event> &dependencies) {            \
         return trmm(CUBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, \
                     a, lda, b, ldb, dependencies);                                                 \
     }
@@ -1311,7 +1311,7 @@ template <typename Func, typename T>
 inline cl::sycl::event trsm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha,
                             const T *a, int64_t lda, T *b, int64_t ldb,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "trsm", "for row_major layout");
 }
 
@@ -1319,7 +1319,7 @@ inline cl::sycl::event trsm(Func func, cl::sycl::queue &queue, side left_right, 
     cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower,                \
                          transpose trans, diag unit_diag, int64_t m, int64_t n, TYPE alpha,        \
                          const TYPE *a, int64_t lda, TYPE *b, int64_t ldb,                         \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {            \
+                         const std::vector<cl::sycl::event> &dependencies) {            \
         return trsm(CUBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, \
                     a, lda, b, ldb, dependencies);                                                 \
     }

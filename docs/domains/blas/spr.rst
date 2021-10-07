@@ -122,7 +122,7 @@ spr (USM Version)
                        const T *x,
                        std::int64_t incx,
                        T *a,
-                       const sycl::vector_class<sycl::event> &dependencies = {})
+                       const std::vector<sycl::event> &dependencies = {})
    }
 .. code-block:: cpp
 
@@ -134,7 +134,7 @@ spr (USM Version)
                        const T *x,
                        std::int64_t incx,
                        T *a,
-                       const sycl::vector_class<sycl::event> &dependencies = {})
+                       const std::vector<sycl::event> &dependencies = {})
    }
    
 .. container:: section

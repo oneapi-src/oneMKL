@@ -117,7 +117,7 @@ axpy (USM Version)
                         std::int64_t incx,
                         T *y,
                         std::int64_t incy,
-                        const sycl::vector_class<sycl::event> &dependencies = {})
+                        const std::vector<sycl::event> &dependencies = {})
    }
 .. code-block:: cpp
 
@@ -129,7 +129,7 @@ axpy (USM Version)
                         std::int64_t incx,
                         T *y,
                         std::int64_t incy,
-                        const sycl::vector_class<sycl::event> &dependencies = {})
+                        const std::vector<sycl::event> &dependencies = {})
    }
 
 .. container:: section

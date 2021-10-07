@@ -272,7 +272,7 @@ gemm (USM Version)
                         Ts beta,
                         Tc *c,
                         std::int64_t ldc,
-                        const sycl::vector_class<sycl::event> &dependencies = {})
+                        const std::vector<sycl::event> &dependencies = {})
    }
 .. code-block:: cpp
 
@@ -291,7 +291,7 @@ gemm (USM Version)
                         Ts beta,
                         Tc *c,
                         std::int64_t ldc,
-                        const sycl::vector_class<sycl::event> &dependencies = {})
+                        const std::vector<sycl::event> &dependencies = {})
    }
 
 .. container:: section
