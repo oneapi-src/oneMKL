@@ -856,7 +856,7 @@ inline cl::sycl::event gemv(Func func, cl::sycl::queue &queue, transpose trans, 
     cl::sycl::event gemv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n,        \
                          TYPE alpha, const TYPE *a, int64_t lda, const TYPE *x, int64_t incx,  \
                          TYPE beta, TYPE *y, int64_t incy,                                     \
-                         const std::vector<cl::sycl::event> &dependencies) {        \
+                         const std::vector<cl::sycl::event> &dependencies) {                   \
         return gemv(CUBLAS_ROUTINE, queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, \
                     dependencies);                                                             \
     }
@@ -897,7 +897,7 @@ inline cl::sycl::event gbmv(Func func, cl::sycl::queue &queue, transpose trans, 
     cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n,          \
                          int64_t kl, int64_t ku, TYPE alpha, const TYPE *a, int64_t lda,         \
                          const TYPE *x, int64_t incx, TYPE beta, TYPE *y, int64_t incy,          \
-                         const std::vector<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {                     \
         return gbmv(CUBLAS_ROUTINE, queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, \
                     incy, dependencies);                                                         \
     }
@@ -935,8 +935,7 @@ inline cl::sycl::event ger(Func func, cl::sycl::queue &queue, int64_t m, int64_t
 #define GER_LAUNCHER_USM(EXT, TYPE, CUBLAS_ROUTINE)                                             \
     cl::sycl::event ger##EXT(cl::sycl::queue &queue, int64_t m, int64_t n, TYPE alpha,          \
                              const TYPE *x, int64_t incx, const TYPE *y, int64_t incy, TYPE *a, \
-                             int64_t lda,                                                       \
-                             const std::vector<cl::sycl::event> &dependencies) {     \
+                             int64_t lda, const std::vector<cl::sycl::event> &dependencies) {   \
         return ger(CUBLAS_ROUTINE, queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies); \
     }
 
@@ -978,7 +977,7 @@ inline cl::sycl::event hbmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event hbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k,       \
                          TYPE alpha, const TYPE *a, int64_t lda, const TYPE *x, int64_t incx,  \
                          TYPE beta, TYPE *y, int64_t incy,                                     \
-                         const std::vector<cl::sycl::event> &dependencies) {        \
+                         const std::vector<cl::sycl::event> &dependencies) {                   \
         return hbmv(CUBLAS_ROUTINE, queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, \
                     incy, dependencies);                                                       \
     }
@@ -990,8 +989,7 @@ HBMV_LAUNCHER_USM(std::complex<double>, cublasZhbmv)
 template <typename Func, typename T>
 inline cl::sycl::event hemv(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                             const T *a, int64_t lda, const T *x, int64_t incx, T beta, T *y,
-                            int64_t incy,
-                            const std::vector<cl::sycl::event> &dependencies) {
+                            int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, incx, incy);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -1017,7 +1015,7 @@ inline cl::sycl::event hemv(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event hemv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,         \
                          const TYPE *a, int64_t lda, const TYPE *x, int64_t incx, TYPE beta,      \
                          TYPE *y, int64_t incy,                                                   \
-                         const std::vector<cl::sycl::event> &dependencies) {           \
+                         const std::vector<cl::sycl::event> &dependencies) {                      \
         return hemv(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, \
                     dependencies);                                                                \
     }
@@ -1029,8 +1027,7 @@ HEMV_LAUNCHER_USM(std::complex<double>, cublasZhemv)
 template <typename Func, typename ScalarType, typename DataType>
 inline cl::sycl::event her(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n,
                            const ScalarType alpha, const DataType *x, int64_t incx, DataType *a,
-                           int64_t lda,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     using cuScalarType = typename CudaEquivalentType<ScalarType>::Type;
     using cuDataType = typename CudaEquivalentType<DataType>::Type;
     overflow_check(n, lda, incx);
@@ -1055,8 +1052,7 @@ inline cl::sycl::event her(Func func, cl::sycl::queue &queue, uplo upper_lower, 
 #define HER_LAUNCHER_USM(SCALAR_TYPE, DATA_TYPE, CUBLAS_ROUTINE)                                 \
     cl::sycl::event her(cl::sycl::queue &queue, uplo upper_lower, int64_t n,                     \
                         const SCALAR_TYPE alpha, const DATA_TYPE *x, int64_t incx, DATA_TYPE *a, \
-                        int64_t lda,                                                             \
-                        const std::vector<cl::sycl::event> &dependencies) {           \
+                        int64_t lda, const std::vector<cl::sycl::event> &dependencies) {         \
         return her(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, x, incx, a, lda, dependencies); \
     }
 
@@ -1092,8 +1088,7 @@ inline cl::sycl::event her2(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define HER2_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
     cl::sycl::event her2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,   \
                          const TYPE *x, int64_t incx, const TYPE *y, int64_t incy, TYPE *a, \
-                         int64_t lda,                                                       \
-                         const std::vector<cl::sycl::event> &dependencies) {     \
+                         int64_t lda, const std::vector<cl::sycl::event> &dependencies) {   \
         return her2(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, \
                     dependencies);                                                          \
     }
@@ -1130,8 +1125,7 @@ inline cl::sycl::event hpmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define HPMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                              \
     cl::sycl::event hpmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,    \
                          const TYPE *a, const TYPE *x, int64_t incx, TYPE beta, TYPE *y,     \
-                         int64_t incy,                                                       \
-                         const std::vector<cl::sycl::event> &dependencies) {      \
+                         int64_t incy, const std::vector<cl::sycl::event> &dependencies) {   \
         return hpmv(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, \
                     dependencies);                                                           \
     }
@@ -1168,7 +1162,7 @@ inline cl::sycl::event hpr(Func func, cl::sycl::queue &queue, uplo upper_lower, 
 #define HPR_LAUNCHER_USM(SCALAR_TYPE, DATA_TYPE, CUBLAS_ROUTINE)                                 \
     cl::sycl::event hpr(cl::sycl::queue &queue, uplo upper_lower, int64_t n,                     \
                         const SCALAR_TYPE alpha, const DATA_TYPE *x, int64_t incx, DATA_TYPE *a, \
-                        const std::vector<cl::sycl::event> &dependencies) {           \
+                        const std::vector<cl::sycl::event> &dependencies) {                      \
         return hpr(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, x, incx, a, dependencies);      \
     }
 
@@ -1204,7 +1198,7 @@ inline cl::sycl::event hpr2(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define HPR2_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
     cl::sycl::event hpr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,   \
                          const TYPE *x, int64_t incx, const TYPE *y, int64_t incy, TYPE *a, \
-                         const std::vector<cl::sycl::event> &dependencies) {     \
+                         const std::vector<cl::sycl::event> &dependencies) {                \
         return hpr2(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, x, incx, y, incy, a,      \
                     dependencies);                                                          \
     }
@@ -1244,7 +1238,7 @@ inline cl::sycl::event sbmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event sbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k,       \
                          TYPE alpha, const TYPE *a, int64_t lda, const TYPE *x, int64_t incx,  \
                          TYPE beta, TYPE *y, int64_t incy,                                     \
-                         const std::vector<cl::sycl::event> &dependencies) {        \
+                         const std::vector<cl::sycl::event> &dependencies) {                   \
         return sbmv(CUBLAS_ROUTINE, queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, \
                     incy, dependencies);                                                       \
     }
@@ -1257,8 +1251,7 @@ SBMV_LAUNCHER_USM(double, cublasDsbmv)
 template <typename Func, typename T>
 inline cl::sycl::event symv(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                             const T *a, int64_t lda, const T *x, int64_t incx, T beta, T *y,
-                            int64_t incy,
-                            const std::vector<cl::sycl::event> &dependencies) {
+                            int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, incx, incy);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -1284,7 +1277,7 @@ inline cl::sycl::event symv(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event symv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,         \
                          const TYPE *a, int64_t lda, const TYPE *x, int64_t incx, TYPE beta,      \
                          TYPE *y, int64_t incy,                                                   \
-                         const std::vector<cl::sycl::event> &dependencies) {           \
+                         const std::vector<cl::sycl::event> &dependencies) {                      \
         return symv(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, \
                     dependencies);                                                                \
     }
@@ -1320,7 +1313,7 @@ inline cl::sycl::event syr(Func func, cl::sycl::queue &queue, uplo upper_lower, 
 #define SYR_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
     cl::sycl::event syr(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,         \
                         const TYPE *x, int64_t incx, TYPE *a, int64_t lda,                       \
-                        const std::vector<cl::sycl::event> &dependencies) {           \
+                        const std::vector<cl::sycl::event> &dependencies) {                      \
         return syr(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, x, incx, a, lda, dependencies); \
     }
 
@@ -1358,8 +1351,7 @@ inline cl::sycl::event syr2(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define SYR2_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
     cl::sycl::event syr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,   \
                          const TYPE *x, int64_t incx, const TYPE *y, int64_t incy, TYPE *a, \
-                         int64_t lda,                                                       \
-                         const std::vector<cl::sycl::event> &dependencies) {     \
+                         int64_t lda, const std::vector<cl::sycl::event> &dependencies) {   \
         return syr2(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, \
                     dependencies);                                                          \
     }
@@ -1399,8 +1391,7 @@ inline cl::sycl::event spmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define SPMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                              \
     cl::sycl::event spmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,    \
                          const TYPE *a, const TYPE *x, int64_t incx, TYPE beta, TYPE *y,     \
-                         int64_t incy,                                                       \
-                         const std::vector<cl::sycl::event> &dependencies) {      \
+                         int64_t incy, const std::vector<cl::sycl::event> &dependencies) {   \
         return spmv(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, \
                     dependencies);                                                           \
     }
@@ -1436,7 +1427,7 @@ inline cl::sycl::event spr(Func func, cl::sycl::queue &queue, uplo upper_lower, 
 #define SPR_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                              \
     cl::sycl::event spr(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,    \
                         const TYPE *x, int64_t incx, TYPE *a,                               \
-                        const std::vector<cl::sycl::event> &dependencies) {      \
+                        const std::vector<cl::sycl::event> &dependencies) {                 \
         return spr(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, x, incx, a, dependencies); \
     }
 
@@ -1472,7 +1463,7 @@ inline cl::sycl::event spr2(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define SPR2_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
     cl::sycl::event spr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,   \
                          const TYPE *x, int64_t incx, const TYPE *y, int64_t incy, TYPE *a, \
-                         const std::vector<cl::sycl::event> &dependencies) {     \
+                         const std::vector<cl::sycl::event> &dependencies) {                \
         return spr2(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, x, incx, y, incy, a,      \
                     dependencies);                                                          \
     }
@@ -1485,8 +1476,7 @@ SPR2_LAUNCHER_USM(double, cublasDspr2)
 template <typename Func, typename T>
 inline cl::sycl::event tbmv(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                             diag unit_diag, int64_t n, int64_t k, const T *a, int64_t lda, T *x,
-                            int64_t incx,
-                            const std::vector<cl::sycl::event> &dependencies) {
+                            int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, k, lda, incx);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -1511,7 +1501,7 @@ inline cl::sycl::event tbmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,              \
                          diag unit_diag, int64_t n, int64_t k, const TYPE *a, int64_t lda,       \
                          TYPE *x, int64_t incx,                                                  \
-                         const std::vector<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {                     \
         return tbmv(CUBLAS_ROUTINE, queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, \
                     dependencies);                                                               \
     }
@@ -1526,8 +1516,7 @@ TBMV_LAUNCHER_USM(std::complex<double>, cublasZtbmv)
 template <typename Func, typename T>
 inline cl::sycl::event tbsv(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                             diag unit_diag, int64_t n, int64_t k, const T *a, int64_t lda, T *x,
-                            int64_t incx,
-                            const std::vector<cl::sycl::event> &dependencies) {
+                            int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, k, lda, incx);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -1552,7 +1541,7 @@ inline cl::sycl::event tbsv(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,              \
                          diag unit_diag, int64_t n, int64_t k, const TYPE *a, int64_t lda,       \
                          TYPE *x, int64_t incx,                                                  \
-                         const std::vector<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {                     \
         return tbsv(CUBLAS_ROUTINE, queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, \
                     dependencies);                                                               \
     }
@@ -1591,7 +1580,7 @@ inline cl::sycl::event tpmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define TPMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                           \
     cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,       \
                          diag unit_diag, int64_t n, const TYPE *a, TYPE *x, int64_t incx, \
-                         const std::vector<cl::sycl::event> &dependencies) {   \
+                         const std::vector<cl::sycl::event> &dependencies) {              \
         return tpmv(CUBLAS_ROUTINE, queue, upper_lower, trans, unit_diag, n, a, x, incx,  \
                     dependencies);                                                        \
     }
@@ -1630,7 +1619,7 @@ inline cl::sycl::event tpsv(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define TPSV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                           \
     cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,       \
                          diag unit_diag, int64_t n, const TYPE *a, TYPE *x, int64_t incx, \
-                         const std::vector<cl::sycl::event> &dependencies) {   \
+                         const std::vector<cl::sycl::event> &dependencies) {              \
         return tpsv(CUBLAS_ROUTINE, queue, upper_lower, trans, unit_diag, n, a, x, incx,  \
                     dependencies);                                                        \
     }
@@ -1669,8 +1658,7 @@ inline cl::sycl::event trmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define TRMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                               \
     cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,           \
                          diag unit_diag, int64_t n, const TYPE *a, int64_t lda, TYPE *x,      \
-                         int64_t incx,                                                        \
-                         const std::vector<cl::sycl::event> &dependencies) {       \
+                         int64_t incx, const std::vector<cl::sycl::event> &dependencies) {    \
         return trmv(CUBLAS_ROUTINE, queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, \
                     dependencies);                                                            \
     }
@@ -1709,8 +1697,7 @@ inline cl::sycl::event trsv(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define TRSV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                               \
     cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,           \
                          diag unit_diag, int64_t n, const TYPE *a, int64_t lda, TYPE *x,      \
-                         int64_t incx,                                                        \
-                         const std::vector<cl::sycl::event> &dependencies) {       \
+                         int64_t incx, const std::vector<cl::sycl::event> &dependencies) {    \
         return trsv(CUBLAS_ROUTINE, queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, \
                     dependencies);                                                            \
     }
@@ -2195,7 +2182,7 @@ inline cl::sycl::event gemv(Func func, cl::sycl::queue &queue, transpose trans, 
     cl::sycl::event gemv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n,        \
                          TYPE alpha, const TYPE *a, int64_t lda, const TYPE *x, int64_t incx,  \
                          TYPE beta, TYPE *y, int64_t incy,                                     \
-                         const std::vector<cl::sycl::event> &dependencies) {        \
+                         const std::vector<cl::sycl::event> &dependencies) {                   \
         return gemv(CUBLAS_ROUTINE, queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, \
                     dependencies);                                                             \
     }
@@ -2218,7 +2205,7 @@ inline cl::sycl::event gbmv(Func func, cl::sycl::queue &queue, transpose trans, 
     cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n,          \
                          int64_t kl, int64_t ku, TYPE alpha, const TYPE *a, int64_t lda,         \
                          const TYPE *x, int64_t incx, TYPE beta, TYPE *y, int64_t incy,          \
-                         const std::vector<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {                     \
         return gbmv(CUBLAS_ROUTINE, queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, \
                     incy, dependencies);                                                         \
     }
@@ -2239,8 +2226,7 @@ inline cl::sycl::event ger(Func func, cl::sycl::queue &queue, int64_t m, int64_t
 #define GER_LAUNCHER_USM(EXT, TYPE, CUBLAS_ROUTINE)                                             \
     cl::sycl::event ger##EXT(cl::sycl::queue &queue, int64_t m, int64_t n, TYPE alpha,          \
                              const TYPE *x, int64_t incx, const TYPE *y, int64_t incy, TYPE *a, \
-                             int64_t lda,                                                       \
-                             const std::vector<cl::sycl::event> &dependencies) {     \
+                             int64_t lda, const std::vector<cl::sycl::event> &dependencies) {   \
         return ger(CUBLAS_ROUTINE, queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies); \
     }
 
@@ -2264,7 +2250,7 @@ inline cl::sycl::event hbmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event hbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k,       \
                          TYPE alpha, const TYPE *a, int64_t lda, const TYPE *x, int64_t incx,  \
                          TYPE beta, TYPE *y, int64_t incy,                                     \
-                         const std::vector<cl::sycl::event> &dependencies) {        \
+                         const std::vector<cl::sycl::event> &dependencies) {                   \
         return hbmv(CUBLAS_ROUTINE, queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, \
                     incy, dependencies);                                                       \
     }
@@ -2276,8 +2262,7 @@ HBMV_LAUNCHER_USM(std::complex<double>, cublasZhbmv)
 template <typename Func, typename T>
 inline cl::sycl::event hemv(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                             const T *a, int64_t lda, const T *x, int64_t incx, T beta, T *y,
-                            int64_t incy,
-                            const std::vector<cl::sycl::event> &dependencies) {
+                            int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "hemv", "for row_major layout");
 }
 
@@ -2285,7 +2270,7 @@ inline cl::sycl::event hemv(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event hemv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,         \
                          const TYPE *a, int64_t lda, const TYPE *x, int64_t incx, TYPE beta,      \
                          TYPE *y, int64_t incy,                                                   \
-                         const std::vector<cl::sycl::event> &dependencies) {           \
+                         const std::vector<cl::sycl::event> &dependencies) {                      \
         return hemv(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, \
                     dependencies);                                                                \
     }
@@ -2297,16 +2282,14 @@ HEMV_LAUNCHER_USM(std::complex<double>, cublasZhemv)
 template <typename Func, typename ScalarType, typename DataType>
 inline cl::sycl::event her(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n,
                            const ScalarType alpha, const DataType *x, int64_t incx, DataType *a,
-                           int64_t lda,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "her", "for row_major layout");
 }
 
 #define HER_LAUNCHER_USM(SCALAR_TYPE, DATA_TYPE, CUBLAS_ROUTINE)                                 \
     cl::sycl::event her(cl::sycl::queue &queue, uplo upper_lower, int64_t n,                     \
                         const SCALAR_TYPE alpha, const DATA_TYPE *x, int64_t incx, DATA_TYPE *a, \
-                        int64_t lda,                                                             \
-                        const std::vector<cl::sycl::event> &dependencies) {           \
+                        int64_t lda, const std::vector<cl::sycl::event> &dependencies) {         \
         return her(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, x, incx, a, lda, dependencies); \
     }
 
@@ -2325,8 +2308,7 @@ inline cl::sycl::event her2(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define HER2_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
     cl::sycl::event her2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,   \
                          const TYPE *x, int64_t incx, const TYPE *y, int64_t incy, TYPE *a, \
-                         int64_t lda,                                                       \
-                         const std::vector<cl::sycl::event> &dependencies) {     \
+                         int64_t lda, const std::vector<cl::sycl::event> &dependencies) {   \
         return her2(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, \
                     dependencies);                                                          \
     }
@@ -2346,8 +2328,7 @@ inline cl::sycl::event hpmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define HPMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                              \
     cl::sycl::event hpmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,    \
                          const TYPE *a, const TYPE *x, int64_t incx, TYPE beta, TYPE *y,     \
-                         int64_t incy,                                                       \
-                         const std::vector<cl::sycl::event> &dependencies) {      \
+                         int64_t incy, const std::vector<cl::sycl::event> &dependencies) {   \
         return hpmv(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, \
                     dependencies);                                                           \
     }
@@ -2367,7 +2348,7 @@ inline cl::sycl::event hpr(Func func, cl::sycl::queue &queue, uplo upper_lower, 
 #define HPR_LAUNCHER_USM(SCALAR_TYPE, DATA_TYPE, CUBLAS_ROUTINE)                                 \
     cl::sycl::event hpr(cl::sycl::queue &queue, uplo upper_lower, int64_t n,                     \
                         const SCALAR_TYPE alpha, const DATA_TYPE *x, int64_t incx, DATA_TYPE *a, \
-                        const std::vector<cl::sycl::event> &dependencies) {           \
+                        const std::vector<cl::sycl::event> &dependencies) {                      \
         return hpr(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, x, incx, a, dependencies);      \
     }
 
@@ -2386,7 +2367,7 @@ inline cl::sycl::event hpr2(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define HPR2_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
     cl::sycl::event hpr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,   \
                          const TYPE *x, int64_t incx, const TYPE *y, int64_t incy, TYPE *a, \
-                         const std::vector<cl::sycl::event> &dependencies) {     \
+                         const std::vector<cl::sycl::event> &dependencies) {                \
         return hpr2(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, x, incx, y, incy, a,      \
                     dependencies);                                                          \
     }
@@ -2408,7 +2389,7 @@ inline cl::sycl::event sbmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event sbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k,       \
                          TYPE alpha, const TYPE *a, int64_t lda, const TYPE *x, int64_t incx,  \
                          TYPE beta, TYPE *y, int64_t incy,                                     \
-                         const std::vector<cl::sycl::event> &dependencies) {        \
+                         const std::vector<cl::sycl::event> &dependencies) {                   \
         return sbmv(CUBLAS_ROUTINE, queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, \
                     incy, dependencies);                                                       \
     }
@@ -2421,8 +2402,7 @@ SBMV_LAUNCHER_USM(double, cublasDsbmv)
 template <typename Func, typename T>
 inline cl::sycl::event symv(Func func, cl::sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                             const T *a, int64_t lda, const T *x, int64_t incx, T beta, T *y,
-                            int64_t incy,
-                            const std::vector<cl::sycl::event> &dependencies) {
+                            int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "symv", "for row_major layout");
 }
 
@@ -2430,7 +2410,7 @@ inline cl::sycl::event symv(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event symv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,         \
                          const TYPE *a, int64_t lda, const TYPE *x, int64_t incx, TYPE beta,      \
                          TYPE *y, int64_t incy,                                                   \
-                         const std::vector<cl::sycl::event> &dependencies) {           \
+                         const std::vector<cl::sycl::event> &dependencies) {                      \
         return symv(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, \
                     dependencies);                                                                \
     }
@@ -2450,7 +2430,7 @@ inline cl::sycl::event syr(Func func, cl::sycl::queue &queue, uplo upper_lower, 
 #define SYR_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
     cl::sycl::event syr(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,         \
                         const TYPE *x, int64_t incx, TYPE *a, int64_t lda,                       \
-                        const std::vector<cl::sycl::event> &dependencies) {           \
+                        const std::vector<cl::sycl::event> &dependencies) {                      \
         return syr(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, x, incx, a, lda, dependencies); \
     }
 
@@ -2471,8 +2451,7 @@ inline cl::sycl::event syr2(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define SYR2_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
     cl::sycl::event syr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,   \
                          const TYPE *x, int64_t incx, const TYPE *y, int64_t incy, TYPE *a, \
-                         int64_t lda,                                                       \
-                         const std::vector<cl::sycl::event> &dependencies) {     \
+                         int64_t lda, const std::vector<cl::sycl::event> &dependencies) {   \
         return syr2(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, \
                     dependencies);                                                          \
     }
@@ -2495,8 +2474,7 @@ inline cl::sycl::event spmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define SPMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                              \
     cl::sycl::event spmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,    \
                          const TYPE *a, const TYPE *x, int64_t incx, TYPE beta, TYPE *y,     \
-                         int64_t incy,                                                       \
-                         const std::vector<cl::sycl::event> &dependencies) {      \
+                         int64_t incy, const std::vector<cl::sycl::event> &dependencies) {   \
         return spmv(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, \
                     dependencies);                                                           \
     }
@@ -2516,7 +2494,7 @@ inline cl::sycl::event spr(Func func, cl::sycl::queue &queue, uplo upper_lower, 
 #define SPR_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                              \
     cl::sycl::event spr(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,    \
                         const TYPE *x, int64_t incx, TYPE *a,                               \
-                        const std::vector<cl::sycl::event> &dependencies) {      \
+                        const std::vector<cl::sycl::event> &dependencies) {                 \
         return spr(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, x, incx, a, dependencies); \
     }
 
@@ -2535,7 +2513,7 @@ inline cl::sycl::event spr2(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define SPR2_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
     cl::sycl::event spr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, TYPE alpha,   \
                          const TYPE *x, int64_t incx, const TYPE *y, int64_t incy, TYPE *a, \
-                         const std::vector<cl::sycl::event> &dependencies) {     \
+                         const std::vector<cl::sycl::event> &dependencies) {                \
         return spr2(CUBLAS_ROUTINE, queue, upper_lower, n, alpha, x, incx, y, incy, a,      \
                     dependencies);                                                          \
     }
@@ -2548,8 +2526,7 @@ SPR2_LAUNCHER_USM(double, cublasDspr2)
 template <typename Func, typename T>
 inline cl::sycl::event tbmv(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                             diag unit_diag, int64_t n, int64_t k, const T *a, int64_t lda, T *x,
-                            int64_t incx,
-                            const std::vector<cl::sycl::event> &dependencies) {
+                            int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "tbmv", "for row_major layout");
 }
 
@@ -2557,7 +2534,7 @@ inline cl::sycl::event tbmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,              \
                          diag unit_diag, int64_t n, int64_t k, const TYPE *a, int64_t lda,       \
                          TYPE *x, int64_t incx,                                                  \
-                         const std::vector<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {                     \
         return tbmv(CUBLAS_ROUTINE, queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, \
                     dependencies);                                                               \
     }
@@ -2572,8 +2549,7 @@ TBMV_LAUNCHER_USM(std::complex<double>, cublasZtbmv)
 template <typename Func, typename T>
 inline cl::sycl::event tbsv(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                             diag unit_diag, int64_t n, int64_t k, const T *a, int64_t lda, T *x,
-                            int64_t incx,
-                            const std::vector<cl::sycl::event> &dependencies) {
+                            int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "tbsv", "for row_major layout");
 }
 
@@ -2581,7 +2557,7 @@ inline cl::sycl::event tbsv(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,              \
                          diag unit_diag, int64_t n, int64_t k, const TYPE *a, int64_t lda,       \
                          TYPE *x, int64_t incx,                                                  \
-                         const std::vector<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {                     \
         return tbsv(CUBLAS_ROUTINE, queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, \
                     dependencies);                                                               \
     }
@@ -2603,7 +2579,7 @@ inline cl::sycl::event tpmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define TPMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                           \
     cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,       \
                          diag unit_diag, int64_t n, const TYPE *a, TYPE *x, int64_t incx, \
-                         const std::vector<cl::sycl::event> &dependencies) {   \
+                         const std::vector<cl::sycl::event> &dependencies) {              \
         return tpmv(CUBLAS_ROUTINE, queue, upper_lower, trans, unit_diag, n, a, x, incx,  \
                     dependencies);                                                        \
     }
@@ -2625,7 +2601,7 @@ inline cl::sycl::event tpsv(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define TPSV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                           \
     cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,       \
                          diag unit_diag, int64_t n, const TYPE *a, TYPE *x, int64_t incx, \
-                         const std::vector<cl::sycl::event> &dependencies) {   \
+                         const std::vector<cl::sycl::event> &dependencies) {              \
         return tpsv(CUBLAS_ROUTINE, queue, upper_lower, trans, unit_diag, n, a, x, incx,  \
                     dependencies);                                                        \
     }
@@ -2647,8 +2623,7 @@ inline cl::sycl::event trmv(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define TRMV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                               \
     cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,           \
                          diag unit_diag, int64_t n, const TYPE *a, int64_t lda, TYPE *x,      \
-                         int64_t incx,                                                        \
-                         const std::vector<cl::sycl::event> &dependencies) {       \
+                         int64_t incx, const std::vector<cl::sycl::event> &dependencies) {    \
         return trmv(CUBLAS_ROUTINE, queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, \
                     dependencies);                                                            \
     }
@@ -2670,8 +2645,7 @@ inline cl::sycl::event trsv(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define TRSV_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                               \
     cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,           \
                          diag unit_diag, int64_t n, const TYPE *a, int64_t lda, TYPE *x,      \
-                         int64_t incx,                                                        \
-                         const std::vector<cl::sycl::event> &dependencies) {       \
+                         int64_t incx, const std::vector<cl::sycl::event> &dependencies) {    \
         return trsv(CUBLAS_ROUTINE, queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, \
                     dependencies);                                                            \
     }

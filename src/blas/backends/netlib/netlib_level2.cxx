@@ -1100,8 +1100,7 @@ cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t
 
 cl::sycl::event gemv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
                      const float *a, int64_t lda, const float *x, int64_t incx, float beta,
-                     float *y, int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     float *y, int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1118,8 +1117,7 @@ cl::sycl::event gemv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t
 
 cl::sycl::event gemv(cl::sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
                      const double *a, int64_t lda, const double *x, int64_t incx, double beta,
-                     double *y, int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     double *y, int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1520,8 +1518,7 @@ cl::sycl::event hpr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n,
 
 cl::sycl::event sbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k, float alpha,
                      const float *a, int64_t lda, const float *x, int64_t incx, float beta,
-                     float *y, int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     float *y, int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1538,8 +1535,7 @@ cl::sycl::event sbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_
 
 cl::sycl::event sbmv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k, double alpha,
                      const double *a, int64_t lda, const double *x, int64_t incx, double beta,
-                     double *y, int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     double *y, int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1654,8 +1650,7 @@ cl::sycl::event spr2(cl::sycl::queue &queue, uplo upper_lower, int64_t n, double
 
 cl::sycl::event symv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, float alpha,
                      const float *a, int64_t lda, const float *x, int64_t incx, float beta,
-                     float *y, int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     float *y, int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1672,8 +1667,7 @@ cl::sycl::event symv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, float 
 
 cl::sycl::event symv(cl::sycl::queue &queue, uplo upper_lower, int64_t n, double alpha,
                      const double *a, int64_t lda, const double *x, int64_t incx, double beta,
-                     double *y, int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     double *y, int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {

@@ -309,15 +309,13 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const std::complex
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, float *alpha, const float **x,
                            int64_t *incx, float **y, int64_t *incy, int64_t group_count,
-                           int64_t *group_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t *group_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpy_batch", "for column_major layout");
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, double *alpha, const double **x,
                            int64_t *incx, double **y, int64_t *incy, int64_t group_count,
-                           int64_t *group_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t *group_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpy_batch", "for column_major layout");
 }
 
@@ -337,31 +335,27 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<doub
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, float alpha, const float *x,
                            int64_t incx, int64_t stridex, float *y, int64_t incy, int64_t stridey,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpy_batch", "for column_major layout");
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, double alpha, const double *x,
                            int64_t incx, int64_t stridex, double *y, int64_t incy, int64_t stridey,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpy_batch", "for column_major layout");
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, std::complex<float> alpha,
                            const std::complex<float> *x, int64_t incx, int64_t stridex,
                            std::complex<float> *y, int64_t incy, int64_t stridey,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpy_batch", "for column_major layout");
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
                            const std::complex<double> *x, int64_t incx, int64_t stridex,
                            std::complex<double> *y, int64_t incy, int64_t stridey,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpy_batch", "for column_major layout");
 }
 
@@ -419,8 +413,7 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *transa, int64_t *m
                            std::complex<float> *alpha, const std::complex<float> **a, int64_t *lda,
                            const std::complex<float> **x, int64_t *incx, std::complex<float> *beta,
                            std::complex<float> **y, int64_t *incy, int64_t group_count,
-                           int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t *groupsize, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "gemv_batch", "for column_major layout");
 }
 
@@ -436,16 +429,14 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *transa, int64_t *m
 cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
                            const float *a, int64_t lda, int64_t stride_a, const float *x,
                            int64_t incx, int64_t stride_x, float *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "dgmm_batch", "for column_major layout");
 }
 
 cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
                            const double *a, int64_t lda, int64_t stride_a, const double *x,
                            int64_t incx, int64_t stride_x, double *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "dgmm_batch", "for column_major layout");
 }
 
@@ -453,8 +444,7 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
                            const std::complex<float> *a, int64_t lda, int64_t stride_a,
                            const std::complex<float> *x, int64_t incx, int64_t stride_x,
                            std::complex<float> *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "dgmm_batch", "for column_major layout");
 }
 
@@ -462,8 +452,7 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
                            const std::complex<double> *a, int64_t lda, int64_t stride_a,
                            const std::complex<double> *x, int64_t incx, int64_t stride_x,
                            std::complex<double> *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "dgmm_batch", "for column_major layout");
 }
 
@@ -536,7 +525,7 @@ inline cl::sycl::event gemm_batch(Func func, cl::sycl::queue &queue, transpose t
         cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,          \
         int64_t k, TYPE alpha, const TYPE *a, int64_t lda, int64_t stride_a, const TYPE *b,        \
         int64_t ldb, int64_t stride_b, TYPE beta, TYPE *c, int64_t ldc, int64_t stride_c,          \
-        int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {         \
+        int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {                    \
         return gemm_batch(CUBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, stride_a, \
                           b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);     \
     }
@@ -594,7 +583,7 @@ inline cl::sycl::event gemm_batch(Func func, cl::sycl::queue &queue, transpose *
                                int64_t *m, int64_t *n, int64_t *k, TYPE *alpha, const TYPE **a,  \
                                int64_t *lda, const TYPE **b, int64_t *ldb, TYPE *beta, TYPE **c, \
                                int64_t *ldc, int64_t group_count, int64_t *group_size,           \
-                               const std::vector<cl::sycl::event> &dependencies) {    \
+                               const std::vector<cl::sycl::event> &dependencies) {               \
         return gemm_batch(CUBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, \
                           beta, c, ldc, group_count, group_size, dependencies);                  \
     }
@@ -627,8 +616,7 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_l
                            transpose trans, diag unit_diag, int64_t m, int64_t n,
                            std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
                            int64_t stride_a, std::complex<float> *b, int64_t ldb, int64_t stride_b,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "trsm_batch", "for column_major layout");
 }
 
@@ -636,8 +624,7 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_l
                            transpose trans, diag unit_diag, int64_t m, int64_t n,
                            std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
                            int64_t stride_a, std::complex<double> *b, int64_t ldb, int64_t stride_b,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "trsm_batch", "for column_major layout");
 }
 
@@ -681,7 +668,7 @@ inline cl::sycl::event trsm_batch(Func func, cl::sycl::queue &queue, side *left_
                                transpose *trans, diag *unit_diag, int64_t *m, int64_t *n,         \
                                TYPE *alpha, const TYPE **a, int64_t *lda, TYPE **b, int64_t *ldb, \
                                int64_t group_count, int64_t *group_size,                          \
-                               const std::vector<cl::sycl::event> &dependencies) {     \
+                               const std::vector<cl::sycl::event> &dependencies) {                \
         return trsm_batch(CUBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n, \
                           alpha, a, lda, b, ldb, group_count, group_size, dependencies);          \
     }
@@ -733,8 +720,7 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose t
 cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                            int64_t k, double alpha, const double *a, int64_t lda, int64_t stride_a,
                            double beta, double *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "syrk_batch", "for column_major layout");
 }
 
@@ -742,8 +728,7 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose t
                            int64_t k, std::complex<float> alpha, const std::complex<float> *a,
                            int64_t lda, int64_t stride_a, std::complex<float> beta,
                            std::complex<float> *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "syrk_batch", "for column_major layout");
 }
 
@@ -751,8 +736,7 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose t
                            int64_t k, std::complex<double> alpha, const std::complex<double> *a,
                            int64_t lda, int64_t stride_a, std::complex<double> beta,
                            std::complex<double> *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "syrk_batch", "for column_major layout");
 }
 
@@ -1019,15 +1003,13 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const std::complex
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, float *alpha, const float **x,
                            int64_t *incx, float **y, int64_t *incy, int64_t group_count,
-                           int64_t *group_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t *group_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpy_batch", "for row_major layout");
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, double *alpha, const double **x,
                            int64_t *incx, double **y, int64_t *incy, int64_t group_count,
-                           int64_t *group_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t *group_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpy_batch", "for row_major layout");
 }
 
@@ -1047,31 +1029,27 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<doub
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, float alpha, const float *x,
                            int64_t incx, int64_t stridex, float *y, int64_t incy, int64_t stridey,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpy_batch", "for row_major layout");
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, double alpha, const double *x,
                            int64_t incx, int64_t stridex, double *y, int64_t incy, int64_t stridey,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpy_batch", "for row_major layout");
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, std::complex<float> alpha,
                            const std::complex<float> *x, int64_t incx, int64_t stridex,
                            std::complex<float> *y, int64_t incy, int64_t stridey,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpy_batch", "for row_major layout");
 }
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
                            const std::complex<double> *x, int64_t incx, int64_t stridex,
                            std::complex<double> *y, int64_t incy, int64_t stridey,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "axpy_batch", "for row_major layout");
 }
 
@@ -1129,8 +1107,7 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *transa, int64_t *m
                            std::complex<float> *alpha, const std::complex<float> **a, int64_t *lda,
                            const std::complex<float> **x, int64_t *incx, std::complex<float> *beta,
                            std::complex<float> **y, int64_t *incy, int64_t group_count,
-                           int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t *groupsize, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "gemv_batch", "for row_major layout");
 }
 
@@ -1146,16 +1123,14 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *transa, int64_t *m
 cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
                            const float *a, int64_t lda, int64_t stride_a, const float *x,
                            int64_t incx, int64_t stride_x, float *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "dgmm_batch", "for row_major layout");
 }
 
 cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
                            const double *a, int64_t lda, int64_t stride_a, const double *x,
                            int64_t incx, int64_t stride_x, double *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "dgmm_batch", "for row_major layout");
 }
 
@@ -1163,8 +1138,7 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
                            const std::complex<float> *a, int64_t lda, int64_t stride_a,
                            const std::complex<float> *x, int64_t incx, int64_t stride_x,
                            std::complex<float> *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "dgmm_batch", "for row_major layout");
 }
 
@@ -1172,8 +1146,7 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
                            const std::complex<double> *a, int64_t lda, int64_t stride_a,
                            const std::complex<double> *x, int64_t incx, int64_t stride_x,
                            std::complex<double> *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "dgmm_batch", "for row_major layout");
 }
 
@@ -1222,7 +1195,7 @@ inline cl::sycl::event gemm_batch(Func func, cl::sycl::queue &queue, transpose t
         cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,          \
         int64_t k, TYPE alpha, const TYPE *a, int64_t lda, int64_t stride_a, const TYPE *b,        \
         int64_t ldb, int64_t stride_b, TYPE beta, TYPE *c, int64_t ldc, int64_t stride_c,          \
-        int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {         \
+        int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {                    \
         return gemm_batch(CUBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, stride_a, \
                           b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);     \
     }
@@ -1249,7 +1222,7 @@ inline cl::sycl::event gemm_batch(Func func, cl::sycl::queue &queue, transpose *
                                int64_t *m, int64_t *n, int64_t *k, TYPE *alpha, const TYPE **a,  \
                                int64_t *lda, const TYPE **b, int64_t *ldb, TYPE *beta, TYPE **c, \
                                int64_t *ldc, int64_t group_count, int64_t *group_size,           \
-                               const std::vector<cl::sycl::event> &dependencies) {    \
+                               const std::vector<cl::sycl::event> &dependencies) {               \
         return gemm_batch(CUBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, \
                           beta, c, ldc, group_count, group_size, dependencies);                  \
     }
@@ -1282,8 +1255,7 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_l
                            transpose trans, diag unit_diag, int64_t m, int64_t n,
                            std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
                            int64_t stride_a, std::complex<float> *b, int64_t ldb, int64_t stride_b,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "trsm_batch", "for row_major layout");
 }
 
@@ -1291,8 +1263,7 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_l
                            transpose trans, diag unit_diag, int64_t m, int64_t n,
                            std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
                            int64_t stride_a, std::complex<double> *b, int64_t ldb, int64_t stride_b,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "trsm_batch", "for row_major layout");
 }
 
@@ -1310,7 +1281,7 @@ inline cl::sycl::event trsm_batch(Func func, cl::sycl::queue &queue, side *left_
                                transpose *trans, diag *unit_diag, int64_t *m, int64_t *n,         \
                                TYPE *alpha, const TYPE **a, int64_t *lda, TYPE **b, int64_t *ldb, \
                                int64_t group_count, int64_t *group_size,                          \
-                               const std::vector<cl::sycl::event> &dependencies) {     \
+                               const std::vector<cl::sycl::event> &dependencies) {                \
         return trsm_batch(CUBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n, \
                           alpha, a, lda, b, ldb, group_count, group_size, dependencies);          \
     }
@@ -1362,8 +1333,7 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose t
 cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                            int64_t k, double alpha, const double *a, int64_t lda, int64_t stride_a,
                            double beta, double *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "syrk_batch", "for row_major layout");
 }
 
@@ -1371,8 +1341,7 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose t
                            int64_t k, std::complex<float> alpha, const std::complex<float> *a,
                            int64_t lda, int64_t stride_a, std::complex<float> beta,
                            std::complex<float> *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "syrk_batch", "for row_major layout");
 }
 
@@ -1380,8 +1349,7 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose t
                            int64_t k, std::complex<double> alpha, const std::complex<double> *a,
                            int64_t lda, int64_t stride_a, std::complex<double> beta,
                            std::complex<double> *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "syrk_batch", "for row_major layout");
 }
 

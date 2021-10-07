@@ -960,75 +960,81 @@ ONEMKL_EXPORT void rotg(oneapi::mkl::device libkey, cl::sycl::queue &queue,
 
 // USM APIs
 
-ONEMKL_EXPORT cl::sycl::event herk(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    std::int64_t n, std::int64_t k, float alpha, const std::complex<float> *a, std::int64_t lda,
-    float beta, std::complex<float> *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event herk(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    std::int64_t n, std::int64_t k, double alpha, const std::complex<double> *a, std::int64_t lda,
-    double beta, std::complex<double> *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event herk(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, std::int64_t n,
+                                   std::int64_t k, float alpha, const std::complex<float> *a,
+                                   std::int64_t lda, float beta, std::complex<float> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event herk(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, std::int64_t n,
+                                   std::int64_t k, double alpha, const std::complex<double> *a,
+                                   std::int64_t lda, double beta, std::complex<double> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event scal(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float alpha, float *x,
-    std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event scal(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double alpha, double *x,
-    std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event scal(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
-    std::complex<float> *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event scal(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
-    std::complex<double> *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event scal(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float alpha,
-    std::complex<float> *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event scal(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double alpha,
-    std::complex<double> *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, float alpha, float *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, double alpha, double *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, std::complex<float> alpha,
+                                   std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, std::complex<double> alpha,
+                                   std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, float alpha, std::complex<float> *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event scal(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, double alpha, std::complex<double> *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event trmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, const float *a, std::int64_t lda, float *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, const double *a, std::int64_t lda, double *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, const std::complex<float> *a, std::int64_t lda,
-    std::complex<float> *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, const std::complex<double> *a, std::int64_t lda,
-    std::complex<double> *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, const float *a, std::int64_t lda, float *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, const double *a, std::int64_t lda, double *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, const std::complex<float> *a, std::int64_t lda,
+                                   std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, const std::complex<double> *a, std::int64_t lda,
+                                   std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event tpmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, const float *a, float *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event tpmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, const double *a, double *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event tpmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, const std::complex<float> *a, std::complex<float> *x,
-    std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event tpmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, const std::complex<double> *a, std::complex<double> *x,
-    std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, const float *a, float *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, const double *a, double *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, const std::complex<float> *a,
+                                   std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event tpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, const std::complex<double> *a,
+                                   std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
 ONEMKL_EXPORT cl::sycl::event spr(oneapi::mkl::device libkey, cl::sycl::queue &queue,
                                   uplo upper_lower, std::int64_t n, float alpha, const float *x,
@@ -1039,25 +1045,31 @@ ONEMKL_EXPORT cl::sycl::event spr(oneapi::mkl::device libkey, cl::sycl::queue &q
                                   std::int64_t incx, double *a,
                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event gemm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *transa, transpose *transb,
-    std::int64_t *m, std::int64_t *n, std::int64_t *k, float *alpha, const float **a,
-    std::int64_t *lda, const float **b, std::int64_t *ldb, float *beta, float **c,
-    std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *transa, transpose *transb,
-    std::int64_t *m, std::int64_t *n, std::int64_t *k, double *alpha, const double **a,
-    std::int64_t *lda, const double **b, std::int64_t *ldb, double *beta, double **c,
-    std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *transa, transpose *transb,
-    std::int64_t *m, std::int64_t *n, std::int64_t *k, std::complex<float> *alpha,
-    const std::complex<float> **a, std::int64_t *lda, const std::complex<float> **b,
-    std::int64_t *ldb, std::complex<float> *beta, std::complex<float> **c, std::int64_t *ldc,
-    std::int64_t group_count, std::int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         transpose *transa, transpose *transb, std::int64_t *m,
+                                         std::int64_t *n, std::int64_t *k, float *alpha,
+                                         const float **a, std::int64_t *lda, const float **b,
+                                         std::int64_t *ldb, float *beta, float **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         transpose *transa, transpose *transb, std::int64_t *m,
+                                         std::int64_t *n, std::int64_t *k, double *alpha,
+                                         const double **a, std::int64_t *lda, const double **b,
+                                         std::int64_t *ldb, double *beta, double **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         transpose *transa, transpose *transb, std::int64_t *m,
+                                         std::int64_t *n, std::int64_t *k,
+                                         std::complex<float> *alpha, const std::complex<float> **a,
+                                         std::int64_t *lda, const std::complex<float> **b,
+                                         std::int64_t *ldb, std::complex<float> *beta,
+                                         std::complex<float> **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 ONEMKL_EXPORT cl::sycl::event gemm_batch(
     oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *transa, transpose *transb,
     std::int64_t *m, std::int64_t *n, std::int64_t *k, std::complex<double> *alpha,
@@ -1065,24 +1077,29 @@ ONEMKL_EXPORT cl::sycl::event gemm_batch(
     std::int64_t *ldb, std::complex<double> *beta, std::complex<double> **c, std::int64_t *ldc,
     std::int64_t group_count, std::int64_t *group_size,
     const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *transa, transpose *transb,
-    std::int64_t *m, std::int64_t *n, std::int64_t *k, half *alpha, const half **a,
-    std::int64_t *lda, const half **b, std::int64_t *ldb, half *beta, half **c, std::int64_t *ldc,
-    std::int64_t group_count, std::int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
-    std::int64_t m, std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda,
-    std::int64_t stride_a, const float *b, std::int64_t ldb, std::int64_t stride_b, float beta,
-    float *c, std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
-    std::int64_t m, std::int64_t n, std::int64_t k, double alpha, const double *a, std::int64_t lda,
-    std::int64_t stride_a, const double *b, std::int64_t ldb, std::int64_t stride_b, double beta,
-    double *c, std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         transpose *transa, transpose *transb, std::int64_t *m,
+                                         std::int64_t *n, std::int64_t *k, half *alpha,
+                                         const half **a, std::int64_t *lda, const half **b,
+                                         std::int64_t *ldb, half *beta, half **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         transpose transa, transpose transb, std::int64_t m,
+                                         std::int64_t n, std::int64_t k, float alpha,
+                                         const float *a, std::int64_t lda, std::int64_t stride_a,
+                                         const float *b, std::int64_t ldb, std::int64_t stride_b,
+                                         float beta, float *c, std::int64_t ldc,
+                                         std::int64_t stride_c, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         transpose transa, transpose transb, std::int64_t m,
+                                         std::int64_t n, std::int64_t k, double alpha,
+                                         const double *a, std::int64_t lda, std::int64_t stride_a,
+                                         const double *b, std::int64_t ldb, std::int64_t stride_b,
+                                         double beta, double *c, std::int64_t ldc,
+                                         std::int64_t stride_c, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 ONEMKL_EXPORT cl::sycl::event gemm_batch(
     oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
     std::int64_t m, std::int64_t n, std::int64_t k, std::complex<float> alpha,
@@ -1097,101 +1114,129 @@ ONEMKL_EXPORT cl::sycl::event gemm_batch(
     const std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
     std::complex<double> beta, std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
     std::int64_t batch_size, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
-    std::int64_t m, std::int64_t n, std::int64_t k, half alpha, const half *a, std::int64_t lda,
-    std::int64_t stride_a, const half *b, std::int64_t ldb, std::int64_t stride_b, half beta,
-    half *c, std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         transpose transa, transpose transb, std::int64_t m,
+                                         std::int64_t n, std::int64_t k, half alpha, const half *a,
+                                         std::int64_t lda, std::int64_t stride_a, const half *b,
+                                         std::int64_t ldb, std::int64_t stride_b, half beta,
+                                         half *c, std::int64_t ldc, std::int64_t stride_c,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event syrk(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda, float beta,
-    float *c, std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event syrk(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    std::int64_t n, std::int64_t k, double alpha, const double *a, std::int64_t lda, double beta,
-    double *c, std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event syrk(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    std::int64_t n, std::int64_t k, std::complex<float> alpha, const std::complex<float> *a,
-    std::int64_t lda, std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event syrk(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    std::int64_t n, std::int64_t k, std::complex<double> alpha, const std::complex<double> *a,
-    std::int64_t lda, std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, std::int64_t n,
+                                   std::int64_t k, float alpha, const float *a, std::int64_t lda,
+                                   float beta, float *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, std::int64_t n,
+                                   std::int64_t k, double alpha, const double *a, std::int64_t lda,
+                                   double beta, double *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, std::int64_t n,
+                                   std::int64_t k, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   std::complex<float> beta, std::complex<float> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syrk(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, std::int64_t n,
+                                   std::int64_t k, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   std::complex<double> beta, std::complex<double> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event syrk_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo *upper_lower, transpose *trans,
-    std::int64_t *n, std::int64_t *k, float *alpha, const float **a, std::int64_t *lda, float *beta,
-    float **c, std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event syrk_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo *upper_lower, transpose *trans,
-    std::int64_t *n, std::int64_t *k, double *alpha, const double **a, std::int64_t *lda,
-    double *beta, double **c, std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event syrk_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo *upper_lower, transpose *trans,
-    std::int64_t *n, std::int64_t *k, std::complex<float> *alpha, const std::complex<float> **a,
-    std::int64_t *lda, std::complex<float> *beta, std::complex<float> **c, std::int64_t *ldc,
-    std::int64_t group_count, std::int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event syrk_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo *upper_lower, transpose *trans,
-    std::int64_t *n, std::int64_t *k, std::complex<double> *alpha, const std::complex<double> **a,
-    std::int64_t *lda, std::complex<double> *beta, std::complex<double> **c, std::int64_t *ldc,
-    std::int64_t group_count, std::int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         uplo *upper_lower, transpose *trans, std::int64_t *n,
+                                         std::int64_t *k, float *alpha, const float **a,
+                                         std::int64_t *lda, float *beta, float **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         uplo *upper_lower, transpose *trans, std::int64_t *n,
+                                         std::int64_t *k, double *alpha, const double **a,
+                                         std::int64_t *lda, double *beta, double **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         uplo *upper_lower, transpose *trans, std::int64_t *n,
+                                         std::int64_t *k, std::complex<float> *alpha,
+                                         const std::complex<float> **a, std::int64_t *lda,
+                                         std::complex<float> *beta, std::complex<float> **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         uplo *upper_lower, transpose *trans, std::int64_t *n,
+                                         std::int64_t *k, std::complex<double> *alpha,
+                                         const std::complex<double> **a, std::int64_t *lda,
+                                         std::complex<double> *beta, std::complex<double> **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event syrk_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda,
-    std::int64_t stride_a, float beta, float *c, std::int64_t ldc, std::int64_t stride_c,
-    std::int64_t batch_size, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event syrk_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    std::int64_t n, std::int64_t k, double alpha, const double *a, std::int64_t lda,
-    std::int64_t stride_a, double beta, double *c, std::int64_t ldc, std::int64_t stride_c,
-    std::int64_t batch_size, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event syrk_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    std::int64_t n, std::int64_t k, std::complex<float> alpha, const std::complex<float> *a,
-    std::int64_t lda, std::int64_t stride_a, std::complex<float> beta, std::complex<float> *c,
-    std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event syrk_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    std::int64_t n, std::int64_t k, std::complex<double> alpha, const std::complex<double> *a,
-    std::int64_t lda, std::int64_t stride_a, std::complex<double> beta, std::complex<double> *c,
-    std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         uplo upper_lower, transpose trans, std::int64_t n,
+                                         std::int64_t k, float alpha, const float *a,
+                                         std::int64_t lda, std::int64_t stride_a, float beta,
+                                         float *c, std::int64_t ldc, std::int64_t stride_c,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         uplo upper_lower, transpose trans, std::int64_t n,
+                                         std::int64_t k, double alpha, const double *a,
+                                         std::int64_t lda, std::int64_t stride_a, double beta,
+                                         double *c, std::int64_t ldc, std::int64_t stride_c,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         uplo upper_lower, transpose trans, std::int64_t n,
+                                         std::int64_t k, std::complex<float> alpha,
+                                         const std::complex<float> *a, std::int64_t lda,
+                                         std::int64_t stride_a, std::complex<float> beta,
+                                         std::complex<float> *c, std::int64_t ldc,
+                                         std::int64_t stride_c, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syrk_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         uplo upper_lower, transpose trans, std::int64_t n,
+                                         std::int64_t k, std::complex<double> alpha,
+                                         const std::complex<double> *a, std::int64_t lda,
+                                         std::int64_t stride_a, std::complex<double> beta,
+                                         std::complex<double> *c, std::int64_t ldc,
+                                         std::int64_t stride_c, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event her2(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
-    const std::complex<float> *y, std::int64_t incy, std::complex<float> *a, std::int64_t lda,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event her2(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
-    const std::complex<double> *y, std::int64_t incy, std::complex<double> *a, std::int64_t lda,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event her2(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   const std::complex<float> *y, std::int64_t incy,
+                                   std::complex<float> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event her2(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   const std::complex<double> *y, std::int64_t incy,
+                                   std::complex<double> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event hbmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    std::int64_t k, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
-    std::complex<float> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event hbmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    std::int64_t k, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
-    std::complex<double> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event hbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, std::int64_t k,
+                                   std::complex<float> alpha, const std::complex<float> *a,
+                                   std::int64_t lda, const std::complex<float> *x,
+                                   std::int64_t incx, std::complex<float> beta,
+                                   std::complex<float> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event hbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, std::int64_t k,
+                                   std::complex<double> alpha, const std::complex<double> *a,
+                                   std::int64_t lda, const std::complex<double> *x,
+                                   std::int64_t incx, std::complex<double> beta,
+                                   std::complex<double> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
 ONEMKL_EXPORT cl::sycl::event rot(oneapi::mkl::device libkey, cl::sycl::queue &queue,
                                   std::int64_t n, std::complex<float> *x, std::int64_t incx,
@@ -1210,149 +1255,179 @@ ONEMKL_EXPORT cl::sycl::event rot(oneapi::mkl::device libkey, cl::sycl::queue &q
                                   std::int64_t incy, double c, double s,
                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event axpy(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float alpha, const float *x,
-    std::int64_t incx, float *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event axpy(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double alpha,
-    const double *x, std::int64_t incx, double *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event axpy(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
-    const std::complex<float> *x, std::int64_t incx, std::complex<float> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event axpy(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *x, std::int64_t incx, std::complex<double> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, float alpha, const float *x, std::int64_t incx,
+                                   float *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, double alpha, const double *x, std::int64_t incx,
+                                   double *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   std::complex<float> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event axpy(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   std::complex<double> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event axpy_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n, float *alpha,
-    const float **x, std::int64_t *incx, float **y, std::int64_t *incy, std::int64_t group_count,
-    std::int64_t *group_size, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event axpy_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n, double *alpha,
-    const double **x, std::int64_t *incx, double **y, std::int64_t *incy, std::int64_t group_count,
-    std::int64_t *group_size, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event axpy_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n, std::complex<float> *alpha,
-    const std::complex<float> **x, std::int64_t *incx, std::complex<float> **y, std::int64_t *incy,
-    std::int64_t group_count, std::int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event axpy_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
-    std::complex<double> *alpha, const std::complex<double> **x, std::int64_t *incx,
-    std::complex<double> **y, std::int64_t *incy, std::int64_t group_count,
-    std::int64_t *group_size, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event axpy_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float alpha, const float *x,
-    std::int64_t incx, std::int64_t stridex, float *y, std::int64_t incy, std::int64_t stridey,
-    std::int64_t batch_size, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event axpy_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double alpha,
-    const double *x, std::int64_t incx, std::int64_t stridex, double *y, std::int64_t incy,
-    std::int64_t stridey, std::int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event axpy_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
-    const std::complex<float> *x, std::int64_t incx, std::int64_t stridex, std::complex<float> *y,
-    std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event axpy_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *x, std::int64_t incx, std::int64_t stridex, std::complex<double> *y,
-    std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         std::int64_t *n, float *alpha, const float **x,
+                                         std::int64_t *incx, float **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         std::int64_t *n, double *alpha, const double **x,
+                                         std::int64_t *incx, double **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         std::int64_t *n, std::complex<float> *alpha,
+                                         const std::complex<float> **x, std::int64_t *incx,
+                                         std::complex<float> **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         std::int64_t *n, std::complex<double> *alpha,
+                                         const std::complex<double> **x, std::int64_t *incx,
+                                         std::complex<double> **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         std::int64_t n, float alpha, const float *x,
+                                         std::int64_t incx, std::int64_t stridex, float *y,
+                                         std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         std::int64_t n, double alpha, const double *x,
+                                         std::int64_t incx, std::int64_t stridex, double *y,
+                                         std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         std::int64_t n, std::complex<float> alpha,
+                                         const std::complex<float> *x, std::int64_t incx,
+                                         std::int64_t stridex, std::complex<float> *y,
+                                         std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event axpy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         std::int64_t n, std::complex<double> alpha,
+                                         const std::complex<double> *x, std::int64_t incx,
+                                         std::int64_t stridex, std::complex<double> *y,
+                                         std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event axpby(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float alpha, const float *x,
-    std::int64_t incx, const float beta, float *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event axpby(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double alpha,
-    const double *x, std::int64_t incx, const double beta, double *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event axpby(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
-    const std::complex<float> *x, std::int64_t incx, const std::complex<float> beta,
-    std::complex<float> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event axpby(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *x, std::int64_t incx, const std::complex<double> beta,
-    std::complex<double> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    std::int64_t n, float alpha, const float *x, std::int64_t incx,
+                                    const float beta, float *y, std::int64_t incy,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    std::int64_t n, double alpha, const double *x,
+                                    std::int64_t incx, const double beta, double *y,
+                                    std::int64_t incy,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    std::int64_t n, std::complex<float> alpha,
+                                    const std::complex<float> *x, std::int64_t incx,
+                                    const std::complex<float> beta, std::complex<float> *y,
+                                    std::int64_t incy,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event axpby(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    std::int64_t n, std::complex<double> alpha,
+                                    const std::complex<double> *x, std::int64_t incx,
+                                    const std::complex<double> beta, std::complex<double> *y,
+                                    std::int64_t incy,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event gerc(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
-    std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
-    const std::complex<float> *y, std::int64_t incy, std::complex<float> *a, std::int64_t lda,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gerc(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
-    std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
-    const std::complex<double> *y, std::int64_t incy, std::complex<double> *a, std::int64_t lda,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gerc(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   const std::complex<float> *y, std::int64_t incy,
+                                   std::complex<float> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gerc(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   const std::complex<double> *y, std::int64_t incy,
+                                   std::complex<double> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event syr2k(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda, const float *b,
-    std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event syr2k(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    std::int64_t n, std::int64_t k, double alpha, const double *a, std::int64_t lda,
-    const double *b, std::int64_t ldb, double beta, double *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event syr2k(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    std::int64_t n, std::int64_t k, std::complex<float> alpha, const std::complex<float> *a,
-    std::int64_t lda, const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-    std::complex<float> *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event syr2k(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    std::int64_t n, std::int64_t k, std::complex<double> alpha, const std::complex<double> *a,
-    std::int64_t lda, const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
-    std::complex<double> *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syr2k(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    uplo upper_lower, transpose trans, std::int64_t n,
+                                    std::int64_t k, float alpha, const float *a, std::int64_t lda,
+                                    const float *b, std::int64_t ldb, float beta, float *c,
+                                    std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syr2k(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    uplo upper_lower, transpose trans, std::int64_t n,
+                                    std::int64_t k, double alpha, const double *a, std::int64_t lda,
+                                    const double *b, std::int64_t ldb, double beta, double *c,
+                                    std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syr2k(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    uplo upper_lower, transpose trans, std::int64_t n,
+                                    std::int64_t k, std::complex<float> alpha,
+                                    const std::complex<float> *a, std::int64_t lda,
+                                    const std::complex<float> *b, std::int64_t ldb,
+                                    std::complex<float> beta, std::complex<float> *c,
+                                    std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syr2k(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    uplo upper_lower, transpose trans, std::int64_t n,
+                                    std::int64_t k, std::complex<double> alpha,
+                                    const std::complex<double> *a, std::int64_t lda,
+                                    const std::complex<double> *b, std::int64_t ldb,
+                                    std::complex<double> beta, std::complex<double> *c,
+                                    std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event gemv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
-    std::int64_t n, float alpha, const float *a, std::int64_t lda, const float *x,
-    std::int64_t incx, float beta, float *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
-    std::int64_t n, double alpha, const double *a, std::int64_t lda, const double *x,
-    std::int64_t incx, double beta, double *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
-    std::int64_t n, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
-    std::complex<float> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
-    std::int64_t n, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
-    std::complex<double> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   transpose trans, std::int64_t m, std::int64_t n, float alpha,
+                                   const float *a, std::int64_t lda, const float *x,
+                                   std::int64_t incx, float beta, float *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   transpose trans, std::int64_t m, std::int64_t n, double alpha,
+                                   const double *a, std::int64_t lda, const double *x,
+                                   std::int64_t incx, double beta, double *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   transpose trans, std::int64_t m, std::int64_t n,
+                                   std::complex<float> alpha, const std::complex<float> *a,
+                                   std::int64_t lda, const std::complex<float> *x,
+                                   std::int64_t incx, std::complex<float> beta,
+                                   std::complex<float> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   transpose trans, std::int64_t m, std::int64_t n,
+                                   std::complex<double> alpha, const std::complex<double> *a,
+                                   std::int64_t lda, const std::complex<double> *x,
+                                   std::int64_t incx, std::complex<double> beta,
+                                   std::complex<double> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event gemv_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
-    std::int64_t n, float alpha, const float *a, std::int64_t lda, std::int64_t stridea,
-    const float *x, std::int64_t incx, std::int64_t stridex, float beta, float *y,
-    std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemv_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
-    std::int64_t n, double alpha, const double *a, std::int64_t lda, std::int64_t stridea,
-    const double *x, std::int64_t incx, std::int64_t stridex, double beta, double *y,
-    std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         transpose trans, std::int64_t m, std::int64_t n,
+                                         float alpha, const float *a, std::int64_t lda,
+                                         std::int64_t stridea, const float *x, std::int64_t incx,
+                                         std::int64_t stridex, float beta, float *y,
+                                         std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         transpose trans, std::int64_t m, std::int64_t n,
+                                         double alpha, const double *a, std::int64_t lda,
+                                         std::int64_t stridea, const double *x, std::int64_t incx,
+                                         std::int64_t stridex, double beta, double *y,
+                                         std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 ONEMKL_EXPORT cl::sycl::event gemv_batch(
     oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
     std::int64_t n, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
@@ -1365,22 +1440,28 @@ ONEMKL_EXPORT cl::sycl::event gemv_batch(
     std::int64_t stridea, const std::complex<double> *x, std::int64_t incx, std::int64_t stridex,
     std::complex<double> beta, std::complex<double> *y, std::int64_t incy, std::int64_t stridey,
     std::int64_t batch_size, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemv_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *trans, std::int64_t *m,
-    std::int64_t *n, float *alpha, const float **a, std::int64_t *lda, const float **x,
-    std::int64_t *incx, float *beta, float **y, std::int64_t *incy, std::int64_t group_count,
-    std::int64_t *group_size, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemv_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *trans, std::int64_t *m,
-    std::int64_t *n, double *alpha, const double **a, std::int64_t *lda, const double **x,
-    std::int64_t *incx, double *beta, double **y, std::int64_t *incy, std::int64_t group_count,
-    std::int64_t *group_size, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemv_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *trans, std::int64_t *m,
-    std::int64_t *n, std::complex<float> *alpha, const std::complex<float> **a, std::int64_t *lda,
-    const std::complex<float> **x, std::int64_t *incx, std::complex<float> *beta,
-    std::complex<float> **y, std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         transpose *trans, std::int64_t *m, std::int64_t *n,
+                                         float *alpha, const float **a, std::int64_t *lda,
+                                         const float **x, std::int64_t *incx, float *beta,
+                                         float **y, std::int64_t *incy, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         transpose *trans, std::int64_t *m, std::int64_t *n,
+                                         double *alpha, const double **a, std::int64_t *lda,
+                                         const double **x, std::int64_t *incx, double *beta,
+                                         double **y, std::int64_t *incy, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemv_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         transpose *trans, std::int64_t *m, std::int64_t *n,
+                                         std::complex<float> *alpha, const std::complex<float> **a,
+                                         std::int64_t *lda, const std::complex<float> **x,
+                                         std::int64_t *incx, std::complex<float> *beta,
+                                         std::complex<float> **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 ONEMKL_EXPORT cl::sycl::event gemv_batch(
     oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose *trans, std::int64_t *m,
     std::int64_t *n, std::complex<double> *alpha, const std::complex<double> **a, std::int64_t *lda,
@@ -1388,50 +1469,62 @@ ONEMKL_EXPORT cl::sycl::event gemv_batch(
     std::complex<double> **y, std::int64_t *incy, std::int64_t group_count,
     std::int64_t *group_size, const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event dgmm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, std::int64_t m,
-    std::int64_t n, const float *a, std::int64_t lda, std::int64_t stridea, const float *x,
-    std::int64_t incx, std::int64_t stridex, float *c, std::int64_t ldc, std::int64_t stridec,
-    std::int64_t batch_size, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event dgmm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, std::int64_t m,
-    std::int64_t n, const double *a, std::int64_t lda, std::int64_t stridea, const double *x,
-    std::int64_t incx, std::int64_t stridex, double *c, std::int64_t ldc, std::int64_t stridec,
-    std::int64_t batch_size, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event dgmm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, std::int64_t m,
-    std::int64_t n, const std::complex<float> *a, std::int64_t lda, std::int64_t stridea,
-    const std::complex<float> *x, std::int64_t incx, std::int64_t stridex, std::complex<float> *c,
-    std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event dgmm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, std::int64_t m,
-    std::int64_t n, const std::complex<double> *a, std::int64_t lda, std::int64_t stridea,
-    const std::complex<double> *x, std::int64_t incx, std::int64_t stridex, std::complex<double> *c,
-    std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event dgmm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right, std::int64_t *m,
-    std::int64_t *n, const float **a, std::int64_t *lda, const float **x, std::int64_t *incx,
-    float **c, std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event dgmm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right, std::int64_t *m,
-    std::int64_t *n, const double **a, std::int64_t *lda, const double **x, std::int64_t *incx,
-    double **c, std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event dgmm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right, std::int64_t *m,
-    std::int64_t *n, const std::complex<float> **a, std::int64_t *lda,
-    const std::complex<float> **x, std::int64_t *incx, std::complex<float> **c, std::int64_t *ldc,
-    std::int64_t group_count, std::int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event dgmm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right, std::int64_t *m,
-    std::int64_t *n, const std::complex<double> **a, std::int64_t *lda,
-    const std::complex<double> **x, std::int64_t *incx, std::complex<double> **c, std::int64_t *ldc,
-    std::int64_t group_count, std::int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         side left_right, std::int64_t m, std::int64_t n,
+                                         const float *a, std::int64_t lda, std::int64_t stridea,
+                                         const float *x, std::int64_t incx, std::int64_t stridex,
+                                         float *c, std::int64_t ldc, std::int64_t stridec,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         side left_right, std::int64_t m, std::int64_t n,
+                                         const double *a, std::int64_t lda, std::int64_t stridea,
+                                         const double *x, std::int64_t incx, std::int64_t stridex,
+                                         double *c, std::int64_t ldc, std::int64_t stridec,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         side left_right, std::int64_t m, std::int64_t n,
+                                         const std::complex<float> *a, std::int64_t lda,
+                                         std::int64_t stridea, const std::complex<float> *x,
+                                         std::int64_t incx, std::int64_t stridex,
+                                         std::complex<float> *c, std::int64_t ldc,
+                                         std::int64_t stridec, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         side left_right, std::int64_t m, std::int64_t n,
+                                         const std::complex<double> *a, std::int64_t lda,
+                                         std::int64_t stridea, const std::complex<double> *x,
+                                         std::int64_t incx, std::int64_t stridex,
+                                         std::complex<double> *c, std::int64_t ldc,
+                                         std::int64_t stridec, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         side *left_right, std::int64_t *m, std::int64_t *n,
+                                         const float **a, std::int64_t *lda, const float **x,
+                                         std::int64_t *incx, float **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         side *left_right, std::int64_t *m, std::int64_t *n,
+                                         const double **a, std::int64_t *lda, const double **x,
+                                         std::int64_t *incx, double **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         side *left_right, std::int64_t *m, std::int64_t *n,
+                                         const std::complex<float> **a, std::int64_t *lda,
+                                         const std::complex<float> **x, std::int64_t *incx,
+                                         std::complex<float> **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event dgmm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         side *left_right, std::int64_t *m, std::int64_t *n,
+                                         const std::complex<double> **a, std::int64_t *lda,
+                                         const std::complex<double> **x, std::int64_t *incx,
+                                         std::complex<double> **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
 ONEMKL_EXPORT cl::sycl::event her(oneapi::mkl::device libkey, cl::sycl::queue &queue,
                                   uplo upper_lower, std::int64_t n, float alpha,
@@ -1455,188 +1548,216 @@ ONEMKL_EXPORT cl::sycl::event hpr(oneapi::mkl::device libkey, cl::sycl::queue &q
                                   std::complex<double> *a,
                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event iamin(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, const float *x,
-    std::int64_t incx, std::int64_t *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event iamin(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, const double *x,
-    std::int64_t incx, std::int64_t *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event iamin(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
-    const std::complex<float> *x, std::int64_t incx, std::int64_t *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event iamin(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
-    const std::complex<double> *x, std::int64_t incx, std::int64_t *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event iamin(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    std::int64_t n, const float *x, std::int64_t incx,
+                                    std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event iamin(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    std::int64_t n, const double *x, std::int64_t incx,
+                                    std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event iamin(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+                                    std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event iamin(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    std::int64_t n, const std::complex<double> *x,
+                                    std::int64_t incx, std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event hpmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    std::complex<float> alpha, const std::complex<float> *a, const std::complex<float> *x,
-    std::int64_t incx, std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event hpmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    std::complex<double> alpha, const std::complex<double> *a, const std::complex<double> *x,
-    std::int64_t incx, std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event hpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *a, const std::complex<float> *x,
+                                   std::int64_t incx, std::complex<float> beta,
+                                   std::complex<float> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event hpmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *a, const std::complex<double> *x,
+                                   std::int64_t incx, std::complex<double> beta,
+                                   std::complex<double> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event spmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    float alpha, const float *a, const float *x, std::int64_t incx, float beta, float *y,
-    std::int64_t incy, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event spmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    double alpha, const double *a, const double *x, std::int64_t incx, double beta, double *y,
-    std::int64_t incy, const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event spmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, float alpha, const float *a,
+                                   const float *x, std::int64_t incx, float beta, float *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event spmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, double alpha, const double *a,
+                                   const double *x, std::int64_t incx, double beta, double *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event rotmg(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, float *d1, float *d2, float *x1, float y1,
-    float *param, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event rotmg(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, double *d1, double *d2, double *x1,
-    double y1, double *param, const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event rotmg(oneapi::mkl::device libkey, cl::sycl::queue &queue, float *d1,
+                                    float *d2, float *x1, float y1, float *param,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event rotmg(oneapi::mkl::device libkey, cl::sycl::queue &queue, double *d1,
+                                    double *d2, double *x1, double y1, double *param,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event swap(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx,
-    float *y, std::int64_t incy, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event swap(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double *x,
-    std::int64_t incx, double *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event swap(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, std::complex<float> *x,
-    std::int64_t incx, std::complex<float> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event swap(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, std::complex<double> *x,
-    std::int64_t incx, std::complex<double> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event swap(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, float *x, std::int64_t incx, float *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event swap(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, double *x, std::int64_t incx, double *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event swap(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, std::complex<float> *x, std::int64_t incx,
+                                   std::complex<float> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event swap(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, std::complex<double> *x, std::int64_t incx,
+                                   std::complex<double> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event geru(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
-    std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
-    const std::complex<float> *y, std::int64_t incy, std::complex<float> *a, std::int64_t lda,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event geru(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
-    std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
-    const std::complex<double> *y, std::int64_t incy, std::complex<double> *a, std::int64_t lda,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event geru(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   const std::complex<float> *y, std::int64_t incy,
+                                   std::complex<float> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event geru(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   const std::complex<double> *y, std::int64_t incy,
+                                   std::complex<double> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event nrm2(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
-    const std::complex<float> *x, std::int64_t incx, float *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event nrm2(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
-    const std::complex<double> *x, std::int64_t incx, double *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event nrm2(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, const float *x,
-    std::int64_t incx, float *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event nrm2(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, const double *x,
-    std::int64_t incx, double *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event nrm2(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+                                   float *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event nrm2(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+                                   double *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event nrm2(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, const float *x, std::int64_t incx, float *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event nrm2(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, const double *x, std::int64_t incx,
+                                   double *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event gemmt(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose transa,
-    transpose transb, std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda,
-    const float *b, std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemmt(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose transa,
-    transpose transb, std::int64_t n, std::int64_t k, double alpha, const double *a,
-    std::int64_t lda, const double *b, std::int64_t ldb, double beta, double *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemmt(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose transa,
-    transpose transb, std::int64_t n, std::int64_t k, std::complex<float> alpha,
-    const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b, std::int64_t ldb,
-    std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemmt(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose transa,
-    transpose transb, std::int64_t n, std::int64_t k, std::complex<double> alpha,
-    const std::complex<double> *a, std::int64_t lda, const std::complex<double> *b,
-    std::int64_t ldb, std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    uplo upper_lower, transpose transa, transpose transb,
+                                    std::int64_t n, std::int64_t k, float alpha, const float *a,
+                                    std::int64_t lda, const float *b, std::int64_t ldb, float beta,
+                                    float *c, std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    uplo upper_lower, transpose transa, transpose transb,
+                                    std::int64_t n, std::int64_t k, double alpha, const double *a,
+                                    std::int64_t lda, const double *b, std::int64_t ldb,
+                                    double beta, double *c, std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    uplo upper_lower, transpose transa, transpose transb,
+                                    std::int64_t n, std::int64_t k, std::complex<float> alpha,
+                                    const std::complex<float> *a, std::int64_t lda,
+                                    const std::complex<float> *b, std::int64_t ldb,
+                                    std::complex<float> beta, std::complex<float> *c,
+                                    std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemmt(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    uplo upper_lower, transpose transa, transpose transb,
+                                    std::int64_t n, std::int64_t k, std::complex<double> alpha,
+                                    const std::complex<double> *a, std::int64_t lda,
+                                    const std::complex<double> *b, std::int64_t ldb,
+                                    std::complex<double> beta, std::complex<double> *c,
+                                    std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event gemm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
-    std::int64_t m, std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda,
-    const float *b, std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
-    std::int64_t m, std::int64_t n, std::int64_t k, double alpha, const double *a, std::int64_t lda,
-    const double *b, std::int64_t ldb, double beta, double *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
-    std::int64_t m, std::int64_t n, std::int64_t k, std::complex<float> alpha,
-    const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b, std::int64_t ldb,
-    std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
-    std::int64_t m, std::int64_t n, std::int64_t k, std::complex<double> alpha,
-    const std::complex<double> *a, std::int64_t lda, const std::complex<double> *b,
-    std::int64_t ldb, std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
-    std::int64_t m, std::int64_t n, std::int64_t k, half alpha, const half *a, std::int64_t lda,
-    const half *b, std::int64_t ldb, half beta, half *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
-    std::int64_t m, std::int64_t n, std::int64_t k, float alpha, const half *a, std::int64_t lda,
-    const half *b, std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
-    std::int64_t m, std::int64_t n, std::int64_t k, float alpha, const bfloat16 *a,
-    std::int64_t lda, const bfloat16 *b, std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   transpose transa, transpose transb, std::int64_t m,
+                                   std::int64_t n, std::int64_t k, float alpha, const float *a,
+                                   std::int64_t lda, const float *b, std::int64_t ldb, float beta,
+                                   float *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   transpose transa, transpose transb, std::int64_t m,
+                                   std::int64_t n, std::int64_t k, double alpha, const double *a,
+                                   std::int64_t lda, const double *b, std::int64_t ldb, double beta,
+                                   double *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   transpose transa, transpose transb, std::int64_t m,
+                                   std::int64_t n, std::int64_t k, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   const std::complex<float> *b, std::int64_t ldb,
+                                   std::complex<float> beta, std::complex<float> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   transpose transa, transpose transb, std::int64_t m,
+                                   std::int64_t n, std::int64_t k, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   const std::complex<double> *b, std::int64_t ldb,
+                                   std::complex<double> beta, std::complex<double> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   transpose transa, transpose transb, std::int64_t m,
+                                   std::int64_t n, std::int64_t k, half alpha, const half *a,
+                                   std::int64_t lda, const half *b, std::int64_t ldb, half beta,
+                                   half *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   transpose transa, transpose transb, std::int64_t m,
+                                   std::int64_t n, std::int64_t k, float alpha, const half *a,
+                                   std::int64_t lda, const half *b, std::int64_t ldb, float beta,
+                                   float *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   transpose transa, transpose transb, std::int64_t m,
+                                   std::int64_t n, std::int64_t k, float alpha, const bfloat16 *a,
+                                   std::int64_t lda, const bfloat16 *b, std::int64_t ldb,
+                                   float beta, float *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event gemm_bias(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
-    offset offsetc, int64_t m, int64_t n, int64_t k, float alpha, const std::int8_t *a, int64_t lda,
-    std::int8_t ao, const std::uint8_t *b, int64_t ldb, std::uint8_t bo, float beta,
-    std::int32_t *c, int64_t ldc, const std::int32_t *co,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                        transpose transa, transpose transb, offset offsetc,
+                                        int64_t m, int64_t n, int64_t k, float alpha,
+                                        const std::int8_t *a, int64_t lda, std::int8_t ao,
+                                        const std::uint8_t *b, int64_t ldb, std::uint8_t bo,
+                                        float beta, std::int32_t *c, int64_t ldc,
+                                        const std::int32_t *co,
+                                        const std::vector<cl::sycl::event> &dependencies = {});
 ONEMKL_EXPORT cl::sycl::event gemm_bias(
     oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
     offset offsetc, int64_t m, int64_t n, int64_t k, float alpha, const std::int8_t *a, int64_t lda,
     std::int8_t ao, const std::int8_t *b, int64_t ldb, std::int8_t bo, float beta, std::int32_t *c,
-    int64_t ldc, const std::int32_t *co,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemm_bias(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
-    offset offsetc, int64_t m, int64_t n, int64_t k, float alpha, const std::uint8_t *a,
-    int64_t lda, std::uint8_t ao, const std::int8_t *b, int64_t ldb, std::int8_t bo, float beta,
-    std::int32_t *c, int64_t ldc, const std::int32_t *co,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gemm_bias(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose transa, transpose transb,
-    offset offsetc, int64_t m, int64_t n, int64_t k, float alpha, const std::uint8_t *a,
-    int64_t lda, std::uint8_t ao, const std::uint8_t *b, int64_t ldb, std::uint8_t bo, float beta,
-    std::int32_t *c, int64_t ldc, const std::int32_t *co,
-    const std::vector<cl::sycl::event> &dependencies = {});
+    int64_t ldc, const std::int32_t *co, const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                        transpose transa, transpose transb, offset offsetc,
+                                        int64_t m, int64_t n, int64_t k, float alpha,
+                                        const std::uint8_t *a, int64_t lda, std::uint8_t ao,
+                                        const std::int8_t *b, int64_t ldb, std::int8_t bo,
+                                        float beta, std::int32_t *c, int64_t ldc,
+                                        const std::int32_t *co,
+                                        const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gemm_bias(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                        transpose transa, transpose transb, offset offsetc,
+                                        int64_t m, int64_t n, int64_t k, float alpha,
+                                        const std::uint8_t *a, int64_t lda, std::uint8_t ao,
+                                        const std::uint8_t *b, int64_t ldb, std::uint8_t bo,
+                                        float beta, std::int32_t *c, int64_t ldc,
+                                        const std::int32_t *co,
+                                        const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event syr2(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    float alpha, const float *x, std::int64_t incx, const float *y, std::int64_t incy, float *a,
-    std::int64_t lda, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event syr2(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    double alpha, const double *x, std::int64_t incx, const double *y, std::int64_t incy, double *a,
-    std::int64_t lda, const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syr2(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, float alpha, const float *x,
+                                   std::int64_t incx, const float *y, std::int64_t incy, float *a,
+                                   std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event syr2(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, double alpha, const double *x,
+                                   std::int64_t incx, const double *y, std::int64_t incy, double *a,
+                                   std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
 ONEMKL_EXPORT cl::sycl::event ger(oneapi::mkl::device libkey, cl::sycl::queue &queue,
                                   std::int64_t m, std::int64_t n, float alpha, const float *x,
@@ -1649,182 +1770,213 @@ ONEMKL_EXPORT cl::sycl::event ger(oneapi::mkl::device libkey, cl::sycl::queue &q
                                   std::int64_t lda,
                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event trsm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    transpose trans, diag unit_diag, std::int64_t m, std::int64_t n, float alpha, const float *a,
-    std::int64_t lda, float *b, std::int64_t ldb,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trsm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    transpose trans, diag unit_diag, std::int64_t m, std::int64_t n, double alpha, const double *a,
-    std::int64_t lda, double *b, std::int64_t ldb,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trsm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    transpose trans, diag unit_diag, std::int64_t m, std::int64_t n, std::complex<float> alpha,
-    const std::complex<float> *a, std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trsm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    transpose trans, diag unit_diag, std::int64_t m, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *a, std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trsm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   side left_right, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t m, std::int64_t n, float alpha,
+                                   const float *a, std::int64_t lda, float *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trsm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   side left_right, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t m, std::int64_t n, double alpha,
+                                   const double *a, std::int64_t lda, double *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trsm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   side left_right, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t m, std::int64_t n,
+                                   std::complex<float> alpha, const std::complex<float> *a,
+                                   std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trsm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   side left_right, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t m, std::int64_t n,
+                                   std::complex<double> alpha, const std::complex<double> *a,
+                                   std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event trsm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    transpose trans, diag unit_diag, int64_t m, int64_t n, float alpha, const float *a, int64_t lda,
-    int64_t stride_a, float *b, int64_t ldb, int64_t stride_b, int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trsm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    transpose trans, diag unit_diag, int64_t m, int64_t n, double alpha, const double *a,
-    int64_t lda, int64_t stride_a, double *b, int64_t ldb, int64_t stride_b, int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trsm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    transpose trans, diag unit_diag, int64_t m, int64_t n, std::complex<float> alpha,
-    const std::complex<float> *a, int64_t lda, int64_t stride_a, std::complex<float> *b,
-    int64_t ldb, int64_t stride_b, int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trsm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    transpose trans, diag unit_diag, int64_t m, int64_t n, std::complex<double> alpha,
-    const std::complex<double> *a, int64_t lda, int64_t stride_a, std::complex<double> *b,
-    int64_t ldb, int64_t stride_b, int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trsm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right, uplo *upper_lower,
-    transpose *trans, diag *unit_diag, int64_t *m, int64_t *n, float *alpha, const float **a,
-    int64_t *lda, float **b, int64_t *ldb, int64_t group_count, int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trsm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right, uplo *upper_lower,
-    transpose *trans, diag *unit_diag, int64_t *m, int64_t *n, double *alpha, const double **a,
-    int64_t *lda, double **b, int64_t *ldb, int64_t group_count, int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trsm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right, uplo *upper_lower,
-    transpose *trans, diag *unit_diag, int64_t *m, int64_t *n, std::complex<float> *alpha,
-    const std::complex<float> **a, int64_t *lda, std::complex<float> **b, int64_t *ldb,
-    int64_t group_count, int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trsm_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side *left_right, uplo *upper_lower,
-    transpose *trans, diag *unit_diag, int64_t *m, int64_t *n, std::complex<double> *alpha,
-    const std::complex<double> **a, int64_t *lda, std::complex<double> **b, int64_t *ldb,
-    int64_t group_count, int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         side left_right, uplo upper_lower, transpose trans,
+                                         diag unit_diag, int64_t m, int64_t n, float alpha,
+                                         const float *a, int64_t lda, int64_t stride_a, float *b,
+                                         int64_t ldb, int64_t stride_b, int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         side left_right, uplo upper_lower, transpose trans,
+                                         diag unit_diag, int64_t m, int64_t n, double alpha,
+                                         const double *a, int64_t lda, int64_t stride_a, double *b,
+                                         int64_t ldb, int64_t stride_b, int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         side left_right, uplo upper_lower, transpose trans,
+                                         diag unit_diag, int64_t m, int64_t n,
+                                         std::complex<float> alpha, const std::complex<float> *a,
+                                         int64_t lda, int64_t stride_a, std::complex<float> *b,
+                                         int64_t ldb, int64_t stride_b, int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         side left_right, uplo upper_lower, transpose trans,
+                                         diag unit_diag, int64_t m, int64_t n,
+                                         std::complex<double> alpha, const std::complex<double> *a,
+                                         int64_t lda, int64_t stride_a, std::complex<double> *b,
+                                         int64_t ldb, int64_t stride_b, int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         side *left_right, uplo *upper_lower, transpose *trans,
+                                         diag *unit_diag, int64_t *m, int64_t *n, float *alpha,
+                                         const float **a, int64_t *lda, float **b, int64_t *ldb,
+                                         int64_t group_count, int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         side *left_right, uplo *upper_lower, transpose *trans,
+                                         diag *unit_diag, int64_t *m, int64_t *n, double *alpha,
+                                         const double **a, int64_t *lda, double **b, int64_t *ldb,
+                                         int64_t group_count, int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         side *left_right, uplo *upper_lower, transpose *trans,
+                                         diag *unit_diag, int64_t *m, int64_t *n,
+                                         std::complex<float> *alpha, const std::complex<float> **a,
+                                         int64_t *lda, std::complex<float> **b, int64_t *ldb,
+                                         int64_t group_count, int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trsm_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         side *left_right, uplo *upper_lower, transpose *trans,
+                                         diag *unit_diag, int64_t *m, int64_t *n,
+                                         std::complex<double> *alpha,
+                                         const std::complex<double> **a, int64_t *lda,
+                                         std::complex<double> **b, int64_t *ldb,
+                                         int64_t group_count, int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event dotu(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
-    const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
-    std::int64_t incy, std::complex<float> *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event dotu(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
-    const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
-    std::int64_t incy, std::complex<double> *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event dotu(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+                                   const std::complex<float> *y, std::int64_t incy,
+                                   std::complex<float> *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event dotu(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+                                   const std::complex<double> *y, std::int64_t incy,
+                                   std::complex<double> *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event hemm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    std::int64_t m, std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
-    std::int64_t lda, const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-    std::complex<float> *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event hemm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    std::int64_t m, std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
-    std::int64_t lda, const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
-    std::complex<double> *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event hemm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   side left_right, uplo upper_lower, std::int64_t m,
+                                   std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   const std::complex<float> *b, std::int64_t ldb,
+                                   std::complex<float> beta, std::complex<float> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event hemm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   side left_right, uplo upper_lower, std::int64_t m,
+                                   std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   const std::complex<double> *b, std::int64_t ldb,
+                                   std::complex<double> beta, std::complex<double> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event hpr2(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
-    const std::complex<float> *y, std::int64_t incy, std::complex<float> *a,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event hpr2(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
-    const std::complex<double> *y, std::int64_t incy, std::complex<double> *a,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event hpr2(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   const std::complex<float> *y, std::int64_t incy,
+                                   std::complex<float> *a,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event hpr2(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   const std::complex<double> *y, std::int64_t incy,
+                                   std::complex<double> *a,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event gbmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
-    std::int64_t n, std::int64_t kl, std::int64_t ku, float alpha, const float *a, std::int64_t lda,
-    const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gbmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
-    std::int64_t n, std::int64_t kl, std::int64_t ku, double alpha, const double *a,
-    std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gbmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
-    std::int64_t n, std::int64_t kl, std::int64_t ku, std::complex<float> alpha,
-    const std::complex<float> *a, std::int64_t lda, const std::complex<float> *x, std::int64_t incx,
-    std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event gbmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, transpose trans, std::int64_t m,
-    std::int64_t n, std::int64_t kl, std::int64_t ku, std::complex<double> alpha,
-    const std::complex<double> *a, std::int64_t lda, const std::complex<double> *x,
-    std::int64_t incx, std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
+                                   std::int64_t ku, float alpha, const float *a, std::int64_t lda,
+                                   const float *x, std::int64_t incx, float beta, float *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
+                                   std::int64_t ku, double alpha, const double *a, std::int64_t lda,
+                                   const double *x, std::int64_t incx, double beta, double *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
+                                   std::int64_t ku, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   std::complex<float> beta, std::complex<float> *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event gbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
+                                   std::int64_t ku, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   std::complex<double> beta, std::complex<double> *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event tbmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, std::int64_t k, const float *a, std::int64_t lda, float *x,
-    std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event tbmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, std::int64_t k, const double *a, std::int64_t lda, double *x,
-    std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event tbmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, std::int64_t k, const std::complex<float> *a, std::int64_t lda,
-    std::complex<float> *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event tbmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, std::int64_t k, const std::complex<double> *a, std::int64_t lda,
-    std::complex<double> *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event tbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, std::int64_t k, const float *a, std::int64_t lda,
+                                   float *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event tbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, std::int64_t k, const double *a,
+                                   std::int64_t lda, double *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event tbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, std::int64_t k, const std::complex<float> *a,
+                                   std::int64_t lda, std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event tbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, std::int64_t k, const std::complex<double> *a,
+                                   std::int64_t lda, std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event symm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda, const float *b,
-    std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event symm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    std::int64_t m, std::int64_t n, double alpha, const double *a, std::int64_t lda,
-    const double *b, std::int64_t ldb, double beta, double *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event symm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    std::int64_t m, std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
-    std::int64_t lda, const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-    std::complex<float> *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event symm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    std::int64_t m, std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
-    std::int64_t lda, const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
-    std::complex<double> *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event symm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   side left_right, uplo upper_lower, std::int64_t m,
+                                   std::int64_t n, float alpha, const float *a, std::int64_t lda,
+                                   const float *b, std::int64_t ldb, float beta, float *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event symm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   side left_right, uplo upper_lower, std::int64_t m,
+                                   std::int64_t n, double alpha, const double *a, std::int64_t lda,
+                                   const double *b, std::int64_t ldb, double beta, double *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event symm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   side left_right, uplo upper_lower, std::int64_t m,
+                                   std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   const std::complex<float> *b, std::int64_t ldb,
+                                   std::complex<float> beta, std::complex<float> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event symm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   side left_right, uplo upper_lower, std::int64_t m,
+                                   std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   const std::complex<double> *b, std::int64_t ldb,
+                                   std::complex<double> beta, std::complex<double> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event dotc(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
-    const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
-    std::int64_t incy, std::complex<float> *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event dotc(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
-    const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
-    std::int64_t incy, std::complex<double> *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event dotc(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+                                   const std::complex<float> *y, std::int64_t incy,
+                                   std::complex<float> *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event dotc(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+                                   const std::complex<double> *y, std::int64_t incy,
+                                   std::complex<double> *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
 ONEMKL_EXPORT cl::sycl::event syr(oneapi::mkl::device libkey, cl::sycl::queue &queue,
                                   uplo upper_lower, std::int64_t n, float alpha, const float *x,
@@ -1835,222 +1987,240 @@ ONEMKL_EXPORT cl::sycl::event syr(oneapi::mkl::device libkey, cl::sycl::queue &q
                                   std::int64_t incx, double *a, std::int64_t lda,
                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event trmm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    transpose trans, diag unit_diag, std::int64_t m, std::int64_t n, float alpha, const float *a,
-    std::int64_t lda, float *b, std::int64_t ldb,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trmm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    transpose trans, diag unit_diag, std::int64_t m, std::int64_t n, double alpha, const double *a,
-    std::int64_t lda, double *b, std::int64_t ldb,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trmm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    transpose trans, diag unit_diag, std::int64_t m, std::int64_t n, std::complex<float> alpha,
-    const std::complex<float> *a, std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trmm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, side left_right, uplo upper_lower,
-    transpose trans, diag unit_diag, std::int64_t m, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *a, std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trmm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   side left_right, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t m, std::int64_t n, float alpha,
+                                   const float *a, std::int64_t lda, float *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trmm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   side left_right, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t m, std::int64_t n, double alpha,
+                                   const double *a, std::int64_t lda, double *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trmm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   side left_right, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t m, std::int64_t n,
+                                   std::complex<float> alpha, const std::complex<float> *a,
+                                   std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trmm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   side left_right, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t m, std::int64_t n,
+                                   std::complex<double> alpha, const std::complex<double> *a,
+                                   std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event symv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    float alpha, const float *a, std::int64_t lda, const float *x, std::int64_t incx, float beta,
-    float *y, std::int64_t incy, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event symv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    double alpha, const double *a, std::int64_t lda, const double *x, std::int64_t incx,
-    double beta, double *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event symv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, float alpha, const float *a,
+                                   std::int64_t lda, const float *x, std::int64_t incx, float beta,
+                                   float *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event symv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, double alpha, const double *a,
+                                   std::int64_t lda, const double *x, std::int64_t incx,
+                                   double beta, double *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event tpsv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, const float *a, float *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event tpsv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, const double *a, double *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event tpsv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, const std::complex<float> *a, std::complex<float> *x,
-    std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event tpsv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, const std::complex<double> *a, std::complex<double> *x,
-    std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, const float *a, float *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, const double *a, double *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, const std::complex<float> *a,
+                                   std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event tpsv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, const std::complex<double> *a,
+                                   std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event trsv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, const float *a, std::int64_t lda, float *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trsv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, const double *a, std::int64_t lda, double *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trsv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, const std::complex<float> *a, std::int64_t lda,
-    std::complex<float> *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event trsv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, const std::complex<double> *a, std::int64_t lda,
-    std::complex<double> *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, const float *a, std::int64_t lda, float *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, const double *a, std::int64_t lda, double *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, const std::complex<float> *a, std::int64_t lda,
+                                   std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event trsv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, const std::complex<double> *a, std::int64_t lda,
+                                   std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event copy(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, const float *x,
-    std::int64_t incx, float *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event copy(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, const double *x,
-    std::int64_t incx, double *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event copy(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
-    const std::complex<float> *x, std::int64_t incx, std::complex<float> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event copy(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
-    const std::complex<double> *x, std::int64_t incx, std::complex<double> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, const float *x, std::int64_t incx, float *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, const double *x, std::int64_t incx, double *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+                                   std::complex<float> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event copy(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+                                   std::complex<double> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event copy_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n, const float **x,
-    std::int64_t *incx, float **y, std::int64_t *incy, int64_t group_count, int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event copy_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n, const double **x,
-    std::int64_t *incx, double **y, std::int64_t *incy, int64_t group_count, int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event copy_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
-    const std::complex<float> **x, std::int64_t *incx, std::complex<float> **y, std::int64_t *incy,
-    int64_t group_count, int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event copy_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t *n,
-    const std::complex<double> **x, std::int64_t *incx, std::complex<double> **y,
-    std::int64_t *incy, int64_t group_count, int64_t *group_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         std::int64_t *n, const float **x, std::int64_t *incx,
+                                         float **y, std::int64_t *incy, int64_t group_count,
+                                         int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         std::int64_t *n, const double **x, std::int64_t *incx,
+                                         double **y, std::int64_t *incy, int64_t group_count,
+                                         int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         std::int64_t *n, const std::complex<float> **x,
+                                         std::int64_t *incx, std::complex<float> **y,
+                                         std::int64_t *incy, int64_t group_count,
+                                         int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         std::int64_t *n, const std::complex<double> **x,
+                                         std::int64_t *incx, std::complex<double> **y,
+                                         std::int64_t *incy, int64_t group_count,
+                                         int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event copy_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, const float *x,
-    std::int64_t incx, std::int64_t stridex, float *y, std::int64_t incy, std::int64_t stridey,
-    std::int64_t batch_size, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event copy_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, const double *x,
-    std::int64_t incx, std::int64_t stridex, double *y, std::int64_t incy, std::int64_t stridey,
-    std::int64_t batch_size, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event copy_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
-    const std::complex<float> *x, std::int64_t incx, std::int64_t stridex, std::complex<float> *y,
-    std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event copy_batch(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
-    const std::complex<double> *x, std::int64_t incx, std::int64_t stridex, std::complex<double> *y,
-    std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         std::int64_t n, const float *x, std::int64_t incx,
+                                         std::int64_t stridex, float *y, std::int64_t incy,
+                                         std::int64_t stridey, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         std::int64_t n, const double *x, std::int64_t incx,
+                                         std::int64_t stridex, double *y, std::int64_t incy,
+                                         std::int64_t stridey, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         std::int64_t n, const std::complex<float> *x,
+                                         std::int64_t incx, std::int64_t stridex,
+                                         std::complex<float> *y, std::int64_t incy,
+                                         std::int64_t stridey, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event copy_batch(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                         std::int64_t n, const std::complex<double> *x,
+                                         std::int64_t incx, std::int64_t stridex,
+                                         std::complex<double> *y, std::int64_t incy,
+                                         std::int64_t stridey, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event hemv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
-    std::complex<float> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event hemv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
-    std::complex<double> *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event hemv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   std::complex<float> beta, std::complex<float> *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event hemv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   std::complex<double> beta, std::complex<double> *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event iamax(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, const float *x,
-    std::int64_t incx, std::int64_t *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event iamax(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, const double *x,
-    std::int64_t incx, std::int64_t *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event iamax(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
-    const std::complex<float> *x, std::int64_t incx, std::int64_t *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event iamax(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
-    const std::complex<double> *x, std::int64_t incx, std::int64_t *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event iamax(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    std::int64_t n, const float *x, std::int64_t incx,
+                                    std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event iamax(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    std::int64_t n, const double *x, std::int64_t incx,
+                                    std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event iamax(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+                                    std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event iamax(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    std::int64_t n, const std::complex<double> *x,
+                                    std::int64_t incx, std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event sbmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    std::int64_t k, float alpha, const float *a, std::int64_t lda, const float *x,
-    std::int64_t incx, float beta, float *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event sbmv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    std::int64_t k, double alpha, const double *a, std::int64_t lda, const double *x,
-    std::int64_t incx, double beta, double *y, std::int64_t incy,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event sbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, std::int64_t k, float alpha,
+                                   const float *a, std::int64_t lda, const float *x,
+                                   std::int64_t incx, float beta, float *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event sbmv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, std::int64_t k, double alpha,
+                                   const double *a, std::int64_t lda, const double *x,
+                                   std::int64_t incx, double beta, double *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event asum(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
-    const std::complex<float> *x, std::int64_t incx, float *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event asum(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n,
-    const std::complex<double> *x, std::int64_t incx, double *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event asum(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, const float *x,
-    std::int64_t incx, float *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event asum(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, const double *x,
-    std::int64_t incx, double *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event asum(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, const std::complex<float> *x, std::int64_t incx,
+                                   float *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event asum(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, const std::complex<double> *x, std::int64_t incx,
+                                   double *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event asum(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, const float *x, std::int64_t incx, float *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event asum(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, const double *x, std::int64_t incx,
+                                   double *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event tbsv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, std::int64_t k, const float *a, std::int64_t lda, float *x,
-    std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event tbsv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, std::int64_t k, const double *a, std::int64_t lda, double *x,
-    std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event tbsv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, std::int64_t k, const std::complex<float> *a, std::int64_t lda,
-    std::complex<float> *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event tbsv(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t n, std::int64_t k, const std::complex<double> *a, std::int64_t lda,
-    std::complex<double> *x, std::int64_t incx,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event tbsv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, std::int64_t k, const float *a, std::int64_t lda,
+                                   float *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event tbsv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, std::int64_t k, const double *a,
+                                   std::int64_t lda, double *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event tbsv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, std::int64_t k, const std::complex<float> *a,
+                                   std::int64_t lda, std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event tbsv(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t n, std::int64_t k, const std::complex<double> *a,
+                                   std::int64_t lda, std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event spr2(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    float alpha, const float *x, std::int64_t incx, const float *y, std::int64_t incy, float *a,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event spr2(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
-    double alpha, const double *x, std::int64_t incx, const double *y, std::int64_t incy, double *a,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event spr2(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, float alpha, const float *x,
+                                   std::int64_t incx, const float *y, std::int64_t incy, float *a,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event spr2(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   uplo upper_lower, std::int64_t n, double alpha, const double *x,
+                                   std::int64_t incx, const double *y, std::int64_t incy, double *a,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event rotm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx,
-    float *y, std::int64_t incy, float *param,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event rotm(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, double *x,
-    std::int64_t incx, double *y, std::int64_t incy, double *param,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event rotm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, float *x, std::int64_t incx, float *y,
+                                   std::int64_t incy, float *param,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event rotm(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::int64_t n, double *x, std::int64_t incx, double *y,
+                                   std::int64_t incy, double *param,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
 ONEMKL_EXPORT cl::sycl::event dot(oneapi::mkl::device libkey, cl::sycl::queue &queue,
                                   std::int64_t n, const float *x, std::int64_t incx, const float *y,
@@ -2065,35 +2235,37 @@ ONEMKL_EXPORT cl::sycl::event dot(oneapi::mkl::device libkey, cl::sycl::queue &q
                                   std::int64_t incy, double *result,
                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event sdsdot(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::int64_t n, float sb, const float *x,
-    std::int64_t incx, const float *y, std::int64_t incy, float *result,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event sdsdot(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                     std::int64_t n, float sb, const float *x, std::int64_t incx,
+                                     const float *y, std::int64_t incy, float *result,
+                                     const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event her2k(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    std::int64_t n, std::int64_t k, std::complex<float> alpha, const std::complex<float> *a,
-    std::int64_t lda, const std::complex<float> *b, std::int64_t ldb, float beta,
-    std::complex<float> *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event her2k(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
-    std::int64_t n, std::int64_t k, std::complex<double> alpha, const std::complex<double> *a,
-    std::int64_t lda, const std::complex<double> *b, std::int64_t ldb, double beta,
-    std::complex<double> *c, std::int64_t ldc,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event her2k(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    uplo upper_lower, transpose trans, std::int64_t n,
+                                    std::int64_t k, std::complex<float> alpha,
+                                    const std::complex<float> *a, std::int64_t lda,
+                                    const std::complex<float> *b, std::int64_t ldb, float beta,
+                                    std::complex<float> *c, std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event her2k(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                    uplo upper_lower, transpose trans, std::int64_t n,
+                                    std::int64_t k, std::complex<double> alpha,
+                                    const std::complex<double> *a, std::int64_t lda,
+                                    const std::complex<double> *b, std::int64_t ldb, double beta,
+                                    std::complex<double> *c, std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT cl::sycl::event rotg(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, float *a, float *b, float *c, float *s,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event rotg(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, double *a, double *b, double *c, double *s,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event rotg(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::complex<float> *a,
-    std::complex<float> *b, float *c, std::complex<float> *s,
-    const std::vector<cl::sycl::event> &dependencies = {});
-ONEMKL_EXPORT cl::sycl::event rotg(
-    oneapi::mkl::device libkey, cl::sycl::queue &queue, std::complex<double> *a,
-    std::complex<double> *b, double *c, std::complex<double> *s,
-    const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event rotg(oneapi::mkl::device libkey, cl::sycl::queue &queue, float *a,
+                                   float *b, float *c, float *s,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event rotg(oneapi::mkl::device libkey, cl::sycl::queue &queue, double *a,
+                                   double *b, double *c, double *s,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event rotg(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::complex<float> *a, std::complex<float> *b, float *c,
+                                   std::complex<float> *s,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
+ONEMKL_EXPORT cl::sycl::event rotg(oneapi::mkl::device libkey, cl::sycl::queue &queue,
+                                   std::complex<double> *a, std::complex<double> *b, double *c,
+                                   std::complex<double> *s,
+                                   const std::vector<cl::sycl::event> &dependencies = {});

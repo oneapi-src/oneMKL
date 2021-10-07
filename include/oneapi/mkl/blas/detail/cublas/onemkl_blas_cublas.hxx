@@ -885,12 +885,10 @@ cl::sycl::event asum(cl::sycl::queue &queue, std::int64_t n, const std::complex<
                      const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event asum(cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx,
-                     float *result,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     float *result, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event asum(cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx,
-                     double *result,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     double *result, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event axpy(cl::sycl::queue &queue, std::int64_t n, float alpha, const float *x,
                      std::int64_t incx, float *y, std::int64_t incy,
@@ -902,13 +900,11 @@ cl::sycl::event axpy(cl::sycl::queue &queue, std::int64_t n, double alpha, const
 
 cl::sycl::event axpy(cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
                      const std::complex<float> *x, std::int64_t incx, std::complex<float> *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event axpy(cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
                      const std::complex<double> *x, std::int64_t incx, std::complex<double> *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n, float *alpha, const float **x,
                            std::int64_t *incx, float **y, std::int64_t *incy,
@@ -1061,12 +1057,10 @@ cl::sycl::event dotu(cl::sycl::queue &queue, std::int64_t n, const std::complex<
                      const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event iamin(cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx,
-                      std::int64_t *result,
-                      const std::vector<cl::sycl::event> &dependencies = {});
+                      std::int64_t *result, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event iamin(cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx,
-                      std::int64_t *result,
-                      const std::vector<cl::sycl::event> &dependencies = {});
+                      std::int64_t *result, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event iamin(cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x,
                       std::int64_t incx, std::int64_t *result,
@@ -1077,12 +1071,10 @@ cl::sycl::event iamin(cl::sycl::queue &queue, std::int64_t n, const std::complex
                       const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event iamax(cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx,
-                      std::int64_t *result,
-                      const std::vector<cl::sycl::event> &dependencies = {});
+                      std::int64_t *result, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event iamax(cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx,
-                      std::int64_t *result,
-                      const std::vector<cl::sycl::event> &dependencies = {});
+                      std::int64_t *result, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event iamax(cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x,
                       std::int64_t incx, std::int64_t *result,
@@ -1101,12 +1093,10 @@ cl::sycl::event nrm2(cl::sycl::queue &queue, std::int64_t n, const std::complex<
                      const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event nrm2(cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx,
-                     float *result,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     float *result, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event nrm2(cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx,
-                     double *result,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     double *result, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event rot(cl::sycl::queue &queue, std::int64_t n, std::complex<float> *x,
                     std::int64_t incx, std::complex<float> *y, std::int64_t incy, float c, float s,
@@ -1147,20 +1137,16 @@ cl::sycl::event rotm(cl::sycl::queue &queue, std::int64_t n, double *x, std::int
                      const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event rotmg(cl::sycl::queue &queue, float *d1, float *d2, float *x1, float y1,
-                      float *param,
-                      const std::vector<cl::sycl::event> &dependencies = {});
+                      float *param, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event rotmg(cl::sycl::queue &queue, double *d1, double *d2, double *x1, double y1,
-                      double *param,
-                      const std::vector<cl::sycl::event> &dependencies = {});
+                      double *param, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n, float alpha, float *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n, double alpha, double *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
                      std::complex<float> *x, std::int64_t incx,
@@ -1171,20 +1157,17 @@ cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n, std::complex<double
                      const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n, float alpha, std::complex<float> *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n, double alpha, std::complex<double> *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event sdsdot(cl::sycl::queue &queue, std::int64_t n, float sb, const float *x,
                        std::int64_t incx, const float *y, std::int64_t incy, float *result,
                        const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event swap(cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event swap(cl::sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx,
                      double *y, std::int64_t incy,
@@ -1201,28 +1184,24 @@ cl::sycl::event swap(cl::sycl::queue &queue, std::int64_t n, std::complex<double
 cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
                      std::int64_t kl, std::int64_t ku, float alpha, const float *a,
                      std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
                      std::int64_t kl, std::int64_t ku, double alpha, const double *a,
                      std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
                      std::int64_t kl, std::int64_t ku, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *x,
                      std::int64_t incx, std::complex<float> beta, std::complex<float> *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
                      std::int64_t kl, std::int64_t ku, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *x,
                      std::int64_t incx, std::complex<double> beta, std::complex<double> *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event gemv(cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
                      float alpha, const float *a, std::int64_t lda, const float *x,
@@ -1358,8 +1337,7 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, std::int64_
 
 cl::sycl::event ger(cl::sycl::queue &queue, std::int64_t m, std::int64_t n, float alpha,
                     const float *x, std::int64_t incx, const float *y, std::int64_t incy, float *a,
-                    std::int64_t lda,
-                    const std::vector<cl::sycl::event> &dependencies = {});
+                    std::int64_t lda, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event ger(cl::sycl::queue &queue, std::int64_t m, std::int64_t n, double alpha,
                     const double *x, std::int64_t incx, const double *y, std::int64_t incy,
@@ -1369,26 +1347,22 @@ cl::sycl::event ger(cl::sycl::queue &queue, std::int64_t m, std::int64_t n, doub
 cl::sycl::event gerc(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                      const std::complex<float> *y, std::int64_t incy, std::complex<float> *a,
-                     std::int64_t lda,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event gerc(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *a,
-                     std::int64_t lda,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event geru(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                      const std::complex<float> *y, std::int64_t incy, std::complex<float> *a,
-                     std::int64_t lda,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event geru(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *a,
-                     std::int64_t lda,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event hbmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
                      std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
@@ -1416,25 +1390,21 @@ cl::sycl::event hemv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
 
 cl::sycl::event her(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
                     const std::complex<float> *x, std::int64_t incx, std::complex<float> *a,
-                    std::int64_t lda,
-                    const std::vector<cl::sycl::event> &dependencies = {});
+                    std::int64_t lda, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event her(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
                     const std::complex<double> *x, std::int64_t incx, std::complex<double> *a,
-                    std::int64_t lda,
-                    const std::vector<cl::sycl::event> &dependencies = {});
+                    std::int64_t lda, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event her2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                      const std::complex<float> *y, std::int64_t incy, std::complex<float> *a,
-                     std::int64_t lda,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event her2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *a,
-                     std::int64_t lda,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event hpmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *a,
@@ -1478,13 +1448,11 @@ cl::sycl::event sbmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, s
 
 cl::sycl::event spmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
                      const float *a, const float *x, std::int64_t incx, float beta, float *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event spmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
                      const double *a, const double *x, std::int64_t incx, double beta, double *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event spr(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
                     const float *x, std::int64_t incx, float *a,
@@ -1522,8 +1490,7 @@ cl::sycl::event syr(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, do
 
 cl::sycl::event syr2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
                      const float *x, std::int64_t incx, const float *y, std::int64_t incy, float *a,
-                     std::int64_t lda,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event syr2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
                      const double *x, std::int64_t incx, const double *y, std::int64_t incy,
@@ -1532,13 +1499,11 @@ cl::sycl::event syr2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, d
 
 cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                      std::int64_t n, std::int64_t k, const float *a, std::int64_t lda, float *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                      std::int64_t n, std::int64_t k, const double *a, std::int64_t lda, double *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                      std::int64_t n, std::int64_t k, const std::complex<float> *a, std::int64_t lda,
@@ -1552,13 +1517,11 @@ cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
 
 cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                      std::int64_t n, std::int64_t k, const float *a, std::int64_t lda, float *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                      std::int64_t n, std::int64_t k, const double *a, std::int64_t lda, double *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                      std::int64_t n, std::int64_t k, const std::complex<float> *a, std::int64_t lda,
@@ -1580,13 +1543,11 @@ cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
 
 cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                      std::int64_t n, const std::complex<float> *a, std::complex<float> *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                      std::int64_t n, const std::complex<double> *a, std::complex<double> *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                      std::int64_t n, const float *a, float *x, std::int64_t incx,
@@ -1598,13 +1559,11 @@ cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
 
 cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                      std::int64_t n, const std::complex<float> *a, std::complex<float> *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                      std::int64_t n, const std::complex<double> *a, std::complex<double> *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                      std::int64_t n, const float *a, std::int64_t lda, float *x, std::int64_t incx,
@@ -1612,8 +1571,7 @@ cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
 
 cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                      std::int64_t n, const double *a, std::int64_t lda, double *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                      std::int64_t n, const std::complex<float> *a, std::int64_t lda,
@@ -1631,8 +1589,7 @@ cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
 
 cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                      std::int64_t n, const double *a, std::int64_t lda, double *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                      std::int64_t n, const std::complex<float> *a, std::int64_t lda,
@@ -1652,22 +1609,19 @@ cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
 cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
                      std::int64_t n, std::int64_t k, double alpha, const double *a,
                      std::int64_t lda, const double *b, std::int64_t ldb, double beta, double *c,
-                     std::int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
                      std::int64_t n, std::int64_t k, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                      std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
-                     std::int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
                      std::int64_t n, std::int64_t k, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *b,
                      std::int64_t ldb, std::complex<double> beta, std::complex<double> *c,
-                     std::int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
                      std::int64_t n, std::int64_t k, half alpha, const half *a, std::int64_t lda,
@@ -1682,8 +1636,7 @@ cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
 cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
                      std::int64_t n, std::int64_t k, float alpha, const bfloat16 *a,
                      std::int64_t lda, const bfloat16 *b, std::int64_t ldb, float beta, float *c,
-                     std::int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m,
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
@@ -1754,14 +1707,12 @@ cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
 cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
                      std::int64_t k, std::complex<float> alpha, const std::complex<float> *a,
                      std::int64_t lda, std::complex<float> beta, std::complex<float> *c,
-                     std::int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
                      std::int64_t k, std::complex<double> alpha, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> beta, std::complex<double> *c,
-                     std::int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower, transpose *trans,
                            std::int64_t *n, std::int64_t *k, float *alpha, const float **a,
@@ -1850,14 +1801,12 @@ cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
 cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t m, std::int64_t n, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, std::complex<float> *b,
-                     std::int64_t ldb,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t ldb, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t m, std::int64_t n, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, std::complex<double> *b,
-                     std::int64_t ldb,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t ldb, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t m, std::int64_t n, float alpha, const float *a,
@@ -1872,14 +1821,12 @@ cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
 cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t m, std::int64_t n, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, std::complex<float> *b,
-                     std::int64_t ldb,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t ldb, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t m, std::int64_t n, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, std::complex<double> *b,
-                     std::int64_t ldb,
-                     const std::vector<cl::sycl::event> &dependencies = {});
+                     std::int64_t ldb, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
                            transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
@@ -2020,15 +1967,13 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                       std::int64_t n, std::int64_t k, double alpha, const double *a,
                       std::int64_t lda, const double *b, std::int64_t ldb, double beta, double *c,
-                      std::int64_t ldc,
-                      const std::vector<cl::sycl::event> &dependencies = {});
+                      std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                       std::int64_t n, std::int64_t k, std::complex<float> alpha,
                       const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                       std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
-                      std::int64_t ldc,
-                      const std::vector<cl::sycl::event> &dependencies = {});
+                      std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies = {});
 
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                       std::int64_t n, std::int64_t k, std::complex<double> alpha,

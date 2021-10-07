@@ -514,8 +514,7 @@ cl::sycl::event gemv(cl::sycl::queue &queue, transpose trans, std::int64_t m, st
 cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
                      std::int64_t kl, std::int64_t ku, float alpha, const float *a,
                      std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::sgbmv_sycl(&queue, MAJOR, mkl_convert(trans), m, n, kl, ku, alpha, a,
                                           lda, x, incx, beta, y, incy, dependencies);
 }
@@ -523,8 +522,7 @@ cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m, st
 cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
                      std::int64_t kl, std::int64_t ku, double alpha, const double *a,
                      std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::dgbmv_sycl(&queue, MAJOR, mkl_convert(trans), m, n, kl, ku, alpha, a,
                                           lda, x, incx, beta, y, incy, dependencies);
 }
@@ -533,8 +531,7 @@ cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m, st
                      std::int64_t kl, std::int64_t ku, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *x,
                      std::int64_t incx, std::complex<float> beta, std::complex<float> *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::cgbmv_sycl(&queue, MAJOR, mkl_convert(trans), m, n, kl, ku, alpha, a,
                                           lda, x, incx, beta, y, incy, dependencies);
 }
@@ -543,8 +540,7 @@ cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m, st
                      std::int64_t kl, std::int64_t ku, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *x,
                      std::int64_t incx, std::complex<double> beta, std::complex<double> *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zgbmv_sycl(&queue, MAJOR, mkl_convert(trans), m, n, kl, ku, alpha, a,
                                           lda, x, incx, beta, y, incy, dependencies);
 }
@@ -558,8 +554,7 @@ cl::sycl::event ger(cl::sycl::queue &queue, std::int64_t m, std::int64_t n, floa
 
 cl::sycl::event ger(cl::sycl::queue &queue, std::int64_t m, std::int64_t n, double alpha,
                     const double *x, std::int64_t incx, const double *y, std::int64_t incy,
-                    double *a, std::int64_t lda,
-                    const std::vector<cl::sycl::event> &dependencies) {
+                    double *a, std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::dger_sycl(&queue, MAJOR, m, n, alpha, x, incx, y, incy, a, lda,
                                          dependencies);
 }
@@ -567,8 +562,7 @@ cl::sycl::event ger(cl::sycl::queue &queue, std::int64_t m, std::int64_t n, doub
 cl::sycl::event gerc(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                      const std::complex<float> *y, std::int64_t incy, std::complex<float> *a,
-                     std::int64_t lda,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::cgerc_sycl(&queue, MAJOR, m, n, alpha, x, incx, y, incy, a, lda,
                                           dependencies);
 }
@@ -576,8 +570,7 @@ cl::sycl::event gerc(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
 cl::sycl::event gerc(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *a,
-                     std::int64_t lda,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zgerc_sycl(&queue, MAJOR, m, n, alpha, x, incx, y, incy, a, lda,
                                           dependencies);
 }
@@ -585,8 +578,7 @@ cl::sycl::event gerc(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
 cl::sycl::event geru(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                      const std::complex<float> *y, std::int64_t incy, std::complex<float> *a,
-                     std::int64_t lda,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::cgeru_sycl(&queue, MAJOR, m, n, alpha, x, incx, y, incy, a, lda,
                                           dependencies);
 }
@@ -594,8 +586,7 @@ cl::sycl::event geru(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
 cl::sycl::event geru(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *a,
-                     std::int64_t lda,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zgeru_sycl(&queue, MAJOR, m, n, alpha, x, incx, y, incy, a, lda,
                                           dependencies);
 }
@@ -621,8 +612,7 @@ cl::sycl::event hbmv(cl::sycl::queue &queue, uplo uplo, std::int64_t n, std::int
 cl::sycl::event hemv(cl::sycl::queue &queue, uplo uplo, std::int64_t n, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *x,
                      std::int64_t incx, std::complex<float> beta, std::complex<float> *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::chemv_sycl(&queue, MAJOR, mkl_convert(uplo), n, alpha, a, lda, x,
                                           incx, beta, y, incy, dependencies);
 }
@@ -630,8 +620,7 @@ cl::sycl::event hemv(cl::sycl::queue &queue, uplo uplo, std::int64_t n, std::com
 cl::sycl::event hemv(cl::sycl::queue &queue, uplo uplo, std::int64_t n, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *x,
                      std::int64_t incx, std::complex<double> beta, std::complex<double> *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zhemv_sycl(&queue, MAJOR, mkl_convert(uplo), n, alpha, a, lda, x,
                                           incx, beta, y, incy, dependencies);
 }
@@ -661,8 +650,7 @@ cl::sycl::event her2(cl::sycl::queue &queue, uplo uplo, std::int64_t n, std::com
 cl::sycl::event her2(cl::sycl::queue &queue, uplo uplo, std::int64_t n, std::complex<double> alpha,
                      const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *a,
-                     std::int64_t lda,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zher2_sycl(&queue, MAJOR, mkl_convert(uplo), n, alpha, x, incx, y,
                                           incy, a, lda, dependencies);
 }
@@ -678,8 +666,7 @@ cl::sycl::event hpmv(cl::sycl::queue &queue, uplo uplo, std::int64_t n, std::com
 cl::sycl::event hpmv(cl::sycl::queue &queue, uplo uplo, std::int64_t n, std::complex<double> alpha,
                      const std::complex<double> *a, const std::complex<double> *x,
                      std::int64_t incx, std::complex<double> beta, std::complex<double> *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zhpmv_sycl(&queue, MAJOR, mkl_convert(uplo), n, alpha, a, x, incx,
                                           beta, y, incy, dependencies);
 }
@@ -739,15 +726,13 @@ cl::sycl::event spmv(cl::sycl::queue &queue, uplo uplo, std::int64_t n, float al
 
 cl::sycl::event spmv(cl::sycl::queue &queue, uplo uplo, std::int64_t n, double alpha,
                      const double *a, const double *x, std::int64_t incx, double beta, double *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::dspmv_sycl(&queue, MAJOR, mkl_convert(uplo), n, alpha, a, x, incx,
                                           beta, y, incy, dependencies);
 }
 
 cl::sycl::event spr(cl::sycl::queue &queue, uplo uplo, std::int64_t n, float alpha, const float *x,
-                    std::int64_t incx, float *a,
-                    const std::vector<cl::sycl::event> &dependencies) {
+                    std::int64_t incx, float *a, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::sspr_sycl(&queue, MAJOR, mkl_convert(uplo), n, alpha, x, incx, a,
                                          dependencies);
 }
@@ -775,8 +760,7 @@ cl::sycl::event spr2(cl::sycl::queue &queue, uplo uplo, std::int64_t n, double a
 
 cl::sycl::event symv(cl::sycl::queue &queue, uplo uplo, std::int64_t n, float alpha, const float *a,
                      std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::ssymv_sycl(&queue, MAJOR, mkl_convert(uplo), n, alpha, a, lda, x,
                                           incx, beta, y, incy, dependencies);
 }
@@ -805,8 +789,7 @@ cl::sycl::event syr(cl::sycl::queue &queue, uplo uplo, std::int64_t n, double al
 
 cl::sycl::event syr2(cl::sycl::queue &queue, uplo uplo, std::int64_t n, float alpha, const float *x,
                      std::int64_t incx, const float *y, std::int64_t incy, float *a,
-                     std::int64_t lda,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::ssyr2_sycl(&queue, MAJOR, mkl_convert(uplo), n, alpha, x, incx, y,
                                           incy, a, lda, dependencies);
 }
@@ -828,8 +811,7 @@ cl::sycl::event tbmv(cl::sycl::queue &queue, uplo uplo, transpose trans, diag di
 
 cl::sycl::event tbmv(cl::sycl::queue &queue, uplo uplo, transpose trans, diag diag, std::int64_t n,
                      std::int64_t k, const double *a, std::int64_t lda, double *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::dtbmv_sycl(&queue, MAJOR, mkl_convert(uplo), mkl_convert(trans),
                                           mkl_convert(diag), n, k, a, lda, x, incx, dependencies);
 }
@@ -859,8 +841,7 @@ cl::sycl::event tbsv(cl::sycl::queue &queue, uplo uplo, transpose trans, diag di
 
 cl::sycl::event tbsv(cl::sycl::queue &queue, uplo uplo, transpose trans, diag diag, std::int64_t n,
                      std::int64_t k, const double *a, std::int64_t lda, double *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::dtbsv_sycl(&queue, MAJOR, mkl_convert(uplo), mkl_convert(trans),
                                           mkl_convert(diag), n, k, a, lda, x, incx, dependencies);
 }
@@ -953,16 +934,14 @@ cl::sycl::event trmv(cl::sycl::queue &queue, uplo uplo, transpose trans, diag di
 
 cl::sycl::event trmv(cl::sycl::queue &queue, uplo uplo, transpose trans, diag diag, std::int64_t n,
                      const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::ctrmv_sycl(&queue, MAJOR, mkl_convert(uplo), mkl_convert(trans),
                                           mkl_convert(diag), n, a, lda, x, incx, dependencies);
 }
 
 cl::sycl::event trmv(cl::sycl::queue &queue, uplo uplo, transpose trans, diag diag, std::int64_t n,
                      const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::ztrmv_sycl(&queue, MAJOR, mkl_convert(uplo), mkl_convert(trans),
                                           mkl_convert(diag), n, a, lda, x, incx, dependencies);
 }
@@ -983,16 +962,14 @@ cl::sycl::event trsv(cl::sycl::queue &queue, uplo uplo, transpose trans, diag di
 
 cl::sycl::event trsv(cl::sycl::queue &queue, uplo uplo, transpose trans, diag diag, std::int64_t n,
                      const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::ctrsv_sycl(&queue, MAJOR, mkl_convert(uplo), mkl_convert(trans),
                                           mkl_convert(diag), n, a, lda, x, incx, dependencies);
 }
 
 cl::sycl::event trsv(cl::sycl::queue &queue, uplo uplo, transpose trans, diag diag, std::int64_t n,
                      const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::ztrsv_sycl(&queue, MAJOR, mkl_convert(uplo), mkl_convert(trans),
                                           mkl_convert(diag), n, a, lda, x, incx, dependencies);
 }

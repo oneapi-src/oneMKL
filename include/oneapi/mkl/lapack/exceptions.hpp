@@ -57,8 +57,7 @@ public:
 class batch_error : public oneapi::mkl::batch_error, public oneapi::mkl::lapack::exception {
 public:
     batch_error(const std::string &function, const std::string &info, std::int64_t num_errors,
-                std::vector<std::int64_t> ids = {},
-                std::vector<std::exception_ptr> exceptions = {})
+                std::vector<std::int64_t> ids = {}, std::vector<std::exception_ptr> exceptions = {})
             : oneapi::mkl::batch_error("LAPACK", function, info),
               oneapi::mkl::lapack::exception(this, num_errors),
               _ids(ids),

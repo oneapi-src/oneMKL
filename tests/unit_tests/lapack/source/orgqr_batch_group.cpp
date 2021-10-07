@@ -272,8 +272,7 @@ bool usm_dependency(const sycl::device& dev, uint64_t seed) {
         TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::orgqr_batch,
                            m_vec.data(), n_vec.data(), k_vec.data(), A_dev_ptrs.data(),
                            lda_vec.data(), tau_dev_ptrs.data(), group_count, group_sizes_vec.data(),
-                           scratchpad_dev, scratchpad_size,
-                           std::vector<sycl::event>{ in_event });
+                           scratchpad_dev, scratchpad_size, std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);
 

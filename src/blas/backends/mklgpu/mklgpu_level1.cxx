@@ -361,15 +361,13 @@ cl::sycl::event axpy(cl::sycl::queue &queue, std::int64_t n, double alpha, const
 
 cl::sycl::event axpy(cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
                      const std::complex<float> *x, std::int64_t incx, std::complex<float> *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::caxpy_sycl(&queue, n, alpha, x, incx, y, incy, dependencies);
 }
 
 cl::sycl::event axpy(cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
                      const std::complex<double> *x, std::int64_t incx, std::complex<double> *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zaxpy_sycl(&queue, n, alpha, x, incx, y, incy, dependencies);
 }
 
@@ -566,14 +564,12 @@ cl::sycl::event rotmg(cl::sycl::queue &queue, double *d1, double *d2, double *x1
 }
 
 cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n, float alpha, float *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::sscal_sycl(&queue, n, alpha, x, incx, dependencies);
 }
 
 cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n, double alpha, double *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::dscal_sycl(&queue, n, alpha, x, incx, dependencies);
 }
 
@@ -590,20 +586,17 @@ cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n, std::complex<double
 }
 
 cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n, float alpha, std::complex<float> *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::csscal_sycl(&queue, n, alpha, x, incx, dependencies);
 }
 
 cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n, double alpha, std::complex<double> *x,
-                     std::int64_t incx,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zdscal_sycl(&queue, n, alpha, x, incx, dependencies);
 }
 
 cl::sycl::event swap(cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
-                     std::int64_t incy,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::sswap_sycl(&queue, n, x, incx, y, incy, dependencies);
 }
 
@@ -626,14 +619,12 @@ cl::sycl::event swap(cl::sycl::queue &queue, std::int64_t n, std::complex<double
 }
 
 cl::sycl::event iamax(cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx,
-                      std::int64_t *result,
-                      const std::vector<cl::sycl::event> &dependencies) {
+                      std::int64_t *result, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::isamax_sycl(&queue, n, x, incx, result, dependencies);
 }
 
 cl::sycl::event iamax(cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx,
-                      std::int64_t *result,
-                      const std::vector<cl::sycl::event> &dependencies) {
+                      std::int64_t *result, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::idamax_sycl(&queue, n, x, incx, result, dependencies);
 }
 
@@ -650,14 +641,12 @@ cl::sycl::event iamax(cl::sycl::queue &queue, std::int64_t n, const std::complex
 }
 
 cl::sycl::event iamin(cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx,
-                      std::int64_t *result,
-                      const std::vector<cl::sycl::event> &dependencies) {
+                      std::int64_t *result, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::isamin_sycl(&queue, n, x, incx, result, dependencies);
 }
 
 cl::sycl::event iamin(cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx,
-                      std::int64_t *result,
-                      const std::vector<cl::sycl::event> &dependencies) {
+                      std::int64_t *result, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::idamin_sycl(&queue, n, x, incx, result, dependencies);
 }
 

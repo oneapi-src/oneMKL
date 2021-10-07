@@ -1113,18 +1113,18 @@ typedef struct {
         cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
         std::int64_t stridex, std::complex<double> *y, std::int64_t incy, std::int64_t stridey,
         std::int64_t batch_size, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*column_major_sdot_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, const float *y,
-        std::int64_t incy, float *result,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*column_major_ddot_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, const double *y,
-        std::int64_t incy, double *result,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*column_major_sdot_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                  const float *x, std::int64_t incx, const float *y,
+                                                  std::int64_t incy, float *result,
+                                                  const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*column_major_ddot_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                  const double *x, std::int64_t incx,
+                                                  const double *y, std::int64_t incy,
+                                                  double *result,
+                                                  const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_dsdot_usm_sycl)(
         cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, const float *y,
-        std::int64_t incy, double *result,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::int64_t incy, double *result, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_cdotc_usm_sycl)(
         cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
         const std::complex<float> *y, std::int64_t incy, std::complex<float> *result,
@@ -1177,22 +1177,22 @@ typedef struct {
     cl::sycl::event (*column_major_dnrm2_usm_sycl)(
         cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, double *result,
         const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*column_major_srot_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, std::complex<float> *x, std::int64_t incx,
-        std::complex<float> *y, std::int64_t incy, float c, float s,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*column_major_drot_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, std::complex<double> *x, std::int64_t incx,
-        std::complex<double> *y, std::int64_t incy, double c, double s,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*column_major_srot_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                  std::complex<float> *x, std::int64_t incx,
+                                                  std::complex<float> *y, std::int64_t incy,
+                                                  float c, float s,
+                                                  const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*column_major_drot_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                  std::complex<double> *x, std::int64_t incx,
+                                                  std::complex<double> *y, std::int64_t incy,
+                                                  double c, double s,
+                                                  const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_csrot_usm_sycl)(
         cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
-        std::int64_t incy, float c, float s,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::int64_t incy, float c, float s, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_zdrot_usm_sycl)(
         cl::sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
-        std::int64_t incy, double c, double s,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::int64_t incy, double c, double s, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_srotg_usm_sycl)(
         cl::sycl::queue &queue, float *a, float *b, float *c, float *s,
         const std::vector<cl::sycl::event> &dependencies);
@@ -1207,12 +1207,10 @@ typedef struct {
         std::complex<double> *s, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_srotm_usm_sycl)(
         cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
-        std::int64_t incy, float *param,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::int64_t incy, float *param, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_drotm_usm_sycl)(
         cl::sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
-        std::int64_t incy, double *param,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::int64_t incy, double *param, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_srotmg_usm_sycl)(
         cl::sycl::queue &queue, float *d1, float *d2, float *x1, float y1, float *param,
         const std::vector<cl::sycl::event> &dependencies);
@@ -1280,8 +1278,7 @@ typedef struct {
     cl::sycl::event (*column_major_sgemv_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
         float alpha, const float *a, std::int64_t lda, const float *x, std::int64_t incx,
-        float beta, float *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
+        float beta, float *y, std::int64_t incy, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_dgemv_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
         double alpha, const double *a, std::int64_t lda, const double *x, std::int64_t incx,
@@ -1388,14 +1385,16 @@ typedef struct {
         const std::complex<double> **a, std::int64_t *lda, const std::complex<double> **x,
         std::int64_t *incx, std::complex<double> **c, std::int64_t *ldc, std::int64_t group_count,
         std::int64_t *group_size, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*column_major_sger_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t m, std::int64_t n, float alpha, const float *x,
-        std::int64_t incx, const float *y, std::int64_t incy, float *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*column_major_dger_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t m, std::int64_t n, double alpha, const double *x,
-        std::int64_t incx, const double *y, std::int64_t incy, double *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*column_major_sger_usm_sycl)(cl::sycl::queue &queue, std::int64_t m,
+                                                  std::int64_t n, float alpha, const float *x,
+                                                  std::int64_t incx, const float *y,
+                                                  std::int64_t incy, float *a, std::int64_t lda,
+                                                  const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*column_major_dger_usm_sycl)(cl::sycl::queue &queue, std::int64_t m,
+                                                  std::int64_t n, double alpha, const double *x,
+                                                  std::int64_t incx, const double *y,
+                                                  std::int64_t incy, double *a, std::int64_t lda,
+                                                  const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_cgerc_usm_sycl)(
         cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<float> alpha,
         const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
@@ -1440,14 +1439,18 @@ typedef struct {
         const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
         std::complex<double> *y, std::int64_t incy,
         const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*column_major_cher_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
-        const std::complex<float> *x, std::int64_t incx, std::complex<float> *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*column_major_zher_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, double alpha,
-        const std::complex<double> *x, std::int64_t incx, std::complex<double> *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*column_major_cher_usm_sycl)(cl::sycl::queue &queue,
+                                                  oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                  float alpha, const std::complex<float> *x,
+                                                  std::int64_t incx, std::complex<float> *a,
+                                                  std::int64_t lda,
+                                                  const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*column_major_zher_usm_sycl)(cl::sycl::queue &queue,
+                                                  oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                  double alpha, const std::complex<double> *x,
+                                                  std::int64_t incx, std::complex<double> *a,
+                                                  std::int64_t lda,
+                                                  const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_cher2_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
         std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
@@ -1468,14 +1471,16 @@ typedef struct {
         std::complex<double> alpha, const std::complex<double> *a, const std::complex<double> *x,
         std::int64_t incx, std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
         const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*column_major_chpr_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
-        const std::complex<float> *x, std::int64_t incx, std::complex<float> *a,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*column_major_zhpr_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, double alpha,
-        const std::complex<double> *x, std::int64_t incx, std::complex<double> *a,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*column_major_chpr_usm_sycl)(cl::sycl::queue &queue,
+                                                  oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                  float alpha, const std::complex<float> *x,
+                                                  std::int64_t incx, std::complex<float> *a,
+                                                  const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*column_major_zhpr_usm_sycl)(cl::sycl::queue &queue,
+                                                  oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                  double alpha, const std::complex<double> *x,
+                                                  std::int64_t incx, std::complex<double> *a,
+                                                  const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_chpr2_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
         std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
@@ -1489,8 +1494,7 @@ typedef struct {
     cl::sycl::event (*column_major_ssbmv_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, std::int64_t k,
         float alpha, const float *a, std::int64_t lda, const float *x, std::int64_t incx,
-        float beta, float *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
+        float beta, float *y, std::int64_t incy, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_dsbmv_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, std::int64_t k,
         double alpha, const double *a, std::int64_t lda, const double *x, std::int64_t incx,
@@ -1504,14 +1508,16 @@ typedef struct {
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, double alpha,
         const double *a, const double *x, std::int64_t incx, double beta, double *y,
         std::int64_t incy, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*column_major_sspr_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
-        const float *x, std::int64_t incx, float *a,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*column_major_dspr_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, double alpha,
-        const double *x, std::int64_t incx, double *a,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*column_major_sspr_usm_sycl)(cl::sycl::queue &queue,
+                                                  oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                  float alpha, const float *x, std::int64_t incx,
+                                                  float *a,
+                                                  const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*column_major_dspr_usm_sycl)(cl::sycl::queue &queue,
+                                                  oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                  double alpha, const double *x, std::int64_t incx,
+                                                  double *a,
+                                                  const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_sspr2_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
         const float *x, std::int64_t incx, const float *y, std::int64_t incy, float *a,
@@ -1528,14 +1534,16 @@ typedef struct {
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, double alpha,
         const double *a, std::int64_t lda, const double *x, std::int64_t incx, double beta,
         double *y, std::int64_t incy, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*column_major_ssyr_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
-        const float *x, std::int64_t incx, float *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*column_major_dsyr_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, double alpha,
-        const double *x, std::int64_t incx, double *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*column_major_ssyr_usm_sycl)(cl::sycl::queue &queue,
+                                                  oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                  float alpha, const float *x, std::int64_t incx,
+                                                  float *a, std::int64_t lda,
+                                                  const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*column_major_dsyr_usm_sycl)(cl::sycl::queue &queue,
+                                                  oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                  double alpha, const double *x, std::int64_t incx,
+                                                  double *a, std::int64_t lda,
+                                                  const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_ssyr2_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
         const float *x, std::int64_t incx, const float *y, std::int64_t incy, float *a,
@@ -1697,8 +1705,7 @@ typedef struct {
         cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         std::int64_t m, std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
         std::int64_t lda, const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-        std::complex<float> *c, std::int64_t ldc,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::complex<float> *c, std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_zhemm_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         std::int64_t m, std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
@@ -1719,8 +1726,7 @@ typedef struct {
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         std::int64_t n, std::int64_t k, std::complex<float> alpha, const std::complex<float> *a,
         std::int64_t lda, const std::complex<float> *b, std::int64_t ldb, float beta,
-        std::complex<float> *c, std::int64_t ldc,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::complex<float> *c, std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_zher2k_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         std::int64_t n, std::int64_t k, std::complex<double> alpha, const std::complex<double> *a,
@@ -1741,8 +1747,7 @@ typedef struct {
         cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         std::int64_t m, std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
         std::int64_t lda, const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-        std::complex<float> *c, std::int64_t ldc,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::complex<float> *c, std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_zsymm_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         std::int64_t m, std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
@@ -1756,8 +1761,7 @@ typedef struct {
     cl::sycl::event (*column_major_dsyrk_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         std::int64_t n, std::int64_t k, double alpha, const double *a, std::int64_t lda,
-        double beta, double *c, std::int64_t ldc,
-        const std::vector<cl::sycl::event> &dependencies);
+        double beta, double *c, std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_csyrk_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         std::int64_t n, std::int64_t k, std::complex<float> alpha, const std::complex<float> *a,
@@ -1826,8 +1830,7 @@ typedef struct {
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         std::int64_t n, std::int64_t k, std::complex<float> alpha, const std::complex<float> *a,
         std::int64_t lda, const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-        std::complex<float> *c, std::int64_t ldc,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::complex<float> *c, std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_zsyr2k_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         std::int64_t n, std::int64_t k, std::complex<double> alpha, const std::complex<double> *a,
@@ -1848,8 +1851,7 @@ typedef struct {
         cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
         std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-        std::complex<float> *b, std::int64_t ldb,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::complex<float> *b, std::int64_t ldb, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_ztrmm_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
@@ -1870,8 +1872,7 @@ typedef struct {
         cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
         std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-        std::complex<float> *b, std::int64_t ldb,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::complex<float> *b, std::int64_t ldb, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*column_major_ztrsm_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
@@ -2966,32 +2967,38 @@ typedef struct {
 
     // USM APIs
 
-    cl::sycl::event (*row_major_scasum_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
-        float *result, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dzasum_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
-        double *result, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_sasum_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, float *result,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dasum_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, double *result,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_saxpy_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, float alpha, const float *x, std::int64_t incx,
-        float *y, std::int64_t incy, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_daxpy_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, double alpha, const double *x, std::int64_t incx,
-        double *y, std::int64_t incy, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_caxpy_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
-        const std::complex<float> *x, std::int64_t incx, std::complex<float> *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zaxpy_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
-        const std::complex<double> *x, std::int64_t incx, std::complex<double> *y,
-        std::int64_t incy, const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_scasum_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 const std::complex<float> *x, std::int64_t incx,
+                                                 float *result,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dzasum_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 const std::complex<double> *x, std::int64_t incx,
+                                                 double *result,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_sasum_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                const float *x, std::int64_t incx, float *result,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dasum_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                const double *x, std::int64_t incx, double *result,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_saxpy_usm_sycl)(cl::sycl::queue &queue, std::int64_t n, float alpha,
+                                                const float *x, std::int64_t incx, float *y,
+                                                std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_daxpy_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                double alpha, const double *x, std::int64_t incx,
+                                                double *y, std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_caxpy_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                std::complex<float> alpha,
+                                                const std::complex<float> *x, std::int64_t incx,
+                                                std::complex<float> *y, std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zaxpy_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                std::complex<double> alpha,
+                                                const std::complex<double> *x, std::int64_t incx,
+                                                std::complex<double> *y, std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_saxpy_batch_group_usm_sycl)(
         cl::sycl::queue &queue, std::int64_t *n, float *alpha, const float **x, std::int64_t *incx,
         float **y, std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
@@ -3028,38 +3035,42 @@ typedef struct {
         const std::complex<double> *x, std::int64_t incx, std::int64_t stridex,
         std::complex<double> *y, std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
         const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_saxpby_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, float alpha, const float *x, std::int64_t incx,
-        const float beta, float *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_daxpby_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, double alpha, const double *x, std::int64_t incx,
-        const double beta, double *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_caxpby_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
-        const std::complex<float> *x, std::int64_t incx, const std::complex<float> beta,
-        std::complex<float> *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zaxpby_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
-        const std::complex<double> *x, std::int64_t incx, const std::complex<double> beta,
-        std::complex<double> *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_scopy_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, float *y,
-        std::int64_t incy, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dcopy_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, double *y,
-        std::int64_t incy, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_ccopy_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
-        std::complex<float> *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zcopy_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
-        std::complex<double> *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_saxpby_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 float alpha, const float *x, std::int64_t incx,
+                                                 const float beta, float *y, std::int64_t incy,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_daxpby_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 double alpha, const double *x, std::int64_t incx,
+                                                 const double beta, double *y, std::int64_t incy,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_caxpby_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 std::complex<float> alpha,
+                                                 const std::complex<float> *x, std::int64_t incx,
+                                                 const std::complex<float> beta,
+                                                 std::complex<float> *y, std::int64_t incy,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zaxpby_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 std::complex<double> alpha,
+                                                 const std::complex<double> *x, std::int64_t incx,
+                                                 const std::complex<double> beta,
+                                                 std::complex<double> *y, std::int64_t incy,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_scopy_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                const float *x, std::int64_t incx, float *y,
+                                                std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dcopy_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                const double *x, std::int64_t incx, double *y,
+                                                std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_ccopy_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                const std::complex<float> *x, std::int64_t incx,
+                                                std::complex<float> *y, std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zcopy_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                const std::complex<double> *x, std::int64_t incx,
+                                                std::complex<double> *y, std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_scopy_batch_group_usm_sycl)(
         cl::sycl::queue &queue, std::int64_t *n, const float **x, std::int64_t *incx, float **y,
         std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
@@ -3092,158 +3103,183 @@ typedef struct {
         cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
         std::int64_t stridex, std::complex<double> *y, std::int64_t incy, std::int64_t stridey,
         std::int64_t batch_size, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_sdot_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, const float *y,
-        std::int64_t incy, float *result,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_ddot_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, const double *y,
-        std::int64_t incy, double *result,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dsdot_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, const float *y,
-        std::int64_t incy, double *result,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_cdotc_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
-        const std::complex<float> *y, std::int64_t incy, std::complex<float> *result,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zdotc_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
-        const std::complex<double> *y, std::int64_t incy, std::complex<double> *result,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_cdotu_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
-        const std::complex<float> *y, std::int64_t incy, std::complex<float> *result,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zdotu_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
-        const std::complex<double> *y, std::int64_t incy, std::complex<double> *result,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_isamin_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx,
-        std::int64_t *result, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_idamin_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx,
-        std::int64_t *result, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_icamin_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
-        std::int64_t *result, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_izamin_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
-        std::int64_t *result, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_isamax_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx,
-        std::int64_t *result, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_idamax_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx,
-        std::int64_t *result, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_icamax_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
-        std::int64_t *result, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_izamax_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
-        std::int64_t *result, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_scnrm2_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
-        float *result, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dznrm2_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
-        double *result, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_snrm2_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, float *result,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dnrm2_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, double *result,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_srot_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, std::complex<float> *x, std::int64_t incx,
-        std::complex<float> *y, std::int64_t incy, float c, float s,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_drot_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, std::complex<double> *x, std::int64_t incx,
-        std::complex<double> *y, std::int64_t incy, double c, double s,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_csrot_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
-        std::int64_t incy, float c, float s,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zdrot_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
-        std::int64_t incy, double c, double s,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_srotg_usm_sycl)(
-        cl::sycl::queue &queue, float *a, float *b, float *c, float *s,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_drotg_usm_sycl)(
-        cl::sycl::queue &queue, double *a, double *b, double *c, double *s,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_crotg_usm_sycl)(
-        cl::sycl::queue &queue, std::complex<float> *a, std::complex<float> *b, float *c,
-        std::complex<float> *s, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zrotg_usm_sycl)(
-        cl::sycl::queue &queue, std::complex<double> *a, std::complex<double> *b, double *c,
-        std::complex<double> *s, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_srotm_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
-        std::int64_t incy, float *param,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_drotm_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
-        std::int64_t incy, double *param,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_srotmg_usm_sycl)(
-        cl::sycl::queue &queue, float *d1, float *d2, float *x1, float y1, float *param,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_drotmg_usm_sycl)(
-        cl::sycl::queue &queue, double *d1, double *d2, double *x1, double y1, double *param,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_sscal_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, float alpha, float *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dscal_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, double alpha, double *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_cscal_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha, std::complex<float> *x,
-        std::int64_t incx, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_csscal_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha, std::complex<double> *x,
-        std::int64_t incx, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zscal_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, float alpha, std::complex<float> *x,
-        std::int64_t incx, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zdscal_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, double alpha, std::complex<double> *x,
-        std::int64_t incx, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_sdsdot_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, float sb, const float *x, std::int64_t incx,
-        const float *y, std::int64_t incy, float *result,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_sswap_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
-        std::int64_t incy, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dswap_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
-        std::int64_t incy, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_cswap_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, std::complex<float> *x, std::int64_t incx,
-        std::complex<float> *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zswap_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t n, std::complex<double> *x, std::int64_t incx,
-        std::complex<double> *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_sgbmv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
-        std::int64_t kl, std::int64_t ku, float alpha, const float *a, std::int64_t lda,
-        const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dgbmv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
-        std::int64_t kl, std::int64_t ku, double alpha, const double *a, std::int64_t lda,
-        const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_sdot_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                               const float *x, std::int64_t incx, const float *y,
+                                               std::int64_t incy, float *result,
+                                               const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_ddot_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                               const double *x, std::int64_t incx, const double *y,
+                                               std::int64_t incy, double *result,
+                                               const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dsdot_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                const float *x, std::int64_t incx, const float *y,
+                                                std::int64_t incy, double *result,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_cdotc_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                const std::complex<float> *x, std::int64_t incx,
+                                                const std::complex<float> *y, std::int64_t incy,
+                                                std::complex<float> *result,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zdotc_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                const std::complex<double> *x, std::int64_t incx,
+                                                const std::complex<double> *y, std::int64_t incy,
+                                                std::complex<double> *result,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_cdotu_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                const std::complex<float> *x, std::int64_t incx,
+                                                const std::complex<float> *y, std::int64_t incy,
+                                                std::complex<float> *result,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zdotu_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                const std::complex<double> *x, std::int64_t incx,
+                                                const std::complex<double> *y, std::int64_t incy,
+                                                std::complex<double> *result,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_isamin_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 const float *x, std::int64_t incx,
+                                                 std::int64_t *result,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_idamin_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 const double *x, std::int64_t incx,
+                                                 std::int64_t *result,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_icamin_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 const std::complex<float> *x, std::int64_t incx,
+                                                 std::int64_t *result,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_izamin_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 const std::complex<double> *x, std::int64_t incx,
+                                                 std::int64_t *result,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_isamax_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 const float *x, std::int64_t incx,
+                                                 std::int64_t *result,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_idamax_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 const double *x, std::int64_t incx,
+                                                 std::int64_t *result,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_icamax_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 const std::complex<float> *x, std::int64_t incx,
+                                                 std::int64_t *result,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_izamax_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 const std::complex<double> *x, std::int64_t incx,
+                                                 std::int64_t *result,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_scnrm2_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 const std::complex<float> *x, std::int64_t incx,
+                                                 float *result,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dznrm2_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 const std::complex<double> *x, std::int64_t incx,
+                                                 double *result,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_snrm2_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                const float *x, std::int64_t incx, float *result,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dnrm2_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                const double *x, std::int64_t incx, double *result,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_srot_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                               std::complex<float> *x, std::int64_t incx,
+                                               std::complex<float> *y, std::int64_t incy, float c,
+                                               float s,
+                                               const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_drot_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                               std::complex<double> *x, std::int64_t incx,
+                                               std::complex<double> *y, std::int64_t incy, double c,
+                                               double s,
+                                               const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_csrot_usm_sycl)(cl::sycl::queue &queue, std::int64_t n, float *x,
+                                                std::int64_t incx, float *y, std::int64_t incy,
+                                                float c, float s,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zdrot_usm_sycl)(cl::sycl::queue &queue, std::int64_t n, double *x,
+                                                std::int64_t incx, double *y, std::int64_t incy,
+                                                double c, double s,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_srotg_usm_sycl)(cl::sycl::queue &queue, float *a, float *b,
+                                                float *c, float *s,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_drotg_usm_sycl)(cl::sycl::queue &queue, double *a, double *b,
+                                                double *c, double *s,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_crotg_usm_sycl)(cl::sycl::queue &queue, std::complex<float> *a,
+                                                std::complex<float> *b, float *c,
+                                                std::complex<float> *s,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zrotg_usm_sycl)(cl::sycl::queue &queue, std::complex<double> *a,
+                                                std::complex<double> *b, double *c,
+                                                std::complex<double> *s,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_srotm_usm_sycl)(cl::sycl::queue &queue, std::int64_t n, float *x,
+                                                std::int64_t incx, float *y, std::int64_t incy,
+                                                float *param,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_drotm_usm_sycl)(cl::sycl::queue &queue, std::int64_t n, double *x,
+                                                std::int64_t incx, double *y, std::int64_t incy,
+                                                double *param,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_srotmg_usm_sycl)(cl::sycl::queue &queue, float *d1, float *d2,
+                                                 float *x1, float y1, float *param,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_drotmg_usm_sycl)(cl::sycl::queue &queue, double *d1, double *d2,
+                                                 double *x1, double y1, double *param,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_sscal_usm_sycl)(cl::sycl::queue &queue, std::int64_t n, float alpha,
+                                                float *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dscal_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                double alpha, double *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_cscal_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                std::complex<float> alpha, std::complex<float> *x,
+                                                std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_csscal_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 std::complex<double> alpha,
+                                                 std::complex<double> *x, std::int64_t incx,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zscal_usm_sycl)(cl::sycl::queue &queue, std::int64_t n, float alpha,
+                                                std::complex<float> *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zdscal_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                 double alpha, std::complex<double> *x,
+                                                 std::int64_t incx,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_sdsdot_usm_sycl)(cl::sycl::queue &queue, std::int64_t n, float sb,
+                                                 const float *x, std::int64_t incx, const float *y,
+                                                 std::int64_t incy, float *result,
+                                                 const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_sswap_usm_sycl)(cl::sycl::queue &queue, std::int64_t n, float *x,
+                                                std::int64_t incx, float *y, std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dswap_usm_sycl)(cl::sycl::queue &queue, std::int64_t n, double *x,
+                                                std::int64_t incx, double *y, std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_cswap_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                std::complex<float> *x, std::int64_t incx,
+                                                std::complex<float> *y, std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zswap_usm_sycl)(cl::sycl::queue &queue, std::int64_t n,
+                                                std::complex<double> *x, std::int64_t incx,
+                                                std::complex<double> *y, std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_sgbmv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::transpose trans, std::int64_t m,
+                                                std::int64_t n, std::int64_t kl, std::int64_t ku,
+                                                float alpha, const float *a, std::int64_t lda,
+                                                const float *x, std::int64_t incx, float beta,
+                                                float *y, std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dgbmv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::transpose trans, std::int64_t m,
+                                                std::int64_t n, std::int64_t kl, std::int64_t ku,
+                                                double alpha, const double *a, std::int64_t lda,
+                                                const double *x, std::int64_t incx, double beta,
+                                                double *y, std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_cgbmv_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
         std::int64_t kl, std::int64_t ku, std::complex<float> alpha, const std::complex<float> *a,
@@ -3256,28 +3292,35 @@ typedef struct {
         std::int64_t lda, const std::complex<double> *x, std::int64_t incx,
         std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
         const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_sgemv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
-        float alpha, const float *a, std::int64_t lda, const float *x, std::int64_t incx,
-        float beta, float *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dgemv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
-        double alpha, const double *a, std::int64_t lda, const double *x, std::int64_t incx,
-        double beta, double *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_cgemv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
-        std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-        const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
-        std::complex<float> *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zgemv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
-        std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-        const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
-        std::complex<double> *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_sgemv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::transpose trans, std::int64_t m,
+                                                std::int64_t n, float alpha, const float *a,
+                                                std::int64_t lda, const float *x, std::int64_t incx,
+                                                float beta, float *y, std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dgemv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::transpose trans, std::int64_t m,
+                                                std::int64_t n, double alpha, const double *a,
+                                                std::int64_t lda, const double *x,
+                                                std::int64_t incx, double beta, double *y,
+                                                std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_cgemv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::transpose trans, std::int64_t m,
+                                                std::int64_t n, std::complex<float> alpha,
+                                                const std::complex<float> *a, std::int64_t lda,
+                                                const std::complex<float> *x, std::int64_t incx,
+                                                std::complex<float> beta, std::complex<float> *y,
+                                                std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zgemv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::transpose trans, std::int64_t m,
+                                                std::int64_t n, std::complex<double> alpha,
+                                                const std::complex<double> *a, std::int64_t lda,
+                                                const std::complex<double> *x, std::int64_t incx,
+                                                std::complex<double> beta, std::complex<double> *y,
+                                                std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_sgemv_batch_strided_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
         float alpha, const float *a, std::int64_t lda, std::int64_t stridea, const float *x,
@@ -3367,76 +3410,98 @@ typedef struct {
         const std::complex<double> **a, std::int64_t *lda, const std::complex<double> **x,
         std::int64_t *incx, std::complex<double> **c, std::int64_t *ldc, std::int64_t group_count,
         std::int64_t *group_size, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_sger_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t m, std::int64_t n, float alpha, const float *x,
-        std::int64_t incx, const float *y, std::int64_t incy, float *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dger_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t m, std::int64_t n, double alpha, const double *x,
-        std::int64_t incx, const double *y, std::int64_t incy, double *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_cgerc_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<float> alpha,
-        const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
-        std::int64_t incy, std::complex<float> *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zgerc_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<double> alpha,
-        const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
-        std::int64_t incy, std::complex<double> *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_cgeru_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<float> alpha,
-        const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
-        std::int64_t incy, std::complex<float> *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zgeru_usm_sycl)(
-        cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<double> alpha,
-        const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
-        std::int64_t incy, std::complex<double> *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_chbmv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, std::int64_t k,
-        std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-        const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
-        std::complex<float> *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zhbmv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, std::int64_t k,
-        std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-        const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
-        std::complex<double> *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_chemv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
-        std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-        const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
-        std::complex<float> *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zhemv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
-        std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-        const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
-        std::complex<double> *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_cher_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
-        const std::complex<float> *x, std::int64_t incx, std::complex<float> *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zher_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, double alpha,
-        const std::complex<double> *x, std::int64_t incx, std::complex<double> *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_cher2_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
-        std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
-        const std::complex<float> *y, std::int64_t incy, std::complex<float> *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zher2_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
-        std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
-        const std::complex<double> *y, std::int64_t incy, std::complex<double> *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_sger_usm_sycl)(cl::sycl::queue &queue, std::int64_t m,
+                                               std::int64_t n, float alpha, const float *x,
+                                               std::int64_t incx, const float *y, std::int64_t incy,
+                                               float *a, std::int64_t lda,
+                                               const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dger_usm_sycl)(cl::sycl::queue &queue, std::int64_t m,
+                                               std::int64_t n, double alpha, const double *x,
+                                               std::int64_t incx, const double *y,
+                                               std::int64_t incy, double *a, std::int64_t lda,
+                                               const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_cgerc_usm_sycl)(cl::sycl::queue &queue, std::int64_t m,
+                                                std::int64_t n, std::complex<float> alpha,
+                                                const std::complex<float> *x, std::int64_t incx,
+                                                const std::complex<float> *y, std::int64_t incy,
+                                                std::complex<float> *a, std::int64_t lda,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zgerc_usm_sycl)(cl::sycl::queue &queue, std::int64_t m,
+                                                std::int64_t n, std::complex<double> alpha,
+                                                const std::complex<double> *x, std::int64_t incx,
+                                                const std::complex<double> *y, std::int64_t incy,
+                                                std::complex<double> *a, std::int64_t lda,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_cgeru_usm_sycl)(cl::sycl::queue &queue, std::int64_t m,
+                                                std::int64_t n, std::complex<float> alpha,
+                                                const std::complex<float> *x, std::int64_t incx,
+                                                const std::complex<float> *y, std::int64_t incy,
+                                                std::complex<float> *a, std::int64_t lda,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zgeru_usm_sycl)(cl::sycl::queue &queue, std::int64_t m,
+                                                std::int64_t n, std::complex<double> alpha,
+                                                const std::complex<double> *x, std::int64_t incx,
+                                                const std::complex<double> *y, std::int64_t incy,
+                                                std::complex<double> *a, std::int64_t lda,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_chbmv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                std::int64_t k, std::complex<float> alpha,
+                                                const std::complex<float> *a, std::int64_t lda,
+                                                const std::complex<float> *x, std::int64_t incx,
+                                                std::complex<float> beta, std::complex<float> *y,
+                                                std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zhbmv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                std::int64_t k, std::complex<double> alpha,
+                                                const std::complex<double> *a, std::int64_t lda,
+                                                const std::complex<double> *x, std::int64_t incx,
+                                                std::complex<double> beta, std::complex<double> *y,
+                                                std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_chemv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                std::complex<float> alpha,
+                                                const std::complex<float> *a, std::int64_t lda,
+                                                const std::complex<float> *x, std::int64_t incx,
+                                                std::complex<float> beta, std::complex<float> *y,
+                                                std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zhemv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                std::complex<double> alpha,
+                                                const std::complex<double> *a, std::int64_t lda,
+                                                const std::complex<double> *x, std::int64_t incx,
+                                                std::complex<double> beta, std::complex<double> *y,
+                                                std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_cher_usm_sycl)(cl::sycl::queue &queue,
+                                               oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                               float alpha, const std::complex<float> *x,
+                                               std::int64_t incx, std::complex<float> *a,
+                                               std::int64_t lda,
+                                               const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zher_usm_sycl)(cl::sycl::queue &queue,
+                                               oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                               double alpha, const std::complex<double> *x,
+                                               std::int64_t incx, std::complex<double> *a,
+                                               std::int64_t lda,
+                                               const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_cher2_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                std::complex<float> alpha,
+                                                const std::complex<float> *x, std::int64_t incx,
+                                                const std::complex<float> *y, std::int64_t incy,
+                                                std::complex<float> *a, std::int64_t lda,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zher2_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                std::complex<double> alpha,
+                                                const std::complex<double> *x, std::int64_t incx,
+                                                const std::complex<double> *y, std::int64_t incy,
+                                                std::complex<double> *a, std::int64_t lda,
+                                                const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_chpmv_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
         std::complex<float> alpha, const std::complex<float> *a, const std::complex<float> *x,
@@ -3447,92 +3512,123 @@ typedef struct {
         std::complex<double> alpha, const std::complex<double> *a, const std::complex<double> *x,
         std::int64_t incx, std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
         const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_chpr_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
-        const std::complex<float> *x, std::int64_t incx, std::complex<float> *a,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zhpr_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, double alpha,
-        const std::complex<double> *x, std::int64_t incx, std::complex<double> *a,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_chpr2_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
-        std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
-        const std::complex<float> *y, std::int64_t incy, std::complex<float> *a,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_zhpr2_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
-        std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
-        const std::complex<double> *y, std::int64_t incy, std::complex<double> *a,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_ssbmv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, std::int64_t k,
-        float alpha, const float *a, std::int64_t lda, const float *x, std::int64_t incx,
-        float beta, float *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dsbmv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, std::int64_t k,
-        double alpha, const double *a, std::int64_t lda, const double *x, std::int64_t incx,
-        double beta, double *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_sspmv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
-        const float *a, const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dspmv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, double alpha,
-        const double *a, const double *x, std::int64_t incx, double beta, double *y,
-        std::int64_t incy, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_sspr_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
-        const float *x, std::int64_t incx, float *a,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dspr_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, double alpha,
-        const double *x, std::int64_t incx, double *a,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_sspr2_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
-        const float *x, std::int64_t incx, const float *y, std::int64_t incy, float *a,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dspr2_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, double alpha,
-        const double *x, std::int64_t incx, const double *y, std::int64_t incy, double *a,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_ssymv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
-        const float *a, std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y,
-        std::int64_t incy, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dsymv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, double alpha,
-        const double *a, std::int64_t lda, const double *x, std::int64_t incx, double beta,
-        double *y, std::int64_t incy, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_ssyr_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
-        const float *x, std::int64_t incx, float *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dsyr_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, double alpha,
-        const double *x, std::int64_t incx, double *a, std::int64_t lda,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_ssyr2_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, float alpha,
-        const float *x, std::int64_t incx, const float *y, std::int64_t incy, float *a,
-        std::int64_t lda, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dsyr2_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, double alpha,
-        const double *x, std::int64_t incx, const double *y, std::int64_t incy, double *a,
-        std::int64_t lda, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_stbmv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k, const float *a,
-        std::int64_t lda, float *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dtbmv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k, const double *a,
-        std::int64_t lda, double *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_chpr_usm_sycl)(cl::sycl::queue &queue,
+                                               oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                               float alpha, const std::complex<float> *x,
+                                               std::int64_t incx, std::complex<float> *a,
+                                               const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zhpr_usm_sycl)(cl::sycl::queue &queue,
+                                               oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                               double alpha, const std::complex<double> *x,
+                                               std::int64_t incx, std::complex<double> *a,
+                                               const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_chpr2_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                std::complex<float> alpha,
+                                                const std::complex<float> *x, std::int64_t incx,
+                                                const std::complex<float> *y, std::int64_t incy,
+                                                std::complex<float> *a,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_zhpr2_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                std::complex<double> alpha,
+                                                const std::complex<double> *x, std::int64_t incx,
+                                                const std::complex<double> *y, std::int64_t incy,
+                                                std::complex<double> *a,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_ssbmv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                std::int64_t k, float alpha, const float *a,
+                                                std::int64_t lda, const float *x, std::int64_t incx,
+                                                float beta, float *y, std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dsbmv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                std::int64_t k, double alpha, const double *a,
+                                                std::int64_t lda, const double *x,
+                                                std::int64_t incx, double beta, double *y,
+                                                std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_sspmv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                float alpha, const float *a, const float *x,
+                                                std::int64_t incx, float beta, float *y,
+                                                std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dspmv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                double alpha, const double *a, const double *x,
+                                                std::int64_t incx, double beta, double *y,
+                                                std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_sspr_usm_sycl)(cl::sycl::queue &queue,
+                                               oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                               float alpha, const float *x, std::int64_t incx,
+                                               float *a,
+                                               const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dspr_usm_sycl)(cl::sycl::queue &queue,
+                                               oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                               double alpha, const double *x, std::int64_t incx,
+                                               double *a,
+                                               const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_sspr2_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                float alpha, const float *x, std::int64_t incx,
+                                                const float *y, std::int64_t incy, float *a,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dspr2_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                double alpha, const double *x, std::int64_t incx,
+                                                const double *y, std::int64_t incy, double *a,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_ssymv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                float alpha, const float *a, std::int64_t lda,
+                                                const float *x, std::int64_t incx, float beta,
+                                                float *y, std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dsymv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                double alpha, const double *a, std::int64_t lda,
+                                                const double *x, std::int64_t incx, double beta,
+                                                double *y, std::int64_t incy,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_ssyr_usm_sycl)(cl::sycl::queue &queue,
+                                               oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                               float alpha, const float *x, std::int64_t incx,
+                                               float *a, std::int64_t lda,
+                                               const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dsyr_usm_sycl)(cl::sycl::queue &queue,
+                                               oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                               double alpha, const double *x, std::int64_t incx,
+                                               double *a, std::int64_t lda,
+                                               const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_ssyr2_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                float alpha, const float *x, std::int64_t incx,
+                                                const float *y, std::int64_t incy, float *a,
+                                                std::int64_t lda,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dsyr2_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t n,
+                                                double alpha, const double *x, std::int64_t incx,
+                                                const double *y, std::int64_t incy, double *a,
+                                                std::int64_t lda,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_stbmv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower,
+                                                oneapi::mkl::transpose trans,
+                                                oneapi::mkl::diag unit_diag, std::int64_t n,
+                                                std::int64_t k, const float *a, std::int64_t lda,
+                                                float *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dtbmv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower,
+                                                oneapi::mkl::transpose trans,
+                                                oneapi::mkl::diag unit_diag, std::int64_t n,
+                                                std::int64_t k, const double *a, std::int64_t lda,
+                                                double *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_ctbmv_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k, const std::complex<float> *a,
@@ -3543,16 +3639,20 @@ typedef struct {
         oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k, const std::complex<double> *a,
         std::int64_t lda, std::complex<double> *x, std::int64_t incx,
         const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_stbsv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k, const float *a,
-        std::int64_t lda, float *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dtbsv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k, const double *a,
-        std::int64_t lda, double *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_stbsv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower,
+                                                oneapi::mkl::transpose trans,
+                                                oneapi::mkl::diag unit_diag, std::int64_t n,
+                                                std::int64_t k, const float *a, std::int64_t lda,
+                                                float *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dtbsv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower,
+                                                oneapi::mkl::transpose trans,
+                                                oneapi::mkl::diag unit_diag, std::int64_t n,
+                                                std::int64_t k, const double *a, std::int64_t lda,
+                                                double *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_ctbsv_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k, const std::complex<float> *a,
@@ -3563,42 +3663,58 @@ typedef struct {
         oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k, const std::complex<double> *a,
         std::int64_t lda, std::complex<double> *x, std::int64_t incx,
         const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_stpmv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        oneapi::mkl::diag unit_diag, std::int64_t n, const float *a, float *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dtpmv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        oneapi::mkl::diag unit_diag, std::int64_t n, const double *a, double *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_ctpmv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        oneapi::mkl::diag unit_diag, std::int64_t n, const std::complex<float> *a,
-        std::complex<float> *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_ztpmv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        oneapi::mkl::diag unit_diag, std::int64_t n, const std::complex<double> *a,
-        std::complex<double> *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_stpsv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        oneapi::mkl::diag unit_diag, std::int64_t n, const float *a, float *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dtpsv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        oneapi::mkl::diag unit_diag, std::int64_t n, const double *a, double *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_ctpsv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        oneapi::mkl::diag unit_diag, std::int64_t n, const std::complex<float> *a,
-        std::complex<float> *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_ztpsv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        oneapi::mkl::diag unit_diag, std::int64_t n, const std::complex<double> *a,
-        std::complex<double> *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_stpmv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower,
+                                                oneapi::mkl::transpose trans,
+                                                oneapi::mkl::diag unit_diag, std::int64_t n,
+                                                const float *a, float *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dtpmv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower,
+                                                oneapi::mkl::transpose trans,
+                                                oneapi::mkl::diag unit_diag, std::int64_t n,
+                                                const double *a, double *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_ctpmv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower,
+                                                oneapi::mkl::transpose trans,
+                                                oneapi::mkl::diag unit_diag, std::int64_t n,
+                                                const std::complex<float> *a,
+                                                std::complex<float> *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_ztpmv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower,
+                                                oneapi::mkl::transpose trans,
+                                                oneapi::mkl::diag unit_diag, std::int64_t n,
+                                                const std::complex<double> *a,
+                                                std::complex<double> *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_stpsv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower,
+                                                oneapi::mkl::transpose trans,
+                                                oneapi::mkl::diag unit_diag, std::int64_t n,
+                                                const float *a, float *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dtpsv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower,
+                                                oneapi::mkl::transpose trans,
+                                                oneapi::mkl::diag unit_diag, std::int64_t n,
+                                                const double *a, double *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_ctpsv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower,
+                                                oneapi::mkl::transpose trans,
+                                                oneapi::mkl::diag unit_diag, std::int64_t n,
+                                                const std::complex<float> *a,
+                                                std::complex<float> *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_ztpsv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower,
+                                                oneapi::mkl::transpose trans,
+                                                oneapi::mkl::diag unit_diag, std::int64_t n,
+                                                const std::complex<double> *a,
+                                                std::complex<double> *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_strmv_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         oneapi::mkl::diag unit_diag, std::int64_t n, const float *a, std::int64_t lda, float *x,
@@ -3607,16 +3723,20 @@ typedef struct {
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         oneapi::mkl::diag unit_diag, std::int64_t n, const double *a, std::int64_t lda, double *x,
         std::int64_t incx, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_ctrmv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        oneapi::mkl::diag unit_diag, std::int64_t n, const std::complex<float> *a, std::int64_t lda,
-        std::complex<float> *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_ztrmv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        oneapi::mkl::diag unit_diag, std::int64_t n, const std::complex<double> *a,
-        std::int64_t lda, std::complex<double> *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_ctrmv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower,
+                                                oneapi::mkl::transpose trans,
+                                                oneapi::mkl::diag unit_diag, std::int64_t n,
+                                                const std::complex<float> *a, std::int64_t lda,
+                                                std::complex<float> *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_ztrmv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower,
+                                                oneapi::mkl::transpose trans,
+                                                oneapi::mkl::diag unit_diag, std::int64_t n,
+                                                const std::complex<double> *a, std::int64_t lda,
+                                                std::complex<double> *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_strsv_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         oneapi::mkl::diag unit_diag, std::int64_t n, const float *a, std::int64_t lda, float *x,
@@ -3625,16 +3745,20 @@ typedef struct {
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         oneapi::mkl::diag unit_diag, std::int64_t n, const double *a, std::int64_t lda, double *x,
         std::int64_t incx, const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_ctrsv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        oneapi::mkl::diag unit_diag, std::int64_t n, const std::complex<float> *a, std::int64_t lda,
-        std::complex<float> *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_ztrsv_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        oneapi::mkl::diag unit_diag, std::int64_t n, const std::complex<double> *a,
-        std::int64_t lda, std::complex<double> *x, std::int64_t incx,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_ctrsv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower,
+                                                oneapi::mkl::transpose trans,
+                                                oneapi::mkl::diag unit_diag, std::int64_t n,
+                                                const std::complex<float> *a, std::int64_t lda,
+                                                std::complex<float> *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_ztrsv_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::uplo upper_lower,
+                                                oneapi::mkl::transpose trans,
+                                                oneapi::mkl::diag unit_diag, std::int64_t n,
+                                                const std::complex<double> *a, std::int64_t lda,
+                                                std::complex<double> *x, std::int64_t incx,
+                                                const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_sgemm_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
         std::int64_t m, std::int64_t n, std::int64_t k, float alpha, const float *a,
@@ -3676,8 +3800,7 @@ typedef struct {
         cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         std::int64_t m, std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
         std::int64_t lda, const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-        std::complex<float> *c, std::int64_t ldc,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::complex<float> *c, std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_zhemm_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         std::int64_t m, std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
@@ -3698,30 +3821,32 @@ typedef struct {
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         std::int64_t n, std::int64_t k, std::complex<float> alpha, const std::complex<float> *a,
         std::int64_t lda, const std::complex<float> *b, std::int64_t ldb, float beta,
-        std::complex<float> *c, std::int64_t ldc,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::complex<float> *c, std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_zher2k_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         std::int64_t n, std::int64_t k, std::complex<double> alpha, const std::complex<double> *a,
         std::int64_t lda, const std::complex<double> *b, std::int64_t ldb, double beta,
         std::complex<double> *c, std::int64_t ldc,
         const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_ssymm_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
-        std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda,
-        const float *b, std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-        const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_dsymm_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
-        std::int64_t m, std::int64_t n, double alpha, const double *a, std::int64_t lda,
-        const double *b, std::int64_t ldb, double beta, double *c, std::int64_t ldc,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_ssymm_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::side left_right,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t m,
+                                                std::int64_t n, float alpha, const float *a,
+                                                std::int64_t lda, const float *b, std::int64_t ldb,
+                                                float beta, float *c, std::int64_t ldc,
+                                                const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_dsymm_usm_sycl)(cl::sycl::queue &queue,
+                                                oneapi::mkl::side left_right,
+                                                oneapi::mkl::uplo upper_lower, std::int64_t m,
+                                                std::int64_t n, double alpha, const double *a,
+                                                std::int64_t lda, const double *b, std::int64_t ldb,
+                                                double beta, double *c, std::int64_t ldc,
+                                                const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_csymm_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         std::int64_t m, std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
         std::int64_t lda, const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-        std::complex<float> *c, std::int64_t ldc,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::complex<float> *c, std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_zsymm_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         std::int64_t m, std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
@@ -3735,8 +3860,7 @@ typedef struct {
     cl::sycl::event (*row_major_dsyrk_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         std::int64_t n, std::int64_t k, double alpha, const double *a, std::int64_t lda,
-        double beta, double *c, std::int64_t ldc,
-        const std::vector<cl::sycl::event> &dependencies);
+        double beta, double *c, std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_csyrk_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         std::int64_t n, std::int64_t k, std::complex<float> alpha, const std::complex<float> *a,
@@ -3791,11 +3915,13 @@ typedef struct {
         std::int64_t lda, std::int64_t stride_a, std::complex<double> beta, std::complex<double> *c,
         std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
         const std::vector<cl::sycl::event> &dependencies);
-    cl::sycl::event (*row_major_ssyr2k_usm_sycl)(
-        cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
-        std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda,
-        const float *b, std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-        const std::vector<cl::sycl::event> &dependencies);
+    cl::sycl::event (*row_major_ssyr2k_usm_sycl)(cl::sycl::queue &queue,
+                                                 oneapi::mkl::uplo upper_lower,
+                                                 oneapi::mkl::transpose trans, std::int64_t n,
+                                                 std::int64_t k, float alpha, const float *a,
+                                                 std::int64_t lda, const float *b, std::int64_t ldb,
+                                                 float beta, float *c, std::int64_t ldc,
+                                                 const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_dsyr2k_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         std::int64_t n, std::int64_t k, double alpha, const double *a, std::int64_t lda,
@@ -3805,8 +3931,7 @@ typedef struct {
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         std::int64_t n, std::int64_t k, std::complex<float> alpha, const std::complex<float> *a,
         std::int64_t lda, const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-        std::complex<float> *c, std::int64_t ldc,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::complex<float> *c, std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_zsyr2k_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
         std::int64_t n, std::int64_t k, std::complex<double> alpha, const std::complex<double> *a,
@@ -3827,8 +3952,7 @@ typedef struct {
         cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
         std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-        std::complex<float> *b, std::int64_t ldb,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::complex<float> *b, std::int64_t ldb, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_ztrmm_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
@@ -3849,8 +3973,7 @@ typedef struct {
         cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
         std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-        std::complex<float> *b, std::int64_t ldb,
-        const std::vector<cl::sycl::event> &dependencies);
+        std::complex<float> *b, std::int64_t ldb, const std::vector<cl::sycl::event> &dependencies);
     cl::sycl::event (*row_major_ztrsm_usm_sycl)(
         cl::sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,

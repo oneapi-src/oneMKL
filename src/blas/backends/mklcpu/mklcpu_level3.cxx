@@ -1273,8 +1273,7 @@ cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
 
 cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
                      diag unit_diag, int64_t m, int64_t n, float alpha, const float *a, int64_t lda,
-                     float *b, int64_t ldb,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     float *b, int64_t ldb, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1361,8 +1360,7 @@ cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
 
 cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
                      diag unit_diag, int64_t m, int64_t n, float alpha, const float *a, int64_t lda,
-                     float *b, int64_t ldb,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     float *b, int64_t ldb, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {

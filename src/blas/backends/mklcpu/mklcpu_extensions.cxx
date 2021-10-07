@@ -111,9 +111,8 @@ void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offse
                            ldb, bo, beta, c, ldc, co);
 #endif
 #ifdef ROW_MAJOR
-    gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b,
-                       ldb, bo, beta, c, ldc, co);
-
+    gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb,
+                       bo, beta, c, ldc, co);
 
 #endif
 }
@@ -124,8 +123,8 @@ void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offse
                float beta, cl::sycl::buffer<int32_t, 1> &c, int64_t ldc,
                cl::sycl::buffer<int32_t, 1> &co) {
 #ifdef COLUMN_MAJOR
-    gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b,
-                       ldb, bo, beta, c, ldc, co);
+    gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb,
+                       bo, beta, c, ldc, co);
 
 #endif
 #ifdef ROW_MAJOR
@@ -339,8 +338,8 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
                                   ao, b, ldb, bo, beta, c, ldc, co, dependencies);
 #endif
 #ifdef ROW_MAJOR
-    return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda,
-                              ao, b, ldb, bo, beta, c, ldc, co, dependencies);
+    return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao,
+                              b, ldb, bo, beta, c, ldc, co, dependencies);
 #endif
 }
 
@@ -350,8 +349,8 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
                           int8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
                           const std::vector<cl::sycl::event> &dependencies) {
 #ifdef COLUMN_MAJOR
-        return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda,
-                                  ao, b, ldb, bo, beta, c, ldc, co, dependencies);
+    return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao,
+                              b, ldb, bo, beta, c, ldc, co, dependencies);
 #endif
 #ifdef ROW_MAJOR
     if (is_int8(-int(ao)) && is_int8(-int(bo))) {

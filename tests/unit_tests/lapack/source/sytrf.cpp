@@ -244,9 +244,9 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, 
         /* Check dependency handling */
         auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
-        sycl::event func_event = oneapi::mkl::lapack::sytrf(
-            queue, uplo, n, A_dev, lda, ipiv_dev, scratchpad_dev, scratchpad_size,
-            std::vector<sycl::event>{ in_event });
+        sycl::event func_event =
+            oneapi::mkl::lapack::sytrf(queue, uplo, n, A_dev, lda, ipiv_dev, scratchpad_dev,
+                                       scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
         TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::sytrf, uplo, n,
