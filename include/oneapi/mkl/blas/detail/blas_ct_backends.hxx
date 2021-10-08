@@ -1083,538 +1083,612 @@ static inline void symv(backend_selector<backend::BACKEND> selector, uplo upper_
 
 // USM APIs
 
-static inline cl::sycl::event syr2(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n, float alpha,
-    const float *x, std::int64_t incx, const float *y, std::int64_t incy, float *a,
-    std::int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syr2(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, float alpha, const float *x, std::int64_t incx,
+                                   const float *y, std::int64_t incy, float *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syr2(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n, double alpha,
-    const double *x, std::int64_t incx, const double *y, std::int64_t incy, double *a,
-    std::int64_t lda, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syr2(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, double alpha, const double *x, std::int64_t incx,
+                                   const double *y, std::int64_t incy, double *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event scal(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, float alpha, float *x,
-    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event scal(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   float alpha, float *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event scal(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, double alpha, double *x,
-    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event scal(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   double alpha, double *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event scal(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, std::complex<float> alpha,
-    std::complex<float> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event scal(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   std::complex<float> alpha, std::complex<float> *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event scal(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, std::complex<double> alpha,
-    std::complex<double> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event scal(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   std::complex<double> alpha, std::complex<double> *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event scal(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, float alpha,
-    std::complex<float> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event scal(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   float alpha, std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event scal(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, double alpha,
-    std::complex<double> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event scal(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   double alpha, std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, const float *a, std::int64_t lda, float *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n, const float *a,
+                                   std::int64_t lda, float *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, const double *a, std::int64_t lda, double *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n, const double *a,
+                                   std::int64_t lda, double *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
-    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
-    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event tpmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, const float *a, float *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event tpmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n, const float *a,
+                                   float *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event tpmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, const double *a, double *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event tpmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n, const double *a,
+                                   double *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event tpmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, const std::complex<float> *a, std::complex<float> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event tpmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n,
+                                   const std::complex<float> *a, std::complex<float> *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event tpmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, const std::complex<double> *a, std::complex<double> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event tpmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n,
+                                   const std::complex<double> *a, std::complex<double> *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event spr(backend_selector<backend::BACKEND> selector, uplo upper_lower,
                                   std::int64_t n, float alpha, const float *x, std::int64_t incx,
-                                  float *a,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  float *a, const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event spr(backend_selector<backend::BACKEND> selector, uplo upper_lower,
                                   std::int64_t n, double alpha, const double *x, std::int64_t incx,
-                                  double *a,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  double *a, const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event hpmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n,
-    std::complex<float> alpha, const std::complex<float> *a, const std::complex<float> *x,
-    std::int64_t incx, std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event hpmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *a, const std::complex<float> *x,
+                                   std::int64_t incx, std::complex<float> beta,
+                                   std::complex<float> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event hpmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n,
-    std::complex<double> alpha, const std::complex<double> *a, const std::complex<double> *x,
-    std::int64_t incx, std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event hpmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *a, const std::complex<double> *x,
+                                   std::int64_t incx, std::complex<double> beta,
+                                   std::complex<double> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syrk(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, std::int64_t n,
-    std::int64_t k, float alpha, const float *a, std::int64_t lda, float beta, float *c,
-    std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syrk(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, std::int64_t n, std::int64_t k, float alpha,
+                                   const float *a, std::int64_t lda, float beta, float *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syrk(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, std::int64_t n,
-    std::int64_t k, double alpha, const double *a, std::int64_t lda, double beta, double *c,
-    std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syrk(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, std::int64_t n, std::int64_t k, double alpha,
+                                   const double *a, std::int64_t lda, double beta, double *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syrk(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, std::int64_t n,
-    std::int64_t k, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syrk(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, std::int64_t n, std::int64_t k,
+                                   std::complex<float> alpha, const std::complex<float> *a,
+                                   std::int64_t lda, std::complex<float> beta,
+                                   std::complex<float> *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syrk(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, std::int64_t n,
-    std::int64_t k, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syrk(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, std::int64_t n, std::int64_t k,
+                                   std::complex<double> alpha, const std::complex<double> *a,
+                                   std::int64_t lda, std::complex<double> beta,
+                                   std::complex<double> *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syrk_batch(
-    backend_selector<backend::BACKEND> selector, uplo *upper_lower, transpose *trans,
-    std::int64_t *n, std::int64_t *k, float *alpha, const float **a, std::int64_t *lda, float *beta,
-    float **c, std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syrk_batch(backend_selector<backend::BACKEND> selector,
+                                         uplo *upper_lower, transpose *trans, std::int64_t *n,
+                                         std::int64_t *k, float *alpha, const float **a,
+                                         std::int64_t *lda, float *beta, float **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syrk_batch(
-    backend_selector<backend::BACKEND> selector, uplo *upper_lower, transpose *trans,
-    std::int64_t *n, std::int64_t *k, double *alpha, const double **a, std::int64_t *lda,
-    double *beta, double **c, std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syrk_batch(backend_selector<backend::BACKEND> selector,
+                                         uplo *upper_lower, transpose *trans, std::int64_t *n,
+                                         std::int64_t *k, double *alpha, const double **a,
+                                         std::int64_t *lda, double *beta, double **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syrk_batch(
-    backend_selector<backend::BACKEND> selector, uplo *upper_lower, transpose *trans,
-    std::int64_t *n, std::int64_t *k, std::complex<float> *alpha, const std::complex<float> **a,
-    std::int64_t *lda, std::complex<float> *beta, std::complex<float> **c, std::int64_t *ldc,
-    std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syrk_batch(backend_selector<backend::BACKEND> selector,
+                                         uplo *upper_lower, transpose *trans, std::int64_t *n,
+                                         std::int64_t *k, std::complex<float> *alpha,
+                                         const std::complex<float> **a, std::int64_t *lda,
+                                         std::complex<float> *beta, std::complex<float> **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syrk_batch(
-    backend_selector<backend::BACKEND> selector, uplo *upper_lower, transpose *trans,
-    std::int64_t *n, std::int64_t *k, std::complex<double> *alpha, const std::complex<double> **a,
-    std::int64_t *lda, std::complex<double> *beta, std::complex<double> **c, std::int64_t *ldc,
-    std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syrk_batch(backend_selector<backend::BACKEND> selector,
+                                         uplo *upper_lower, transpose *trans, std::int64_t *n,
+                                         std::int64_t *k, std::complex<double> *alpha,
+                                         const std::complex<double> **a, std::int64_t *lda,
+                                         std::complex<double> *beta, std::complex<double> **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syrk_batch(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, std::int64_t n,
-    std::int64_t k, float alpha, const float *a, std::int64_t lda, std::int64_t stride_a,
-    float beta, float *c, std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syrk_batch(backend_selector<backend::BACKEND> selector,
+                                         uplo upper_lower, transpose trans, std::int64_t n,
+                                         std::int64_t k, float alpha, const float *a,
+                                         std::int64_t lda, std::int64_t stride_a, float beta,
+                                         float *c, std::int64_t ldc, std::int64_t stride_c,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syrk_batch(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, std::int64_t n,
-    std::int64_t k, double alpha, const double *a, std::int64_t lda, std::int64_t stride_a,
-    double beta, double *c, std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syrk_batch(backend_selector<backend::BACKEND> selector,
+                                         uplo upper_lower, transpose trans, std::int64_t n,
+                                         std::int64_t k, double alpha, const double *a,
+                                         std::int64_t lda, std::int64_t stride_a, double beta,
+                                         double *c, std::int64_t ldc, std::int64_t stride_c,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syrk_batch(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, std::int64_t n,
-    std::int64_t k, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    std::int64_t stride_a, std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
-    std::int64_t stride_c, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syrk_batch(backend_selector<backend::BACKEND> selector,
+                                         uplo upper_lower, transpose trans, std::int64_t n,
+                                         std::int64_t k, std::complex<float> alpha,
+                                         const std::complex<float> *a, std::int64_t lda,
+                                         std::int64_t stride_a, std::complex<float> beta,
+                                         std::complex<float> *c, std::int64_t ldc,
+                                         std::int64_t stride_c, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syrk_batch(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, std::int64_t n,
-    std::int64_t k, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    std::int64_t stride_a, std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
-    std::int64_t stride_c, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syrk_batch(backend_selector<backend::BACKEND> selector,
+                                         uplo upper_lower, transpose trans, std::int64_t n,
+                                         std::int64_t k, std::complex<double> alpha,
+                                         const std::complex<double> *a, std::int64_t lda,
+                                         std::int64_t stride_a, std::complex<double> beta,
+                                         std::complex<double> *c, std::int64_t ldc,
+                                         std::int64_t stride_c, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event her2(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n,
-    std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
-    const std::complex<float> *y, std::int64_t incy, std::complex<float> *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event her2(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   const std::complex<float> *y, std::int64_t incy,
+                                   std::complex<float> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event her2(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n,
-    std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
-    const std::complex<double> *y, std::int64_t incy, std::complex<double> *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event her2(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   const std::complex<double> *y, std::int64_t incy,
+                                   std::complex<double> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event hbmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n, std::int64_t k,
-    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
-    std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event hbmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, std::int64_t k, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   std::complex<float> beta, std::complex<float> *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event hbmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n, std::int64_t k,
-    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
-    std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event hbmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, std::int64_t k, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   std::complex<double> beta, std::complex<double> *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event rot(backend_selector<backend::BACKEND> selector, std::int64_t n,
                                   std::complex<float> *x, std::int64_t incx, std::complex<float> *y,
                                   std::int64_t incy, float c, float s,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event rot(backend_selector<backend::BACKEND> selector, std::int64_t n,
                                   std::complex<double> *x, std::int64_t incx,
                                   std::complex<double> *y, std::int64_t incy, double c, double s,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event rot(backend_selector<backend::BACKEND> selector, std::int64_t n,
                                   float *x, std::int64_t incx, float *y, std::int64_t incy, float c,
-                                  float s,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  float s, const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event rot(backend_selector<backend::BACKEND> selector, std::int64_t n,
                                   double *x, std::int64_t incx, double *y, std::int64_t incy,
                                   double c, double s,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event axpy(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, float alpha, const float *x,
-    std::int64_t incx, float *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event axpy(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   float alpha, const float *x, std::int64_t incx, float *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event axpy(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, double alpha, const double *x,
-    std::int64_t incx, double *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event axpy(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   double alpha, const double *x, std::int64_t incx, double *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event axpy(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, std::complex<float> alpha,
-    const std::complex<float> *x, std::int64_t incx, std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event axpy(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   std::complex<float> alpha, const std::complex<float> *x,
+                                   std::int64_t incx, std::complex<float> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event axpy(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *x, std::int64_t incx, std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event axpy(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   std::complex<double> alpha, const std::complex<double> *x,
+                                   std::int64_t incx, std::complex<double> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event axpy_batch(
-    backend_selector<backend::BACKEND> selector, std::int64_t *n, float *alpha, const float **x,
-    std::int64_t *incx, float **y, std::int64_t *incy, std::int64_t group_count,
-    std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event axpy_batch(backend_selector<backend::BACKEND> selector,
+                                         std::int64_t *n, float *alpha, const float **x,
+                                         std::int64_t *incx, float **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event axpy_batch(
-    backend_selector<backend::BACKEND> selector, std::int64_t *n, double *alpha, const double **x,
-    std::int64_t *incx, double **y, std::int64_t *incy, std::int64_t group_count,
-    std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event axpy_batch(backend_selector<backend::BACKEND> selector,
+                                         std::int64_t *n, double *alpha, const double **x,
+                                         std::int64_t *incx, double **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event axpy_batch(
-    backend_selector<backend::BACKEND> selector, std::int64_t *n, std::complex<float> *alpha,
-    const std::complex<float> **x, std::int64_t *incx, std::complex<float> **y, std::int64_t *incy,
-    std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event axpy_batch(backend_selector<backend::BACKEND> selector,
+                                         std::int64_t *n, std::complex<float> *alpha,
+                                         const std::complex<float> **x, std::int64_t *incx,
+                                         std::complex<float> **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event axpy_batch(
-    backend_selector<backend::BACKEND> selector, std::int64_t *n, std::complex<double> *alpha,
-    const std::complex<double> **x, std::int64_t *incx, std::complex<double> **y,
-    std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event axpy_batch(backend_selector<backend::BACKEND> selector,
+                                         std::int64_t *n, std::complex<double> *alpha,
+                                         const std::complex<double> **x, std::int64_t *incx,
+                                         std::complex<double> **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event axpy_batch(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, float alpha, const float *x,
-    std::int64_t incx, std::int64_t stridex, float *y, std::int64_t incy, std::int64_t stridey,
-    std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event axpy_batch(backend_selector<backend::BACKEND> selector,
+                                         std::int64_t n, float alpha, const float *x,
+                                         std::int64_t incx, std::int64_t stridex, float *y,
+                                         std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event axpy_batch(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, double alpha, const double *x,
-    std::int64_t incx, std::int64_t stridex, double *y, std::int64_t incy, std::int64_t stridey,
-    std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event axpy_batch(backend_selector<backend::BACKEND> selector,
+                                         std::int64_t n, double alpha, const double *x,
+                                         std::int64_t incx, std::int64_t stridex, double *y,
+                                         std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event axpy_batch(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, std::complex<float> alpha,
-    const std::complex<float> *x, std::int64_t incx, std::int64_t stridex, std::complex<float> *y,
-    std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event axpy_batch(backend_selector<backend::BACKEND> selector,
+                                         std::int64_t n, std::complex<float> alpha,
+                                         const std::complex<float> *x, std::int64_t incx,
+                                         std::int64_t stridex, std::complex<float> *y,
+                                         std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event axpy_batch(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *x, std::int64_t incx, std::int64_t stridex, std::complex<double> *y,
-    std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event axpy_batch(backend_selector<backend::BACKEND> selector,
+                                         std::int64_t n, std::complex<double> alpha,
+                                         const std::complex<double> *x, std::int64_t incx,
+                                         std::int64_t stridex, std::complex<double> *y,
+                                         std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event axpby(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, float alpha, const float *x,
-    std::int64_t incx, const float beta, float *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event axpby(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                    float alpha, const float *x, std::int64_t incx,
+                                    const float beta, float *y, std::int64_t incy,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event axpby(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, double alpha, const double *x,
-    std::int64_t incx, const double beta, double *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event axpby(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                    double alpha, const double *x, std::int64_t incx,
+                                    const double beta, double *y, std::int64_t incy,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event axpby(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, std::complex<float> alpha,
-    const std::complex<float> *x, std::int64_t incx, const std::complex<float> beta,
-    std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event axpby(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                    std::complex<float> alpha, const std::complex<float> *x,
+                                    std::int64_t incx, const std::complex<float> beta,
+                                    std::complex<float> *y, std::int64_t incy,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event axpby(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *x, std::int64_t incx, const std::complex<double> beta,
-    std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event axpby(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                    std::complex<double> alpha, const std::complex<double> *x,
+                                    std::int64_t incx, const std::complex<double> beta,
+                                    std::complex<double> *y, std::int64_t incy,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gerc(
-    backend_selector<backend::BACKEND> selector, std::int64_t m, std::int64_t n,
-    std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
-    const std::complex<float> *y, std::int64_t incy, std::complex<float> *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gerc(backend_selector<backend::BACKEND> selector, std::int64_t m,
+                                   std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   const std::complex<float> *y, std::int64_t incy,
+                                   std::complex<float> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gerc(
-    backend_selector<backend::BACKEND> selector, std::int64_t m, std::int64_t n,
-    std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
-    const std::complex<double> *y, std::int64_t incy, std::complex<double> *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gerc(backend_selector<backend::BACKEND> selector, std::int64_t m,
+                                   std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   const std::complex<double> *y, std::int64_t incy,
+                                   std::complex<double> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syr2k(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, std::int64_t n,
-    std::int64_t k, float alpha, const float *a, std::int64_t lda, const float *b, std::int64_t ldb,
-    float beta, float *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syr2k(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                    transpose trans, std::int64_t n, std::int64_t k, float alpha,
+                                    const float *a, std::int64_t lda, const float *b,
+                                    std::int64_t ldb, float beta, float *c, std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syr2k(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, std::int64_t n,
-    std::int64_t k, double alpha, const double *a, std::int64_t lda, const double *b,
-    std::int64_t ldb, double beta, double *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syr2k(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                    transpose trans, std::int64_t n, std::int64_t k, double alpha,
+                                    const double *a, std::int64_t lda, const double *b,
+                                    std::int64_t ldb, double beta, double *c, std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syr2k(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, std::int64_t n,
-    std::int64_t k, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-    std::complex<float> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syr2k(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                    transpose trans, std::int64_t n, std::int64_t k,
+                                    std::complex<float> alpha, const std::complex<float> *a,
+                                    std::int64_t lda, const std::complex<float> *b,
+                                    std::int64_t ldb, std::complex<float> beta,
+                                    std::complex<float> *c, std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event syr2k(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, std::int64_t n,
-    std::int64_t k, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
-    std::complex<double> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event syr2k(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                    transpose trans, std::int64_t n, std::int64_t k,
+                                    std::complex<double> alpha, const std::complex<double> *a,
+                                    std::int64_t lda, const std::complex<double> *b,
+                                    std::int64_t ldb, std::complex<double> beta,
+                                    std::complex<double> *c, std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemv(
-    backend_selector<backend::BACKEND> selector, transpose trans, std::int64_t m, std::int64_t n,
-    float alpha, const float *a, std::int64_t lda, const float *x, std::int64_t incx, float beta,
-    float *y, std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemv(backend_selector<backend::BACKEND> selector, transpose trans,
+                                   std::int64_t m, std::int64_t n, float alpha, const float *a,
+                                   std::int64_t lda, const float *x, std::int64_t incx, float beta,
+                                   float *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemv(
-    backend_selector<backend::BACKEND> selector, transpose trans, std::int64_t m, std::int64_t n,
-    double alpha, const double *a, std::int64_t lda, const double *x, std::int64_t incx,
-    double beta, double *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemv(backend_selector<backend::BACKEND> selector, transpose trans,
+                                   std::int64_t m, std::int64_t n, double alpha, const double *a,
+                                   std::int64_t lda, const double *x, std::int64_t incx,
+                                   double beta, double *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemv(
-    backend_selector<backend::BACKEND> selector, transpose trans, std::int64_t m, std::int64_t n,
-    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
-    std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemv(backend_selector<backend::BACKEND> selector, transpose trans,
+                                   std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   std::complex<float> beta, std::complex<float> *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemv(
-    backend_selector<backend::BACKEND> selector, transpose trans, std::int64_t m, std::int64_t n,
-    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
-    std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemv(backend_selector<backend::BACKEND> selector, transpose trans,
+                                   std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   std::complex<double> beta, std::complex<double> *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemv_batch(
-    backend_selector<backend::BACKEND> selector, transpose trans, std::int64_t m, std::int64_t n,
-    float alpha, const float *a, std::int64_t lda, std::int64_t stridea, const float *x,
-    std::int64_t incx, std::int64_t stridex, float beta, float *y, std::int64_t incy,
-    std::int64_t stridey, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemv_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose trans, std::int64_t m, std::int64_t n,
+                                         float alpha, const float *a, std::int64_t lda,
+                                         std::int64_t stridea, const float *x, std::int64_t incx,
+                                         std::int64_t stridex, float beta, float *y,
+                                         std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemv_batch(
-    backend_selector<backend::BACKEND> selector, transpose trans, std::int64_t m, std::int64_t n,
-    double alpha, const double *a, std::int64_t lda, std::int64_t stridea, const double *x,
-    std::int64_t incx, std::int64_t stridex, double beta, double *y, std::int64_t incy,
-    std::int64_t stridey, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemv_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose trans, std::int64_t m, std::int64_t n,
+                                         double alpha, const double *a, std::int64_t lda,
+                                         std::int64_t stridea, const double *x, std::int64_t incx,
+                                         std::int64_t stridex, double beta, double *y,
+                                         std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event gemv_batch(
     backend_selector<backend::BACKEND> selector, transpose trans, std::int64_t m, std::int64_t n,
     std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda, std::int64_t stridea,
     const std::complex<float> *x, std::int64_t incx, std::int64_t stridex, std::complex<float> beta,
     std::complex<float> *y, std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+    const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event gemv_batch(
     backend_selector<backend::BACKEND> selector, transpose trans, std::int64_t m, std::int64_t n,
     std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
     std::int64_t stridea, const std::complex<double> *x, std::int64_t incx, std::int64_t stridex,
     std::complex<double> beta, std::complex<double> *y, std::int64_t incy, std::int64_t stridey,
-    std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+    std::int64_t batch_size, const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemv_batch(
-    backend_selector<backend::BACKEND> selector, transpose *trans, std::int64_t *m, std::int64_t *n,
-    float *alpha, const float **a, std::int64_t *lda, const float **x, std::int64_t *incx,
-    float *beta, float **y, std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemv_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose *trans, std::int64_t *m, std::int64_t *n,
+                                         float *alpha, const float **a, std::int64_t *lda,
+                                         const float **x, std::int64_t *incx, float *beta,
+                                         float **y, std::int64_t *incy, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemv_batch(
-    backend_selector<backend::BACKEND> selector, transpose *trans, std::int64_t *m, std::int64_t *n,
-    double *alpha, const double **a, std::int64_t *lda, const double **x, std::int64_t *incx,
-    double *beta, double **y, std::int64_t *incy, std::int64_t group_count,
-    std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemv_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose *trans, std::int64_t *m, std::int64_t *n,
+                                         double *alpha, const double **a, std::int64_t *lda,
+                                         const double **x, std::int64_t *incx, double *beta,
+                                         double **y, std::int64_t *incy, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemv_batch(
-    backend_selector<backend::BACKEND> selector, transpose *trans, std::int64_t *m, std::int64_t *n,
-    std::complex<float> *alpha, const std::complex<float> **a, std::int64_t *lda,
-    const std::complex<float> **x, std::int64_t *incx, std::complex<float> *beta,
-    std::complex<float> **y, std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemv_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose *trans, std::int64_t *m, std::int64_t *n,
+                                         std::complex<float> *alpha, const std::complex<float> **a,
+                                         std::int64_t *lda, const std::complex<float> **x,
+                                         std::int64_t *incx, std::complex<float> *beta,
+                                         std::complex<float> **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event gemv_batch(
     backend_selector<backend::BACKEND> selector, transpose *trans, std::int64_t *m, std::int64_t *n,
     std::complex<double> *alpha, const std::complex<double> **a, std::int64_t *lda,
     const std::complex<double> **x, std::int64_t *incx, std::complex<double> *beta,
     std::complex<double> **y, std::int64_t *incy, std::int64_t group_count,
-    std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+    std::int64_t *group_size, const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event dgmm_batch(
-    backend_selector<backend::BACKEND> selector, side left_right, std::int64_t m, std::int64_t n,
-    const float *a, std::int64_t lda, std::int64_t stridea, const float *x, std::int64_t incx,
-    std::int64_t stridex, float *c, std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event dgmm_batch(backend_selector<backend::BACKEND> selector,
+                                         side left_right, std::int64_t m, std::int64_t n,
+                                         const float *a, std::int64_t lda, std::int64_t stridea,
+                                         const float *x, std::int64_t incx, std::int64_t stridex,
+                                         float *c, std::int64_t ldc, std::int64_t stridec,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event dgmm_batch(
-    backend_selector<backend::BACKEND> selector, side left_right, std::int64_t m, std::int64_t n,
-    const double *a, std::int64_t lda, std::int64_t stridea, const double *x, std::int64_t incx,
-    std::int64_t stridex, double *c, std::int64_t ldc, std::int64_t stridec,
-    std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event dgmm_batch(backend_selector<backend::BACKEND> selector,
+                                         side left_right, std::int64_t m, std::int64_t n,
+                                         const double *a, std::int64_t lda, std::int64_t stridea,
+                                         const double *x, std::int64_t incx, std::int64_t stridex,
+                                         double *c, std::int64_t ldc, std::int64_t stridec,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event dgmm_batch(
-    backend_selector<backend::BACKEND> selector, side left_right, std::int64_t m, std::int64_t n,
-    const std::complex<float> *a, std::int64_t lda, std::int64_t stridea,
-    const std::complex<float> *x, std::int64_t incx, std::int64_t stridex, std::complex<float> *c,
-    std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event dgmm_batch(backend_selector<backend::BACKEND> selector,
+                                         side left_right, std::int64_t m, std::int64_t n,
+                                         const std::complex<float> *a, std::int64_t lda,
+                                         std::int64_t stridea, const std::complex<float> *x,
+                                         std::int64_t incx, std::int64_t stridex,
+                                         std::complex<float> *c, std::int64_t ldc,
+                                         std::int64_t stridec, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event dgmm_batch(
-    backend_selector<backend::BACKEND> selector, side left_right, std::int64_t m, std::int64_t n,
-    const std::complex<double> *a, std::int64_t lda, std::int64_t stridea,
-    const std::complex<double> *x, std::int64_t incx, std::int64_t stridex, std::complex<double> *c,
-    std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event dgmm_batch(backend_selector<backend::BACKEND> selector,
+                                         side left_right, std::int64_t m, std::int64_t n,
+                                         const std::complex<double> *a, std::int64_t lda,
+                                         std::int64_t stridea, const std::complex<double> *x,
+                                         std::int64_t incx, std::int64_t stridex,
+                                         std::complex<double> *c, std::int64_t ldc,
+                                         std::int64_t stridec, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event dgmm_batch(
-    backend_selector<backend::BACKEND> selector, side *left_right, std::int64_t *m, std::int64_t *n,
-    const float **a, std::int64_t *lda, const float **x, std::int64_t *incx, float **c,
-    std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event dgmm_batch(backend_selector<backend::BACKEND> selector,
+                                         side *left_right, std::int64_t *m, std::int64_t *n,
+                                         const float **a, std::int64_t *lda, const float **x,
+                                         std::int64_t *incx, float **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event dgmm_batch(
-    backend_selector<backend::BACKEND> selector, side *left_right, std::int64_t *m, std::int64_t *n,
-    const double **a, std::int64_t *lda, const double **x, std::int64_t *incx, double **c,
-    std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event dgmm_batch(backend_selector<backend::BACKEND> selector,
+                                         side *left_right, std::int64_t *m, std::int64_t *n,
+                                         const double **a, std::int64_t *lda, const double **x,
+                                         std::int64_t *incx, double **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event dgmm_batch(
-    backend_selector<backend::BACKEND> selector, side *left_right, std::int64_t *m, std::int64_t *n,
-    const std::complex<float> **a, std::int64_t *lda, const std::complex<float> **x,
-    std::int64_t *incx, std::complex<float> **c, std::int64_t *ldc, std::int64_t group_count,
-    std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event dgmm_batch(backend_selector<backend::BACKEND> selector,
+                                         side *left_right, std::int64_t *m, std::int64_t *n,
+                                         const std::complex<float> **a, std::int64_t *lda,
+                                         const std::complex<float> **x, std::int64_t *incx,
+                                         std::complex<float> **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event dgmm_batch(
-    backend_selector<backend::BACKEND> selector, side *left_right, std::int64_t *m, std::int64_t *n,
-    const std::complex<double> **a, std::int64_t *lda, const std::complex<double> **x,
-    std::int64_t *incx, std::complex<double> **c, std::int64_t *ldc, std::int64_t group_count,
-    std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event dgmm_batch(backend_selector<backend::BACKEND> selector,
+                                         side *left_right, std::int64_t *m, std::int64_t *n,
+                                         const std::complex<double> **a, std::int64_t *lda,
+                                         const std::complex<double> **x, std::int64_t *incx,
+                                         std::complex<double> **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event her(backend_selector<backend::BACKEND> selector, uplo upper_lower,
                                   std::int64_t n, float alpha, const std::complex<float> *x,
                                   std::int64_t incx, std::complex<float> *a, std::int64_t lda,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event her(backend_selector<backend::BACKEND> selector, uplo upper_lower,
                                   std::int64_t n, double alpha, const std::complex<double> *x,
                                   std::int64_t incx, std::complex<double> *a, std::int64_t lda,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event hpr(backend_selector<backend::BACKEND> selector, uplo upper_lower,
                                   std::int64_t n, float alpha, const std::complex<float> *x,
                                   std::int64_t incx, std::complex<float> *a,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event hpr(backend_selector<backend::BACKEND> selector, uplo upper_lower,
                                   std::int64_t n, double alpha, const std::complex<double> *x,
                                   std::int64_t incx, std::complex<double> *a,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event iamin(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const float *x, std::int64_t incx,
-    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event iamin(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                    const float *x, std::int64_t incx, std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event iamin(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const double *x, std::int64_t incx,
-    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event iamin(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                    const double *x, std::int64_t incx, std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event iamin(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const std::complex<float> *x,
-    std::int64_t incx, std::int64_t *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event iamin(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                    const std::complex<float> *x, std::int64_t incx,
+                                    std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event iamin(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const std::complex<double> *x,
-    std::int64_t incx, std::int64_t *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event iamin(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                    const std::complex<double> *x, std::int64_t incx,
+                                    std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemm_batch(
-    backend_selector<backend::BACKEND> selector, transpose *transa, transpose *transb,
-    std::int64_t *m, std::int64_t *n, std::int64_t *k, float *alpha, const float **a,
-    std::int64_t *lda, const float **b, std::int64_t *ldb, float *beta, float **c,
-    std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemm_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose *transa, transpose *transb, std::int64_t *m,
+                                         std::int64_t *n, std::int64_t *k, float *alpha,
+                                         const float **a, std::int64_t *lda, const float **b,
+                                         std::int64_t *ldb, float *beta, float **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemm_batch(
-    backend_selector<backend::BACKEND> selector, transpose *transa, transpose *transb,
-    std::int64_t *m, std::int64_t *n, std::int64_t *k, double *alpha, const double **a,
-    std::int64_t *lda, const double **b, std::int64_t *ldb, double *beta, double **c,
-    std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemm_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose *transa, transpose *transb, std::int64_t *m,
+                                         std::int64_t *n, std::int64_t *k, double *alpha,
+                                         const double **a, std::int64_t *lda, const double **b,
+                                         std::int64_t *ldb, double *beta, double **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemm_batch(
-    backend_selector<backend::BACKEND> selector, transpose *transa, transpose *transb,
-    std::int64_t *m, std::int64_t *n, std::int64_t *k, std::complex<float> *alpha,
-    const std::complex<float> **a, std::int64_t *lda, const std::complex<float> **b,
-    std::int64_t *ldb, std::complex<float> *beta, std::complex<float> **c, std::int64_t *ldc,
-    std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemm_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose *transa, transpose *transb, std::int64_t *m,
+                                         std::int64_t *n, std::int64_t *k,
+                                         std::complex<float> *alpha, const std::complex<float> **a,
+                                         std::int64_t *lda, const std::complex<float> **b,
+                                         std::int64_t *ldb, std::complex<float> *beta,
+                                         std::complex<float> **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event gemm_batch(
     backend_selector<backend::BACKEND> selector, transpose *transa, transpose *transb,
@@ -1622,28 +1696,33 @@ static inline cl::sycl::event gemm_batch(
     const std::complex<double> **a, std::int64_t *lda, const std::complex<double> **b,
     std::int64_t *ldb, std::complex<double> *beta, std::complex<double> **c, std::int64_t *ldc,
     std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemm_batch(
-    backend_selector<backend::BACKEND> selector, transpose *transa, transpose *transb,
-    std::int64_t *m, std::int64_t *n, std::int64_t *k, half *alpha, const half **a,
-    std::int64_t *lda, const half **b, std::int64_t *ldb, half *beta, half **c, std::int64_t *ldc,
-    std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemm_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose *transa, transpose *transb, std::int64_t *m,
+                                         std::int64_t *n, std::int64_t *k, half *alpha,
+                                         const half **a, std::int64_t *lda, const half **b,
+                                         std::int64_t *ldb, half *beta, half **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemm_batch(
-    backend_selector<backend::BACKEND> selector, transpose transa, transpose transb, std::int64_t m,
-    std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda,
-    std::int64_t stride_a, const float *b, std::int64_t ldb, std::int64_t stride_b, float beta,
-    float *c, std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemm_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose transa, transpose transb, std::int64_t m,
+                                         std::int64_t n, std::int64_t k, float alpha,
+                                         const float *a, std::int64_t lda, std::int64_t stride_a,
+                                         const float *b, std::int64_t ldb, std::int64_t stride_b,
+                                         float beta, float *c, std::int64_t ldc,
+                                         std::int64_t stride_c, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemm_batch(
-    backend_selector<backend::BACKEND> selector, transpose transa, transpose transb, std::int64_t m,
-    std::int64_t n, std::int64_t k, double alpha, const double *a, std::int64_t lda,
-    std::int64_t stride_a, const double *b, std::int64_t ldb, std::int64_t stride_b, double beta,
-    double *c, std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemm_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose transa, transpose transb, std::int64_t m,
+                                         std::int64_t n, std::int64_t k, double alpha,
+                                         const double *a, std::int64_t lda, std::int64_t stride_a,
+                                         const double *b, std::int64_t ldb, std::int64_t stride_b,
+                                         double beta, double *c, std::int64_t ldc,
+                                         std::int64_t stride_c, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event gemm_batch(
     backend_selector<backend::BACKEND> selector, transpose transa, transpose transb, std::int64_t m,
@@ -1651,7 +1730,7 @@ static inline cl::sycl::event gemm_batch(
     std::int64_t lda, std::int64_t stride_a, const std::complex<float> *b, std::int64_t ldb,
     std::int64_t stride_b, std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
     std::int64_t stride_c, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+    const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event gemm_batch(
     backend_selector<backend::BACKEND> selector, transpose transa, transpose transb, std::int64_t m,
@@ -1659,682 +1738,746 @@ static inline cl::sycl::event gemm_batch(
     std::int64_t lda, std::int64_t stride_a, const std::complex<double> *b, std::int64_t ldb,
     std::int64_t stride_b, std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
     std::int64_t stride_c, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemm_batch(
-    backend_selector<backend::BACKEND> selector, transpose transa, transpose transb, std::int64_t m,
-    std::int64_t n, std::int64_t k, half alpha, const half *a, std::int64_t lda,
-    std::int64_t stride_a, const half *b, std::int64_t ldb, std::int64_t stride_b, half beta,
-    half *c, std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemm_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose transa, transpose transb, std::int64_t m,
+                                         std::int64_t n, std::int64_t k, half alpha, const half *a,
+                                         std::int64_t lda, std::int64_t stride_a, const half *b,
+                                         std::int64_t ldb, std::int64_t stride_b, half beta,
+                                         half *c, std::int64_t ldc, std::int64_t stride_c,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event spmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n, float alpha,
-    const float *a, const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event spmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, float alpha, const float *a, const float *x,
+                                   std::int64_t incx, float beta, float *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event spmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n, double alpha,
-    const double *a, const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event spmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, double alpha, const double *a, const double *x,
+                                   std::int64_t incx, double beta, double *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event swap(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, float *x, std::int64_t incx,
-    float *y, std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event swap(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   float *x, std::int64_t incx, float *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event swap(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, double *x, std::int64_t incx,
-    double *y, std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event swap(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   double *x, std::int64_t incx, double *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event swap(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, std::complex<float> *x,
-    std::int64_t incx, std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event swap(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   std::complex<float> *x, std::int64_t incx,
+                                   std::complex<float> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event swap(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, std::complex<double> *x,
-    std::int64_t incx, std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event swap(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   std::complex<double> *x, std::int64_t incx,
+                                   std::complex<double> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event geru(
-    backend_selector<backend::BACKEND> selector, std::int64_t m, std::int64_t n,
-    std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
-    const std::complex<float> *y, std::int64_t incy, std::complex<float> *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event geru(backend_selector<backend::BACKEND> selector, std::int64_t m,
+                                   std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   const std::complex<float> *y, std::int64_t incy,
+                                   std::complex<float> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event geru(
-    backend_selector<backend::BACKEND> selector, std::int64_t m, std::int64_t n,
-    std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
-    const std::complex<double> *y, std::int64_t incy, std::complex<double> *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event geru(backend_selector<backend::BACKEND> selector, std::int64_t m,
+                                   std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   const std::complex<double> *y, std::int64_t incy,
+                                   std::complex<double> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event nrm2(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const std::complex<float> *x,
-    std::int64_t incx, float *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event nrm2(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   const std::complex<float> *x, std::int64_t incx, float *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event nrm2(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const std::complex<double> *x,
-    std::int64_t incx, double *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event nrm2(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   const std::complex<double> *x, std::int64_t incx, double *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event nrm2(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const float *x, std::int64_t incx,
-    float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event nrm2(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   const float *x, std::int64_t incx, float *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event nrm2(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const double *x, std::int64_t incx,
-    double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event nrm2(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   const double *x, std::int64_t incx, double *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemm(
-    backend_selector<backend::BACKEND> selector, transpose transa, transpose transb, std::int64_t m,
-    std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda, const float *b,
-    std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemm(backend_selector<backend::BACKEND> selector, transpose transa,
+                                   transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+                                   float alpha, const float *a, std::int64_t lda, const float *b,
+                                   std::int64_t ldb, float beta, float *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemm(
-    backend_selector<backend::BACKEND> selector, transpose transa, transpose transb, std::int64_t m,
-    std::int64_t n, std::int64_t k, double alpha, const double *a, std::int64_t lda,
-    const double *b, std::int64_t ldb, double beta, double *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemm(backend_selector<backend::BACKEND> selector, transpose transa,
+                                   transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+                                   double alpha, const double *a, std::int64_t lda, const double *b,
+                                   std::int64_t ldb, double beta, double *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemm(
-    backend_selector<backend::BACKEND> selector, transpose transa, transpose transb, std::int64_t m,
-    std::int64_t n, std::int64_t k, std::complex<float> alpha, const std::complex<float> *a,
-    std::int64_t lda, const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-    std::complex<float> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemm(backend_selector<backend::BACKEND> selector, transpose transa,
+                                   transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+                                   std::complex<float> alpha, const std::complex<float> *a,
+                                   std::int64_t lda, const std::complex<float> *b, std::int64_t ldb,
+                                   std::complex<float> beta, std::complex<float> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemm(
-    backend_selector<backend::BACKEND> selector, transpose transa, transpose transb, std::int64_t m,
-    std::int64_t n, std::int64_t k, std::complex<double> alpha, const std::complex<double> *a,
-    std::int64_t lda, const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
-    std::complex<double> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemm(backend_selector<backend::BACKEND> selector, transpose transa,
+                                   transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+                                   std::complex<double> alpha, const std::complex<double> *a,
+                                   std::int64_t lda, const std::complex<double> *b,
+                                   std::int64_t ldb, std::complex<double> beta,
+                                   std::complex<double> *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemm(
-    backend_selector<backend::BACKEND> selector, transpose transa, transpose transb, std::int64_t m,
-    std::int64_t n, std::int64_t k, half alpha, const half *a, std::int64_t lda, const half *b,
-    std::int64_t ldb, half beta, half *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemm(backend_selector<backend::BACKEND> selector, transpose transa,
+                                   transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+                                   half alpha, const half *a, std::int64_t lda, const half *b,
+                                   std::int64_t ldb, half beta, half *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemm(
-    backend_selector<backend::BACKEND> selector, transpose transa, transpose transb, std::int64_t m,
-    std::int64_t n, std::int64_t k, float alpha, const half *a, std::int64_t lda, const half *b,
-    std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemm(backend_selector<backend::BACKEND> selector, transpose transa,
+                                   transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+                                   float alpha, const half *a, std::int64_t lda, const half *b,
+                                   std::int64_t ldb, float beta, float *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemm(
-    backend_selector<backend::BACKEND> selector, transpose transa, transpose transb, std::int64_t m,
-    std::int64_t n, std::int64_t k, float alpha, const bfloat16 *a, std::int64_t lda,
-    const bfloat16 *b, std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemm(backend_selector<backend::BACKEND> selector, transpose transa,
+                                   transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+                                   float alpha, const bfloat16 *a, std::int64_t lda,
+                                   const bfloat16 *b, std::int64_t ldb, float beta, float *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event herk(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, std::int64_t n,
-    std::int64_t k, float alpha, const std::complex<float> *a, std::int64_t lda, float beta,
-    std::complex<float> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event herk(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, std::int64_t n, std::int64_t k, float alpha,
+                                   const std::complex<float> *a, std::int64_t lda, float beta,
+                                   std::complex<float> *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event herk(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, std::int64_t n,
-    std::int64_t k, double alpha, const std::complex<double> *a, std::int64_t lda, double beta,
-    std::complex<double> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event herk(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, std::int64_t n, std::int64_t k, double alpha,
+                                   const std::complex<double> *a, std::int64_t lda, double beta,
+                                   std::complex<double> *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event ger(backend_selector<backend::BACKEND> selector, std::int64_t m,
                                   std::int64_t n, float alpha, const float *x, std::int64_t incx,
                                   const float *y, std::int64_t incy, float *a, std::int64_t lda,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event ger(backend_selector<backend::BACKEND> selector, std::int64_t m,
                                   std::int64_t n, double alpha, const double *x, std::int64_t incx,
                                   const double *y, std::int64_t incy, double *a, std::int64_t lda,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trsm(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda,
-    float *b, std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trsm(backend_selector<backend::BACKEND> selector, side left_right,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t m, std::int64_t n, float alpha, const float *a,
+                                   std::int64_t lda, float *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trsm(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t m, std::int64_t n, double alpha, const double *a, std::int64_t lda,
-    double *b, std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trsm(backend_selector<backend::BACKEND> selector, side left_right,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t m, std::int64_t n, double alpha, const double *a,
+                                   std::int64_t lda, double *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trsm(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t m, std::int64_t n, std::complex<float> alpha,
-    const std::complex<float> *a, std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trsm(backend_selector<backend::BACKEND> selector, side left_right,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   std::complex<float> *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trsm(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t m, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *a, std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trsm(backend_selector<backend::BACKEND> selector, side left_right,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   std::complex<double> *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trsm_batch(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, transpose trans,
-    diag unit_diag, int64_t m, int64_t n, float alpha, const float *a, int64_t lda,
-    int64_t stride_a, float *b, int64_t ldb, int64_t stride_b, int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trsm_batch(backend_selector<backend::BACKEND> selector,
+                                         side left_right, uplo upper_lower, transpose trans,
+                                         diag unit_diag, int64_t m, int64_t n, float alpha,
+                                         const float *a, int64_t lda, int64_t stride_a, float *b,
+                                         int64_t ldb, int64_t stride_b, int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trsm_batch(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, transpose trans,
-    diag unit_diag, int64_t m, int64_t n, double alpha, const double *a, int64_t lda,
-    int64_t stride_a, double *b, int64_t ldb, int64_t stride_b, int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trsm_batch(backend_selector<backend::BACKEND> selector,
+                                         side left_right, uplo upper_lower, transpose trans,
+                                         diag unit_diag, int64_t m, int64_t n, double alpha,
+                                         const double *a, int64_t lda, int64_t stride_a, double *b,
+                                         int64_t ldb, int64_t stride_b, int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trsm_batch(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, transpose trans,
-    diag unit_diag, int64_t m, int64_t n, std::complex<float> alpha, const std::complex<float> *a,
-    int64_t lda, int64_t stride_a, std::complex<float> *b, int64_t ldb, int64_t stride_b,
-    int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trsm_batch(backend_selector<backend::BACKEND> selector,
+                                         side left_right, uplo upper_lower, transpose trans,
+                                         diag unit_diag, int64_t m, int64_t n,
+                                         std::complex<float> alpha, const std::complex<float> *a,
+                                         int64_t lda, int64_t stride_a, std::complex<float> *b,
+                                         int64_t ldb, int64_t stride_b, int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trsm_batch(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, transpose trans,
-    diag unit_diag, int64_t m, int64_t n, std::complex<double> alpha, const std::complex<double> *a,
-    int64_t lda, int64_t stride_a, std::complex<double> *b, int64_t ldb, int64_t stride_b,
-    int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trsm_batch(backend_selector<backend::BACKEND> selector,
+                                         side left_right, uplo upper_lower, transpose trans,
+                                         diag unit_diag, int64_t m, int64_t n,
+                                         std::complex<double> alpha, const std::complex<double> *a,
+                                         int64_t lda, int64_t stride_a, std::complex<double> *b,
+                                         int64_t ldb, int64_t stride_b, int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trsm_batch(
-    backend_selector<backend::BACKEND> selector, side *left_right, uplo *upper_lower,
-    transpose *trans, diag *unit_diag, int64_t *m, int64_t *n, float *alpha, const float **a,
-    int64_t *lda, float **b, int64_t *ldb, int64_t group_count, int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trsm_batch(backend_selector<backend::BACKEND> selector,
+                                         side *left_right, uplo *upper_lower, transpose *trans,
+                                         diag *unit_diag, int64_t *m, int64_t *n, float *alpha,
+                                         const float **a, int64_t *lda, float **b, int64_t *ldb,
+                                         int64_t group_count, int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trsm_batch(
-    backend_selector<backend::BACKEND> selector, side *left_right, uplo *upper_lower,
-    transpose *trans, diag *unit_diag, int64_t *m, int64_t *n, double *alpha, const double **a,
-    int64_t *lda, double **b, int64_t *ldb, int64_t group_count, int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trsm_batch(backend_selector<backend::BACKEND> selector,
+                                         side *left_right, uplo *upper_lower, transpose *trans,
+                                         diag *unit_diag, int64_t *m, int64_t *n, double *alpha,
+                                         const double **a, int64_t *lda, double **b, int64_t *ldb,
+                                         int64_t group_count, int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trsm_batch(
-    backend_selector<backend::BACKEND> selector, side *left_right, uplo *upper_lower,
-    transpose *trans, diag *unit_diag, int64_t *m, int64_t *n, std::complex<float> *alpha,
-    const std::complex<float> **a, int64_t *lda, std::complex<float> **b, int64_t *ldb,
-    int64_t group_count, int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trsm_batch(backend_selector<backend::BACKEND> selector,
+                                         side *left_right, uplo *upper_lower, transpose *trans,
+                                         diag *unit_diag, int64_t *m, int64_t *n,
+                                         std::complex<float> *alpha, const std::complex<float> **a,
+                                         int64_t *lda, std::complex<float> **b, int64_t *ldb,
+                                         int64_t group_count, int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trsm_batch(
-    backend_selector<backend::BACKEND> selector, side *left_right, uplo *upper_lower,
-    transpose *trans, diag *unit_diag, int64_t *m, int64_t *n, std::complex<double> *alpha,
-    const std::complex<double> **a, int64_t *lda, std::complex<double> **b, int64_t *ldb,
-    int64_t group_count, int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trsm_batch(backend_selector<backend::BACKEND> selector,
+                                         side *left_right, uplo *upper_lower, transpose *trans,
+                                         diag *unit_diag, int64_t *m, int64_t *n,
+                                         std::complex<double> *alpha,
+                                         const std::complex<double> **a, int64_t *lda,
+                                         std::complex<double> **b, int64_t *ldb,
+                                         int64_t group_count, int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event dotu(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const std::complex<float> *x,
-    std::int64_t incx, const std::complex<float> *y, std::int64_t incy, std::complex<float> *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event dotu(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   const std::complex<float> *y, std::int64_t incy,
+                                   std::complex<float> *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event dotu(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const std::complex<double> *x,
-    std::int64_t incx, const std::complex<double> *y, std::int64_t incy,
-    std::complex<double> *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event dotu(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   const std::complex<double> *y, std::int64_t incy,
+                                   std::complex<double> *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event hemm(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, std::int64_t m,
-    std::int64_t n, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-    std::complex<float> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event hemm(backend_selector<backend::BACKEND> selector, side left_right,
+                                   uplo upper_lower, std::int64_t m, std::int64_t n,
+                                   std::complex<float> alpha, const std::complex<float> *a,
+                                   std::int64_t lda, const std::complex<float> *b, std::int64_t ldb,
+                                   std::complex<float> beta, std::complex<float> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event hemm(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, std::int64_t m,
-    std::int64_t n, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
-    std::complex<double> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event hemm(backend_selector<backend::BACKEND> selector, side left_right,
+                                   uplo upper_lower, std::int64_t m, std::int64_t n,
+                                   std::complex<double> alpha, const std::complex<double> *a,
+                                   std::int64_t lda, const std::complex<double> *b,
+                                   std::int64_t ldb, std::complex<double> beta,
+                                   std::complex<double> *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event hpr2(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n,
-    std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
-    const std::complex<float> *y, std::int64_t incy, std::complex<float> *a,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event hpr2(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   const std::complex<float> *y, std::int64_t incy,
+                                   std::complex<float> *a,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event hpr2(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n,
-    std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
-    const std::complex<double> *y, std::int64_t incy, std::complex<double> *a,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event hpr2(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   const std::complex<double> *y, std::int64_t incy,
+                                   std::complex<double> *a,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gbmv(
-    backend_selector<backend::BACKEND> selector, transpose trans, std::int64_t m, std::int64_t n,
-    std::int64_t kl, std::int64_t ku, float alpha, const float *a, std::int64_t lda, const float *x,
-    std::int64_t incx, float beta, float *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gbmv(backend_selector<backend::BACKEND> selector, transpose trans,
+                                   std::int64_t m, std::int64_t n, std::int64_t kl, std::int64_t ku,
+                                   float alpha, const float *a, std::int64_t lda, const float *x,
+                                   std::int64_t incx, float beta, float *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gbmv(
-    backend_selector<backend::BACKEND> selector, transpose trans, std::int64_t m, std::int64_t n,
-    std::int64_t kl, std::int64_t ku, double alpha, const double *a, std::int64_t lda,
-    const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gbmv(backend_selector<backend::BACKEND> selector, transpose trans,
+                                   std::int64_t m, std::int64_t n, std::int64_t kl, std::int64_t ku,
+                                   double alpha, const double *a, std::int64_t lda, const double *x,
+                                   std::int64_t incx, double beta, double *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gbmv(
-    backend_selector<backend::BACKEND> selector, transpose trans, std::int64_t m, std::int64_t n,
-    std::int64_t kl, std::int64_t ku, std::complex<float> alpha, const std::complex<float> *a,
-    std::int64_t lda, const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
-    std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gbmv(backend_selector<backend::BACKEND> selector, transpose trans,
+                                   std::int64_t m, std::int64_t n, std::int64_t kl, std::int64_t ku,
+                                   std::complex<float> alpha, const std::complex<float> *a,
+                                   std::int64_t lda, const std::complex<float> *x,
+                                   std::int64_t incx, std::complex<float> beta,
+                                   std::complex<float> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gbmv(
-    backend_selector<backend::BACKEND> selector, transpose trans, std::int64_t m, std::int64_t n,
-    std::int64_t kl, std::int64_t ku, std::complex<double> alpha, const std::complex<double> *a,
-    std::int64_t lda, const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
-    std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gbmv(backend_selector<backend::BACKEND> selector, transpose trans,
+                                   std::int64_t m, std::int64_t n, std::int64_t kl, std::int64_t ku,
+                                   std::complex<double> alpha, const std::complex<double> *a,
+                                   std::int64_t lda, const std::complex<double> *x,
+                                   std::int64_t incx, std::complex<double> beta,
+                                   std::complex<double> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event tbmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, std::int64_t k, const float *a, std::int64_t lda, float *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event tbmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
+                                   const float *a, std::int64_t lda, float *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event tbmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, std::int64_t k, const double *a, std::int64_t lda, double *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event tbmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
+                                   const double *a, std::int64_t lda, double *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event tbmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, std::int64_t k, const std::complex<float> *a, std::int64_t lda,
-    std::complex<float> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event tbmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event tbmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, std::int64_t k, const std::complex<double> *a, std::int64_t lda,
-    std::complex<double> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event tbmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event symm(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, std::int64_t m,
-    std::int64_t n, float alpha, const float *a, std::int64_t lda, const float *b, std::int64_t ldb,
-    float beta, float *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event symm(backend_selector<backend::BACKEND> selector, side left_right,
+                                   uplo upper_lower, std::int64_t m, std::int64_t n, float alpha,
+                                   const float *a, std::int64_t lda, const float *b,
+                                   std::int64_t ldb, float beta, float *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event symm(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, std::int64_t m,
-    std::int64_t n, double alpha, const double *a, std::int64_t lda, const double *b,
-    std::int64_t ldb, double beta, double *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event symm(backend_selector<backend::BACKEND> selector, side left_right,
+                                   uplo upper_lower, std::int64_t m, std::int64_t n, double alpha,
+                                   const double *a, std::int64_t lda, const double *b,
+                                   std::int64_t ldb, double beta, double *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event symm(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, std::int64_t m,
-    std::int64_t n, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-    std::complex<float> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event symm(backend_selector<backend::BACKEND> selector, side left_right,
+                                   uplo upper_lower, std::int64_t m, std::int64_t n,
+                                   std::complex<float> alpha, const std::complex<float> *a,
+                                   std::int64_t lda, const std::complex<float> *b, std::int64_t ldb,
+                                   std::complex<float> beta, std::complex<float> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event symm(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, std::int64_t m,
-    std::int64_t n, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
-    std::complex<double> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event symm(backend_selector<backend::BACKEND> selector, side left_right,
+                                   uplo upper_lower, std::int64_t m, std::int64_t n,
+                                   std::complex<double> alpha, const std::complex<double> *a,
+                                   std::int64_t lda, const std::complex<double> *b,
+                                   std::int64_t ldb, std::complex<double> beta,
+                                   std::complex<double> *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event dotc(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const std::complex<float> *x,
-    std::int64_t incx, const std::complex<float> *y, std::int64_t incy, std::complex<float> *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event dotc(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   const std::complex<float> *y, std::int64_t incy,
+                                   std::complex<float> *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event dotc(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const std::complex<double> *x,
-    std::int64_t incx, const std::complex<double> *y, std::int64_t incy,
-    std::complex<double> *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event dotc(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   const std::complex<double> *y, std::int64_t incy,
+                                   std::complex<double> *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event syr(backend_selector<backend::BACKEND> selector, uplo upper_lower,
                                   std::int64_t n, float alpha, const float *x, std::int64_t incx,
                                   float *a, std::int64_t lda,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event syr(backend_selector<backend::BACKEND> selector, uplo upper_lower,
                                   std::int64_t n, double alpha, const double *x, std::int64_t incx,
                                   double *a, std::int64_t lda,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trmm(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda,
-    float *b, std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trmm(backend_selector<backend::BACKEND> selector, side left_right,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t m, std::int64_t n, float alpha, const float *a,
+                                   std::int64_t lda, float *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trmm(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t m, std::int64_t n, double alpha, const double *a, std::int64_t lda,
-    double *b, std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trmm(backend_selector<backend::BACKEND> selector, side left_right,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t m, std::int64_t n, double alpha, const double *a,
+                                   std::int64_t lda, double *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trmm(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t m, std::int64_t n, std::complex<float> alpha,
-    const std::complex<float> *a, std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trmm(backend_selector<backend::BACKEND> selector, side left_right,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   std::complex<float> *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trmm(
-    backend_selector<backend::BACKEND> selector, side left_right, uplo upper_lower, transpose trans,
-    diag unit_diag, std::int64_t m, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *a, std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trmm(backend_selector<backend::BACKEND> selector, side left_right,
+                                   uplo upper_lower, transpose trans, diag unit_diag,
+                                   std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   std::complex<double> *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event rotmg(
-    backend_selector<backend::BACKEND> selector, float *d1, float *d2, float *x1, float y1,
-    float *param, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event rotmg(backend_selector<backend::BACKEND> selector, float *d1,
+                                    float *d2, float *x1, float y1, float *param,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event rotmg(
-    backend_selector<backend::BACKEND> selector, double *d1, double *d2, double *x1, double y1,
-    double *param, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event rotmg(backend_selector<backend::BACKEND> selector, double *d1,
+                                    double *d2, double *x1, double y1, double *param,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event tpsv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, const float *a, float *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event tpsv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n, const float *a,
+                                   float *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event tpsv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, const double *a, double *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event tpsv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n, const double *a,
+                                   double *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event tpsv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, const std::complex<float> *a, std::complex<float> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event tpsv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n,
+                                   const std::complex<float> *a, std::complex<float> *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event tpsv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, const std::complex<double> *a, std::complex<double> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event tpsv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n,
+                                   const std::complex<double> *a, std::complex<double> *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trsv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, const float *a, std::int64_t lda, float *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trsv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n, const float *a,
+                                   std::int64_t lda, float *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trsv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, const double *a, std::int64_t lda, double *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trsv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n, const double *a,
+                                   std::int64_t lda, double *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trsv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
-    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trsv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event trsv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
-    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event trsv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event copy(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const float *x, std::int64_t incx,
-    float *y, std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event copy(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   const float *x, std::int64_t incx, float *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event copy(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const double *x, std::int64_t incx,
-    double *y, std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event copy(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   const double *x, std::int64_t incx, double *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event copy(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const std::complex<float> *x,
-    std::int64_t incx, std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event copy(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   std::complex<float> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event copy(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const std::complex<double> *x,
-    std::int64_t incx, std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event copy(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   std::complex<double> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event copy_batch(
-    backend_selector<backend::BACKEND> selector, std::int64_t *n, const float **x,
-    std::int64_t *incx, float **y, std::int64_t *incy, std::int64_t group_count,
-    std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event copy_batch(backend_selector<backend::BACKEND> selector,
+                                         std::int64_t *n, const float **x, std::int64_t *incx,
+                                         float **y, std::int64_t *incy, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event copy_batch(
-    backend_selector<backend::BACKEND> selector, std::int64_t *n, const double **x,
-    std::int64_t *incx, double **y, std::int64_t *incy, std::int64_t group_count,
-    std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event copy_batch(backend_selector<backend::BACKEND> selector,
+                                         std::int64_t *n, const double **x, std::int64_t *incx,
+                                         double **y, std::int64_t *incy, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event copy_batch(
-    backend_selector<backend::BACKEND> selector, std::int64_t *n, const std::complex<float> **x,
-    std::int64_t *incx, std::complex<float> **y, std::int64_t *incy, std::int64_t group_count,
-    std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event copy_batch(backend_selector<backend::BACKEND> selector,
+                                         std::int64_t *n, const std::complex<float> **x,
+                                         std::int64_t *incx, std::complex<float> **y,
+                                         std::int64_t *incy, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event copy_batch(
-    backend_selector<backend::BACKEND> selector, std::int64_t *n, const std::complex<double> **x,
-    std::int64_t *incx, std::complex<double> **y, std::int64_t *incy, std::int64_t group_count,
-    std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event copy_batch(backend_selector<backend::BACKEND> selector,
+                                         std::int64_t *n, const std::complex<double> **x,
+                                         std::int64_t *incx, std::complex<double> **y,
+                                         std::int64_t *incy, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event copy_batch(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const float *x, std::int64_t incx,
-    std::int64_t stridex, float *y, std::int64_t incy, std::int64_t stridey,
-    std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event copy_batch(backend_selector<backend::BACKEND> selector,
+                                         std::int64_t n, const float *x, std::int64_t incx,
+                                         std::int64_t stridex, float *y, std::int64_t incy,
+                                         std::int64_t stridey, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event copy_batch(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const double *x, std::int64_t incx,
-    std::int64_t stridex, double *y, std::int64_t incy, std::int64_t stridey,
-    std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event copy_batch(backend_selector<backend::BACKEND> selector,
+                                         std::int64_t n, const double *x, std::int64_t incx,
+                                         std::int64_t stridex, double *y, std::int64_t incy,
+                                         std::int64_t stridey, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event copy_batch(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const std::complex<float> *x,
-    std::int64_t incx, std::int64_t stridex, std::complex<float> *y, std::int64_t incy,
-    std::int64_t stridey, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event copy_batch(backend_selector<backend::BACKEND> selector,
+                                         std::int64_t n, const std::complex<float> *x,
+                                         std::int64_t incx, std::int64_t stridex,
+                                         std::complex<float> *y, std::int64_t incy,
+                                         std::int64_t stridey, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event copy_batch(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const std::complex<double> *x,
-    std::int64_t incx, std::int64_t stridex, std::complex<double> *y, std::int64_t incy,
-    std::int64_t stridey, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event copy_batch(backend_selector<backend::BACKEND> selector,
+                                         std::int64_t n, const std::complex<double> *x,
+                                         std::int64_t incx, std::int64_t stridex,
+                                         std::complex<double> *y, std::int64_t incy,
+                                         std::int64_t stridey, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event hemv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n,
-    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
-    std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event hemv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   std::complex<float> beta, std::complex<float> *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event hemv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n,
-    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
-    std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event hemv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   std::complex<double> beta, std::complex<double> *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemmt(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose transa,
-    transpose transb, std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda,
-    const float *b, std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemmt(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                    transpose transa, transpose transb, std::int64_t n,
+                                    std::int64_t k, float alpha, const float *a, std::int64_t lda,
+                                    const float *b, std::int64_t ldb, float beta, float *c,
+                                    std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemmt(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose transa,
-    transpose transb, std::int64_t n, std::int64_t k, double alpha, const double *a,
-    std::int64_t lda, const double *b, std::int64_t ldb, double beta, double *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemmt(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                    transpose transa, transpose transb, std::int64_t n,
+                                    std::int64_t k, double alpha, const double *a, std::int64_t lda,
+                                    const double *b, std::int64_t ldb, double beta, double *c,
+                                    std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemmt(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose transa,
-    transpose transb, std::int64_t n, std::int64_t k, std::complex<float> alpha,
-    const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b, std::int64_t ldb,
-    std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemmt(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                    transpose transa, transpose transb, std::int64_t n,
+                                    std::int64_t k, std::complex<float> alpha,
+                                    const std::complex<float> *a, std::int64_t lda,
+                                    const std::complex<float> *b, std::int64_t ldb,
+                                    std::complex<float> beta, std::complex<float> *c,
+                                    std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemmt(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose transa,
-    transpose transb, std::int64_t n, std::int64_t k, std::complex<double> alpha,
-    const std::complex<double> *a, std::int64_t lda, const std::complex<double> *b,
-    std::int64_t ldb, std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemmt(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                    transpose transa, transpose transb, std::int64_t n,
+                                    std::int64_t k, std::complex<double> alpha,
+                                    const std::complex<double> *a, std::int64_t lda,
+                                    const std::complex<double> *b, std::int64_t ldb,
+                                    std::complex<double> beta, std::complex<double> *c,
+                                    std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event gemm_bias(
     backend_selector<backend::BACKEND> selector, transpose transa, transpose transb, offset offsetc,
     int64_t m, int64_t n, int64_t k, float alpha, const std::int8_t *a, int64_t lda, std::int8_t ao,
     const std::uint8_t *b, int64_t ldb, std::uint8_t bo, float beta, std::int32_t *c, int64_t ldc,
-    const std::int32_t *co, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+    const std::int32_t *co, const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event gemm_bias(
     backend_selector<backend::BACKEND> selector, transpose transa, transpose transb, offset offsetc,
     int64_t m, int64_t n, int64_t k, float alpha, const std::int8_t *a, int64_t lda, std::int8_t ao,
     const std::int8_t *b, int64_t ldb, std::int8_t bo, float beta, std::int32_t *c, int64_t ldc,
-    const std::int32_t *co, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+    const std::int32_t *co, const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event gemm_bias(
     backend_selector<backend::BACKEND> selector, transpose transa, transpose transb, offset offsetc,
     int64_t m, int64_t n, int64_t k, float alpha, const std::uint8_t *a, int64_t lda,
     std::uint8_t ao, const std::int8_t *b, int64_t ldb, std::int8_t bo, float beta, std::int32_t *c,
-    int64_t ldc, const std::int32_t *co,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+    int64_t ldc, const std::int32_t *co, const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event gemm_bias(
-    backend_selector<backend::BACKEND> selector, transpose transa, transpose transb, offset offsetc,
-    int64_t m, int64_t n, int64_t k, float alpha, const std::uint8_t *a, int64_t lda,
-    std::uint8_t ao, const std::uint8_t *b, int64_t ldb, std::uint8_t bo, float beta,
-    std::int32_t *c, int64_t ldc, const std::int32_t *co,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event gemm_bias(backend_selector<backend::BACKEND> selector,
+                                        transpose transa, transpose transb, offset offsetc,
+                                        int64_t m, int64_t n, int64_t k, float alpha,
+                                        const std::uint8_t *a, int64_t lda, std::uint8_t ao,
+                                        const std::uint8_t *b, int64_t ldb, std::uint8_t bo,
+                                        float beta, std::int32_t *c, int64_t ldc,
+                                        const std::int32_t *co,
+                                        const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event sbmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n, std::int64_t k,
-    float alpha, const float *a, std::int64_t lda, const float *x, std::int64_t incx, float beta,
-    float *y, std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event sbmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, std::int64_t k, float alpha, const float *a,
+                                   std::int64_t lda, const float *x, std::int64_t incx, float beta,
+                                   float *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event sbmv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n, std::int64_t k,
-    double alpha, const double *a, std::int64_t lda, const double *x, std::int64_t incx,
-    double beta, double *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event sbmv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, std::int64_t k, double alpha, const double *a,
+                                   std::int64_t lda, const double *x, std::int64_t incx,
+                                   double beta, double *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event asum(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const std::complex<float> *x,
-    std::int64_t incx, float *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event asum(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   const std::complex<float> *x, std::int64_t incx, float *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event asum(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const std::complex<double> *x,
-    std::int64_t incx, double *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event asum(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   const std::complex<double> *x, std::int64_t incx, double *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event asum(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const float *x, std::int64_t incx,
-    float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event asum(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   const float *x, std::int64_t incx, float *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event asum(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const double *x, std::int64_t incx,
-    double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event asum(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   const double *x, std::int64_t incx, double *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event tbsv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, std::int64_t k, const float *a, std::int64_t lda, float *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event tbsv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
+                                   const float *a, std::int64_t lda, float *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event tbsv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, std::int64_t k, const double *a, std::int64_t lda, double *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event tbsv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
+                                   const double *a, std::int64_t lda, double *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event tbsv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, std::int64_t k, const std::complex<float> *a, std::int64_t lda,
-    std::complex<float> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event tbsv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event tbsv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t n, std::int64_t k, const std::complex<double> *a, std::int64_t lda,
-    std::complex<double> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event tbsv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t n, std::int64_t k,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event spr2(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n, float alpha,
-    const float *x, std::int64_t incx, const float *y, std::int64_t incy, float *a,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event spr2(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, float alpha, const float *x, std::int64_t incx,
+                                   const float *y, std::int64_t incy, float *a,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event spr2(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n, double alpha,
-    const double *x, std::int64_t incx, const double *y, std::int64_t incy, double *a,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event spr2(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, double alpha, const double *x, std::int64_t incx,
+                                   const double *y, std::int64_t incy, double *a,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event iamax(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const float *x, std::int64_t incx,
-    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event iamax(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                    const float *x, std::int64_t incx, std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event iamax(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const double *x, std::int64_t incx,
-    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event iamax(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                    const double *x, std::int64_t incx, std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event iamax(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const std::complex<float> *x,
-    std::int64_t incx, std::int64_t *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event iamax(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                    const std::complex<float> *x, std::int64_t incx,
+                                    std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event iamax(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, const std::complex<double> *x,
-    std::int64_t incx, std::int64_t *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event iamax(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                    const std::complex<double> *x, std::int64_t incx,
+                                    std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event rotm(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, float *x, std::int64_t incx,
-    float *y, std::int64_t incy, float *param,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event rotm(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   float *x, std::int64_t incx, float *y, std::int64_t incy,
+                                   float *param,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event rotm(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, double *x, std::int64_t incx,
-    double *y, std::int64_t incy, double *param,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event rotm(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                   double *x, std::int64_t incx, double *y, std::int64_t incy,
+                                   double *param,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event rotg(
-    backend_selector<backend::BACKEND> selector, float *a, float *b, float *c, float *s,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event rotg(backend_selector<backend::BACKEND> selector, float *a, float *b,
+                                   float *c, float *s,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event rotg(
-    backend_selector<backend::BACKEND> selector, double *a, double *b, double *c, double *s,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event rotg(backend_selector<backend::BACKEND> selector, double *a,
+                                   double *b, double *c, double *s,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event rotg(
-    backend_selector<backend::BACKEND> selector, std::complex<float> *a, std::complex<float> *b,
-    float *c, std::complex<float> *s,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event rotg(backend_selector<backend::BACKEND> selector,
+                                   std::complex<float> *a, std::complex<float> *b, float *c,
+                                   std::complex<float> *s,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event rotg(
-    backend_selector<backend::BACKEND> selector, std::complex<double> *a, std::complex<double> *b,
-    double *c, std::complex<double> *s,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event rotg(backend_selector<backend::BACKEND> selector,
+                                   std::complex<double> *a, std::complex<double> *b, double *c,
+                                   std::complex<double> *s,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event sdsdot(
-    backend_selector<backend::BACKEND> selector, std::int64_t n, float sb, const float *x,
-    std::int64_t incx, const float *y, std::int64_t incy, float *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event sdsdot(backend_selector<backend::BACKEND> selector, std::int64_t n,
+                                     float sb, const float *x, std::int64_t incx, const float *y,
+                                     std::int64_t incy, float *result,
+                                     const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event her2k(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, std::int64_t n,
-    std::int64_t k, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *b, std::int64_t ldb, float beta, std::complex<float> *c,
-    std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event her2k(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                    transpose trans, std::int64_t n, std::int64_t k,
+                                    std::complex<float> alpha, const std::complex<float> *a,
+                                    std::int64_t lda, const std::complex<float> *b,
+                                    std::int64_t ldb, float beta, std::complex<float> *c,
+                                    std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event her2k(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, transpose trans, std::int64_t n,
-    std::int64_t k, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *b, std::int64_t ldb, double beta, std::complex<double> *c,
-    std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event her2k(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                    transpose trans, std::int64_t n, std::int64_t k,
+                                    std::complex<double> alpha, const std::complex<double> *a,
+                                    std::int64_t lda, const std::complex<double> *b,
+                                    std::int64_t ldb, double beta, std::complex<double> *c,
+                                    std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event dot(backend_selector<backend::BACKEND> selector, std::int64_t n,
                                   const float *x, std::int64_t incx, const float *y,
                                   std::int64_t incy, float *result,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event dot(backend_selector<backend::BACKEND> selector, std::int64_t n,
                                   const double *x, std::int64_t incx, const double *y,
                                   std::int64_t incy, double *result,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  const std::vector<cl::sycl::event> &dependencies = {});
 
 static inline cl::sycl::event dot(backend_selector<backend::BACKEND> selector, std::int64_t n,
                                   const float *x, std::int64_t incx, const float *y,
                                   std::int64_t incy, double *result,
-                                  const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+                                  const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event symv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n, float alpha,
-    const float *a, std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y,
-    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event symv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, float alpha, const float *a, std::int64_t lda,
+                                   const float *x, std::int64_t incx, float beta, float *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});
 
-static inline cl::sycl::event symv(
-    backend_selector<backend::BACKEND> selector, uplo upper_lower, std::int64_t n, double alpha,
-    const double *a, std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y,
-    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {});
+static inline cl::sycl::event symv(backend_selector<backend::BACKEND> selector, uplo upper_lower,
+                                   std::int64_t n, double alpha, const double *a, std::int64_t lda,
+                                   const double *x, std::int64_t incx, double beta, double *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {});

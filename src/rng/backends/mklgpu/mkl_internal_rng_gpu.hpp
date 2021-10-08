@@ -66,7 +66,7 @@ template <typename EngineType, typename DistrType>
 sycl::event generate(sycl::queue& queue, const DistrType& distr,
                      engine_base_impl<EngineType>* engine, std::int64_t n,
                      typename DistrType::result_type* r,
-                     const sycl::vector_class<sycl::event>& dependencies = {});
+                     const std::vector<sycl::event>& dependencies = {});
 
 } // namespace gpu
 } // namespace detail

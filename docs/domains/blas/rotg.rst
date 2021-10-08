@@ -115,7 +115,7 @@ rotg (USM Version)
                         T *b,
                         T_real *c,
                         T *s,
-                        const sycl::vector_class<sycl::event> &dependencies = {})
+                        const std::vector<sycl::event> &dependencies = {})
    }
 .. code-block:: cpp
 
@@ -125,7 +125,7 @@ rotg (USM Version)
                         T *b,
                         T_real *c,
                         T *s,
-                        const sycl::vector_class<sycl::event> &dependencies = {})
+                        const std::vector<sycl::event> &dependencies = {})
    }
 
 .. container:: section

@@ -54,7 +54,7 @@ static inline void generate(const Distr& distr, Engine& engine, std::int64_t n,
 //      const Distr& distr               - distribution object
 //      Engine& engine                   - engine object
 //      std::int64_t n                   - number of random values to be generated
-//      const cl::sycl::vector_class<cl::sycl::event>& dependencies - list of events to wait for
+//      const std::vector<cl::sycl::event>& dependencies - list of events to wait for
 //                  before starting computation, if any. If omitted, defaults to no dependencies
 //
 // Output parameters:
@@ -63,9 +63,9 @@ static inline void generate(const Distr& distr, Engine& engine, std::int64_t n,
 // Returns:
 //      cl::sycl::event - event for the submitted to the engine's queue task
 template <typename Distr, typename Engine>
-static inline cl::sycl::event generate(
-    const Distr& distr, Engine& engine, std::int64_t n, typename Distr::result_type* r,
-    const cl::sycl::vector_class<cl::sycl::event>& dependencies = {}) {
+static inline cl::sycl::event generate(const Distr& distr, Engine& engine, std::int64_t n,
+                                       typename Distr::result_type* r,
+                                       const std::vector<cl::sycl::event>& dependencies = {}) {
     generate_precondition(distr, engine, n, r, dependencies);
     return engine.pimpl_->generate(distr, n, r, dependencies);
 }

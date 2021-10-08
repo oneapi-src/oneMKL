@@ -85,7 +85,7 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
                               std::int64_t *incy,
                               std::int64_t group_count,
                               std::int64_t *group_size,
-                              const sycl::vector_class<sycl::event> &dependencies = {})
+                              const std::vector<sycl::event> &dependencies = {})
    }
 .. code-block:: cpp
 
@@ -99,7 +99,7 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
                               std::int64_t *incy,
                               std::int64_t group_count,
                               std::int64_t *group_size,
-                              const sycl::vector_class<sycl::event> &dependencies = {})
+                              const std::vector<sycl::event> &dependencies = {})
    }
 
 .. container:: section
@@ -173,7 +173,7 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
                               std::int64_t incy,
                               std::int64_t stridey,
                               std::int64_t batch_size,
-                              const sycl::vector_class<sycl::event> &dependencies = {})
+                              const std::vector<sycl::event> &dependencies = {})
    }
 .. code-block:: cpp
 
@@ -188,7 +188,7 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
                               std::int64_t incy,
                               std::int64_t stridey,
                               std::int64_t batch_size,
-                              const sycl::vector_class<sycl::event> &dependencies = {})
+                              const std::vector<sycl::event> &dependencies = {})
    }
 
 .. container:: section

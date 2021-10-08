@@ -637,417 +637,417 @@ ONEMKL_EXPORT sycl::event gebrd(oneapi::mkl::device libkey, sycl::queue &queue, 
                                 std::int64_t n, std::complex<float> *a, std::int64_t lda, float *d,
                                 float *e, std::complex<float> *tauq, std::complex<float> *taup,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event gebrd(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, double *a, std::int64_t lda, double *d, double *e,
                                 double *tauq, double *taup, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event gebrd(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, float *a, std::int64_t lda, float *d, float *e,
                                 float *tauq, float *taup, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event gebrd(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, std::complex<double> *a, std::int64_t lda,
                                 double *d, double *e, std::complex<double> *tauq,
                                 std::complex<double> *taup, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event gerqf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, float *a, std::int64_t lda, float *tau,
                                 float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event gerqf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, double *a, std::int64_t lda, double *tau,
                                 double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event gerqf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, std::complex<float> *a, std::int64_t lda,
                                 std::complex<float> *tau, std::complex<float> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event gerqf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, std::complex<double> *a, std::int64_t lda,
                                 std::complex<double> *tau, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event geqrf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, std::complex<float> *a, std::int64_t lda,
                                 std::complex<float> *tau, std::complex<float> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event geqrf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, double *a, std::int64_t lda, double *tau,
                                 double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event geqrf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, float *a, std::int64_t lda, float *tau,
                                 float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event geqrf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, std::complex<double> *a, std::int64_t lda,
                                 std::complex<double> *tau, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, std::complex<float> *a, std::int64_t lda,
                                 std::int64_t *ipiv, std::complex<float> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, double *a, std::int64_t lda, std::int64_t *ipiv,
                                 double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, float *a, std::int64_t lda, std::int64_t *ipiv,
                                 float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, std::complex<double> *a, std::int64_t lda,
                                 std::int64_t *ipiv, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getri(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t n,
                                 std::complex<float> *a, std::int64_t lda, std::int64_t *ipiv,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getri(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t n,
                                 double *a, std::int64_t lda, std::int64_t *ipiv, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getri(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t n,
                                 float *a, std::int64_t lda, std::int64_t *ipiv, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getri(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t n,
                                 std::complex<double> *a, std::int64_t lda, std::int64_t *ipiv,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrs(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs,
                                 std::complex<float> *a, std::int64_t lda, std::int64_t *ipiv,
                                 std::complex<float> *b, std::int64_t ldb,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrs(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs,
                                 double *a, std::int64_t lda, std::int64_t *ipiv, double *b,
                                 std::int64_t ldb, double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrs(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs,
                                 float *a, std::int64_t lda, std::int64_t *ipiv, float *b,
                                 std::int64_t ldb, float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrs(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs,
                                 std::complex<double> *a, std::int64_t lda, std::int64_t *ipiv,
                                 std::complex<double> *b, std::int64_t ldb,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event gesvd(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::jobsvd jobu, oneapi::mkl::jobsvd jobvt, std::int64_t m,
                                 std::int64_t n, double *a, std::int64_t lda, double *s, double *u,
                                 std::int64_t ldu, double *vt, std::int64_t ldvt, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event gesvd(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::jobsvd jobu, oneapi::mkl::jobsvd jobvt, std::int64_t m,
                                 std::int64_t n, float *a, std::int64_t lda, float *s, float *u,
                                 std::int64_t ldu, float *vt, std::int64_t ldvt, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event gesvd(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::jobsvd jobu, oneapi::mkl::jobsvd jobvt, std::int64_t m,
                                 std::int64_t n, std::complex<float> *a, std::int64_t lda, float *s,
                                 std::complex<float> *u, std::int64_t ldu, std::complex<float> *vt,
                                 std::int64_t ldvt, std::complex<float> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event gesvd(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::jobsvd jobu, oneapi::mkl::jobsvd jobvt, std::int64_t m,
                                 std::int64_t n, std::complex<double> *a, std::int64_t lda,
                                 double *s, std::complex<double> *u, std::int64_t ldu,
                                 std::complex<double> *vt, std::int64_t ldvt,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event heevd(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
                                 std::complex<float> *a, std::int64_t lda, float *w,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event heevd(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
                                 std::complex<double> *a, std::int64_t lda, double *w,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event hegvd(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t itype,
                                 oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
                                 std::complex<float> *a, std::int64_t lda, std::complex<float> *b,
                                 std::int64_t ldb, float *w, std::complex<float> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event hegvd(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t itype,
                                 oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
                                 std::complex<double> *a, std::int64_t lda, std::complex<double> *b,
                                 std::int64_t ldb, double *w, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event hetrd(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, std::complex<float> *a,
                                 std::int64_t lda, float *d, float *e, std::complex<float> *tau,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event hetrd(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, std::complex<double> *a,
                                 std::int64_t lda, double *d, double *e, std::complex<double> *tau,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event hetrf(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, std::complex<float> *a,
                                 std::int64_t lda, std::int64_t *ipiv,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event hetrf(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, std::complex<double> *a,
                                 std::int64_t lda, std::int64_t *ipiv,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event orgbr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::generate vec, std::int64_t m, std::int64_t n,
                                 std::int64_t k, float *a, std::int64_t lda, float *tau,
                                 float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event orgbr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::generate vec, std::int64_t m, std::int64_t n,
                                 std::int64_t k, double *a, std::int64_t lda, double *tau,
                                 double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event orgqr(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, std::int64_t k, double *a, std::int64_t lda,
                                 double *tau, double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event orgqr(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, std::int64_t k, float *a, std::int64_t lda,
                                 float *tau, float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event orgtr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, float *a, std::int64_t lda,
                                 float *tau, float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event orgtr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, double *a, std::int64_t lda,
                                 double *tau, double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event ormtr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::side side, oneapi::mkl::uplo uplo,
                                 oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
                                 float *a, std::int64_t lda, float *tau, float *c, std::int64_t ldc,
                                 float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event ormtr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::side side, oneapi::mkl::uplo uplo,
                                 oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
                                 double *a, std::int64_t lda, double *tau, double *c,
                                 std::int64_t ldc, double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event ormrq(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::side side, oneapi::mkl::transpose trans,
                                 std::int64_t m, std::int64_t n, std::int64_t k, float *a,
                                 std::int64_t lda, float *tau, float *c, std::int64_t ldc,
                                 float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event ormrq(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::side side, oneapi::mkl::transpose trans,
                                 std::int64_t m, std::int64_t n, std::int64_t k, double *a,
                                 std::int64_t lda, double *tau, double *c, std::int64_t ldc,
                                 double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event ormqr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::side side, oneapi::mkl::transpose trans,
                                 std::int64_t m, std::int64_t n, std::int64_t k, double *a,
                                 std::int64_t lda, double *tau, double *c, std::int64_t ldc,
                                 double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event ormqr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::side side, oneapi::mkl::transpose trans,
                                 std::int64_t m, std::int64_t n, std::int64_t k, float *a,
                                 std::int64_t lda, float *tau, float *c, std::int64_t ldc,
                                 float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrf(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, float *a, std::int64_t lda,
                                 float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrf(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, double *a, std::int64_t lda,
                                 double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrf(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, std::complex<float> *a,
                                 std::int64_t lda, std::complex<float> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrf(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, std::complex<double> *a,
                                 std::int64_t lda, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potri(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, float *a, std::int64_t lda,
                                 float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potri(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, double *a, std::int64_t lda,
                                 double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potri(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, std::complex<float> *a,
                                 std::int64_t lda, std::complex<float> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potri(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, std::complex<double> *a,
                                 std::int64_t lda, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrs(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs, float *a,
                                 std::int64_t lda, float *b, std::int64_t ldb, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrs(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs,
                                 double *a, std::int64_t lda, double *b, std::int64_t ldb,
                                 double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrs(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs,
                                 std::complex<float> *a, std::int64_t lda, std::complex<float> *b,
                                 std::int64_t ldb, std::complex<float> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrs(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs,
                                 std::complex<double> *a, std::int64_t lda, std::complex<double> *b,
                                 std::int64_t ldb, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event syevd(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
                                 double *a, std::int64_t lda, double *w, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event syevd(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
                                 float *a, std::int64_t lda, float *w, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event sygvd(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t itype,
                                 oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
                                 double *a, std::int64_t lda, double *b, std::int64_t ldb, double *w,
                                 double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event sygvd(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t itype,
                                 oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
                                 float *a, std::int64_t lda, float *b, std::int64_t ldb, float *w,
                                 float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event sytrd(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, double *a, std::int64_t lda,
                                 double *d, double *e, double *tau, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event sytrd(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, float *a, std::int64_t lda,
                                 float *d, float *e, float *tau, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event sytrf(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, float *a, std::int64_t lda,
                                 std::int64_t *ipiv, float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event sytrf(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, double *a, std::int64_t lda,
                                 std::int64_t *ipiv, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event sytrf(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, std::complex<float> *a,
                                 std::int64_t lda, std::int64_t *ipiv,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event sytrf(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, std::complex<double> *a,
                                 std::int64_t lda, std::int64_t *ipiv,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event trtrs(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
                                 oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs,
                                 std::complex<float> *a, std::int64_t lda, std::complex<float> *b,
                                 std::int64_t ldb, std::complex<float> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event trtrs(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
                                 oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs,
                                 double *a, std::int64_t lda, double *b, std::int64_t ldb,
                                 double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event trtrs(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
                                 oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs, float *a,
                                 std::int64_t lda, float *b, std::int64_t ldb, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event trtrs(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
                                 oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs,
                                 std::complex<double> *a, std::int64_t lda, std::complex<double> *b,
                                 std::int64_t ldb, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event ungbr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::generate vec, std::int64_t m, std::int64_t n,
                                 std::int64_t k, std::complex<float> *a, std::int64_t lda,
                                 std::complex<float> *tau, std::complex<float> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event ungbr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::generate vec, std::int64_t m, std::int64_t n,
                                 std::int64_t k, std::complex<double> *a, std::int64_t lda,
                                 std::complex<double> *tau, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event ungqr(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, std::int64_t k, std::complex<float> *a,
                                 std::int64_t lda, std::complex<float> *tau,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event ungqr(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,
                                 std::int64_t n, std::int64_t k, std::complex<double> *a,
                                 std::int64_t lda, std::complex<double> *tau,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event ungtr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, std::complex<float> *a,
                                 std::int64_t lda, std::complex<float> *tau,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event ungtr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::uplo uplo, std::int64_t n, std::complex<double> *a,
                                 std::int64_t lda, std::complex<double> *tau,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event unmrq(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::side side, oneapi::mkl::transpose trans,
                                 std::int64_t m, std::int64_t n, std::int64_t k,
                                 std::complex<float> *a, std::int64_t lda, std::complex<float> *tau,
                                 std::complex<float> *c, std::int64_t ldc,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event unmrq(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::side side, oneapi::mkl::transpose trans,
                                 std::int64_t m, std::int64_t n, std::int64_t k,
@@ -1055,14 +1055,14 @@ ONEMKL_EXPORT sycl::event unmrq(oneapi::mkl::device libkey, sycl::queue &queue,
                                 std::complex<double> *tau, std::complex<double> *c,
                                 std::int64_t ldc, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event unmqr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::side side, oneapi::mkl::transpose trans,
                                 std::int64_t m, std::int64_t n, std::int64_t k,
                                 std::complex<float> *a, std::int64_t lda, std::complex<float> *tau,
                                 std::complex<float> *c, std::int64_t ldc,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event unmqr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::side side, oneapi::mkl::transpose trans,
                                 std::int64_t m, std::int64_t n, std::int64_t k,
@@ -1070,14 +1070,14 @@ ONEMKL_EXPORT sycl::event unmqr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 std::complex<double> *tau, std::complex<double> *c,
                                 std::int64_t ldc, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event unmtr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::side side, oneapi::mkl::uplo uplo,
                                 oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
                                 std::complex<float> *a, std::int64_t lda, std::complex<float> *tau,
                                 std::complex<float> *c, std::int64_t ldc,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event unmtr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 oneapi::mkl::side side, oneapi::mkl::uplo uplo,
                                 oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
@@ -1085,157 +1085,157 @@ ONEMKL_EXPORT sycl::event unmtr(oneapi::mkl::device libkey, sycl::queue &queue,
                                 std::complex<double> *tau, std::complex<double> *c,
                                 std::int64_t ldc, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {});
+                                const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event geqrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t m, std::int64_t n, float *a, std::int64_t lda,
                                       std::int64_t stride_a, float *tau, std::int64_t stride_tau,
                                       std::int64_t batch_size, float *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event geqrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t m, std::int64_t n, double *a, std::int64_t lda,
                                       std::int64_t stride_a, double *tau, std::int64_t stride_tau,
                                       std::int64_t batch_size, double *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event geqrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t m, std::int64_t n, std::complex<float> *a,
                                       std::int64_t lda, std::int64_t stride_a,
                                       std::complex<float> *tau, std::int64_t stride_tau,
                                       std::int64_t batch_size, std::complex<float> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event geqrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t m, std::int64_t n, std::complex<double> *a,
                                       std::int64_t lda, std::int64_t stride_a,
                                       std::complex<double> *tau, std::int64_t stride_tau,
                                       std::int64_t batch_size, std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event geqrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t *m, std::int64_t *n, float **a,
                                       std::int64_t *lda, float **tau, std::int64_t group_count,
                                       std::int64_t *group_sizes, float *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event geqrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t *m, std::int64_t *n, double **a,
                                       std::int64_t *lda, double **tau, std::int64_t group_count,
                                       std::int64_t *group_sizes, double *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event geqrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t *m, std::int64_t *n, std::complex<float> **a,
                                       std::int64_t *lda, std::complex<float> **tau,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event geqrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t *m, std::int64_t *n, std::complex<double> **a,
                                       std::int64_t *lda, std::complex<double> **tau,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t m, std::int64_t n, float *a, std::int64_t lda,
                                       std::int64_t stride_a, std::int64_t *ipiv,
                                       std::int64_t stride_ipiv, std::int64_t batch_size,
                                       float *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t m, std::int64_t n, double *a, std::int64_t lda,
                                       std::int64_t stride_a, std::int64_t *ipiv,
                                       std::int64_t stride_ipiv, std::int64_t batch_size,
                                       double *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t m, std::int64_t n, std::complex<float> *a,
                                       std::int64_t lda, std::int64_t stride_a, std::int64_t *ipiv,
                                       std::int64_t stride_ipiv, std::int64_t batch_size,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t m, std::int64_t n, std::complex<double> *a,
                                       std::int64_t lda, std::int64_t stride_a, std::int64_t *ipiv,
                                       std::int64_t stride_ipiv, std::int64_t batch_size,
                                       std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t *m, std::int64_t *n, float **a,
                                       std::int64_t *lda, std::int64_t **ipiv,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       float *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t *m, std::int64_t *n, double **a,
                                       std::int64_t *lda, std::int64_t **ipiv,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       double *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t *m, std::int64_t *n, std::complex<float> **a,
                                       std::int64_t *lda, std::int64_t **ipiv,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t *m, std::int64_t *n, std::complex<double> **a,
                                       std::int64_t *lda, std::int64_t **ipiv,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t n, float *a, std::int64_t lda,
                                       std::int64_t stride_a, std::int64_t *ipiv,
                                       std::int64_t stride_ipiv, std::int64_t batch_size,
                                       float *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t n, double *a, std::int64_t lda,
                                       std::int64_t stride_a, std::int64_t *ipiv,
                                       std::int64_t stride_ipiv, std::int64_t batch_size,
                                       double *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t n, std::complex<float> *a, std::int64_t lda,
                                       std::int64_t stride_a, std::int64_t *ipiv,
                                       std::int64_t stride_ipiv, std::int64_t batch_size,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t n, std::complex<double> *a, std::int64_t lda,
                                       std::int64_t stride_a, std::int64_t *ipiv,
                                       std::int64_t stride_ipiv, std::int64_t batch_size,
                                       std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t *n, float **a, std::int64_t *lda,
                                       std::int64_t **ipiv, std::int64_t group_count,
                                       std::int64_t *group_sizes, float *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t *n, double **a, std::int64_t *lda,
                                       std::int64_t **ipiv, std::int64_t group_count,
                                       std::int64_t *group_sizes, double *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t *n, std::complex<float> **a, std::int64_t *lda,
                                       std::int64_t **ipiv, std::int64_t group_count,
                                       std::int64_t *group_sizes, std::complex<float> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t *n, std::complex<double> **a, std::int64_t *lda,
                                       std::int64_t **ipiv, std::int64_t group_count,
                                       std::int64_t *group_sizes, std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::transpose trans, std::int64_t n,
                                       std::int64_t nrhs, float *a, std::int64_t lda,
@@ -1243,7 +1243,7 @@ ONEMKL_EXPORT sycl::event getrs_batch(oneapi::mkl::device libkey, sycl::queue &q
                                       std::int64_t stride_ipiv, float *b, std::int64_t ldb,
                                       std::int64_t stride_b, std::int64_t batch_size,
                                       float *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::transpose trans, std::int64_t n,
                                       std::int64_t nrhs, double *a, std::int64_t lda,
@@ -1251,33 +1251,33 @@ ONEMKL_EXPORT sycl::event getrs_batch(oneapi::mkl::device libkey, sycl::queue &q
                                       std::int64_t stride_ipiv, double *b, std::int64_t ldb,
                                       std::int64_t stride_b, std::int64_t batch_size,
                                       double *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrs_batch(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n,
     std::int64_t nrhs, std::complex<float> *a, std::int64_t lda, std::int64_t stride_a,
     std::int64_t *ipiv, std::int64_t stride_ipiv, std::complex<float> *b, std::int64_t ldb,
     std::int64_t stride_b, std::int64_t batch_size, std::complex<float> *scratchpad,
-    std::int64_t scratchpad_size, const sycl::vector_class<sycl::event> &dependencies = {});
+    std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrs_batch(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n,
     std::int64_t nrhs, std::complex<double> *a, std::int64_t lda, std::int64_t stride_a,
     std::int64_t *ipiv, std::int64_t stride_ipiv, std::complex<double> *b, std::int64_t ldb,
     std::int64_t stride_b, std::int64_t batch_size, std::complex<double> *scratchpad,
-    std::int64_t scratchpad_size, const sycl::vector_class<sycl::event> &dependencies = {});
+    std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::transpose *trans, std::int64_t *n,
                                       std::int64_t *nrhs, float **a, std::int64_t *lda,
                                       std::int64_t **ipiv, float **b, std::int64_t *ldb,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       float *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::transpose *trans, std::int64_t *n,
                                       std::int64_t *nrhs, double **a, std::int64_t *lda,
                                       std::int64_t **ipiv, double **b, std::int64_t *ldb,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       double *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::transpose *trans, std::int64_t *n,
                                       std::int64_t *nrhs, std::complex<float> **a,
@@ -1285,101 +1285,101 @@ ONEMKL_EXPORT sycl::event getrs_batch(oneapi::mkl::device libkey, sycl::queue &q
                                       std::complex<float> **b, std::int64_t *ldb,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event getrs_batch(
     oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::transpose *trans, std::int64_t *n,
     std::int64_t *nrhs, std::complex<double> **a, std::int64_t *lda, std::int64_t **ipiv,
     std::complex<double> **b, std::int64_t *ldb, std::int64_t group_count,
     std::int64_t *group_sizes, std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-    const sycl::vector_class<sycl::event> &dependencies = {});
+    const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event orgqr_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t m, std::int64_t n, std::int64_t k, float *a,
                                       std::int64_t lda, std::int64_t stride_a, float *tau,
                                       std::int64_t stride_tau, std::int64_t batch_size,
                                       float *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event orgqr_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t m, std::int64_t n, std::int64_t k, double *a,
                                       std::int64_t lda, std::int64_t stride_a, double *tau,
                                       std::int64_t stride_tau, std::int64_t batch_size,
                                       double *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event orgqr_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t *m, std::int64_t *n, std::int64_t *k, float **a,
                                       std::int64_t *lda, float **tau, std::int64_t group_count,
                                       std::int64_t *group_sizes, float *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event orgqr_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t *m, std::int64_t *n, std::int64_t *k, double **a,
                                       std::int64_t *lda, double **tau, std::int64_t group_count,
                                       std::int64_t *group_sizes, double *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::uplo uplo, std::int64_t n, float *a,
                                       std::int64_t lda, std::int64_t stride_a,
                                       std::int64_t batch_size, float *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::uplo uplo, std::int64_t n, double *a,
                                       std::int64_t lda, std::int64_t stride_a,
                                       std::int64_t batch_size, double *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::uplo uplo, std::int64_t n,
                                       std::complex<float> *a, std::int64_t lda,
                                       std::int64_t stride_a, std::int64_t batch_size,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::uplo uplo, std::int64_t n,
                                       std::complex<double> *a, std::int64_t lda,
                                       std::int64_t stride_a, std::int64_t batch_size,
                                       std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::uplo *uplo, std::int64_t *n, float **a,
                                       std::int64_t *lda, std::int64_t group_count,
                                       std::int64_t *group_sizes, float *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::uplo *uplo, std::int64_t *n, double **a,
                                       std::int64_t *lda, std::int64_t group_count,
                                       std::int64_t *group_sizes, double *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::uplo *uplo, std::int64_t *n,
                                       std::complex<float> **a, std::int64_t *lda,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::uplo *uplo, std::int64_t *n,
                                       std::complex<double> **a, std::int64_t *lda,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs,
                                       float *a, std::int64_t lda, std::int64_t stride_a, float *b,
                                       std::int64_t ldb, std::int64_t stride_b,
                                       std::int64_t batch_size, float *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs,
                                       double *a, std::int64_t lda, std::int64_t stride_a, double *b,
                                       std::int64_t ldb, std::int64_t stride_b,
                                       std::int64_t batch_size, double *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs,
                                       std::complex<float> *a, std::int64_t lda,
@@ -1387,7 +1387,7 @@ ONEMKL_EXPORT sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &q
                                       std::int64_t ldb, std::int64_t stride_b,
                                       std::int64_t batch_size, std::complex<float> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs,
                                       std::complex<double> *a, std::int64_t lda,
@@ -1395,26 +1395,26 @@ ONEMKL_EXPORT sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &q
                                       std::int64_t ldb, std::int64_t stride_b,
                                       std::int64_t batch_size, std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::uplo *uplo, std::int64_t *n, std::int64_t *nrhs,
                                       float **a, std::int64_t *lda, float **b, std::int64_t *ldb,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       float *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::uplo *uplo, std::int64_t *n, std::int64_t *nrhs,
                                       double **a, std::int64_t *lda, double **b, std::int64_t *ldb,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       double *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::uplo *uplo, std::int64_t *n, std::int64_t *nrhs,
                                       std::complex<float> **a, std::int64_t *lda,
                                       std::complex<float> **b, std::int64_t *ldb,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       oneapi::mkl::uplo *uplo, std::int64_t *n, std::int64_t *nrhs,
                                       std::complex<double> **a, std::int64_t *lda,
@@ -1422,33 +1422,33 @@ ONEMKL_EXPORT sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &q
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event ungqr_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t m, std::int64_t n, std::int64_t k,
                                       std::complex<float> *a, std::int64_t lda,
                                       std::int64_t stride_a, std::complex<float> *tau,
                                       std::int64_t stride_tau, std::int64_t batch_size,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event ungqr_batch(
     oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k,
     std::complex<double> *a, std::int64_t lda, std::int64_t stride_a, std::complex<double> *tau,
     std::int64_t stride_tau, std::int64_t batch_size, std::complex<double> *scratchpad,
-    std::int64_t scratchpad_size, const sycl::vector_class<sycl::event> &dependencies = {});
+    std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event ungqr_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t *m, std::int64_t *n, std::int64_t *k,
                                       std::complex<float> **a, std::int64_t *lda,
                                       std::complex<float> **tau, std::int64_t group_count,
                                       std::int64_t *group_sizes, std::complex<float> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event ungqr_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                       std::int64_t *m, std::int64_t *n, std::int64_t *k,
                                       std::complex<double> **a, std::int64_t *lda,
                                       std::complex<double> **tau, std::int64_t group_count,
                                       std::int64_t *group_sizes, std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {});
+                                      const std::vector<sycl::event> &dependencies = {});
 
 template <typename fp_type, oneapi::mkl::lapack::internal::is_floating_point<fp_type> = nullptr>
 std::int64_t gebrd_scratchpad_size(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m,

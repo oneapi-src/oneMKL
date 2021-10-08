@@ -317,9 +317,9 @@ public:
 
     // USM APIs
 
-    virtual cl::sycl::event generate(
-        const uniform<float, uniform_method::standard>& distr, std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const uniform<float, uniform_method::standard>& distr,
+                                     std::int64_t n, float* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -329,9 +329,9 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
-        const uniform<double, uniform_method::standard>& distr, std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const uniform<double, uniform_method::standard>& distr,
+                                     std::int64_t n, double* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -341,9 +341,9 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
-        const uniform<std::int32_t, uniform_method::standard>& distr, std::int64_t n,
-        std::int32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const uniform<std::int32_t, uniform_method::standard>& distr,
+                                     std::int64_t n, std::int32_t* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -353,9 +353,9 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
-        const uniform<float, uniform_method::accurate>& distr, std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const uniform<float, uniform_method::accurate>& distr,
+                                     std::int64_t n, float* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -366,9 +366,9 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
-        const uniform<double, uniform_method::accurate>& distr, std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const uniform<double, uniform_method::accurate>& distr,
+                                     std::int64_t n, double* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -379,9 +379,9 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
-        const gaussian<float, gaussian_method::box_muller2>& distr, std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const gaussian<float, gaussian_method::box_muller2>& distr,
+                                     std::int64_t n, float* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -392,9 +392,9 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
-        const gaussian<double, gaussian_method::box_muller2>& distr, std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const gaussian<double, gaussian_method::box_muller2>& distr,
+                                     std::int64_t n, double* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -405,9 +405,9 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
-        const gaussian<float, gaussian_method::icdf>& distr, std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const gaussian<float, gaussian_method::icdf>& distr,
+                                     std::int64_t n, float* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -418,9 +418,9 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
-        const gaussian<double, gaussian_method::icdf>& distr, std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const gaussian<double, gaussian_method::icdf>& distr,
+                                     std::int64_t n, double* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -431,9 +431,9 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
-        const lognormal<float, lognormal_method::box_muller2>& distr, std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const lognormal<float, lognormal_method::box_muller2>& distr,
+                                     std::int64_t n, float* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -444,9 +444,9 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
-        const lognormal<double, lognormal_method::box_muller2>& distr, std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const lognormal<double, lognormal_method::box_muller2>& distr,
+                                     std::int64_t n, double* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -457,9 +457,9 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
-        const lognormal<float, lognormal_method::icdf>& distr, std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const lognormal<float, lognormal_method::icdf>& distr,
+                                     std::int64_t n, float* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -470,9 +470,9 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
-        const lognormal<double, lognormal_method::icdf>& distr, std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const lognormal<double, lognormal_method::icdf>& distr,
+                                     std::int64_t n, double* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -483,9 +483,9 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
-        const bernoulli<std::int32_t, bernoulli_method::icdf>& distr, std::int64_t n,
-        std::int32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
+                                     std::int64_t n, std::int32_t* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -495,9 +495,9 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
-        const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr, std::int64_t n,
-        std::uint32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
+                                     std::int64_t n, std::uint32_t* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -510,7 +510,7 @@ public:
 
     virtual cl::sycl::event generate(
         const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
-        std::int32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int32_t* r, const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -522,7 +522,7 @@ public:
 
     virtual cl::sycl::event generate(
         const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
-        std::uint32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::uint32_t* r, const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
@@ -533,9 +533,9 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
-        const bits<std::uint32_t>& distr, std::int64_t n, std::uint32_t* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const bits<std::uint32_t>& distr, std::int64_t n,
+                                     std::uint32_t* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;

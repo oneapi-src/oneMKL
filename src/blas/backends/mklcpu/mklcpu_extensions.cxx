@@ -111,9 +111,8 @@ void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offse
                            ldb, bo, beta, c, ldc, co);
 #endif
 #ifdef ROW_MAJOR
-    gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b,
-                       ldb, bo, beta, c, ldc, co);
-
+    gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb,
+                       bo, beta, c, ldc, co);
 
 #endif
 }
@@ -124,8 +123,8 @@ void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offse
                float beta, cl::sycl::buffer<int32_t, 1> &c, int64_t ldc,
                cl::sycl::buffer<int32_t, 1> &co) {
 #ifdef COLUMN_MAJOR
-    gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b,
-                       ldb, bo, beta, c, ldc, co);
+    gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb,
+                       bo, beta, c, ldc, co);
 
 #endif
 #ifdef ROW_MAJOR
@@ -259,7 +258,7 @@ cl::sycl::event gemm_bias_fallback(cl::sycl::queue &queue, MKL_LAYOUT layout, tr
                                    int64_t k, float alpha, const Ta *a, int64_t lda, Ta ao,
                                    const Tb *b, int64_t ldb, Tb bo, float beta, int32_t *c,
                                    int64_t ldc, const int32_t *co,
-                                   const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                                   const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -303,7 +302,7 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
                           offset offsetc, int64_t m, int64_t n, int64_t k, float alpha,
                           const int8_t *a, int64_t lda, int8_t ao, const int8_t *b, int64_t ldb,
                           int8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao,
                               b, ldb, bo, beta, c, ldc, co, dependencies);
 }
@@ -312,7 +311,7 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
                           offset offsetc, int64_t m, int64_t n, int64_t k, float alpha,
                           const int8_t *a, int64_t lda, int8_t ao, const uint8_t *b, int64_t ldb,
                           uint8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
 #ifdef COLUMN_MAJOR
     if (is_int8(-int(ao)) && is_int8(-int(bo))) {
         auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -339,8 +338,8 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
                                   ao, b, ldb, bo, beta, c, ldc, co, dependencies);
 #endif
 #ifdef ROW_MAJOR
-    return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda,
-                              ao, b, ldb, bo, beta, c, ldc, co, dependencies);
+    return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao,
+                              b, ldb, bo, beta, c, ldc, co, dependencies);
 #endif
 }
 
@@ -348,10 +347,10 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
                           offset offsetc, int64_t m, int64_t n, int64_t k, float alpha,
                           const uint8_t *a, int64_t lda, uint8_t ao, const int8_t *b, int64_t ldb,
                           int8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
 #ifdef COLUMN_MAJOR
-        return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda,
-                                  ao, b, ldb, bo, beta, c, ldc, co, dependencies);
+    return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao,
+                              b, ldb, bo, beta, c, ldc, co, dependencies);
 #endif
 #ifdef ROW_MAJOR
     if (is_int8(-int(ao)) && is_int8(-int(bo))) {
@@ -384,7 +383,7 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
                           offset offsetc, int64_t m, int64_t n, int64_t k, float alpha,
                           const uint8_t *a, int64_t lda, uint8_t ao, const uint8_t *b, int64_t ldb,
                           uint8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao,
                               b, ldb, bo, beta, c, ldc, co, dependencies);
 }
@@ -392,7 +391,7 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                       int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
                       const float *b, int64_t ldb, float beta, float *c, int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -412,7 +411,7 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                       int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
                       const double *b, int64_t ldb, double beta, double *c, int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -433,7 +432,7 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
                       int64_t n, int64_t k, std::complex<float> alpha, const std::complex<float> *a,
                       int64_t lda, const std::complex<float> *b, int64_t ldb,
                       std::complex<float> beta, std::complex<float> *c, int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -458,7 +457,7 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
                       int64_t n, int64_t k, std::complex<double> alpha,
                       const std::complex<double> *a, int64_t lda, const std::complex<double> *b,
                       int64_t ldb, std::complex<double> beta, std::complex<double> *c, int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {

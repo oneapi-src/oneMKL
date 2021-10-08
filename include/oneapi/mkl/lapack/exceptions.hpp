@@ -57,23 +57,22 @@ public:
 class batch_error : public oneapi::mkl::batch_error, public oneapi::mkl::lapack::exception {
 public:
     batch_error(const std::string &function, const std::string &info, std::int64_t num_errors,
-                sycl::vector_class<std::int64_t> ids = {},
-                sycl::vector_class<std::exception_ptr> exceptions = {})
+                std::vector<std::int64_t> ids = {}, std::vector<std::exception_ptr> exceptions = {})
             : oneapi::mkl::batch_error("LAPACK", function, info),
               oneapi::mkl::lapack::exception(this, num_errors),
               _ids(ids),
               _exceptions(exceptions) {}
     using oneapi::mkl::batch_error::what;
-    const sycl::vector_class<std::int64_t> &ids() const {
+    const std::vector<std::int64_t> &ids() const {
         return _ids;
     }
-    const sycl::vector_class<std::exception_ptr> &exceptions() const {
+    const std::vector<std::exception_ptr> &exceptions() const {
         return _exceptions;
     }
 
 private:
-    sycl::vector_class<std::int64_t> _ids;
-    sycl::vector_class<std::exception_ptr> _exceptions;
+    std::vector<std::int64_t> _ids;
+    std::vector<std::exception_ptr> _exceptions;
 };
 
 class invalid_argument : public oneapi::mkl::invalid_argument,

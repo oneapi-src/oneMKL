@@ -749,7 +749,7 @@ void swap(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<doubl
 // USM APIs
 
 cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, float *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -762,7 +762,7 @@ cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const float *x, int64_t 
 }
 
 cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const double *x, int64_t incx,
-                     double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     double *result, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -775,7 +775,7 @@ cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const double *x, int64_t
 }
 
 cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const std::complex<float> *x, int64_t incx,
-                     float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     float *result, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -788,7 +788,7 @@ cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const std::complex<float
 }
 
 cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const std::complex<double> *x, int64_t incx,
-                     double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     double *result, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -801,8 +801,7 @@ cl::sycl::event asum(cl::sycl::queue &queue, int64_t n, const std::complex<doubl
 }
 
 cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, float alpha, const float *x, int64_t incx,
-                     float *y, int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     float *y, int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -815,8 +814,7 @@ cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, float alpha, const float
 }
 
 cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, double alpha, const double *x, int64_t incx,
-                     double *y, int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     double *y, int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -830,7 +828,7 @@ cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, double alpha, const doub
 
 cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, std::complex<float> alpha,
                      const std::complex<float> *x, int64_t incx, std::complex<float> *y,
-                     int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -847,7 +845,7 @@ cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, std::complex<float> alph
 
 cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
                      const std::complex<double> *x, int64_t incx, std::complex<double> *y,
-                     int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -864,7 +862,7 @@ cl::sycl::event axpy(cl::sycl::queue &queue, int64_t n, std::complex<double> alp
 
 cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, float alpha, const float *x, int64_t incx,
                       float beta, float *y, int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -877,7 +875,7 @@ cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, float alpha, const floa
 }
 cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, double alpha, const double *x,
                       int64_t incx, double beta, double *y, int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -891,7 +889,7 @@ cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, double alpha, const dou
 cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, std::complex<float> alpha,
                       const std::complex<float> *x, int64_t incx, std::complex<float> beta,
                       std::complex<float> *y, int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -910,7 +908,7 @@ cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, std::complex<float> alp
 cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
                       const std::complex<double> *x, int64_t incx, std::complex<double> beta,
                       std::complex<double> *y, int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -928,7 +926,7 @@ cl::sycl::event axpby(cl::sycl::queue &queue, int64_t n, std::complex<double> al
 }
 
 cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, float *y,
-                     int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -940,7 +938,7 @@ cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const float *x, int64_t 
 }
 
 cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const double *x, int64_t incx, double *y,
-                     int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -953,7 +951,7 @@ cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const double *x, int64_t
 
 cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const std::complex<float> *x, int64_t incx,
                      std::complex<float> *y, int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -966,7 +964,7 @@ cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const std::complex<float
 
 cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const std::complex<double> *x, int64_t incx,
                      std::complex<double> *y, int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -978,8 +976,7 @@ cl::sycl::event copy(cl::sycl::queue &queue, int64_t n, const std::complex<doubl
 }
 
 cl::sycl::event dot(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, const float *y,
-                    int64_t incy, float *result,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    int64_t incy, float *result, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -993,7 +990,7 @@ cl::sycl::event dot(cl::sycl::queue &queue, int64_t n, const float *x, int64_t i
 
 cl::sycl::event dot(cl::sycl::queue &queue, int64_t n, const double *x, int64_t incx,
                     const double *y, int64_t incy, double *result,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1007,7 +1004,7 @@ cl::sycl::event dot(cl::sycl::queue &queue, int64_t n, const double *x, int64_t 
 
 cl::sycl::event dot(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, const float *y,
                     int64_t incy, double *result,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1021,7 +1018,7 @@ cl::sycl::event dot(cl::sycl::queue &queue, int64_t n, const float *x, int64_t i
 
 cl::sycl::event dotc(cl::sycl::queue &queue, int64_t n, const std::complex<float> *x, int64_t incx,
                      const std::complex<float> *y, int64_t incy, std::complex<float> *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1035,7 +1032,7 @@ cl::sycl::event dotc(cl::sycl::queue &queue, int64_t n, const std::complex<float
 
 cl::sycl::event dotc(cl::sycl::queue &queue, int64_t n, const std::complex<double> *x, int64_t incx,
                      const std::complex<double> *y, int64_t incy, std::complex<double> *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1049,7 +1046,7 @@ cl::sycl::event dotc(cl::sycl::queue &queue, int64_t n, const std::complex<doubl
 
 cl::sycl::event dotu(cl::sycl::queue &queue, int64_t n, const std::complex<float> *x, int64_t incx,
                      const std::complex<float> *y, int64_t incy, std::complex<float> *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1063,7 +1060,7 @@ cl::sycl::event dotu(cl::sycl::queue &queue, int64_t n, const std::complex<float
 
 cl::sycl::event dotu(cl::sycl::queue &queue, int64_t n, const std::complex<double> *x, int64_t incx,
                      const std::complex<double> *y, int64_t incy, std::complex<double> *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1076,8 +1073,7 @@ cl::sycl::event dotu(cl::sycl::queue &queue, int64_t n, const std::complex<doubl
 }
 
 cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx,
-                      int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      int64_t *result, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1090,8 +1086,7 @@ cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const float *x, int64_t
 }
 
 cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const double *x, int64_t incx,
-                      int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      int64_t *result, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1104,8 +1099,7 @@ cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const double *x, int64_
 }
 
 cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const std::complex<float> *x, int64_t incx,
-                      int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      int64_t *result, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1119,7 +1113,7 @@ cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const std::complex<floa
 
 cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const std::complex<double> *x,
                       int64_t incx, int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1132,8 +1126,7 @@ cl::sycl::event iamin(cl::sycl::queue &queue, int64_t n, const std::complex<doub
 }
 
 cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx,
-                      int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      int64_t *result, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1146,8 +1139,7 @@ cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const float *x, int64_t
 }
 
 cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const double *x, int64_t incx,
-                      int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      int64_t *result, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1160,8 +1152,7 @@ cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const double *x, int64_
 }
 
 cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const std::complex<float> *x, int64_t incx,
-                      int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      int64_t *result, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1175,7 +1166,7 @@ cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const std::complex<floa
 
 cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const std::complex<double> *x,
                       int64_t incx, int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1188,7 +1179,7 @@ cl::sycl::event iamax(cl::sycl::queue &queue, int64_t n, const std::complex<doub
 }
 
 cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx, float *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1201,7 +1192,7 @@ cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const float *x, int64_t 
 }
 
 cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const double *x, int64_t incx,
-                     double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     double *result, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1214,7 +1205,7 @@ cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const double *x, int64_t
 }
 
 cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const std::complex<float> *x, int64_t incx,
-                     float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     float *result, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1227,7 +1218,7 @@ cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const std::complex<float
 }
 
 cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const std::complex<double> *x, int64_t incx,
-                     double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     double *result, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1241,7 +1232,7 @@ cl::sycl::event nrm2(cl::sycl::queue &queue, int64_t n, const std::complex<doubl
 
 cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, float *x, int64_t incx, float *y,
                     int64_t incy, float c, float s,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1255,7 +1246,7 @@ cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, float *x, int64_t incx, f
 
 cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, double *x, int64_t incx, double *y,
                     int64_t incy, double c, double s,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1269,7 +1260,7 @@ cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, double *x, int64_t incx, 
 
 cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, std::complex<float> *x, int64_t incx,
                     std::complex<float> *y, int64_t incy, float c, float s,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1283,7 +1274,7 @@ cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, std::complex<float> *x, i
 
 cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, std::complex<double> *x, int64_t incx,
                     std::complex<double> *y, int64_t incy, double c, double s,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1296,7 +1287,7 @@ cl::sycl::event rot(cl::sycl::queue &queue, int64_t n, std::complex<double> *x, 
 }
 
 cl::sycl::event rotg(cl::sycl::queue &queue, float *a, float *b, float *c, float *s,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1308,7 +1299,7 @@ cl::sycl::event rotg(cl::sycl::queue &queue, float *a, float *b, float *c, float
 }
 
 cl::sycl::event rotg(cl::sycl::queue &queue, double *a, double *b, double *c, double *s,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1321,7 +1312,7 @@ cl::sycl::event rotg(cl::sycl::queue &queue, double *a, double *b, double *c, do
 
 cl::sycl::event rotg(cl::sycl::queue &queue, std::complex<float> *a, std::complex<float> *b,
                      float *c, std::complex<float> *s,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1334,7 +1325,7 @@ cl::sycl::event rotg(cl::sycl::queue &queue, std::complex<float> *a, std::comple
 
 cl::sycl::event rotg(cl::sycl::queue &queue, std::complex<double> *a, std::complex<double> *b,
                      double *c, std::complex<double> *s,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1346,8 +1337,7 @@ cl::sycl::event rotg(cl::sycl::queue &queue, std::complex<double> *a, std::compl
 }
 
 cl::sycl::event rotm(cl::sycl::queue &queue, int64_t n, float *x, int64_t incx, float *y,
-                     int64_t incy, float *param,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     int64_t incy, float *param, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1361,7 +1351,7 @@ cl::sycl::event rotm(cl::sycl::queue &queue, int64_t n, float *x, int64_t incx, 
 
 cl::sycl::event rotm(cl::sycl::queue &queue, int64_t n, double *x, int64_t incx, double *y,
                      int64_t incy, double *param,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1374,7 +1364,7 @@ cl::sycl::event rotm(cl::sycl::queue &queue, int64_t n, double *x, int64_t incx,
 }
 
 cl::sycl::event rotmg(cl::sycl::queue &queue, float *d1, float *d2, float *x1, float y1,
-                      float *param, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      float *param, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1387,7 +1377,7 @@ cl::sycl::event rotmg(cl::sycl::queue &queue, float *d1, float *d2, float *x1, f
 }
 
 cl::sycl::event rotmg(cl::sycl::queue &queue, double *d1, double *d2, double *x1, double y1,
-                      double *param, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      double *param, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1400,7 +1390,7 @@ cl::sycl::event rotmg(cl::sycl::queue &queue, double *d1, double *d2, double *x1
 }
 
 cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, float alpha, float *x, int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1414,7 +1404,7 @@ cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, float alpha, float *x, i
 }
 
 cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, double alpha, double *x, int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1429,7 +1419,7 @@ cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, double alpha, double *x,
 
 cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, std::complex<float> alpha,
                      std::complex<float> *x, int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1445,7 +1435,7 @@ cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, std::complex<float> alph
 }
 
 cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, float alpha, std::complex<float> *x,
-                     int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1460,7 +1450,7 @@ cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, float alpha, std::comple
 
 cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
                      std::complex<double> *x, int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1476,7 +1466,7 @@ cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, std::complex<double> alp
 }
 
 cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, double alpha, std::complex<double> *x,
-                     int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1491,7 +1481,7 @@ cl::sycl::event scal(cl::sycl::queue &queue, int64_t n, double alpha, std::compl
 
 cl::sycl::event sdsdot(cl::sycl::queue &queue, int64_t n, float sb, const float *x, int64_t incx,
                        const float *y, int64_t incy, float *result,
-                       const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                       const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1504,7 +1494,7 @@ cl::sycl::event sdsdot(cl::sycl::queue &queue, int64_t n, float sb, const float 
 }
 
 cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, float *x, int64_t incx, float *y,
-                     int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1516,7 +1506,7 @@ cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, float *x, int64_t incx, 
 }
 
 cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, double *x, int64_t incx, double *y,
-                     int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1529,7 +1519,7 @@ cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, double *x, int64_t incx,
 
 cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, std::complex<float> *x, int64_t incx,
                      std::complex<float> *y, int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1542,7 +1532,7 @@ cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, std::complex<float> *x, 
 
 cl::sycl::event swap(cl::sycl::queue &queue, int64_t n, std::complex<double> *x, int64_t incx,
                      std::complex<double> *y, int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {

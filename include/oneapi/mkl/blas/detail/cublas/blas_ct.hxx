@@ -2028,7 +2028,7 @@ void symv(backend_selector<backend::cublas> selector, uplo upper_lower, std::int
 cl::sycl::event syr2(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                      float alpha, const float *x, std::int64_t incx, const float *y,
                      std::int64_t incy, float *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     syr2_precondition(selector.get_queue(), upper_lower, n, alpha, x, incx, y, incy, a, lda,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::syr2(selector.get_queue(), upper_lower, n, alpha,
@@ -2041,7 +2041,7 @@ cl::sycl::event syr2(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event syr2(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                      double alpha, const double *x, std::int64_t incx, const double *y,
                      std::int64_t incy, double *a, std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     syr2_precondition(selector.get_queue(), upper_lower, n, alpha, x, incx, y, incy, a, lda,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::syr2(selector.get_queue(), upper_lower, n, alpha,
@@ -2053,7 +2053,7 @@ cl::sycl::event syr2(backend_selector<backend::cublas> selector, uplo upper_lowe
 
 cl::sycl::event scal(backend_selector<backend::cublas> selector, std::int64_t n, float alpha,
                      float *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     scal_precondition(selector.get_queue(), n, alpha, x, incx, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::scal(selector.get_queue(), n, alpha, x, incx,
                                                        dependencies);
@@ -2063,7 +2063,7 @@ cl::sycl::event scal(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event scal(backend_selector<backend::cublas> selector, std::int64_t n, double alpha,
                      double *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     scal_precondition(selector.get_queue(), n, alpha, x, incx, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::scal(selector.get_queue(), n, alpha, x, incx,
                                                        dependencies);
@@ -2073,7 +2073,7 @@ cl::sycl::event scal(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event scal(backend_selector<backend::cublas> selector, std::int64_t n,
                      std::complex<float> alpha, std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     scal_precondition(selector.get_queue(), n, alpha, x, incx, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::scal(selector.get_queue(), n, alpha, x, incx,
                                                        dependencies);
@@ -2083,7 +2083,7 @@ cl::sycl::event scal(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event scal(backend_selector<backend::cublas> selector, std::int64_t n,
                      std::complex<double> alpha, std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     scal_precondition(selector.get_queue(), n, alpha, x, incx, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::scal(selector.get_queue(), n, alpha, x, incx,
                                                        dependencies);
@@ -2093,7 +2093,7 @@ cl::sycl::event scal(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event scal(backend_selector<backend::cublas> selector, std::int64_t n, float alpha,
                      std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     scal_precondition(selector.get_queue(), n, alpha, x, incx, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::scal(selector.get_queue(), n, alpha, x, incx,
                                                        dependencies);
@@ -2103,7 +2103,7 @@ cl::sycl::event scal(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event scal(backend_selector<backend::cublas> selector, std::int64_t n, double alpha,
                      std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     scal_precondition(selector.get_queue(), n, alpha, x, incx, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::scal(selector.get_queue(), n, alpha, x, incx,
                                                        dependencies);
@@ -2113,8 +2113,7 @@ cl::sycl::event scal(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event trmv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, const float *a, std::int64_t lda, float *x,
-                     std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     trmv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, a, lda, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trmv(selector.get_queue(), upper_lower, trans,
@@ -2126,8 +2125,7 @@ cl::sycl::event trmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 
 cl::sycl::event trmv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, const double *a, std::int64_t lda, double *x,
-                     std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     trmv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, a, lda, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trmv(selector.get_queue(), upper_lower, trans,
@@ -2140,7 +2138,7 @@ cl::sycl::event trmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event trmv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, const std::complex<float> *a, std::int64_t lda,
                      std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     trmv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, a, lda, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trmv(selector.get_queue(), upper_lower, trans,
@@ -2153,7 +2151,7 @@ cl::sycl::event trmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event trmv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     trmv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, a, lda, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trmv(selector.get_queue(), upper_lower, trans,
@@ -2165,7 +2163,7 @@ cl::sycl::event trmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 
 cl::sycl::event tpmv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, const float *a, float *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     tpmv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, a, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::tpmv(selector.get_queue(), upper_lower, trans,
@@ -2177,7 +2175,7 @@ cl::sycl::event tpmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 
 cl::sycl::event tpmv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, const double *a, double *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     tpmv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, a, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::tpmv(selector.get_queue(), upper_lower, trans,
@@ -2190,7 +2188,7 @@ cl::sycl::event tpmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event tpmv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, const std::complex<float> *a,
                      std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     tpmv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, a, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::tpmv(selector.get_queue(), upper_lower, trans,
@@ -2203,7 +2201,7 @@ cl::sycl::event tpmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event tpmv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, const std::complex<double> *a,
                      std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     tpmv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, a, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::tpmv(selector.get_queue(), upper_lower, trans,
@@ -2215,7 +2213,7 @@ cl::sycl::event tpmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 
 cl::sycl::event spr(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                     float alpha, const float *x, std::int64_t incx, float *a,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     spr_precondition(selector.get_queue(), upper_lower, n, alpha, x, incx, a, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::spr(selector.get_queue(), upper_lower, n, alpha,
                                                       x, incx, a, dependencies);
@@ -2225,7 +2223,7 @@ cl::sycl::event spr(backend_selector<backend::cublas> selector, uplo upper_lower
 
 cl::sycl::event spr(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                     double alpha, const double *x, std::int64_t incx, double *a,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     spr_precondition(selector.get_queue(), upper_lower, n, alpha, x, incx, a, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::spr(selector.get_queue(), upper_lower, n, alpha,
                                                       x, incx, a, dependencies);
@@ -2237,7 +2235,7 @@ cl::sycl::event hpmv(backend_selector<backend::cublas> selector, uplo upper_lowe
                      std::complex<float> alpha, const std::complex<float> *a,
                      const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
                      std::complex<float> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     hpmv_precondition(selector.get_queue(), upper_lower, n, alpha, a, x, incx, beta, y, incy,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::hpmv(selector.get_queue(), upper_lower, n, alpha,
@@ -2251,7 +2249,7 @@ cl::sycl::event hpmv(backend_selector<backend::cublas> selector, uplo upper_lowe
                      std::complex<double> alpha, const std::complex<double> *a,
                      const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
                      std::complex<double> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     hpmv_precondition(selector.get_queue(), upper_lower, n, alpha, a, x, incx, beta, y, incy,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::hpmv(selector.get_queue(), upper_lower, n, alpha,
@@ -2264,7 +2262,7 @@ cl::sycl::event hpmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event syrk(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda,
                      float beta, float *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     syrk_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::syrk(
@@ -2277,7 +2275,7 @@ cl::sycl::event syrk(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event syrk(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      std::int64_t n, std::int64_t k, double alpha, const double *a,
                      std::int64_t lda, double beta, double *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     syrk_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::syrk(
@@ -2291,7 +2289,7 @@ cl::sycl::event syrk(backend_selector<backend::cublas> selector, uplo upper_lowe
                      std::int64_t n, std::int64_t k, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, std::complex<float> beta,
                      std::complex<float> *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     syrk_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::syrk(
@@ -2305,7 +2303,7 @@ cl::sycl::event syrk(backend_selector<backend::cublas> selector, uplo upper_lowe
                      std::int64_t n, std::int64_t k, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, std::complex<double> beta,
                      std::complex<double> *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     syrk_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::syrk(
@@ -2319,7 +2317,7 @@ cl::sycl::event syrk_batch(backend_selector<backend::cublas> selector, uplo *upp
                            transpose *trans, std::int64_t *n, std::int64_t *k, float *alpha,
                            const float **a, std::int64_t *lda, float *beta, float **c,
                            std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     syrk_batch_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, beta, c,
                             ldc, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::syrk_batch(
@@ -2334,7 +2332,7 @@ cl::sycl::event syrk_batch(backend_selector<backend::cublas> selector, uplo *upp
                            transpose *trans, std::int64_t *n, std::int64_t *k, double *alpha,
                            const double **a, std::int64_t *lda, double *beta, double **c,
                            std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     syrk_batch_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, beta, c,
                             ldc, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::syrk_batch(
@@ -2350,7 +2348,7 @@ cl::sycl::event syrk_batch(backend_selector<backend::cublas> selector, uplo *upp
                            std::complex<float> *alpha, const std::complex<float> **a,
                            std::int64_t *lda, std::complex<float> *beta, std::complex<float> **c,
                            std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     syrk_batch_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, beta, c,
                             ldc, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::syrk_batch(
@@ -2366,7 +2364,7 @@ cl::sycl::event syrk_batch(backend_selector<backend::cublas> selector, uplo *upp
                            std::complex<double> *alpha, const std::complex<double> **a,
                            std::int64_t *lda, std::complex<double> *beta, std::complex<double> **c,
                            std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     syrk_batch_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, beta, c,
                             ldc, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::syrk_batch(
@@ -2382,7 +2380,7 @@ cl::sycl::event syrk_batch(backend_selector<backend::cublas> selector, uplo uppe
                            const float *a, std::int64_t lda, std::int64_t stride_a, float beta,
                            float *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     syrk_batch_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, stride_a,
                             beta, c, ldc, stride_c, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::syrk_batch(
@@ -2398,7 +2396,7 @@ cl::sycl::event syrk_batch(backend_selector<backend::cublas> selector, uplo uppe
                            const double *a, std::int64_t lda, std::int64_t stride_a, double beta,
                            double *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     syrk_batch_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, stride_a,
                             beta, c, ldc, stride_c, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::syrk_batch(
@@ -2415,7 +2413,7 @@ cl::sycl::event syrk_batch(backend_selector<backend::cublas> selector, uplo uppe
                            std::int64_t lda, std::int64_t stride_a, std::complex<float> beta,
                            std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     syrk_batch_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, stride_a,
                             beta, c, ldc, stride_c, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::syrk_batch(
@@ -2432,7 +2430,7 @@ cl::sycl::event syrk_batch(backend_selector<backend::cublas> selector, uplo uppe
                            std::int64_t lda, std::int64_t stride_a, std::complex<double> beta,
                            std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     syrk_batch_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, stride_a,
                             beta, c, ldc, stride_c, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::syrk_batch(
@@ -2446,8 +2444,7 @@ cl::sycl::event syrk_batch(backend_selector<backend::cublas> selector, uplo uppe
 cl::sycl::event her2(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                      const std::complex<float> *y, std::int64_t incy, std::complex<float> *a,
-                     std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     her2_precondition(selector.get_queue(), upper_lower, n, alpha, x, incx, y, incy, a, lda,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::her2(selector.get_queue(), upper_lower, n, alpha,
@@ -2460,8 +2457,7 @@ cl::sycl::event her2(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event her2(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *a,
-                     std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     her2_precondition(selector.get_queue(), upper_lower, n, alpha, x, incx, y, incy, a, lda,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::her2(selector.get_queue(), upper_lower, n, alpha,
@@ -2475,7 +2471,7 @@ cl::sycl::event hbmv(backend_selector<backend::cublas> selector, uplo upper_lowe
                      std::int64_t k, std::complex<float> alpha, const std::complex<float> *a,
                      std::int64_t lda, const std::complex<float> *x, std::int64_t incx,
                      std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     hbmv_precondition(selector.get_queue(), upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
                       incy, dependencies);
     auto done =
@@ -2490,7 +2486,7 @@ cl::sycl::event hbmv(backend_selector<backend::cublas> selector, uplo upper_lowe
                      std::int64_t k, std::complex<double> alpha, const std::complex<double> *a,
                      std::int64_t lda, const std::complex<double> *x, std::int64_t incx,
                      std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     hbmv_precondition(selector.get_queue(), upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
                       incy, dependencies);
     auto done =
@@ -2504,7 +2500,7 @@ cl::sycl::event hbmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event rot(backend_selector<backend::cublas> selector, std::int64_t n,
                     std::complex<float> *x, std::int64_t incx, std::complex<float> *y,
                     std::int64_t incy, float c, float s,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     rot_precondition(selector.get_queue(), n, x, incx, y, incy, c, s, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::rot(selector.get_queue(), n, x, incx, y, incy, c,
                                                       s, dependencies);
@@ -2515,7 +2511,7 @@ cl::sycl::event rot(backend_selector<backend::cublas> selector, std::int64_t n,
 cl::sycl::event rot(backend_selector<backend::cublas> selector, std::int64_t n,
                     std::complex<double> *x, std::int64_t incx, std::complex<double> *y,
                     std::int64_t incy, double c, double s,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     rot_precondition(selector.get_queue(), n, x, incx, y, incy, c, s, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::rot(selector.get_queue(), n, x, incx, y, incy, c,
                                                       s, dependencies);
@@ -2525,7 +2521,7 @@ cl::sycl::event rot(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event rot(backend_selector<backend::cublas> selector, std::int64_t n, float *x,
                     std::int64_t incx, float *y, std::int64_t incy, float c, float s,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     rot_precondition(selector.get_queue(), n, x, incx, y, incy, c, s, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::rot(selector.get_queue(), n, x, incx, y, incy, c,
                                                       s, dependencies);
@@ -2535,7 +2531,7 @@ cl::sycl::event rot(backend_selector<backend::cublas> selector, std::int64_t n, 
 
 cl::sycl::event rot(backend_selector<backend::cublas> selector, std::int64_t n, double *x,
                     std::int64_t incx, double *y, std::int64_t incy, double c, double s,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     rot_precondition(selector.get_queue(), n, x, incx, y, incy, c, s, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::rot(selector.get_queue(), n, x, incx, y, incy, c,
                                                       s, dependencies);
@@ -2545,7 +2541,7 @@ cl::sycl::event rot(backend_selector<backend::cublas> selector, std::int64_t n, 
 
 cl::sycl::event axpy(backend_selector<backend::cublas> selector, std::int64_t n, float alpha,
                      const float *x, std::int64_t incx, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     axpy_precondition(selector.get_queue(), n, alpha, x, incx, y, incy, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::axpy(selector.get_queue(), n, alpha, x, incx, y,
                                                        incy, dependencies);
@@ -2555,7 +2551,7 @@ cl::sycl::event axpy(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event axpy(backend_selector<backend::cublas> selector, std::int64_t n, double alpha,
                      const double *x, std::int64_t incx, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     axpy_precondition(selector.get_queue(), n, alpha, x, incx, y, incy, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::axpy(selector.get_queue(), n, alpha, x, incx, y,
                                                        incy, dependencies);
@@ -2566,7 +2562,7 @@ cl::sycl::event axpy(backend_selector<backend::cublas> selector, std::int64_t n,
 cl::sycl::event axpy(backend_selector<backend::cublas> selector, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                      std::complex<float> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     axpy_precondition(selector.get_queue(), n, alpha, x, incx, y, incy, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::axpy(selector.get_queue(), n, alpha, x, incx, y,
                                                        incy, dependencies);
@@ -2577,7 +2573,7 @@ cl::sycl::event axpy(backend_selector<backend::cublas> selector, std::int64_t n,
 cl::sycl::event axpy(backend_selector<backend::cublas> selector, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                      std::complex<double> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     axpy_precondition(selector.get_queue(), n, alpha, x, incx, y, incy, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::axpy(selector.get_queue(), n, alpha, x, incx, y,
                                                        incy, dependencies);
@@ -2588,7 +2584,7 @@ cl::sycl::event axpy(backend_selector<backend::cublas> selector, std::int64_t n,
 cl::sycl::event axpy_batch(backend_selector<backend::cublas> selector, std::int64_t *n,
                            float *alpha, const float **x, std::int64_t *incx, float **y,
                            std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     axpy_batch_precondition(selector.get_queue(), n, alpha, x, incx, y, incy, group_count,
                             group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::axpy_batch(
@@ -2601,7 +2597,7 @@ cl::sycl::event axpy_batch(backend_selector<backend::cublas> selector, std::int6
 cl::sycl::event axpy_batch(backend_selector<backend::cublas> selector, std::int64_t *n,
                            double *alpha, const double **x, std::int64_t *incx, double **y,
                            std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     axpy_batch_precondition(selector.get_queue(), n, alpha, x, incx, y, incy, group_count,
                             group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::axpy_batch(
@@ -2615,7 +2611,7 @@ cl::sycl::event axpy_batch(backend_selector<backend::cublas> selector, std::int6
                            std::complex<float> *alpha, const std::complex<float> **x,
                            std::int64_t *incx, std::complex<float> **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     axpy_batch_precondition(selector.get_queue(), n, alpha, x, incx, y, incy, group_count,
                             group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::axpy_batch(
@@ -2629,7 +2625,7 @@ cl::sycl::event axpy_batch(backend_selector<backend::cublas> selector, std::int6
                            std::complex<double> *alpha, const std::complex<double> **x,
                            std::int64_t *incx, std::complex<double> **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     axpy_batch_precondition(selector.get_queue(), n, alpha, x, incx, y, incy, group_count,
                             group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::axpy_batch(
@@ -2642,7 +2638,7 @@ cl::sycl::event axpy_batch(backend_selector<backend::cublas> selector, std::int6
 cl::sycl::event axpy_batch(backend_selector<backend::cublas> selector, std::int64_t n, float alpha,
                            const float *x, std::int64_t incx, std::int64_t stridex, float *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     axpy_batch_precondition(selector.get_queue(), n, alpha, x, incx, stridex, y, incy, stridey,
                             batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::axpy_batch(selector.get_queue(), n, alpha, x,
@@ -2656,7 +2652,7 @@ cl::sycl::event axpy_batch(backend_selector<backend::cublas> selector, std::int6
 cl::sycl::event axpy_batch(backend_selector<backend::cublas> selector, std::int64_t n, double alpha,
                            const double *x, std::int64_t incx, std::int64_t stridex, double *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     axpy_batch_precondition(selector.get_queue(), n, alpha, x, incx, stridex, y, incy, stridey,
                             batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::axpy_batch(selector.get_queue(), n, alpha, x,
@@ -2671,7 +2667,7 @@ cl::sycl::event axpy_batch(backend_selector<backend::cublas> selector, std::int6
                            std::complex<float> alpha, const std::complex<float> *x,
                            std::int64_t incx, std::int64_t stridex, std::complex<float> *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     axpy_batch_precondition(selector.get_queue(), n, alpha, x, incx, stridex, y, incy, stridey,
                             batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::axpy_batch(selector.get_queue(), n, alpha, x,
@@ -2686,7 +2682,7 @@ cl::sycl::event axpy_batch(backend_selector<backend::cublas> selector, std::int6
                            std::complex<double> alpha, const std::complex<double> *x,
                            std::int64_t incx, std::int64_t stridex, std::complex<double> *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     axpy_batch_precondition(selector.get_queue(), n, alpha, x, incx, stridex, y, incy, stridey,
                             batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::axpy_batch(selector.get_queue(), n, alpha, x,
@@ -2699,8 +2695,7 @@ cl::sycl::event axpy_batch(backend_selector<backend::cublas> selector, std::int6
 
 cl::sycl::event axpby(backend_selector<backend::cublas> selector, std::int64_t n, float alpha,
                       const float *x, std::int64_t incx, const float beta, float *y,
-                      std::int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     axpby_precondition(selector.get_queue(), n, alpha, x, incx, beta, y, incy, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::axpby(selector.get_queue(), n, alpha, x, incx,
                                                         beta, y, incy, dependencies);
@@ -2710,8 +2705,7 @@ cl::sycl::event axpby(backend_selector<backend::cublas> selector, std::int64_t n
 
 cl::sycl::event axpby(backend_selector<backend::cublas> selector, std::int64_t n, double alpha,
                       const double *x, std::int64_t incx, const double beta, double *y,
-                      std::int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     axpby_precondition(selector.get_queue(), n, alpha, x, incx, beta, y, incy, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::axpby(selector.get_queue(), n, alpha, x, incx,
                                                         beta, y, incy, dependencies);
@@ -2722,7 +2716,7 @@ cl::sycl::event axpby(backend_selector<backend::cublas> selector, std::int64_t n
 cl::sycl::event axpby(backend_selector<backend::cublas> selector, std::int64_t n,
                       std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                       const std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     axpby_precondition(selector.get_queue(), n, alpha, x, incx, beta, y, incy, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::axpby(selector.get_queue(), n, alpha, x, incx,
                                                         beta, y, incy, dependencies);
@@ -2733,7 +2727,7 @@ cl::sycl::event axpby(backend_selector<backend::cublas> selector, std::int64_t n
 cl::sycl::event axpby(backend_selector<backend::cublas> selector, std::int64_t n,
                       std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                       const std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     axpby_precondition(selector.get_queue(), n, alpha, x, incx, beta, y, incy, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::axpby(selector.get_queue(), n, alpha, x, incx,
                                                         beta, y, incy, dependencies);
@@ -2744,8 +2738,7 @@ cl::sycl::event axpby(backend_selector<backend::cublas> selector, std::int64_t n
 cl::sycl::event gerc(backend_selector<backend::cublas> selector, std::int64_t m, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                      const std::complex<float> *y, std::int64_t incy, std::complex<float> *a,
-                     std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     gerc_precondition(selector.get_queue(), m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gerc(selector.get_queue(), m, n, alpha, x, incx,
                                                        y, incy, a, lda, dependencies);
@@ -2756,8 +2749,7 @@ cl::sycl::event gerc(backend_selector<backend::cublas> selector, std::int64_t m,
 cl::sycl::event gerc(backend_selector<backend::cublas> selector, std::int64_t m, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *a,
-                     std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     gerc_precondition(selector.get_queue(), m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gerc(selector.get_queue(), m, n, alpha, x, incx,
                                                        y, incy, a, lda, dependencies);
@@ -2768,7 +2760,7 @@ cl::sycl::event gerc(backend_selector<backend::cublas> selector, std::int64_t m,
 cl::sycl::event syr2k(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                       std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda,
                       const float *b, std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     syr2k_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
                        c, ldc, dependencies);
     auto done =
@@ -2782,8 +2774,7 @@ cl::sycl::event syr2k(backend_selector<backend::cublas> selector, uplo upper_low
 cl::sycl::event syr2k(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                       std::int64_t n, std::int64_t k, double alpha, const double *a,
                       std::int64_t lda, const double *b, std::int64_t ldb, double beta, double *c,
-                      std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     syr2k_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
                        c, ldc, dependencies);
     auto done =
@@ -2798,8 +2789,7 @@ cl::sycl::event syr2k(backend_selector<backend::cublas> selector, uplo upper_low
                       std::int64_t n, std::int64_t k, std::complex<float> alpha,
                       const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                       std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
-                      std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     syr2k_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
                        c, ldc, dependencies);
     auto done =
@@ -2815,7 +2805,7 @@ cl::sycl::event syr2k(backend_selector<backend::cublas> selector, uplo upper_low
                       const std::complex<double> *a, std::int64_t lda,
                       const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
                       std::complex<double> *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     syr2k_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
                        c, ldc, dependencies);
     auto done =
@@ -2829,7 +2819,7 @@ cl::sycl::event syr2k(backend_selector<backend::cublas> selector, uplo upper_low
 cl::sycl::event gemv(backend_selector<backend::cublas> selector, transpose trans, std::int64_t m,
                      std::int64_t n, float alpha, const float *a, std::int64_t lda, const float *x,
                      std::int64_t incx, float beta, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     gemv_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemv(selector.get_queue(), trans, m, n, alpha, a,
@@ -2842,7 +2832,7 @@ cl::sycl::event gemv(backend_selector<backend::cublas> selector, transpose trans
 cl::sycl::event gemv(backend_selector<backend::cublas> selector, transpose trans, std::int64_t m,
                      std::int64_t n, double alpha, const double *a, std::int64_t lda,
                      const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     gemv_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemv(selector.get_queue(), trans, m, n, alpha, a,
@@ -2856,7 +2846,7 @@ cl::sycl::event gemv(backend_selector<backend::cublas> selector, transpose trans
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                      std::int64_t lda, const std::complex<float> *x, std::int64_t incx,
                      std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     gemv_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemv(selector.get_queue(), trans, m, n, alpha, a,
@@ -2870,7 +2860,7 @@ cl::sycl::event gemv(backend_selector<backend::cublas> selector, transpose trans
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
                      std::int64_t lda, const std::complex<double> *x, std::int64_t incx,
                      std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     gemv_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemv(selector.get_queue(), trans, m, n, alpha, a,
@@ -2885,7 +2875,7 @@ cl::sycl::event gemv_batch(backend_selector<backend::cublas> selector, transpose
                            std::int64_t lda, std::int64_t stridea, const float *x,
                            std::int64_t incx, std::int64_t stridex, float beta, float *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemv_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, stridea, x, incx,
                             stridex, beta, y, incy, stridey, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemv_batch(
@@ -2901,7 +2891,7 @@ cl::sycl::event gemv_batch(backend_selector<backend::cublas> selector, transpose
                            std::int64_t lda, std::int64_t stridea, const double *x,
                            std::int64_t incx, std::int64_t stridex, double beta, double *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemv_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, stridea, x, incx,
                             stridex, beta, y, incy, stridey, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemv_batch(
@@ -2918,7 +2908,7 @@ cl::sycl::event gemv_batch(backend_selector<backend::cublas> selector, transpose
                            const std::complex<float> *x, std::int64_t incx, std::int64_t stridex,
                            std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
                            std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemv_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, stridea, x, incx,
                             stridex, beta, y, incy, stridey, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemv_batch(
@@ -2935,7 +2925,7 @@ cl::sycl::event gemv_batch(backend_selector<backend::cublas> selector, transpose
                            const std::complex<double> *x, std::int64_t incx, std::int64_t stridex,
                            std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
                            std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemv_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, stridea, x, incx,
                             stridex, beta, y, incy, stridey, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemv_batch(
@@ -2951,7 +2941,7 @@ cl::sycl::event gemv_batch(backend_selector<backend::cublas> selector, transpose
                            std::int64_t *lda, const float **x, std::int64_t *incx, float *beta,
                            float **y, std::int64_t *incy, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemv_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, x, incx, beta, y,
                             incy, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemv_batch(selector.get_queue(), trans, m, n,
@@ -2967,7 +2957,7 @@ cl::sycl::event gemv_batch(backend_selector<backend::cublas> selector, transpose
                            std::int64_t *lda, const double **x, std::int64_t *incx, double *beta,
                            double **y, std::int64_t *incy, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemv_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, x, incx, beta, y,
                             incy, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemv_batch(selector.get_queue(), trans, m, n,
@@ -2984,7 +2974,7 @@ cl::sycl::event gemv_batch(backend_selector<backend::cublas> selector, transpose
                            const std::complex<float> **x, std::int64_t *incx,
                            std::complex<float> *beta, std::complex<float> **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemv_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, x, incx, beta, y,
                             incy, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemv_batch(selector.get_queue(), trans, m, n,
@@ -3001,7 +2991,7 @@ cl::sycl::event gemv_batch(backend_selector<backend::cublas> selector, transpose
                            const std::complex<double> **x, std::int64_t *incx,
                            std::complex<double> *beta, std::complex<double> **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemv_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, x, incx, beta, y,
                             incy, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemv_batch(selector.get_queue(), trans, m, n,
@@ -3017,7 +3007,7 @@ cl::sycl::event dgmm_batch(backend_selector<backend::cublas> selector, side left
                            std::int64_t stridea, const float *x, std::int64_t incx,
                            std::int64_t stridex, float *c, std::int64_t ldc, std::int64_t stridec,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     dgmm_batch_precondition(selector.get_queue(), left_right, m, n, a, lda, stridea, x, incx,
                             stridex, c, ldc, stridec, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::dgmm_batch(
@@ -3033,7 +3023,7 @@ cl::sycl::event dgmm_batch(backend_selector<backend::cublas> selector, side left
                            std::int64_t stridea, const double *x, std::int64_t incx,
                            std::int64_t stridex, double *c, std::int64_t ldc, std::int64_t stridec,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     dgmm_batch_precondition(selector.get_queue(), left_right, m, n, a, lda, stridea, x, incx,
                             stridex, c, ldc, stridec, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::dgmm_batch(
@@ -3049,7 +3039,7 @@ cl::sycl::event dgmm_batch(backend_selector<backend::cublas> selector, side left
                            std::int64_t lda, std::int64_t stridea, const std::complex<float> *x,
                            std::int64_t incx, std::int64_t stridex, std::complex<float> *c,
                            std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     dgmm_batch_precondition(selector.get_queue(), left_right, m, n, a, lda, stridea, x, incx,
                             stridex, c, ldc, stridec, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::dgmm_batch(
@@ -3065,7 +3055,7 @@ cl::sycl::event dgmm_batch(backend_selector<backend::cublas> selector, side left
                            std::int64_t lda, std::int64_t stridea, const std::complex<double> *x,
                            std::int64_t incx, std::int64_t stridex, std::complex<double> *c,
                            std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     dgmm_batch_precondition(selector.get_queue(), left_right, m, n, a, lda, stridea, x, incx,
                             stridex, c, ldc, stridec, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::dgmm_batch(
@@ -3080,7 +3070,7 @@ cl::sycl::event dgmm_batch(backend_selector<backend::cublas> selector, side *lef
                            std::int64_t *m, std::int64_t *n, const float **a, std::int64_t *lda,
                            const float **x, std::int64_t *incx, float **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     dgmm_batch_precondition(selector.get_queue(), left_right, m, n, a, lda, x, incx, c, ldc,
                             group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::dgmm_batch(selector.get_queue(), left_right, m, n,
@@ -3095,7 +3085,7 @@ cl::sycl::event dgmm_batch(backend_selector<backend::cublas> selector, side *lef
                            std::int64_t *m, std::int64_t *n, const double **a, std::int64_t *lda,
                            const double **x, std::int64_t *incx, double **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     dgmm_batch_precondition(selector.get_queue(), left_right, m, n, a, lda, x, incx, c, ldc,
                             group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::dgmm_batch(selector.get_queue(), left_right, m, n,
@@ -3111,7 +3101,7 @@ cl::sycl::event dgmm_batch(backend_selector<backend::cublas> selector, side *lef
                            std::int64_t *lda, const std::complex<float> **x, std::int64_t *incx,
                            std::complex<float> **c, std::int64_t *ldc, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     dgmm_batch_precondition(selector.get_queue(), left_right, m, n, a, lda, x, incx, c, ldc,
                             group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::dgmm_batch(selector.get_queue(), left_right, m, n,
@@ -3127,7 +3117,7 @@ cl::sycl::event dgmm_batch(backend_selector<backend::cublas> selector, side *lef
                            std::int64_t *lda, const std::complex<double> **x, std::int64_t *incx,
                            std::complex<double> **c, std::int64_t *ldc, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     dgmm_batch_precondition(selector.get_queue(), left_right, m, n, a, lda, x, incx, c, ldc,
                             group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::dgmm_batch(selector.get_queue(), left_right, m, n,
@@ -3141,7 +3131,7 @@ cl::sycl::event dgmm_batch(backend_selector<backend::cublas> selector, side *lef
 cl::sycl::event her(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                     float alpha, const std::complex<float> *x, std::int64_t incx,
                     std::complex<float> *a, std::int64_t lda,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     her_precondition(selector.get_queue(), upper_lower, n, alpha, x, incx, a, lda, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::her(selector.get_queue(), upper_lower, n, alpha,
                                                       x, incx, a, lda, dependencies);
@@ -3152,7 +3142,7 @@ cl::sycl::event her(backend_selector<backend::cublas> selector, uplo upper_lower
 cl::sycl::event her(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                     double alpha, const std::complex<double> *x, std::int64_t incx,
                     std::complex<double> *a, std::int64_t lda,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     her_precondition(selector.get_queue(), upper_lower, n, alpha, x, incx, a, lda, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::her(selector.get_queue(), upper_lower, n, alpha,
                                                       x, incx, a, lda, dependencies);
@@ -3162,8 +3152,7 @@ cl::sycl::event her(backend_selector<backend::cublas> selector, uplo upper_lower
 
 cl::sycl::event hpr(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                     float alpha, const std::complex<float> *x, std::int64_t incx,
-                    std::complex<float> *a,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    std::complex<float> *a, const std::vector<cl::sycl::event> &dependencies) {
     hpr_precondition(selector.get_queue(), upper_lower, n, alpha, x, incx, a, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::hpr(selector.get_queue(), upper_lower, n, alpha,
                                                       x, incx, a, dependencies);
@@ -3173,8 +3162,7 @@ cl::sycl::event hpr(backend_selector<backend::cublas> selector, uplo upper_lower
 
 cl::sycl::event hpr(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                     double alpha, const std::complex<double> *x, std::int64_t incx,
-                    std::complex<double> *a,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    std::complex<double> *a, const std::vector<cl::sycl::event> &dependencies) {
     hpr_precondition(selector.get_queue(), upper_lower, n, alpha, x, incx, a, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::hpr(selector.get_queue(), upper_lower, n, alpha,
                                                       x, incx, a, dependencies);
@@ -3184,7 +3172,7 @@ cl::sycl::event hpr(backend_selector<backend::cublas> selector, uplo upper_lower
 
 cl::sycl::event iamin(backend_selector<backend::cublas> selector, std::int64_t n, const float *x,
                       std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     iamin_precondition(selector.get_queue(), n, x, incx, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::iamin(selector.get_queue(), n, x, incx, result,
                                                         dependencies);
@@ -3194,7 +3182,7 @@ cl::sycl::event iamin(backend_selector<backend::cublas> selector, std::int64_t n
 
 cl::sycl::event iamin(backend_selector<backend::cublas> selector, std::int64_t n, const double *x,
                       std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     iamin_precondition(selector.get_queue(), n, x, incx, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::iamin(selector.get_queue(), n, x, incx, result,
                                                         dependencies);
@@ -3204,7 +3192,7 @@ cl::sycl::event iamin(backend_selector<backend::cublas> selector, std::int64_t n
 
 cl::sycl::event iamin(backend_selector<backend::cublas> selector, std::int64_t n,
                       const std::complex<float> *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     iamin_precondition(selector.get_queue(), n, x, incx, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::iamin(selector.get_queue(), n, x, incx, result,
                                                         dependencies);
@@ -3214,7 +3202,7 @@ cl::sycl::event iamin(backend_selector<backend::cublas> selector, std::int64_t n
 
 cl::sycl::event iamin(backend_selector<backend::cublas> selector, std::int64_t n,
                       const std::complex<double> *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     iamin_precondition(selector.get_queue(), n, x, incx, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::iamin(selector.get_queue(), n, x, incx, result,
                                                         dependencies);
@@ -3227,7 +3215,7 @@ cl::sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose
                            float *alpha, const float **a, std::int64_t *lda, const float **b,
                            std::int64_t *ldb, float *beta, float **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb,
                             beta, c, ldc, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
@@ -3243,7 +3231,7 @@ cl::sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose
                            double *alpha, const double **a, std::int64_t *lda, const double **b,
                            std::int64_t *ldb, double *beta, double **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb,
                             beta, c, ldc, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
@@ -3260,7 +3248,7 @@ cl::sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose
                            std::int64_t *lda, const std::complex<float> **b, std::int64_t *ldb,
                            std::complex<float> *beta, std::complex<float> **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb,
                             beta, c, ldc, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
@@ -3277,7 +3265,7 @@ cl::sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose
                            std::int64_t *lda, const std::complex<double> **b, std::int64_t *ldb,
                            std::complex<double> *beta, std::complex<double> **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb,
                             beta, c, ldc, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
@@ -3293,7 +3281,7 @@ cl::sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose
                            half *alpha, const half **a, std::int64_t *lda, const half **b,
                            std::int64_t *ldb, half *beta, half **c, std::int64_t *ldc,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb,
                             beta, c, ldc, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
@@ -3310,7 +3298,7 @@ cl::sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose
                            const float *b, std::int64_t ldb, std::int64_t stride_b, float beta,
                            float *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, stride_a,
                             b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
@@ -3327,7 +3315,7 @@ cl::sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose
                            const double *b, std::int64_t ldb, std::int64_t stride_b, double beta,
                            double *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, stride_a,
                             b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
@@ -3345,7 +3333,7 @@ cl::sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose
                            std::int64_t ldb, std::int64_t stride_b, std::complex<float> beta,
                            std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, stride_a,
                             b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
@@ -3363,7 +3351,7 @@ cl::sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose
                            std::int64_t ldb, std::int64_t stride_b, std::complex<double> beta,
                            std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, stride_a,
                             b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
@@ -3380,7 +3368,7 @@ cl::sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose
                            const half *b, std::int64_t ldb, std::int64_t stride_b, half beta,
                            half *c, std::int64_t ldc, std::int64_t stride_c,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     gemm_batch_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, stride_a,
                             b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
@@ -3394,7 +3382,7 @@ cl::sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose
 cl::sycl::event spmv(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                      float alpha, const float *a, const float *x, std::int64_t incx, float beta,
                      float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     spmv_precondition(selector.get_queue(), upper_lower, n, alpha, a, x, incx, beta, y, incy,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::spmv(selector.get_queue(), upper_lower, n, alpha,
@@ -3407,7 +3395,7 @@ cl::sycl::event spmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event spmv(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                      double alpha, const double *a, const double *x, std::int64_t incx, double beta,
                      double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     spmv_precondition(selector.get_queue(), upper_lower, n, alpha, a, x, incx, beta, y, incy,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::spmv(selector.get_queue(), upper_lower, n, alpha,
@@ -3419,7 +3407,7 @@ cl::sycl::event spmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 
 cl::sycl::event swap(backend_selector<backend::cublas> selector, std::int64_t n, float *x,
                      std::int64_t incx, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     swap_precondition(selector.get_queue(), n, x, incx, y, incy, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::swap(selector.get_queue(), n, x, incx, y, incy,
                                                        dependencies);
@@ -3429,7 +3417,7 @@ cl::sycl::event swap(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event swap(backend_selector<backend::cublas> selector, std::int64_t n, double *x,
                      std::int64_t incx, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     swap_precondition(selector.get_queue(), n, x, incx, y, incy, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::swap(selector.get_queue(), n, x, incx, y, incy,
                                                        dependencies);
@@ -3439,8 +3427,7 @@ cl::sycl::event swap(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event swap(backend_selector<backend::cublas> selector, std::int64_t n,
                      std::complex<float> *x, std::int64_t incx, std::complex<float> *y,
-                     std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     swap_precondition(selector.get_queue(), n, x, incx, y, incy, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::swap(selector.get_queue(), n, x, incx, y, incy,
                                                        dependencies);
@@ -3450,8 +3437,7 @@ cl::sycl::event swap(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event swap(backend_selector<backend::cublas> selector, std::int64_t n,
                      std::complex<double> *x, std::int64_t incx, std::complex<double> *y,
-                     std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     swap_precondition(selector.get_queue(), n, x, incx, y, incy, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::swap(selector.get_queue(), n, x, incx, y, incy,
                                                        dependencies);
@@ -3462,8 +3448,7 @@ cl::sycl::event swap(backend_selector<backend::cublas> selector, std::int64_t n,
 cl::sycl::event geru(backend_selector<backend::cublas> selector, std::int64_t m, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                      const std::complex<float> *y, std::int64_t incy, std::complex<float> *a,
-                     std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     geru_precondition(selector.get_queue(), m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::geru(selector.get_queue(), m, n, alpha, x, incx,
                                                        y, incy, a, lda, dependencies);
@@ -3474,8 +3459,7 @@ cl::sycl::event geru(backend_selector<backend::cublas> selector, std::int64_t m,
 cl::sycl::event geru(backend_selector<backend::cublas> selector, std::int64_t m, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *a,
-                     std::int64_t lda,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t lda, const std::vector<cl::sycl::event> &dependencies) {
     geru_precondition(selector.get_queue(), m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::geru(selector.get_queue(), m, n, alpha, x, incx,
                                                        y, incy, a, lda, dependencies);
@@ -3485,7 +3469,7 @@ cl::sycl::event geru(backend_selector<backend::cublas> selector, std::int64_t m,
 
 cl::sycl::event nrm2(backend_selector<backend::cublas> selector, std::int64_t n,
                      const std::complex<float> *x, std::int64_t incx, float *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     nrm2_precondition(selector.get_queue(), n, x, incx, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::nrm2(selector.get_queue(), n, x, incx, result,
                                                        dependencies);
@@ -3495,7 +3479,7 @@ cl::sycl::event nrm2(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event nrm2(backend_selector<backend::cublas> selector, std::int64_t n,
                      const std::complex<double> *x, std::int64_t incx, double *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     nrm2_precondition(selector.get_queue(), n, x, incx, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::nrm2(selector.get_queue(), n, x, incx, result,
                                                        dependencies);
@@ -3505,7 +3489,7 @@ cl::sycl::event nrm2(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event nrm2(backend_selector<backend::cublas> selector, std::int64_t n, const float *x,
                      std::int64_t incx, float *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     nrm2_precondition(selector.get_queue(), n, x, incx, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::nrm2(selector.get_queue(), n, x, incx, result,
                                                        dependencies);
@@ -3515,7 +3499,7 @@ cl::sycl::event nrm2(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event nrm2(backend_selector<backend::cublas> selector, std::int64_t n, const double *x,
                      std::int64_t incx, double *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     nrm2_precondition(selector.get_queue(), n, x, incx, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::nrm2(selector.get_queue(), n, x, incx, result,
                                                        dependencies);
@@ -3526,8 +3510,7 @@ cl::sycl::event nrm2(backend_selector<backend::cublas> selector, std::int64_t n,
 cl::sycl::event gemm(backend_selector<backend::cublas> selector, transpose transa, transpose transb,
                      std::int64_t m, std::int64_t n, std::int64_t k, float alpha, const float *a,
                      std::int64_t lda, const float *b, std::int64_t ldb, float beta, float *c,
-                     std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     gemm_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
                       ldc, dependencies);
     auto done =
@@ -3541,8 +3524,7 @@ cl::sycl::event gemm(backend_selector<backend::cublas> selector, transpose trans
 cl::sycl::event gemm(backend_selector<backend::cublas> selector, transpose transa, transpose transb,
                      std::int64_t m, std::int64_t n, std::int64_t k, double alpha, const double *a,
                      std::int64_t lda, const double *b, std::int64_t ldb, double beta, double *c,
-                     std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     gemm_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
                       ldc, dependencies);
     auto done =
@@ -3557,8 +3539,7 @@ cl::sycl::event gemm(backend_selector<backend::cublas> selector, transpose trans
                      std::int64_t m, std::int64_t n, std::int64_t k, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                      std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
-                     std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     gemm_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
                       ldc, dependencies);
     auto done =
@@ -3573,8 +3554,7 @@ cl::sycl::event gemm(backend_selector<backend::cublas> selector, transpose trans
                      std::int64_t m, std::int64_t n, std::int64_t k, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *b,
                      std::int64_t ldb, std::complex<double> beta, std::complex<double> *c,
-                     std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     gemm_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
                       ldc, dependencies);
     auto done =
@@ -3588,8 +3568,7 @@ cl::sycl::event gemm(backend_selector<backend::cublas> selector, transpose trans
 cl::sycl::event gemm(backend_selector<backend::cublas> selector, transpose transa, transpose transb,
                      std::int64_t m, std::int64_t n, std::int64_t k, half alpha, const half *a,
                      std::int64_t lda, const half *b, std::int64_t ldb, half beta, half *c,
-                     std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     gemm_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
                       ldc, dependencies);
     auto done =
@@ -3603,8 +3582,7 @@ cl::sycl::event gemm(backend_selector<backend::cublas> selector, transpose trans
 cl::sycl::event gemm(backend_selector<backend::cublas> selector, transpose transa, transpose transb,
                      std::int64_t m, std::int64_t n, std::int64_t k, float alpha, const half *a,
                      std::int64_t lda, const half *b, std::int64_t ldb, float beta, float *c,
-                     std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     gemm_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
                       ldc, dependencies);
     auto done =
@@ -3618,8 +3596,7 @@ cl::sycl::event gemm(backend_selector<backend::cublas> selector, transpose trans
 cl::sycl::event gemm(backend_selector<backend::cublas> selector, transpose transa, transpose transb,
                      std::int64_t m, std::int64_t n, std::int64_t k, float alpha, const bfloat16 *a,
                      std::int64_t lda, const bfloat16 *b, std::int64_t ldb, float beta, float *c,
-                     std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     gemm_precondition(selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
                       ldc, dependencies);
     auto done =
@@ -3635,7 +3612,7 @@ cl::sycl::event gemm_bias(backend_selector<backend::cublas> selector, transpose 
                           std::int64_t k, float alpha, const std::int8_t *a, std::int64_t lda,
                           std::int8_t ao, const std::uint8_t *b, std::int64_t ldb, std::uint8_t bo,
                           float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     gemm_bias_precondition(selector.get_queue(), transa, transb, offsetc, m, n, k, alpha, a, lda,
                            ao, b, ldb, bo, beta, c, ldc, co, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_bias(
@@ -3651,7 +3628,7 @@ cl::sycl::event gemm_bias(backend_selector<backend::cublas> selector, transpose 
                           std::int64_t k, float alpha, const std::int8_t *a, std::int64_t lda,
                           std::int8_t ao, const std::int8_t *b, std::int64_t ldb, std::int8_t bo,
                           float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     gemm_bias_precondition(selector.get_queue(), transa, transb, offsetc, m, n, k, alpha, a, lda,
                            ao, b, ldb, bo, beta, c, ldc, co, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_bias(
@@ -3667,7 +3644,7 @@ cl::sycl::event gemm_bias(backend_selector<backend::cublas> selector, transpose 
                           std::int64_t k, float alpha, const std::uint8_t *a, std::int64_t lda,
                           std::uint8_t ao, const std::int8_t *b, std::int64_t ldb, std::int8_t bo,
                           float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     gemm_bias_precondition(selector.get_queue(), transa, transb, offsetc, m, n, k, alpha, a, lda,
                            ao, b, ldb, bo, beta, c, ldc, co, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_bias(
@@ -3683,7 +3660,7 @@ cl::sycl::event gemm_bias(backend_selector<backend::cublas> selector, transpose 
                           std::int64_t k, float alpha, const std::uint8_t *a, std::int64_t lda,
                           std::uint8_t ao, const std::uint8_t *b, std::int64_t ldb, std::uint8_t bo,
                           float beta, std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     gemm_bias_precondition(selector.get_queue(), transa, transb, offsetc, m, n, k, alpha, a, lda,
                            ao, b, ldb, bo, beta, c, ldc, co, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_bias(
@@ -3697,7 +3674,7 @@ cl::sycl::event gemm_bias(backend_selector<backend::cublas> selector, transpose 
 cl::sycl::event herk(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      std::int64_t n, std::int64_t k, float alpha, const std::complex<float> *a,
                      std::int64_t lda, float beta, std::complex<float> *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     herk_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::herk(
@@ -3710,7 +3687,7 @@ cl::sycl::event herk(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event herk(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      std::int64_t n, std::int64_t k, double alpha, const std::complex<double> *a,
                      std::int64_t lda, double beta, std::complex<double> *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     herk_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::herk(
@@ -3723,7 +3700,7 @@ cl::sycl::event herk(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event ger(backend_selector<backend::cublas> selector, std::int64_t m, std::int64_t n,
                     float alpha, const float *x, std::int64_t incx, const float *y,
                     std::int64_t incy, float *a, std::int64_t lda,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     ger_precondition(selector.get_queue(), m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::ger(selector.get_queue(), m, n, alpha, x, incx, y,
                                                       incy, a, lda, dependencies);
@@ -3734,7 +3711,7 @@ cl::sycl::event ger(backend_selector<backend::cublas> selector, std::int64_t m, 
 cl::sycl::event ger(backend_selector<backend::cublas> selector, std::int64_t m, std::int64_t n,
                     double alpha, const double *x, std::int64_t incx, const double *y,
                     std::int64_t incy, double *a, std::int64_t lda,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     ger_precondition(selector.get_queue(), m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::ger(selector.get_queue(), m, n, alpha, x, incx, y,
                                                       incy, a, lda, dependencies);
@@ -3745,7 +3722,7 @@ cl::sycl::event ger(backend_selector<backend::cublas> selector, std::int64_t m, 
 cl::sycl::event trsm(backend_selector<backend::cublas> selector, side left_right, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t m, std::int64_t n, float alpha,
                      const float *a, std::int64_t lda, float *b, std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     trsm_precondition(selector.get_queue(), left_right, upper_lower, trans, unit_diag, m, n, alpha,
                       a, lda, b, ldb, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trsm(selector.get_queue(), left_right,
@@ -3759,7 +3736,7 @@ cl::sycl::event trsm(backend_selector<backend::cublas> selector, side left_right
 cl::sycl::event trsm(backend_selector<backend::cublas> selector, side left_right, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t m, std::int64_t n, double alpha,
                      const double *a, std::int64_t lda, double *b, std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     trsm_precondition(selector.get_queue(), left_right, upper_lower, trans, unit_diag, m, n, alpha,
                       a, lda, b, ldb, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trsm(selector.get_queue(), left_right,
@@ -3774,7 +3751,7 @@ cl::sycl::event trsm(backend_selector<backend::cublas> selector, side left_right
                      transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
                      std::complex<float> *b, std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     trsm_precondition(selector.get_queue(), left_right, upper_lower, trans, unit_diag, m, n, alpha,
                       a, lda, b, ldb, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trsm(selector.get_queue(), left_right,
@@ -3789,7 +3766,7 @@ cl::sycl::event trsm(backend_selector<backend::cublas> selector, side left_right
                      transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
                      std::complex<double> *b, std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     trsm_precondition(selector.get_queue(), left_right, upper_lower, trans, unit_diag, m, n, alpha,
                       a, lda, b, ldb, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trsm(selector.get_queue(), left_right,
@@ -3805,7 +3782,7 @@ cl::sycl::event trsm_batch(backend_selector<backend::cublas> selector, side left
                            std::int64_t n, float alpha, const float *a, std::int64_t lda,
                            std::int64_t stride_a, float *b, std::int64_t ldb, std::int64_t stride_b,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     trsm_batch_precondition(selector.get_queue(), left_right, upper_lower, trans, unit_diag, m, n,
                             alpha, a, lda, stride_a, b, ldb, stride_b, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trsm_batch(
@@ -3821,7 +3798,7 @@ cl::sycl::event trsm_batch(backend_selector<backend::cublas> selector, side left
                            std::int64_t n, double alpha, const double *a, std::int64_t lda,
                            std::int64_t stride_a, double *b, std::int64_t ldb,
                            std::int64_t stride_b, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     trsm_batch_precondition(selector.get_queue(), left_right, upper_lower, trans, unit_diag, m, n,
                             alpha, a, lda, stride_a, b, ldb, stride_b, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trsm_batch(
@@ -3837,7 +3814,7 @@ cl::sycl::event trsm_batch(backend_selector<backend::cublas> selector, side left
                            std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                            std::int64_t lda, std::int64_t stride_a, std::complex<float> *b,
                            std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     trsm_batch_precondition(selector.get_queue(), left_right, upper_lower, trans, unit_diag, m, n,
                             alpha, a, lda, stride_a, b, ldb, stride_b, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trsm_batch(
@@ -3854,7 +3831,7 @@ cl::sycl::event trsm_batch(backend_selector<backend::cublas> selector, side left
                            const std::complex<double> *a, std::int64_t lda, std::int64_t stride_a,
                            std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     trsm_batch_precondition(selector.get_queue(), left_right, upper_lower, trans, unit_diag, m, n,
                             alpha, a, lda, stride_a, b, ldb, stride_b, batch_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trsm_batch(
@@ -3870,7 +3847,7 @@ cl::sycl::event trsm_batch(backend_selector<backend::cublas> selector, side *lef
                            std::int64_t *n, float *alpha, const float **a, std::int64_t *lda,
                            float **b, std::int64_t *ldb, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     trsm_batch_precondition(selector.get_queue(), left_right, upper_lower, trans, unit_diag, m, n,
                             alpha, a, lda, b, ldb, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trsm_batch(
@@ -3886,7 +3863,7 @@ cl::sycl::event trsm_batch(backend_selector<backend::cublas> selector, side *lef
                            std::int64_t *n, double *alpha, const double **a, std::int64_t *lda,
                            double **b, std::int64_t *ldb, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     trsm_batch_precondition(selector.get_queue(), left_right, upper_lower, trans, unit_diag, m, n,
                             alpha, a, lda, b, ldb, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trsm_batch(
@@ -3903,7 +3880,7 @@ cl::sycl::event trsm_batch(backend_selector<backend::cublas> selector, side *lef
                            const std::complex<float> **a, std::int64_t *lda,
                            std::complex<float> **b, std::int64_t *ldb, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     trsm_batch_precondition(selector.get_queue(), left_right, upper_lower, trans, unit_diag, m, n,
                             alpha, a, lda, b, ldb, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trsm_batch(
@@ -3920,7 +3897,7 @@ cl::sycl::event trsm_batch(backend_selector<backend::cublas> selector, side *lef
                            const std::complex<double> **a, std::int64_t *lda,
                            std::complex<double> **b, std::int64_t *ldb, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     trsm_batch_precondition(selector.get_queue(), left_right, upper_lower, trans, unit_diag, m, n,
                             alpha, a, lda, b, ldb, group_count, group_size, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trsm_batch(
@@ -3934,7 +3911,7 @@ cl::sycl::event trsm_batch(backend_selector<backend::cublas> selector, side *lef
 cl::sycl::event dotu(backend_selector<backend::cublas> selector, std::int64_t n,
                      const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
                      std::int64_t incy, std::complex<float> *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     dotu_precondition(selector.get_queue(), n, x, incx, y, incy, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::dotu(selector.get_queue(), n, x, incx, y, incy,
                                                        result, dependencies);
@@ -3945,7 +3922,7 @@ cl::sycl::event dotu(backend_selector<backend::cublas> selector, std::int64_t n,
 cl::sycl::event dotu(backend_selector<backend::cublas> selector, std::int64_t n,
                      const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     dotu_precondition(selector.get_queue(), n, x, incx, y, incy, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::dotu(selector.get_queue(), n, x, incx, y, incy,
                                                        result, dependencies);
@@ -3957,8 +3934,7 @@ cl::sycl::event hemm(backend_selector<backend::cublas> selector, side left_right
                      std::int64_t m, std::int64_t n, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                      std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
-                     std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     hemm_precondition(selector.get_queue(), left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
                       beta, c, ldc, dependencies);
     auto done =
@@ -3973,8 +3949,7 @@ cl::sycl::event hemm(backend_selector<backend::cublas> selector, side left_right
                      std::int64_t m, std::int64_t n, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *b,
                      std::int64_t ldb, std::complex<double> beta, std::complex<double> *c,
-                     std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     hemm_precondition(selector.get_queue(), left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
                       beta, c, ldc, dependencies);
     auto done =
@@ -3988,7 +3963,7 @@ cl::sycl::event hemm(backend_selector<backend::cublas> selector, side left_right
 cl::sycl::event hpr2(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *x, std::int64_t incx,
                      const std::complex<float> *y, std::int64_t incy, std::complex<float> *a,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     hpr2_precondition(selector.get_queue(), upper_lower, n, alpha, x, incx, y, incy, a,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::hpr2(selector.get_queue(), upper_lower, n, alpha,
@@ -4001,7 +3976,7 @@ cl::sycl::event hpr2(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event hpr2(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *a,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     hpr2_precondition(selector.get_queue(), upper_lower, n, alpha, x, incx, y, incy, a,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::hpr2(selector.get_queue(), upper_lower, n, alpha,
@@ -4014,8 +3989,7 @@ cl::sycl::event hpr2(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event gbmv(backend_selector<backend::cublas> selector, transpose trans, std::int64_t m,
                      std::int64_t n, std::int64_t kl, std::int64_t ku, float alpha, const float *a,
                      std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y,
-                     std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     gbmv_precondition(selector.get_queue(), trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
                       incy, dependencies);
     auto done =
@@ -4030,7 +4004,7 @@ cl::sycl::event gbmv(backend_selector<backend::cublas> selector, transpose trans
                      std::int64_t n, std::int64_t kl, std::int64_t ku, double alpha,
                      const double *a, std::int64_t lda, const double *x, std::int64_t incx,
                      double beta, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     gbmv_precondition(selector.get_queue(), trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
                       incy, dependencies);
     auto done =
@@ -4045,8 +4019,7 @@ cl::sycl::event gbmv(backend_selector<backend::cublas> selector, transpose trans
                      std::int64_t n, std::int64_t kl, std::int64_t ku, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *x,
                      std::int64_t incx, std::complex<float> beta, std::complex<float> *y,
-                     std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     gbmv_precondition(selector.get_queue(), trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
                       incy, dependencies);
     auto done =
@@ -4061,8 +4034,7 @@ cl::sycl::event gbmv(backend_selector<backend::cublas> selector, transpose trans
                      std::int64_t n, std::int64_t kl, std::int64_t ku, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *x,
                      std::int64_t incx, std::complex<double> beta, std::complex<double> *y,
-                     std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     gbmv_precondition(selector.get_queue(), trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
                       incy, dependencies);
     auto done =
@@ -4076,7 +4048,7 @@ cl::sycl::event gbmv(backend_selector<backend::cublas> selector, transpose trans
 cl::sycl::event tbmv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, std::int64_t k, const float *a,
                      std::int64_t lda, float *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     tbmv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::tbmv(
@@ -4089,7 +4061,7 @@ cl::sycl::event tbmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event tbmv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, std::int64_t k, const double *a,
                      std::int64_t lda, double *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     tbmv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::tbmv(
@@ -4102,7 +4074,7 @@ cl::sycl::event tbmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event tbmv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, std::int64_t k, const std::complex<float> *a,
                      std::int64_t lda, std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     tbmv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::tbmv(
@@ -4115,7 +4087,7 @@ cl::sycl::event tbmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event tbmv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, std::int64_t k, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     tbmv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::tbmv(
@@ -4128,7 +4100,7 @@ cl::sycl::event tbmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event symm(backend_selector<backend::cublas> selector, side left_right, uplo upper_lower,
                      std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda,
                      const float *b, std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     symm_precondition(selector.get_queue(), left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
                       beta, c, ldc, dependencies);
     auto done =
@@ -4142,8 +4114,7 @@ cl::sycl::event symm(backend_selector<backend::cublas> selector, side left_right
 cl::sycl::event symm(backend_selector<backend::cublas> selector, side left_right, uplo upper_lower,
                      std::int64_t m, std::int64_t n, double alpha, const double *a,
                      std::int64_t lda, const double *b, std::int64_t ldb, double beta, double *c,
-                     std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     symm_precondition(selector.get_queue(), left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
                       beta, c, ldc, dependencies);
     auto done =
@@ -4158,8 +4129,7 @@ cl::sycl::event symm(backend_selector<backend::cublas> selector, side left_right
                      std::int64_t m, std::int64_t n, std::complex<float> alpha,
                      const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                      std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
-                     std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     symm_precondition(selector.get_queue(), left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
                       beta, c, ldc, dependencies);
     auto done =
@@ -4174,8 +4144,7 @@ cl::sycl::event symm(backend_selector<backend::cublas> selector, side left_right
                      std::int64_t m, std::int64_t n, std::complex<double> alpha,
                      const std::complex<double> *a, std::int64_t lda, const std::complex<double> *b,
                      std::int64_t ldb, std::complex<double> beta, std::complex<double> *c,
-                     std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     symm_precondition(selector.get_queue(), left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
                       beta, c, ldc, dependencies);
     auto done =
@@ -4189,7 +4158,7 @@ cl::sycl::event symm(backend_selector<backend::cublas> selector, side left_right
 cl::sycl::event dotc(backend_selector<backend::cublas> selector, std::int64_t n,
                      const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
                      std::int64_t incy, std::complex<float> *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     dotc_precondition(selector.get_queue(), n, x, incx, y, incy, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::dotc(selector.get_queue(), n, x, incx, y, incy,
                                                        result, dependencies);
@@ -4200,7 +4169,7 @@ cl::sycl::event dotc(backend_selector<backend::cublas> selector, std::int64_t n,
 cl::sycl::event dotc(backend_selector<backend::cublas> selector, std::int64_t n,
                      const std::complex<double> *x, std::int64_t incx,
                      const std::complex<double> *y, std::int64_t incy, std::complex<double> *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     dotc_precondition(selector.get_queue(), n, x, incx, y, incy, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::dotc(selector.get_queue(), n, x, incx, y, incy,
                                                        result, dependencies);
@@ -4210,7 +4179,7 @@ cl::sycl::event dotc(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event syr(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                     float alpha, const float *x, std::int64_t incx, float *a, std::int64_t lda,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     syr_precondition(selector.get_queue(), upper_lower, n, alpha, x, incx, a, lda, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::syr(selector.get_queue(), upper_lower, n, alpha,
                                                       x, incx, a, lda, dependencies);
@@ -4220,7 +4189,7 @@ cl::sycl::event syr(backend_selector<backend::cublas> selector, uplo upper_lower
 
 cl::sycl::event syr(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                     double alpha, const double *x, std::int64_t incx, double *a, std::int64_t lda,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     syr_precondition(selector.get_queue(), upper_lower, n, alpha, x, incx, a, lda, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::syr(selector.get_queue(), upper_lower, n, alpha,
                                                       x, incx, a, lda, dependencies);
@@ -4231,7 +4200,7 @@ cl::sycl::event syr(backend_selector<backend::cublas> selector, uplo upper_lower
 cl::sycl::event trmm(backend_selector<backend::cublas> selector, side left_right, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t m, std::int64_t n, float alpha,
                      const float *a, std::int64_t lda, float *b, std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     trmm_precondition(selector.get_queue(), left_right, upper_lower, trans, unit_diag, m, n, alpha,
                       a, lda, b, ldb, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trmm(selector.get_queue(), left_right,
@@ -4245,7 +4214,7 @@ cl::sycl::event trmm(backend_selector<backend::cublas> selector, side left_right
 cl::sycl::event trmm(backend_selector<backend::cublas> selector, side left_right, uplo upper_lower,
                      transpose trans, diag unit_diag, std::int64_t m, std::int64_t n, double alpha,
                      const double *a, std::int64_t lda, double *b, std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     trmm_precondition(selector.get_queue(), left_right, upper_lower, trans, unit_diag, m, n, alpha,
                       a, lda, b, ldb, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trmm(selector.get_queue(), left_right,
@@ -4260,7 +4229,7 @@ cl::sycl::event trmm(backend_selector<backend::cublas> selector, side left_right
                      transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
                      std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
                      std::complex<float> *b, std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     trmm_precondition(selector.get_queue(), left_right, upper_lower, trans, unit_diag, m, n, alpha,
                       a, lda, b, ldb, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trmm(selector.get_queue(), left_right,
@@ -4275,7 +4244,7 @@ cl::sycl::event trmm(backend_selector<backend::cublas> selector, side left_right
                      transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
                      std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
                      std::complex<double> *b, std::int64_t ldb,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     trmm_precondition(selector.get_queue(), left_right, upper_lower, trans, unit_diag, m, n, alpha,
                       a, lda, b, ldb, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trmm(selector.get_queue(), left_right,
@@ -4287,8 +4256,7 @@ cl::sycl::event trmm(backend_selector<backend::cublas> selector, side left_right
 }
 
 cl::sycl::event rotmg(backend_selector<backend::cublas> selector, float *d1, float *d2, float *x1,
-                      float y1, float *param,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      float y1, float *param, const std::vector<cl::sycl::event> &dependencies) {
     rotmg_precondition(selector.get_queue(), d1, d2, x1, y1, param, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::rotmg(selector.get_queue(), d1, d2, x1, y1, param,
                                                         dependencies);
@@ -4298,7 +4266,7 @@ cl::sycl::event rotmg(backend_selector<backend::cublas> selector, float *d1, flo
 
 cl::sycl::event rotmg(backend_selector<backend::cublas> selector, double *d1, double *d2,
                       double *x1, double y1, double *param,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     rotmg_precondition(selector.get_queue(), d1, d2, x1, y1, param, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::rotmg(selector.get_queue(), d1, d2, x1, y1, param,
                                                         dependencies);
@@ -4308,7 +4276,7 @@ cl::sycl::event rotmg(backend_selector<backend::cublas> selector, double *d1, do
 
 cl::sycl::event tpsv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, const float *a, float *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     tpsv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, a, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::tpsv(selector.get_queue(), upper_lower, trans,
@@ -4320,7 +4288,7 @@ cl::sycl::event tpsv(backend_selector<backend::cublas> selector, uplo upper_lowe
 
 cl::sycl::event tpsv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, const double *a, double *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     tpsv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, a, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::tpsv(selector.get_queue(), upper_lower, trans,
@@ -4333,7 +4301,7 @@ cl::sycl::event tpsv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event tpsv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, const std::complex<float> *a,
                      std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     tpsv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, a, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::tpsv(selector.get_queue(), upper_lower, trans,
@@ -4346,7 +4314,7 @@ cl::sycl::event tpsv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event tpsv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, const std::complex<double> *a,
                      std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     tpsv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, a, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::tpsv(selector.get_queue(), upper_lower, trans,
@@ -4358,8 +4326,7 @@ cl::sycl::event tpsv(backend_selector<backend::cublas> selector, uplo upper_lowe
 
 cl::sycl::event trsv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, const float *a, std::int64_t lda, float *x,
-                     std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     trsv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, a, lda, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trsv(selector.get_queue(), upper_lower, trans,
@@ -4371,8 +4338,7 @@ cl::sycl::event trsv(backend_selector<backend::cublas> selector, uplo upper_lowe
 
 cl::sycl::event trsv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, const double *a, std::int64_t lda, double *x,
-                     std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t incx, const std::vector<cl::sycl::event> &dependencies) {
     trsv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, a, lda, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trsv(selector.get_queue(), upper_lower, trans,
@@ -4385,7 +4351,7 @@ cl::sycl::event trsv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event trsv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, const std::complex<float> *a, std::int64_t lda,
                      std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     trsv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, a, lda, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trsv(selector.get_queue(), upper_lower, trans,
@@ -4398,7 +4364,7 @@ cl::sycl::event trsv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event trsv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     trsv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, a, lda, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::trsv(selector.get_queue(), upper_lower, trans,
@@ -4410,7 +4376,7 @@ cl::sycl::event trsv(backend_selector<backend::cublas> selector, uplo upper_lowe
 
 cl::sycl::event copy(backend_selector<backend::cublas> selector, std::int64_t n, const float *x,
                      std::int64_t incx, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     copy_precondition(selector.get_queue(), n, x, incx, y, incy, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::copy(selector.get_queue(), n, x, incx, y, incy,
                                                        dependencies);
@@ -4420,7 +4386,7 @@ cl::sycl::event copy(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event copy(backend_selector<backend::cublas> selector, std::int64_t n, const double *x,
                      std::int64_t incx, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     copy_precondition(selector.get_queue(), n, x, incx, y, incy, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::copy(selector.get_queue(), n, x, incx, y, incy,
                                                        dependencies);
@@ -4430,8 +4396,7 @@ cl::sycl::event copy(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event copy(backend_selector<backend::cublas> selector, std::int64_t n,
                      const std::complex<float> *x, std::int64_t incx, std::complex<float> *y,
-                     std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     copy_precondition(selector.get_queue(), n, x, incx, y, incy, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::copy(selector.get_queue(), n, x, incx, y, incy,
                                                        dependencies);
@@ -4441,8 +4406,7 @@ cl::sycl::event copy(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event copy(backend_selector<backend::cublas> selector, std::int64_t n,
                      const std::complex<double> *x, std::int64_t incx, std::complex<double> *y,
-                     std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     std::int64_t incy, const std::vector<cl::sycl::event> &dependencies) {
     copy_precondition(selector.get_queue(), n, x, incx, y, incy, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::copy(selector.get_queue(), n, x, incx, y, incy,
                                                        dependencies);
@@ -4453,7 +4417,7 @@ cl::sycl::event copy(backend_selector<backend::cublas> selector, std::int64_t n,
 cl::sycl::event copy_batch(backend_selector<backend::cublas> selector, std::int64_t *n,
                            const float **x, std::int64_t *incx, float **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     copy_batch_precondition(selector.get_queue(), n, x, incx, y, incy, group_count, group_size,
                             dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::copy_batch(
@@ -4466,7 +4430,7 @@ cl::sycl::event copy_batch(backend_selector<backend::cublas> selector, std::int6
 cl::sycl::event copy_batch(backend_selector<backend::cublas> selector, std::int64_t *n,
                            const double **x, std::int64_t *incx, double **y, std::int64_t *incy,
                            std::int64_t group_count, std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     copy_batch_precondition(selector.get_queue(), n, x, incx, y, incy, group_count, group_size,
                             dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::copy_batch(
@@ -4480,7 +4444,7 @@ cl::sycl::event copy_batch(backend_selector<backend::cublas> selector, std::int6
                            const std::complex<float> **x, std::int64_t *incx,
                            std::complex<float> **y, std::int64_t *incy, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     copy_batch_precondition(selector.get_queue(), n, x, incx, y, incy, group_count, group_size,
                             dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::copy_batch(
@@ -4494,7 +4458,7 @@ cl::sycl::event copy_batch(backend_selector<backend::cublas> selector, std::int6
                            const std::complex<double> **x, std::int64_t *incx,
                            std::complex<double> **y, std::int64_t *incy, std::int64_t group_count,
                            std::int64_t *group_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     copy_batch_precondition(selector.get_queue(), n, x, incx, y, incy, group_count, group_size,
                             dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::copy_batch(
@@ -4507,7 +4471,7 @@ cl::sycl::event copy_batch(backend_selector<backend::cublas> selector, std::int6
 cl::sycl::event copy_batch(backend_selector<backend::cublas> selector, std::int64_t n,
                            const float *x, std::int64_t incx, std::int64_t stridex, float *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     copy_batch_precondition(selector.get_queue(), n, x, incx, stridex, y, incy, stridey, batch_size,
                             dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::copy_batch(
@@ -4520,7 +4484,7 @@ cl::sycl::event copy_batch(backend_selector<backend::cublas> selector, std::int6
 cl::sycl::event copy_batch(backend_selector<backend::cublas> selector, std::int64_t n,
                            const double *x, std::int64_t incx, std::int64_t stridex, double *y,
                            std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     copy_batch_precondition(selector.get_queue(), n, x, incx, stridex, y, incy, stridey, batch_size,
                             dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::copy_batch(
@@ -4534,7 +4498,7 @@ cl::sycl::event copy_batch(backend_selector<backend::cublas> selector, std::int6
                            const std::complex<float> *x, std::int64_t incx, std::int64_t stridex,
                            std::complex<float> *y, std::int64_t incy, std::int64_t stridey,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     copy_batch_precondition(selector.get_queue(), n, x, incx, stridex, y, incy, stridey, batch_size,
                             dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::copy_batch(
@@ -4548,7 +4512,7 @@ cl::sycl::event copy_batch(backend_selector<backend::cublas> selector, std::int6
                            const std::complex<double> *x, std::int64_t incx, std::int64_t stridex,
                            std::complex<double> *y, std::int64_t incy, std::int64_t stridey,
                            std::int64_t batch_size,
-                           const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                           const std::vector<cl::sycl::event> &dependencies) {
     copy_batch_precondition(selector.get_queue(), n, x, incx, stridex, y, incy, stridey, batch_size,
                             dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::copy_batch(
@@ -4562,7 +4526,7 @@ cl::sycl::event hemv(backend_selector<backend::cublas> selector, uplo upper_lowe
                      std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
                      const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
                      std::complex<float> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     hemv_precondition(selector.get_queue(), upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::hemv(
@@ -4576,7 +4540,7 @@ cl::sycl::event hemv(backend_selector<backend::cublas> selector, uplo upper_lowe
                      std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
                      const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
                      std::complex<double> *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     hemv_precondition(selector.get_queue(), upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::hemv(
@@ -4590,7 +4554,7 @@ cl::sycl::event gemmt(backend_selector<backend::cublas> selector, uplo upper_low
                       transpose transa, transpose transb, std::int64_t n, std::int64_t k,
                       float alpha, const float *a, std::int64_t lda, const float *b,
                       std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     gemmt_precondition(selector.get_queue(), upper_lower, transa, transb, n, k, alpha, a, lda, b,
                        ldb, beta, c, ldc, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemmt(selector.get_queue(), upper_lower, transa,
@@ -4605,7 +4569,7 @@ cl::sycl::event gemmt(backend_selector<backend::cublas> selector, uplo upper_low
                       transpose transa, transpose transb, std::int64_t n, std::int64_t k,
                       double alpha, const double *a, std::int64_t lda, const double *b,
                       std::int64_t ldb, double beta, double *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     gemmt_precondition(selector.get_queue(), upper_lower, transa, transb, n, k, alpha, a, lda, b,
                        ldb, beta, c, ldc, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemmt(selector.get_queue(), upper_lower, transa,
@@ -4621,7 +4585,7 @@ cl::sycl::event gemmt(backend_selector<backend::cublas> selector, uplo upper_low
                       std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
                       const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
                       std::complex<float> *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     gemmt_precondition(selector.get_queue(), upper_lower, transa, transb, n, k, alpha, a, lda, b,
                        ldb, beta, c, ldc, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemmt(selector.get_queue(), upper_lower, transa,
@@ -4637,7 +4601,7 @@ cl::sycl::event gemmt(backend_selector<backend::cublas> selector, uplo upper_low
                       std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
                       const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
                       std::complex<double> *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     gemmt_precondition(selector.get_queue(), upper_lower, transa, transb, n, k, alpha, a, lda, b,
                        ldb, beta, c, ldc, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemmt(selector.get_queue(), upper_lower, transa,
@@ -4651,7 +4615,7 @@ cl::sycl::event gemmt(backend_selector<backend::cublas> selector, uplo upper_low
 cl::sycl::event sbmv(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                      std::int64_t k, float alpha, const float *a, std::int64_t lda, const float *x,
                      std::int64_t incx, float beta, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     sbmv_precondition(selector.get_queue(), upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
                       incy, dependencies);
     auto done =
@@ -4665,7 +4629,7 @@ cl::sycl::event sbmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event sbmv(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                      std::int64_t k, double alpha, const double *a, std::int64_t lda,
                      const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     sbmv_precondition(selector.get_queue(), upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
                       incy, dependencies);
     auto done =
@@ -4678,7 +4642,7 @@ cl::sycl::event sbmv(backend_selector<backend::cublas> selector, uplo upper_lowe
 
 cl::sycl::event asum(backend_selector<backend::cublas> selector, std::int64_t n,
                      const std::complex<float> *x, std::int64_t incx, float *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     asum_precondition(selector.get_queue(), n, x, incx, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::asum(selector.get_queue(), n, x, incx, result,
                                                        dependencies);
@@ -4688,7 +4652,7 @@ cl::sycl::event asum(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event asum(backend_selector<backend::cublas> selector, std::int64_t n,
                      const std::complex<double> *x, std::int64_t incx, double *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     asum_precondition(selector.get_queue(), n, x, incx, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::asum(selector.get_queue(), n, x, incx, result,
                                                        dependencies);
@@ -4698,7 +4662,7 @@ cl::sycl::event asum(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event asum(backend_selector<backend::cublas> selector, std::int64_t n, const float *x,
                      std::int64_t incx, float *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     asum_precondition(selector.get_queue(), n, x, incx, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::asum(selector.get_queue(), n, x, incx, result,
                                                        dependencies);
@@ -4708,7 +4672,7 @@ cl::sycl::event asum(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event asum(backend_selector<backend::cublas> selector, std::int64_t n, const double *x,
                      std::int64_t incx, double *result,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     asum_precondition(selector.get_queue(), n, x, incx, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::asum(selector.get_queue(), n, x, incx, result,
                                                        dependencies);
@@ -4719,7 +4683,7 @@ cl::sycl::event asum(backend_selector<backend::cublas> selector, std::int64_t n,
 cl::sycl::event tbsv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, std::int64_t k, const float *a,
                      std::int64_t lda, float *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     tbsv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::tbsv(
@@ -4732,7 +4696,7 @@ cl::sycl::event tbsv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event tbsv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, std::int64_t k, const double *a,
                      std::int64_t lda, double *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     tbsv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::tbsv(
@@ -4745,7 +4709,7 @@ cl::sycl::event tbsv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event tbsv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, std::int64_t k, const std::complex<float> *a,
                      std::int64_t lda, std::complex<float> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     tbsv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::tbsv(
@@ -4758,7 +4722,7 @@ cl::sycl::event tbsv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event tbsv(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
                      diag unit_diag, std::int64_t n, std::int64_t k, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *x, std::int64_t incx,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     tbsv_precondition(selector.get_queue(), upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::tbsv(
@@ -4771,7 +4735,7 @@ cl::sycl::event tbsv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event spr2(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                      float alpha, const float *x, std::int64_t incx, const float *y,
                      std::int64_t incy, float *a,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     spr2_precondition(selector.get_queue(), upper_lower, n, alpha, x, incx, y, incy, a,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::spr2(selector.get_queue(), upper_lower, n, alpha,
@@ -4784,7 +4748,7 @@ cl::sycl::event spr2(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event spr2(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                      double alpha, const double *x, std::int64_t incx, const double *y,
                      std::int64_t incy, double *a,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     spr2_precondition(selector.get_queue(), upper_lower, n, alpha, x, incx, y, incy, a,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::spr2(selector.get_queue(), upper_lower, n, alpha,
@@ -4796,7 +4760,7 @@ cl::sycl::event spr2(backend_selector<backend::cublas> selector, uplo upper_lowe
 
 cl::sycl::event iamax(backend_selector<backend::cublas> selector, std::int64_t n, const float *x,
                       std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     iamax_precondition(selector.get_queue(), n, x, incx, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::iamax(selector.get_queue(), n, x, incx, result,
                                                         dependencies);
@@ -4806,7 +4770,7 @@ cl::sycl::event iamax(backend_selector<backend::cublas> selector, std::int64_t n
 
 cl::sycl::event iamax(backend_selector<backend::cublas> selector, std::int64_t n, const double *x,
                       std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     iamax_precondition(selector.get_queue(), n, x, incx, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::iamax(selector.get_queue(), n, x, incx, result,
                                                         dependencies);
@@ -4816,7 +4780,7 @@ cl::sycl::event iamax(backend_selector<backend::cublas> selector, std::int64_t n
 
 cl::sycl::event iamax(backend_selector<backend::cublas> selector, std::int64_t n,
                       const std::complex<float> *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     iamax_precondition(selector.get_queue(), n, x, incx, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::iamax(selector.get_queue(), n, x, incx, result,
                                                         dependencies);
@@ -4826,7 +4790,7 @@ cl::sycl::event iamax(backend_selector<backend::cublas> selector, std::int64_t n
 
 cl::sycl::event iamax(backend_selector<backend::cublas> selector, std::int64_t n,
                       const std::complex<double> *x, std::int64_t incx, std::int64_t *result,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     iamax_precondition(selector.get_queue(), n, x, incx, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::iamax(selector.get_queue(), n, x, incx, result,
                                                         dependencies);
@@ -4836,7 +4800,7 @@ cl::sycl::event iamax(backend_selector<backend::cublas> selector, std::int64_t n
 
 cl::sycl::event rotm(backend_selector<backend::cublas> selector, std::int64_t n, float *x,
                      std::int64_t incx, float *y, std::int64_t incy, float *param,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     rotm_precondition(selector.get_queue(), n, x, incx, y, incy, param, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::rotm(selector.get_queue(), n, x, incx, y, incy,
                                                        param, dependencies);
@@ -4846,7 +4810,7 @@ cl::sycl::event rotm(backend_selector<backend::cublas> selector, std::int64_t n,
 
 cl::sycl::event rotm(backend_selector<backend::cublas> selector, std::int64_t n, double *x,
                      std::int64_t incx, double *y, std::int64_t incy, double *param,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     rotm_precondition(selector.get_queue(), n, x, incx, y, incy, param, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::rotm(selector.get_queue(), n, x, incx, y, incy,
                                                        param, dependencies);
@@ -4855,7 +4819,7 @@ cl::sycl::event rotm(backend_selector<backend::cublas> selector, std::int64_t n,
 }
 
 cl::sycl::event rotg(backend_selector<backend::cublas> selector, float *a, float *b, float *c,
-                     float *s, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     float *s, const std::vector<cl::sycl::event> &dependencies) {
     rotg_precondition(selector.get_queue(), a, b, c, s, dependencies);
     auto done =
         oneapi::mkl::blas::cublas::MAJOR::rotg(selector.get_queue(), a, b, c, s, dependencies);
@@ -4864,7 +4828,7 @@ cl::sycl::event rotg(backend_selector<backend::cublas> selector, float *a, float
 }
 
 cl::sycl::event rotg(backend_selector<backend::cublas> selector, double *a, double *b, double *c,
-                     double *s, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     double *s, const std::vector<cl::sycl::event> &dependencies) {
     rotg_precondition(selector.get_queue(), a, b, c, s, dependencies);
     auto done =
         oneapi::mkl::blas::cublas::MAJOR::rotg(selector.get_queue(), a, b, c, s, dependencies);
@@ -4874,7 +4838,7 @@ cl::sycl::event rotg(backend_selector<backend::cublas> selector, double *a, doub
 
 cl::sycl::event rotg(backend_selector<backend::cublas> selector, std::complex<float> *a,
                      std::complex<float> *b, float *c, std::complex<float> *s,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     rotg_precondition(selector.get_queue(), a, b, c, s, dependencies);
     auto done =
         oneapi::mkl::blas::cublas::MAJOR::rotg(selector.get_queue(), a, b, c, s, dependencies);
@@ -4884,7 +4848,7 @@ cl::sycl::event rotg(backend_selector<backend::cublas> selector, std::complex<fl
 
 cl::sycl::event rotg(backend_selector<backend::cublas> selector, std::complex<double> *a,
                      std::complex<double> *b, double *c, std::complex<double> *s,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     rotg_precondition(selector.get_queue(), a, b, c, s, dependencies);
     auto done =
         oneapi::mkl::blas::cublas::MAJOR::rotg(selector.get_queue(), a, b, c, s, dependencies);
@@ -4894,7 +4858,7 @@ cl::sycl::event rotg(backend_selector<backend::cublas> selector, std::complex<do
 
 cl::sycl::event sdsdot(backend_selector<backend::cublas> selector, std::int64_t n, float sb,
                        const float *x, std::int64_t incx, const float *y, std::int64_t incy,
-                       float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                       float *result, const std::vector<cl::sycl::event> &dependencies) {
     sdsdot_precondition(selector.get_queue(), n, sb, x, incx, y, incy, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::sdsdot(selector.get_queue(), n, sb, x, incx, y,
                                                          incy, result, dependencies);
@@ -4906,7 +4870,7 @@ cl::sycl::event her2k(backend_selector<backend::cublas> selector, uplo upper_low
                       std::int64_t n, std::int64_t k, std::complex<float> alpha,
                       const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
                       std::int64_t ldb, float beta, std::complex<float> *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     her2k_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
                        c, ldc, dependencies);
     auto done =
@@ -4922,7 +4886,7 @@ cl::sycl::event her2k(backend_selector<backend::cublas> selector, uplo upper_low
                       const std::complex<double> *a, std::int64_t lda,
                       const std::complex<double> *b, std::int64_t ldb, double beta,
                       std::complex<double> *c, std::int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     her2k_precondition(selector.get_queue(), upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta,
                        c, ldc, dependencies);
     auto done =
@@ -4935,7 +4899,7 @@ cl::sycl::event her2k(backend_selector<backend::cublas> selector, uplo upper_low
 
 cl::sycl::event dot(backend_selector<backend::cublas> selector, std::int64_t n, const float *x,
                     std::int64_t incx, const float *y, std::int64_t incy, float *result,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     dot_precondition(selector.get_queue(), n, x, incx, y, incy, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::dot(selector.get_queue(), n, x, incx, y, incy,
                                                       result, dependencies);
@@ -4945,7 +4909,7 @@ cl::sycl::event dot(backend_selector<backend::cublas> selector, std::int64_t n, 
 
 cl::sycl::event dot(backend_selector<backend::cublas> selector, std::int64_t n, const double *x,
                     std::int64_t incx, const double *y, std::int64_t incy, double *result,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     dot_precondition(selector.get_queue(), n, x, incx, y, incy, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::dot(selector.get_queue(), n, x, incx, y, incy,
                                                       result, dependencies);
@@ -4955,7 +4919,7 @@ cl::sycl::event dot(backend_selector<backend::cublas> selector, std::int64_t n, 
 
 cl::sycl::event dot(backend_selector<backend::cublas> selector, std::int64_t n, const float *x,
                     std::int64_t incx, const float *y, std::int64_t incy, double *result,
-                    const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                    const std::vector<cl::sycl::event> &dependencies) {
     dot_precondition(selector.get_queue(), n, x, incx, y, incy, result, dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::dot(selector.get_queue(), n, x, incx, y, incy,
                                                       result, dependencies);
@@ -4966,7 +4930,7 @@ cl::sycl::event dot(backend_selector<backend::cublas> selector, std::int64_t n, 
 cl::sycl::event symv(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                      float alpha, const float *a, std::int64_t lda, const float *x,
                      std::int64_t incx, float beta, float *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     symv_precondition(selector.get_queue(), upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::symv(
@@ -4979,7 +4943,7 @@ cl::sycl::event symv(backend_selector<backend::cublas> selector, uplo upper_lowe
 cl::sycl::event symv(backend_selector<backend::cublas> selector, uplo upper_lower, std::int64_t n,
                      double alpha, const double *a, std::int64_t lda, const double *x,
                      std::int64_t incx, double beta, double *y, std::int64_t incy,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                     const std::vector<cl::sycl::event> &dependencies) {
     symv_precondition(selector.get_queue(), upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = oneapi::mkl::blas::cublas::MAJOR::symv(

@@ -601,21 +601,21 @@ sycl::event gebrd(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m
                   std::complex<float> *a, std::int64_t lda, float *d, float *e,
                   std::complex<float> *tauq, std::complex<float> *taup,
                   std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cgebrd_usm_sycl(queue, m, n, a, lda, d, e, tauq, taup,
                                                    scratchpad, scratchpad_size, dependencies);
 }
 sycl::event gebrd(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   double *a, std::int64_t lda, double *d, double *e, double *tauq, double *taup,
                   double *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dgebrd_usm_sycl(queue, m, n, a, lda, d, e, tauq, taup,
                                                    scratchpad, scratchpad_size, dependencies);
 }
 sycl::event gebrd(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   float *a, std::int64_t lda, float *d, float *e, float *tauq, float *taup,
                   float *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sgebrd_usm_sycl(queue, m, n, a, lda, d, e, tauq, taup,
                                                    scratchpad, scratchpad_size, dependencies);
 }
@@ -623,119 +623,111 @@ sycl::event gebrd(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m
                   std::complex<double> *a, std::int64_t lda, double *d, double *e,
                   std::complex<double> *tauq, std::complex<double> *taup,
                   std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zgebrd_usm_sycl(queue, m, n, a, lda, d, e, tauq, taup,
                                                    scratchpad, scratchpad_size, dependencies);
 }
 sycl::event gerqf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   float *a, std::int64_t lda, float *tau, float *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sgerqf_usm_sycl(queue, m, n, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event gerqf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   double *a, std::int64_t lda, double *tau, double *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dgerqf_usm_sycl(queue, m, n, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event gerqf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   std::complex<float> *a, std::int64_t lda, std::complex<float> *tau,
                   std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cgerqf_usm_sycl(queue, m, n, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event gerqf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   std::complex<double> *a, std::int64_t lda, std::complex<double> *tau,
                   std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zgerqf_usm_sycl(queue, m, n, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event geqrf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   std::complex<float> *a, std::int64_t lda, std::complex<float> *tau,
                   std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cgeqrf_usm_sycl(queue, m, n, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event geqrf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   double *a, std::int64_t lda, double *tau, double *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dgeqrf_usm_sycl(queue, m, n, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event geqrf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   float *a, std::int64_t lda, float *tau, float *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sgeqrf_usm_sycl(queue, m, n, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event geqrf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   std::complex<double> *a, std::int64_t lda, std::complex<double> *tau,
                   std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zgeqrf_usm_sycl(queue, m, n, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event getrf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   std::complex<float> *a, std::int64_t lda, std::int64_t *ipiv,
                   std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cgetrf_usm_sycl(queue, m, n, a, lda, ipiv, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event getrf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   double *a, std::int64_t lda, std::int64_t *ipiv, double *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dgetrf_usm_sycl(queue, m, n, a, lda, ipiv, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event getrf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   float *a, std::int64_t lda, std::int64_t *ipiv, float *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sgetrf_usm_sycl(queue, m, n, a, lda, ipiv, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event getrf(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   std::complex<double> *a, std::int64_t lda, std::int64_t *ipiv,
                   std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zgetrf_usm_sycl(queue, m, n, a, lda, ipiv, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event getri(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t n,
                   std::complex<float> *a, std::int64_t lda, std::int64_t *ipiv,
                   std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cgetri_usm_sycl(queue, n, a, lda, ipiv, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event getri(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t n, double *a,
                   std::int64_t lda, std::int64_t *ipiv, double *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dgetri_usm_sycl(queue, n, a, lda, ipiv, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event getri(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t n, float *a,
                   std::int64_t lda, std::int64_t *ipiv, float *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sgetri_usm_sycl(queue, n, a, lda, ipiv, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event getri(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t n,
                   std::complex<double> *a, std::int64_t lda, std::int64_t *ipiv,
                   std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zgetri_usm_sycl(queue, n, a, lda, ipiv, scratchpad,
                                                    scratchpad_size, dependencies);
 }
@@ -743,22 +735,21 @@ sycl::event getrs(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::t
                   std::int64_t n, std::int64_t nrhs, std::complex<float> *a, std::int64_t lda,
                   std::int64_t *ipiv, std::complex<float> *b, std::int64_t ldb,
                   std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cgetrs_usm_sycl(queue, trans, n, nrhs, a, lda, ipiv, b, ldb,
                                                    scratchpad, scratchpad_size, dependencies);
 }
 sycl::event getrs(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::transpose trans,
                   std::int64_t n, std::int64_t nrhs, double *a, std::int64_t lda,
                   std::int64_t *ipiv, double *b, std::int64_t ldb, double *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dgetrs_usm_sycl(queue, trans, n, nrhs, a, lda, ipiv, b, ldb,
                                                    scratchpad, scratchpad_size, dependencies);
 }
 sycl::event getrs(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::transpose trans,
                   std::int64_t n, std::int64_t nrhs, float *a, std::int64_t lda, std::int64_t *ipiv,
                   float *b, std::int64_t ldb, float *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sgetrs_usm_sycl(queue, trans, n, nrhs, a, lda, ipiv, b, ldb,
                                                    scratchpad, scratchpad_size, dependencies);
 }
@@ -766,7 +757,7 @@ sycl::event getrs(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::t
                   std::int64_t n, std::int64_t nrhs, std::complex<double> *a, std::int64_t lda,
                   std::int64_t *ipiv, std::complex<double> *b, std::int64_t ldb,
                   std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zgetrs_usm_sycl(queue, trans, n, nrhs, a, lda, ipiv, b, ldb,
                                                    scratchpad, scratchpad_size, dependencies);
 }
@@ -774,7 +765,7 @@ sycl::event gesvd(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::j
                   oneapi::mkl::jobsvd jobvt, std::int64_t m, std::int64_t n, double *a,
                   std::int64_t lda, double *s, double *u, std::int64_t ldu, double *vt,
                   std::int64_t ldvt, double *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dgesvd_usm_sycl(queue, jobu, jobvt, m, n, a, lda, s, u, ldu, vt,
                                                    ldvt, scratchpad, scratchpad_size, dependencies);
 }
@@ -782,7 +773,7 @@ sycl::event gesvd(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::j
                   oneapi::mkl::jobsvd jobvt, std::int64_t m, std::int64_t n, float *a,
                   std::int64_t lda, float *s, float *u, std::int64_t ldu, float *vt,
                   std::int64_t ldvt, float *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sgesvd_usm_sycl(queue, jobu, jobvt, m, n, a, lda, s, u, ldu, vt,
                                                    ldvt, scratchpad, scratchpad_size, dependencies);
 }
@@ -790,8 +781,7 @@ sycl::event gesvd(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::j
                   oneapi::mkl::jobsvd jobvt, std::int64_t m, std::int64_t n, std::complex<float> *a,
                   std::int64_t lda, float *s, std::complex<float> *u, std::int64_t ldu,
                   std::complex<float> *vt, std::int64_t ldvt, std::complex<float> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cgesvd_usm_sycl(queue, jobu, jobvt, m, n, a, lda, s, u, ldu, vt,
                                                    ldvt, scratchpad, scratchpad_size, dependencies);
 }
@@ -800,21 +790,21 @@ sycl::event gesvd(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::j
                   std::complex<double> *a, std::int64_t lda, double *s, std::complex<double> *u,
                   std::int64_t ldu, std::complex<double> *vt, std::int64_t ldvt,
                   std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zgesvd_usm_sycl(queue, jobu, jobvt, m, n, a, lda, s, u, ldu, vt,
                                                    ldvt, scratchpad, scratchpad_size, dependencies);
 }
 sycl::event heevd(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::job jobz,
                   oneapi::mkl::uplo uplo, std::int64_t n, std::complex<float> *a, std::int64_t lda,
                   float *w, std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cheevd_usm_sycl(queue, jobz, uplo, n, a, lda, w, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event heevd(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::job jobz,
                   oneapi::mkl::uplo uplo, std::int64_t n, std::complex<double> *a, std::int64_t lda,
                   double *w, std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zheevd_usm_sycl(queue, jobz, uplo, n, a, lda, w, scratchpad,
                                                    scratchpad_size, dependencies);
 }
@@ -822,8 +812,7 @@ sycl::event hegvd(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t i
                   oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
                   std::complex<float> *a, std::int64_t lda, std::complex<float> *b,
                   std::int64_t ldb, float *w, std::complex<float> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].chegvd_usm_sycl(queue, itype, jobz, uplo, n, a, lda, b, ldb, w,
                                                    scratchpad, scratchpad_size, dependencies);
 }
@@ -831,80 +820,73 @@ sycl::event hegvd(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t i
                   oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
                   std::complex<double> *a, std::int64_t lda, std::complex<double> *b,
                   std::int64_t ldb, double *w, std::complex<double> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zhegvd_usm_sycl(queue, itype, jobz, uplo, n, a, lda, b, ldb, w,
                                                    scratchpad, scratchpad_size, dependencies);
 }
 sycl::event hetrd(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::complex<float> *a, std::int64_t lda, float *d, float *e,
                   std::complex<float> *tau, std::complex<float> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].chetrd_usm_sycl(queue, uplo, n, a, lda, d, e, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event hetrd(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::complex<double> *a, std::int64_t lda, double *d, double *e,
                   std::complex<double> *tau, std::complex<double> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zhetrd_usm_sycl(queue, uplo, n, a, lda, d, e, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event hetrf(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::complex<float> *a, std::int64_t lda, std::int64_t *ipiv,
                   std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].chetrf_usm_sycl(queue, uplo, n, a, lda, ipiv, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event hetrf(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::complex<double> *a, std::int64_t lda, std::int64_t *ipiv,
                   std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zhetrf_usm_sycl(queue, uplo, n, a, lda, ipiv, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event orgbr(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::generate vec,
                   std::int64_t m, std::int64_t n, std::int64_t k, float *a, std::int64_t lda,
                   float *tau, float *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sorgbr_usm_sycl(queue, vec, m, n, k, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event orgbr(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::generate vec,
                   std::int64_t m, std::int64_t n, std::int64_t k, double *a, std::int64_t lda,
                   double *tau, double *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dorgbr_usm_sycl(queue, vec, m, n, k, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event orgqr(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   std::int64_t k, double *a, std::int64_t lda, double *tau, double *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dorgqr_usm_sycl(queue, m, n, k, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event orgqr(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   std::int64_t k, float *a, std::int64_t lda, float *tau, float *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sorgqr_usm_sycl(queue, m, n, k, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event orgtr(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, float *a, std::int64_t lda, float *tau, float *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sorgtr_usm_sycl(queue, uplo, n, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event orgtr(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, double *a, std::int64_t lda, double *tau, double *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dorgtr_usm_sycl(queue, uplo, n, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
@@ -912,7 +894,7 @@ sycl::event ormtr(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::s
                   oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans, std::int64_t m,
                   std::int64_t n, float *a, std::int64_t lda, float *tau, float *c,
                   std::int64_t ldc, float *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sormtr_usm_sycl(queue, side, uplo, trans, m, n, a, lda, tau, c,
                                                    ldc, scratchpad, scratchpad_size, dependencies);
 }
@@ -920,7 +902,7 @@ sycl::event ormtr(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::s
                   oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans, std::int64_t m,
                   std::int64_t n, double *a, std::int64_t lda, double *tau, double *c,
                   std::int64_t ldc, double *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dormtr_usm_sycl(queue, side, uplo, trans, m, n, a, lda, tau, c,
                                                    ldc, scratchpad, scratchpad_size, dependencies);
 }
@@ -928,7 +910,7 @@ sycl::event ormrq(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::s
                   oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t k,
                   float *a, std::int64_t lda, float *tau, float *c, std::int64_t ldc,
                   float *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sormrq_usm_sycl(queue, side, trans, m, n, k, a, lda, tau, c, ldc,
                                                    scratchpad, scratchpad_size, dependencies);
 }
@@ -936,7 +918,7 @@ sycl::event ormrq(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::s
                   oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t k,
                   double *a, std::int64_t lda, double *tau, double *c, std::int64_t ldc,
                   double *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dormrq_usm_sycl(queue, side, trans, m, n, k, a, lda, tau, c, ldc,
                                                    scratchpad, scratchpad_size, dependencies);
 }
@@ -944,7 +926,7 @@ sycl::event ormqr(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::s
                   oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t k,
                   double *a, std::int64_t lda, double *tau, double *c, std::int64_t ldc,
                   double *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dormqr_usm_sycl(queue, side, trans, m, n, k, a, lda, tau, c, ldc,
                                                    scratchpad, scratchpad_size, dependencies);
 }
@@ -952,165 +934,156 @@ sycl::event ormqr(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::s
                   oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t k,
                   float *a, std::int64_t lda, float *tau, float *c, std::int64_t ldc,
                   float *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sormqr_usm_sycl(queue, side, trans, m, n, k, a, lda, tau, c, ldc,
                                                    scratchpad, scratchpad_size, dependencies);
 }
 sycl::event potrf(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, float *a, std::int64_t lda, float *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].spotrf_usm_sycl(queue, uplo, n, a, lda, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event potrf(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, double *a, std::int64_t lda, double *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dpotrf_usm_sycl(queue, uplo, n, a, lda, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event potrf(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::complex<float> *a, std::int64_t lda,
                   std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cpotrf_usm_sycl(queue, uplo, n, a, lda, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event potrf(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::complex<double> *a, std::int64_t lda,
                   std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zpotrf_usm_sycl(queue, uplo, n, a, lda, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event potri(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, float *a, std::int64_t lda, float *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].spotri_usm_sycl(queue, uplo, n, a, lda, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event potri(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, double *a, std::int64_t lda, double *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dpotri_usm_sycl(queue, uplo, n, a, lda, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event potri(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::complex<float> *a, std::int64_t lda,
                   std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cpotri_usm_sycl(queue, uplo, n, a, lda, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event potri(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::complex<double> *a, std::int64_t lda,
                   std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zpotri_usm_sycl(queue, uplo, n, a, lda, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event potrs(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::int64_t nrhs, float *a, std::int64_t lda, float *b,
                   std::int64_t ldb, float *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].spotrs_usm_sycl(queue, uplo, n, nrhs, a, lda, b, ldb, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event potrs(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::int64_t nrhs, double *a, std::int64_t lda, double *b,
                   std::int64_t ldb, double *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dpotrs_usm_sycl(queue, uplo, n, nrhs, a, lda, b, ldb, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event potrs(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::int64_t nrhs, std::complex<float> *a, std::int64_t lda,
                   std::complex<float> *b, std::int64_t ldb, std::complex<float> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cpotrs_usm_sycl(queue, uplo, n, nrhs, a, lda, b, ldb, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event potrs(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::int64_t nrhs, std::complex<double> *a, std::int64_t lda,
                   std::complex<double> *b, std::int64_t ldb, std::complex<double> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zpotrs_usm_sycl(queue, uplo, n, nrhs, a, lda, b, ldb, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event syevd(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::job jobz,
                   oneapi::mkl::uplo uplo, std::int64_t n, double *a, std::int64_t lda, double *w,
                   double *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dsyevd_usm_sycl(queue, jobz, uplo, n, a, lda, w, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event syevd(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::job jobz,
                   oneapi::mkl::uplo uplo, std::int64_t n, float *a, std::int64_t lda, float *w,
                   float *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].ssyevd_usm_sycl(queue, jobz, uplo, n, a, lda, w, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event sygvd(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t itype,
                   oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n, double *a,
                   std::int64_t lda, double *b, std::int64_t ldb, double *w, double *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dsygvd_usm_sycl(queue, itype, jobz, uplo, n, a, lda, b, ldb, w,
                                                    scratchpad, scratchpad_size, dependencies);
 }
 sycl::event sygvd(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t itype,
                   oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n, float *a,
                   std::int64_t lda, float *b, std::int64_t ldb, float *w, float *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].ssygvd_usm_sycl(queue, itype, jobz, uplo, n, a, lda, b, ldb, w,
                                                    scratchpad, scratchpad_size, dependencies);
 }
 sycl::event sytrd(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, double *a, std::int64_t lda, double *d, double *e, double *tau,
                   double *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dsytrd_usm_sycl(queue, uplo, n, a, lda, d, e, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event sytrd(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, float *a, std::int64_t lda, float *d, float *e, float *tau,
                   float *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].ssytrd_usm_sycl(queue, uplo, n, a, lda, d, e, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event sytrf(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, float *a, std::int64_t lda, std::int64_t *ipiv, float *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].ssytrf_usm_sycl(queue, uplo, n, a, lda, ipiv, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event sytrf(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, double *a, std::int64_t lda, std::int64_t *ipiv,
                   double *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dsytrf_usm_sycl(queue, uplo, n, a, lda, ipiv, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event sytrf(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::complex<float> *a, std::int64_t lda, std::int64_t *ipiv,
                   std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].csytrf_usm_sycl(queue, uplo, n, a, lda, ipiv, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event sytrf(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::complex<double> *a, std::int64_t lda, std::int64_t *ipiv,
                   std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zsytrf_usm_sycl(queue, uplo, n, a, lda, ipiv, scratchpad,
                                                    scratchpad_size, dependencies);
 }
@@ -1118,8 +1091,7 @@ sycl::event trtrs(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::u
                   oneapi::mkl::transpose trans, oneapi::mkl::diag diag, std::int64_t n,
                   std::int64_t nrhs, std::complex<float> *a, std::int64_t lda,
                   std::complex<float> *b, std::int64_t ldb, std::complex<float> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].ctrtrs_usm_sycl(queue, uplo, trans, diag, n, nrhs, a, lda, b,
                                                    ldb, scratchpad, scratchpad_size, dependencies);
 }
@@ -1127,7 +1099,7 @@ sycl::event trtrs(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::u
                   oneapi::mkl::transpose trans, oneapi::mkl::diag diag, std::int64_t n,
                   std::int64_t nrhs, double *a, std::int64_t lda, double *b, std::int64_t ldb,
                   double *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dtrtrs_usm_sycl(queue, uplo, trans, diag, n, nrhs, a, lda, b,
                                                    ldb, scratchpad, scratchpad_size, dependencies);
 }
@@ -1135,7 +1107,7 @@ sycl::event trtrs(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::u
                   oneapi::mkl::transpose trans, oneapi::mkl::diag diag, std::int64_t n,
                   std::int64_t nrhs, float *a, std::int64_t lda, float *b, std::int64_t ldb,
                   float *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].strtrs_usm_sycl(queue, uplo, trans, diag, n, nrhs, a, lda, b,
                                                    ldb, scratchpad, scratchpad_size, dependencies);
 }
@@ -1143,56 +1115,49 @@ sycl::event trtrs(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::u
                   oneapi::mkl::transpose trans, oneapi::mkl::diag diag, std::int64_t n,
                   std::int64_t nrhs, std::complex<double> *a, std::int64_t lda,
                   std::complex<double> *b, std::int64_t ldb, std::complex<double> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].ztrtrs_usm_sycl(queue, uplo, trans, diag, n, nrhs, a, lda, b,
                                                    ldb, scratchpad, scratchpad_size, dependencies);
 }
 sycl::event ungbr(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::generate vec,
                   std::int64_t m, std::int64_t n, std::int64_t k, std::complex<float> *a,
                   std::int64_t lda, std::complex<float> *tau, std::complex<float> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cungbr_usm_sycl(queue, vec, m, n, k, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event ungbr(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::generate vec,
                   std::int64_t m, std::int64_t n, std::int64_t k, std::complex<double> *a,
                   std::int64_t lda, std::complex<double> *tau, std::complex<double> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zungbr_usm_sycl(queue, vec, m, n, k, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event ungqr(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   std::int64_t k, std::complex<float> *a, std::int64_t lda,
                   std::complex<float> *tau, std::complex<float> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cungqr_usm_sycl(queue, m, n, k, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event ungqr(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   std::int64_t k, std::complex<double> *a, std::int64_t lda,
                   std::complex<double> *tau, std::complex<double> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zungqr_usm_sycl(queue, m, n, k, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event ungtr(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::complex<float> *a, std::int64_t lda,
                   std::complex<float> *tau, std::complex<float> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cungtr_usm_sycl(queue, uplo, n, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
 sycl::event ungtr(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::complex<double> *a, std::int64_t lda,
                   std::complex<double> *tau, std::complex<double> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zungtr_usm_sycl(queue, uplo, n, a, lda, tau, scratchpad,
                                                    scratchpad_size, dependencies);
 }
@@ -1200,8 +1165,7 @@ sycl::event unmrq(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::s
                   oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t k,
                   std::complex<float> *a, std::int64_t lda, std::complex<float> *tau,
                   std::complex<float> *c, std::int64_t ldc, std::complex<float> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cunmrq_usm_sycl(queue, side, trans, m, n, k, a, lda, tau, c, ldc,
                                                    scratchpad, scratchpad_size, dependencies);
 }
@@ -1209,8 +1173,7 @@ sycl::event unmrq(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::s
                   oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t k,
                   std::complex<double> *a, std::int64_t lda, std::complex<double> *tau,
                   std::complex<double> *c, std::int64_t ldc, std::complex<double> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zunmrq_usm_sycl(queue, side, trans, m, n, k, a, lda, tau, c, ldc,
                                                    scratchpad, scratchpad_size, dependencies);
 }
@@ -1218,8 +1181,7 @@ sycl::event unmqr(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::s
                   oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t k,
                   std::complex<float> *a, std::int64_t lda, std::complex<float> *tau,
                   std::complex<float> *c, std::int64_t ldc, std::complex<float> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cunmqr_usm_sycl(queue, side, trans, m, n, k, a, lda, tau, c, ldc,
                                                    scratchpad, scratchpad_size, dependencies);
 }
@@ -1227,8 +1189,7 @@ sycl::event unmqr(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::s
                   oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t k,
                   std::complex<double> *a, std::int64_t lda, std::complex<double> *tau,
                   std::complex<double> *c, std::int64_t ldc, std::complex<double> *scratchpad,
-                  std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zunmqr_usm_sycl(queue, side, trans, m, n, k, a, lda, tau, c, ldc,
                                                    scratchpad, scratchpad_size, dependencies);
 }
@@ -1237,7 +1198,7 @@ sycl::event unmtr(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::s
                   std::int64_t n, std::complex<float> *a, std::int64_t lda,
                   std::complex<float> *tau, std::complex<float> *c, std::int64_t ldc,
                   std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cunmtr_usm_sycl(queue, side, uplo, trans, m, n, a, lda, tau, c,
                                                    ldc, scratchpad, scratchpad_size, dependencies);
 }
@@ -1246,7 +1207,7 @@ sycl::event unmtr(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::s
                   std::int64_t n, std::complex<double> *a, std::int64_t lda,
                   std::complex<double> *tau, std::complex<double> *c, std::int64_t ldc,
                   std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                  const sycl::vector_class<sycl::event> &dependencies) {
+                  const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zunmtr_usm_sycl(queue, side, uplo, trans, m, n, a, lda, tau, c,
                                                    ldc, scratchpad, scratchpad_size, dependencies);
 }
@@ -1478,7 +1439,7 @@ sycl::event geqrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t n, float *a, std::int64_t lda, std::int64_t stride_a,
                         float *tau, std::int64_t stride_tau, std::int64_t batch_size,
                         float *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sgeqrf_batch_usm_sycl(queue, m, n, a, lda, stride_a, tau,
                                                          stride_tau, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1487,7 +1448,7 @@ sycl::event geqrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t n, double *a, std::int64_t lda, std::int64_t stride_a,
                         double *tau, std::int64_t stride_tau, std::int64_t batch_size,
                         double *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dgeqrf_batch_usm_sycl(queue, m, n, a, lda, stride_a, tau,
                                                          stride_tau, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1497,7 +1458,7 @@ sycl::event geqrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t stride_a, std::complex<float> *tau, std::int64_t stride_tau,
                         std::int64_t batch_size, std::complex<float> *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cgeqrf_batch_usm_sycl(queue, m, n, a, lda, stride_a, tau,
                                                          stride_tau, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1507,7 +1468,7 @@ sycl::event geqrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t stride_a, std::complex<double> *tau, std::int64_t stride_tau,
                         std::int64_t batch_size, std::complex<double> *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zgeqrf_batch_usm_sycl(queue, m, n, a, lda, stride_a, tau,
                                                          stride_tau, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1516,7 +1477,7 @@ sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t n, float *a, std::int64_t lda, std::int64_t stride_a,
                         std::int64_t *ipiv, std::int64_t stride_ipiv, std::int64_t batch_size,
                         float *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sgetrf_batch_usm_sycl(queue, m, n, a, lda, stride_a, ipiv,
                                                          stride_ipiv, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1525,7 +1486,7 @@ sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t n, double *a, std::int64_t lda, std::int64_t stride_a,
                         std::int64_t *ipiv, std::int64_t stride_ipiv, std::int64_t batch_size,
                         double *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dgetrf_batch_usm_sycl(queue, m, n, a, lda, stride_a, ipiv,
                                                          stride_ipiv, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1535,7 +1496,7 @@ sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t stride_a, std::int64_t *ipiv, std::int64_t stride_ipiv,
                         std::int64_t batch_size, std::complex<float> *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cgetrf_batch_usm_sycl(queue, m, n, a, lda, stride_a, ipiv,
                                                          stride_ipiv, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1545,7 +1506,7 @@ sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t stride_a, std::int64_t *ipiv, std::int64_t stride_ipiv,
                         std::int64_t batch_size, std::complex<double> *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zgetrf_batch_usm_sycl(queue, m, n, a, lda, stride_a, ipiv,
                                                          stride_ipiv, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1554,7 +1515,7 @@ sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t lda, std::int64_t stride_a, std::int64_t *ipiv,
                         std::int64_t stride_ipiv, std::int64_t batch_size, float *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sgetri_batch_usm_sycl(queue, n, a, lda, stride_a, ipiv,
                                                          stride_ipiv, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1563,7 +1524,7 @@ sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t lda, std::int64_t stride_a, std::int64_t *ipiv,
                         std::int64_t stride_ipiv, std::int64_t batch_size, double *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dgetri_batch_usm_sycl(queue, n, a, lda, stride_a, ipiv,
                                                          stride_ipiv, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1572,7 +1533,7 @@ sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::complex<float> *a, std::int64_t lda, std::int64_t stride_a,
                         std::int64_t *ipiv, std::int64_t stride_ipiv, std::int64_t batch_size,
                         std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cgetri_batch_usm_sycl(queue, n, a, lda, stride_a, ipiv,
                                                          stride_ipiv, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1581,7 +1542,7 @@ sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::complex<double> *a, std::int64_t lda, std::int64_t stride_a,
                         std::int64_t *ipiv, std::int64_t stride_ipiv, std::int64_t batch_size,
                         std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zgetri_batch_usm_sycl(queue, n, a, lda, stride_a, ipiv,
                                                          stride_ipiv, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1591,7 +1552,7 @@ sycl::event getrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                         std::int64_t lda, std::int64_t stride_a, std::int64_t *ipiv,
                         std::int64_t stride_ipiv, float *b, std::int64_t ldb, std::int64_t stride_b,
                         std::int64_t batch_size, float *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sgetrs_batch_usm_sycl(
         queue, trans, n, nrhs, a, lda, stride_a, ipiv, stride_ipiv, b, ldb, stride_b, batch_size,
         scratchpad, scratchpad_size, dependencies);
@@ -1602,7 +1563,7 @@ sycl::event getrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                         std::int64_t stride_ipiv, double *b, std::int64_t ldb,
                         std::int64_t stride_b, std::int64_t batch_size, double *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dgetrs_batch_usm_sycl(
         queue, trans, n, nrhs, a, lda, stride_a, ipiv, stride_ipiv, b, ldb, stride_b, batch_size,
         scratchpad, scratchpad_size, dependencies);
@@ -1613,7 +1574,7 @@ sycl::event getrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                         std::int64_t *ipiv, std::int64_t stride_ipiv, std::complex<float> *b,
                         std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
                         std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cgetrs_batch_usm_sycl(
         queue, trans, n, nrhs, a, lda, stride_a, ipiv, stride_ipiv, b, ldb, stride_b, batch_size,
         scratchpad, scratchpad_size, dependencies);
@@ -1624,7 +1585,7 @@ sycl::event getrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                         std::int64_t *ipiv, std::int64_t stride_ipiv, std::complex<double> *b,
                         std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
                         std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zgetrs_batch_usm_sycl(
         queue, trans, n, nrhs, a, lda, stride_a, ipiv, stride_ipiv, b, ldb, stride_b, batch_size,
         scratchpad, scratchpad_size, dependencies);
@@ -1633,7 +1594,7 @@ sycl::event orgqr_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t n, std::int64_t k, float *a, std::int64_t lda,
                         std::int64_t stride_a, float *tau, std::int64_t stride_tau,
                         std::int64_t batch_size, float *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sorgqr_batch_usm_sycl(queue, m, n, k, a, lda, stride_a, tau,
                                                          stride_tau, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1642,7 +1603,7 @@ sycl::event orgqr_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t n, std::int64_t k, double *a, std::int64_t lda,
                         std::int64_t stride_a, double *tau, std::int64_t stride_tau,
                         std::int64_t batch_size, double *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dorgqr_batch_usm_sycl(queue, m, n, k, a, lda, stride_a, tau,
                                                          stride_tau, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1650,14 +1611,14 @@ sycl::event orgqr_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
 sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                         std::int64_t n, float *a, std::int64_t lda, std::int64_t stride_a,
                         std::int64_t batch_size, float *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].spotrf_batch_usm_sycl(
         queue, uplo, n, a, lda, stride_a, batch_size, scratchpad, scratchpad_size, dependencies);
 }
 sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo uplo,
                         std::int64_t n, double *a, std::int64_t lda, std::int64_t stride_a,
                         std::int64_t batch_size, double *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dpotrf_batch_usm_sycl(
         queue, uplo, n, a, lda, stride_a, batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1665,7 +1626,7 @@ sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::
                         std::int64_t n, std::complex<float> *a, std::int64_t lda,
                         std::int64_t stride_a, std::int64_t batch_size,
                         std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cpotrf_batch_usm_sycl(
         queue, uplo, n, a, lda, stride_a, batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1673,7 +1634,7 @@ sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::
                         std::int64_t n, std::complex<double> *a, std::int64_t lda,
                         std::int64_t stride_a, std::int64_t batch_size,
                         std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zpotrf_batch_usm_sycl(
         queue, uplo, n, a, lda, stride_a, batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1681,7 +1642,7 @@ sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::
                         std::int64_t n, std::int64_t nrhs, float *a, std::int64_t lda,
                         std::int64_t stride_a, float *b, std::int64_t ldb, std::int64_t stride_b,
                         std::int64_t batch_size, float *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].spotrs_batch_usm_sycl(queue, uplo, n, nrhs, a, lda, stride_a, b,
                                                          ldb, stride_b, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1690,7 +1651,7 @@ sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::
                         std::int64_t n, std::int64_t nrhs, double *a, std::int64_t lda,
                         std::int64_t stride_a, double *b, std::int64_t ldb, std::int64_t stride_b,
                         std::int64_t batch_size, double *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dpotrs_batch_usm_sycl(queue, uplo, n, nrhs, a, lda, stride_a, b,
                                                          ldb, stride_b, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1700,7 +1661,7 @@ sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::
                         std::int64_t stride_a, std::complex<float> *b, std::int64_t ldb,
                         std::int64_t stride_b, std::int64_t batch_size,
                         std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cpotrs_batch_usm_sycl(queue, uplo, n, nrhs, a, lda, stride_a, b,
                                                          ldb, stride_b, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1710,7 +1671,7 @@ sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::
                         std::int64_t lda, std::int64_t stride_a, std::complex<double> *b,
                         std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
                         std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zpotrs_batch_usm_sycl(queue, uplo, n, nrhs, a, lda, stride_a, b,
                                                          ldb, stride_b, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1720,7 +1681,7 @@ sycl::event ungqr_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t stride_a, std::complex<float> *tau, std::int64_t stride_tau,
                         std::int64_t batch_size, std::complex<float> *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cungqr_batch_usm_sycl(queue, m, n, k, a, lda, stride_a, tau,
                                                          stride_tau, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1730,7 +1691,7 @@ sycl::event ungqr_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t stride_a, std::complex<double> *tau, std::int64_t stride_tau,
                         std::int64_t batch_size, std::complex<double> *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zungqr_batch_usm_sycl(queue, m, n, k, a, lda, stride_a, tau,
                                                          stride_tau, batch_size, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1739,7 +1700,7 @@ sycl::event geqrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t *n, float **a, std::int64_t *lda, float **tau,
                         std::int64_t group_count, std::int64_t *group_sizes, float *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sgeqrf_group_usm_sycl(queue, m, n, a, lda, tau, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1748,7 +1709,7 @@ sycl::event geqrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t *n, double **a, std::int64_t *lda, double **tau,
                         std::int64_t group_count, std::int64_t *group_sizes, double *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dgeqrf_group_usm_sycl(queue, m, n, a, lda, tau, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1758,7 +1719,7 @@ sycl::event geqrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::complex<float> **tau, std::int64_t group_count,
                         std::int64_t *group_sizes, std::complex<float> *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cgeqrf_group_usm_sycl(queue, m, n, a, lda, tau, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1768,7 +1729,7 @@ sycl::event geqrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::complex<double> **tau, std::int64_t group_count,
                         std::int64_t *group_sizes, std::complex<double> *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zgeqrf_group_usm_sycl(queue, m, n, a, lda, tau, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1777,7 +1738,7 @@ sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t *n, float **a, std::int64_t *lda, std::int64_t **ipiv,
                         std::int64_t group_count, std::int64_t *group_sizes, float *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sgetrf_group_usm_sycl(queue, m, n, a, lda, ipiv, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1786,7 +1747,7 @@ sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t *n, double **a, std::int64_t *lda, std::int64_t **ipiv,
                         std::int64_t group_count, std::int64_t *group_sizes, double *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dgetrf_group_usm_sycl(queue, m, n, a, lda, ipiv, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1795,7 +1756,7 @@ sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t *n, std::complex<float> **a, std::int64_t *lda,
                         std::int64_t **ipiv, std::int64_t group_count, std::int64_t *group_sizes,
                         std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cgetrf_group_usm_sycl(queue, m, n, a, lda, ipiv, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1804,7 +1765,7 @@ sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t *n, std::complex<double> **a, std::int64_t *lda,
                         std::int64_t **ipiv, std::int64_t group_count, std::int64_t *group_sizes,
                         std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zgetrf_group_usm_sycl(queue, m, n, a, lda, ipiv, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1812,7 +1773,7 @@ sycl::event getrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
 sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t *n, float **a,
                         std::int64_t *lda, std::int64_t **ipiv, std::int64_t group_count,
                         std::int64_t *group_sizes, float *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sgetri_group_usm_sycl(queue, n, a, lda, ipiv, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1820,7 +1781,7 @@ sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
 sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t *n, double **a,
                         std::int64_t *lda, std::int64_t **ipiv, std::int64_t group_count,
                         std::int64_t *group_sizes, double *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dgetri_group_usm_sycl(queue, n, a, lda, ipiv, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1829,7 +1790,7 @@ sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::complex<float> **a, std::int64_t *lda, std::int64_t **ipiv,
                         std::int64_t group_count, std::int64_t *group_sizes,
                         std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cgetri_group_usm_sycl(queue, n, a, lda, ipiv, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1838,7 +1799,7 @@ sycl::event getri_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::complex<double> **a, std::int64_t *lda, std::int64_t **ipiv,
                         std::int64_t group_count, std::int64_t *group_sizes,
                         std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zgetri_group_usm_sycl(queue, n, a, lda, ipiv, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1848,7 +1809,7 @@ sycl::event getrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                         float **a, std::int64_t *lda, std::int64_t **ipiv, float **b,
                         std::int64_t *ldb, std::int64_t group_count, std::int64_t *group_sizes,
                         float *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sgetrs_group_usm_sycl(queue, trans, n, nrhs, a, lda, ipiv, b,
                                                          ldb, group_count, group_sizes, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1858,7 +1819,7 @@ sycl::event getrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                         double **a, std::int64_t *lda, std::int64_t **ipiv, double **b,
                         std::int64_t *ldb, std::int64_t group_count, std::int64_t *group_sizes,
                         double *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dgetrs_group_usm_sycl(queue, trans, n, nrhs, a, lda, ipiv, b,
                                                          ldb, group_count, group_sizes, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1869,7 +1830,7 @@ sycl::event getrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                         std::complex<float> **b, std::int64_t *ldb, std::int64_t group_count,
                         std::int64_t *group_sizes, std::complex<float> *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cgetrs_group_usm_sycl(queue, trans, n, nrhs, a, lda, ipiv, b,
                                                          ldb, group_count, group_sizes, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1880,7 +1841,7 @@ sycl::event getrs_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                         std::complex<double> **b, std::int64_t *ldb, std::int64_t group_count,
                         std::int64_t *group_sizes, std::complex<double> *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zgetrs_group_usm_sycl(queue, trans, n, nrhs, a, lda, ipiv, b,
                                                          ldb, group_count, group_sizes, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1889,7 +1850,7 @@ sycl::event orgqr_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t *n, std::int64_t *k, float **a, std::int64_t *lda, float **tau,
                         std::int64_t group_count, std::int64_t *group_sizes, float *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].sorgqr_group_usm_sycl(queue, m, n, k, a, lda, tau, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1898,7 +1859,7 @@ sycl::event orgqr_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t *n, std::int64_t *k, double **a, std::int64_t *lda,
                         double **tau, std::int64_t group_count, std::int64_t *group_sizes,
                         double *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dorgqr_group_usm_sycl(queue, m, n, k, a, lda, tau, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1906,7 +1867,7 @@ sycl::event orgqr_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
 sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo *uplo,
                         std::int64_t *n, float **a, std::int64_t *lda, std::int64_t group_count,
                         std::int64_t *group_sizes, float *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].spotrf_group_usm_sycl(queue, uplo, n, a, lda, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1914,7 +1875,7 @@ sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::
 sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::mkl::uplo *uplo,
                         std::int64_t *n, double **a, std::int64_t *lda, std::int64_t group_count,
                         std::int64_t *group_sizes, double *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dpotrf_group_usm_sycl(queue, uplo, n, a, lda, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1923,7 +1884,7 @@ sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::
                         std::int64_t *n, std::complex<float> **a, std::int64_t *lda,
                         std::int64_t group_count, std::int64_t *group_sizes,
                         std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cpotrf_group_usm_sycl(queue, uplo, n, a, lda, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1932,7 +1893,7 @@ sycl::event potrf_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::
                         std::int64_t *n, std::complex<double> **a, std::int64_t *lda,
                         std::int64_t group_count, std::int64_t *group_sizes,
                         std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zpotrf_group_usm_sycl(queue, uplo, n, a, lda, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1941,7 +1902,7 @@ sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::
                         std::int64_t *n, std::int64_t *nrhs, float **a, std::int64_t *lda,
                         float **b, std::int64_t *ldb, std::int64_t group_count,
                         std::int64_t *group_sizes, float *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].spotrs_group_usm_sycl(queue, uplo, n, nrhs, a, lda, b, ldb,
                                                          group_count, group_sizes, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1950,7 +1911,7 @@ sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::
                         std::int64_t *n, std::int64_t *nrhs, double **a, std::int64_t *lda,
                         double **b, std::int64_t *ldb, std::int64_t group_count,
                         std::int64_t *group_sizes, double *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].dpotrs_group_usm_sycl(queue, uplo, n, nrhs, a, lda, b, ldb,
                                                          group_count, group_sizes, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1960,7 +1921,7 @@ sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::
                         std::int64_t *lda, std::complex<float> **b, std::int64_t *ldb,
                         std::int64_t group_count, std::int64_t *group_sizes,
                         std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cpotrs_group_usm_sycl(queue, uplo, n, nrhs, a, lda, b, ldb,
                                                          group_count, group_sizes, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1970,7 +1931,7 @@ sycl::event potrs_batch(oneapi::mkl::device libkey, sycl::queue &queue, oneapi::
                         std::int64_t *lda, std::complex<double> **b, std::int64_t *ldb,
                         std::int64_t group_count, std::int64_t *group_sizes,
                         std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zpotrs_group_usm_sycl(queue, uplo, n, nrhs, a, lda, b, ldb,
                                                          group_count, group_sizes, scratchpad,
                                                          scratchpad_size, dependencies);
@@ -1980,7 +1941,7 @@ sycl::event ungqr_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t *lda, std::complex<float> **tau, std::int64_t group_count,
                         std::int64_t *group_sizes, std::complex<float> *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].cungqr_group_usm_sycl(queue, m, n, k, a, lda, tau, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);
@@ -1990,7 +1951,7 @@ sycl::event ungqr_batch(oneapi::mkl::device libkey, sycl::queue &queue, std::int
                         std::int64_t *lda, std::complex<double> **tau, std::int64_t group_count,
                         std::int64_t *group_sizes, std::complex<double> *scratchpad,
                         std::int64_t scratchpad_size,
-                        const sycl::vector_class<sycl::event> &dependencies) {
+                        const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].zungqr_group_usm_sycl(queue, m, n, k, a, lda, tau, group_count,
                                                          group_sizes, scratchpad, scratchpad_size,
                                                          dependencies);

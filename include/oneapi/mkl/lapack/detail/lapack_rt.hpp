@@ -904,21 +904,21 @@ static inline sycl::event gebrd(sycl::queue &queue, std::int64_t m, std::int64_t
                                 std::complex<float> *a, std::int64_t lda, float *d, float *e,
                                 std::complex<float> *tauq, std::complex<float> *taup,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::gebrd(get_device_id(queue), queue, m, n, a, lda, d, e, tauq, taup, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event gebrd(sycl::queue &queue, std::int64_t m, std::int64_t n, double *a,
                                 std::int64_t lda, double *d, double *e, double *tauq, double *taup,
                                 double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::gebrd(get_device_id(queue), queue, m, n, a, lda, d, e, tauq, taup, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event gebrd(sycl::queue &queue, std::int64_t m, std::int64_t n, float *a,
                                 std::int64_t lda, float *d, float *e, float *tauq, float *taup,
                                 float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::gebrd(get_device_id(queue), queue, m, n, a, lda, d, e, tauq, taup, scratchpad,
                          scratchpad_size, dependencies);
 }
@@ -926,28 +926,28 @@ static inline sycl::event gebrd(sycl::queue &queue, std::int64_t m, std::int64_t
                                 std::complex<double> *a, std::int64_t lda, double *d, double *e,
                                 std::complex<double> *tauq, std::complex<double> *taup,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::gebrd(get_device_id(queue), queue, m, n, a, lda, d, e, tauq, taup, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event gerqf(sycl::queue &queue, std::int64_t m, std::int64_t n, float *a,
                                 std::int64_t lda, float *tau, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::gerqf(get_device_id(queue), queue, m, n, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event gerqf(sycl::queue &queue, std::int64_t m, std::int64_t n, double *a,
                                 std::int64_t lda, double *tau, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::gerqf(get_device_id(queue), queue, m, n, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event gerqf(sycl::queue &queue, std::int64_t m, std::int64_t n,
                                 std::complex<float> *a, std::int64_t lda, std::complex<float> *tau,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::gerqf(get_device_id(queue), queue, m, n, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
@@ -955,28 +955,28 @@ static inline sycl::event gerqf(sycl::queue &queue, std::int64_t m, std::int64_t
                                 std::complex<double> *a, std::int64_t lda,
                                 std::complex<double> *tau, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::gerqf(get_device_id(queue), queue, m, n, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event geqrf(sycl::queue &queue, std::int64_t m, std::int64_t n,
                                 std::complex<float> *a, std::int64_t lda, std::complex<float> *tau,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::geqrf(get_device_id(queue), queue, m, n, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event geqrf(sycl::queue &queue, std::int64_t m, std::int64_t n, double *a,
                                 std::int64_t lda, double *tau, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::geqrf(get_device_id(queue), queue, m, n, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event geqrf(sycl::queue &queue, std::int64_t m, std::int64_t n, float *a,
                                 std::int64_t lda, float *tau, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::geqrf(get_device_id(queue), queue, m, n, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
@@ -984,62 +984,62 @@ static inline sycl::event geqrf(sycl::queue &queue, std::int64_t m, std::int64_t
                                 std::complex<double> *a, std::int64_t lda,
                                 std::complex<double> *tau, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::geqrf(get_device_id(queue), queue, m, n, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event getrf(sycl::queue &queue, std::int64_t m, std::int64_t n,
                                 std::complex<float> *a, std::int64_t lda, std::int64_t *ipiv,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrf(get_device_id(queue), queue, m, n, a, lda, ipiv, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event getrf(sycl::queue &queue, std::int64_t m, std::int64_t n, double *a,
                                 std::int64_t lda, std::int64_t *ipiv, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrf(get_device_id(queue), queue, m, n, a, lda, ipiv, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event getrf(sycl::queue &queue, std::int64_t m, std::int64_t n, float *a,
                                 std::int64_t lda, std::int64_t *ipiv, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrf(get_device_id(queue), queue, m, n, a, lda, ipiv, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event getrf(sycl::queue &queue, std::int64_t m, std::int64_t n,
                                 std::complex<double> *a, std::int64_t lda, std::int64_t *ipiv,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrf(get_device_id(queue), queue, m, n, a, lda, ipiv, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event getri(sycl::queue &queue, std::int64_t n, std::complex<float> *a,
                                 std::int64_t lda, std::int64_t *ipiv,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::getri(get_device_id(queue), queue, n, a, lda, ipiv, scratchpad, scratchpad_size,
                          dependencies);
 }
 static inline sycl::event getri(sycl::queue &queue, std::int64_t n, double *a, std::int64_t lda,
                                 std::int64_t *ipiv, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::getri(get_device_id(queue), queue, n, a, lda, ipiv, scratchpad, scratchpad_size,
                          dependencies);
 }
 static inline sycl::event getri(sycl::queue &queue, std::int64_t n, float *a, std::int64_t lda,
                                 std::int64_t *ipiv, float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::getri(get_device_id(queue), queue, n, a, lda, ipiv, scratchpad, scratchpad_size,
                          dependencies);
 }
 static inline sycl::event getri(sycl::queue &queue, std::int64_t n, std::complex<double> *a,
                                 std::int64_t lda, std::int64_t *ipiv,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::getri(get_device_id(queue), queue, n, a, lda, ipiv, scratchpad, scratchpad_size,
                          dependencies);
 }
@@ -1047,7 +1047,7 @@ static inline sycl::event getrs(sycl::queue &queue, oneapi::mkl::transpose trans
                                 std::int64_t nrhs, std::complex<float> *a, std::int64_t lda,
                                 std::int64_t *ipiv, std::complex<float> *b, std::int64_t ldb,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrs(get_device_id(queue), queue, trans, n, nrhs, a, lda, ipiv, b, ldb,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1055,7 +1055,7 @@ static inline sycl::event getrs(sycl::queue &queue, oneapi::mkl::transpose trans
                                 std::int64_t nrhs, double *a, std::int64_t lda, std::int64_t *ipiv,
                                 double *b, std::int64_t ldb, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrs(get_device_id(queue), queue, trans, n, nrhs, a, lda, ipiv, b, ldb,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1063,7 +1063,7 @@ static inline sycl::event getrs(sycl::queue &queue, oneapi::mkl::transpose trans
                                 std::int64_t nrhs, float *a, std::int64_t lda, std::int64_t *ipiv,
                                 float *b, std::int64_t ldb, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrs(get_device_id(queue), queue, trans, n, nrhs, a, lda, ipiv, b, ldb,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1071,7 +1071,7 @@ static inline sycl::event getrs(sycl::queue &queue, oneapi::mkl::transpose trans
                                 std::int64_t nrhs, std::complex<double> *a, std::int64_t lda,
                                 std::int64_t *ipiv, std::complex<double> *b, std::int64_t ldb,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrs(get_device_id(queue), queue, trans, n, nrhs, a, lda, ipiv, b, ldb,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1080,7 +1080,7 @@ static inline sycl::event gesvd(sycl::queue &queue, oneapi::mkl::jobsvd jobu,
                                 double *a, std::int64_t lda, double *s, double *u, std::int64_t ldu,
                                 double *vt, std::int64_t ldvt, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::gesvd(get_device_id(queue), queue, jobu, jobvt, m, n, a, lda, s, u, ldu, vt,
                          ldvt, scratchpad, scratchpad_size, dependencies);
 }
@@ -1088,7 +1088,7 @@ static inline sycl::event gesvd(sycl::queue &queue, oneapi::mkl::jobsvd jobu,
                                 oneapi::mkl::jobsvd jobvt, std::int64_t m, std::int64_t n, float *a,
                                 std::int64_t lda, float *s, float *u, std::int64_t ldu, float *vt,
                                 std::int64_t ldvt, float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::gesvd(get_device_id(queue), queue, jobu, jobvt, m, n, a, lda, s, u, ldu, vt,
                          ldvt, scratchpad, scratchpad_size, dependencies);
 }
@@ -1098,7 +1098,7 @@ static inline sycl::event gesvd(sycl::queue &queue, oneapi::mkl::jobsvd jobu,
                                 std::complex<float> *u, std::int64_t ldu, std::complex<float> *vt,
                                 std::int64_t ldvt, std::complex<float> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::gesvd(get_device_id(queue), queue, jobu, jobvt, m, n, a, lda, s, u, ldu, vt,
                          ldvt, scratchpad, scratchpad_size, dependencies);
 }
@@ -1108,14 +1108,14 @@ static inline sycl::event gesvd(sycl::queue &queue, oneapi::mkl::jobsvd jobu,
                                 std::complex<double> *u, std::int64_t ldu, std::complex<double> *vt,
                                 std::int64_t ldvt, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::gesvd(get_device_id(queue), queue, jobu, jobvt, m, n, a, lda, s, u, ldu, vt,
                          ldvt, scratchpad, scratchpad_size, dependencies);
 }
 static inline sycl::event heevd(sycl::queue &queue, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,
                                 std::int64_t n, std::complex<float> *a, std::int64_t lda, float *w,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::heevd(get_device_id(queue), queue, jobz, uplo, n, a, lda, w, scratchpad,
                          scratchpad_size, dependencies);
 }
@@ -1123,7 +1123,7 @@ static inline sycl::event heevd(sycl::queue &queue, oneapi::mkl::job jobz, oneap
                                 std::int64_t n, std::complex<double> *a, std::int64_t lda,
                                 double *w, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::heevd(get_device_id(queue), queue, jobz, uplo, n, a, lda, w, scratchpad,
                          scratchpad_size, dependencies);
 }
@@ -1132,7 +1132,7 @@ static inline sycl::event hegvd(sycl::queue &queue, std::int64_t itype, oneapi::
                                 std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
                                 float *w, std::complex<float> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::hegvd(get_device_id(queue), queue, itype, jobz, uplo, n, a, lda, b, ldb, w,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1141,7 +1141,7 @@ static inline sycl::event hegvd(sycl::queue &queue, std::int64_t itype, oneapi::
                                 std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
                                 double *w, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::hegvd(get_device_id(queue), queue, itype, jobz, uplo, n, a, lda, b, ldb, w,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1149,7 +1149,7 @@ static inline sycl::event hetrd(sycl::queue &queue, oneapi::mkl::uplo uplo, std:
                                 std::complex<float> *a, std::int64_t lda, float *d, float *e,
                                 std::complex<float> *tau, std::complex<float> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::hetrd(get_device_id(queue), queue, uplo, n, a, lda, d, e, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
@@ -1157,63 +1157,63 @@ static inline sycl::event hetrd(sycl::queue &queue, oneapi::mkl::uplo uplo, std:
                                 std::complex<double> *a, std::int64_t lda, double *d, double *e,
                                 std::complex<double> *tau, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::hetrd(get_device_id(queue), queue, uplo, n, a, lda, d, e, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event hetrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 std::complex<float> *a, std::int64_t lda, std::int64_t *ipiv,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::hetrf(get_device_id(queue), queue, uplo, n, a, lda, ipiv, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event hetrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 std::complex<double> *a, std::int64_t lda, std::int64_t *ipiv,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::hetrf(get_device_id(queue), queue, uplo, n, a, lda, ipiv, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event orgbr(sycl::queue &queue, oneapi::mkl::generate vec, std::int64_t m,
                                 std::int64_t n, std::int64_t k, float *a, std::int64_t lda,
                                 float *tau, float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::orgbr(get_device_id(queue), queue, vec, m, n, k, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event orgbr(sycl::queue &queue, oneapi::mkl::generate vec, std::int64_t m,
                                 std::int64_t n, std::int64_t k, double *a, std::int64_t lda,
                                 double *tau, double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::orgbr(get_device_id(queue), queue, vec, m, n, k, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event orgqr(sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k,
                                 double *a, std::int64_t lda, double *tau, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::orgqr(get_device_id(queue), queue, m, n, k, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event orgqr(sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k,
                                 float *a, std::int64_t lda, float *tau, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::orgqr(get_device_id(queue), queue, m, n, k, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event orgtr(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 float *a, std::int64_t lda, float *tau, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::orgtr(get_device_id(queue), queue, uplo, n, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event orgtr(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 double *a, std::int64_t lda, double *tau, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::orgtr(get_device_id(queue), queue, uplo, n, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
@@ -1221,7 +1221,7 @@ static inline sycl::event ormtr(sycl::queue &queue, oneapi::mkl::side side, onea
                                 oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
                                 float *a, std::int64_t lda, float *tau, float *c, std::int64_t ldc,
                                 float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::ormtr(get_device_id(queue), queue, side, uplo, trans, m, n, a, lda, tau, c, ldc,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1229,7 +1229,7 @@ static inline sycl::event ormtr(sycl::queue &queue, oneapi::mkl::side side, onea
                                 oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
                                 double *a, std::int64_t lda, double *tau, double *c,
                                 std::int64_t ldc, double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::ormtr(get_device_id(queue), queue, side, uplo, trans, m, n, a, lda, tau, c, ldc,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1237,7 +1237,7 @@ static inline sycl::event ormrq(sycl::queue &queue, oneapi::mkl::side side,
                                 oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
                                 std::int64_t k, float *a, std::int64_t lda, float *tau, float *c,
                                 std::int64_t ldc, float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::ormrq(get_device_id(queue), queue, side, trans, m, n, k, a, lda, tau, c, ldc,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1245,7 +1245,7 @@ static inline sycl::event ormrq(sycl::queue &queue, oneapi::mkl::side side,
                                 oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
                                 std::int64_t k, double *a, std::int64_t lda, double *tau, double *c,
                                 std::int64_t ldc, double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::ormrq(get_device_id(queue), queue, side, trans, m, n, k, a, lda, tau, c, ldc,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1253,7 +1253,7 @@ static inline sycl::event ormqr(sycl::queue &queue, oneapi::mkl::side side,
                                 oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
                                 std::int64_t k, double *a, std::int64_t lda, double *tau, double *c,
                                 std::int64_t ldc, double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::ormqr(get_device_id(queue), queue, side, trans, m, n, k, a, lda, tau, c, ldc,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1261,77 +1261,77 @@ static inline sycl::event ormqr(sycl::queue &queue, oneapi::mkl::side side,
                                 oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
                                 std::int64_t k, float *a, std::int64_t lda, float *tau, float *c,
                                 std::int64_t ldc, float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::ormqr(get_device_id(queue), queue, side, trans, m, n, k, a, lda, tau, c, ldc,
                          scratchpad, scratchpad_size, dependencies);
 }
 static inline sycl::event potrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 float *a, std::int64_t lda, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrf(get_device_id(queue), queue, uplo, n, a, lda, scratchpad, scratchpad_size,
                          dependencies);
 }
 static inline sycl::event potrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 double *a, std::int64_t lda, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrf(get_device_id(queue), queue, uplo, n, a, lda, scratchpad, scratchpad_size,
                          dependencies);
 }
 static inline sycl::event potrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 std::complex<float> *a, std::int64_t lda,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrf(get_device_id(queue), queue, uplo, n, a, lda, scratchpad, scratchpad_size,
                          dependencies);
 }
 static inline sycl::event potrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 std::complex<double> *a, std::int64_t lda,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrf(get_device_id(queue), queue, uplo, n, a, lda, scratchpad, scratchpad_size,
                          dependencies);
 }
 static inline sycl::event potri(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 float *a, std::int64_t lda, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::potri(get_device_id(queue), queue, uplo, n, a, lda, scratchpad, scratchpad_size,
                          dependencies);
 }
 static inline sycl::event potri(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 double *a, std::int64_t lda, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::potri(get_device_id(queue), queue, uplo, n, a, lda, scratchpad, scratchpad_size,
                          dependencies);
 }
 static inline sycl::event potri(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 std::complex<float> *a, std::int64_t lda,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::potri(get_device_id(queue), queue, uplo, n, a, lda, scratchpad, scratchpad_size,
                          dependencies);
 }
 static inline sycl::event potri(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 std::complex<double> *a, std::int64_t lda,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::potri(get_device_id(queue), queue, uplo, n, a, lda, scratchpad, scratchpad_size,
                          dependencies);
 }
 static inline sycl::event potrs(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 std::int64_t nrhs, float *a, std::int64_t lda, float *b,
                                 std::int64_t ldb, float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrs(get_device_id(queue), queue, uplo, n, nrhs, a, lda, b, ldb, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event potrs(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 std::int64_t nrhs, double *a, std::int64_t lda, double *b,
                                 std::int64_t ldb, double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrs(get_device_id(queue), queue, uplo, n, nrhs, a, lda, b, ldb, scratchpad,
                          scratchpad_size, dependencies);
 }
@@ -1339,7 +1339,7 @@ static inline sycl::event potrs(sycl::queue &queue, oneapi::mkl::uplo uplo, std:
                                 std::int64_t nrhs, std::complex<float> *a, std::int64_t lda,
                                 std::complex<float> *b, std::int64_t ldb,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrs(get_device_id(queue), queue, uplo, n, nrhs, a, lda, b, ldb, scratchpad,
                          scratchpad_size, dependencies);
 }
@@ -1347,21 +1347,21 @@ static inline sycl::event potrs(sycl::queue &queue, oneapi::mkl::uplo uplo, std:
                                 std::int64_t nrhs, std::complex<double> *a, std::int64_t lda,
                                 std::complex<double> *b, std::int64_t ldb,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrs(get_device_id(queue), queue, uplo, n, nrhs, a, lda, b, ldb, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event syevd(sycl::queue &queue, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,
                                 std::int64_t n, double *a, std::int64_t lda, double *w,
                                 double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::syevd(get_device_id(queue), queue, jobz, uplo, n, a, lda, w, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event syevd(sycl::queue &queue, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,
                                 std::int64_t n, float *a, std::int64_t lda, float *w,
                                 float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::syevd(get_device_id(queue), queue, jobz, uplo, n, a, lda, w, scratchpad,
                          scratchpad_size, dependencies);
 }
@@ -1369,7 +1369,7 @@ static inline sycl::event sygvd(sycl::queue &queue, std::int64_t itype, oneapi::
                                 oneapi::mkl::uplo uplo, std::int64_t n, double *a, std::int64_t lda,
                                 double *b, std::int64_t ldb, double *w, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::sygvd(get_device_id(queue), queue, itype, jobz, uplo, n, a, lda, b, ldb, w,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1377,49 +1377,49 @@ static inline sycl::event sygvd(sycl::queue &queue, std::int64_t itype, oneapi::
                                 oneapi::mkl::uplo uplo, std::int64_t n, float *a, std::int64_t lda,
                                 float *b, std::int64_t ldb, float *w, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::sygvd(get_device_id(queue), queue, itype, jobz, uplo, n, a, lda, b, ldb, w,
                          scratchpad, scratchpad_size, dependencies);
 }
 static inline sycl::event sytrd(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 double *a, std::int64_t lda, double *d, double *e, double *tau,
                                 double *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::sytrd(get_device_id(queue), queue, uplo, n, a, lda, d, e, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event sytrd(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 float *a, std::int64_t lda, float *d, float *e, float *tau,
                                 float *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::sytrd(get_device_id(queue), queue, uplo, n, a, lda, d, e, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event sytrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 float *a, std::int64_t lda, std::int64_t *ipiv, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::sytrf(get_device_id(queue), queue, uplo, n, a, lda, ipiv, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event sytrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 double *a, std::int64_t lda, std::int64_t *ipiv, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::sytrf(get_device_id(queue), queue, uplo, n, a, lda, ipiv, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event sytrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 std::complex<float> *a, std::int64_t lda, std::int64_t *ipiv,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::sytrf(get_device_id(queue), queue, uplo, n, a, lda, ipiv, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event sytrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 std::complex<double> *a, std::int64_t lda, std::int64_t *ipiv,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::sytrf(get_device_id(queue), queue, uplo, n, a, lda, ipiv, scratchpad,
                          scratchpad_size, dependencies);
 }
@@ -1428,7 +1428,7 @@ static inline sycl::event trtrs(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                 std::int64_t n, std::int64_t nrhs, std::complex<float> *a,
                                 std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::trtrs(get_device_id(queue), queue, uplo, trans, diag, n, nrhs, a, lda, b, ldb,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1437,7 +1437,7 @@ static inline sycl::event trtrs(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                 std::int64_t n, std::int64_t nrhs, double *a, std::int64_t lda,
                                 double *b, std::int64_t ldb, double *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::trtrs(get_device_id(queue), queue, uplo, trans, diag, n, nrhs, a, lda, b, ldb,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1446,7 +1446,7 @@ static inline sycl::event trtrs(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                 std::int64_t n, std::int64_t nrhs, float *a, std::int64_t lda,
                                 float *b, std::int64_t ldb, float *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::trtrs(get_device_id(queue), queue, uplo, trans, diag, n, nrhs, a, lda, b, ldb,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1455,7 +1455,7 @@ static inline sycl::event trtrs(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                 std::int64_t n, std::int64_t nrhs, std::complex<double> *a,
                                 std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::trtrs(get_device_id(queue), queue, uplo, trans, diag, n, nrhs, a, lda, b, ldb,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1463,7 +1463,7 @@ static inline sycl::event ungbr(sycl::queue &queue, oneapi::mkl::generate vec, s
                                 std::int64_t n, std::int64_t k, std::complex<float> *a,
                                 std::int64_t lda, std::complex<float> *tau,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::ungbr(get_device_id(queue), queue, vec, m, n, k, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
@@ -1471,14 +1471,14 @@ static inline sycl::event ungbr(sycl::queue &queue, oneapi::mkl::generate vec, s
                                 std::int64_t n, std::int64_t k, std::complex<double> *a,
                                 std::int64_t lda, std::complex<double> *tau,
                                 std::complex<double> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::ungbr(get_device_id(queue), queue, vec, m, n, k, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event ungqr(sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k,
                                 std::complex<float> *a, std::int64_t lda, std::complex<float> *tau,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::ungqr(get_device_id(queue), queue, m, n, k, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
@@ -1486,14 +1486,14 @@ static inline sycl::event ungqr(sycl::queue &queue, std::int64_t m, std::int64_t
                                 std::complex<double> *a, std::int64_t lda,
                                 std::complex<double> *tau, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::ungqr(get_device_id(queue), queue, m, n, k, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
 static inline sycl::event ungtr(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
                                 std::complex<float> *a, std::int64_t lda, std::complex<float> *tau,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::ungtr(get_device_id(queue), queue, uplo, n, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
@@ -1501,7 +1501,7 @@ static inline sycl::event ungtr(sycl::queue &queue, oneapi::mkl::uplo uplo, std:
                                 std::complex<double> *a, std::int64_t lda,
                                 std::complex<double> *tau, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::ungtr(get_device_id(queue), queue, uplo, n, a, lda, tau, scratchpad,
                          scratchpad_size, dependencies);
 }
@@ -1510,7 +1510,7 @@ static inline sycl::event unmrq(sycl::queue &queue, oneapi::mkl::side side,
                                 std::int64_t k, std::complex<float> *a, std::int64_t lda,
                                 std::complex<float> *tau, std::complex<float> *c, std::int64_t ldc,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::unmrq(get_device_id(queue), queue, side, trans, m, n, k, a, lda, tau, c, ldc,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1520,7 +1520,7 @@ static inline sycl::event unmrq(sycl::queue &queue, oneapi::mkl::side side,
                                 std::complex<double> *tau, std::complex<double> *c,
                                 std::int64_t ldc, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::unmrq(get_device_id(queue), queue, side, trans, m, n, k, a, lda, tau, c, ldc,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1529,7 +1529,7 @@ static inline sycl::event unmqr(sycl::queue &queue, oneapi::mkl::side side,
                                 std::int64_t k, std::complex<float> *a, std::int64_t lda,
                                 std::complex<float> *tau, std::complex<float> *c, std::int64_t ldc,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::unmqr(get_device_id(queue), queue, side, trans, m, n, k, a, lda, tau, c, ldc,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1539,7 +1539,7 @@ static inline sycl::event unmqr(sycl::queue &queue, oneapi::mkl::side side,
                                 std::complex<double> *tau, std::complex<double> *c,
                                 std::int64_t ldc, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::unmqr(get_device_id(queue), queue, side, trans, m, n, k, a, lda, tau, c, ldc,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1548,7 +1548,7 @@ static inline sycl::event unmtr(sycl::queue &queue, oneapi::mkl::side side, onea
                                 std::complex<float> *a, std::int64_t lda, std::complex<float> *tau,
                                 std::complex<float> *c, std::int64_t ldc,
                                 std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::unmtr(get_device_id(queue), queue, side, uplo, trans, m, n, a, lda, tau, c, ldc,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1558,7 +1558,7 @@ static inline sycl::event unmtr(sycl::queue &queue, oneapi::mkl::side side, onea
                                 std::complex<double> *tau, std::complex<double> *c,
                                 std::int64_t ldc, std::complex<double> *scratchpad,
                                 std::int64_t scratchpad_size,
-                                const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                const std::vector<sycl::event> &dependencies = {}) {
     return detail::unmtr(get_device_id(queue), queue, side, uplo, trans, m, n, a, lda, tau, c, ldc,
                          scratchpad, scratchpad_size, dependencies);
 }
@@ -1566,7 +1566,7 @@ static inline sycl::event geqrf_batch(sycl::queue &queue, std::int64_t m, std::i
                                       std::int64_t lda, std::int64_t stride_a, float *tau,
                                       std::int64_t stride_tau, std::int64_t batch_size,
                                       float *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::geqrf_batch(get_device_id(queue), queue, m, n, a, lda, stride_a, tau, stride_tau,
                                batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1574,7 +1574,7 @@ static inline sycl::event geqrf_batch(sycl::queue &queue, std::int64_t m, std::i
                                       std::int64_t lda, std::int64_t stride_a, double *tau,
                                       std::int64_t stride_tau, std::int64_t batch_size,
                                       double *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::geqrf_batch(get_device_id(queue), queue, m, n, a, lda, stride_a, tau, stride_tau,
                                batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1583,7 +1583,7 @@ static inline sycl::event geqrf_batch(sycl::queue &queue, std::int64_t m, std::i
                                       std::int64_t stride_a, std::complex<float> *tau,
                                       std::int64_t stride_tau, std::int64_t batch_size,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::geqrf_batch(get_device_id(queue), queue, m, n, a, lda, stride_a, tau, stride_tau,
                                batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1593,7 +1593,7 @@ static inline sycl::event geqrf_batch(sycl::queue &queue, std::int64_t m, std::i
                                       std::int64_t stride_tau, std::int64_t batch_size,
                                       std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::geqrf_batch(get_device_id(queue), queue, m, n, a, lda, stride_a, tau, stride_tau,
                                batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1601,7 +1601,7 @@ static inline sycl::event geqrf_batch(sycl::queue &queue, std::int64_t *m, std::
                                       float **a, std::int64_t *lda, float **tau,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       float *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::geqrf_batch(get_device_id(queue), queue, m, n, a, lda, tau, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1609,7 +1609,7 @@ static inline sycl::event geqrf_batch(sycl::queue &queue, std::int64_t *m, std::
                                       double **a, std::int64_t *lda, double **tau,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       double *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::geqrf_batch(get_device_id(queue), queue, m, n, a, lda, tau, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1618,7 +1618,7 @@ static inline sycl::event geqrf_batch(sycl::queue &queue, std::int64_t *m, std::
                                       std::complex<float> **tau, std::int64_t group_count,
                                       std::int64_t *group_sizes, std::complex<float> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::geqrf_batch(get_device_id(queue), queue, m, n, a, lda, tau, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1627,7 +1627,7 @@ static inline sycl::event geqrf_batch(sycl::queue &queue, std::int64_t *m, std::
                                       std::complex<double> **tau, std::int64_t group_count,
                                       std::int64_t *group_sizes, std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::geqrf_batch(get_device_id(queue), queue, m, n, a, lda, tau, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1635,7 +1635,7 @@ static inline sycl::event getrf_batch(sycl::queue &queue, std::int64_t m, std::i
                                       std::int64_t lda, std::int64_t stride_a, std::int64_t *ipiv,
                                       std::int64_t stride_ipiv, std::int64_t batch_size,
                                       float *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrf_batch(get_device_id(queue), queue, m, n, a, lda, stride_a, ipiv,
                                stride_ipiv, batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1643,7 +1643,7 @@ static inline sycl::event getrf_batch(sycl::queue &queue, std::int64_t m, std::i
                                       std::int64_t lda, std::int64_t stride_a, std::int64_t *ipiv,
                                       std::int64_t stride_ipiv, std::int64_t batch_size,
                                       double *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrf_batch(get_device_id(queue), queue, m, n, a, lda, stride_a, ipiv,
                                stride_ipiv, batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1652,7 +1652,7 @@ static inline sycl::event getrf_batch(sycl::queue &queue, std::int64_t m, std::i
                                       std::int64_t stride_a, std::int64_t *ipiv,
                                       std::int64_t stride_ipiv, std::int64_t batch_size,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrf_batch(get_device_id(queue), queue, m, n, a, lda, stride_a, ipiv,
                                stride_ipiv, batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1662,7 +1662,7 @@ static inline sycl::event getrf_batch(sycl::queue &queue, std::int64_t m, std::i
                                       std::int64_t stride_ipiv, std::int64_t batch_size,
                                       std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrf_batch(get_device_id(queue), queue, m, n, a, lda, stride_a, ipiv,
                                stride_ipiv, batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1670,7 +1670,7 @@ static inline sycl::event getrf_batch(sycl::queue &queue, std::int64_t *m, std::
                                       float **a, std::int64_t *lda, std::int64_t **ipiv,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       float *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrf_batch(get_device_id(queue), queue, m, n, a, lda, ipiv, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1678,7 +1678,7 @@ static inline sycl::event getrf_batch(sycl::queue &queue, std::int64_t *m, std::
                                       double **a, std::int64_t *lda, std::int64_t **ipiv,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       double *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrf_batch(get_device_id(queue), queue, m, n, a, lda, ipiv, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1687,7 +1687,7 @@ static inline sycl::event getrf_batch(sycl::queue &queue, std::int64_t *m, std::
                                       std::int64_t **ipiv, std::int64_t group_count,
                                       std::int64_t *group_sizes, std::complex<float> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrf_batch(get_device_id(queue), queue, m, n, a, lda, ipiv, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1696,7 +1696,7 @@ static inline sycl::event getrf_batch(sycl::queue &queue, std::int64_t *m, std::
                                       std::int64_t **ipiv, std::int64_t group_count,
                                       std::int64_t *group_sizes, std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrf_batch(get_device_id(queue), queue, m, n, a, lda, ipiv, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1704,7 +1704,7 @@ static inline sycl::event getri_batch(sycl::queue &queue, std::int64_t n, float 
                                       std::int64_t lda, std::int64_t stride_a, std::int64_t *ipiv,
                                       std::int64_t stride_ipiv, std::int64_t batch_size,
                                       float *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getri_batch(get_device_id(queue), queue, n, a, lda, stride_a, ipiv, stride_ipiv,
                                batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1712,7 +1712,7 @@ static inline sycl::event getri_batch(sycl::queue &queue, std::int64_t n, double
                                       std::int64_t lda, std::int64_t stride_a, std::int64_t *ipiv,
                                       std::int64_t stride_ipiv, std::int64_t batch_size,
                                       double *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getri_batch(get_device_id(queue), queue, n, a, lda, stride_a, ipiv, stride_ipiv,
                                batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1720,7 +1720,7 @@ static inline sycl::event getri_batch(sycl::queue &queue, std::int64_t n, std::c
                                       std::int64_t lda, std::int64_t stride_a, std::int64_t *ipiv,
                                       std::int64_t stride_ipiv, std::int64_t batch_size,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getri_batch(get_device_id(queue), queue, n, a, lda, stride_a, ipiv, stride_ipiv,
                                batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1729,7 +1729,7 @@ static inline sycl::event getri_batch(sycl::queue &queue, std::int64_t n, std::c
                                       std::int64_t stride_ipiv, std::int64_t batch_size,
                                       std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getri_batch(get_device_id(queue), queue, n, a, lda, stride_a, ipiv, stride_ipiv,
                                batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1737,7 +1737,7 @@ static inline sycl::event getri_batch(sycl::queue &queue, std::int64_t *n, float
                                       std::int64_t *lda, std::int64_t **ipiv,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       float *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getri_batch(get_device_id(queue), queue, n, a, lda, ipiv, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1745,7 +1745,7 @@ static inline sycl::event getri_batch(sycl::queue &queue, std::int64_t *n, doubl
                                       std::int64_t *lda, std::int64_t **ipiv,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       double *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getri_batch(get_device_id(queue), queue, n, a, lda, ipiv, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1753,7 +1753,7 @@ static inline sycl::event getri_batch(sycl::queue &queue, std::int64_t *n, std::
                                       std::int64_t *lda, std::int64_t **ipiv,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getri_batch(get_device_id(queue), queue, n, a, lda, ipiv, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1762,7 +1762,7 @@ static inline sycl::event getri_batch(sycl::queue &queue, std::int64_t *n, std::
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getri_batch(get_device_id(queue), queue, n, a, lda, ipiv, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1772,7 +1772,7 @@ static inline sycl::event getrs_batch(sycl::queue &queue, oneapi::mkl::transpose
                                       std::int64_t stride_ipiv, float *b, std::int64_t ldb,
                                       std::int64_t stride_b, std::int64_t batch_size,
                                       float *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrs_batch(get_device_id(queue), queue, trans, n, nrhs, a, lda, stride_a, ipiv,
                                stride_ipiv, b, ldb, stride_b, batch_size, scratchpad,
                                scratchpad_size, dependencies);
@@ -1783,7 +1783,7 @@ static inline sycl::event getrs_batch(sycl::queue &queue, oneapi::mkl::transpose
                                       std::int64_t stride_ipiv, double *b, std::int64_t ldb,
                                       std::int64_t stride_b, std::int64_t batch_size,
                                       double *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrs_batch(get_device_id(queue), queue, trans, n, nrhs, a, lda, stride_a, ipiv,
                                stride_ipiv, b, ldb, stride_b, batch_size, scratchpad,
                                scratchpad_size, dependencies);
@@ -1795,7 +1795,7 @@ static inline sycl::event getrs_batch(sycl::queue &queue, oneapi::mkl::transpose
                                       std::int64_t ldb, std::int64_t stride_b,
                                       std::int64_t batch_size, std::complex<float> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrs_batch(get_device_id(queue), queue, trans, n, nrhs, a, lda, stride_a, ipiv,
                                stride_ipiv, b, ldb, stride_b, batch_size, scratchpad,
                                scratchpad_size, dependencies);
@@ -1807,7 +1807,7 @@ static inline sycl::event getrs_batch(sycl::queue &queue, oneapi::mkl::transpose
                                       std::int64_t ldb, std::int64_t stride_b,
                                       std::int64_t batch_size, std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrs_batch(get_device_id(queue), queue, trans, n, nrhs, a, lda, stride_a, ipiv,
                                stride_ipiv, b, ldb, stride_b, batch_size, scratchpad,
                                scratchpad_size, dependencies);
@@ -1818,7 +1818,7 @@ static inline sycl::event getrs_batch(sycl::queue &queue, oneapi::mkl::transpose
                                       std::int64_t *ldb, std::int64_t group_count,
                                       std::int64_t *group_sizes, float *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrs_batch(get_device_id(queue), queue, trans, n, nrhs, a, lda, ipiv, b, ldb,
                                group_count, group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1828,7 +1828,7 @@ static inline sycl::event getrs_batch(sycl::queue &queue, oneapi::mkl::transpose
                                       std::int64_t *ldb, std::int64_t group_count,
                                       std::int64_t *group_sizes, double *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrs_batch(get_device_id(queue), queue, trans, n, nrhs, a, lda, ipiv, b, ldb,
                                group_count, group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1838,7 +1838,7 @@ static inline sycl::event getrs_batch(sycl::queue &queue, oneapi::mkl::transpose
                                       std::complex<float> **b, std::int64_t *ldb,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrs_batch(get_device_id(queue), queue, trans, n, nrhs, a, lda, ipiv, b, ldb,
                                group_count, group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1849,7 +1849,7 @@ static inline sycl::event getrs_batch(sycl::queue &queue, oneapi::mkl::transpose
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::getrs_batch(get_device_id(queue), queue, trans, n, nrhs, a, lda, ipiv, b, ldb,
                                group_count, group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1858,7 +1858,7 @@ static inline sycl::event orgqr_batch(sycl::queue &queue, std::int64_t m, std::i
                                       std::int64_t stride_a, float *tau, std::int64_t stride_tau,
                                       std::int64_t batch_size, float *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::orgqr_batch(get_device_id(queue), queue, m, n, k, a, lda, stride_a, tau,
                                stride_tau, batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1867,7 +1867,7 @@ static inline sycl::event orgqr_batch(sycl::queue &queue, std::int64_t m, std::i
                                       std::int64_t stride_a, double *tau, std::int64_t stride_tau,
                                       std::int64_t batch_size, double *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::orgqr_batch(get_device_id(queue), queue, m, n, k, a, lda, stride_a, tau,
                                stride_tau, batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1875,7 +1875,7 @@ static inline sycl::event orgqr_batch(sycl::queue &queue, std::int64_t *m, std::
                                       std::int64_t *k, float **a, std::int64_t *lda, float **tau,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       float *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::orgqr_batch(get_device_id(queue), queue, m, n, k, a, lda, tau, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1883,7 +1883,7 @@ static inline sycl::event orgqr_batch(sycl::queue &queue, std::int64_t *m, std::
                                       std::int64_t *k, double **a, std::int64_t *lda, double **tau,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       double *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::orgqr_batch(get_device_id(queue), queue, m, n, k, a, lda, tau, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1891,7 +1891,7 @@ static inline sycl::event potrf_batch(sycl::queue &queue, oneapi::mkl::uplo uplo
                                       float *a, std::int64_t lda, std::int64_t stride_a,
                                       std::int64_t batch_size, float *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrf_batch(get_device_id(queue), queue, uplo, n, a, lda, stride_a, batch_size,
                                scratchpad, scratchpad_size, dependencies);
 }
@@ -1899,7 +1899,7 @@ static inline sycl::event potrf_batch(sycl::queue &queue, oneapi::mkl::uplo uplo
                                       double *a, std::int64_t lda, std::int64_t stride_a,
                                       std::int64_t batch_size, double *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrf_batch(get_device_id(queue), queue, uplo, n, a, lda, stride_a, batch_size,
                                scratchpad, scratchpad_size, dependencies);
 }
@@ -1907,7 +1907,7 @@ static inline sycl::event potrf_batch(sycl::queue &queue, oneapi::mkl::uplo uplo
                                       std::complex<float> *a, std::int64_t lda,
                                       std::int64_t stride_a, std::int64_t batch_size,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrf_batch(get_device_id(queue), queue, uplo, n, a, lda, stride_a, batch_size,
                                scratchpad, scratchpad_size, dependencies);
 }
@@ -1916,7 +1916,7 @@ static inline sycl::event potrf_batch(sycl::queue &queue, oneapi::mkl::uplo uplo
                                       std::int64_t stride_a, std::int64_t batch_size,
                                       std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrf_batch(get_device_id(queue), queue, uplo, n, a, lda, stride_a, batch_size,
                                scratchpad, scratchpad_size, dependencies);
 }
@@ -1924,7 +1924,7 @@ static inline sycl::event potrf_batch(sycl::queue &queue, oneapi::mkl::uplo *upl
                                       float **a, std::int64_t *lda, std::int64_t group_count,
                                       std::int64_t *group_sizes, float *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrf_batch(get_device_id(queue), queue, uplo, n, a, lda, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1932,7 +1932,7 @@ static inline sycl::event potrf_batch(sycl::queue &queue, oneapi::mkl::uplo *upl
                                       double **a, std::int64_t *lda, std::int64_t group_count,
                                       std::int64_t *group_sizes, double *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrf_batch(get_device_id(queue), queue, uplo, n, a, lda, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1940,7 +1940,7 @@ static inline sycl::event potrf_batch(sycl::queue &queue, oneapi::mkl::uplo *upl
                                       std::complex<float> **a, std::int64_t *lda,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrf_batch(get_device_id(queue), queue, uplo, n, a, lda, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1949,7 +1949,7 @@ static inline sycl::event potrf_batch(sycl::queue &queue, oneapi::mkl::uplo *upl
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrf_batch(get_device_id(queue), queue, uplo, n, a, lda, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -1958,7 +1958,7 @@ static inline sycl::event potrs_batch(sycl::queue &queue, oneapi::mkl::uplo uplo
                                       std::int64_t stride_a, float *b, std::int64_t ldb,
                                       std::int64_t stride_b, std::int64_t batch_size,
                                       float *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrs_batch(get_device_id(queue), queue, uplo, n, nrhs, a, lda, stride_a, b, ldb,
                                stride_b, batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1967,7 +1967,7 @@ static inline sycl::event potrs_batch(sycl::queue &queue, oneapi::mkl::uplo uplo
                                       std::int64_t stride_a, double *b, std::int64_t ldb,
                                       std::int64_t stride_b, std::int64_t batch_size,
                                       double *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrs_batch(get_device_id(queue), queue, uplo, n, nrhs, a, lda, stride_a, b, ldb,
                                stride_b, batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1977,7 +1977,7 @@ static inline sycl::event potrs_batch(sycl::queue &queue, oneapi::mkl::uplo uplo
                                       std::int64_t ldb, std::int64_t stride_b,
                                       std::int64_t batch_size, std::complex<float> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrs_batch(get_device_id(queue), queue, uplo, n, nrhs, a, lda, stride_a, b, ldb,
                                stride_b, batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1987,7 +1987,7 @@ static inline sycl::event potrs_batch(sycl::queue &queue, oneapi::mkl::uplo uplo
                                       std::int64_t ldb, std::int64_t stride_b,
                                       std::int64_t batch_size, std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrs_batch(get_device_id(queue), queue, uplo, n, nrhs, a, lda, stride_a, b, ldb,
                                stride_b, batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -1996,7 +1996,7 @@ static inline sycl::event potrs_batch(sycl::queue &queue, oneapi::mkl::uplo *upl
                                       std::int64_t *ldb, std::int64_t group_count,
                                       std::int64_t *group_sizes, float *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrs_batch(get_device_id(queue), queue, uplo, n, nrhs, a, lda, b, ldb,
                                group_count, group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -2005,7 +2005,7 @@ static inline sycl::event potrs_batch(sycl::queue &queue, oneapi::mkl::uplo *upl
                                       std::int64_t *ldb, std::int64_t group_count,
                                       std::int64_t *group_sizes, double *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrs_batch(get_device_id(queue), queue, uplo, n, nrhs, a, lda, b, ldb,
                                group_count, group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -2014,7 +2014,7 @@ static inline sycl::event potrs_batch(sycl::queue &queue, oneapi::mkl::uplo *upl
                                       std::int64_t *lda, std::complex<float> **b, std::int64_t *ldb,
                                       std::int64_t group_count, std::int64_t *group_sizes,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrs_batch(get_device_id(queue), queue, uplo, n, nrhs, a, lda, b, ldb,
                                group_count, group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -2024,7 +2024,7 @@ static inline sycl::event potrs_batch(sycl::queue &queue, oneapi::mkl::uplo *upl
                                       std::int64_t *ldb, std::int64_t group_count,
                                       std::int64_t *group_sizes, std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::potrs_batch(get_device_id(queue), queue, uplo, n, nrhs, a, lda, b, ldb,
                                group_count, group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -2033,7 +2033,7 @@ static inline sycl::event ungqr_batch(sycl::queue &queue, std::int64_t m, std::i
                                       std::int64_t stride_a, std::complex<float> *tau,
                                       std::int64_t stride_tau, std::int64_t batch_size,
                                       std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::ungqr_batch(get_device_id(queue), queue, m, n, k, a, lda, stride_a, tau,
                                stride_tau, batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -2043,7 +2043,7 @@ static inline sycl::event ungqr_batch(sycl::queue &queue, std::int64_t m, std::i
                                       std::int64_t stride_tau, std::int64_t batch_size,
                                       std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::ungqr_batch(get_device_id(queue), queue, m, n, k, a, lda, stride_a, tau,
                                stride_tau, batch_size, scratchpad, scratchpad_size, dependencies);
 }
@@ -2052,7 +2052,7 @@ static inline sycl::event ungqr_batch(sycl::queue &queue, std::int64_t *m, std::
                                       std::complex<float> **tau, std::int64_t group_count,
                                       std::int64_t *group_sizes, std::complex<float> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::ungqr_batch(get_device_id(queue), queue, m, n, k, a, lda, tau, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }
@@ -2061,7 +2061,7 @@ static inline sycl::event ungqr_batch(sycl::queue &queue, std::int64_t *m, std::
                                       std::complex<double> **tau, std::int64_t group_count,
                                       std::int64_t *group_sizes, std::complex<double> *scratchpad,
                                       std::int64_t scratchpad_size,
-                                      const sycl::vector_class<sycl::event> &dependencies = {}) {
+                                      const std::vector<sycl::event> &dependencies = {}) {
     return detail::ungqr_batch(get_device_id(queue), queue, m, n, k, a, lda, tau, group_count,
                                group_sizes, scratchpad, scratchpad_size, dependencies);
 }

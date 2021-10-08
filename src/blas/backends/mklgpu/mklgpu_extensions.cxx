@@ -97,7 +97,7 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
                           offset offsetc, int64_t m, int64_t n, int64_t k, float alpha,
                           const int8_t *a, int64_t lda, int8_t ao, const int8_t *b, int64_t ldb,
                           int8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::gemm_s8s8s32_sycl(
         &queue, MAJOR, mkl_convert(transa), mkl_convert(transb), mkl_convert(offsetc), m, n, k,
         alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co, dependencies);
@@ -107,7 +107,7 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
                           offset offsetc, int64_t m, int64_t n, int64_t k, float alpha,
                           const int8_t *a, int64_t lda, int8_t ao, const uint8_t *b, int64_t ldb,
                           uint8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::gemm_s8u8s32_sycl(
         &queue, MAJOR, mkl_convert(transa), mkl_convert(transb), mkl_convert(offsetc), m, n, k,
         alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co, dependencies);
@@ -117,7 +117,7 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
                           offset offsetc, int64_t m, int64_t n, int64_t k, float alpha,
                           const uint8_t *a, int64_t lda, uint8_t ao, const int8_t *b, int64_t ldb,
                           int8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::gemm_u8s8s32_sycl(
         &queue, MAJOR, mkl_convert(transa), mkl_convert(transb), mkl_convert(offsetc), m, n, k,
         alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co, dependencies);
@@ -127,7 +127,7 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
                           offset offsetc, int64_t m, int64_t n, int64_t k, float alpha,
                           const uint8_t *a, int64_t lda, uint8_t ao, const uint8_t *b, int64_t ldb,
                           uint8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                          const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::gemm_u8u8s32_sycl(
         &queue, MAJOR, mkl_convert(transa), mkl_convert(transb), mkl_convert(offsetc), m, n, k,
         alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co, dependencies);
@@ -136,7 +136,7 @@ cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose tr
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                       int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
                       const float *b, int64_t ldb, float beta, float *c, int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::sgemmt_sycl(&queue, MAJOR, mkl_convert(upper_lower),
                                            mkl_convert(transa), mkl_convert(transb), n, k, alpha, a,
                                            lda, b, ldb, beta, c, ldc, dependencies);
@@ -145,7 +145,7 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                       int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
                       const double *b, int64_t ldb, double beta, double *c, int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::dgemmt_sycl(&queue, MAJOR, mkl_convert(upper_lower),
                                            mkl_convert(transa), mkl_convert(transb), n, k, alpha, a,
                                            lda, b, ldb, beta, c, ldc, dependencies);
@@ -155,7 +155,7 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
                       int64_t n, int64_t k, std::complex<float> alpha, const std::complex<float> *a,
                       int64_t lda, const std::complex<float> *b, int64_t ldb,
                       std::complex<float> beta, std::complex<float> *c, int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::cgemmt_sycl(&queue, MAJOR, mkl_convert(upper_lower),
                                            mkl_convert(transa), mkl_convert(transb), n, k, alpha, a,
                                            lda, b, ldb, beta, c, ldc, dependencies);
@@ -165,7 +165,7 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
                       int64_t n, int64_t k, std::complex<double> alpha,
                       const std::complex<double> *a, int64_t lda, const std::complex<double> *b,
                       int64_t ldb, std::complex<double> beta, std::complex<double> *c, int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zgemmt_sycl(&queue, MAJOR, mkl_convert(upper_lower),
                                            mkl_convert(transa), mkl_convert(transb), n, k, alpha, a,
                                            lda, b, ldb, beta, c, ldc, dependencies);

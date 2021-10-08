@@ -147,12 +147,12 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, 
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::getrf_batch(
             queue, m, n, A_dev, lda, stride_a, ipiv_dev, stride_ipiv, batch_size, scratchpad_dev,
-            scratchpad_size, sycl::vector_class<sycl::event>{ in_event });
+            scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
         TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::getrf_batch, m, n,
                            A_dev, lda, stride_a, ipiv_dev, stride_ipiv, batch_size, scratchpad_dev,
-                           scratchpad_size, sycl::vector_class<sycl::event>{ in_event });
+                           scratchpad_size, std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);
 
