@@ -170,4 +170,10 @@ static inline void free_shared(void *p, cl::sycl::context ctx) {
 } // namespace mkl
 } // namespace oneapi
 
+// Workaround for supporting ::half for hipSYCL
+// TODO: This should be removed after the interface is SYCL2020 conformant
+#ifdef __HIPSYCL__
+using ::cl::sycl::half;
+#endif
+
 #endif // _TEST_HELPER_HPP_
