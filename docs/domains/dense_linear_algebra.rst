@@ -15,3 +15,4 @@ This section contains information about dense linear algebra routines:
 
     matrix-storage.rst
     blas/blas.rst
+    lapack/lapack.rst
