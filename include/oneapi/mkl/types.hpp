@@ -105,13 +105,13 @@ enum class order : char {
     E = 1,
 };
 
+} //namespace mkl
+} //namespace oneapi
+
 // Workaround for supporting ::half for hipSYCL
 // TODO: This should be removed after the interface is SYCL2020 conformant
 #ifdef __HIPSYCL__
 using ::cl::sycl::half;
 #endif
-
-} //namespace mkl
-} //namespace oneapi
 
 #endif //_ONEMKL_TYPES_HPP_
