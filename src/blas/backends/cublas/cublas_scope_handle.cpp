@@ -24,21 +24,6 @@ namespace mkl {
 namespace blas {
 namespace cublas {
 
-cublas_handle::~cublas_handle() noexcept(false) {
-    for (auto &handle_pair : cublas_handle_mapper_) {
-        cublasStatus_t err;
-        if (handle_pair.second != nullptr) {
-            auto handle = handle_pair.second->exchange(nullptr);
-            if (handle != nullptr) {
-                CUBLAS_ERROR_FUNC(cublasDestroy, err, handle);
-                handle = nullptr;
-            }
-            delete handle_pair.second;
-            handle_pair.second = nullptr;
-        }
-    }
-    cublas_handle_mapper_.clear();
-}
 /**
  * Inserts a new element in the map if its key is unique. This new element
  * is constructed in place using args as the arguments for the construction
@@ -46,7 +31,7 @@ cublas_handle::~cublas_handle() noexcept(false) {
  * takes place if no other element in the container has a key equivalent to
  * the one being emplaced (keys in a map container are unique).
  */
-thread_local cublas_handle CublasScopedContextHandler::handle_helper = cublas_handle{};
+thread_local cublas_handle<pi_context> CublasScopedContextHandler::handle_helper = cublas_handle<pi_context>{};
 
 CublasScopedContextHandler::CublasScopedContextHandler(cl::sycl::queue queue,
                                                        cl::sycl::interop_handler &ih)

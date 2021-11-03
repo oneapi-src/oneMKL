@@ -27,16 +27,12 @@
 #include <thread>
 #include <unordered_map>
 #include "cublas_helper.hpp"
+#include "cublas_handle.hpp"
+
 namespace oneapi {
 namespace mkl {
 namespace blas {
 namespace cublas {
-
-struct cublas_handle {
-    using handle_container_t = std::unordered_map<pi_context, std::atomic<cublasHandle_t> *>;
-    handle_container_t cublas_handle_mapper_{};
-    ~cublas_handle() noexcept(false);
-};
 
 /**
 * @brief NVIDIA advise for handle creation:
@@ -69,7 +65,7 @@ class CublasScopedContextHandler {
     cl::sycl::context placedContext_;
     bool needToRecover_;
     cl::sycl::interop_handler &ih;
-    static thread_local cublas_handle handle_helper;
+    static thread_local cublas_handle<pi_context> handle_helper;
     CUstream get_stream(const cl::sycl::queue &queue);
     cl::sycl::context get_context(const cl::sycl::queue &queue);
 
