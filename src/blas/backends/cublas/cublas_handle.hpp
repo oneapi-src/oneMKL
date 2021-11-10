@@ -16,8 +16,8 @@
 *  limitations under the License.
 *
 **************************************************************************/
-#ifndef CUBLAS_HANDLE_HIPSYCL_HPP
-#define CUBLAS_HANDLE_HIPSYCL_HPP
+#ifndef CUBLAS_HANDLE_HPP
+#define CUBLAS_HANDLE_HPP
 #include<atomic>
 #include<unordered_map>
 
@@ -53,4 +53,4 @@ struct cublas_handle {
 } // namespace mkl
 } // namespace oneapi
 
-#endif // CUBLAS_HANDLE_HIPSYCL_HPP
+#endif // CUBLAS_HANDLE_HPP
