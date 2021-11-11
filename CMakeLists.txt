@@ -36,31 +36,8 @@ else()
     message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 endif()
 
-# Define required compilers for Windows before project
-if(WIN32)
-  set(CMAKE_CXX_COMPILER "clang-cl")
-  set(CMAKE_C_COMPILER "clang-cl")
-endif()
-
-project(oneMKL VERSION 0.1.0 LANGUAGES CXX)
-
+# Build options
 option(BUILD_SHARED_LIBS "Build dynamic libraries" ON)
-
-# Override default CXX compile/link lines for Windows after project
-if(WIN32)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function -w")
-  foreach (flag_var
-           CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
-           CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-    string(REPLACE "/MD" "" ${flag_var} "${${flag_var}}")
-  endforeach()
-  set(CMAKE_CXX_COMPILE_OBJECT "<CMAKE_CXX_COMPILER> -fsycl /nologo <DEFINES> <INCLUDES> /EHsc <FLAGS> /Fo<OBJECT> -c <SOURCE>")
-  set(CMAKE_CXX_CREATE_STATIC_LIBRARY "lib /nologo <OBJECTS> /out:<TARGET>")
-  set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> -fsycl /nologo <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
-endif()
-
-# Temporary disable sycl 2020 deprecations warnings
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSYCL2020_DISABLE_DEPRECATION_WARNINGS")
 
 ## Backends
 option(ENABLE_MKLCPU_BACKEND "" ON)
@@ -73,7 +50,13 @@ option(ENABLE_CURAND_BACKEND "" OFF)
 option(ENABLE_NETLIB_BACKEND "" OFF)
 set(ONEMKL_SYCL_IMPLEMENTATION "dpc++" CACHE STRING "Name of the SYCL compiler")
 
-## Domains
+## Testing
+option(BUILD_FUNCTIONAL_TESTS "" ON)
+
+## Documentation
+option(BUILD_DOC "" OFF)
+
+## Supported domains
 set(DOMAINS_LIST "")
 if(ENABLE_MKLCPU_BACKEND
         OR ENABLE_MKLGPU_BACKEND
@@ -91,6 +74,56 @@ if(ENABLE_MKLCPU_BACKEND
   list(APPEND DOMAINS_LIST "rng")
 endif()
 
+# Define required compilers before project
+if(CMAKE_CXX_COMPILER)
+  if(WIN32)
+    string(REPLACE "\\" "/" CMAKE_CXX_COMPILER ${CMAKE_CXX_COMPILER})
+  endif()
+else()
+  if(ENABLE_CUBLAS_BACKEND OR ENABLE_CURAND_BACKEND)
+    set(CMAKE_CXX_COMPILER "clang++")
+    set(CMAKE_C_COMPILER "clang++")
+  elseif(ENABLE_MKLGPU_BACKEND)
+    set(CMAKE_CXX_COMPILER "dpcpp")
+    set(CMAKE_C_COMPILER "dpcpp")
+  else()
+    find_program(DPCPP_PATH dpcpp)
+    if(DPCPP_PATH)
+      set(CMAKE_CXX_COMPILER "dpcpp")
+      set(CMAKE_C_COMPILER "dpcpp")
+    else()
+      if(WIN32)
+        message(STATUS "dpcpp was not found in PATH, using clang-cl instead")
+        set(CMAKE_CXX_COMPILER "clang-cl")
+        set(CMAKE_C_COMPILER "clang-cl")
+      else()
+        message(STATUS "dpcpp was not found in PATH, using clang++ instead")
+        set(CMAKE_CXX_COMPILER "clang++")
+        set(CMAKE_C_COMPILER "clang++")
+      endif()
+    endif()
+  endif()
+endif()
+
+project(oneMKL VERSION 0.1.0 LANGUAGES CXX)
+
+# Override default CXX compile/link lines for Windows after project
+if(WIN32)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function -w")
+  foreach (flag_var
+           CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+           CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+    string(REPLACE "/MD" "" ${flag_var} "${${flag_var}}")
+  endforeach()
+  set(CMAKE_CXX_COMPILE_OBJECT "<CMAKE_CXX_COMPILER> -fsycl /nologo <DEFINES> <INCLUDES> /EHsc <FLAGS> /Fo<OBJECT> -c <SOURCE>")
+  set(CMAKE_CXX_CREATE_STATIC_LIBRARY "lib /nologo <OBJECTS> /out:<TARGET>")
+  set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> -fsycl /nologo <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
+endif()
+
+# Temporary disable sycl 2020 deprecations warnings
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSYCL2020_DISABLE_DEPRECATION_WARNINGS")
+
+# Target domains
 if(NOT TARGET_DOMAINS OR TARGET_DOMAINS STREQUAL "None")
   # Set to all by default
   set(TARGET_DOMAINS ${DOMAINS_LIST})
@@ -110,12 +143,6 @@ else()
   endif()
 endif()
 message(STATUS "TARGET_DOMAINS: ${TARGET_DOMAINS}")
-
-## Testing
-option(BUILD_FUNCTIONAL_TESTS "" ON)
-
-## Documentation
-option(BUILD_DOC "" OFF)
 
 # Set output directories for the project
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
