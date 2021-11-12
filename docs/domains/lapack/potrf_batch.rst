@@ -92,30 +92,6 @@ scratchpad_size
 a
 	Cholesky factors :math:`U_i` or :math:`L_i`, as specified by ``uplo``.
 
-.. container:: section
-
-  .. rubric:: Throws
-
-This routine shall throw the following exceptions if the associated condition is detected. An implementation may throw additional implementation-specific exception(s) in case of error conditions not covered here.
-
-:ref:`oneapi::mkl::lapack::batch_error<onemkl_lapack_exception_batch_error>`
-
-:ref:`oneapi::mkl::unimplemented<onemkl_exception_unimplemented>`
-
-:ref:`oneapi::mkl::unsupported_device<onemkl_exception_unsupported_device>`
-
-:ref:`oneapi::mkl::lapack::invalid_argument<onemkl_lapack_exception_invalid_argument>`
- 
-   The ``info`` code of the problem can be obtained by `info()` method of exception object:
-
-   If ``info = -n``, the :math:`n`-th parameter had an illegal value.
-   
-   If ``info`` equals to value passed as scratchpad size, and `detail()` returns non zero, then passed scratchpad is of insufficient size, and required size should be not less then value returned by `detail()` method of exception object.
-
-   If ``info`` is not zero and `detail()` returns zero, then there were some errors for some of the problems in the supplied batch and ``info`` code contains the number of failed calculations in a batch.
-   
-   If ``info`` is zero, then the leading minors of some of matrices (and therefore some matrices :math:`A_i` themselves) are not positive-definite, and the factorizations could not be completed for these matrices from the batch. The indices of such matrices in the batch can be obtained with `ids()` method of the exception object. The orders of corresponding not positive-definite leading minors of these matrices can be obtained by `exceptions()` method of exception object.
-
 .. _onemkl_lapack_potrf_batch_usm:
 
 potrf_batch (USM Version)
@@ -193,31 +169,6 @@ a
 
 Output event to wait on to ensure computation is complete.
 
-
-.. container:: section
-
-  .. rubric:: Throws
-
-This routine shall throw the following exceptions if the associated condition is detected. An implementation may throw additional implementation-specific exception(s) in case of error conditions not covered here.
-
-:ref:`oneapi::mkl::lapack::batch_error<onemkl_lapack_exception_batch_error>`
-
-:ref:`oneapi::mkl::unimplemented<onemkl_exception_unimplemented>`
-
-:ref:`oneapi::mkl::unsupported_device<onemkl_exception_unsupported_device>`
-
-:ref:`oneapi::mkl::lapack::invalid_argument<onemkl_lapack_exception_invalid_argument>`
- 
-   The ``info`` code of the problem can be obtained by `info()` method of exception object:
-
-   If ``info = -n``, the :math:`n`-th parameter had an illegal value.
-
-   If ``info`` equals to value passed as scratchpad size, and `detail()` returns non zero, then passed scratchpad is of insufficient size, and required size should be not less then value returned by `detail()` method of exception object.
-
-   If ``info`` is not zero and `detail()` returns zero, then there were some errors for some of the problems in the supplied batch and ``info`` code contains the number of failed calculations in a batch.
-   
-   If ``info`` is zero, then the leading minors of some of the input matrices (and therefore some matrices themselves) are not positive-definite, and the factorizations could not be completed for these matrices from the batch. The indices of such matrices in the batch can be obtained with `ids()` method of the exception object. The orders of corresponding not positive-definite leading minors of these matrices can be obtained by `exceptions()` method of the exception object.
-
 **Strided API**
 
  | The routine forms the Cholesky factorizations of a symmetric positive-definite or, for complex data, Hermitian positive-definite matrices :math:`A_i`, :math:`i \in \{1...batch\_size\}`:
@@ -283,30 +234,6 @@ a
   .. rubric:: Return Values
 
 Output event to wait on to ensure computation is complete.
-
-.. container:: section
-
-  .. rubric:: Throws
-
-This routine shall throw the following exceptions if the associated condition is detected. An implementation may throw additional implementation-specific exception(s) in case of error conditions not covered here.
-
-:ref:`oneapi::mkl::lapack::batch_error<onemkl_lapack_exception_batch_error>`
-
-:ref:`oneapi::mkl::unimplemented<onemkl_exception_unimplemented>`
-
-:ref:`oneapi::mkl::unsupported_device<onemkl_exception_unsupported_device>`
-
-:ref:`oneapi::mkl::lapack::invalid_argument<onemkl_lapack_exception_invalid_argument>`
-
-   The ``info`` code of the problem can be obtained by `info()` method of exception object:
-
-   If ``info = -n``, the :math:`n`-th parameter had an illegal value.
-
-   If ``info`` equals to value passed as scratchpad size, and `detail()` returns non zero, then passed scratchpad is of insufficient size, and required size should be not less then value returned by `detail()` method of exception object.
-
-   If ``info`` is not zero and `detail()` returns zero, then there were some errors for some of the problems in the supplied batch and ``info`` code contains the number of failed calculations in a batch.
-        
-   If ``info`` is zero, then the leading minors of some of matrices (and therefore some matrices :math:`A_i` themselves) are not positive-definite, and the factorizations could not be completed for these matrices from the batch. The indices of such matrices in the batch can be obtained with `ids()` method of the exception object. The orders of corresponding not positive-definite leading minors of these matrices can be obtained by `exceptions()` method of exception object.
 
 **Parent topic:** :ref:`onemkl_lapack-like-extensions-routines`
 

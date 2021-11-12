@@ -87,32 +87,6 @@ a
 ipiv
   Array containing batch of the pivot indices :math:`\text{ipiv}_i` each of size at least :math:`\max(1,\min(m,n))`; for :math:`1 \le k \le \min(m,n)`, where row :math:`k` of :math:`A_i` was interchanged with row :math:`\text{ipiv}_i(k)`.
 
-.. container:: section
-
-  .. rubric:: Throws
-
-This routine shall throw the following exceptions if the associated condition is detected. An implementation may throw additional implementation-specific exception(s) in case of error conditions not covered here.
-
-:ref:`oneapi::mkl::lapack::batch_error<onemkl_lapack_exception_batch_error>`
-
-:ref:`oneapi::mkl::unimplemented<onemkl_exception_unimplemented>`
-
-:ref:`oneapi::mkl::unsupported_device<onemkl_exception_unsupported_device>`
-
-:ref:`oneapi::mkl::lapack::invalid_argument<onemkl_lapack_exception_invalid_argument>`
- 
-   The ``info`` code of the problem can be obtained by `info()` method of exception object:
-
-    If ``info = -n``, the :math:`n`-th parameter had an illegal value.
-
-    If ``info`` equals to value passed as scratchpad size, and `detail()` returns non zero, then passed scratchpad is of insufficient size, and required size should be not less then value returned by `detail()` method of exception object.
-
-    If ``info`` is not zero and `detail()` returns zero, then there were some errors for some of the problems in the supplied batch and ``info`` code contains the number of failed calculations in a batch.
-
-    If ``info`` is positive, then the factorization has been completed, but some of :math:`U_i` are exactly singular. Division by 0 will occur if you use the factor :math:`U_i` for solving a system of linear equations.
-
-    The indices of such matrices in the batch can be obtained with `ids()` method of the exception object. The indices of first zero diagonal elements in these :math:`U_i` matrices can be obtained by `exceptions()` method of exception object.
-
 .. _onemkl_lapack_getrf_batch_usm:
 
 getrf_batch (USM Version)
@@ -184,32 +158,6 @@ ipiv
 
 Output event to wait on to ensure computation is complete.
 
-.. container:: section
-
-  .. rubric:: Throws
-
-This routine shall throw the following exceptions if the associated condition is detected. An implementation may throw additional implementation-specific exception(s) in case of error conditions not covered here.
-
-:ref:`oneapi::mkl::lapack::batch_error<onemkl_lapack_exception_batch_error>`
-
-:ref:`oneapi::mkl::unimplemented<onemkl_exception_unimplemented>`
-
-:ref:`oneapi::mkl::unsupported_device<onemkl_exception_unsupported_device>`
-
-:ref:`oneapi::mkl::lapack::invalid_argument<onemkl_lapack_exception_invalid_argument>`
-
-   The ``info`` code of the problem can be obtained by `info()` method of exception object:
-
-   If ``info = -n``, the :math:`n`-th parameter had an illegal value.
-
-   If ``info`` equals to value passed as scratchpad size, and `detail()` returns non zero, then passed scratchpad is of insufficient size, and required size should be not less then value returned by `detail()` method of exception object.
-
-   If ``info`` is not zero and `detail()` returns zero, then there were some errors for some of the problems in the supplied batch and ``info`` code contains the number of failed calculations in a batch.
-
-   If ``info`` is positive, then the factorization has been completed, but some of :math:`U_i` are exactly singular. Division by 0 will occur if you use the factor :math:`U_i` for solving a system of linear equations.
-
-   The indices of such matrices in the batch can be obtained with `ids()` method of the exception object. The indices of first zero diagonal elements in these :math:`U_i` matrices can be obtained by `exceptions()` method of exception object.
-
 **Strided API**
 
 The routine computes the LU factorizations of general :math:`m \times n` matrices :math:`A_i` as :math:`A_i = P_iL_iU_i`, where :math:`P_i` is a permutation matrix, :math:`L_i` is lower triangular with unit diagonal elements (lower trapezoidal if :math:`m > n`) and :math:`U_i` is upper triangular (upper trapezoidal if :math:`m < n`). The routine uses partial pivoting, with row interchanges.
@@ -274,31 +222,5 @@ ipiv
    .. rubric:: Return Values
 
 Output event to wait on to ensure computation is complete.
-
-.. container:: section
-
-  .. rubric:: Throws
-
-This routine shall throw the following exceptions if the associated condition is detected. An implementation may throw additional implementation-specific exception(s) in case of error conditions not covered here.
-
-:ref:`oneapi::mkl::lapack::batch_error<onemkl_lapack_exception_batch_error>`
-
-:ref:`oneapi::mkl::unimplemented<onemkl_exception_unimplemented>`
-
-:ref:`oneapi::mkl::unsupported_device<onemkl_exception_unsupported_device>`
-
-:ref:`oneapi::mkl::lapack::invalid_argument<onemkl_lapack_exception_invalid_argument>`
-
-   The ``info`` code of the problem can be obtained by `info()` method of exception object:
-    
-    If ``info = -n``, the :math:`n`-th parameter had an illegal value.
-    
-    If ``info`` equals to value passed as scratchpad size, and `detail()` returns non zero, then passed scratchpad is of insufficient size, and required size should be not less then value returned by `detail()` method of exception object.
-
-    If ``info`` is not zero and `detail()` returns zero, then there were some errors for some of the problems in the supplied batch and ``info`` code contains the number of failed calculations in a batch.
-    
-    If ``info`` is positive, then the factorization has been completed, but some of :math:`U_i` are exactly singular. Division by 0 will occur if you use the factor :math:`U_i` for solving a system of linear equations.
-
-    The indices of such matrices in the batch can be obtained with `ids()` method of the exception object. The indices of first zero diagonal elements in these :math:`U_i` matrices can be obtained by `exceptions()` method of exception object.
 
 **Parent topic:** :ref:`onemkl_lapack-like-extensions-routines`

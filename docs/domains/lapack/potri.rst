@@ -80,33 +80,6 @@ a
 scratchpad
    Buffer holding scratchpad memory to be used by routine for storing intermediate results.
 
-.. container:: section
-
-  .. rubric:: Throws
-         
-This routine shall throw the following exceptions if the associated condition is detected. An implementation may throw additional implementation-specific exception(s) in case of error conditions not covered here.
-
-:ref:`oneapi::mkl::host_bad_alloc<onemkl_exception_host_bad_alloc>`
-
-:ref:`oneapi::mkl::device_bad_alloc<onemkl_exception_device_bad_alloc>`
-
-:ref:`oneapi::mkl::unimplemented<onemkl_exception_unimplemented>`
-
-:ref:`oneapi::mkl::unsupported_device<onemkl_exception_unsupported_device>`
-
-:ref:`oneapi::mkl::lapack::invalid_argument<onemkl_lapack_exception_invalid_argument>`
-
-:ref:`oneapi::mkl::lapack::computation_error<onemkl_lapack_exception_computation_error>`
-
-   Exception is thrown in case of problems during calculations. The ``info`` code of the problem can be obtained by `info()` method of exception object:
-
-   If :math:`\text{info}=-i`, the :math:`i`-th parameter had an illegal value.
-
-   If :math:`\text{info}=i`, the :math:`i`-th diagonal element of the Cholesky factor
-   (and therefore the factor itself) is zero, and the inversion could not be completed.
-
-   If ``info`` equals to value passed as scratchpad size, and `detail()` returns non zero, then passed scratchpad is of insufficient size, and required size should not be less than value return by `detail()` method of exception object.
-
 potri (USM Version)
 ----------------------
 
@@ -159,33 +132,6 @@ a
 
 scratchpad
    Pointer to scratchpad memory to be used by routine for storing intermediate results.
-
-.. container:: section
-
-  .. rubric:: Throws
-         
-This routine shall throw the following exceptions if the associated condition is detected. An implementation may throw additional implementation-specific exception(s) in case of error conditions not covered here.
-
-:ref:`oneapi::mkl::host_bad_alloc<onemkl_exception_host_bad_alloc>`
-
-:ref:`oneapi::mkl::device_bad_alloc<onemkl_exception_device_bad_alloc>`
-
-:ref:`oneapi::mkl::unimplemented<onemkl_exception_unimplemented>`
-
-:ref:`oneapi::mkl::unsupported_device<onemkl_exception_unsupported_device>`
-
-:ref:`oneapi::mkl::lapack::invalid_argument<onemkl_lapack_exception_invalid_argument>`
-
-:ref:`oneapi::mkl::lapack::computation_error<onemkl_lapack_exception_computation_error>`
-
-   Exception is thrown in case of problems during calculations. The ``info`` code of the problem can be obtained by `info()` method of exception object:
-
-   If :math:`\text{info}=-i`, the :math:`i`-th parameter had an illegal value.
-
-   If :math:`\text{info}=i`, the :math:`i`-th diagonal element of the Cholesky factor
-   (and therefore the factor itself) is zero, and the inversion could not be completed.
-
-   If ``info`` equals to value passed as scratchpad size, and `detail()` returns non zero, then passed scratchpad is of insufficient size, and required size should not be less than value return by `detail()` method of exception object.
 
 .. container:: section
 
