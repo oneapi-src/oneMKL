@@ -3,7 +3,7 @@
 
 .. _create_backend_wrappers:
 
-Integrating a Third-party Library to oneAPI Math Kernel Library (oneMKL) Interfaces
+Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMKL) Interfaces
 ====================================================================================
 
 This step-by-step tutorial provides examples for enabling new third-party libraries in oneMKL.
