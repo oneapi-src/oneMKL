@@ -45,6 +45,7 @@ oneMKL is part of [oneAPI](https://oneapi.io).
 ## Table of Contents
 
 - [Support and Requirements](#support-and-requirements)
+- [Selection of Compilers](#selection-of-compilers)
 - [Build Setup](#build-setup)
 - [Building with Conan](#building-with-conan)
 - [Building with CMake](#building-with-cmake)
@@ -80,8 +81,8 @@ oneapi::mkl::blas::column_major::gemm(gpu_queue, transA, transB, m, ...);
 How to build an application with run-time dispatching:
 
 ```cmd
-$> clang++ -fsycl –I$ONEMKL/include app.cpp
-$> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl
+$> dpcpp -fsycl –I$ONEMKL/include app.cpp
+$> dpcpp -fsycl app.o –L$ONEMKL/lib –lonemkl
 ```
 
 - **Compile-time dispatching**: The application uses a templated backend selector API where the template parameters specify the required backends and third-party libraries and the application is linked with the required oneMKL backend wrapper libraries (libraries can be static or dynamic).
@@ -109,6 +110,8 @@ How to build an application with compile-time dispatching:
 $> clang++ -fsycl –I$ONEMKL/include app.cpp
 $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl_blas_mklcpu –lonemkl_blas_cublas
 ```
+
+*Refer to [Selection of Compilers](#selection-of-compilers) for the choice between `dpcpp` and `clang++` compilers.*
 
 ### Supported Configurations:
 
@@ -366,6 +369,16 @@ Python | 3.6 or higher | No | *N/A* | *Pre-installed or Installed by user* | [PS
 
 ---
 
+## Selection of Compilers
+
+A compiler needs to be chosen according to the required backend of your application.
+
+- If your application requires Intel GPU, use [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) `dpcpp`.
+- If your application requires NVIDIA GPU, use the latest release of `clang++` from [Intel project for LLVM* technology](https://github.com/intel/llvm/releases/tag/2021-07).
+- If neither Intel GPU nor NVIDIA GPU is required, you can use `dpcpp` or `clang++` on Linux and `dpcpp` or `clang-cl` from [Intel project for LLVM* technology](https://github.com/intel/llvm/releases/tag/2021-07) on Windows.
+
+---
+
 ## Build Setup
 
 1. Install Intel(R) oneAPI DPC++ Compiler (select variant as per requirement).
@@ -515,10 +528,10 @@ conan build ..
 ```bash
 # Inside <path to onemkl>
 mkdir build && cd build
-export CXX=<path_to_dpcpp_compiler>/bin/dpcpp;
-cmake .. [-DMKL_ROOT=<mkl_install_prefix>] \                    # required only if environment variable MKLROOT is not set
-         [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \    # required only for testing
-         [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]  # required only for testing
+cmake .. [-DCMAKE_CXX_COMPILER=<path_to_dpcpp_compiler>/bin/dpcpp] \  # required only if dpcpp is not found in environment variable PATH
+         [-DMKL_ROOT=<mkl_install_prefix>] \                          # required only if environment variable MKLROOT is not set
+         [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \          # required only for testing
+         [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]        # required only for testing
 cmake --build .
 ctest
 cmake --install . --prefix <path_to_install_dir>
@@ -527,11 +540,10 @@ cmake --install . --prefix <path_to_install_dir>
 ```bash
 # Inside <path to onemkl>
 md build && cd build
-cmake .. -G Ninja
-                  [-DMKL_ROOT=<mkl_install_prefix>] \                    # required only if environment variable MKLROOT is not set
-                  [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \    # required only for testing
-                  [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]  # required only for testing
-
+cmake .. -G Ninja [-DCMAKE_CXX_COMPILER=<path_to_dpcpp_compiler>\bin\dpcpp] \  # required only if dpcpp is not found in environment variable PATH
+                  [-DMKL_ROOT=<mkl_install_prefix>] \                          # required only if environment variable MKLROOT is not set
+                  [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \          # required only for testing
+                  [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]        # required only for testing
 ninja 
 ctest
 cmake --install . --prefix <path_to_install_dir>
@@ -546,11 +558,11 @@ With the cuBLAS backend:
 ```bash
 # Inside <path to onemkl>
 mkdir build && cd build
-export CXX=<path_to_dpcpp_compiler>/bin/dpcpp;
-cmake .. -DENABLE_CUBLAS_BACKEND=True                      \
-         -DENABLE_MKLCPU_BACKEND=False                     \   # disable Intel MKL CPU backend
-         -DENABLE_MKLGPU_BACKEND=False                     \   # disable Intel MKL GPU backend
-         [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \   # required only for testing
+cmake .. -DENABLE_CUBLAS_BACKEND=True  \
+         -DENABLE_MKLCPU_BACKEND=False \                                  # disable Intel MKL CPU backend
+         -DENABLE_MKLGPU_BACKEND=False \                                  # disable Intel MKL GPU backend
+         [-DCMAKE_CXX_COMPILER=<path_to_clang++_compiler>/bin/clang++] \  # required only if clang++ is not found in environment variable PATH
+         [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \              # required only for testing
 cmake --build .
 ctest
 cmake --install . --prefix <path_to_install_dir>
