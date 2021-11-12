@@ -123,7 +123,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -140,7 +140,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<double*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -158,7 +158,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = ib.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr = reinterpret_cast<std::uint32_t*>(
                         ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -175,7 +175,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -192,7 +192,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<double*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -209,7 +209,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -226,7 +226,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<double*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -259,7 +259,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -276,7 +276,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<double*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -336,7 +336,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.template get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr = reinterpret_cast<std::uint32_t*>(
                         ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -354,7 +354,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     curandStatus_t status;
                     CURAND_CALL(curandGenerateUniform, status, engine_, r, n);
                 });
@@ -369,7 +369,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     curandStatus_t status;
                     CURAND_CALL(curandGenerateUniformDouble, status, engine_, r, n);
                 });
@@ -387,7 +387,7 @@ public:
             n * sizeof(std::uint32_t), queue_.get_device(), queue_.get_context());
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     curandStatus_t status;
                     CURAND_CALL(curandGenerate, status, engine_, ib, n);
                 });
@@ -402,7 +402,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     curandStatus_t status;
                     CURAND_CALL(curandGenerateUniform, status, engine_, r, n);
                 });
@@ -417,7 +417,7 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     curandStatus_t status;
                     CURAND_CALL(curandGenerateUniformDouble, status, engine_, r, n);
                 });
@@ -432,7 +432,7 @@ public:
         std::int64_t n, float* r, const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](cl::sycl::handler& cgh) {
-            cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+            cgh.host_task([=](cl::sycl::interop_handle ih) {
                 curandStatus_t status;
                 CURAND_CALL(curandGenerateNormal, status, engine_, r, n, distr.mean(),
                             distr.stddev());
@@ -446,7 +446,7 @@ public:
         std::int64_t n, double* r, const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](cl::sycl::handler& cgh) {
-            cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+            cgh.host_task([=](cl::sycl::interop_handle ih) {
                 curandStatus_t status;
                 CURAND_CALL(curandGenerateNormalDouble, status, engine_, r, n, distr.mean(),
                             distr.stddev());
@@ -478,7 +478,7 @@ public:
         std::int64_t n, float* r, const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](cl::sycl::handler& cgh) {
-            cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+            cgh.host_task([=](cl::sycl::interop_handle ih) {
                 curandStatus_t status;
                 CURAND_CALL(curandGenerateLogNormal, status, engine_, r, n, distr.m(), distr.s());
             });
@@ -491,7 +491,7 @@ public:
         std::int64_t n, double* r, const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](cl::sycl::handler& cgh) {
-            cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+            cgh.host_task([=](cl::sycl::interop_handle ih) {
                 curandStatus_t status;
                 CURAND_CALL(curandGenerateLogNormalDouble, status, engine_, r, n, distr.m(),
                             distr.s());
@@ -558,7 +558,7 @@ public:
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](cl::sycl::handler& cgh) {
-            cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+            cgh.host_task([=](cl::sycl::interop_handle ih) {
                 curandStatus_t status;
                 CURAND_CALL(curandGenerate, status, engine_, r, n);
             });
