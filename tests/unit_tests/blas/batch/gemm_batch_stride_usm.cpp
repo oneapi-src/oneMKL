@@ -53,8 +53,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
             }
             catch (exception const &e) {
                 std::cout << "Caught asynchronous SYCL exception during GEMM_BATCH_STRIDE:\n"
-                          << e.what() << std::endl
-                          << "OpenCL status: " << e.get_cl_code() << std::endl;
+                          << e.what() << std::endl;
+                print_error_code(e);
             }
         }
     };
@@ -207,8 +207,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     }
     catch (exception const &e) {
         std::cout << "Caught synchronous SYCL exception during GEMM_BATCH_STRIDE:\n"
-                  << e.what() << std::endl
-                  << "OpenCL status: " << e.get_cl_code() << std::endl;
+                  << e.what() << std::endl;
+        print_error_code(e);
     }
 
     catch (const oneapi::mkl::unimplemented &e) {
@@ -239,6 +239,10 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
 
 class GemmBatchStrideUsmTests
         : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
+
+TEST_P(GemmBatchStrideUsmTests, RealHalfPrecision) {
+    EXPECT_TRUEORSKIP(test<half>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
+}
 
 TEST_P(GemmBatchStrideUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));

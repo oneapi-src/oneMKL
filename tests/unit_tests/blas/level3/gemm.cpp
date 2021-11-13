@@ -78,8 +78,8 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
             }
             catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during GEMM:\n"
-                          << e.what() << std::endl
-                          << "OpenCL status: " << e.get_cl_code() << std::endl;
+                          << e.what() << std::endl;
+                print_error_code(e);
             }
         }
     };
@@ -122,9 +122,8 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
 #endif
     }
     catch (exception const& e) {
-        std::cout << "Caught synchronous SYCL exception during GEMM:\n"
-                  << e.what() << std::endl
-                  << "OpenCL status: " << e.get_cl_code() << std::endl;
+        std::cout << "Caught synchronous SYCL exception during GEMM:\n" << e.what() << std::endl;
+        print_error_code(e);
     }
 
     catch (const oneapi::mkl::unimplemented& e) {
@@ -144,6 +143,23 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
 
 class GemmTests
         : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+
+TEST_P(GemmTests, Bfloat16Bfloat16FloatPrecision) {
+    float alpha(2.0);
+    float beta(3.0);
+    EXPECT_TRUEORSKIP((test<oneapi::mkl::bfloat16, float>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::mkl::transpose::nontrans,
+        oneapi::mkl::transpose::nontrans, 79, 83, 91, 103, 105, 106, alpha, beta)));
+    EXPECT_TRUEORSKIP((test<oneapi::mkl::bfloat16, float>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::mkl::transpose::nontrans,
+        oneapi::mkl::transpose::trans, 79, 83, 91, 103, 105, 106, alpha, beta)));
+    EXPECT_TRUEORSKIP((test<oneapi::mkl::bfloat16, float>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::mkl::transpose::trans,
+        oneapi::mkl::transpose::nontrans, 79, 83, 91, 103, 105, 106, alpha, beta)));
+    EXPECT_TRUEORSKIP((test<oneapi::mkl::bfloat16, float>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::mkl::transpose::trans,
+        oneapi::mkl::transpose::trans, 79, 83, 91, 103, 105, 106, alpha, beta)));
+}
 
 TEST_P(GemmTests, HalfHalfFloatPrecision) {
     float alpha(2.0);

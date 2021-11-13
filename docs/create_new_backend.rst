@@ -3,8 +3,8 @@
 
 .. _create_backend_wrappers:
 
-Integrating a Third-party Library to oneAPI Math Kernel Library (oneMKL) Interfaces
-===================================================================================
+Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMKL) Interfaces
+====================================================================================
 
 This step-by-step tutorial provides examples for enabling new third-party libraries in oneMKL.
 
@@ -312,7 +312,7 @@ Updated structure of the ``src`` folder with the ``newlib`` wrappers:
 .. _integrate_backend_to_build_system:
 
 4. Integrate Wrappers to the Build System
--------------------------------------
+-----------------------------------------
 Here is the list of files that should be created/updated to integrate the new wrappers for the third-party library to the oneMKL build system:
 
 * Add the new option ``ENABLE_XXX_BACKEND`` for the new third-party library to the top of the ``CMakeList.txt`` file.

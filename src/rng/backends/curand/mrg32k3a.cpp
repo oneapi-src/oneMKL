@@ -1,32 +1,70 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions
-* and limitations under the License.
-*
-*
-* SPDX-License-Identifier: Apache-2.0
-*******************************************************************************/
+ * cuRAND back-end Copyright (c) 2021, The Regents of the University of
+ * California, through Lawrence Berkeley National Laboratory (subject to receipt
+ * of any required approvals from the U.S. Dept. of Energy). All rights
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * (1) Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
+ *
+ * (2) Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ *
+ * (3) Neither the name of the University of California, Lawrence Berkeley
+ * National Laboratory, U.S. Dept. of Energy nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
+ *
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * You are under no obligation whatsoever to provide any bug fixes, patches,
+ * or upgrades to the features, functionality or performance of the source
+ * code ("Enhancements") to anyone; however, if you choose to make your
+ * Enhancements available either publicly, or directly to Lawrence Berkeley
+ * National Laboratory, without imposing a separate written license agreement
+ * for such Enhancements, then you hereby grant the following license: a
+ * non-exclusive, royalty-free perpetual license to install, use, modify,
+ * prepare derivative works, incorporate into other computer software,
+ * distribute, and sublicense such enhancements or derivative works thereof,
+ * in binary and source code form.
+ *
+ * If you have questions about your rights to use or distribute this software,
+ * please contact Berkeley Lab's Intellectual Property Office at
+ * IPO@lbl.gov.
+ *
+ * NOTICE.  This Software was developed under funding from the U.S. Department
+ * of Energy and the U.S. Government consequently retains certain rights.  As
+ * such, the U.S. Government has been granted for itself and others acting on
+ * its behalf a paid-up, nonexclusive, irrevocable, worldwide license in the
+ * Software to reproduce, distribute copies to the public, prepare derivative
+ * works, and perform publicly and display publicly, and to permit others to do
+ * so.
+ ******************************************************************************/
 
-#include <iostream>
 #include <CL/sycl.hpp>
 #include <CL/sycl/backend/cuda.hpp>
-
-#include "oneapi/mkl/rng/detail/engine_impl.hpp"
-#include "oneapi/mkl/rng/engines.hpp"
-#include "oneapi/mkl/exceptions.hpp"
-#include "oneapi/mkl/rng/detail/curand/onemkl_rng_curand.hpp"
+#include <iostream>
 
 #include "curand_helper.hpp"
+#include "oneapi/mkl/exceptions.hpp"
+#include "oneapi/mkl/rng/detail/curand/onemkl_rng_curand.hpp"
+#include "oneapi/mkl/rng/detail/engine_impl.hpp"
+#include "oneapi/mkl/rng/engines.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -62,7 +100,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -79,7 +117,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<double*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -97,7 +135,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = ib.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto ib_ptr = reinterpret_cast<std::uint32_t*>(
                         ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -114,7 +152,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -131,7 +169,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<double*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -148,7 +186,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -165,7 +203,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<double*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -198,7 +236,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -215,7 +253,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<double*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -275,7 +313,7 @@ public:
         queue_
             .submit([&](cl::sycl::handler& cgh) {
                 auto acc = r.template get_access<cl::sycl::access::mode::read_write>(cgh);
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr = reinterpret_cast<std::uint32_t*>(
                         ih.get_native_mem<cl::sycl::backend::cuda>(acc));
                     curandStatus_t status;
@@ -289,12 +327,11 @@ public:
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::standard>& distr,
-        std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, float* r, const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     curandStatus_t status;
                     CURAND_CALL(curandGenerateUniform, status, engine_, r, n);
                 });
@@ -305,12 +342,11 @@ public:
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::standard>& distr,
-        std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, double* r, const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     curandStatus_t status;
                     CURAND_CALL(curandGenerateUniformDouble, status, engine_, r, n);
                 });
@@ -323,12 +359,12 @@ public:
         const oneapi::mkl::rng::uniform<std::int32_t, oneapi::mkl::rng::uniform_method::standard>&
             distr,
         std::int64_t n, std::int32_t* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        const std::vector<cl::sycl::event>& dependencies) override {
         std::uint32_t* ib = (std::uint32_t*)malloc_device(
             n * sizeof(std::uint32_t), queue_.get_device(), queue_.get_context());
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     curandStatus_t status;
                     CURAND_CALL(curandGenerate, status, engine_, ib, n);
                 });
@@ -339,12 +375,11 @@ public:
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::accurate>& distr,
-        std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, float* r, const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     curandStatus_t status;
                     CURAND_CALL(curandGenerateUniform, status, engine_, r, n);
                 });
@@ -355,12 +390,11 @@ public:
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::accurate>& distr,
-        std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, double* r, const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+                cgh.host_task([=](cl::sycl::interop_handle ih) {
                     curandStatus_t status;
                     CURAND_CALL(curandGenerateUniformDouble, status, engine_, r, n);
                 });
@@ -372,11 +406,10 @@ public:
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::box_muller2>&
             distr,
-        std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, float* r, const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](cl::sycl::handler& cgh) {
-            cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+            cgh.host_task([=](cl::sycl::interop_handle ih) {
                 curandStatus_t status;
                 CURAND_CALL(curandGenerateNormal, status, engine_, r, n, distr.mean(),
                             distr.stddev());
@@ -387,11 +420,10 @@ public:
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::box_muller2>&
             distr,
-        std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, double* r, const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](cl::sycl::handler& cgh) {
-            cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+            cgh.host_task([=](cl::sycl::interop_handle ih) {
                 curandStatus_t status;
                 CURAND_CALL(curandGenerateNormalDouble, status, engine_, r, n, distr.mean(),
                             distr.stddev());
@@ -401,8 +433,7 @@ public:
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::icdf>& distr,
-        std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, float* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented(
             "rng", "mrg32ka engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
@@ -411,8 +442,7 @@ public:
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>& distr,
-        std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, double* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented(
             "rng", "mrg32ka engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
@@ -422,11 +452,10 @@ public:
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::lognormal<float, oneapi::mkl::rng::lognormal_method::box_muller2>&
             distr,
-        std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, float* r, const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](cl::sycl::handler& cgh) {
-            cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+            cgh.host_task([=](cl::sycl::interop_handle ih) {
                 curandStatus_t status;
                 CURAND_CALL(curandGenerateLogNormal, status, engine_, r, n, distr.m(), distr.s());
             });
@@ -436,11 +465,10 @@ public:
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::box_muller2>&
             distr,
-        std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, double* r, const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](cl::sycl::handler& cgh) {
-            cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+            cgh.host_task([=](cl::sycl::interop_handle ih) {
                 curandStatus_t status;
                 CURAND_CALL(curandGenerateLogNormalDouble, status, engine_, r, n, distr.m(),
                             distr.s());
@@ -450,8 +478,7 @@ public:
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::lognormal<float, oneapi::mkl::rng::lognormal_method::icdf>& distr,
-        std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, float* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented(
             "rng", "mrg32ka engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
@@ -460,26 +487,25 @@ public:
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::icdf>& distr,
-        std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, double* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented(
             "rng", "mrg32ka engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
         return cl::sycl::event{};
     }
 
-    virtual cl::sycl::event generate(
-        const bernoulli<std::int32_t, bernoulli_method::icdf>& distr, std::int64_t n,
-        std::int32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
+                                     std::int64_t n, std::int32_t* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented(
             "rng", "mrg32ka engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
         return cl::sycl::event{};
     }
 
-    virtual cl::sycl::event generate(
-        const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr, std::int64_t n,
-        std::uint32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
+                                     std::int64_t n, std::uint32_t* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented(
             "rng", "mrg32ka engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
@@ -488,7 +514,7 @@ public:
 
     virtual cl::sycl::event generate(
         const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
-        std::int32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int32_t* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented(
             "rng", "mrg32ka engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
@@ -497,19 +523,19 @@ public:
 
     virtual cl::sycl::event generate(
         const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
-        std::uint32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::uint32_t* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented(
             "rng", "mrg32ka engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
         return cl::sycl::event{};
     }
 
-    virtual cl::sycl::event generate(
-        const bits<std::uint32_t>& distr, std::int64_t n, std::uint32_t* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const bits<std::uint32_t>& distr, std::int64_t n,
+                                     std::uint32_t* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](cl::sycl::handler& cgh) {
-            cgh.codeplay_host_task([=](cl::sycl::interop_handle ih) {
+            cgh.host_task([=](cl::sycl::interop_handle ih) {
                 curandStatus_t status;
                 CURAND_CALL(curandGenerate, status, engine_, r, n);
             });
@@ -668,16 +694,14 @@ public:
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::standard>& distr,
-        std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, float* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::standard>& distr,
-        std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, double* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
@@ -686,23 +710,21 @@ public:
         const oneapi::mkl::rng::uniform<std::int32_t, oneapi::mkl::rng::uniform_method::standard>&
             distr,
         std::int64_t n, std::int32_t* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::accurate>& distr,
-        std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, float* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::accurate>& distr,
-        std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, double* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
@@ -710,8 +732,7 @@ public:
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::box_muller2>&
             distr,
-        std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, float* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
@@ -719,24 +740,21 @@ public:
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::box_muller2>&
             distr,
-        std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, double* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::icdf>& distr,
-        std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, float* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>& distr,
-        std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, double* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
@@ -744,8 +762,7 @@ public:
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::lognormal<float, oneapi::mkl::rng::lognormal_method::box_muller2>&
             distr,
-        std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, float* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
@@ -753,59 +770,56 @@ public:
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::box_muller2>&
             distr,
-        std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, double* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::lognormal<float, oneapi::mkl::rng::lognormal_method::icdf>& distr,
-        std::int64_t n, float* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, float* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::icdf>& distr,
-        std::int64_t n, double* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int64_t n, double* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
 
-    virtual cl::sycl::event generate(
-        const bernoulli<std::int32_t, bernoulli_method::icdf>& distr, std::int64_t n,
-        std::int32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
+                                     std::int64_t n, std::int32_t* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
 
-    virtual cl::sycl::event generate(
-        const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr, std::int64_t n,
-        std::uint32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
+                                     std::int64_t n, std::uint32_t* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
-        std::int32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::int32_t* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
 
     virtual cl::sycl::event generate(
         const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
-        std::uint32_t* r, const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+        std::uint32_t* r, const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }
 
-    virtual cl::sycl::event generate(
-        const bits<std::uint32_t>& distr, std::int64_t n, std::uint32_t* r,
-        const cl::sycl::vector_class<cl::sycl::event>& dependencies) override {
+    virtual cl::sycl::event generate(const bits<std::uint32_t>& distr, std::int64_t n,
+                                     std::uint32_t* r,
+                                     const std::vector<cl::sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32ka engine");
         return cl::sycl::event{};
     }

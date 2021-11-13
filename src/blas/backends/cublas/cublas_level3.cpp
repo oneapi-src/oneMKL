@@ -16,9 +16,9 @@
 *  limitations under the License.
 *
 **************************************************************************/
-#include <CL/sycl/detail/pi.hpp>
 #include "cublas_helper.hpp"
-#include "cublas_scope_handle.hpp"
+#include "cublas_task.hpp"
+
 #include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/blas/detail/cublas/onemkl_blas_cublas.hpp"
 
@@ -41,12 +41,11 @@ inline void gemm(Func func, cl::sycl::queue &queue, transpose transa, transpose 
         auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
-            auto a_ = sc.get_mem<cuDataType *>(ih, a_acc);
-            auto b_ = sc.get_mem<cuDataType *>(ih, b_acc);
-            auto c_ = sc.get_mem<cuDataType *>(ih, c_acc);
+            auto a_ = sc.get_mem<cuDataType *>(a_acc);
+            auto b_ = sc.get_mem<cuDataType *>(b_acc);
+            auto c_ = sc.get_mem<cuDataType *>(c_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_operation(transa),
                               get_cublas_operation(transb), m, n, k, (cuDataType *)&alpha, a_, lda,
@@ -70,29 +69,32 @@ GEMM_LAUNCHER(std::complex<double>, cublasZgemm)
 
 #undef GEMM_LAUNCHER
 
-template <typename Func, typename T_A, typename T_B, typename T_C, typename DATATYPE_A,
-          typename DATATYPE_B, typename DATATYPE_C>
-inline void gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
-                 cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                 int64_t k, T_C alpha, cl::sycl::buffer<T_A, 1> &a, int64_t lda,
-                 cl::sycl::buffer<T_B, 1> &b, int64_t ldb, T_C beta, cl::sycl::buffer<T_C, 1> &c,
-                 int64_t ldc) {
+template <typename T_A, typename T_B, typename T_C, typename DATATYPE_A, typename DATATYPE_B,
+          typename DATATYPE_C>
+inline void gemm_ex(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C, cl::sycl::queue &queue,
+                    transpose transa, transpose transb, int64_t m, int64_t n, int64_t k, T_C alpha,
+                    cl::sycl::buffer<T_A, 1> &a, int64_t lda, cl::sycl::buffer<T_B, 1> &b,
+                    int64_t ldb, T_C beta, cl::sycl::buffer<T_C, 1> &c, int64_t ldc) {
     using cuDataType_A = typename CudaEquivalentType<T_A>::Type;
     using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
     using cuDataType_C = typename CudaEquivalentType<T_C>::Type;
     overflow_check(m, n, k, lda, ldb, ldc);
     queue.submit([&](cl::sycl::handler &cgh) {
+        if (!verify_support<cl::sycl::half, T_A, T_B, T_C>(queue, cl::sycl::aspect::fp16)) {
+            throw oneapi::mkl::unimplemented(
+                "blas", "cl::sycl::half",
+                "half is not supported by the device or the sycl compiler");
+        }
         auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
-            auto a_ = sc.get_mem<cuDataType_A *>(ih, a_acc);
-            auto b_ = sc.get_mem<cuDataType_B *>(ih, b_acc);
-            auto c_ = sc.get_mem<cuDataType_C *>(ih, c_acc);
+            auto a_ = sc.get_mem<cuDataType_A *>(a_acc);
+            auto b_ = sc.get_mem<cuDataType_B *>(b_acc);
+            auto c_ = sc.get_mem<cuDataType_C *>(c_acc);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_operation(transa),
+            CUBLAS_ERROR_FUNC(cublasGemmEx, err, handle, get_cublas_operation(transa),
                               get_cublas_operation(transb), m, n, k, (cuDataType_C *)&alpha, a_,
                               DT_A, lda, b_, DT_B, ldb, (cuDataType_C *)&beta, c_, DT_C, ldc, DT_C,
                               CUBLAS_GEMM_DEFAULT);
@@ -100,20 +102,26 @@ inline void gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
     });
 }
 
-#define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, CUBLAS_ROUTINE, CUDADATATYPE_A, CUDADATATYPE_B, \
-                         CUDADATATYPE_C)                                                         \
+#define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C) \
     void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,  \
               int64_t k, TYPE_C alpha, cl::sycl::buffer<TYPE_A, 1> &a, int64_t lda,              \
               cl::sycl::buffer<TYPE_B, 1> &b, int64_t ldb, TYPE_C beta,                          \
               cl::sycl::buffer<TYPE_C, 1> &c, int64_t ldc) {                                     \
-        gemm(CUBLAS_ROUTINE, CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa,      \
-             transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);                              \
+        gemm_ex(CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa, transb, m, n, k,  \
+                alpha, a, lda, b, ldb, beta, c, ldc);                                            \
     }
 
-GEMM_EX_LAUNCHER(half, half, float, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
-GEMM_EX_LAUNCHER(half, half, half, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
+GEMM_EX_LAUNCHER(half, half, float, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
+GEMM_EX_LAUNCHER(half, half, half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
 
 #undef GEMM_EX_LAUNCHER
+
+void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+          int64_t k, float alpha, cl::sycl::buffer<bfloat16, 1> &a, int64_t lda,
+          cl::sycl::buffer<bfloat16, 1> &b, int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c,
+          int64_t ldc) {
+    throw unimplemented("blas", "gemm", "for column_major layout");
+}
 
 template <typename Func, typename T>
 inline void symm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
@@ -126,12 +134,11 @@ inline void symm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_
         auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
-            auto a_ = sc.get_mem<cuDataType *>(ih, a_acc);
-            auto b_ = sc.get_mem<cuDataType *>(ih, b_acc);
-            auto c_ = sc.get_mem<cuDataType *>(ih, c_acc);
+            auto a_ = sc.get_mem<cuDataType *>(a_acc);
+            auto b_ = sc.get_mem<cuDataType *>(b_acc);
+            auto c_ = sc.get_mem<cuDataType *>(c_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_side_mode(left_right),
                               get_cublas_fill_mode(upper_lower), m, n, (cuDataType *)&alpha, a_,
@@ -166,12 +173,11 @@ inline void hemm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_
         auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
-            auto a_ = sc.get_mem<cuDataType *>(ih, a_acc);
-            auto b_ = sc.get_mem<cuDataType *>(ih, b_acc);
-            auto c_ = sc.get_mem<cuDataType *>(ih, c_acc);
+            auto a_ = sc.get_mem<cuDataType *>(a_acc);
+            auto b_ = sc.get_mem<cuDataType *>(b_acc);
+            auto c_ = sc.get_mem<cuDataType *>(c_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_side_mode(left_right),
                               get_cublas_fill_mode(upper_lower), m, n, (cuDataType *)&alpha, a_,
@@ -201,11 +207,10 @@ inline void syrk(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose 
     queue.submit([&](cl::sycl::handler &cgh) {
         auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
-            auto a_ = sc.get_mem<cuDataType *>(ih, a_acc);
-            auto c_ = sc.get_mem<cuDataType *>(ih, c_acc);
+            auto a_ = sc.get_mem<cuDataType *>(a_acc);
+            auto c_ = sc.get_mem<cuDataType *>(c_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_fill_mode(upper_lower),
                               get_cublas_operation(trans), n, k, (cuDataType *)&alpha, a_, lda,
@@ -238,11 +243,10 @@ inline void herk(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose 
     queue.submit([&](cl::sycl::handler &cgh) {
         auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
-            auto a_ = sc.get_mem<cuDataType *>(ih, a_acc);
-            auto c_ = sc.get_mem<cuDataType *>(ih, c_acc);
+            auto a_ = sc.get_mem<cuDataType *>(a_acc);
+            auto c_ = sc.get_mem<cuDataType *>(c_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_fill_mode(upper_lower),
                               get_cublas_operation(trans), n, k, (cuScalarType *)&alpha, a_, lda,
@@ -274,12 +278,11 @@ inline void syr2k(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose
         auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
-            auto a_ = sc.get_mem<cuDataType *>(ih, a_acc);
-            auto b_ = sc.get_mem<cuDataType *>(ih, b_acc);
-            auto c_ = sc.get_mem<cuDataType *>(ih, c_acc);
+            auto a_ = sc.get_mem<cuDataType *>(a_acc);
+            auto b_ = sc.get_mem<cuDataType *>(b_acc);
+            auto c_ = sc.get_mem<cuDataType *>(c_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_fill_mode(upper_lower),
                               get_cublas_operation(trans), n, k, (cuDataType *)&alpha, a_, lda, b_,
@@ -315,12 +318,11 @@ inline void her2k(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose
         auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<cl::sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
-            auto a_ = sc.get_mem<cuDataType *>(ih, a_acc);
-            auto b_ = sc.get_mem<cuDataType *>(ih, b_acc);
-            auto c_ = sc.get_mem<cuDataType *>(ih, c_acc);
+            auto a_ = sc.get_mem<cuDataType *>(a_acc);
+            auto b_ = sc.get_mem<cuDataType *>(b_acc);
+            auto c_ = sc.get_mem<cuDataType *>(c_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_fill_mode(upper_lower),
                               get_cublas_operation(trans), n, k, (cuDataType *)&alpha, a_, lda, b_,
@@ -356,11 +358,10 @@ inline void trmm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_
     queue.submit([&](cl::sycl::handler &cgh) {
         auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
-            auto a_ = sc.get_mem<cuDataType *>(ih, a_acc);
-            auto b_ = sc.get_mem<cuDataType *>(ih, b_acc);
+            auto a_ = sc.get_mem<cuDataType *>(a_acc);
+            auto b_ = sc.get_mem<cuDataType *>(b_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_side_mode(left_right),
                               get_cublas_fill_mode(upper_lower), get_cublas_operation(trans),
@@ -393,11 +394,10 @@ inline void trsm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_
     queue.submit([&](cl::sycl::handler &cgh) {
         auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
-            auto a_ = sc.get_mem<cuDataType *>(ih, a_acc);
-            auto b_ = sc.get_mem<cuDataType *>(ih, b_acc);
+            auto a_ = sc.get_mem<cuDataType *>(a_acc);
+            auto b_ = sc.get_mem<cuDataType *>(b_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC(func, err, handle, get_cublas_side_mode(left_right),
                               get_cublas_fill_mode(upper_lower), get_cublas_operation(trans),
@@ -427,7 +427,7 @@ template <typename Func, typename T>
 inline cl::sycl::event gemm(Func func, cl::sycl::queue &queue, transpose transa, transpose transb,
                             int64_t m, int64_t n, int64_t k, T alpha, const T *a, int64_t lda,
                             const T *b, int64_t ldb, T beta, T *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, ldb, ldc);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -435,8 +435,7 @@ inline cl::sycl::event gemm(Func func, cl::sycl::queue &queue, transpose transa,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
             auto b_ = reinterpret_cast<const cuDataType *>(b);
@@ -454,7 +453,7 @@ inline cl::sycl::event gemm(Func func, cl::sycl::queue &queue, transpose transa,
     cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,  \
                          int64_t n, int64_t k, TYPE alpha, const TYPE *a, int64_t lda,           \
                          const TYPE *b, int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,            \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {                     \
         return gemm(CUBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, \
                     c, ldc, dependencies);                                                       \
     }
@@ -466,10 +465,56 @@ GEMM_LAUNCHER_USM(std::complex<double>, cublasZgemm)
 
 #undef GEMM_LAUNCHER_USM
 
-cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                     std::int64_t n, std::int64_t k, half alpha, const half *a, std::int64_t lda,
-                     const half *b, std::int64_t ldb, half beta, half *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+template <typename T_A, typename T_B, typename T_C, typename DATATYPE_A, typename DATATYPE_B,
+          typename DATATYPE_C>
+inline cl::sycl::event gemm_ex_usm(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
+                                   cl::sycl::queue &queue, transpose transa, transpose transb,
+                                   int64_t m, int64_t n, int64_t k, T_C alpha, const T_A *a,
+                                   int64_t lda, const T_B *b, int64_t ldb, T_C beta, T_C *c,
+                                   int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
+    using cuDataType_A = typename CudaEquivalentType<T_A>::Type;
+    using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
+    using cuDataType_C = typename CudaEquivalentType<T_C>::Type;
+    overflow_check(m, n, k, lda, ldb, ldc);
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+            auto handle = sc.get_handle(queue);
+            auto a_ = reinterpret_cast<const cuDataType_A *>(a);
+            auto b_ = reinterpret_cast<const cuDataType_B *>(b);
+            auto c_ = reinterpret_cast<cuDataType_C *>(c);
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC(cublasGemmEx, err, handle, get_cublas_operation(transa),
+                              get_cublas_operation(transb), m, n, k, (cuDataType_C *)&alpha, a_,
+                              DT_A, lda, b_, DT_B, ldb, (cuDataType_C *)&beta, c_, DT_C, ldc, DT_C,
+                              CUBLAS_GEMM_DEFAULT);
+        });
+    });
+    return done;
+}
+
+#define GEMM_EX_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, CUDADATATYPE_A, CUDADATATYPE_B,              \
+                             CUDADATATYPE_C)                                                      \
+    cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,   \
+                         int64_t n, int64_t k, TYPE_C alpha, const TYPE_A *a, int64_t lda,        \
+                         const TYPE_B *b, int64_t ldb, TYPE_C beta, TYPE_C *c, int64_t ldc,       \
+                         const std::vector<cl::sycl::event> &dependencies) {                      \
+        return gemm_ex_usm(CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa, transb, \
+                           m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);           \
+    }
+
+GEMM_EX_LAUNCHER_USM(half, half, float, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
+GEMM_EX_LAUNCHER_USM(half, half, half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
+
+#undef GEMM_EX_LAUNCHER_USM
+
+cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                     int64_t n, int64_t k, float alpha, const bfloat16 *a, int64_t lda,
+                     const bfloat16 *b, int64_t ldb, float beta, float *c, int64_t ldc,
+                     const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "gemm", "for column_major layout");
 }
 
@@ -477,7 +522,7 @@ template <typename Func, typename T>
 inline cl::sycl::event symm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             int64_t m, int64_t n, T alpha, const T *a, int64_t lda, const T *b,
                             int64_t ldb, T beta, T *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb, ldc);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -485,8 +530,7 @@ inline cl::sycl::event symm(Func func, cl::sycl::queue &queue, side left_right, 
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
             auto b_ = reinterpret_cast<const cuDataType *>(b);
@@ -504,7 +548,7 @@ inline cl::sycl::event symm(Func func, cl::sycl::queue &queue, side left_right, 
     cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,   \
                          int64_t n, TYPE alpha, const TYPE *a, int64_t lda, const TYPE *b,       \
                          int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,                           \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {                     \
         return symm(CUBLAS_ROUTINE, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, \
                     beta, c, ldc, dependencies);                                                 \
     }
@@ -520,7 +564,7 @@ template <typename Func, typename T>
 inline cl::sycl::event hemm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             int64_t m, int64_t n, T alpha, const T *a, int64_t lda, const T *b,
                             int64_t ldb, T beta, T *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb, ldc);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -528,8 +572,7 @@ inline cl::sycl::event hemm(Func func, cl::sycl::queue &queue, side left_right, 
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
             auto b_ = reinterpret_cast<const cuDataType *>(b);
@@ -547,7 +590,7 @@ inline cl::sycl::event hemm(Func func, cl::sycl::queue &queue, side left_right, 
     cl::sycl::event hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,   \
                          int64_t n, TYPE alpha, const TYPE *a, int64_t lda, const TYPE *b,       \
                          int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,                           \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {                     \
         return hemm(CUBLAS_ROUTINE, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, \
                     beta, c, ldc, dependencies);                                                 \
     }
@@ -559,8 +602,7 @@ HEMM_LAUNCHER_USM(std::complex<double>, cublasZhemm)
 template <typename Func, typename T>
 inline cl::sycl::event syrk(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                             int64_t n, int64_t k, T alpha, const T *a, int64_t lda, T beta, T *c,
-                            int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, k, lda, ldc);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -568,8 +610,7 @@ inline cl::sycl::event syrk(Func func, cl::sycl::queue &queue, uplo upper_lower,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
             auto c_ = reinterpret_cast<cuDataType *>(c);
@@ -585,8 +626,7 @@ inline cl::sycl::event syrk(Func func, cl::sycl::queue &queue, uplo upper_lower,
 #define SYRK_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
     cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
                          int64_t k, TYPE alpha, const TYPE *a, int64_t lda, TYPE beta, TYPE *c,   \
-                         int64_t ldc,                                                             \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                         int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {         \
         return syrk(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, \
                     dependencies);                                                                \
     }
@@ -602,7 +642,7 @@ template <typename Func, typename DataType, typename ScalarType>
 inline cl::sycl::event herk(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                             int64_t n, int64_t k, const ScalarType alpha, const DataType *a,
                             int64_t lda, const ScalarType beta, DataType *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<DataType>::Type;
     using cuScalarType = typename CudaEquivalentType<ScalarType>::Type;
     overflow_check(n, k, lda, ldc);
@@ -611,8 +651,7 @@ inline cl::sycl::event herk(Func func, cl::sycl::queue &queue, uplo upper_lower,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
             auto c_ = reinterpret_cast<cuDataType *>(c);
@@ -629,7 +668,7 @@ inline cl::sycl::event herk(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
                          int64_t k, const SCALAR_TYPE alpha, const DATA_TYPE *a, int64_t lda,     \
                          const SCALAR_TYPE beta, DATA_TYPE *c, int64_t ldc,                       \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                         const std::vector<cl::sycl::event> &dependencies) {                      \
         return herk(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, \
                     dependencies);                                                                \
     }
@@ -643,7 +682,7 @@ template <typename Func, typename T>
 inline cl::sycl::event syr2k(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                              int64_t n, int64_t k, T alpha, const T *a, int64_t lda, const T *b,
                              int64_t ldb, T beta, T *c, int64_t ldc,
-                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                             const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, k, lda, ldb, ldc);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -651,8 +690,7 @@ inline cl::sycl::event syr2k(Func func, cl::sycl::queue &queue, uplo upper_lower
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
             auto b_ = reinterpret_cast<const cuDataType *>(b);
@@ -670,7 +708,7 @@ inline cl::sycl::event syr2k(Func func, cl::sycl::queue &queue, uplo upper_lower
     cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
                           int64_t k, TYPE alpha, const TYPE *a, int64_t lda, const TYPE *b,        \
                           int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,                            \
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                          const std::vector<cl::sycl::event> &dependencies) {                      \
         return syr2k(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, \
                      c, ldc, dependencies);                                                        \
     }
@@ -686,7 +724,7 @@ inline cl::sycl::event her2k(Func func, cl::sycl::queue &queue, uplo upper_lower
                              int64_t n, int64_t k, const DataType alpha, const DataType *a,
                              int64_t lda, const DataType *b, int64_t ldb, const ScalarType beta,
                              DataType *c, int64_t ldc,
-                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                             const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<DataType>::Type;
     using cuScalarType = typename CudaEquivalentType<ScalarType>::Type;
     overflow_check(n, k, lda, ldb, ldc);
@@ -695,8 +733,7 @@ inline cl::sycl::event her2k(Func func, cl::sycl::queue &queue, uplo upper_lower
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
             auto b_ = reinterpret_cast<const cuDataType *>(b);
@@ -714,8 +751,7 @@ inline cl::sycl::event her2k(Func func, cl::sycl::queue &queue, uplo upper_lower
     cl::sycl::event her2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
                           int64_t k, const DATA_TYPE alpha, const DATA_TYPE *a, int64_t lda,       \
                           const DATA_TYPE *b, int64_t ldb, const SCALAR_TYPE beta, DATA_TYPE *c,   \
-                          int64_t ldc,                                                             \
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                          int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {         \
         return her2k(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, \
                      c, ldc, dependencies);                                                        \
     }
@@ -733,7 +769,7 @@ template <typename Func, typename T>
 inline cl::sycl::event trmm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha,
                             const T *a, int64_t lda, T *b, int64_t ldb,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -741,8 +777,7 @@ inline cl::sycl::event trmm(Func func, cl::sycl::queue &queue, side left_right, 
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
             auto b_ = reinterpret_cast<cuDataType *>(b);
@@ -760,7 +795,7 @@ inline cl::sycl::event trmm(Func func, cl::sycl::queue &queue, side left_right, 
     cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower,                \
                          transpose trans, diag unit_diag, int64_t m, int64_t n, TYPE alpha,        \
                          const TYPE *a, int64_t lda, TYPE *b, int64_t ldb,                         \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {            \
+                         const std::vector<cl::sycl::event> &dependencies) {                       \
         return trmm(CUBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, \
                     a, lda, b, ldb, dependencies);                                                 \
     }
@@ -775,7 +810,7 @@ template <typename Func, typename T>
 inline cl::sycl::event trsm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha,
                             const T *a, int64_t lda, T *b, int64_t ldb,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb);
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
@@ -783,8 +818,7 @@ inline cl::sycl::event trsm(Func func, cl::sycl::queue &queue, side left_right, 
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        cgh.interop_task([=](cl::sycl::interop_handler ih) {
-            auto sc = CublasScopedContextHandler(queue);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
             auto b_ = reinterpret_cast<cuDataType *>(b);
@@ -802,7 +836,7 @@ inline cl::sycl::event trsm(Func func, cl::sycl::queue &queue, side left_right, 
     cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower,                \
                          transpose trans, diag unit_diag, int64_t m, int64_t n, TYPE alpha,        \
                          const TYPE *a, int64_t lda, TYPE *b, int64_t ldb,                         \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {            \
+                         const std::vector<cl::sycl::event> &dependencies) {                       \
         return trsm(CUBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, \
                     a, lda, b, ldb, dependencies);                                                 \
     }
@@ -841,30 +875,35 @@ GEMM_LAUNCHER(std::complex<double>, cublasZgemm)
 
 #undef GEMM_LAUNCHER
 
-template <typename Func, typename T_A, typename T_B, typename T_C, typename DATATYPE_A,
-          typename DATATYPE_B, typename DATATYPE_C>
-inline void gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
-                 cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                 int64_t k, T_C alpha, cl::sycl::buffer<T_A, 1> &a, int64_t lda,
-                 cl::sycl::buffer<T_B, 1> &b, int64_t ldb, T_C beta, cl::sycl::buffer<T_C, 1> &c,
-                 int64_t ldc) {
+template <typename T_A, typename T_B, typename T_C, typename DATATYPE_A, typename DATATYPE_B,
+          typename DATATYPE_C>
+inline void gemm_ex(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C, cl::sycl::queue &queue,
+                    transpose transa, transpose transb, int64_t m, int64_t n, int64_t k, T_C alpha,
+                    cl::sycl::buffer<T_A, 1> &a, int64_t lda, cl::sycl::buffer<T_B, 1> &b,
+                    int64_t ldb, T_C beta, cl::sycl::buffer<T_C, 1> &c, int64_t ldc) {
     throw unimplemented("blas", "gemm", "for row_major layout");
 }
 
-#define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, CUBLAS_ROUTINE, CUDADATATYPE_A, CUDADATATYPE_B, \
-                         CUDADATATYPE_C)                                                         \
+#define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C) \
     void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,  \
               int64_t k, TYPE_C alpha, cl::sycl::buffer<TYPE_A, 1> &a, int64_t lda,              \
               cl::sycl::buffer<TYPE_B, 1> &b, int64_t ldb, TYPE_C beta,                          \
               cl::sycl::buffer<TYPE_C, 1> &c, int64_t ldc) {                                     \
-        gemm(CUBLAS_ROUTINE, CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa,      \
-             transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);                              \
+        gemm_ex(CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa, transb, m, n, k,  \
+                alpha, a, lda, b, ldb, beta, c, ldc);                                            \
     }
 
-GEMM_EX_LAUNCHER(half, half, float, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
-GEMM_EX_LAUNCHER(half, half, half, cublasGemmEx, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
+GEMM_EX_LAUNCHER(half, half, float, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
+GEMM_EX_LAUNCHER(half, half, half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
 
 #undef GEMM_EX_LAUNCHER
+
+void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+          int64_t k, float alpha, cl::sycl::buffer<bfloat16, 1> &a, int64_t lda,
+          cl::sycl::buffer<bfloat16, 1> &b, int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c,
+          int64_t ldc) {
+    throw unimplemented("blas", "gemm", "for row_major layout");
+}
 
 template <typename Func, typename T>
 inline void symm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
@@ -1046,7 +1085,7 @@ template <typename Func, typename T>
 inline cl::sycl::event gemm(Func func, cl::sycl::queue &queue, transpose transa, transpose transb,
                             int64_t m, int64_t n, int64_t k, T alpha, const T *a, int64_t lda,
                             const T *b, int64_t ldb, T beta, T *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "gemm", "for row_major layout");
 }
 
@@ -1054,7 +1093,7 @@ inline cl::sycl::event gemm(Func func, cl::sycl::queue &queue, transpose transa,
     cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,  \
                          int64_t n, int64_t k, TYPE alpha, const TYPE *a, int64_t lda,           \
                          const TYPE *b, int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,            \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {                     \
         return gemm(CUBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, \
                     c, ldc, dependencies);                                                       \
     }
@@ -1066,10 +1105,35 @@ GEMM_LAUNCHER_USM(std::complex<double>, cublasZgemm)
 
 #undef GEMM_LAUNCHER_USM
 
-cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                     std::int64_t n, std::int64_t k, half alpha, const half *a, std::int64_t lda,
-                     const half *b, std::int64_t ldb, half beta, half *c, std::int64_t ldc,
-                     const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+template <typename T_A, typename T_B, typename T_C, typename DATATYPE_A, typename DATATYPE_B,
+          typename DATATYPE_C>
+inline cl::sycl::event gemm_ex_usm(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
+                                   cl::sycl::queue &queue, transpose transa, transpose transb,
+                                   int64_t m, int64_t n, int64_t k, T_C alpha, const T_A *a,
+                                   int64_t lda, const T_B *b, int64_t ldb, T_C beta, T_C *c,
+                                   int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
+    throw unimplemented("blas", "gemm", "for row_major layout");
+}
+
+#define GEMM_EX_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, CUDADATATYPE_A, CUDADATATYPE_B,              \
+                             CUDADATATYPE_C)                                                      \
+    cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,   \
+                         int64_t n, int64_t k, TYPE_C alpha, const TYPE_A *a, int64_t lda,        \
+                         const TYPE_B *b, int64_t ldb, TYPE_C beta, TYPE_C *c, int64_t ldc,       \
+                         const std::vector<cl::sycl::event> &dependencies) {                      \
+        return gemm_ex_usm(CUDADATATYPE_A, CUDADATATYPE_B, CUDADATATYPE_C, queue, transa, transb, \
+                           m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);           \
+    }
+
+GEMM_EX_LAUNCHER_USM(half, half, float, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
+GEMM_EX_LAUNCHER_USM(half, half, half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
+
+#undef GEMM_EX_LAUNCHER_USM
+
+cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                     int64_t n, int64_t k, float alpha, const bfloat16 *a, int64_t lda,
+                     const bfloat16 *b, int64_t ldb, float beta, float *c, int64_t ldc,
+                     const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "gemm", "for row_major layout");
 }
 
@@ -1077,7 +1141,7 @@ template <typename Func, typename T>
 inline cl::sycl::event symm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             int64_t m, int64_t n, T alpha, const T *a, int64_t lda, const T *b,
                             int64_t ldb, T beta, T *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "symm", "for row_major layout");
 }
 
@@ -1085,7 +1149,7 @@ inline cl::sycl::event symm(Func func, cl::sycl::queue &queue, side left_right, 
     cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,   \
                          int64_t n, TYPE alpha, const TYPE *a, int64_t lda, const TYPE *b,       \
                          int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,                           \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {                     \
         return symm(CUBLAS_ROUTINE, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, \
                     beta, c, ldc, dependencies);                                                 \
     }
@@ -1101,7 +1165,7 @@ template <typename Func, typename T>
 inline cl::sycl::event hemm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             int64_t m, int64_t n, T alpha, const T *a, int64_t lda, const T *b,
                             int64_t ldb, T beta, T *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "hemm", "for row_major layout");
 }
 
@@ -1109,7 +1173,7 @@ inline cl::sycl::event hemm(Func func, cl::sycl::queue &queue, side left_right, 
     cl::sycl::event hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,   \
                          int64_t n, TYPE alpha, const TYPE *a, int64_t lda, const TYPE *b,       \
                          int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,                           \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {          \
+                         const std::vector<cl::sycl::event> &dependencies) {                     \
         return hemm(CUBLAS_ROUTINE, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, \
                     beta, c, ldc, dependencies);                                                 \
     }
@@ -1121,16 +1185,14 @@ HEMM_LAUNCHER_USM(std::complex<double>, cublasZhemm)
 template <typename Func, typename T>
 inline cl::sycl::event syrk(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                             int64_t n, int64_t k, T alpha, const T *a, int64_t lda, T beta, T *c,
-                            int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "syrk", "for row_major layout");
 }
 
 #define SYRK_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                   \
     cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
                          int64_t k, TYPE alpha, const TYPE *a, int64_t lda, TYPE beta, TYPE *c,   \
-                         int64_t ldc,                                                             \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                         int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {         \
         return syrk(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, \
                     dependencies);                                                                \
     }
@@ -1146,7 +1208,7 @@ template <typename Func, typename DataType, typename ScalarType>
 inline cl::sycl::event herk(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                             int64_t n, int64_t k, const ScalarType alpha, const DataType *a,
                             int64_t lda, const ScalarType beta, DataType *c, int64_t ldc,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "herk", "for row_major layout");
 }
 
@@ -1154,7 +1216,7 @@ inline cl::sycl::event herk(Func func, cl::sycl::queue &queue, uplo upper_lower,
     cl::sycl::event herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
                          int64_t k, const SCALAR_TYPE alpha, const DATA_TYPE *a, int64_t lda,     \
                          const SCALAR_TYPE beta, DATA_TYPE *c, int64_t ldc,                       \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                         const std::vector<cl::sycl::event> &dependencies) {                      \
         return herk(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, \
                     dependencies);                                                                \
     }
@@ -1168,7 +1230,7 @@ template <typename Func, typename T>
 inline cl::sycl::event syr2k(Func func, cl::sycl::queue &queue, uplo upper_lower, transpose trans,
                              int64_t n, int64_t k, T alpha, const T *a, int64_t lda, const T *b,
                              int64_t ldb, T beta, T *c, int64_t ldc,
-                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                             const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "syr2k", "for row_major layout");
 }
 
@@ -1176,7 +1238,7 @@ inline cl::sycl::event syr2k(Func func, cl::sycl::queue &queue, uplo upper_lower
     cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
                           int64_t k, TYPE alpha, const TYPE *a, int64_t lda, const TYPE *b,        \
                           int64_t ldb, TYPE beta, TYPE *c, int64_t ldc,                            \
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                          const std::vector<cl::sycl::event> &dependencies) {                      \
         return syr2k(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, \
                      c, ldc, dependencies);                                                        \
     }
@@ -1192,7 +1254,7 @@ inline cl::sycl::event her2k(Func func, cl::sycl::queue &queue, uplo upper_lower
                              int64_t n, int64_t k, const DataType alpha, const DataType *a,
                              int64_t lda, const DataType *b, int64_t ldb, const ScalarType beta,
                              DataType *c, int64_t ldc,
-                             const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                             const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "her2k", "for row_major layout");
 }
 
@@ -1200,8 +1262,7 @@ inline cl::sycl::event her2k(Func func, cl::sycl::queue &queue, uplo upper_lower
     cl::sycl::event her2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,    \
                           int64_t k, const DATA_TYPE alpha, const DATA_TYPE *a, int64_t lda,       \
                           const DATA_TYPE *b, int64_t ldb, const SCALAR_TYPE beta, DATA_TYPE *c,   \
-                          int64_t ldc,                                                             \
-                          const cl::sycl::vector_class<cl::sycl::event> &dependencies) {           \
+                          int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {         \
         return her2k(CUBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, \
                      c, ldc, dependencies);                                                        \
     }
@@ -1219,7 +1280,7 @@ template <typename Func, typename T>
 inline cl::sycl::event trmm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha,
                             const T *a, int64_t lda, T *b, int64_t ldb,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "trmm", "for row_major layout");
 }
 
@@ -1227,7 +1288,7 @@ inline cl::sycl::event trmm(Func func, cl::sycl::queue &queue, side left_right, 
     cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower,                \
                          transpose trans, diag unit_diag, int64_t m, int64_t n, TYPE alpha,        \
                          const TYPE *a, int64_t lda, TYPE *b, int64_t ldb,                         \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {            \
+                         const std::vector<cl::sycl::event> &dependencies) {                       \
         return trmm(CUBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, \
                     a, lda, b, ldb, dependencies);                                                 \
     }
@@ -1242,7 +1303,7 @@ template <typename Func, typename T>
 inline cl::sycl::event trsm(Func func, cl::sycl::queue &queue, side left_right, uplo upper_lower,
                             transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha,
                             const T *a, int64_t lda, T *b, int64_t ldb,
-                            const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                            const std::vector<cl::sycl::event> &dependencies) {
     throw unimplemented("blas", "trsm", "for row_major layout");
 }
 
@@ -1250,7 +1311,7 @@ inline cl::sycl::event trsm(Func func, cl::sycl::queue &queue, side left_right, 
     cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower,                \
                          transpose trans, diag unit_diag, int64_t m, int64_t n, TYPE alpha,        \
                          const TYPE *a, int64_t lda, TYPE *b, int64_t ldb,                         \
-                         const cl::sycl::vector_class<cl::sycl::event> &dependencies) {            \
+                         const std::vector<cl::sycl::event> &dependencies) {                       \
         return trsm(CUBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, \
                     a, lda, b, ldb, dependencies);                                                 \
     }

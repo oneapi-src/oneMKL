@@ -48,7 +48,6 @@ option(BUILD_SHARED_LIBS "Build dynamic libraries" ON)
 
 # Override default CXX compile/link lines for Windows after project
 if(WIN32)
-  set(CMAKE_CXX_STANDARD 14)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function -w")
   foreach (flag_var
            CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
@@ -60,6 +59,9 @@ if(WIN32)
   set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> -fsycl /nologo <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
 endif()
 
+# Temporary disable sycl 2020 deprecations warnings
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSYCL2020_DISABLE_DEPRECATION_WARNINGS")
+
 ## Backends
 option(ENABLE_MKLCPU_BACKEND "" ON)
 option(ENABLE_MKLGPU_BACKEND "" ON)
@@ -69,6 +71,7 @@ endif()
 option(ENABLE_CUBLAS_BACKEND "" OFF)
 option(ENABLE_CURAND_BACKEND "" OFF)
 option(ENABLE_NETLIB_BACKEND "" OFF)
+set(ONEMKL_SYCL_IMPLEMENTATION "dpc++" CACHE STRING "Name of the SYCL compiler")
 
 ## Domains
 set(DOMAINS_LIST "")
@@ -77,6 +80,10 @@ if(ENABLE_MKLCPU_BACKEND
         OR ENABLE_CUBLAS_BACKEND
         OR ENABLE_NETLIB_BACKEND)
   list(APPEND DOMAINS_LIST "blas")
+endif()
+if(ENABLE_MKLCPU_BACKEND
+        OR ENABLE_MKLGPU_BACKEND)
+  list(APPEND DOMAINS_LIST "lapack")
 endif()
 if(ENABLE_MKLCPU_BACKEND
         OR ENABLE_MKLGPU_BACKEND
@@ -125,7 +132,26 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 if(WIN32)
   add_library(ONEMKL::SYCL::SYCL INTERFACE IMPORTED)
 else()
-  find_package(Compiler REQUIRED)
+  # Find necessary packages
+  if(ONEMKL_SYCL_IMPLEMENTATION)
+    string( TOLOWER "${ONEMKL_SYCL_IMPLEMENTATION}" ONEMKL_SYCL_IMPLEMENTATION)
+    if (ONEMKL_SYCL_IMPLEMENTATION STREQUAL "hipsycl")
+      message(STATUS "Looking for hipSYCL")
+      find_package(hipSYCL CONFIG REQUIRED)
+      set(USE_ADD_SYCL_TO_TARGET_INTEGRATION true)
+      add_library(ONEMKL::SYCL::SYCL INTERFACE IMPORTED)
+    elseif(ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++")
+      message(STATUS "Looking for dpc++")
+      set(USE_ADD_SYCL_TO_TARGET_INTEGRATION false)
+      find_package(Compiler REQUIRED)
+    else()
+      message(FATAL_ERROR "SYCL implementation ${ONEMKL_SYCL_IMPLEMENTATION} is not known")
+    endif()
+  else()
+    message(STATUS "Looking for dpc++")
+    set(USE_ADD_SYCL_TO_TARGET_INTEGRATION false)
+    find_package(Compiler REQUIRED)
+  endif()
 endif()
 
 # Add source directory and output to bin/

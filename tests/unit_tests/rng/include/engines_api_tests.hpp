@@ -65,9 +65,8 @@ public:
             return;
         }
         catch (cl::sycl::exception const& e) {
-            std::cout << "SYCL exception during generation" << std::endl
-                      << e.what() << std::endl
-                      << "OpenCL status: " << e.get_cl_code() << std::endl;
+            std::cout << "SYCL exception during generation" << std::endl << e.what() << std::endl;
+            print_error_code(e);
             status = test_failed;
             return;
         }
@@ -121,9 +120,8 @@ public:
             return;
         }
         catch (cl::sycl::exception const& e) {
-            std::cout << "SYCL exception during generation" << std::endl
-                      << e.what() << std::endl
-                      << "OpenCL status: " << e.get_cl_code() << std::endl;
+            std::cout << "SYCL exception during generation" << std::endl << e.what() << std::endl;
+            print_error_code(e);
             status = test_failed;
             return;
         }

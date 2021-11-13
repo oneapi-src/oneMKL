@@ -20,6 +20,8 @@
 #ifndef _ONEMKL_TYPES_HPP_
 #define _ONEMKL_TYPES_HPP_
 
+#include "oneapi/mkl/bfloat16.hpp"
+
 namespace oneapi {
 namespace mkl {
 
@@ -36,6 +38,11 @@ enum class offset : char { row = 0, column = 1, fix = 2, R = 0, C = 1, F = 2 };
 
 enum class layout : char { column_major = 0, row_major = 1, C = 0, R = 1 };
 
+enum class index_base : char {
+    zero = 0,
+    one = 1,
+};
+
 // LAPACK flag types.
 enum class job : char {
     novec = 0,
@@ -51,12 +58,50 @@ enum class job : char {
     S = 4,
     O = 5
 };
-
+enum class jobsvd : char {
+    novec = 0,
+    vectors = 1,
+    vectorsina = 2,
+    somevec = 3,
+    N = 0,
+    A = 1,
+    O = 2,
+    S = 3
+};
 enum class generate : char { q = 0, p = 1, none = 2, both = 3, Q = 0, P = 1, N = 2, V = 3 };
-
-enum class index_base : char {
-    zero = 0,
-    one = 1,
+enum class compz : char {
+    novectors = 0,
+    vectors = 1,
+    initvectors = 2,
+    N = 0,
+    V = 1,
+    I = 2,
+};
+enum class direct : char {
+    forward = 0,
+    backward = 1,
+    F = 0,
+    B = 1,
+};
+enum class storev : char {
+    columnwise = 0,
+    rowwise = 1,
+    C = 0,
+    R = 1,
+};
+enum class rangev : char {
+    all = 0,
+    values = 1,
+    indices = 2,
+    A = 0,
+    V = 1,
+    I = 2,
+};
+enum class order : char {
+    block = 0,
+    entire = 1,
+    B = 0,
+    E = 1,
 };
 
 } //namespace mkl

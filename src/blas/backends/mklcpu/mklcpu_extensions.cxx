@@ -19,37 +19,151 @@
 
 // Buffer APIs
 
+template <typename Ta, typename Tb>
+void gemm_bias_fallback(cl::sycl::queue &queue, MKL_LAYOUT layout, transpose transa,
+                        transpose transb, offset offsetc, int64_t m, int64_t n, int64_t k,
+                        float alpha, cl::sycl::buffer<Ta, 1> &a, int64_t lda, Ta ao,
+                        cl::sycl::buffer<Tb, 1> &b, int64_t ldb, Tb bo, float beta,
+                        cl::sycl::buffer<int32_t, 1> &c, int64_t ldc,
+                        cl::sycl::buffer<int32_t, 1> &co) {
+    queue.submit([&](cl::sycl::handler &cgh) {
+        auto transa_ = cblas_convert(transa);
+        auto transb_ = cblas_convert(transb);
+        auto offsetc_ = cblas_convert(offsetc);
+        int64_t sizea, sizeb, sizec;
+#ifdef COLUMN_MAJOR
+        sizea = (transa == transpose::nontrans) ? lda * k : lda * m;
+        sizeb = (transb == transpose::nontrans) ? ldb * n : ldb * k;
+        sizec = ldc * n;
+#endif
+#ifdef ROW_MAJOR
+        sizea = (transa == transpose::nontrans) ? lda * m : lda * k;
+        sizeb = (transb == transpose::nontrans) ? ldb * k : ldb * n;
+        sizec = ldc * m;
+#endif
+        auto accessor_a = a.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_b = b.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto accessor_c = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_co = co.template get_access<cl::sycl::access::mode::read>(cgh);
+        host_task<class mkl_kernel_gemm_bias_fallback>(cgh, [=]() {
+            auto a_mat = (Ta *)static_cast<void *>(accessor_a.get_pointer());
+            auto b_mat = (Tb *)static_cast<void *>(accessor_b.get_pointer());
+            auto c_mat = (int32_t *)static_cast<void *>(accessor_c.get_pointer());
+            auto co_vec = (int32_t *)static_cast<void *>(accessor_co.get_pointer());
+            auto ad = (double *)malloc(sizeof(double) * sizea);
+            auto bd = (double *)malloc(sizeof(double) * sizeb);
+            auto cd = (double *)malloc(sizeof(double) * sizec);
+            double alphad = alpha, betad = beta;
+            double aod = ao, bod = bo;
+            copy_mat(a_mat, layout, transa, m, k, lda, aod, ad);
+            copy_mat(b_mat, layout, transb, k, n, ldb, bod, bd);
+            copy_mat(c_mat, layout, MKL_NOTRANS, m, n, ldc, 0.0, cd);
+            ::cblas_dgemm((CBLAS_LAYOUT)layout, transa_, transb_, m, n, k, alphad, ad, lda, bd, ldb,
+                          betad, cd, ldc);
+            copy_mat(cd, layout, m, n, ldc, offsetc_, co_vec, c_mat);
+            free(ad);
+            free(bd);
+            free(cd);
+        });
+    });
+}
+
+void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
+               int64_t m, int64_t n, int64_t k, float alpha, cl::sycl::buffer<int8_t, 1> &a,
+               int64_t lda, int8_t ao, cl::sycl::buffer<int8_t, 1> &b, int64_t ldb, int8_t bo,
+               float beta, cl::sycl::buffer<int32_t, 1> &c, int64_t ldc,
+               cl::sycl::buffer<int32_t, 1> &co) {
+    gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb,
+                       bo, beta, c, ldc, co);
+}
+
 void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
                int64_t m, int64_t n, int64_t k, float alpha, cl::sycl::buffer<int8_t, 1> &a,
                int64_t lda, int8_t ao, cl::sycl::buffer<uint8_t, 1> &b, int64_t ldb, uint8_t bo,
                float beta, cl::sycl::buffer<int32_t, 1> &c, int64_t ldc,
                cl::sycl::buffer<int32_t, 1> &co) {
 #ifdef COLUMN_MAJOR
-    queue.submit([&](cl::sycl::handler &cgh) {
-        CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
-        CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
-        CBLAS_OFFSET offsetc_ = cblas_convert(offsetc);
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto accessor_co = co.get_access<cl::sycl::access::mode::read>(cgh);
-        host_task<class mkl_kernel_gemm_s8u8s32>(cgh, [=]() {
-            MKL_INT8 *a_mat =
-                static_cast<MKL_INT8 *>(static_cast<void *>(accessor_a.get_pointer()));
-            MKL_UINT8 *b_mat =
-                static_cast<MKL_UINT8 *>(static_cast<void *>(accessor_b.get_pointer()));
-            MKL_INT8 bo_internal = -bo;
-            MKL_INT8 ao_internal = -ao;
-            ::cblas_gemm_s8u8s32(CBLASMAJOR, transa_, transb_, offsetc_, m, n, k, alpha, a_mat, lda,
-                                 ao_internal, b_mat, ldb, bo_internal, beta,
-                                 (MKL_INT32 *)accessor_c.get_pointer(), ldc,
-                                 (const MKL_INT32 *)accessor_co.get_pointer());
+    if (is_int8(-int(ao)) && is_int8(-int(bo))) {
+        queue.submit([&](cl::sycl::handler &cgh) {
+            CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+            CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
+            CBLAS_OFFSET offsetc_ = cblas_convert(offsetc);
+            auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
+            auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
+            auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+            auto accessor_co = co.get_access<cl::sycl::access::mode::read>(cgh);
+            host_task<class mkl_kernel_gemm_s8u8s32>(cgh, [=]() {
+                MKL_INT8 *a_mat =
+                    static_cast<MKL_INT8 *>(static_cast<void *>(accessor_a.get_pointer()));
+                MKL_UINT8 *b_mat =
+                    static_cast<MKL_UINT8 *>(static_cast<void *>(accessor_b.get_pointer()));
+                MKL_INT8 bo_internal = -bo;
+                MKL_INT8 ao_internal = -ao;
+                ::cblas_gemm_s8u8s32(CBLASMAJOR, transa_, transb_, offsetc_, m, n, k, alpha, a_mat,
+                                     lda, ao_internal, b_mat, ldb, bo_internal, beta,
+                                     (MKL_INT32 *)accessor_c.get_pointer(), ldc,
+                                     (const MKL_INT32 *)accessor_co.get_pointer());
+            });
         });
-    });
+    }
+    else
+        gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b,
+                           ldb, bo, beta, c, ldc, co);
 #endif
 #ifdef ROW_MAJOR
-    throw unimplemented("blas", "gemm_bias", "for row_major layout");
+    gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb,
+                       bo, beta, c, ldc, co);
+
 #endif
+}
+
+void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
+               int64_t m, int64_t n, int64_t k, float alpha, cl::sycl::buffer<uint8_t, 1> &a,
+               int64_t lda, uint8_t ao, cl::sycl::buffer<int8_t, 1> &b, int64_t ldb, int8_t bo,
+               float beta, cl::sycl::buffer<int32_t, 1> &c, int64_t ldc,
+               cl::sycl::buffer<int32_t, 1> &co) {
+#ifdef COLUMN_MAJOR
+    gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb,
+                       bo, beta, c, ldc, co);
+
+#endif
+#ifdef ROW_MAJOR
+    if (is_int8(-int(ao)) && is_int8(-int(bo))) {
+        queue.submit([&](cl::sycl::handler &cgh) {
+            CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+            CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
+            CBLAS_OFFSET offsetc_ = cblas_convert(column_to_row(offsetc));
+            auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
+            auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
+            auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+            auto accessor_co = co.get_access<cl::sycl::access::mode::read>(cgh);
+            host_task<class mkl_kernel_gemm_u8s8s32>(cgh, [=]() {
+                MKL_UINT8 *a_mat =
+                    static_cast<MKL_UINT8 *>(static_cast<void *>(accessor_a.get_pointer()));
+                MKL_INT8 *b_mat =
+                    static_cast<MKL_INT8 *>(static_cast<void *>(accessor_b.get_pointer()));
+                MKL_INT8 bo_internal = -bo;
+                MKL_INT8 ao_internal = -ao;
+                ::cblas_gemm_s8u8s32(CblasColMajor, transb_, transa_, offsetc_, n, m, k, alpha,
+                                     b_mat, ldb, bo_internal, a_mat, lda, ao_internal, beta,
+                                     (MKL_INT32 *)accessor_c.get_pointer(), ldc,
+                                     (const MKL_INT32 *)accessor_co.get_pointer());
+            });
+        });
+    }
+    else
+        gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b,
+                           ldb, bo, beta, c, ldc, co);
+#endif
+}
+
+void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
+               int64_t m, int64_t n, int64_t k, float alpha, cl::sycl::buffer<uint8_t, 1> &a,
+               int64_t lda, uint8_t ao, cl::sycl::buffer<uint8_t, 1> &b, int64_t ldb, uint8_t bo,
+               float beta, cl::sycl::buffer<int32_t, 1> &c, int64_t ldc,
+               cl::sycl::buffer<int32_t, 1> &co) {
+    gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb,
+                       bo, beta, c, ldc, co);
 }
 
 void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, int64_t n,
@@ -138,10 +252,146 @@ void gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose
 
 // USM APIs
 
+template <typename Ta, typename Tb>
+cl::sycl::event gemm_bias_fallback(cl::sycl::queue &queue, MKL_LAYOUT layout, transpose transa,
+                                   transpose transb, offset offsetc, int64_t m, int64_t n,
+                                   int64_t k, float alpha, const Ta *a, int64_t lda, Ta ao,
+                                   const Tb *b, int64_t ldb, Tb bo, float beta, int32_t *c,
+                                   int64_t ldc, const int32_t *co,
+                                   const std::vector<cl::sycl::event> &dependencies) {
+    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        auto transa_ = cblas_convert(transa);
+        auto transb_ = cblas_convert(transb);
+        auto offsetc_ = cblas_convert(offsetc);
+        int64_t sizea, sizeb, sizec;
+#ifdef COLUMN_MAJOR
+        sizea = (transa == transpose::nontrans) ? lda * k : lda * m;
+        sizeb = (transb == transpose::nontrans) ? ldb * n : ldb * k;
+        sizec = ldc * n;
+#endif
+#ifdef ROW_MAJOR
+        sizea = (transa == transpose::nontrans) ? lda * m : lda * k;
+        sizeb = (transb == transpose::nontrans) ? ldb * k : ldb * n;
+        sizec = ldc * m;
+#endif
+        host_task<class mkl_kernel_gemm_bias_fallback_usm>(cgh, [=]() {
+            double *ad = (double *)malloc(sizeof(double) * sizea);
+            double *bd = (double *)malloc(sizeof(double) * sizeb);
+            double *cd = (double *)malloc(sizeof(double) * sizec);
+            double alphad = alpha, betad = beta;
+            double aod = ao, bod = bo;
+            copy_mat(a, layout, transa, m, k, lda, aod, ad);
+            copy_mat(b, layout, transb, k, n, ldb, bod, bd);
+            copy_mat(c, layout, MKL_NOTRANS, m, n, ldc, 0.0, cd);
+            ::cblas_dgemm((CBLAS_LAYOUT)layout, transa_, transb_, m, n, k, alphad, ad, lda, bd, ldb,
+                          betad, cd, ldc);
+            copy_mat(cd, layout, m, n, ldc, offsetc_, co, c);
+            free(ad);
+            free(bd);
+            free(cd);
+        });
+    });
+    return done;
+}
+
+cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb,
+                          offset offsetc, int64_t m, int64_t n, int64_t k, float alpha,
+                          const int8_t *a, int64_t lda, int8_t ao, const int8_t *b, int64_t ldb,
+                          int8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
+                          const std::vector<cl::sycl::event> &dependencies) {
+    return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao,
+                              b, ldb, bo, beta, c, ldc, co, dependencies);
+}
+
+cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb,
+                          offset offsetc, int64_t m, int64_t n, int64_t k, float alpha,
+                          const int8_t *a, int64_t lda, int8_t ao, const uint8_t *b, int64_t ldb,
+                          uint8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
+                          const std::vector<cl::sycl::event> &dependencies) {
+#ifdef COLUMN_MAJOR
+    if (is_int8(-int(ao)) && is_int8(-int(bo))) {
+        auto done = queue.submit([&](cl::sycl::handler &cgh) {
+            int64_t num_events = dependencies.size();
+            for (int64_t i = 0; i < num_events; i++) {
+                cgh.depends_on(dependencies[i]);
+            }
+            CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+            CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
+            CBLAS_OFFSET offsetc_ = cblas_convert(offsetc);
+            host_task<class mkl_kernel_gemm_s8u8s32_usm>(cgh, [=]() {
+                MKL_INT8 bo_internal = -bo;
+                MKL_INT8 ao_internal = -ao;
+                ::cblas_gemm_s8u8s32(CBLASMAJOR, transa_, transb_, offsetc_, m, n, k, alpha,
+                                     (const MKL_INT8 *)a, lda, ao_internal, (const MKL_UINT8 *)b,
+                                     ldb, bo_internal, beta, (MKL_INT32 *)c, ldc,
+                                     (const MKL_INT32 *)co);
+            });
+        });
+        return done;
+    }
+    else
+        return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda,
+                                  ao, b, ldb, bo, beta, c, ldc, co, dependencies);
+#endif
+#ifdef ROW_MAJOR
+    return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao,
+                              b, ldb, bo, beta, c, ldc, co, dependencies);
+#endif
+}
+
+cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb,
+                          offset offsetc, int64_t m, int64_t n, int64_t k, float alpha,
+                          const uint8_t *a, int64_t lda, uint8_t ao, const int8_t *b, int64_t ldb,
+                          int8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
+                          const std::vector<cl::sycl::event> &dependencies) {
+#ifdef COLUMN_MAJOR
+    return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao,
+                              b, ldb, bo, beta, c, ldc, co, dependencies);
+#endif
+#ifdef ROW_MAJOR
+    if (is_int8(-int(ao)) && is_int8(-int(bo))) {
+        auto done = queue.submit([&](cl::sycl::handler &cgh) {
+            int64_t num_events = dependencies.size();
+            for (int64_t i = 0; i < num_events; i++) {
+                cgh.depends_on(dependencies[i]);
+            }
+            CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
+            CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
+            CBLAS_OFFSET offsetc_ = cblas_convert(column_to_row(offsetc));
+            host_task<class mkl_kernel_gemm_u8s8s32_usm>(cgh, [=]() {
+                MKL_INT8 bo_internal = -bo;
+                MKL_INT8 ao_internal = -ao;
+                ::cblas_gemm_s8u8s32(CblasColMajor, transb_, transa_, offsetc_, n, m, k, alpha,
+                                     (const MKL_INT8 *)b, ldb, bo_internal, (const MKL_UINT8 *)a,
+                                     lda, ao_internal, beta, (MKL_INT32 *)c, ldc,
+                                     (const MKL_INT32 *)co);
+            });
+        });
+        return done;
+    }
+    else
+        return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda,
+                                  ao, b, ldb, bo, beta, c, ldc, co, dependencies);
+#endif
+}
+
+cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb,
+                          offset offsetc, int64_t m, int64_t n, int64_t k, float alpha,
+                          const uint8_t *a, int64_t lda, uint8_t ao, const uint8_t *b, int64_t ldb,
+                          uint8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
+                          const std::vector<cl::sycl::event> &dependencies) {
+    return gemm_bias_fallback(queue, MKLMAJOR, transa, transb, offsetc, m, n, k, alpha, a, lda, ao,
+                              b, ldb, bo, beta, c, ldc, co, dependencies);
+}
+
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                       int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
                       const float *b, int64_t ldb, float beta, float *c, int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -161,7 +411,7 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
 cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                       int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
                       const double *b, int64_t ldb, double beta, double *c, int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -182,7 +432,7 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
                       int64_t n, int64_t k, std::complex<float> alpha, const std::complex<float> *a,
                       int64_t lda, const std::complex<float> *b, int64_t ldb,
                       std::complex<float> beta, std::complex<float> *c, int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -207,7 +457,7 @@ cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa
                       int64_t n, int64_t k, std::complex<double> alpha,
                       const std::complex<double> *a, int64_t lda, const std::complex<double> *b,
                       int64_t ldb, std::complex<double> beta, std::complex<double> *c, int64_t ldc,
-                      const cl::sycl::vector_class<cl::sycl::event> &dependencies) {
+                      const std::vector<cl::sycl::event> &dependencies) {
     auto done = queue.submit([&](cl::sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {

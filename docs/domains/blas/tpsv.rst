@@ -133,7 +133,7 @@ tpsv (USM Version)
                         const T *a,
                         T *x,
                         std::int64_t incx,
-                        const sycl::vector_class<sycl::event> &dependencies = {})
+                        const std::vector<sycl::event> &dependencies = {})
    }
 .. code-block:: cpp
 
@@ -147,7 +147,7 @@ tpsv (USM Version)
                         const T *a,
                         T *x,
                         std::int64_t incx,
-                        const sycl::vector_class<sycl::event> &dependencies = {})
+                        const std::vector<sycl::event> &dependencies = {})
    }
 
 .. container:: section

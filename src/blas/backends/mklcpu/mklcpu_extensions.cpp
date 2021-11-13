@@ -31,18 +31,22 @@ namespace column_major {
 
 #define CBLASMAJOR CblasColMajor
 #define COLUMN_MAJOR
+#define MKLMAJOR MKL_COL_MAJOR
 #include "mklcpu_extensions.cxx"
 #undef CBLASMAJOR
 #undef COLUMN_MAJOR
+#undef MKLMAJOR
 
 } // namespace column_major
 namespace row_major {
 
 #define CBLASMAJOR CblasRowMajor
 #define ROW_MAJOR
+#define MKLMAJOR MKL_ROW_MAJOR
 #include "mklcpu_extensions.cxx"
 #undef CBLASMAJOR
-#undef ROW_MAJOR
+#define ROW_MAJOR
+#undef MKLMAJOR
 
 } // namespace row_major
 } // namespace mklcpu

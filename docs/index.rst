@@ -15,8 +15,8 @@ oneMKL Interfaces is an open-source implementation of oneMKL Data Parallel C++ (
 
 .. toctree::
    :maxdepth: 2
+   :includehidden:
 
    onemkl-datatypes.rst
-   domains/matrix-storage.rst
-   domains/blas/blas.rst
+   domains/dense_linear_algebra.rst
    create_new_backend.rst

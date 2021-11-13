@@ -81,6 +81,80 @@ static inline void axpy(cl::sycl::queue &queue, std::int64_t n, std::complex<dou
     axpy_postcondition(queue, n, alpha, x, incx, y, incy);
 }
 
+static inline void axpy_batch(cl::sycl::queue &queue, std::int64_t n, float alpha,
+                              cl::sycl::buffer<float, 1> &x, std::int64_t incx,
+                              std::int64_t stridex, cl::sycl::buffer<float, 1> &y,
+                              std::int64_t incy, std::int64_t stridey, std::int64_t batch_size) {
+    axpy_batch_precondition(queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size);
+    detail::axpy_batch(get_device_id(queue), queue, n, alpha, x, incx, stridex, y, incy, stridey,
+                       batch_size);
+    axpy_batch_postcondition(queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size);
+}
+
+static inline void axpy_batch(cl::sycl::queue &queue, std::int64_t n, double alpha,
+                              cl::sycl::buffer<double, 1> &x, std::int64_t incx,
+                              std::int64_t stridex, cl::sycl::buffer<double, 1> &y,
+                              std::int64_t incy, std::int64_t stridey, std::int64_t batch_size) {
+    axpy_batch_precondition(queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size);
+    detail::axpy_batch(get_device_id(queue), queue, n, alpha, x, incx, stridex, y, incy, stridey,
+                       batch_size);
+    axpy_batch_postcondition(queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size);
+}
+
+static inline void axpy_batch(cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
+                              cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
+                              std::int64_t stridex, cl::sycl::buffer<std::complex<float>, 1> &y,
+                              std::int64_t incy, std::int64_t stridey, std::int64_t batch_size) {
+    axpy_batch_precondition(queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size);
+    detail::axpy_batch(get_device_id(queue), queue, n, alpha, x, incx, stridex, y, incy, stridey,
+                       batch_size);
+    axpy_batch_postcondition(queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size);
+}
+
+static inline void axpy_batch(cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
+                              cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
+                              std::int64_t stridex, cl::sycl::buffer<std::complex<double>, 1> &y,
+                              std::int64_t incy, std::int64_t stridey, std::int64_t batch_size) {
+    axpy_batch_precondition(queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size);
+    detail::axpy_batch(get_device_id(queue), queue, n, alpha, x, incx, stridex, y, incy, stridey,
+                       batch_size);
+    axpy_batch_postcondition(queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size);
+}
+
+static inline void axpby(cl::sycl::queue &queue, std::int64_t n, float alpha,
+                         cl::sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
+                         cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
+    axpby_precondition(queue, n, alpha, x, incx, beta, y, incy);
+    detail::axpby(get_device_id(queue), queue, n, alpha, x, incx, beta, y, incy);
+    axpby_postcondition(queue, n, alpha, x, incx, beta, y, incy);
+}
+
+static inline void axpby(cl::sycl::queue &queue, std::int64_t n, double alpha,
+                         cl::sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
+                         cl::sycl::buffer<double, 1> &y, std::int64_t incy) {
+    axpby_precondition(queue, n, alpha, x, incx, beta, y, incy);
+    detail::axpby(get_device_id(queue), queue, n, alpha, x, incx, beta, y, incy);
+    axpby_postcondition(queue, n, alpha, x, incx, beta, y, incy);
+}
+
+static inline void axpby(cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
+                         cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
+                         std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &y,
+                         std::int64_t incy) {
+    axpby_precondition(queue, n, alpha, x, incx, beta, y, incy);
+    detail::axpby(get_device_id(queue), queue, n, alpha, x, incx, beta, y, incy);
+    axpby_postcondition(queue, n, alpha, x, incx, beta, y, incy);
+}
+
+static inline void axpby(cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
+                         cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
+                         std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &y,
+                         std::int64_t incy) {
+    axpby_precondition(queue, n, alpha, x, incx, beta, y, incy);
+    detail::axpby(get_device_id(queue), queue, n, alpha, x, incx, beta, y, incy);
+    axpby_postcondition(queue, n, alpha, x, incx, beta, y, incy);
+}
+
 static inline void copy(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
                         std::int64_t incx, cl::sycl::buffer<float, 1> &y, std::int64_t incy) {
     copy_precondition(queue, n, x, incx, y, incy);
@@ -109,6 +183,46 @@ static inline void copy(cl::sycl::queue &queue, std::int64_t n,
     copy_precondition(queue, n, x, incx, y, incy);
     detail::copy(get_device_id(queue), queue, n, x, incx, y, incy);
     copy_postcondition(queue, n, x, incx, y, incy);
+}
+
+static inline void copy_batch(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
+                              std::int64_t incx, std::int64_t stridex,
+                              cl::sycl::buffer<float, 1> &y, std::int64_t incy,
+                              std::int64_t stridey, std::int64_t batch_size) {
+    copy_batch_precondition(queue, n, x, incx, stridex, y, incy, stridey, batch_size);
+    detail::copy_batch(get_device_id(queue), queue, n, x, incx, stridex, y, incy, stridey,
+                       batch_size);
+    copy_batch_postcondition(queue, n, x, incx, stridex, y, incy, stridey, batch_size);
+}
+
+static inline void copy_batch(cl::sycl::queue &queue, std::int64_t n,
+                              cl::sycl::buffer<double, 1> &x, std::int64_t incx,
+                              std::int64_t stridex, cl::sycl::buffer<double, 1> &y,
+                              std::int64_t incy, std::int64_t stridey, std::int64_t batch_size) {
+    copy_batch_precondition(queue, n, x, incx, stridex, y, incy, stridey, batch_size);
+    detail::copy_batch(get_device_id(queue), queue, n, x, incx, stridex, y, incy, stridey,
+                       batch_size);
+    copy_batch_postcondition(queue, n, x, incx, stridex, y, incy, stridey, batch_size);
+}
+
+static inline void copy_batch(cl::sycl::queue &queue, std::int64_t n,
+                              cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
+                              std::int64_t stridex, cl::sycl::buffer<std::complex<float>, 1> &y,
+                              std::int64_t incy, std::int64_t stridey, std::int64_t batch_size) {
+    copy_batch_precondition(queue, n, x, incx, stridex, y, incy, stridey, batch_size);
+    detail::copy_batch(get_device_id(queue), queue, n, x, incx, stridex, y, incy, stridey,
+                       batch_size);
+    copy_batch_postcondition(queue, n, x, incx, stridex, y, incy, stridey, batch_size);
+}
+
+static inline void copy_batch(cl::sycl::queue &queue, std::int64_t n,
+                              cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
+                              std::int64_t stridex, cl::sycl::buffer<std::complex<double>, 1> &y,
+                              std::int64_t incy, std::int64_t stridey, std::int64_t batch_size) {
+    copy_batch_precondition(queue, n, x, incx, stridex, y, incy, stridey, batch_size);
+    detail::copy_batch(get_device_id(queue), queue, n, x, incx, stridex, y, incy, stridey,
+                       batch_size);
+    copy_batch_postcondition(queue, n, x, incx, stridex, y, incy, stridey, batch_size);
 }
 
 static inline void dot(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x,
@@ -282,6 +396,17 @@ static inline void gemm(cl::sycl::queue &queue, transpose transa, transpose tran
     gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
+static inline void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                        std::int64_t n, std::int64_t k, float alpha,
+                        cl::sycl::buffer<bfloat16, 1> &a, std::int64_t lda,
+                        cl::sycl::buffer<bfloat16, 1> &b, std::int64_t ldb, float beta,
+                        cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
+    gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+    detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                 c, ldc);
+    gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+}
+
 static inline void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
                               std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
                               cl::sycl::buffer<float, 1> &a, std::int64_t lda,
@@ -344,10 +469,66 @@ static inline void gemm_batch(cl::sycl::queue &queue, transpose transa, transpos
                              stride_b, beta, c, ldc, stride_c, batch_size);
 }
 
+static inline void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
+                              std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
+                              cl::sycl::buffer<half, 1> &a, std::int64_t lda, std::int64_t stride_a,
+                              cl::sycl::buffer<half, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+                              half beta, cl::sycl::buffer<half, 1> &c, std::int64_t ldc,
+                              std::int64_t stride_c, std::int64_t batch_size) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                            stride_b, beta, c, ldc, stride_c, batch_size);
+    detail::gemm_batch(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda,
+                       stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, batch_size);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                             stride_b, beta, c, ldc, stride_c, batch_size);
+}
+
 static inline void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb,
                              offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
                              float alpha, cl::sycl::buffer<int8_t, 1> &a, std::int64_t lda,
                              int8_t ao, cl::sycl::buffer<uint8_t, 1> &b, std::int64_t ldb,
+                             uint8_t bo, float beta, cl::sycl::buffer<int32_t, 1> &c,
+                             std::int64_t ldc, cl::sycl::buffer<int32_t, 1> &co) {
+    gemm_bias_precondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                           beta, c, ldc, co);
+    detail::gemm_bias(get_device_id(queue), queue, transa, transb, offsetc, m, n, k, alpha, a, lda,
+                      ao, b, ldb, bo, beta, c, ldc, co);
+    gemm_bias_postcondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                            beta, c, ldc, co);
+}
+
+static inline void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb,
+                             offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
+                             float alpha, cl::sycl::buffer<int8_t, 1> &a, std::int64_t lda,
+                             int8_t ao, cl::sycl::buffer<int8_t, 1> &b, std::int64_t ldb, int8_t bo,
+                             float beta, cl::sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
+                             cl::sycl::buffer<int32_t, 1> &co) {
+    gemm_bias_precondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                           beta, c, ldc, co);
+    detail::gemm_bias(get_device_id(queue), queue, transa, transb, offsetc, m, n, k, alpha, a, lda,
+                      ao, b, ldb, bo, beta, c, ldc, co);
+    gemm_bias_postcondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                            beta, c, ldc, co);
+}
+
+static inline void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb,
+                             offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
+                             float alpha, cl::sycl::buffer<uint8_t, 1> &a, std::int64_t lda,
+                             uint8_t ao, cl::sycl::buffer<int8_t, 1> &b, std::int64_t ldb,
+                             int8_t bo, float beta, cl::sycl::buffer<int32_t, 1> &c,
+                             std::int64_t ldc, cl::sycl::buffer<int32_t, 1> &co) {
+    gemm_bias_precondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                           beta, c, ldc, co);
+    detail::gemm_bias(get_device_id(queue), queue, transa, transb, offsetc, m, n, k, alpha, a, lda,
+                      ao, b, ldb, bo, beta, c, ldc, co);
+    gemm_bias_postcondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                            beta, c, ldc, co);
+}
+
+static inline void gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb,
+                             offset offsetc, std::int64_t m, std::int64_t n, std::int64_t k,
+                             float alpha, cl::sycl::buffer<uint8_t, 1> &a, std::int64_t lda,
+                             uint8_t ao, cl::sycl::buffer<uint8_t, 1> &b, std::int64_t ldb,
                              uint8_t bo, float beta, cl::sycl::buffer<int32_t, 1> &c,
                              std::int64_t ldc, cl::sycl::buffer<int32_t, 1> &co) {
     gemm_bias_precondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
@@ -448,6 +629,120 @@ static inline void gemv(cl::sycl::queue &queue, transpose trans, std::int64_t m,
     gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
     detail::gemv(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
     gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
+}
+
+static inline void gemv_batch(cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                              std::int64_t n, float alpha, cl::sycl::buffer<float, 1> &a,
+                              std::int64_t lda, std::int64_t stridea, cl::sycl::buffer<float, 1> &x,
+                              std::int64_t incx, std::int64_t stridex, float beta,
+                              cl::sycl::buffer<float, 1> &y, std::int64_t incy,
+                              std::int64_t stridey, std::int64_t batch_size) {
+    gemv_batch_precondition(queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y,
+                            incy, stridey, batch_size);
+    detail::gemv_batch(get_device_id(queue), queue, trans, m, n, alpha, a, lda, stridea, x, incx,
+                       stridex, beta, y, incy, stridey, batch_size);
+    gemv_batch_postcondition(queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y,
+                             incy, stridey, batch_size);
+}
+
+static inline void gemv_batch(cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                              std::int64_t n, double alpha, cl::sycl::buffer<double, 1> &a,
+                              std::int64_t lda, std::int64_t stridea,
+                              cl::sycl::buffer<double, 1> &x, std::int64_t incx,
+                              std::int64_t stridex, double beta, cl::sycl::buffer<double, 1> &y,
+                              std::int64_t incy, std::int64_t stridey, std::int64_t batch_size) {
+    gemv_batch_precondition(queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y,
+                            incy, stridey, batch_size);
+    detail::gemv_batch(get_device_id(queue), queue, trans, m, n, alpha, a, lda, stridea, x, incx,
+                       stridex, beta, y, incy, stridey, batch_size);
+    gemv_batch_postcondition(queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y,
+                             incy, stridey, batch_size);
+}
+
+static inline void gemv_batch(cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                              std::int64_t n, std::complex<float> alpha,
+                              cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+                              std::int64_t stridea, cl::sycl::buffer<std::complex<float>, 1> &x,
+                              std::int64_t incx, std::int64_t stridex, std::complex<float> beta,
+                              cl::sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
+                              std::int64_t stridey, std::int64_t batch_size) {
+    gemv_batch_precondition(queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y,
+                            incy, stridey, batch_size);
+    detail::gemv_batch(get_device_id(queue), queue, trans, m, n, alpha, a, lda, stridea, x, incx,
+                       stridex, beta, y, incy, stridey, batch_size);
+    gemv_batch_postcondition(queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y,
+                             incy, stridey, batch_size);
+}
+
+static inline void gemv_batch(cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                              std::int64_t n, std::complex<double> alpha,
+                              cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+                              std::int64_t stridea, cl::sycl::buffer<std::complex<double>, 1> &x,
+                              std::int64_t incx, std::int64_t stridex, std::complex<double> beta,
+                              cl::sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
+                              std::int64_t stridey, std::int64_t batch_size) {
+    gemv_batch_precondition(queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y,
+                            incy, stridey, batch_size);
+    detail::gemv_batch(get_device_id(queue), queue, trans, m, n, alpha, a, lda, stridea, x, incx,
+                       stridex, beta, y, incy, stridey, batch_size);
+    gemv_batch_postcondition(queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y,
+                             incy, stridey, batch_size);
+}
+
+static inline void dgmm_batch(cl::sycl::queue &queue, side left_right, std::int64_t m,
+                              std::int64_t n, cl::sycl::buffer<float, 1> &a, std::int64_t lda,
+                              std::int64_t stridea, cl::sycl::buffer<float, 1> &x,
+                              std::int64_t incx, std::int64_t stridex,
+                              cl::sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stridec,
+                              std::int64_t batch_size) {
+    dgmm_batch_precondition(queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc,
+                            stridec, batch_size);
+    detail::dgmm_batch(get_device_id(queue), queue, left_right, m, n, a, lda, stridea, x, incx,
+                       stridex, c, ldc, stridec, batch_size);
+    dgmm_batch_postcondition(queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc,
+                             stridec, batch_size);
+}
+
+static inline void dgmm_batch(cl::sycl::queue &queue, side left_right, std::int64_t m,
+                              std::int64_t n, cl::sycl::buffer<double, 1> &a, std::int64_t lda,
+                              std::int64_t stridea, cl::sycl::buffer<double, 1> &x,
+                              std::int64_t incx, std::int64_t stridex,
+                              cl::sycl::buffer<double, 1> &c, std::int64_t ldc,
+                              std::int64_t stridec, std::int64_t batch_size) {
+    dgmm_batch_precondition(queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc,
+                            stridec, batch_size);
+    detail::dgmm_batch(get_device_id(queue), queue, left_right, m, n, a, lda, stridea, x, incx,
+                       stridex, c, ldc, stridec, batch_size);
+    dgmm_batch_postcondition(queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc,
+                             stridec, batch_size);
+}
+
+static inline void dgmm_batch(cl::sycl::queue &queue, side left_right, std::int64_t m,
+                              std::int64_t n, cl::sycl::buffer<std::complex<float>, 1> &a,
+                              std::int64_t lda, std::int64_t stridea,
+                              cl::sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
+                              std::int64_t stridex, cl::sycl::buffer<std::complex<float>, 1> &c,
+                              std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size) {
+    dgmm_batch_precondition(queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc,
+                            stridec, batch_size);
+    detail::dgmm_batch(get_device_id(queue), queue, left_right, m, n, a, lda, stridea, x, incx,
+                       stridex, c, ldc, stridec, batch_size);
+    dgmm_batch_postcondition(queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc,
+                             stridec, batch_size);
+}
+
+static inline void dgmm_batch(cl::sycl::queue &queue, side left_right, std::int64_t m,
+                              std::int64_t n, cl::sycl::buffer<std::complex<double>, 1> &a,
+                              std::int64_t lda, std::int64_t stridea,
+                              cl::sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
+                              std::int64_t stridex, cl::sycl::buffer<std::complex<double>, 1> &c,
+                              std::int64_t ldc, std::int64_t stridec, std::int64_t batch_size) {
+    dgmm_batch_precondition(queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc,
+                            stridec, batch_size);
+    detail::dgmm_batch(get_device_id(queue), queue, left_right, m, n, a, lda, stridea, x, incx,
+                       stridex, c, ldc, stridec, batch_size);
+    dgmm_batch_postcondition(queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc,
+                             stridec, batch_size);
 }
 
 static inline void ger(cl::sycl::queue &queue, std::int64_t m, std::int64_t n, float alpha,
@@ -1235,6 +1530,60 @@ static inline void syrk(cl::sycl::queue &queue, uplo upper_lower, transpose tran
     syrk_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc);
 }
 
+static inline void syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                              std::int64_t n, std::int64_t k, float alpha,
+                              cl::sycl::buffer<float, 1> &a, std::int64_t lda,
+                              std::int64_t stride_a, float beta, cl::sycl::buffer<float, 1> &c,
+                              std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size) {
+    syrk_batch_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc,
+                            stride_c, batch_size);
+    detail::syrk_batch(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
+                       stride_a, beta, c, ldc, stride_c, batch_size);
+    syrk_batch_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc,
+                             stride_c, batch_size);
+}
+
+static inline void syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                              std::int64_t n, std::int64_t k, double alpha,
+                              cl::sycl::buffer<double, 1> &a, std::int64_t lda,
+                              std::int64_t stride_a, double beta, cl::sycl::buffer<double, 1> &c,
+                              std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size) {
+    syrk_batch_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc,
+                            stride_c, batch_size);
+    detail::syrk_batch(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
+                       stride_a, beta, c, ldc, stride_c, batch_size);
+    syrk_batch_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc,
+                             stride_c, batch_size);
+}
+
+static inline void syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                              std::int64_t n, std::int64_t k, std::complex<float> alpha,
+                              cl::sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+                              std::int64_t stride_a, std::complex<float> beta,
+                              cl::sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc,
+                              std::int64_t stride_c, std::int64_t batch_size) {
+    syrk_batch_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc,
+                            stride_c, batch_size);
+    detail::syrk_batch(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
+                       stride_a, beta, c, ldc, stride_c, batch_size);
+    syrk_batch_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc,
+                             stride_c, batch_size);
+}
+
+static inline void syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                              std::int64_t n, std::int64_t k, std::complex<double> alpha,
+                              cl::sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+                              std::int64_t stride_a, std::complex<double> beta,
+                              cl::sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc,
+                              std::int64_t stride_c, std::int64_t batch_size) {
+    syrk_batch_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc,
+                            stride_c, batch_size);
+    detail::syrk_batch(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
+                       stride_a, beta, c, ldc, stride_c, batch_size);
+    syrk_batch_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc,
+                             stride_c, batch_size);
+}
+
 static inline void tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                         std::int64_t n, std::int64_t k, cl::sycl::buffer<float, 1> &a,
                         std::int64_t lda, cl::sycl::buffer<float, 1> &x, std::int64_t incx) {
@@ -1587,85 +1936,85 @@ static inline void trsv(cl::sycl::queue &queue, uplo upper_lower, transpose tran
 
 // USM APIs
 
-static inline cl::sycl::event asum(
-    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
-    float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event asum(cl::sycl::queue &queue, std::int64_t n,
+                                   const std::complex<float> *x, std::int64_t incx, float *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     asum_precondition(queue, n, x, incx, result, dependencies);
     auto done = detail::asum(get_device_id(queue), queue, n, x, incx, result, dependencies);
     asum_postcondition(queue, n, x, incx, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event asum(
-    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
-    double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event asum(cl::sycl::queue &queue, std::int64_t n,
+                                   const std::complex<double> *x, std::int64_t incx, double *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     asum_precondition(queue, n, x, incx, result, dependencies);
     auto done = detail::asum(get_device_id(queue), queue, n, x, incx, result, dependencies);
     asum_postcondition(queue, n, x, incx, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event asum(
-    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, float *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event asum(cl::sycl::queue &queue, std::int64_t n, const float *x,
+                                   std::int64_t incx, float *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     asum_precondition(queue, n, x, incx, result, dependencies);
     auto done = detail::asum(get_device_id(queue), queue, n, x, incx, result, dependencies);
     asum_postcondition(queue, n, x, incx, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event asum(
-    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, double *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event asum(cl::sycl::queue &queue, std::int64_t n, const double *x,
+                                   std::int64_t incx, double *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     asum_precondition(queue, n, x, incx, result, dependencies);
     auto done = detail::asum(get_device_id(queue), queue, n, x, incx, result, dependencies);
     asum_postcondition(queue, n, x, incx, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event axpy(
-    cl::sycl::queue &queue, std::int64_t n, float alpha, const float *x, std::int64_t incx,
-    float *y, std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event axpy(cl::sycl::queue &queue, std::int64_t n, float alpha,
+                                   const float *x, std::int64_t incx, float *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
     auto done = detail::axpy(get_device_id(queue), queue, n, alpha, x, incx, y, incy, dependencies);
     axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
     return done;
 }
 
-static inline cl::sycl::event axpy(
-    cl::sycl::queue &queue, std::int64_t n, double alpha, const double *x, std::int64_t incx,
-    double *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event axpy(cl::sycl::queue &queue, std::int64_t n, double alpha,
+                                   const double *x, std::int64_t incx, double *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
     auto done = detail::axpy(get_device_id(queue), queue, n, alpha, x, incx, y, incy, dependencies);
     axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
     return done;
 }
 
-static inline cl::sycl::event axpy(
-    cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha, const std::complex<float> *x,
-    std::int64_t incx, std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event axpy(cl::sycl::queue &queue, std::int64_t n,
+                                   std::complex<float> alpha, const std::complex<float> *x,
+                                   std::int64_t incx, std::complex<float> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
     auto done = detail::axpy(get_device_id(queue), queue, n, alpha, x, incx, y, incy, dependencies);
     axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
     return done;
 }
 
-static inline cl::sycl::event axpy(
-    cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *x, std::int64_t incx, std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event axpy(cl::sycl::queue &queue, std::int64_t n,
+                                   std::complex<double> alpha, const std::complex<double> *x,
+                                   std::int64_t incx, std::complex<double> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     axpy_precondition(queue, n, alpha, x, incx, y, incy, dependencies);
     auto done = detail::axpy(get_device_id(queue), queue, n, alpha, x, incx, y, incy, dependencies);
     axpy_postcondition(queue, n, alpha, x, incx, y, incy, dependencies);
     return done;
 }
 
-static inline cl::sycl::event axpy_batch(
-    cl::sycl::queue &queue, std::int64_t *n, float *alpha, const float **x, std::int64_t *incx,
-    float **y, std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n, double *alpha,
+                                         const double **x, std::int64_t *incx, double **y,
+                                         std::int64_t *incy, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
     axpy_batch_precondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
                             dependencies);
     auto done = detail::axpy_batch(get_device_id(queue), queue, n, alpha, x, incx, y, incy,
@@ -1675,10 +2024,11 @@ static inline cl::sycl::event axpy_batch(
     return done;
 }
 
-static inline cl::sycl::event axpy_batch(
-    cl::sycl::queue &queue, std::int64_t *n, double *alpha, const double **x, std::int64_t *incx,
-    double **y, std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n, float *alpha,
+                                         const float **x, std::int64_t *incx, float **y,
+                                         std::int64_t *incy, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
     axpy_batch_precondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
                             dependencies);
     auto done = detail::axpy_batch(get_device_id(queue), queue, n, alpha, x, incx, y, incy,
@@ -1688,11 +2038,12 @@ static inline cl::sycl::event axpy_batch(
     return done;
 }
 
-static inline cl::sycl::event axpy_batch(
-    cl::sycl::queue &queue, std::int64_t *n, std::complex<float> *alpha,
-    const std::complex<float> **x, std::int64_t *incx, std::complex<float> **y, std::int64_t *incy,
-    std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n,
+                                         std::complex<double> *alpha,
+                                         const std::complex<double> **x, std::int64_t *incx,
+                                         std::complex<double> **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
     axpy_batch_precondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
                             dependencies);
     auto done = detail::axpy_batch(get_device_id(queue), queue, n, alpha, x, incx, y, incy,
@@ -1702,11 +2053,12 @@ static inline cl::sycl::event axpy_batch(
     return done;
 }
 
-static inline cl::sycl::event axpy_batch(
-    cl::sycl::queue &queue, std::int64_t *n, std::complex<double> *alpha,
-    const std::complex<double> **x, std::int64_t *incx, std::complex<double> **y,
-    std::int64_t *incy, std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t *n,
+                                         std::complex<float> *alpha, const std::complex<float> **x,
+                                         std::int64_t *incx, std::complex<float> **y,
+                                         std::int64_t *incy, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
     axpy_batch_precondition(queue, n, alpha, x, incx, y, incy, group_count, group_size,
                             dependencies);
     auto done = detail::axpy_batch(get_device_id(queue), queue, n, alpha, x, incx, y, incy,
@@ -1716,78 +2068,283 @@ static inline cl::sycl::event axpy_batch(
     return done;
 }
 
-static inline cl::sycl::event copy(
-    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, float *y,
-    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t n, float alpha,
+                                         const float *x, std::int64_t incx, std::int64_t stridex,
+                                         float *y, std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    axpy_batch_precondition(queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size,
+                            dependencies);
+    auto done = detail::axpy_batch(get_device_id(queue), queue, n, alpha, x, incx, stridex, y, incy,
+                                   stridey, batch_size, dependencies);
+    axpy_batch_postcondition(queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size,
+                             dependencies);
+    return done;
+}
+
+static inline cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t n, double alpha,
+                                         const double *x, std::int64_t incx, std::int64_t stridex,
+                                         double *y, std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    axpy_batch_precondition(queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size,
+                            dependencies);
+    auto done = detail::axpy_batch(get_device_id(queue), queue, n, alpha, x, incx, stridex, y, incy,
+                                   stridey, batch_size, dependencies);
+    axpy_batch_postcondition(queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size,
+                             dependencies);
+    return done;
+}
+
+static inline cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t n,
+                                         std::complex<float> alpha, const std::complex<float> *x,
+                                         std::int64_t incx, std::int64_t stridex,
+                                         std::complex<float> *y, std::int64_t incy,
+                                         std::int64_t stridey, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    axpy_batch_precondition(queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size,
+                            dependencies);
+    auto done = detail::axpy_batch(get_device_id(queue), queue, n, alpha, x, incx, stridex, y, incy,
+                                   stridey, batch_size, dependencies);
+    axpy_batch_postcondition(queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size,
+                             dependencies);
+    return done;
+}
+
+static inline cl::sycl::event axpy_batch(cl::sycl::queue &queue, std::int64_t n,
+                                         std::complex<double> alpha, const std::complex<double> *x,
+                                         std::int64_t incx, std::int64_t stridex,
+                                         std::complex<double> *y, std::int64_t incy,
+                                         std::int64_t stridey, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    axpy_batch_precondition(queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size,
+                            dependencies);
+    auto done = detail::axpy_batch(get_device_id(queue), queue, n, alpha, x, incx, stridex, y, incy,
+                                   stridey, batch_size, dependencies);
+    axpy_batch_postcondition(queue, n, alpha, x, incx, stridex, y, incy, stridey, batch_size,
+                             dependencies);
+    return done;
+}
+
+static inline cl::sycl::event axpby(cl::sycl::queue &queue, std::int64_t n, float alpha,
+                                    const float *x, std::int64_t incx, const float beta, float *y,
+                                    std::int64_t incy,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
+    axpby_precondition(queue, n, alpha, x, incx, beta, y, incy, dependencies);
+    auto done =
+        detail::axpby(get_device_id(queue), queue, n, alpha, x, incx, beta, y, incy, dependencies);
+    axpby_postcondition(queue, n, alpha, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event axpby(cl::sycl::queue &queue, std::int64_t n, double alpha,
+                                    const double *x, std::int64_t incx, const double beta,
+                                    double *y, std::int64_t incy,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
+    axpby_precondition(queue, n, alpha, x, incx, beta, y, incy, dependencies);
+    auto done =
+        detail::axpby(get_device_id(queue), queue, n, alpha, x, incx, beta, y, incy, dependencies);
+    axpby_postcondition(queue, n, alpha, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event axpby(cl::sycl::queue &queue, std::int64_t n,
+                                    std::complex<float> alpha, const std::complex<float> *x,
+                                    std::int64_t incx, const std::complex<float> beta,
+                                    std::complex<float> *y, std::int64_t incy,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
+    axpby_precondition(queue, n, alpha, x, incx, beta, y, incy, dependencies);
+    auto done =
+        detail::axpby(get_device_id(queue), queue, n, alpha, x, incx, beta, y, incy, dependencies);
+    axpby_postcondition(queue, n, alpha, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event axpby(cl::sycl::queue &queue, std::int64_t n,
+                                    std::complex<double> alpha, const std::complex<double> *x,
+                                    std::int64_t incx, const std::complex<double> beta,
+                                    std::complex<double> *y, std::int64_t incy,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
+    axpby_precondition(queue, n, alpha, x, incx, beta, y, incy, dependencies);
+    auto done =
+        detail::axpby(get_device_id(queue), queue, n, alpha, x, incx, beta, y, incy, dependencies);
+    axpby_postcondition(queue, n, alpha, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event copy(cl::sycl::queue &queue, std::int64_t n, const float *x,
+                                   std::int64_t incx, float *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     copy_precondition(queue, n, x, incx, y, incy, dependencies);
     auto done = detail::copy(get_device_id(queue), queue, n, x, incx, y, incy, dependencies);
     copy_postcondition(queue, n, x, incx, y, incy, dependencies);
     return done;
 }
 
-static inline cl::sycl::event copy(
-    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, double *y,
-    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event copy(cl::sycl::queue &queue, std::int64_t n, const double *x,
+                                   std::int64_t incx, double *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     copy_precondition(queue, n, x, incx, y, incy, dependencies);
     auto done = detail::copy(get_device_id(queue), queue, n, x, incx, y, incy, dependencies);
     copy_postcondition(queue, n, x, incx, y, incy, dependencies);
     return done;
 }
 
-static inline cl::sycl::event copy(
-    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
-    std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event copy(cl::sycl::queue &queue, std::int64_t n,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   std::complex<float> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     copy_precondition(queue, n, x, incx, y, incy, dependencies);
     auto done = detail::copy(get_device_id(queue), queue, n, x, incx, y, incy, dependencies);
     copy_postcondition(queue, n, x, incx, y, incy, dependencies);
     return done;
 }
 
-static inline cl::sycl::event copy(
-    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
-    std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event copy(cl::sycl::queue &queue, std::int64_t n,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   std::complex<double> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     copy_precondition(queue, n, x, incx, y, incy, dependencies);
     auto done = detail::copy(get_device_id(queue), queue, n, x, incx, y, incy, dependencies);
     copy_postcondition(queue, n, x, incx, y, incy, dependencies);
     return done;
 }
 
-static inline cl::sycl::event dot(
-    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, const float *y,
-    std::int64_t incy, float *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event copy_batch(cl::sycl::queue &queue, std::int64_t *n, const float **x,
+                                         std::int64_t *incx, float **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    copy_batch_precondition(queue, n, x, incx, y, incy, group_count, group_size, dependencies);
+    auto done = detail::copy_batch(get_device_id(queue), queue, n, x, incx, y, incy, group_count,
+                                   group_size, dependencies);
+    copy_batch_postcondition(queue, n, x, incx, y, incy, group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event copy_batch(cl::sycl::queue &queue, std::int64_t *n, const double **x,
+                                         std::int64_t *incx, double **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    copy_batch_precondition(queue, n, x, incx, y, incy, group_count, group_size, dependencies);
+    auto done = detail::copy_batch(get_device_id(queue), queue, n, x, incx, y, incy, group_count,
+                                   group_size, dependencies);
+    copy_batch_postcondition(queue, n, x, incx, y, incy, group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event copy_batch(cl::sycl::queue &queue, std::int64_t *n,
+                                         const std::complex<float> **x, std::int64_t *incx,
+                                         std::complex<float> **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    copy_batch_precondition(queue, n, x, incx, y, incy, group_count, group_size, dependencies);
+    auto done = detail::copy_batch(get_device_id(queue), queue, n, x, incx, y, incy, group_count,
+                                   group_size, dependencies);
+    copy_batch_postcondition(queue, n, x, incx, y, incy, group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event copy_batch(cl::sycl::queue &queue, std::int64_t *n,
+                                         const std::complex<double> **x, std::int64_t *incx,
+                                         std::complex<double> **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    copy_batch_precondition(queue, n, x, incx, y, incy, group_count, group_size, dependencies);
+    auto done = detail::copy_batch(get_device_id(queue), queue, n, x, incx, y, incy, group_count,
+                                   group_size, dependencies);
+    copy_batch_postcondition(queue, n, x, incx, y, incy, group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event copy_batch(cl::sycl::queue &queue, std::int64_t n, const float *x,
+                                         std::int64_t incx, std::int64_t stridex, float *y,
+                                         std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    copy_batch_precondition(queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+    auto done = detail::copy_batch(get_device_id(queue), queue, n, x, incx, stridex, y, incy,
+                                   stridey, batch_size, dependencies);
+    copy_batch_postcondition(queue, n, x, incx, stridex, y, incy, stridey, batch_size,
+                             dependencies);
+    return done;
+}
+
+static inline cl::sycl::event copy_batch(cl::sycl::queue &queue, std::int64_t n, const double *x,
+                                         std::int64_t incx, std::int64_t stridex, double *y,
+                                         std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    copy_batch_precondition(queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+    auto done = detail::copy_batch(get_device_id(queue), queue, n, x, incx, stridex, y, incy,
+                                   stridey, batch_size, dependencies);
+    copy_batch_postcondition(queue, n, x, incx, stridex, y, incy, stridey, batch_size,
+                             dependencies);
+    return done;
+}
+
+static inline cl::sycl::event copy_batch(cl::sycl::queue &queue, std::int64_t n,
+                                         const std::complex<float> *x, std::int64_t incx,
+                                         std::int64_t stridex, std::complex<float> *y,
+                                         std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    copy_batch_precondition(queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+    auto done = detail::copy_batch(get_device_id(queue), queue, n, x, incx, stridex, y, incy,
+                                   stridey, batch_size, dependencies);
+    copy_batch_postcondition(queue, n, x, incx, stridex, y, incy, stridey, batch_size,
+                             dependencies);
+    return done;
+}
+
+static inline cl::sycl::event copy_batch(cl::sycl::queue &queue, std::int64_t n,
+                                         const std::complex<double> *x, std::int64_t incx,
+                                         std::int64_t stridex, std::complex<double> *y,
+                                         std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    copy_batch_precondition(queue, n, x, incx, stridex, y, incy, stridey, batch_size, dependencies);
+    auto done = detail::copy_batch(get_device_id(queue), queue, n, x, incx, stridex, y, incy,
+                                   stridey, batch_size, dependencies);
+    copy_batch_postcondition(queue, n, x, incx, stridex, y, incy, stridey, batch_size,
+                             dependencies);
+    return done;
+}
+
+static inline cl::sycl::event dot(cl::sycl::queue &queue, std::int64_t n, const float *x,
+                                  std::int64_t incx, const float *y, std::int64_t incy,
+                                  float *result,
+                                  const std::vector<cl::sycl::event> &dependencies = {}) {
     dot_precondition(queue, n, x, incx, y, incy, result, dependencies);
     auto done = detail::dot(get_device_id(queue), queue, n, x, incx, y, incy, result, dependencies);
     dot_postcondition(queue, n, x, incx, y, incy, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event dot(
-    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, const double *y,
-    std::int64_t incy, double *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event dot(cl::sycl::queue &queue, std::int64_t n, const double *x,
+                                  std::int64_t incx, const double *y, std::int64_t incy,
+                                  double *result,
+                                  const std::vector<cl::sycl::event> &dependencies = {}) {
     dot_precondition(queue, n, x, incx, y, incy, result, dependencies);
     auto done = detail::dot(get_device_id(queue), queue, n, x, incx, y, incy, result, dependencies);
     dot_postcondition(queue, n, x, incx, y, incy, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event dot(
-    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, const float *y,
-    std::int64_t incy, double *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event dot(cl::sycl::queue &queue, std::int64_t n, const float *x,
+                                  std::int64_t incx, const float *y, std::int64_t incy,
+                                  double *result,
+                                  const std::vector<cl::sycl::event> &dependencies = {}) {
     dot_precondition(queue, n, x, incx, y, incy, result, dependencies);
     auto done = detail::dot(get_device_id(queue), queue, n, x, incx, y, incy, result, dependencies);
     dot_postcondition(queue, n, x, incx, y, incy, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event dotc(
-    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
-    const std::complex<float> *y, std::int64_t incy, std::complex<float> *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event dotc(cl::sycl::queue &queue, std::int64_t n,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   const std::complex<float> *y, std::int64_t incy,
+                                   std::complex<float> *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     dotc_precondition(queue, n, x, incx, y, incy, result, dependencies);
     auto done =
         detail::dotc(get_device_id(queue), queue, n, x, incx, y, incy, result, dependencies);
@@ -1795,10 +2352,11 @@ static inline cl::sycl::event dotc(
     return done;
 }
 
-static inline cl::sycl::event dotc(
-    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
-    const std::complex<double> *y, std::int64_t incy, std::complex<double> *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event dotc(cl::sycl::queue &queue, std::int64_t n,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   const std::complex<double> *y, std::int64_t incy,
+                                   std::complex<double> *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     dotc_precondition(queue, n, x, incx, y, incy, result, dependencies);
     auto done =
         detail::dotc(get_device_id(queue), queue, n, x, incx, y, incy, result, dependencies);
@@ -1806,10 +2364,11 @@ static inline cl::sycl::event dotc(
     return done;
 }
 
-static inline cl::sycl::event dotu(
-    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
-    const std::complex<float> *y, std::int64_t incy, std::complex<float> *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event dotu(cl::sycl::queue &queue, std::int64_t n,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   const std::complex<float> *y, std::int64_t incy,
+                                   std::complex<float> *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     dotu_precondition(queue, n, x, incx, y, incy, result, dependencies);
     auto done =
         detail::dotu(get_device_id(queue), queue, n, x, incx, y, incy, result, dependencies);
@@ -1817,10 +2376,11 @@ static inline cl::sycl::event dotu(
     return done;
 }
 
-static inline cl::sycl::event dotu(
-    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
-    const std::complex<double> *y, std::int64_t incy, std::complex<double> *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event dotu(cl::sycl::queue &queue, std::int64_t n,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   const std::complex<double> *y, std::int64_t incy,
+                                   std::complex<double> *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     dotu_precondition(queue, n, x, incx, y, incy, result, dependencies);
     auto done =
         detail::dotu(get_device_id(queue), queue, n, x, incx, y, incy, result, dependencies);
@@ -1828,11 +2388,11 @@ static inline cl::sycl::event dotu(
     return done;
 }
 
-static inline cl::sycl::event gbmv(
-    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
-    std::int64_t ku, float alpha, const float *a, std::int64_t lda, const float *x,
-    std::int64_t incx, float beta, float *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                                   std::int64_t n, std::int64_t kl, std::int64_t ku, float alpha,
+                                   const float *a, std::int64_t lda, const float *x,
+                                   std::int64_t incx, float beta, float *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     gbmv_precondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = detail::gbmv(get_device_id(queue), queue, trans, m, n, kl, ku, alpha, a, lda, x,
@@ -1842,11 +2402,11 @@ static inline cl::sycl::event gbmv(
     return done;
 }
 
-static inline cl::sycl::event gbmv(
-    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
-    std::int64_t ku, double alpha, const double *a, std::int64_t lda, const double *x,
-    std::int64_t incx, double beta, double *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                                   std::int64_t n, std::int64_t kl, std::int64_t ku, double alpha,
+                                   const double *a, std::int64_t lda, const double *x,
+                                   std::int64_t incx, double beta, double *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     gbmv_precondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = detail::gbmv(get_device_id(queue), queue, trans, m, n, kl, ku, alpha, a, lda, x,
@@ -1856,12 +2416,13 @@ static inline cl::sycl::event gbmv(
     return done;
 }
 
-static inline cl::sycl::event gbmv(
-    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
-    std::int64_t ku, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
-    std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                                   std::int64_t n, std::int64_t kl, std::int64_t ku,
+                                   std::complex<float> alpha, const std::complex<float> *a,
+                                   std::int64_t lda, const std::complex<float> *x,
+                                   std::int64_t incx, std::complex<float> beta,
+                                   std::complex<float> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     gbmv_precondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = detail::gbmv(get_device_id(queue), queue, trans, m, n, kl, ku, alpha, a, lda, x,
@@ -1871,12 +2432,13 @@ static inline cl::sycl::event gbmv(
     return done;
 }
 
-static inline cl::sycl::event gbmv(
-    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
-    std::int64_t ku, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
-    std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gbmv(cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                                   std::int64_t n, std::int64_t kl, std::int64_t ku,
+                                   std::complex<double> alpha, const std::complex<double> *a,
+                                   std::int64_t lda, const std::complex<double> *x,
+                                   std::int64_t incx, std::complex<double> beta,
+                                   std::complex<double> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     gbmv_precondition(queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = detail::gbmv(get_device_id(queue), queue, trans, m, n, kl, ku, alpha, a, lda, x,
@@ -1886,11 +2448,11 @@ static inline cl::sycl::event gbmv(
     return done;
 }
 
-static inline cl::sycl::event gemm(
-    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
-    std::int64_t k, float alpha, const float *a, std::int64_t lda, const float *b, std::int64_t ldb,
-    float beta, float *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
+                                   std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                                   const float *a, std::int64_t lda, const float *b,
+                                   std::int64_t ldb, float beta, float *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
     auto done = detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b,
@@ -1900,11 +2462,11 @@ static inline cl::sycl::event gemm(
     return done;
 }
 
-static inline cl::sycl::event gemm(
-    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
-    std::int64_t k, double alpha, const double *a, std::int64_t lda, const double *b,
-    std::int64_t ldb, double beta, double *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
+                                   std::int64_t m, std::int64_t n, std::int64_t k, double alpha,
+                                   const double *a, std::int64_t lda, const double *b,
+                                   std::int64_t ldb, double beta, double *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
     auto done = detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b,
@@ -1914,12 +2476,13 @@ static inline cl::sycl::event gemm(
     return done;
 }
 
-static inline cl::sycl::event gemm(
-    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
-    std::int64_t k, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-    std::complex<float> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
+                                   std::int64_t m, std::int64_t n, std::int64_t k,
+                                   std::complex<float> alpha, const std::complex<float> *a,
+                                   std::int64_t lda, const std::complex<float> *b, std::int64_t ldb,
+                                   std::complex<float> beta, std::complex<float> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
     auto done = detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b,
@@ -1929,12 +2492,13 @@ static inline cl::sycl::event gemm(
     return done;
 }
 
-static inline cl::sycl::event gemm(
-    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
-    std::int64_t k, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
-    std::complex<double> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
+                                   std::int64_t m, std::int64_t n, std::int64_t k,
+                                   std::complex<double> alpha, const std::complex<double> *a,
+                                   std::int64_t lda, const std::complex<double> *b,
+                                   std::int64_t ldb, std::complex<double> beta,
+                                   std::complex<double> *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
     auto done = detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b,
@@ -1944,11 +2508,55 @@ static inline cl::sycl::event gemm(
     return done;
 }
 
-static inline cl::sycl::event gemm_batch(
-    cl::sycl::queue &queue, transpose *transa, transpose *transb, std::int64_t *m, std::int64_t *n,
-    std::int64_t *k, float *alpha, const float **a, std::int64_t *lda, const float **b,
-    std::int64_t *ldb, float *beta, float **c, std::int64_t *ldc, std::int64_t group_count,
-    std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
+                                   std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
+                                   const half *a, std::int64_t lda, const half *b, std::int64_t ldb,
+                                   half beta, half *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b,
+                             ldb, beta, c, ldc, dependencies);
+    gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
+                                   std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                                   const half *a, std::int64_t lda, const half *b, std::int64_t ldb,
+                                   float beta, float *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b,
+                             ldb, beta, c, ldc, dependencies);
+    gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
+                                   std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                                   const bfloat16 *a, std::int64_t lda, const bfloat16 *b,
+                                   std::int64_t ldb, float beta, float *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                      dependencies);
+    auto done = detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b,
+                             ldb, beta, c, ldc, dependencies);
+    gemm_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                       dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa,
+                                         transpose *transb, std::int64_t *m, std::int64_t *n,
+                                         std::int64_t *k, float *alpha, const float **a,
+                                         std::int64_t *lda, const float **b, std::int64_t *ldb,
+                                         float *beta, float **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                             group_count, group_size, dependencies);
     auto done =
@@ -1959,11 +2567,13 @@ static inline cl::sycl::event gemm_batch(
     return done;
 }
 
-static inline cl::sycl::event gemm_batch(
-    cl::sycl::queue &queue, transpose *transa, transpose *transb, std::int64_t *m, std::int64_t *n,
-    std::int64_t *k, double *alpha, const double **a, std::int64_t *lda, const double **b,
-    std::int64_t *ldb, double *beta, double **c, std::int64_t *ldc, std::int64_t group_count,
-    std::int64_t *group_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa,
+                                         transpose *transb, std::int64_t *m, std::int64_t *n,
+                                         std::int64_t *k, double *alpha, const double **a,
+                                         std::int64_t *lda, const double **b, std::int64_t *ldb,
+                                         double *beta, double **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                             group_count, group_size, dependencies);
     auto done =
@@ -1979,7 +2589,7 @@ static inline cl::sycl::event gemm_batch(
     std::int64_t *k, std::complex<float> *alpha, const std::complex<float> **a, std::int64_t *lda,
     const std::complex<float> **b, std::int64_t *ldb, std::complex<float> *beta,
     std::complex<float> **c, std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    const std::vector<cl::sycl::event> &dependencies = {}) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                             group_count, group_size, dependencies);
     auto done =
@@ -1995,7 +2605,7 @@ static inline cl::sycl::event gemm_batch(
     std::int64_t *k, std::complex<double> *alpha, const std::complex<double> **a, std::int64_t *lda,
     const std::complex<double> **b, std::int64_t *ldb, std::complex<double> *beta,
     std::complex<double> **c, std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    const std::vector<cl::sycl::event> &dependencies = {}) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                             group_count, group_size, dependencies);
     auto done =
@@ -2006,12 +2616,31 @@ static inline cl::sycl::event gemm_batch(
     return done;
 }
 
-static inline cl::sycl::event gemm_batch(
-    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
-    std::int64_t k, float alpha, const float *a, std::int64_t lda, std::int64_t stride_a,
-    const float *b, std::int64_t ldb, std::int64_t stride_b, float beta, float *c, std::int64_t ldc,
-    std::int64_t stride_c, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa,
+                                         transpose *transb, std::int64_t *m, std::int64_t *n,
+                                         std::int64_t *k, half *alpha, const half **a,
+                                         std::int64_t *lda, const half **b, std::int64_t *ldb,
+                                         half *beta, half **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                            group_count, group_size, dependencies);
+    auto done =
+        detail::gemm_batch(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b,
+                           ldb, beta, c, ldc, group_count, group_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+                             group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
+                                         std::int64_t m, std::int64_t n, std::int64_t k,
+                                         float alpha, const float *a, std::int64_t lda,
+                                         std::int64_t stride_a, const float *b, std::int64_t ldb,
+                                         std::int64_t stride_b, float beta, float *c,
+                                         std::int64_t ldc, std::int64_t stride_c,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     auto done = detail::gemm_batch(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a,
@@ -2022,12 +2651,14 @@ static inline cl::sycl::event gemm_batch(
     return done;
 }
 
-static inline cl::sycl::event gemm_batch(
-    cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
-    std::int64_t k, double alpha, const double *a, std::int64_t lda, std::int64_t stride_a,
-    const double *b, std::int64_t ldb, std::int64_t stride_b, double beta, double *c,
-    std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
+                                         std::int64_t m, std::int64_t n, std::int64_t k,
+                                         double alpha, const double *a, std::int64_t lda,
+                                         std::int64_t stride_a, const double *b, std::int64_t ldb,
+                                         std::int64_t stride_b, double beta, double *c,
+                                         std::int64_t ldc, std::int64_t stride_c,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     auto done = detail::gemm_batch(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a,
@@ -2043,7 +2674,7 @@ static inline cl::sycl::event gemm_batch(
     std::int64_t k, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
     std::int64_t stride_a, const std::complex<float> *b, std::int64_t ldb, std::int64_t stride_b,
     std::complex<float> beta, std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
-    std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    std::int64_t batch_size, const std::vector<cl::sycl::event> &dependencies = {}) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     auto done = detail::gemm_batch(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a,
@@ -2059,7 +2690,7 @@ static inline cl::sycl::event gemm_batch(
     std::int64_t k, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
     std::int64_t stride_a, const std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
     std::complex<double> beta, std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
-    std::int64_t batch_size, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+    std::int64_t batch_size, const std::vector<cl::sycl::event> &dependencies = {}) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
     auto done = detail::gemm_batch(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a,
@@ -2070,11 +2701,28 @@ static inline cl::sycl::event gemm_batch(
     return done;
 }
 
-static inline cl::sycl::event gemmt(
-    cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
-    std::int64_t k, float alpha, const float *a, std::int64_t lda, const float *b, std::int64_t ldb,
-    float beta, float *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
+                                         std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
+                                         const half *a, std::int64_t lda, std::int64_t stride_a,
+                                         const half *b, std::int64_t ldb, std::int64_t stride_b,
+                                         half beta, half *c, std::int64_t ldc,
+                                         std::int64_t stride_c, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                            stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    auto done = detail::gemm_batch(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a,
+                                   lda, stride_a, b, ldb, stride_b, beta, c, ldc, stride_c,
+                                   batch_size, dependencies);
+    gemm_batch_postcondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
+                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa,
+                                    transpose transb, std::int64_t n, std::int64_t k, float alpha,
+                                    const float *a, std::int64_t lda, const float *b,
+                                    std::int64_t ldb, float beta, float *c, std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                        ldc, dependencies);
     auto done = detail::gemmt(get_device_id(queue), queue, upper_lower, transa, transb, n, k, alpha,
@@ -2084,11 +2732,11 @@ static inline cl::sycl::event gemmt(
     return done;
 }
 
-static inline cl::sycl::event gemmt(
-    cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
-    std::int64_t k, double alpha, const double *a, std::int64_t lda, const double *b,
-    std::int64_t ldb, double beta, double *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa,
+                                    transpose transb, std::int64_t n, std::int64_t k, double alpha,
+                                    const double *a, std::int64_t lda, const double *b,
+                                    std::int64_t ldb, double beta, double *c, std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                        ldc, dependencies);
     auto done = detail::gemmt(get_device_id(queue), queue, upper_lower, transa, transb, n, k, alpha,
@@ -2098,12 +2746,13 @@ static inline cl::sycl::event gemmt(
     return done;
 }
 
-static inline cl::sycl::event gemmt(
-    cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
-    std::int64_t k, std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-    std::complex<float> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa,
+                                    transpose transb, std::int64_t n, std::int64_t k,
+                                    std::complex<float> alpha, const std::complex<float> *a,
+                                    std::int64_t lda, const std::complex<float> *b,
+                                    std::int64_t ldb, std::complex<float> beta,
+                                    std::complex<float> *c, std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                        ldc, dependencies);
     auto done = detail::gemmt(get_device_id(queue), queue, upper_lower, transa, transb, n, k, alpha,
@@ -2113,12 +2762,13 @@ static inline cl::sycl::event gemmt(
     return done;
 }
 
-static inline cl::sycl::event gemmt(
-    cl::sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
-    std::int64_t k, std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
-    std::complex<double> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gemmt(cl::sycl::queue &queue, uplo upper_lower, transpose transa,
+                                    transpose transb, std::int64_t n, std::int64_t k,
+                                    std::complex<double> alpha, const std::complex<double> *a,
+                                    std::int64_t lda, const std::complex<double> *b,
+                                    std::int64_t ldb, std::complex<double> beta,
+                                    std::complex<double> *c, std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     gemmt_precondition(queue, upper_lower, transa, transb, n, k, alpha, a, lda, b, ldb, beta, c,
                        ldc, dependencies);
     auto done = detail::gemmt(get_device_id(queue), queue, upper_lower, transa, transb, n, k, alpha,
@@ -2128,10 +2778,75 @@ static inline cl::sycl::event gemmt(
     return done;
 }
 
-static inline cl::sycl::event gemv(
-    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, float alpha,
-    const float *a, std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y,
-    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb,
+                                        offset offsetc, std::int64_t m, std::int64_t n,
+                                        std::int64_t k, float alpha, const std::int8_t *a,
+                                        std::int64_t lda, std::int8_t ao, const std::uint8_t *b,
+                                        std::int64_t ldb, std::uint8_t bo, float beta,
+                                        std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
+                                        const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemm_bias_precondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                           beta, c, ldc, co, dependencies);
+    auto done = detail::gemm_bias(get_device_id(queue), queue, transa, transb, offsetc, m, n, k,
+                                  alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co, dependencies);
+    gemm_bias_postcondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                            beta, c, ldc, co, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb,
+                                        offset offsetc, std::int64_t m, std::int64_t n,
+                                        std::int64_t k, float alpha, const std::int8_t *a,
+                                        std::int64_t lda, std::int8_t ao, const std::int8_t *b,
+                                        std::int64_t ldb, std::int8_t bo, float beta,
+                                        std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
+                                        const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemm_bias_precondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                           beta, c, ldc, co, dependencies);
+    auto done = detail::gemm_bias(get_device_id(queue), queue, transa, transb, offsetc, m, n, k,
+                                  alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co, dependencies);
+    gemm_bias_postcondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                            beta, c, ldc, co, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb,
+                                        offset offsetc, std::int64_t m, std::int64_t n,
+                                        std::int64_t k, float alpha, const std::uint8_t *a,
+                                        std::int64_t lda, std::uint8_t ao, const std::int8_t *b,
+                                        std::int64_t ldb, std::int8_t bo, float beta,
+                                        std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
+                                        const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemm_bias_precondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                           beta, c, ldc, co, dependencies);
+    auto done = detail::gemm_bias(get_device_id(queue), queue, transa, transb, offsetc, m, n, k,
+                                  alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co, dependencies);
+    gemm_bias_postcondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                            beta, c, ldc, co, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemm_bias(cl::sycl::queue &queue, transpose transa, transpose transb,
+                                        offset offsetc, std::int64_t m, std::int64_t n,
+                                        std::int64_t k, float alpha, const std::uint8_t *a,
+                                        std::int64_t lda, std::uint8_t ao, const std::uint8_t *b,
+                                        std::int64_t ldb, std::uint8_t bo, float beta,
+                                        std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
+                                        const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemm_bias_precondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                           beta, c, ldc, co, dependencies);
+    auto done = detail::gemm_bias(get_device_id(queue), queue, transa, transb, offsetc, m, n, k,
+                                  alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co, dependencies);
+    gemm_bias_postcondition(queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo,
+                            beta, c, ldc, co, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemv(cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                                   std::int64_t n, float alpha, const float *a, std::int64_t lda,
+                                   const float *x, std::int64_t incx, float beta, float *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     auto done = detail::gemv(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx, beta,
                              y, incy, dependencies);
@@ -2139,10 +2854,11 @@ static inline cl::sycl::event gemv(
     return done;
 }
 
-static inline cl::sycl::event gemv(
-    cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, double alpha,
-    const double *a, std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y,
-    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gemv(cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                                   std::int64_t n, double alpha, const double *a, std::int64_t lda,
+                                   const double *x, std::int64_t incx, double beta, double *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     auto done = detail::gemv(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx, beta,
                              y, incy, dependencies);
@@ -2150,36 +2866,294 @@ static inline cl::sycl::event gemv(
     return done;
 }
 
-static inline cl::sycl::event gemv(
+static inline cl::sycl::event gemv(cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                                   std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   std::complex<float> beta, std::complex<float> *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = detail::gemv(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx, beta,
+                             y, incy, dependencies);
+    gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemv(cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                                   std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   std::complex<double> beta, std::complex<double> *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    auto done = detail::gemv(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx, beta,
+                             y, incy, dependencies);
+    gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                                         std::int64_t n, float alpha, const float *a,
+                                         std::int64_t lda, std::int64_t stridea, const float *x,
+                                         std::int64_t incx, std::int64_t stridex, float beta,
+                                         float *y, std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemv_batch_precondition(queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y,
+                            incy, stridey, batch_size, dependencies);
+    auto done =
+        detail::gemv_batch(get_device_id(queue), queue, trans, m, n, alpha, a, lda, stridea, x,
+                           incx, stridex, beta, y, incy, stridey, batch_size, dependencies);
+    gemv_batch_postcondition(queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y,
+                             incy, stridey, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose trans, std::int64_t m,
+                                         std::int64_t n, double alpha, const double *a,
+                                         std::int64_t lda, std::int64_t stridea, const double *x,
+                                         std::int64_t incx, std::int64_t stridex, double beta,
+                                         double *y, std::int64_t incy, std::int64_t stridey,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemv_batch_precondition(queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y,
+                            incy, stridey, batch_size, dependencies);
+    auto done =
+        detail::gemv_batch(get_device_id(queue), queue, trans, m, n, alpha, a, lda, stridea, x,
+                           incx, stridex, beta, y, incy, stridey, batch_size, dependencies);
+    gemv_batch_postcondition(queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y,
+                             incy, stridey, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemv_batch(
     cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
-    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
-    std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
-    gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
-    auto done = detail::gemv(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx, beta,
-                             y, incy, dependencies);
-    gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda, std::int64_t stridea,
+    const std::complex<float> *x, std::int64_t incx, std::int64_t stridex, std::complex<float> beta,
+    std::complex<float> *y, std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+    const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemv_batch_precondition(queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y,
+                            incy, stridey, batch_size, dependencies);
+    auto done =
+        detail::gemv_batch(get_device_id(queue), queue, trans, m, n, alpha, a, lda, stridea, x,
+                           incx, stridex, beta, y, incy, stridey, batch_size, dependencies);
+    gemv_batch_postcondition(queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y,
+                             incy, stridey, batch_size, dependencies);
     return done;
 }
 
-static inline cl::sycl::event gemv(
+static inline cl::sycl::event gemv_batch(
     cl::sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
     std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
-    std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
-    gemv_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
-    auto done = detail::gemv(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx, beta,
-                             y, incy, dependencies);
-    gemv_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
+    std::int64_t stridea, const std::complex<double> *x, std::int64_t incx, std::int64_t stridex,
+    std::complex<double> beta, std::complex<double> *y, std::int64_t incy, std::int64_t stridey,
+    std::int64_t batch_size, const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemv_batch_precondition(queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y,
+                            incy, stridey, batch_size, dependencies);
+    auto done =
+        detail::gemv_batch(get_device_id(queue), queue, trans, m, n, alpha, a, lda, stridea, x,
+                           incx, stridex, beta, y, incy, stridey, batch_size, dependencies);
+    gemv_batch_postcondition(queue, trans, m, n, alpha, a, lda, stridea, x, incx, stridex, beta, y,
+                             incy, stridey, batch_size, dependencies);
     return done;
 }
 
-static inline cl::sycl::event ger(
-    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, float alpha, const float *x,
-    std::int64_t incx, const float *y, std::int64_t incy, float *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *trans, std::int64_t *m,
+                                         std::int64_t *n, float *alpha, const float **a,
+                                         std::int64_t *lda, const float **x, std::int64_t *incx,
+                                         float *beta, float **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemv_batch_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count,
+                            group_size, dependencies);
+    auto done = detail::gemv_batch(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx,
+                                   beta, y, incy, group_count, group_size, dependencies);
+    gemv_batch_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count,
+                             group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *trans, std::int64_t *m,
+                                         std::int64_t *n, double *alpha, const double **a,
+                                         std::int64_t *lda, const double **x, std::int64_t *incx,
+                                         double *beta, double **y, std::int64_t *incy,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemv_batch_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count,
+                            group_size, dependencies);
+    auto done = detail::gemv_batch(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx,
+                                   beta, y, incy, group_count, group_size, dependencies);
+    gemv_batch_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count,
+                             group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *trans, std::int64_t *m,
+                                         std::int64_t *n, std::complex<float> *alpha,
+                                         const std::complex<float> **a, std::int64_t *lda,
+                                         const std::complex<float> **x, std::int64_t *incx,
+                                         std::complex<float> *beta, std::complex<float> **y,
+                                         std::int64_t *incy, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemv_batch_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count,
+                            group_size, dependencies);
+    auto done = detail::gemv_batch(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx,
+                                   beta, y, incy, group_count, group_size, dependencies);
+    gemv_batch_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count,
+                             group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *trans, std::int64_t *m,
+                                         std::int64_t *n, std::complex<double> *alpha,
+                                         const std::complex<double> **a, std::int64_t *lda,
+                                         const std::complex<double> **x, std::int64_t *incx,
+                                         std::complex<double> *beta, std::complex<double> **y,
+                                         std::int64_t *incy, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    gemv_batch_precondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count,
+                            group_size, dependencies);
+    auto done = detail::gemv_batch(get_device_id(queue), queue, trans, m, n, alpha, a, lda, x, incx,
+                                   beta, y, incy, group_count, group_size, dependencies);
+    gemv_batch_postcondition(queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy, group_count,
+                             group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, std::int64_t m,
+                                         std::int64_t n, const float *a, std::int64_t lda,
+                                         std::int64_t stridea, const float *x, std::int64_t incx,
+                                         std::int64_t stridex, float *c, std::int64_t ldc,
+                                         std::int64_t stridec, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    dgmm_batch_precondition(queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc,
+                            stridec, batch_size, dependencies);
+    auto done = detail::dgmm_batch(get_device_id(queue), queue, left_right, m, n, a, lda, stridea,
+                                   x, incx, stridex, c, ldc, stridec, batch_size, dependencies);
+    dgmm_batch_postcondition(queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc,
+                             stridec, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, std::int64_t m,
+                                         std::int64_t n, const double *a, std::int64_t lda,
+                                         std::int64_t stridea, const double *x, std::int64_t incx,
+                                         std::int64_t stridex, double *c, std::int64_t ldc,
+                                         std::int64_t stridec, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    dgmm_batch_precondition(queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc,
+                            stridec, batch_size, dependencies);
+    auto done = detail::dgmm_batch(get_device_id(queue), queue, left_right, m, n, a, lda, stridea,
+                                   x, incx, stridex, c, ldc, stridec, batch_size, dependencies);
+    dgmm_batch_postcondition(queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc,
+                             stridec, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, std::int64_t m,
+                                         std::int64_t n, const std::complex<float> *a,
+                                         std::int64_t lda, std::int64_t stridea,
+                                         const std::complex<float> *x, std::int64_t incx,
+                                         std::int64_t stridex, std::complex<float> *c,
+                                         std::int64_t ldc, std::int64_t stridec,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    dgmm_batch_precondition(queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc,
+                            stridec, batch_size, dependencies);
+    auto done = detail::dgmm_batch(get_device_id(queue), queue, left_right, m, n, a, lda, stridea,
+                                   x, incx, stridex, c, ldc, stridec, batch_size, dependencies);
+    dgmm_batch_postcondition(queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc,
+                             stridec, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, std::int64_t m,
+                                         std::int64_t n, const std::complex<double> *a,
+                                         std::int64_t lda, std::int64_t stridea,
+                                         const std::complex<double> *x, std::int64_t incx,
+                                         std::int64_t stridex, std::complex<double> *c,
+                                         std::int64_t ldc, std::int64_t stridec,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    dgmm_batch_precondition(queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc,
+                            stridec, batch_size, dependencies);
+    auto done = detail::dgmm_batch(get_device_id(queue), queue, left_right, m, n, a, lda, stridea,
+                                   x, incx, stridex, c, ldc, stridec, batch_size, dependencies);
+    dgmm_batch_postcondition(queue, left_right, m, n, a, lda, stridea, x, incx, stridex, c, ldc,
+                             stridec, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, std::int64_t *m,
+                                         std::int64_t *n, const float **a, std::int64_t *lda,
+                                         const float **x, std::int64_t *incx, float **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    dgmm_batch_precondition(queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count,
+                            group_size, dependencies);
+    auto done = detail::dgmm_batch(get_device_id(queue), queue, left_right, m, n, a, lda, x, incx,
+                                   c, ldc, group_count, group_size, dependencies);
+    dgmm_batch_postcondition(queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count,
+                             group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, std::int64_t *m,
+                                         std::int64_t *n, const double **a, std::int64_t *lda,
+                                         const double **x, std::int64_t *incx, double **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    dgmm_batch_precondition(queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count,
+                            group_size, dependencies);
+    auto done = detail::dgmm_batch(get_device_id(queue), queue, left_right, m, n, a, lda, x, incx,
+                                   c, ldc, group_count, group_size, dependencies);
+    dgmm_batch_postcondition(queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count,
+                             group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, std::int64_t *m,
+                                         std::int64_t *n, const std::complex<float> **a,
+                                         std::int64_t *lda, const std::complex<float> **x,
+                                         std::int64_t *incx, std::complex<float> **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    dgmm_batch_precondition(queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count,
+                            group_size, dependencies);
+    auto done = detail::dgmm_batch(get_device_id(queue), queue, left_right, m, n, a, lda, x, incx,
+                                   c, ldc, group_count, group_size, dependencies);
+    dgmm_batch_postcondition(queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count,
+                             group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, std::int64_t *m,
+                                         std::int64_t *n, const std::complex<double> **a,
+                                         std::int64_t *lda, const std::complex<double> **x,
+                                         std::int64_t *incx, std::complex<double> **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    dgmm_batch_precondition(queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count,
+                            group_size, dependencies);
+    auto done = detail::dgmm_batch(get_device_id(queue), queue, left_right, m, n, a, lda, x, incx,
+                                   c, ldc, group_count, group_size, dependencies);
+    dgmm_batch_postcondition(queue, left_right, m, n, a, lda, x, incx, c, ldc, group_count,
+                             group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event ger(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
+                                  float alpha, const float *x, std::int64_t incx, const float *y,
+                                  std::int64_t incy, float *a, std::int64_t lda,
+                                  const std::vector<cl::sycl::event> &dependencies = {}) {
     ger_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = detail::ger(get_device_id(queue), queue, m, n, alpha, x, incx, y, incy, a, lda,
                             dependencies);
@@ -2187,10 +3161,10 @@ static inline cl::sycl::event ger(
     return done;
 }
 
-static inline cl::sycl::event ger(
-    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, double alpha, const double *x,
-    std::int64_t incx, const double *y, std::int64_t incy, double *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event ger(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
+                                  double alpha, const double *x, std::int64_t incx, const double *y,
+                                  std::int64_t incy, double *a, std::int64_t lda,
+                                  const std::vector<cl::sycl::event> &dependencies = {}) {
     ger_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = detail::ger(get_device_id(queue), queue, m, n, alpha, x, incx, y, incy, a, lda,
                             dependencies);
@@ -2198,11 +3172,11 @@ static inline cl::sycl::event ger(
     return done;
 }
 
-static inline cl::sycl::event gerc(
-    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<float> alpha,
-    const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
-    std::int64_t incy, std::complex<float> *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gerc(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
+                                   std::complex<float> alpha, const std::complex<float> *x,
+                                   std::int64_t incx, const std::complex<float> *y,
+                                   std::int64_t incy, std::complex<float> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     gerc_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = detail::gerc(get_device_id(queue), queue, m, n, alpha, x, incx, y, incy, a, lda,
                              dependencies);
@@ -2210,11 +3184,11 @@ static inline cl::sycl::event gerc(
     return done;
 }
 
-static inline cl::sycl::event gerc(
-    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
-    std::int64_t incy, std::complex<double> *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event gerc(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
+                                   std::complex<double> alpha, const std::complex<double> *x,
+                                   std::int64_t incx, const std::complex<double> *y,
+                                   std::int64_t incy, std::complex<double> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     gerc_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = detail::gerc(get_device_id(queue), queue, m, n, alpha, x, incx, y, incy, a, lda,
                              dependencies);
@@ -2222,11 +3196,11 @@ static inline cl::sycl::event gerc(
     return done;
 }
 
-static inline cl::sycl::event geru(
-    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<float> alpha,
-    const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
-    std::int64_t incy, std::complex<float> *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event geru(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
+                                   std::complex<float> alpha, const std::complex<float> *x,
+                                   std::int64_t incx, const std::complex<float> *y,
+                                   std::int64_t incy, std::complex<float> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     geru_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = detail::geru(get_device_id(queue), queue, m, n, alpha, x, incx, y, incy, a, lda,
                              dependencies);
@@ -2234,11 +3208,11 @@ static inline cl::sycl::event geru(
     return done;
 }
 
-static inline cl::sycl::event geru(
-    cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
-    std::int64_t incy, std::complex<double> *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event geru(cl::sycl::queue &queue, std::int64_t m, std::int64_t n,
+                                   std::complex<double> alpha, const std::complex<double> *x,
+                                   std::int64_t incx, const std::complex<double> *y,
+                                   std::int64_t incy, std::complex<double> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     geru_precondition(queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = detail::geru(get_device_id(queue), queue, m, n, alpha, x, incx, y, incy, a, lda,
                              dependencies);
@@ -2246,12 +3220,13 @@ static inline cl::sycl::event geru(
     return done;
 }
 
-static inline cl::sycl::event hbmv(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
-    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
-    std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event hbmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   std::int64_t k, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   std::complex<float> beta, std::complex<float> *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     hbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = detail::hbmv(get_device_id(queue), queue, upper_lower, n, k, alpha, a, lda, x, incx,
@@ -2261,12 +3236,13 @@ static inline cl::sycl::event hbmv(
     return done;
 }
 
-static inline cl::sycl::event hbmv(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
-    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
-    std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event hbmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   std::int64_t k, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   std::complex<double> beta, std::complex<double> *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     hbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = detail::hbmv(get_device_id(queue), queue, upper_lower, n, k, alpha, a, lda, x, incx,
@@ -2276,12 +3252,13 @@ static inline cl::sycl::event hbmv(
     return done;
 }
 
-static inline cl::sycl::event hemm(
-    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
-    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-    std::complex<float> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                   std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   const std::complex<float> *b, std::int64_t ldb,
+                                   std::complex<float> beta, std::complex<float> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     hemm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
     auto done = detail::hemm(get_device_id(queue), queue, left_right, upper_lower, m, n, alpha, a,
@@ -2291,12 +3268,13 @@ static inline cl::sycl::event hemm(
     return done;
 }
 
-static inline cl::sycl::event hemm(
-    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
-    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
-    std::complex<double> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                   std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   const std::complex<double> *b, std::int64_t ldb,
+                                   std::complex<double> beta, std::complex<double> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     hemm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
     auto done = detail::hemm(get_device_id(queue), queue, left_right, upper_lower, m, n, alpha, a,
@@ -2306,11 +3284,12 @@ static inline cl::sycl::event hemm(
     return done;
 }
 
-static inline cl::sycl::event hemv(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
-    const std::complex<float> *a, std::int64_t lda, const std::complex<float> *x, std::int64_t incx,
-    std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event hemv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   std::complex<float> alpha, const std::complex<float> *a,
+                                   std::int64_t lda, const std::complex<float> *x,
+                                   std::int64_t incx, std::complex<float> beta,
+                                   std::complex<float> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     hemv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     auto done = detail::hemv(get_device_id(queue), queue, upper_lower, n, alpha, a, lda, x, incx,
                              beta, y, incy, dependencies);
@@ -2318,11 +3297,12 @@ static inline cl::sycl::event hemv(
     return done;
 }
 
-static inline cl::sycl::event hemv(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *a, std::int64_t lda, const std::complex<double> *x,
-    std::int64_t incx, std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event hemv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   std::complex<double> alpha, const std::complex<double> *a,
+                                   std::int64_t lda, const std::complex<double> *x,
+                                   std::int64_t incx, std::complex<double> beta,
+                                   std::complex<double> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     hemv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     auto done = detail::hemv(get_device_id(queue), queue, upper_lower, n, alpha, a, lda, x, incx,
                              beta, y, incy, dependencies);
@@ -2330,10 +3310,10 @@ static inline cl::sycl::event hemv(
     return done;
 }
 
-static inline cl::sycl::event her(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
-    const std::complex<float> *x, std::int64_t incx, std::complex<float> *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event her(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                  float alpha, const std::complex<float> *x, std::int64_t incx,
+                                  std::complex<float> *a, std::int64_t lda,
+                                  const std::vector<cl::sycl::event> &dependencies = {}) {
     her_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     auto done = detail::her(get_device_id(queue), queue, upper_lower, n, alpha, x, incx, a, lda,
                             dependencies);
@@ -2341,10 +3321,10 @@ static inline cl::sycl::event her(
     return done;
 }
 
-static inline cl::sycl::event her(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
-    const std::complex<double> *x, std::int64_t incx, std::complex<double> *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event her(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                  double alpha, const std::complex<double> *x, std::int64_t incx,
+                                  std::complex<double> *a, std::int64_t lda,
+                                  const std::vector<cl::sycl::event> &dependencies = {}) {
     her_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     auto done = detail::her(get_device_id(queue), queue, upper_lower, n, alpha, x, incx, a, lda,
                             dependencies);
@@ -2352,11 +3332,11 @@ static inline cl::sycl::event her(
     return done;
 }
 
-static inline cl::sycl::event her2(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
-    const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
-    std::int64_t incy, std::complex<float> *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event her2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   std::complex<float> alpha, const std::complex<float> *x,
+                                   std::int64_t incx, const std::complex<float> *y,
+                                   std::int64_t incy, std::complex<float> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     her2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = detail::her2(get_device_id(queue), queue, upper_lower, n, alpha, x, incx, y, incy,
                              a, lda, dependencies);
@@ -2364,11 +3344,11 @@ static inline cl::sycl::event her2(
     return done;
 }
 
-static inline cl::sycl::event her2(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
-    std::int64_t incy, std::complex<double> *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event her2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   std::complex<double> alpha, const std::complex<double> *x,
+                                   std::int64_t incx, const std::complex<double> *y,
+                                   std::int64_t incy, std::complex<double> *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     her2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = detail::her2(get_device_id(queue), queue, upper_lower, n, alpha, x, incx, y, incy,
                              a, lda, dependencies);
@@ -2376,11 +3356,12 @@ static inline cl::sycl::event her2(
     return done;
 }
 
-static inline cl::sycl::event her2k(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
-    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *b, std::int64_t ldb, float beta, std::complex<float> *c,
-    std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event her2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                    std::int64_t n, std::int64_t k, std::complex<float> alpha,
+                                    const std::complex<float> *a, std::int64_t lda,
+                                    const std::complex<float> *b, std::int64_t ldb, float beta,
+                                    std::complex<float> *c, std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     her2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     auto done = detail::her2k(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
@@ -2390,11 +3371,12 @@ static inline cl::sycl::event her2k(
     return done;
 }
 
-static inline cl::sycl::event her2k(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
-    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *b, std::int64_t ldb, double beta, std::complex<double> *c,
-    std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event her2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                    std::int64_t n, std::int64_t k, std::complex<double> alpha,
+                                    const std::complex<double> *a, std::int64_t lda,
+                                    const std::complex<double> *b, std::int64_t ldb, double beta,
+                                    std::complex<double> *c, std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     her2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     auto done = detail::her2k(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
@@ -2404,10 +3386,11 @@ static inline cl::sycl::event her2k(
     return done;
 }
 
-static inline cl::sycl::event herk(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
-    float alpha, const std::complex<float> *a, std::int64_t lda, float beta, std::complex<float> *c,
-    std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   std::int64_t n, std::int64_t k, float alpha,
+                                   const std::complex<float> *a, std::int64_t lda, float beta,
+                                   std::complex<float> *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     herk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
     auto done = detail::herk(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
                              beta, c, ldc, dependencies);
@@ -2415,11 +3398,11 @@ static inline cl::sycl::event herk(
     return done;
 }
 
-static inline cl::sycl::event herk(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
-    double alpha, const std::complex<double> *a, std::int64_t lda, double beta,
-    std::complex<double> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   std::int64_t n, std::int64_t k, double alpha,
+                                   const std::complex<double> *a, std::int64_t lda, double beta,
+                                   std::complex<double> *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     herk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
     auto done = detail::herk(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
                              beta, c, ldc, dependencies);
@@ -2427,11 +3410,12 @@ static inline cl::sycl::event herk(
     return done;
 }
 
-static inline cl::sycl::event hpmv(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
-    const std::complex<float> *a, const std::complex<float> *x, std::int64_t incx,
-    std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event hpmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   std::complex<float> alpha, const std::complex<float> *a,
+                                   const std::complex<float> *x, std::int64_t incx,
+                                   std::complex<float> beta, std::complex<float> *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     hpmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
     auto done = detail::hpmv(get_device_id(queue), queue, upper_lower, n, alpha, a, x, incx, beta,
                              y, incy, dependencies);
@@ -2439,11 +3423,12 @@ static inline cl::sycl::event hpmv(
     return done;
 }
 
-static inline cl::sycl::event hpmv(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *a, const std::complex<double> *x, std::int64_t incx,
-    std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event hpmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   std::complex<double> alpha, const std::complex<double> *a,
+                                   const std::complex<double> *x, std::int64_t incx,
+                                   std::complex<double> beta, std::complex<double> *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     hpmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
     auto done = detail::hpmv(get_device_id(queue), queue, upper_lower, n, alpha, a, x, incx, beta,
                              y, incy, dependencies);
@@ -2451,10 +3436,10 @@ static inline cl::sycl::event hpmv(
     return done;
 }
 
-static inline cl::sycl::event hpr(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
-    const std::complex<float> *x, std::int64_t incx, std::complex<float> *a,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event hpr(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                  float alpha, const std::complex<float> *x, std::int64_t incx,
+                                  std::complex<float> *a,
+                                  const std::vector<cl::sycl::event> &dependencies = {}) {
     hpr_precondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
     auto done =
         detail::hpr(get_device_id(queue), queue, upper_lower, n, alpha, x, incx, a, dependencies);
@@ -2462,10 +3447,10 @@ static inline cl::sycl::event hpr(
     return done;
 }
 
-static inline cl::sycl::event hpr(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
-    const std::complex<double> *x, std::int64_t incx, std::complex<double> *a,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event hpr(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                  double alpha, const std::complex<double> *x, std::int64_t incx,
+                                  std::complex<double> *a,
+                                  const std::vector<cl::sycl::event> &dependencies = {}) {
     hpr_precondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
     auto done =
         detail::hpr(get_device_id(queue), queue, upper_lower, n, alpha, x, incx, a, dependencies);
@@ -2473,11 +3458,11 @@ static inline cl::sycl::event hpr(
     return done;
 }
 
-static inline cl::sycl::event hpr2(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
-    const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
-    std::int64_t incy, std::complex<float> *a,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event hpr2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   std::complex<float> alpha, const std::complex<float> *x,
+                                   std::int64_t incx, const std::complex<float> *y,
+                                   std::int64_t incy, std::complex<float> *a,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     hpr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
     auto done = detail::hpr2(get_device_id(queue), queue, upper_lower, n, alpha, x, incx, y, incy,
                              a, dependencies);
@@ -2485,11 +3470,11 @@ static inline cl::sycl::event hpr2(
     return done;
 }
 
-static inline cl::sycl::event hpr2(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
-    const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
-    std::int64_t incy, std::complex<double> *a,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event hpr2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   std::complex<double> alpha, const std::complex<double> *x,
+                                   std::int64_t incx, const std::complex<double> *y,
+                                   std::int64_t incy, std::complex<double> *a,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     hpr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
     auto done = detail::hpr2(get_device_id(queue), queue, upper_lower, n, alpha, x, incx, y, incy,
                              a, dependencies);
@@ -2497,232 +3482,232 @@ static inline cl::sycl::event hpr2(
     return done;
 }
 
-static inline cl::sycl::event iamax(
-    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, std::int64_t *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event iamax(cl::sycl::queue &queue, std::int64_t n, const float *x,
+                                    std::int64_t incx, std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     iamax_precondition(queue, n, x, incx, result, dependencies);
     auto done = detail::iamax(get_device_id(queue), queue, n, x, incx, result, dependencies);
     iamax_postcondition(queue, n, x, incx, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event iamax(
-    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx,
-    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event iamax(cl::sycl::queue &queue, std::int64_t n, const double *x,
+                                    std::int64_t incx, std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     iamax_precondition(queue, n, x, incx, result, dependencies);
     auto done = detail::iamax(get_device_id(queue), queue, n, x, incx, result, dependencies);
     iamax_postcondition(queue, n, x, incx, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event iamax(
-    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
-    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event iamax(cl::sycl::queue &queue, std::int64_t n,
+                                    const std::complex<float> *x, std::int64_t incx,
+                                    std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     iamax_precondition(queue, n, x, incx, result, dependencies);
     auto done = detail::iamax(get_device_id(queue), queue, n, x, incx, result, dependencies);
     iamax_postcondition(queue, n, x, incx, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event iamax(
-    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
-    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event iamax(cl::sycl::queue &queue, std::int64_t n,
+                                    const std::complex<double> *x, std::int64_t incx,
+                                    std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     iamax_precondition(queue, n, x, incx, result, dependencies);
     auto done = detail::iamax(get_device_id(queue), queue, n, x, incx, result, dependencies);
     iamax_postcondition(queue, n, x, incx, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event iamin(
-    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, std::int64_t *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event iamin(cl::sycl::queue &queue, std::int64_t n, const float *x,
+                                    std::int64_t incx, std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     iamin_precondition(queue, n, x, incx, result, dependencies);
     auto done = detail::iamin(get_device_id(queue), queue, n, x, incx, result, dependencies);
     iamin_postcondition(queue, n, x, incx, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event iamin(
-    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx,
-    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event iamin(cl::sycl::queue &queue, std::int64_t n, const double *x,
+                                    std::int64_t incx, std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     iamin_precondition(queue, n, x, incx, result, dependencies);
     auto done = detail::iamin(get_device_id(queue), queue, n, x, incx, result, dependencies);
     iamin_postcondition(queue, n, x, incx, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event iamin(
-    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
-    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event iamin(cl::sycl::queue &queue, std::int64_t n,
+                                    const std::complex<float> *x, std::int64_t incx,
+                                    std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     iamin_precondition(queue, n, x, incx, result, dependencies);
     auto done = detail::iamin(get_device_id(queue), queue, n, x, incx, result, dependencies);
     iamin_postcondition(queue, n, x, incx, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event iamin(
-    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
-    std::int64_t *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event iamin(cl::sycl::queue &queue, std::int64_t n,
+                                    const std::complex<double> *x, std::int64_t incx,
+                                    std::int64_t *result,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     iamin_precondition(queue, n, x, incx, result, dependencies);
     auto done = detail::iamin(get_device_id(queue), queue, n, x, incx, result, dependencies);
     iamin_postcondition(queue, n, x, incx, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event nrm2(
-    cl::sycl::queue &queue, std::int64_t n, const std::complex<float> *x, std::int64_t incx,
-    float *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event nrm2(cl::sycl::queue &queue, std::int64_t n,
+                                   const std::complex<float> *x, std::int64_t incx, float *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     nrm2_precondition(queue, n, x, incx, result, dependencies);
     auto done = detail::nrm2(get_device_id(queue), queue, n, x, incx, result, dependencies);
     nrm2_postcondition(queue, n, x, incx, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event nrm2(
-    cl::sycl::queue &queue, std::int64_t n, const std::complex<double> *x, std::int64_t incx,
-    double *result, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event nrm2(cl::sycl::queue &queue, std::int64_t n,
+                                   const std::complex<double> *x, std::int64_t incx, double *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     nrm2_precondition(queue, n, x, incx, result, dependencies);
     auto done = detail::nrm2(get_device_id(queue), queue, n, x, incx, result, dependencies);
     nrm2_postcondition(queue, n, x, incx, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event nrm2(
-    cl::sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, float *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event nrm2(cl::sycl::queue &queue, std::int64_t n, const float *x,
+                                   std::int64_t incx, float *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     nrm2_precondition(queue, n, x, incx, result, dependencies);
     auto done = detail::nrm2(get_device_id(queue), queue, n, x, incx, result, dependencies);
     nrm2_postcondition(queue, n, x, incx, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event nrm2(
-    cl::sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx, double *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event nrm2(cl::sycl::queue &queue, std::int64_t n, const double *x,
+                                   std::int64_t incx, double *result,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     nrm2_precondition(queue, n, x, incx, result, dependencies);
     auto done = detail::nrm2(get_device_id(queue), queue, n, x, incx, result, dependencies);
     nrm2_postcondition(queue, n, x, incx, result, dependencies);
     return done;
 }
 
-static inline cl::sycl::event rot(
-    cl::sycl::queue &queue, std::int64_t n, std::complex<float> *x, std::int64_t incx,
-    std::complex<float> *y, std::int64_t incy, float c, float s,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event rot(cl::sycl::queue &queue, std::int64_t n, std::complex<float> *x,
+                                  std::int64_t incx, std::complex<float> *y, std::int64_t incy,
+                                  float c, float s,
+                                  const std::vector<cl::sycl::event> &dependencies = {}) {
     rot_precondition(queue, n, x, incx, y, incy, c, s, dependencies);
     auto done = detail::rot(get_device_id(queue), queue, n, x, incx, y, incy, c, s, dependencies);
     rot_postcondition(queue, n, x, incx, y, incy, c, s, dependencies);
     return done;
 }
 
-static inline cl::sycl::event rot(
-    cl::sycl::queue &queue, std::int64_t n, std::complex<double> *x, std::int64_t incx,
-    std::complex<double> *y, std::int64_t incy, double c, double s,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event rot(cl::sycl::queue &queue, std::int64_t n, std::complex<double> *x,
+                                  std::int64_t incx, std::complex<double> *y, std::int64_t incy,
+                                  double c, double s,
+                                  const std::vector<cl::sycl::event> &dependencies = {}) {
     rot_precondition(queue, n, x, incx, y, incy, c, s, dependencies);
     auto done = detail::rot(get_device_id(queue), queue, n, x, incx, y, incy, c, s, dependencies);
     rot_postcondition(queue, n, x, incx, y, incy, c, s, dependencies);
     return done;
 }
 
-static inline cl::sycl::event rot(
-    cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
-    std::int64_t incy, float c, float s,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event rot(cl::sycl::queue &queue, std::int64_t n, float *x,
+                                  std::int64_t incx, float *y, std::int64_t incy, float c, float s,
+                                  const std::vector<cl::sycl::event> &dependencies = {}) {
     rot_precondition(queue, n, x, incx, y, incy, c, s, dependencies);
     auto done = detail::rot(get_device_id(queue), queue, n, x, incx, y, incy, c, s, dependencies);
     rot_postcondition(queue, n, x, incx, y, incy, c, s, dependencies);
     return done;
 }
 
-static inline cl::sycl::event rot(
-    cl::sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
-    std::int64_t incy, double c, double s,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event rot(cl::sycl::queue &queue, std::int64_t n, double *x,
+                                  std::int64_t incx, double *y, std::int64_t incy, double c,
+                                  double s, const std::vector<cl::sycl::event> &dependencies = {}) {
     rot_precondition(queue, n, x, incx, y, incy, c, s, dependencies);
     auto done = detail::rot(get_device_id(queue), queue, n, x, incx, y, incy, c, s, dependencies);
     rot_postcondition(queue, n, x, incx, y, incy, c, s, dependencies);
     return done;
 }
 
-static inline cl::sycl::event rotg(
-    cl::sycl::queue &queue, float *a, float *b, float *c, float *s,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event rotg(cl::sycl::queue &queue, float *a, float *b, float *c, float *s,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     rotg_precondition(queue, a, b, c, s, dependencies);
     auto done = detail::rotg(get_device_id(queue), queue, a, b, c, s, dependencies);
     rotg_postcondition(queue, a, b, c, s, dependencies);
     return done;
 }
 
-static inline cl::sycl::event rotg(
-    cl::sycl::queue &queue, double *a, double *b, double *c, double *s,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event rotg(cl::sycl::queue &queue, double *a, double *b, double *c,
+                                   double *s,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     rotg_precondition(queue, a, b, c, s, dependencies);
     auto done = detail::rotg(get_device_id(queue), queue, a, b, c, s, dependencies);
     rotg_postcondition(queue, a, b, c, s, dependencies);
     return done;
 }
 
-static inline cl::sycl::event rotg(
-    cl::sycl::queue &queue, std::complex<float> *a, std::complex<float> *b, float *c,
-    std::complex<float> *s, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event rotg(cl::sycl::queue &queue, std::complex<float> *a,
+                                   std::complex<float> *b, float *c, std::complex<float> *s,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     rotg_precondition(queue, a, b, c, s, dependencies);
     auto done = detail::rotg(get_device_id(queue), queue, a, b, c, s, dependencies);
     rotg_postcondition(queue, a, b, c, s, dependencies);
     return done;
 }
 
-static inline cl::sycl::event rotg(
-    cl::sycl::queue &queue, std::complex<double> *a, std::complex<double> *b, double *c,
-    std::complex<double> *s, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event rotg(cl::sycl::queue &queue, std::complex<double> *a,
+                                   std::complex<double> *b, double *c, std::complex<double> *s,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     rotg_precondition(queue, a, b, c, s, dependencies);
     auto done = detail::rotg(get_device_id(queue), queue, a, b, c, s, dependencies);
     rotg_postcondition(queue, a, b, c, s, dependencies);
     return done;
 }
 
-static inline cl::sycl::event rotm(
-    cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
-    std::int64_t incy, float *param,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event rotm(cl::sycl::queue &queue, std::int64_t n, float *x,
+                                   std::int64_t incx, float *y, std::int64_t incy, float *param,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     rotm_precondition(queue, n, x, incx, y, incy, param, dependencies);
     auto done = detail::rotm(get_device_id(queue), queue, n, x, incx, y, incy, param, dependencies);
     rotm_postcondition(queue, n, x, incx, y, incy, param, dependencies);
     return done;
 }
 
-static inline cl::sycl::event rotm(
-    cl::sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
-    std::int64_t incy, double *param,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event rotm(cl::sycl::queue &queue, std::int64_t n, double *x,
+                                   std::int64_t incx, double *y, std::int64_t incy, double *param,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     rotm_precondition(queue, n, x, incx, y, incy, param, dependencies);
     auto done = detail::rotm(get_device_id(queue), queue, n, x, incx, y, incy, param, dependencies);
     rotm_postcondition(queue, n, x, incx, y, incy, param, dependencies);
     return done;
 }
 
-static inline cl::sycl::event rotmg(
-    cl::sycl::queue &queue, float *d1, float *d2, float *x1, float y1, float *param,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event rotmg(cl::sycl::queue &queue, float *d1, float *d2, float *x1,
+                                    float y1, float *param,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     rotmg_precondition(queue, d1, d2, x1, y1, param, dependencies);
     auto done = detail::rotmg(get_device_id(queue), queue, d1, d2, x1, y1, param, dependencies);
     rotmg_postcondition(queue, d1, d2, x1, y1, param, dependencies);
     return done;
 }
 
-static inline cl::sycl::event rotmg(
-    cl::sycl::queue &queue, double *d1, double *d2, double *x1, double y1, double *param,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event rotmg(cl::sycl::queue &queue, double *d1, double *d2, double *x1,
+                                    double y1, double *param,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     rotmg_precondition(queue, d1, d2, x1, y1, param, dependencies);
     auto done = detail::rotmg(get_device_id(queue), queue, d1, d2, x1, y1, param, dependencies);
     rotmg_postcondition(queue, d1, d2, x1, y1, param, dependencies);
     return done;
 }
 
-static inline cl::sycl::event sbmv(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k, float alpha,
-    const float *a, std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y,
-    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event sbmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   std::int64_t k, float alpha, const float *a, std::int64_t lda,
+                                   const float *x, std::int64_t incx, float beta, float *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     sbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = detail::sbmv(get_device_id(queue), queue, upper_lower, n, k, alpha, a, lda, x, incx,
@@ -2732,10 +3717,11 @@ static inline cl::sycl::event sbmv(
     return done;
 }
 
-static inline cl::sycl::event sbmv(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k, double alpha,
-    const double *a, std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y,
-    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event sbmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   std::int64_t k, double alpha, const double *a, std::int64_t lda,
+                                   const double *x, std::int64_t incx, double beta, double *y,
+                                   std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     sbmv_precondition(queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y, incy,
                       dependencies);
     auto done = detail::sbmv(get_device_id(queue), queue, upper_lower, n, k, alpha, a, lda, x, incx,
@@ -2745,64 +3731,66 @@ static inline cl::sycl::event sbmv(
     return done;
 }
 
-static inline cl::sycl::event scal(
-    cl::sycl::queue &queue, std::int64_t n, float alpha, float *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n, float alpha, float *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     scal_precondition(queue, n, alpha, x, incx, dependencies);
     auto done = detail::scal(get_device_id(queue), queue, n, alpha, x, incx, dependencies);
     scal_postcondition(queue, n, alpha, x, incx, dependencies);
     return done;
 }
 
-static inline cl::sycl::event scal(
-    cl::sycl::queue &queue, std::int64_t n, double alpha, double *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n, double alpha, double *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     scal_precondition(queue, n, alpha, x, incx, dependencies);
     auto done = detail::scal(get_device_id(queue), queue, n, alpha, x, incx, dependencies);
     scal_postcondition(queue, n, alpha, x, incx, dependencies);
     return done;
 }
 
-static inline cl::sycl::event scal(
-    cl::sycl::queue &queue, std::int64_t n, std::complex<float> alpha, std::complex<float> *x,
-    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n,
+                                   std::complex<float> alpha, std::complex<float> *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     scal_precondition(queue, n, alpha, x, incx, dependencies);
     auto done = detail::scal(get_device_id(queue), queue, n, alpha, x, incx, dependencies);
     scal_postcondition(queue, n, alpha, x, incx, dependencies);
     return done;
 }
 
-static inline cl::sycl::event scal(
-    cl::sycl::queue &queue, std::int64_t n, std::complex<double> alpha, std::complex<double> *x,
-    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n,
+                                   std::complex<double> alpha, std::complex<double> *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     scal_precondition(queue, n, alpha, x, incx, dependencies);
     auto done = detail::scal(get_device_id(queue), queue, n, alpha, x, incx, dependencies);
     scal_postcondition(queue, n, alpha, x, incx, dependencies);
     return done;
 }
 
-static inline cl::sycl::event scal(
-    cl::sycl::queue &queue, std::int64_t n, float alpha, std::complex<float> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n, float alpha,
+                                   std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     scal_precondition(queue, n, alpha, x, incx, dependencies);
     auto done = detail::scal(get_device_id(queue), queue, n, alpha, x, incx, dependencies);
     scal_postcondition(queue, n, alpha, x, incx, dependencies);
     return done;
 }
 
-static inline cl::sycl::event scal(
-    cl::sycl::queue &queue, std::int64_t n, double alpha, std::complex<double> *x,
-    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event scal(cl::sycl::queue &queue, std::int64_t n, double alpha,
+                                   std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     scal_precondition(queue, n, alpha, x, incx, dependencies);
     auto done = detail::scal(get_device_id(queue), queue, n, alpha, x, incx, dependencies);
     scal_postcondition(queue, n, alpha, x, incx, dependencies);
     return done;
 }
 
-static inline cl::sycl::event sdsdot(
-    cl::sycl::queue &queue, std::int64_t n, float sb, const float *x, std::int64_t incx,
-    const float *y, std::int64_t incy, float *result,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event sdsdot(cl::sycl::queue &queue, std::int64_t n, float sb,
+                                     const float *x, std::int64_t incx, const float *y,
+                                     std::int64_t incy, float *result,
+                                     const std::vector<cl::sycl::event> &dependencies = {}) {
     sdsdot_precondition(queue, n, sb, x, incx, y, incy, result, dependencies);
     auto done =
         detail::sdsdot(get_device_id(queue), queue, n, sb, x, incx, y, incy, result, dependencies);
@@ -2810,10 +3798,10 @@ static inline cl::sycl::event sdsdot(
     return done;
 }
 
-static inline cl::sycl::event spmv(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *a,
-    const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event spmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   float alpha, const float *a, const float *x, std::int64_t incx,
+                                   float beta, float *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     spmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
     auto done = detail::spmv(get_device_id(queue), queue, upper_lower, n, alpha, a, x, incx, beta,
                              y, incy, dependencies);
@@ -2821,10 +3809,10 @@ static inline cl::sycl::event spmv(
     return done;
 }
 
-static inline cl::sycl::event spmv(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *a,
-    const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event spmv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   double alpha, const double *a, const double *x,
+                                   std::int64_t incx, double beta, double *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     spmv_precondition(queue, upper_lower, n, alpha, a, x, incx, beta, y, incy, dependencies);
     auto done = detail::spmv(get_device_id(queue), queue, upper_lower, n, alpha, a, x, incx, beta,
                              y, incy, dependencies);
@@ -2832,9 +3820,9 @@ static inline cl::sycl::event spmv(
     return done;
 }
 
-static inline cl::sycl::event spr(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *x,
-    std::int64_t incx, float *a, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event spr(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                  float alpha, const float *x, std::int64_t incx, float *a,
+                                  const std::vector<cl::sycl::event> &dependencies = {}) {
     spr_precondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
     auto done =
         detail::spr(get_device_id(queue), queue, upper_lower, n, alpha, x, incx, a, dependencies);
@@ -2842,10 +3830,9 @@ static inline cl::sycl::event spr(
     return done;
 }
 
-static inline cl::sycl::event spr(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *x,
-    std::int64_t incx, double *a,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event spr(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                  double alpha, const double *x, std::int64_t incx, double *a,
+                                  const std::vector<cl::sycl::event> &dependencies = {}) {
     spr_precondition(queue, upper_lower, n, alpha, x, incx, a, dependencies);
     auto done =
         detail::spr(get_device_id(queue), queue, upper_lower, n, alpha, x, incx, a, dependencies);
@@ -2853,10 +3840,10 @@ static inline cl::sycl::event spr(
     return done;
 }
 
-static inline cl::sycl::event spr2(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *x,
-    std::int64_t incx, const float *y, std::int64_t incy, float *a,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event spr2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   float alpha, const float *x, std::int64_t incx, const float *y,
+                                   std::int64_t incy, float *a,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     spr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
     auto done = detail::spr2(get_device_id(queue), queue, upper_lower, n, alpha, x, incx, y, incy,
                              a, dependencies);
@@ -2864,10 +3851,10 @@ static inline cl::sycl::event spr2(
     return done;
 }
 
-static inline cl::sycl::event spr2(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *x,
-    std::int64_t incx, const double *y, std::int64_t incy, double *a,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event spr2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   double alpha, const double *x, std::int64_t incx,
+                                   const double *y, std::int64_t incy, double *a,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     spr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, dependencies);
     auto done = detail::spr2(get_device_id(queue), queue, upper_lower, n, alpha, x, incx, y, incy,
                              a, dependencies);
@@ -2875,48 +3862,47 @@ static inline cl::sycl::event spr2(
     return done;
 }
 
-static inline cl::sycl::event swap(
-    cl::sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
-    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event swap(cl::sycl::queue &queue, std::int64_t n, float *x,
+                                   std::int64_t incx, float *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     swap_precondition(queue, n, x, incx, y, incy, dependencies);
     auto done = detail::swap(get_device_id(queue), queue, n, x, incx, y, incy, dependencies);
     swap_postcondition(queue, n, x, incx, y, incy, dependencies);
     return done;
 }
 
-static inline cl::sycl::event swap(
-    cl::sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
-    std::int64_t incy, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event swap(cl::sycl::queue &queue, std::int64_t n, double *x,
+                                   std::int64_t incx, double *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     swap_precondition(queue, n, x, incx, y, incy, dependencies);
     auto done = detail::swap(get_device_id(queue), queue, n, x, incx, y, incy, dependencies);
     swap_postcondition(queue, n, x, incx, y, incy, dependencies);
     return done;
 }
 
-static inline cl::sycl::event swap(
-    cl::sycl::queue &queue, std::int64_t n, std::complex<float> *x, std::int64_t incx,
-    std::complex<float> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event swap(cl::sycl::queue &queue, std::int64_t n, std::complex<float> *x,
+                                   std::int64_t incx, std::complex<float> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     swap_precondition(queue, n, x, incx, y, incy, dependencies);
     auto done = detail::swap(get_device_id(queue), queue, n, x, incx, y, incy, dependencies);
     swap_postcondition(queue, n, x, incx, y, incy, dependencies);
     return done;
 }
 
-static inline cl::sycl::event swap(
-    cl::sycl::queue &queue, std::int64_t n, std::complex<double> *x, std::int64_t incx,
-    std::complex<double> *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event swap(cl::sycl::queue &queue, std::int64_t n, std::complex<double> *x,
+                                   std::int64_t incx, std::complex<double> *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     swap_precondition(queue, n, x, incx, y, incy, dependencies);
     auto done = detail::swap(get_device_id(queue), queue, n, x, incx, y, incy, dependencies);
     swap_postcondition(queue, n, x, incx, y, incy, dependencies);
     return done;
 }
 
-static inline cl::sycl::event symm(
-    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
-    float alpha, const float *a, std::int64_t lda, const float *b, std::int64_t ldb, float beta,
-    float *c, std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                   std::int64_t m, std::int64_t n, float alpha, const float *a,
+                                   std::int64_t lda, const float *b, std::int64_t ldb, float beta,
+                                   float *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
     auto done = detail::symm(get_device_id(queue), queue, left_right, upper_lower, m, n, alpha, a,
@@ -2926,10 +3912,11 @@ static inline cl::sycl::event symm(
     return done;
 }
 
-static inline cl::sycl::event symm(
-    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
-    double alpha, const double *a, std::int64_t lda, const double *b, std::int64_t ldb, double beta,
-    double *c, std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                   std::int64_t m, std::int64_t n, double alpha, const double *a,
+                                   std::int64_t lda, const double *b, std::int64_t ldb, double beta,
+                                   double *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
     auto done = detail::symm(get_device_id(queue), queue, left_right, upper_lower, m, n, alpha, a,
@@ -2939,12 +3926,13 @@ static inline cl::sycl::event symm(
     return done;
 }
 
-static inline cl::sycl::event symm(
-    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
-    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-    std::complex<float> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                   std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   const std::complex<float> *b, std::int64_t ldb,
+                                   std::complex<float> beta, std::complex<float> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
     auto done = detail::symm(get_device_id(queue), queue, left_right, upper_lower, m, n, alpha, a,
@@ -2954,12 +3942,13 @@ static inline cl::sycl::event symm(
     return done;
 }
 
-static inline cl::sycl::event symm(
-    cl::sycl::queue &queue, side left_right, uplo upper_lower, std::int64_t m, std::int64_t n,
-    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
-    std::complex<double> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                   std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   const std::complex<double> *b, std::int64_t ldb,
+                                   std::complex<double> beta, std::complex<double> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     symm_precondition(queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
     auto done = detail::symm(get_device_id(queue), queue, left_right, upper_lower, m, n, alpha, a,
@@ -2969,10 +3958,10 @@ static inline cl::sycl::event symm(
     return done;
 }
 
-static inline cl::sycl::event symv(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *a,
-    std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event symv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   float alpha, const float *a, std::int64_t lda, const float *x,
+                                   std::int64_t incx, float beta, float *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     symv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     auto done = detail::symv(get_device_id(queue), queue, upper_lower, n, alpha, a, lda, x, incx,
                              beta, y, incy, dependencies);
@@ -2980,10 +3969,10 @@ static inline cl::sycl::event symv(
     return done;
 }
 
-static inline cl::sycl::event symv(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *a,
-    std::int64_t lda, const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event symv(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   double alpha, const double *a, std::int64_t lda, const double *x,
+                                   std::int64_t incx, double beta, double *y, std::int64_t incy,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     symv_precondition(queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy, dependencies);
     auto done = detail::symv(get_device_id(queue), queue, upper_lower, n, alpha, a, lda, x, incx,
                              beta, y, incy, dependencies);
@@ -2991,10 +3980,10 @@ static inline cl::sycl::event symv(
     return done;
 }
 
-static inline cl::sycl::event syr(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *x,
-    std::int64_t incx, float *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event syr(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                  float alpha, const float *x, std::int64_t incx, float *a,
+                                  std::int64_t lda,
+                                  const std::vector<cl::sycl::event> &dependencies = {}) {
     syr_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     auto done = detail::syr(get_device_id(queue), queue, upper_lower, n, alpha, x, incx, a, lda,
                             dependencies);
@@ -3002,10 +3991,10 @@ static inline cl::sycl::event syr(
     return done;
 }
 
-static inline cl::sycl::event syr(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *x,
-    std::int64_t incx, double *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event syr(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                  double alpha, const double *x, std::int64_t incx, double *a,
+                                  std::int64_t lda,
+                                  const std::vector<cl::sycl::event> &dependencies = {}) {
     syr_precondition(queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
     auto done = detail::syr(get_device_id(queue), queue, upper_lower, n, alpha, x, incx, a, lda,
                             dependencies);
@@ -3013,10 +4002,10 @@ static inline cl::sycl::event syr(
     return done;
 }
 
-static inline cl::sycl::event syr2(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *x,
-    std::int64_t incx, const float *y, std::int64_t incy, float *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event syr2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   float alpha, const float *x, std::int64_t incx, const float *y,
+                                   std::int64_t incy, float *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     syr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = detail::syr2(get_device_id(queue), queue, upper_lower, n, alpha, x, incx, y, incy,
                              a, lda, dependencies);
@@ -3024,10 +4013,10 @@ static inline cl::sycl::event syr2(
     return done;
 }
 
-static inline cl::sycl::event syr2(
-    cl::sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *x,
-    std::int64_t incx, const double *y, std::int64_t incy, double *a, std::int64_t lda,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event syr2(cl::sycl::queue &queue, uplo upper_lower, std::int64_t n,
+                                   double alpha, const double *x, std::int64_t incx,
+                                   const double *y, std::int64_t incy, double *a, std::int64_t lda,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     syr2_precondition(queue, upper_lower, n, alpha, x, incx, y, incy, a, lda, dependencies);
     auto done = detail::syr2(get_device_id(queue), queue, upper_lower, n, alpha, x, incx, y, incy,
                              a, lda, dependencies);
@@ -3035,10 +4024,11 @@ static inline cl::sycl::event syr2(
     return done;
 }
 
-static inline cl::sycl::event syr2k(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
-    float alpha, const float *a, std::int64_t lda, const float *b, std::int64_t ldb, float beta,
-    float *c, std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                    std::int64_t n, std::int64_t k, float alpha, const float *a,
+                                    std::int64_t lda, const float *b, std::int64_t ldb, float beta,
+                                    float *c, std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     auto done = detail::syr2k(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
@@ -3048,10 +4038,11 @@ static inline cl::sycl::event syr2k(
     return done;
 }
 
-static inline cl::sycl::event syr2k(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
-    double alpha, const double *a, std::int64_t lda, const double *b, std::int64_t ldb, double beta,
-    double *c, std::int64_t ldc, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                    std::int64_t n, std::int64_t k, double alpha, const double *a,
+                                    std::int64_t lda, const double *b, std::int64_t ldb,
+                                    double beta, double *c, std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     auto done = detail::syr2k(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
@@ -3061,12 +4052,13 @@ static inline cl::sycl::event syr2k(
     return done;
 }
 
-static inline cl::sycl::event syr2k(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
-    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    const std::complex<float> *b, std::int64_t ldb, std::complex<float> beta,
-    std::complex<float> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                    std::int64_t n, std::int64_t k, std::complex<float> alpha,
+                                    const std::complex<float> *a, std::int64_t lda,
+                                    const std::complex<float> *b, std::int64_t ldb,
+                                    std::complex<float> beta, std::complex<float> *c,
+                                    std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     auto done = detail::syr2k(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
@@ -3076,12 +4068,13 @@ static inline cl::sycl::event syr2k(
     return done;
 }
 
-static inline cl::sycl::event syr2k(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
-    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    const std::complex<double> *b, std::int64_t ldb, std::complex<double> beta,
-    std::complex<double> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                    std::int64_t n, std::int64_t k, std::complex<double> alpha,
+                                    const std::complex<double> *a, std::int64_t lda,
+                                    const std::complex<double> *b, std::int64_t ldb,
+                                    std::complex<double> beta, std::complex<double> *c,
+                                    std::int64_t ldc,
+                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     syr2k_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                        dependencies);
     auto done = detail::syr2k(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
@@ -3091,10 +4084,10 @@ static inline cl::sycl::event syr2k(
     return done;
 }
 
-static inline cl::sycl::event syrk(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
-    float alpha, const float *a, std::int64_t lda, float beta, float *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   std::int64_t n, std::int64_t k, float alpha, const float *a,
+                                   std::int64_t lda, float beta, float *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     syrk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
     auto done = detail::syrk(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
                              beta, c, ldc, dependencies);
@@ -3102,10 +4095,10 @@ static inline cl::sycl::event syrk(
     return done;
 }
 
-static inline cl::sycl::event syrk(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
-    double alpha, const double *a, std::int64_t lda, double beta, double *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   std::int64_t n, std::int64_t k, double alpha, const double *a,
+                                   std::int64_t lda, double beta, double *c, std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     syrk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
     auto done = detail::syrk(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
                              beta, c, ldc, dependencies);
@@ -3113,11 +4106,12 @@ static inline cl::sycl::event syrk(
     return done;
 }
 
-static inline cl::sycl::event syrk(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
-    std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
-    std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   std::int64_t n, std::int64_t k, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   std::complex<float> beta, std::complex<float> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     syrk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
     auto done = detail::syrk(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
                              beta, c, ldc, dependencies);
@@ -3125,11 +4119,12 @@ static inline cl::sycl::event syrk(
     return done;
 }
 
-static inline cl::sycl::event syrk(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n, std::int64_t k,
-    std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
-    std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   std::int64_t n, std::int64_t k, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   std::complex<double> beta, std::complex<double> *c,
+                                   std::int64_t ldc,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     syrk_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc, dependencies);
     auto done = detail::syrk(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a, lda,
                              beta, c, ldc, dependencies);
@@ -3137,10 +4132,135 @@ static inline cl::sycl::event syrk(
     return done;
 }
 
-static inline cl::sycl::event tbmv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    std::int64_t k, const float *a, std::int64_t lda, float *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower,
+                                         transpose *trans, std::int64_t *n, std::int64_t *k,
+                                         float *alpha, const float **a, std::int64_t *lda,
+                                         float *beta, float **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    syrk_batch_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
+                            group_count, group_size, dependencies);
+    auto done = detail::syrk_batch(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a,
+                                   lda, beta, c, ldc, group_count, group_size, dependencies);
+    syrk_batch_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
+                             group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower,
+                                         transpose *trans, std::int64_t *n, std::int64_t *k,
+                                         double *alpha, const double **a, std::int64_t *lda,
+                                         double *beta, double **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    syrk_batch_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
+                            group_count, group_size, dependencies);
+    auto done = detail::syrk_batch(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a,
+                                   lda, beta, c, ldc, group_count, group_size, dependencies);
+    syrk_batch_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
+                             group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower,
+                                         transpose *trans, std::int64_t *n, std::int64_t *k,
+                                         std::complex<float> *alpha, const std::complex<float> **a,
+                                         std::int64_t *lda, std::complex<float> *beta,
+                                         std::complex<float> **c, std::int64_t *ldc,
+                                         std::int64_t group_count, std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    syrk_batch_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
+                            group_count, group_size, dependencies);
+    auto done = detail::syrk_batch(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a,
+                                   lda, beta, c, ldc, group_count, group_size, dependencies);
+    syrk_batch_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
+                             group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower,
+                                         transpose *trans, std::int64_t *n, std::int64_t *k,
+                                         std::complex<double> *alpha,
+                                         const std::complex<double> **a, std::int64_t *lda,
+                                         std::complex<double> *beta, std::complex<double> **c,
+                                         std::int64_t *ldc, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    syrk_batch_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
+                            group_count, group_size, dependencies);
+    auto done = detail::syrk_batch(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a,
+                                   lda, beta, c, ldc, group_count, group_size, dependencies);
+    syrk_batch_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, beta, c, ldc,
+                             group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                         std::int64_t n, std::int64_t k, float alpha,
+                                         const float *a, std::int64_t lda, std::int64_t stride_a,
+                                         float beta, float *c, std::int64_t ldc,
+                                         std::int64_t stride_c, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    syrk_batch_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc,
+                            stride_c, batch_size, dependencies);
+    auto done = detail::syrk_batch(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a,
+                                   lda, stride_a, beta, c, ldc, stride_c, batch_size, dependencies);
+    syrk_batch_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc,
+                             stride_c, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                         std::int64_t n, std::int64_t k, double alpha,
+                                         const double *a, std::int64_t lda, std::int64_t stride_a,
+                                         double beta, double *c, std::int64_t ldc,
+                                         std::int64_t stride_c, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    syrk_batch_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc,
+                            stride_c, batch_size, dependencies);
+    auto done = detail::syrk_batch(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a,
+                                   lda, stride_a, beta, c, ldc, stride_c, batch_size, dependencies);
+    syrk_batch_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc,
+                             stride_c, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                         std::int64_t n, std::int64_t k, std::complex<float> alpha,
+                                         const std::complex<float> *a, std::int64_t lda,
+                                         std::int64_t stride_a, std::complex<float> beta,
+                                         std::complex<float> *c, std::int64_t ldc,
+                                         std::int64_t stride_c, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    syrk_batch_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc,
+                            stride_c, batch_size, dependencies);
+    auto done = detail::syrk_batch(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a,
+                                   lda, stride_a, beta, c, ldc, stride_c, batch_size, dependencies);
+    syrk_batch_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc,
+                             stride_c, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                         std::int64_t n, std::int64_t k, std::complex<double> alpha,
+                                         const std::complex<double> *a, std::int64_t lda,
+                                         std::int64_t stride_a, std::complex<double> beta,
+                                         std::complex<double> *c, std::int64_t ldc,
+                                         std::int64_t stride_c, std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    syrk_batch_precondition(queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc,
+                            stride_c, batch_size, dependencies);
+    auto done = detail::syrk_batch(get_device_id(queue), queue, upper_lower, trans, n, k, alpha, a,
+                                   lda, stride_a, beta, c, ldc, stride_c, batch_size, dependencies);
+    syrk_batch_postcondition(queue, upper_lower, trans, n, k, alpha, a, lda, stride_a, beta, c, ldc,
+                             stride_c, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, std::int64_t k, const float *a,
+                                   std::int64_t lda, float *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
     auto done = detail::tbmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a,
                              lda, x, incx, dependencies);
@@ -3148,10 +4268,10 @@ static inline cl::sycl::event tbmv(
     return done;
 }
 
-static inline cl::sycl::event tbmv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    std::int64_t k, const double *a, std::int64_t lda, double *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, std::int64_t k, const double *a,
+                                   std::int64_t lda, double *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
     auto done = detail::tbmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a,
                              lda, x, incx, dependencies);
@@ -3159,10 +4279,11 @@ static inline cl::sycl::event tbmv(
     return done;
 }
 
-static inline cl::sycl::event tbmv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    std::int64_t k, const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
-    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, std::int64_t k,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
     auto done = detail::tbmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a,
                              lda, x, incx, dependencies);
@@ -3170,10 +4291,11 @@ static inline cl::sycl::event tbmv(
     return done;
 }
 
-static inline cl::sycl::event tbmv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    std::int64_t k, const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
-    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event tbmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, std::int64_t k,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     tbmv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
     auto done = detail::tbmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a,
                              lda, x, incx, dependencies);
@@ -3181,10 +4303,10 @@ static inline cl::sycl::event tbmv(
     return done;
 }
 
-static inline cl::sycl::event tbsv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    std::int64_t k, const float *a, std::int64_t lda, float *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, std::int64_t k, const float *a,
+                                   std::int64_t lda, float *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
     auto done = detail::tbsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a,
                              lda, x, incx, dependencies);
@@ -3192,10 +4314,10 @@ static inline cl::sycl::event tbsv(
     return done;
 }
 
-static inline cl::sycl::event tbsv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    std::int64_t k, const double *a, std::int64_t lda, double *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, std::int64_t k, const double *a,
+                                   std::int64_t lda, double *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
     auto done = detail::tbsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a,
                              lda, x, incx, dependencies);
@@ -3203,10 +4325,11 @@ static inline cl::sycl::event tbsv(
     return done;
 }
 
-static inline cl::sycl::event tbsv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    std::int64_t k, const std::complex<float> *a, std::int64_t lda, std::complex<float> *x,
-    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, std::int64_t k,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
     auto done = detail::tbsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a,
                              lda, x, incx, dependencies);
@@ -3214,10 +4337,11 @@ static inline cl::sycl::event tbsv(
     return done;
 }
 
-static inline cl::sycl::event tbsv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    std::int64_t k, const std::complex<double> *a, std::int64_t lda, std::complex<double> *x,
-    std::int64_t incx, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event tbsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, std::int64_t k,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     tbsv_precondition(queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx, dependencies);
     auto done = detail::tbsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, k, a,
                              lda, x, incx, dependencies);
@@ -3225,10 +4349,10 @@ static inline cl::sycl::event tbsv(
     return done;
 }
 
-static inline cl::sycl::event tpmv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    const float *a, float *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, const float *a, float *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     tpmv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     auto done = detail::tpmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, a, x,
                              incx, dependencies);
@@ -3236,10 +4360,10 @@ static inline cl::sycl::event tpmv(
     return done;
 }
 
-static inline cl::sycl::event tpmv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    const double *a, double *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, const double *a, double *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     tpmv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     auto done = detail::tpmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, a, x,
                              incx, dependencies);
@@ -3247,10 +4371,10 @@ static inline cl::sycl::event tpmv(
     return done;
 }
 
-static inline cl::sycl::event tpmv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    const std::complex<float> *a, std::complex<float> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, const std::complex<float> *a,
+                                   std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     tpmv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     auto done = detail::tpmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, a, x,
                              incx, dependencies);
@@ -3258,10 +4382,10 @@ static inline cl::sycl::event tpmv(
     return done;
 }
 
-static inline cl::sycl::event tpmv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    const std::complex<double> *a, std::complex<double> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event tpmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, const std::complex<double> *a,
+                                   std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     tpmv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     auto done = detail::tpmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, a, x,
                              incx, dependencies);
@@ -3269,10 +4393,10 @@ static inline cl::sycl::event tpmv(
     return done;
 }
 
-static inline cl::sycl::event tpsv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    const float *a, float *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, const float *a, float *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     tpsv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     auto done = detail::tpsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, a, x,
                              incx, dependencies);
@@ -3280,10 +4404,10 @@ static inline cl::sycl::event tpsv(
     return done;
 }
 
-static inline cl::sycl::event tpsv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    const double *a, double *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, const double *a, double *x,
+                                   std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     tpsv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     auto done = detail::tpsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, a, x,
                              incx, dependencies);
@@ -3291,10 +4415,10 @@ static inline cl::sycl::event tpsv(
     return done;
 }
 
-static inline cl::sycl::event tpsv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    const std::complex<float> *a, std::complex<float> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, const std::complex<float> *a,
+                                   std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     tpsv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     auto done = detail::tpsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, a, x,
                              incx, dependencies);
@@ -3302,10 +4426,10 @@ static inline cl::sycl::event tpsv(
     return done;
 }
 
-static inline cl::sycl::event tpsv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    const std::complex<double> *a, std::complex<double> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event tpsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, const std::complex<double> *a,
+                                   std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     tpsv_precondition(queue, upper_lower, trans, unit_diag, n, a, x, incx, dependencies);
     auto done = detail::tpsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, a, x,
                              incx, dependencies);
@@ -3313,10 +4437,11 @@ static inline cl::sycl::event tpsv(
     return done;
 }
 
-static inline cl::sycl::event trmm(
-    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda, float *b,
-    std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
+                                   float alpha, const float *a, std::int64_t lda, float *b,
+                                   std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
     auto done = detail::trmm(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
@@ -3326,10 +4451,11 @@ static inline cl::sycl::event trmm(
     return done;
 }
 
-static inline cl::sycl::event trmm(
-    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t m, std::int64_t n, double alpha, const double *a, std::int64_t lda, double *b,
-    std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
+                                   double alpha, const double *a, std::int64_t lda, double *b,
+                                   std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
     auto done = detail::trmm(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
@@ -3339,11 +4465,11 @@ static inline cl::sycl::event trmm(
     return done;
 }
 
-static inline cl::sycl::event trmm(
-    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t m, std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
-    std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
+                                   std::complex<float> alpha, const std::complex<float> *a,
+                                   std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
     auto done = detail::trmm(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
@@ -3353,11 +4479,11 @@ static inline cl::sycl::event trmm(
     return done;
 }
 
-static inline cl::sycl::event trmm(
-    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t m, std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
-    std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
+                                   std::complex<double> alpha, const std::complex<double> *a,
+                                   std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     trmm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
     auto done = detail::trmm(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
@@ -3367,10 +4493,10 @@ static inline cl::sycl::event trmm(
     return done;
 }
 
-static inline cl::sycl::event trmv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    const float *a, std::int64_t lda, float *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, const float *a, std::int64_t lda,
+                                   float *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     trmv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     auto done = detail::trmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, a, lda,
                              x, incx, dependencies);
@@ -3378,10 +4504,10 @@ static inline cl::sycl::event trmv(
     return done;
 }
 
-static inline cl::sycl::event trmv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    const double *a, std::int64_t lda, double *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, const double *a,
+                                   std::int64_t lda, double *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     trmv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     auto done = detail::trmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, a, lda,
                              x, incx, dependencies);
@@ -3389,10 +4515,10 @@ static inline cl::sycl::event trmv(
     return done;
 }
 
-static inline cl::sycl::event trmv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    const std::complex<float> *a, std::int64_t lda, std::complex<float> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, const std::complex<float> *a,
+                                   std::int64_t lda, std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     trmv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     auto done = detail::trmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, a, lda,
                              x, incx, dependencies);
@@ -3400,10 +4526,10 @@ static inline cl::sycl::event trmv(
     return done;
 }
 
-static inline cl::sycl::event trmv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    const std::complex<double> *a, std::int64_t lda, std::complex<double> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event trmv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, const std::complex<double> *a,
+                                   std::int64_t lda, std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     trmv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     auto done = detail::trmv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, a, lda,
                              x, incx, dependencies);
@@ -3411,10 +4537,11 @@ static inline cl::sycl::event trmv(
     return done;
 }
 
-static inline cl::sycl::event trsm(
-    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda, float *b,
-    std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
+                                   float alpha, const float *a, std::int64_t lda, float *b,
+                                   std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
     auto done = detail::trsm(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
@@ -3424,10 +4551,11 @@ static inline cl::sycl::event trsm(
     return done;
 }
 
-static inline cl::sycl::event trsm(
-    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t m, std::int64_t n, double alpha, const double *a, std::int64_t lda, double *b,
-    std::int64_t ldb, const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
+                                   double alpha, const double *a, std::int64_t lda, double *b,
+                                   std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
     auto done = detail::trsm(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
@@ -3437,11 +4565,11 @@ static inline cl::sycl::event trsm(
     return done;
 }
 
-static inline cl::sycl::event trsm(
-    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t m, std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
-    std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
+                                   std::complex<float> alpha, const std::complex<float> *a,
+                                   std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
     auto done = detail::trsm(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
@@ -3451,11 +4579,11 @@ static inline cl::sycl::event trsm(
     return done;
 }
 
-static inline cl::sycl::event trsm(
-    cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans, diag unit_diag,
-    std::int64_t m, std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
-    std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                   transpose trans, diag unit_diag, std::int64_t m, std::int64_t n,
+                                   std::complex<double> alpha, const std::complex<double> *a,
+                                   std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     trsm_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda, b, ldb,
                       dependencies);
     auto done = detail::trsm(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
@@ -3465,10 +4593,144 @@ static inline cl::sycl::event trsm(
     return done;
 }
 
-static inline cl::sycl::event trsv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    const float *a, std::int64_t lda, float *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                         transpose trans, diag unit_diag, std::int64_t m,
+                                         std::int64_t n, float alpha, const float *a,
+                                         std::int64_t lda, std::int64_t stride_a, float *b,
+                                         std::int64_t ldb, std::int64_t stride_b,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                            stride_a, b, ldb, stride_b, batch_size, dependencies);
+    auto done = detail::trsm_batch(get_device_id(queue), queue, left_right, upper_lower, trans,
+                                   unit_diag, m, n, alpha, a, lda, stride_a, b, ldb, stride_b,
+                                   batch_size, dependencies);
+    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                             stride_a, b, ldb, stride_b, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                         transpose trans, diag unit_diag, std::int64_t m,
+                                         std::int64_t n, double alpha, const double *a,
+                                         std::int64_t lda, std::int64_t stride_a, double *b,
+                                         std::int64_t ldb, std::int64_t stride_b,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                            stride_a, b, ldb, stride_b, batch_size, dependencies);
+    auto done = detail::trsm_batch(get_device_id(queue), queue, left_right, upper_lower, trans,
+                                   unit_diag, m, n, alpha, a, lda, stride_a, b, ldb, stride_b,
+                                   batch_size, dependencies);
+    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                             stride_a, b, ldb, stride_b, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                         transpose trans, diag unit_diag, std::int64_t m,
+                                         std::int64_t n, std::complex<float> alpha,
+                                         const std::complex<float> *a, std::int64_t lda,
+                                         std::int64_t stride_a, std::complex<float> *b,
+                                         std::int64_t ldb, std::int64_t stride_b,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                            stride_a, b, ldb, stride_b, batch_size, dependencies);
+    auto done = detail::trsm_batch(get_device_id(queue), queue, left_right, upper_lower, trans,
+                                   unit_diag, m, n, alpha, a, lda, stride_a, b, ldb, stride_b,
+                                   batch_size, dependencies);
+    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                             stride_a, b, ldb, stride_b, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+                                         transpose trans, diag unit_diag, std::int64_t m,
+                                         std::int64_t n, std::complex<double> alpha,
+                                         const std::complex<double> *a, std::int64_t lda,
+                                         std::int64_t stride_a, std::complex<double> *b,
+                                         std::int64_t ldb, std::int64_t stride_b,
+                                         std::int64_t batch_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                            stride_a, b, ldb, stride_b, batch_size, dependencies);
+    auto done = detail::trsm_batch(get_device_id(queue), queue, left_right, upper_lower, trans,
+                                   unit_diag, m, n, alpha, a, lda, stride_a, b, ldb, stride_b,
+                                   batch_size, dependencies);
+    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                             stride_a, b, ldb, stride_b, batch_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trsm_batch(cl::sycl::queue &queue, side *left_right,
+                                         uplo *upper_lower, transpose *trans, diag *unit_diag,
+                                         std::int64_t *m, std::int64_t *n, float *alpha,
+                                         const float **a, std::int64_t *lda, float **b,
+                                         std::int64_t *ldb, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                            b, ldb, group_count, group_size, dependencies);
+    auto done =
+        detail::trsm_batch(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
+                           m, n, alpha, a, lda, b, ldb, group_count, group_size, dependencies);
+    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                             b, ldb, group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trsm_batch(cl::sycl::queue &queue, side *left_right,
+                                         uplo *upper_lower, transpose *trans, diag *unit_diag,
+                                         std::int64_t *m, std::int64_t *n, double *alpha,
+                                         const double **a, std::int64_t *lda, double **b,
+                                         std::int64_t *ldb, std::int64_t group_count,
+                                         std::int64_t *group_size,
+                                         const std::vector<cl::sycl::event> &dependencies = {}) {
+    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                            b, ldb, group_count, group_size, dependencies);
+    auto done =
+        detail::trsm_batch(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
+                           m, n, alpha, a, lda, b, ldb, group_count, group_size, dependencies);
+    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                             b, ldb, group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trsm_batch(
+    cl::sycl::queue &queue, side *left_right, uplo *upper_lower, transpose *trans, diag *unit_diag,
+    std::int64_t *m, std::int64_t *n, std::complex<float> *alpha, const std::complex<float> **a,
+    std::int64_t *lda, std::complex<float> **b, std::int64_t *ldb, std::int64_t group_count,
+    std::int64_t *group_size, const std::vector<cl::sycl::event> &dependencies = {}) {
+    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                            b, ldb, group_count, group_size, dependencies);
+    auto done =
+        detail::trsm_batch(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
+                           m, n, alpha, a, lda, b, ldb, group_count, group_size, dependencies);
+    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                             b, ldb, group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trsm_batch(
+    cl::sycl::queue &queue, side *left_right, uplo *upper_lower, transpose *trans, diag *unit_diag,
+    std::int64_t *m, std::int64_t *n, std::complex<double> *alpha, const std::complex<double> **a,
+    std::int64_t *lda, std::complex<double> **b, std::int64_t *ldb, std::int64_t group_count,
+    std::int64_t *group_size, const std::vector<cl::sycl::event> &dependencies = {}) {
+    trsm_batch_precondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                            b, ldb, group_count, group_size, dependencies);
+    auto done =
+        detail::trsm_batch(get_device_id(queue), queue, left_right, upper_lower, trans, unit_diag,
+                           m, n, alpha, a, lda, b, ldb, group_count, group_size, dependencies);
+    trsm_batch_postcondition(queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, lda,
+                             b, ldb, group_count, group_size, dependencies);
+    return done;
+}
+
+static inline cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, const float *a, std::int64_t lda,
+                                   float *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     auto done = detail::trsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, a, lda,
                              x, incx, dependencies);
@@ -3476,10 +4738,10 @@ static inline cl::sycl::event trsv(
     return done;
 }
 
-static inline cl::sycl::event trsv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    const double *a, std::int64_t lda, double *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, const double *a,
+                                   std::int64_t lda, double *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     auto done = detail::trsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, a, lda,
                              x, incx, dependencies);
@@ -3487,10 +4749,10 @@ static inline cl::sycl::event trsv(
     return done;
 }
 
-static inline cl::sycl::event trsv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    const std::complex<float> *a, std::int64_t lda, std::complex<float> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, const std::complex<float> *a,
+                                   std::int64_t lda, std::complex<float> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     auto done = detail::trsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, a, lda,
                              x, incx, dependencies);
@@ -3498,10 +4760,10 @@ static inline cl::sycl::event trsv(
     return done;
 }
 
-static inline cl::sycl::event trsv(
-    cl::sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
-    const std::complex<double> *a, std::int64_t lda, std::complex<double> *x, std::int64_t incx,
-    const cl::sycl::vector_class<cl::sycl::event> &dependencies = {}) {
+static inline cl::sycl::event trsv(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
+                                   diag unit_diag, std::int64_t n, const std::complex<double> *a,
+                                   std::int64_t lda, std::complex<double> *x, std::int64_t incx,
+                                   const std::vector<cl::sycl::event> &dependencies = {}) {
     trsv_precondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     auto done = detail::trsv(get_device_id(queue), queue, upper_lower, trans, unit_diag, n, a, lda,
                              x, incx, dependencies);

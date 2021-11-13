@@ -129,7 +129,7 @@ her (USM Version)
                        std::int64_t incx,
                        T *a,
                        std::int64_t lda,
-                       const sycl::vector_class<sycl::event> &dependencies = {})
+                       const std::vector<sycl::event> &dependencies = {})
    }
 .. code-block:: cpp
 
@@ -142,7 +142,7 @@ her (USM Version)
                        std::int64_t incx,
                        T *a,
                        std::int64_t lda,
-                       const sycl::vector_class<sycl::event> &dependencies = {})
+                       const std::vector<sycl::event> &dependencies = {})
    }
 
 .. container:: section

@@ -1,6 +1,11 @@
 # oneAPI Math Kernel Library (oneMKL) Interfaces
 
+<img align="left" src="https://spec.oneapi.io/oneapi-logo-white-scaled.jpg" alt="oneAPI logo">
+
 oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel C++ (DPC++) interface according to the [oneMKL specification](https://spec.oneapi.com/versions/latest/elements/oneMKL/source/index.html). It works with multiple devices (backends) using device-specific libraries underneath.
+
+oneMKL is part of [oneAPI](https://oneapi.io).
+<br/><br/>
 
 <table>
     <thead>
@@ -107,7 +112,7 @@ $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl_blas_mklcpu –lonemkl_blas_c
 
 ### Supported Configurations:
 
-Supported domains: BLAS, RNG
+Supported domains: BLAS, LAPACK, RNG
 
 #### Linux*
 
@@ -139,6 +144,16 @@ Supported domains: BLAS, RNG
         <tr>
             <td align="center">x86 CPU</td>
             <td align="center">NETLIB LAPACK</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td rowspan=2 align="center">LAPACK</td>
+            <td align="center">x86 CPU</td>
+            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">Intel GPU</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -184,6 +199,16 @@ Supported domains: BLAS, RNG
         <tr>
             <td align="center">x86 CPU</td>
             <td align="center">NETLIB LAPACK</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td rowspan=2 align="center">LAPACK</td>
+            <td align="center">x86 CPU</td>
+            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">Intel GPU</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -484,15 +509,16 @@ conan build ..
 
 2. Build and install all required [dependencies](#software-requirements). 
 
-Then:
+### Building for oneMKL
 
 - On Linux*
 ```bash
 # Inside <path to onemkl>
 mkdir build && cd build
 export CXX=<path_to_dpcpp_compiler>/bin/dpcpp;
-cmake .. [-DMKL_ROOT=<mkl_install_prefix>] \               # required only if environment variable MKLROOT is not set
-         [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] # required only for testing
+cmake .. [-DMKL_ROOT=<mkl_install_prefix>] \                    # required only if environment variable MKLROOT is not set
+         [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \    # required only for testing
+         [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]  # required only for testing
 cmake --build .
 ctest
 cmake --install . --prefix <path_to_install_dir>
@@ -502,12 +528,42 @@ cmake --install . --prefix <path_to_install_dir>
 # Inside <path to onemkl>
 md build && cd build
 cmake .. -G Ninja
-                  [-DMKL_ROOT=<mkl_install_prefix>] \                   # required only if environment variable MKLROOT is not set
-                  [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]     # required only for testing
+                  [-DMKL_ROOT=<mkl_install_prefix>] \                    # required only if environment variable MKLROOT is not set
+                  [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \    # required only for testing
+                  [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]  # required only for testing
 
 ninja 
 ctest
 cmake --install . --prefix <path_to_install_dir>
+```
+
+### Building for CUDA
+
+- On Linux*
+
+With the cuBLAS backend:
+
+```bash
+# Inside <path to onemkl>
+mkdir build && cd build
+export CXX=<path_to_dpcpp_compiler>/bin/dpcpp;
+cmake .. -DENABLE_CUBLAS_BACKEND=True                      \
+         -DENABLE_MKLCPU_BACKEND=False                     \   # disable Intel MKL CPU backend
+         -DENABLE_MKLGPU_BACKEND=False                     \   # disable Intel MKL GPU backend
+         [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \   # required only for testing
+cmake --build .
+ctest
+cmake --install . --prefix <path_to_install_dir>
+```
+
+To build with the cuRAND backend instead simply replace:
+```bash
+-DENABLE_CUBLAS_BACKEND=True   \
+```
+
+With:
+```bash
+-DENABLE_CURAND_BACKEND=True   \
 ```
 
 ### Build Options

@@ -23,6 +23,7 @@
 #include "oneapi/mkl/types.hpp"
 
 #include "oneapi/mkl/blas.hpp"
+#include "oneapi/mkl/lapack.hpp"
 #include "oneapi/mkl/rng.hpp"
 
 #endif //_ONEMKL_HPP_

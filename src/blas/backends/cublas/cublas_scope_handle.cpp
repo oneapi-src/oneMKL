@@ -48,17 +48,15 @@ cublas_handle::~cublas_handle() noexcept(false) {
  */
 thread_local cublas_handle CublasScopedContextHandler::handle_helper = cublas_handle{};
 
-CublasScopedContextHandler::CublasScopedContextHandler(cl::sycl::queue queue) {
+CublasScopedContextHandler::CublasScopedContextHandler(cl::sycl::queue queue,
+                                                       cl::sycl::interop_handler &ih)
+        : ih(ih),
+          needToRecover_(false) {
     placedContext_ = queue.get_context();
     auto device = queue.get_device();
     auto desired = cl::sycl::get_native<cl::sycl::backend::cuda>(placedContext_);
-    auto cudaDevice = cl::sycl::get_native<cl::sycl::backend::cuda>(device);
     CUresult err;
     CUDA_ERROR_FUNC(cuCtxGetCurrent, err, &original_);
-    CUcontext primary;
-    cuDevicePrimaryCtxRetain(&primary, cudaDevice);
-    bool isPrimary = primary == desired;
-    cuDevicePrimaryCtxRelease(cudaDevice);
     if (original_ != desired) {
         // Sets the desired context as the active one for the thread
         CUDA_ERROR_FUNC(cuCtxSetCurrent, err, desired);
@@ -68,7 +66,7 @@ CublasScopedContextHandler::CublasScopedContextHandler(cl::sycl::queue queue) {
         // same underlying CUDA primary context are destroyed. This emulates
         // the behaviour of the CUDA runtime api, and avoids costly context
         // switches. No action is required on this side of the if.
-        needToRecover_ = !(original_ == nullptr && isPrimary);
+        needToRecover_ = !(original_ == nullptr);
     }
 }
 
@@ -97,7 +95,8 @@ void ContextCallback(void *userData) {
 }
 
 cublasHandle_t CublasScopedContextHandler::get_handle(const cl::sycl::queue &queue) {
-    auto piPlacedContext_ = reinterpret_cast<pi_context>(placedContext_.get());
+    auto piPlacedContext_ =
+        reinterpret_cast<pi_context>(cl::sycl::get_native<cl::sycl::backend::cuda>(placedContext_));
     CUstream streamId = get_stream(queue);
     cublasStatus_t err;
     auto it = handle_helper.cublas_handle_mapper_.find(piPlacedContext_);

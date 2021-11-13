@@ -1,21 +1,60 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions
-* and limitations under the License.
-*
-*
-* SPDX-License-Identifier: Apache-2.0
-*******************************************************************************/
+ * cuRAND back-end Copyright (c) 2021, The Regents of the University of
+ * California, through Lawrence Berkeley National Laboratory (subject to receipt
+ * of any required approvals from the U.S. Dept. of Energy). All rights
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * (1) Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
+ *
+ * (2) Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ *
+ * (3) Neither the name of the University of California, Lawrence Berkeley
+ * National Laboratory, U.S. Dept. of Energy nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
+ *
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * You are under no obligation whatsoever to provide any bug fixes, patches,
+ * or upgrades to the features, functionality or performance of the source
+ * code ("Enhancements") to anyone; however, if you choose to make your
+ * Enhancements available either publicly, or directly to Lawrence Berkeley
+ * National Laboratory, without imposing a separate written license agreement
+ * for such Enhancements, then you hereby grant the following license: a
+ * non-exclusive, royalty-free perpetual license to install, use, modify,
+ * prepare derivative works, incorporate into other computer software,
+ * distribute, and sublicense such enhancements or derivative works thereof,
+ * in binary and source code form.
+ *
+ * If you have questions about your rights to use or distribute this software,
+ * please contact Berkeley Lab's Intellectual Property Office at
+ * IPO@lbl.gov.
+ *
+ * NOTICE.  This Software was developed under funding from the U.S. Department
+ * of Energy and the U.S. Government consequently retains certain rights.  As
+ * such, the U.S. Government has been granted for itself and others acting on
+ * its behalf a paid-up, nonexclusive, irrevocable, worldwide license in the
+ * Software to reproduce, distribute copies to the public, prepare derivative
+ * works, and perform publicly and display publicly, and to permit others to do
+ * so.
+ ******************************************************************************/
 
 /**
  * @file curand_helper.cpp : contains the implementation of all the routines
@@ -23,9 +62,11 @@
  */
 #ifndef _MKL_RNG_CURAND_HELPER_HPP_
 #define _MKL_RNG_CURAND_HELPER_HPP_
-#include <curand.h>
 #include <cuda.h>
+#include <curand.h>
+
 #include <complex>
+
 #include "oneapi/mkl/types.hpp"
 
 namespace oneapi {
@@ -149,11 +190,12 @@ public:
         throw curand_error(std::string(#func) + std::string(" : "), status); \
     }
 
-// Static template functions oneapi::mkl::rng::curand::range_transform_fp for Buffer and USM APIs
+// Static template functions oneapi::mkl::rng::curand::range_transform_fp for
+// Buffer and USM APIs
 //
 // cuRAND has no built-in functionality to specify a custom range for sampling
-// random numbers; `curandGenerateUniform' generates uniform random numbers on [0, 1).
-// This function is used to convert to range [a, b).
+// random numbers; `curandGenerateUniform' generates uniform random numbers on
+// [0, 1). This function is used to convert to range [a, b).
 //
 // Supported types:
 //      float
@@ -213,11 +255,12 @@ static inline cl::sycl::event range_transform_fp_accurate(cl::sycl::queue& queue
     });
 }
 
-// Static template functions oneapi::mkl::rng::curand::range_transform_int for Buffer and USM APIs
+// Static template functions oneapi::mkl::rng::curand::range_transform_int for
+// Buffer and USM APIs
 //
 // cuRAND has no built-in functionality to specify a custom range for sampling
-// random numbers; `curandGenerateUniform' generates uniform random numbers on [0, 1).
-// This function is used to convert to range [a, b).
+// random numbers; `curandGenerateUniform' generates uniform random numbers on
+// [0, 1). This function is used to convert to range [a, b).
 //
 // Supported types:
 //      std::int32_t
@@ -248,7 +291,8 @@ inline cl::sycl::event range_transform_int(cl::sycl::queue& queue, T a, T b, std
     });
 }
 
-// Static template functions oneapi::mkl::rng::curand::sample_bernoulli for Buffer and USM APIs
+// Static template functions oneapi::mkl::rng::curand::sample_bernoulli for
+// Buffer and USM APIs
 //
 // cuRAND has no built-in functionality to sample from a Bernoulli distribution.
 // The implementation here uses uniformly-generated random numbers and returns

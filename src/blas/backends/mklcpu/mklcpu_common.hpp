@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _MKL_CPU_COMMON_HPP_
-#define _MKL_CPU_COMMON_HPP_
+#ifndef _MKLCPU_COMMON_HPP_
+#define _MKLCPU_COMMON_HPP_
 
 #define MKL_Complex8  std::complex<float>
 #define MKL_Complex16 std::complex<double>
@@ -31,6 +31,7 @@
 
 #include "oneapi/mkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
 #include "oneapi/mkl/types.hpp"
+#include "runtime_support_helper.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -152,6 +153,20 @@ inline bool isNonTranspose(transpose trans) {
     return trans == transpose::nontrans;
 }
 
+template <typename offset_type>
+inline offset offset_convert(offset_type off_kind) {
+    return offset::F;
+}
+
+template <>
+inline offset offset_convert(CBLAS_OFFSET off_kind) {
+    if (off_kind == CblasFixOffset)
+        return offset::F;
+    if (off_kind == CblasRowOffset)
+        return offset::R;
+    return offset::C;
+}
+
 template <typename T_src, typename T_dest, typename transpose_type>
 static inline void copy_mat(T_src &src, MKL_LAYOUT layout, transpose_type trans, int64_t row,
                             int64_t col, int64_t ld, T_dest off, T_dest *&dest) {
@@ -172,8 +187,8 @@ static inline void copy_mat(T_src &src, MKL_LAYOUT layout, transpose_type trans,
 }
 
 template <typename T_src, typename T_dest, typename T_off, typename offset_type>
-static inline void copy_mat(T_src &src, MKL_LAYOUT layout, int64_t row, int64_t col, int64_t ld,
-                            offset_type off_kind, T_off off, T_dest &dest) {
+static inline void copy_mat(T_src *src, MKL_LAYOUT layout, int64_t row, int64_t col, int64_t ld,
+                            offset_type off_kind, T_off off, T_dest *dest) {
     using T_data = typename std::remove_reference<decltype(dest[0])>::type;
     int64_t i, j;
     T_data tmp;
@@ -181,7 +196,7 @@ static inline void copy_mat(T_src &src, MKL_LAYOUT layout, int64_t row, int64_t 
     int64_t Jend = (layout == MKL_COL_MAJOR) ? col : row;
     int64_t Iend = (layout == MKL_COL_MAJOR) ? row : col;
 
-    if (off_kind == offset::F) {
+    if (offset_convert(off_kind) == offset::F) {
         tmp = off[0];
         for (j = 0; j < Jend; j++) {
             for (i = 0; i < Iend; i++) {
@@ -189,8 +204,8 @@ static inline void copy_mat(T_src &src, MKL_LAYOUT layout, int64_t row, int64_t 
             }
         }
     }
-    else if (((off_kind == offset::C) && (layout == MKL_COL_MAJOR)) ||
-             ((off_kind == offset::R) && (layout == MKL_ROW_MAJOR))) {
+    else if (((offset_convert(off_kind) == offset::C) && (layout == MKL_COL_MAJOR)) ||
+             ((offset_convert(off_kind) == offset::R) && (layout == MKL_ROW_MAJOR))) {
         for (j = 0; j < Jend; j++) {
             for (i = 0; i < Iend; i++) {
                 tmp = off[i];
@@ -208,9 +223,17 @@ static inline void copy_mat(T_src &src, MKL_LAYOUT layout, int64_t row, int64_t 
     }
 }
 
+inline offset column_to_row(offset o) {
+    return (o == offset::C) ? offset::R : (o == offset::R) ? offset::C : offset::F;
+}
+
+static inline bool is_int8(int v) {
+    return (v >= -128) && (v < 128);
+}
+
 } // namespace mklcpu
 } // namespace blas
 } // namespace mkl
 } // namespace oneapi
 
-#endif //_MKL_CPU_COMMON_HPP_
+#endif //_MKLCPU_COMMON_HPP_

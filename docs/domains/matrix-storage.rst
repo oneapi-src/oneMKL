@@ -577,5 +577,5 @@ Matrix Storage
              }_\text{1 + (1-n) x incx}] \quad if \:incx \:< \:0 
 
 
-      **Parent topic:** :ref:`onemkl_dense_linear_algebra`
+
 

@@ -18,7 +18,7 @@
 #===============================================================================
 
 # Build object from all test sources
-set(EXTENSIONS_SOURCES "gemm_bias.cpp" "gemmt.cpp" "gemmt_usm.cpp")
+set(EXTENSIONS_SOURCES "gemm_bias.cpp" "gemmt.cpp" "gemm_bias_usm.cpp" "gemmt_usm.cpp")
 
 if(BUILD_SHARED_LIBS)
   add_library(blas_extensions_rt OBJECT ${EXTENSIONS_SOURCES})
@@ -31,7 +31,11 @@ if(BUILD_SHARED_LIBS)
       PUBLIC ${CMAKE_BINARY_DIR}/bin
       PUBLIC ${CBLAS_INCLUDE}
   )
-  target_link_libraries(blas_extensions_rt PUBLIC ONEMKL::SYCL::SYCL)
+  if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+    add_sycl_to_target(TARGET blas_extensions_rt SOURCES ${EXTENSIONS_SOURCES})
+  else()
+    target_link_libraries(blas_extensions_rt PUBLIC ONEMKL::SYCL::SYCL)
+  endif()
 endif()
 
 add_library(blas_extensions_ct OBJECT ${EXTENSIONS_SOURCES})
@@ -44,4 +48,8 @@ target_include_directories(blas_extensions_ct
     PUBLIC ${CMAKE_BINARY_DIR}/bin
     PUBLIC ${CBLAS_INCLUDE}
 )
-target_link_libraries(blas_extensions_ct PUBLIC ONEMKL::SYCL::SYCL)
+if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+  add_sycl_to_target(TARGET blas_extensions_ct  SOURCES ${EXTENSIONS_SOURCES})
+else()
+  target_link_libraries(blas_extensions_ct PUBLIC ONEMKL::SYCL::SYCL)
+endif()

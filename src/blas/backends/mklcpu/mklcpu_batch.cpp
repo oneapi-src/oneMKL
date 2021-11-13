@@ -19,6 +19,7 @@
 
 #include <CL/sycl.hpp>
 
+#include "oneapi/mkl/exceptions.hpp"
 #include "mklcpu_common.hpp"
 #include "oneapi/mkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
 
@@ -29,15 +30,23 @@ namespace mklcpu {
 namespace column_major {
 
 #define CBLASMAJOR CblasColMajor
+#define COLUMN_MAJOR
+#define MKLMAJOR MKL_COL_MAJOR
 #include "mklcpu_batch.cxx"
 #undef CBLASMAJOR
+#undef COLUMN_MAJOR
+#undef MKLMAJOR
 
 } // namespace column_major
 namespace row_major {
 
 #define CBLASMAJOR CblasRowMajor
+#define ROW_MAJOR
+#define MKLMAJOR MKL_ROW_MAJOR
 #include "mklcpu_batch.cxx"
 #undef CBLASMAJOR
+#undef ROW_MAJOR
+#undef MKLMAJOR
 
 } // namespace row_major
 } // namespace mklcpu
