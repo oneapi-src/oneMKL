@@ -116,7 +116,11 @@ int main(int argc, char** argv) {
                         if (dev.is_gpu() && vendor_id == NVIDIA_ID)
                             continue;
 #endif
+#ifdef __HIPSYCL__
+                        if (dev.is_accelerator())
+#else
                         if (!dev.is_accelerator())
+#endif
                             local_devices.push_back(dev);
                     }
                 }

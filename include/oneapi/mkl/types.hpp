@@ -21,6 +21,7 @@
 #define _ONEMKL_TYPES_HPP_
 
 #include "oneapi/mkl/bfloat16.hpp"
+#include <CL/sycl.hpp>
 
 namespace oneapi {
 namespace mkl {
@@ -106,5 +107,11 @@ enum class order : char {
 
 } //namespace mkl
 } //namespace oneapi
+
+// Workaround for supporting ::half for hipSYCL
+// TODO: This should be removed after the interface is SYCL2020 conformant
+#ifdef __HIPSYCL__
+using ::cl::sycl::half;
+#endif
 
 #endif //_ONEMKL_TYPES_HPP_

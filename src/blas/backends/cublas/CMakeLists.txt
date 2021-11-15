@@ -25,7 +25,8 @@ set(SOURCES cublas_level1.cpp
                 cublas_level3.cpp 
                 cublas_batch.cpp 
                 cublas_extensions.cpp 
-                cublas_scope_handle.cpp 
+                $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},dpc++>:cublas_scope_handle.cpp >
+                $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},hipsycl>:cublas_scope_handle_hipsycl.cpp >
                 $<$<BOOL:${BUILD_SHARED_LIBS}>: cublas_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
