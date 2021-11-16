@@ -72,11 +72,12 @@ void ContextCallback(void *userData) {
         cublasStatus_t err1;
         CUBLAS_ERROR_FUNC(cublasDestroy, err1, handle);
         handle = nullptr;
-    } else {
-      // if the handle is nullptr it means the handle was already destroyed by
-      // the cublas_handle destructor and we're free to delete the atomic
-      // object.
-      delete ptr;
+    }
+    else {
+        // if the handle is nullptr it means the handle was already destroyed by
+        // the cublas_handle destructor and we're free to delete the atomic
+        // object.
+        delete ptr;
     }
 }
 
