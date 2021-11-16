@@ -18,7 +18,7 @@
 #===============================================================================
 
 from conans import ConanFile, CMake, tools
-from packaging.version import parse
+from pkg_resources.packaging.version import parse
 from six import StringIO
 
 class oneMKLConan(ConanFile):
