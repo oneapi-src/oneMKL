@@ -18,7 +18,7 @@
 #===============================================================================
 
 from conans import ConanFile, CMake, tools
-from pkg_resources.packaging.version import parse
+from pkg_resources import packaging
 from six import StringIO
 
 class oneMKLConan(ConanFile):
@@ -101,8 +101,8 @@ THIRD-PARTY-PROGRAMS file and in the README.md file included with the Software P
             python_exe = "python"
             my_buffer = StringIO()
             self.run(f"{python_exe} --version", output=my_buffer)
-            ver_found = parse( my_buffer.getvalue().replace('Python ', '') )
-            if ver_found < parse('3.6.0'):
+            ver_found = packaging.version.parse( my_buffer.getvalue().replace('Python ', '') )
+            if ver_found < packaging.version.parse('3.6.0'):
                 self.output.error(f"Python 3.6.0 or higher required. Found {ver_found}")
                 return
         return python_exe
