@@ -108,10 +108,8 @@ enum class order : char {
 } //namespace mkl
 } //namespace oneapi
 
-// Workaround for supporting ::half for hipSYCL
+// Workaround for supporting ::half for hipSYCL and DPC++
 // TODO: This should be removed after the interface is SYCL2020 conformant
-#ifdef __HIPSYCL__
 using ::cl::sycl::half;
-#endif
 
 #endif //_ONEMKL_TYPES_HPP_

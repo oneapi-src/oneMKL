@@ -63,19 +63,21 @@ CublasScopedContextHandler::~CublasScopedContextHandler() noexcept(false) {
 }
 
 void ContextCallback(void *userData) {
-    auto *ptr = static_cast<std::atomic<cublasHandle_t> **>(userData);
+    auto *ptr = static_cast<std::atomic<cublasHandle_t> *>(userData);
     if (!ptr) {
         return;
     }
-    if (*ptr != nullptr) {
-        auto handle = (*ptr)->exchange(nullptr);
-        if (handle != nullptr) {
-            cublasStatus_t err1;
-            CUBLAS_ERROR_FUNC(cublasDestroy, err1, handle);
-            handle = nullptr;
-        }
-        delete *ptr;
-        *ptr = nullptr;
+    auto handle = ptr->exchange(nullptr);
+    if (handle != nullptr) {
+        cublasStatus_t err1;
+        CUBLAS_ERROR_FUNC(cublasDestroy, err1, handle);
+        handle = nullptr;
+    }
+    else {
+        // if the handle is nullptr it means the handle was already destroyed by
+        // the cublas_handle destructor and we're free to delete the atomic
+        // object.
+        delete ptr;
     }
 }
 
@@ -113,9 +115,8 @@ cublasHandle_t CublasScopedContextHandler::get_handle(const cl::sycl::queue &que
     auto insert_iter = handle_helper.cublas_handle_mapper_.insert(
         std::make_pair(piPlacedContext_, new std::atomic<cublasHandle_t>(handle)));
 
-    auto ptr = &(insert_iter.first->second);
-
-    sycl::detail::pi::contextSetExtendedDeleter(placedContext_, ContextCallback, ptr);
+    sycl::detail::pi::contextSetExtendedDeleter(placedContext_, ContextCallback,
+                                                insert_iter.first->second);
 
     return handle;
 }
