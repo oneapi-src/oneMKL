@@ -4,6 +4,8 @@
 # Get Base image from Docker Hub Intel repo
 ARG base_image="intel/oneapi-basekit"
 FROM "$base_image"
+COPY . /home/oneMKL
+WORKDIR /home/oneMKL
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
@@ -60,12 +62,12 @@ RUN pip3 install conan && conan --version
 
 # entrypoint
 #SHELL ["/bin/bash", "-c"]
-RUN mkdir -p BUILD
-RUN pwd && ls
+#RUN mkdir -p BUILD
+#RUN pwd && ls
 #COPY ./ /usr/onemkl/
 
 # Setup DPC++ compiler prefix for Conan
-RUN sed -i 's#<path to dpc++ compiler root>#/opt/intel/oneapi/compiler/latest/linux/#g' conan/profiles/inteldpcpp_lnx && cat conan/profiles/inteldpcpp_lnx
+#RUN sed -i 's#<path to dpc++ compiler root>#/opt/intel/oneapi/compiler/latest/linux/#g' conan/profiles/inteldpcpp_lnx && cat conan/profiles/inteldpcpp_lnx
 
 
 #RUN cd /usr/onemkl/BUILD && \
@@ -75,5 +77,6 @@ RUN sed -i 's#<path to dpc++ compiler root>#/opt/intel/oneapi/compiler/latest/li
 
 #COPY entrypoint.sh /
 #RUN chmod a+x entrypoint.sh
-#ENTRYPOINT ["docker/entrypoint.sh"]
+
+ENTRYPOINT ["docker/entrypoint.sh"]
 #CMD ["/bin/bash"]
