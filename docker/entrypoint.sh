@@ -8,9 +8,7 @@ set --
 PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\u@\h:\w\$'
 
 #ls /opt/intel/oneapi/set
-# Set oneAPI environment
-source /opt/intel/oneapi/setvars.sh
-
+# Check oneAPI Compiler environment
 dpcpp --version
 
 # Set CUDA environment
