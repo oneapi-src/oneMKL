@@ -216,7 +216,7 @@ struct CudaEquivalentType {
     using Type = T;
 };
 template <>
-struct CudaEquivalentType<half> {
+struct CudaEquivalentType<sycl::half> {
     using Type = __half;
 };
 template <>

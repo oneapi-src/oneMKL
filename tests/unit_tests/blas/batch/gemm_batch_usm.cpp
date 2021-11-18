@@ -330,7 +330,7 @@ class GemmBatchUsmTests
         : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(GemmBatchUsmTests, RealHalfPrecision) {
-    EXPECT_TRUEORSKIP(test<half>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
+    EXPECT_TRUEORSKIP(test<sycl::half>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 TEST_P(GemmBatchUsmTests, RealSinglePrecision) {

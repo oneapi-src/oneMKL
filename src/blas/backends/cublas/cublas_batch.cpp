@@ -183,7 +183,7 @@ inline void gemm_batch(Func func, cl::sycl::queue &queue, transpose transa, tran
                    ldb, stride_b, beta, c, ldc, stride_c, batch_size);                             \
     }
 
-GEMM_STRIDED_BATCH_LAUNCHER(half, cublasHgemmStridedBatched)
+GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, cublasHgemmStridedBatched)
 GEMM_STRIDED_BATCH_LAUNCHER(float, cublasSgemmStridedBatched)
 GEMM_STRIDED_BATCH_LAUNCHER(double, cublasDgemmStridedBatched)
 GEMM_STRIDED_BATCH_LAUNCHER(std::complex<float>, cublasCgemmStridedBatched)
@@ -530,7 +530,7 @@ inline cl::sycl::event gemm_batch(Func func, cl::sycl::queue &queue, transpose t
                           b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);     \
     }
 
-GEMM_STRIDED_BATCH_LAUNCHER_USM(half, cublasHgemmStridedBatched)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, cublasHgemmStridedBatched)
 GEMM_STRIDED_BATCH_LAUNCHER_USM(float, cublasSgemmStridedBatched)
 GEMM_STRIDED_BATCH_LAUNCHER_USM(double, cublasDgemmStridedBatched)
 GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<float>, cublasCgemmStridedBatched)
@@ -588,7 +588,7 @@ inline cl::sycl::event gemm_batch(Func func, cl::sycl::queue &queue, transpose *
                           beta, c, ldc, group_count, group_size, dependencies);                  \
     }
 
-GEMM_BATCH_LAUNCHER_USM(half, cublasHgemmBatched)
+GEMM_BATCH_LAUNCHER_USM(sycl::half, cublasHgemmBatched)
 GEMM_BATCH_LAUNCHER_USM(float, cublasSgemmBatched)
 GEMM_BATCH_LAUNCHER_USM(double, cublasDgemmBatched)
 GEMM_BATCH_LAUNCHER_USM(std::complex<float>, cublasCgemmBatched)
@@ -877,7 +877,7 @@ inline void gemm_batch(Func func, cl::sycl::queue &queue, transpose transa, tran
                    ldb, stride_b, beta, c, ldc, stride_c, batch_size);                             \
     }
 
-GEMM_STRIDED_BATCH_LAUNCHER(half, cublasHgemmStridedBatched)
+GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, cublasHgemmStridedBatched)
 GEMM_STRIDED_BATCH_LAUNCHER(float, cublasSgemmStridedBatched)
 GEMM_STRIDED_BATCH_LAUNCHER(double, cublasDgemmStridedBatched)
 GEMM_STRIDED_BATCH_LAUNCHER(std::complex<float>, cublasCgemmStridedBatched)
@@ -1200,7 +1200,7 @@ inline cl::sycl::event gemm_batch(Func func, cl::sycl::queue &queue, transpose t
                           b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, dependencies);     \
     }
 
-GEMM_STRIDED_BATCH_LAUNCHER_USM(half, cublasHgemmStridedBatched)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, cublasHgemmStridedBatched)
 GEMM_STRIDED_BATCH_LAUNCHER_USM(float, cublasSgemmStridedBatched)
 GEMM_STRIDED_BATCH_LAUNCHER_USM(double, cublasDgemmStridedBatched)
 GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<float>, cublasCgemmStridedBatched)
@@ -1227,7 +1227,7 @@ inline cl::sycl::event gemm_batch(Func func, cl::sycl::queue &queue, transpose *
                           beta, c, ldc, group_count, group_size, dependencies);                  \
     }
 
-GEMM_BATCH_LAUNCHER_USM(half, cublasHgemmBatched)
+GEMM_BATCH_LAUNCHER_USM(sycl::half, cublasHgemmBatched)
 GEMM_BATCH_LAUNCHER_USM(float, cublasSgemmBatched)
 GEMM_BATCH_LAUNCHER_USM(double, cublasDgemmBatched)
 GEMM_BATCH_LAUNCHER_USM(std::complex<float>, cublasCgemmBatched)
