@@ -23,7 +23,7 @@ from six import StringIO
 
 class oneMKLConan(ConanFile):
     name = "oneMKL"
-    version = "0.1.0-beta"
+    version = "0.2.0-beta"
     url = "https://github.com/oneapi-src/oneMKL"
     description = "oneMKL interfaces is an open-source implementation of oneMKL Data Parallel C++ (DPC++) interfaces according to oneMKL specification that can work with multiple devices (backends) using device specific libraries underneath."
     license = "Apache License Version 2.0"
