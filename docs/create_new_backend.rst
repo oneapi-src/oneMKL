@@ -16,9 +16,9 @@ For the new backend library and header naming please use the following template:
 
     onemkl_<domain>_<3rd-party library short name>[<wrapper for specific target>]
 
-Where ``<wrapper for specific target>`` is required only if there multiple wrappers are provided from the same 3rd-party library, e.g., wrappers with Intel oneMKL C API for CPU target ``onemkl_blas_mklcpu.so`` and wrappers with Intel oneMKL DPC++ API for GPU target ``onemkl_blas_mklgpu.so``.
+Where ``<wrapper for specific target>`` is required only if multiple wrappers are provided from the same 3rd-party library, e.g., wrappers with Intel oneMKL C API for CPU target ``onemkl_blas_mklcpu.so`` and wrappers with Intel oneMKL DPC++ API for GPU target ``onemkl_blas_mklgpu.so``.
 
-If there is no need in multiple targets only ``<domain>`` and ``<3rd-party library short name>`` are required, e.g. ``onemkl_rng_curand.so``
+If there is no need for multiple wrappers only ``<domain>`` and ``<3rd-party library short name>`` are required, e.g. ``onemkl_rng_curand.so``
 
 `1. Create Header Files`_
 
