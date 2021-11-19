@@ -582,7 +582,7 @@ enable_mklgpu_backend    | ENABLE_MKLGPU_BACKEND    | True, False         | True
 enable_mklcpu_thread_tbb | ENABLE_MKLCPU_THREAD_TBB | True, False         | True
 build_functional_tests   | BUILD_FUNCTIONAL_TESTS   | True, False         | True
 build_doc                | BUILD_DOC                | True, False         | False
-target_domains (list)    | TARGET_DOMAINS (list)    | blas, rng           | All domains
+target_domains (list)    | TARGET_DOMAINS (list)    | blas, lapack, rng   | All domains
 
 *Note: `build_functional_tests` and related CMake option affects all domains at a global scope.*
 
