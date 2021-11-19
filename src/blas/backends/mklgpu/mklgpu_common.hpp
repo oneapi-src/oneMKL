@@ -888,8 +888,9 @@ void hgemm_batch(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa
                  MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k, sycl::half alpha,
                  cl::sycl::buffer<sycl::half, 1> &a, int64_t lda, int64_t stride_a,
                  cl::sycl::buffer<sycl::half, 1> &b, int64_t ldb, int64_t stride_b, sycl::half beta,
-                 cl::sycl::buffer<sycl::half, 1> &c, int64_t ldc, int64_t stride_c, int64_t batch_size,
-                 int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
+                 cl::sycl::buffer<sycl::half, 1> &c, int64_t ldc, int64_t stride_c,
+                 int64_t batch_size, int64_t offset_a = 0, int64_t offset_b = 0,
+                 int64_t offset_c = 0);
 
 void strsm_batch(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_SIDE left_right,
                  MKL_UPLO upper_lower, MKL_TRANSPOSE trans, MKL_DIAG unit_diag, int64_t m,
@@ -940,14 +941,15 @@ void cgemmt(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_UPLO upper_lower, MKL
             cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc);
 
 void hgemm(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa, MKL_TRANSPOSE transb,
-           int64_t m, int64_t n, int64_t k, sycl::half alpha, cl::sycl::buffer<sycl::half, 1> &a, int64_t lda,
-           cl::sycl::buffer<sycl::half, 1> &b, int64_t ldb, sycl::half beta, cl::sycl::buffer<sycl::half, 1> &c,
-           int64_t ldc);
+           int64_t m, int64_t n, int64_t k, sycl::half alpha, cl::sycl::buffer<sycl::half, 1> &a,
+           int64_t lda, cl::sycl::buffer<sycl::half, 1> &b, int64_t ldb, sycl::half beta,
+           cl::sycl::buffer<sycl::half, 1> &c, int64_t ldc);
 
 void gemm_f16f16f32(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
                     MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k, float alpha,
-                    cl::sycl::buffer<sycl::half, 1> &a, int64_t lda, cl::sycl::buffer<sycl::half, 1> &b,
-                    int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c, int64_t ldc);
+                    cl::sycl::buffer<sycl::half, 1> &a, int64_t lda,
+                    cl::sycl::buffer<sycl::half, 1> &b, int64_t ldb, float beta,
+                    cl::sycl::buffer<float, 1> &c, int64_t ldc);
 
 void gemm_bf16bf16f32(cl::sycl::queue &queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
                       MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k, float alpha,
@@ -1027,15 +1029,16 @@ cl::sycl::event zgemm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSP
 
 cl::sycl::event hgemm_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
                            MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k, sycl::half alpha,
-                           const sycl::half *a, int64_t lda, const sycl::half *b, int64_t ldb, sycl::half beta,
-                           sycl::half *c, int64_t ldc, const std::vector<cl::sycl::event> &dependencies,
-                           int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
+                           const sycl::half *a, int64_t lda, const sycl::half *b, int64_t ldb,
+                           sycl::half beta, sycl::half *c, int64_t ldc,
+                           const std::vector<cl::sycl::event> &dependencies, int64_t offset_a = 0,
+                           int64_t offset_b = 0, int64_t offset_c = 0);
 
 cl::sycl::event gemm_f16f16f32_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
                                     MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k,
-                                    float alpha, const sycl::half *a, int64_t lda, const sycl::half *b,
-                                    int64_t ldb, float beta, float *c, int64_t ldc,
-                                    const std::vector<cl::sycl::event> &dependencies,
+                                    float alpha, const sycl::half *a, int64_t lda,
+                                    const sycl::half *b, int64_t ldb, float beta, float *c,
+                                    int64_t ldc, const std::vector<cl::sycl::event> &dependencies,
                                     int64_t offset_a = 0, int64_t offset_b = 0,
                                     int64_t offset_c = 0);
 
@@ -2102,10 +2105,11 @@ cl::sycl::event zgemm_batch_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_
                                  int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
 cl::sycl::event hgemm_batch_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
-                                 MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k, sycl::half alpha,
-                                 const sycl::half *a, int64_t lda, int64_t strideA, const sycl::half *b,
-                                 int64_t ldb, int64_t strideB, sycl::half beta, sycl::half *c, int64_t ldc,
-                                 int64_t strideC, int64_t groupsize,
+                                 MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k,
+                                 sycl::half alpha, const sycl::half *a, int64_t lda,
+                                 int64_t strideA, const sycl::half *b, int64_t ldb, int64_t strideB,
+                                 sycl::half beta, sycl::half *c, int64_t ldc, int64_t strideC,
+                                 int64_t groupsize,
                                  const std::vector<cl::sycl::event> &dependencies,
                                  int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
@@ -2144,10 +2148,10 @@ cl::sycl::event zgemm_batch_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_
                                  int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
 cl::sycl::event hgemm_batch_sycl(cl::sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
-                                 MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k, sycl::half alpha,
-                                 const sycl::half **a, int64_t lda, const sycl::half **b, int64_t ldb,
-                                 sycl::half beta, sycl::half **c, int64_t ldc, int64_t offset_batch,
-                                 int64_t groupsize,
+                                 MKL_TRANSPOSE transb, int64_t m, int64_t n, int64_t k,
+                                 sycl::half alpha, const sycl::half **a, int64_t lda,
+                                 const sycl::half **b, int64_t ldb, sycl::half beta, sycl::half **c,
+                                 int64_t ldc, int64_t offset_batch, int64_t groupsize,
                                  const std::vector<cl::sycl::event> &dependencies,
                                  int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
