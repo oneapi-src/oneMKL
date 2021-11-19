@@ -10,6 +10,16 @@ This step-by-step tutorial provides examples for enabling new third-party librar
 
 oneMKL has a header-based implementation of the interface layer (``include`` directory) and a source-based implementation of the backend layer for each third-party library (``src`` directory). To enable a third-party library, you must update both parts of oneMKL and integrate the new third-party library to the oneMKL build and test systems.
 
+For the new backend library and header naming please use the following template:
+
+.. code-block::
+
+    onemkl_<domain>_<3rd-party library short name>[<wrapper for specific target>]
+
+Where ``<wrapper for specific target>`` is required only if multiple wrappers are provided from the same 3rd-party library, e.g., wrappers with Intel oneMKL C API for CPU target ``onemkl_blas_mklcpu.so`` and wrappers with Intel oneMKL DPC++ API for GPU target ``onemkl_blas_mklgpu.so``.
+
+If there is no need for multiple wrappers only ``<domain>`` and ``<3rd-party library short name>`` are required, e.g. ``onemkl_rng_curand.so``
+
 `1. Create Header Files`_
 
 `2. Integrate Header Files`_
