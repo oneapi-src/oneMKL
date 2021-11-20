@@ -206,7 +206,7 @@ gemv (USM Version)
       Scaling factor for the matrix-vector product.
 
    a
-      The pointer to the input matrix ``A``. Must have a size of at
+      Pointer to the input matrix ``A``. Must have a size of at
       least ``lda``\ \*\ ``n`` if column major layout is used or at
       least ``lda``\ \*\ ``m`` if row major layout is used. See
       :ref:`matrix-storage` for more details.

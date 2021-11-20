@@ -1,19 +1,19 @@
-.. _onemkl_blas_axpy_batch:
+.. _onemkl_blas_copy_batch:
 
-axpy_batch
+copy_batch
 ==========
 
-Computes a group of ``axpy`` operations.
+Computes a group of ``copy`` operations.
 
-.. _onemkl_blas_axpy_batch_description:
+.. _onemkl_blas_copy_batch_description:
 
 .. rubric:: Description
 
-The ``axpy_batch`` routines are batched versions of :ref:`onemkl_blas_axpy`, performing
-multiple ``axpy`` operations in a single call. Each ``axpy`` 
-operation adds a scalar-vector product to a vector.
+The ``copy_batch`` routines are batched versions of :ref:`onemkl_blas_copy`, performing
+multiple ``copy`` operations in a single call. Each ``copy`` 
+operation copies one vector to another.
    
-``axpy_batch`` supports the following precisions for data.
+``copy_batch`` supports the following precisions for data.
 
    .. list-table:: 
       :header-rows: 1
@@ -24,26 +24,24 @@ operation adds a scalar-vector product to a vector.
       * -  ``std::complex<float>`` 
       * -  ``std::complex<double>`` 
 
-.. _onemkl_blas_axpy_batch_buffer:
+.. _onemkl_blas_copy_batch_buffer:
 
-axpy_batch (Buffer Version)
+copy_batch (Buffer Version)
 ---------------------------
 
 .. rubric:: Description
 
-The buffer version of ``axpy_batch`` supports only the strided API. 
+The buffer version of ``copy_batch`` supports only the strided API. 
 
 The strided API operation is defined as:
 ::
   
    for i = 0 … batch_size – 1
       X and Y are vectors at offset i * stridex, i * stridey in x and y
-      Y := alpha * X + Y
+      Y := X
    end for
 
 where:
-
-``alpha`` is scalar,
 
 ``X`` and ``Y`` are vectors.
    
@@ -54,9 +52,8 @@ where:
 .. code-block:: cpp
 
    namespace oneapi::mkl::blas::column_major {
-       void axpy_batch(sycl::queue &queue,
+       void copy_batch(sycl::queue &queue,
                        std::int64_t n,
-                       T alpha,
                        sycl::buffer<T,
                        1> &x,
                        std::int64_t incx,
@@ -70,9 +67,8 @@ where:
 .. code-block:: cpp
 
    namespace oneapi::mkl::blas::row_major {
-       void axpy_batch(sycl::queue &queue,
+       void copy_batch(sycl::queue &queue,
                        std::int64_t n,
-                       T alpha,
                        sycl::buffer<T,
                        1> &x,
                        std::int64_t incx,
@@ -94,9 +90,6 @@ where:
    n
       Number of elements in ``X`` and ``Y``.
 
-   alpha
-       Specifies the scalar ``alpha``.
-
    x
       Buffer holding input vectors ``X`` with size ``stridex`` * ``batch_size``.
 
@@ -116,25 +109,24 @@ where:
       Stride between different ``Y`` vectors.
 
    batch_size 
-      Specifies the number of ``axpy`` operations to perform.
+      Specifies the number of ``copy`` operations to perform.
 
 .. container:: section
 
    .. rubric:: Output Parameters
 
    y
-      Output buffer, overwritten by ``batch_size`` ``axpy`` operations of the form 
-      ``alpha`` * ``X`` + ``Y``.
+      Output buffer, overwritten by ``batch_size`` ``copy`` operations.
 
 
-.. _onemkl_blas_axpy_batch_usm:
+.. _onemkl_blas_copy_batch_usm:
 
-axpy_batch (USM Version)
+copy_batch (USM Version)
 ------------------------
 
 .. rubric:: Description
 
-The USM version of ``axpy_batch`` supports the group API and strided API. 
+The USM version of ``copy_batch`` supports the group API and strided API. 
 
 The group API operation is defined as
 ::
@@ -143,7 +135,7 @@ The group API operation is defined as
    for i = 0 … group_count – 1
        for j = 0 … group_size – 1
            X and Y are vectors in x[idx] and y[idx]
-           Y := alpha[i] * X + Y
+           Y := X
            idx := idx + 1
        end for
    end for
@@ -153,12 +145,10 @@ The strided API operation is defined as
    
    for i = 0 … batch_size – 1
       X and Y are vectors at offset i * stridex, i * stridey in x and y
-      Y := alpha * X + Y
+      Y := X
    end for
 
 where:
-
-``alpha`` is scalar,
 
 ``X`` and ``Y`` are vectors.
 
@@ -179,9 +169,8 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
 .. code-block:: cpp
 
    namespace oneapi::mkl::blas::column_major {
-       sycl::event axpy_batch(sycl::queue &queue,
+       sycl::event copy_batch(sycl::queue &queue,
                               std::int64_t *n,
-                              T *alpha,
                               const T **x,
                               std::int64_t *incx,
                               T **y,
@@ -193,9 +182,8 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
 .. code-block:: cpp
 
    namespace oneapi::mkl::blas::row_major {
-       sycl::event axpy_batch(sycl::queue &queue,
+       sycl::event copy_batch(sycl::queue &queue,
                               std::int64_t *n,
-                              T *alpha,
                               const T **x,
                               std::int64_t *incx,
                               T **y,
@@ -214,9 +202,6 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
 
    n
       Array of ``group_count`` integers. ``n[i]`` specifies the number of elements in vectors ``X`` and ``Y`` for every vector in group ``i``.
-
-   alpha
-       Array of ``group_count`` scalar elements. ``alpha[i]`` specifies the scaling factor for vector ``X`` in group ``i``.
 
    x
       Array of pointers to input vectors ``X`` with size ``total_batch_count``.
@@ -238,7 +223,7 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
       Number of groups. Must be at least 0.
 
    group_size
-      Array of ``group_count`` integers. ``group_size[i]`` specifies the number of ``axpy`` operations in group ``i``. 
+      Array of ``group_count`` integers. ``group_size[i]`` specifies the number of ``copy`` operations in group ``i``. 
       Each element in ``group_size`` must be at least 0.
 
    dependencies
@@ -250,8 +235,7 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
    .. rubric:: Output Parameters
 
    y
-      Array of pointers holding the ``Y`` vectors, overwritten by ``total_batch_count`` ``axpy`` operations of the form 
-      ``alpha`` * ``X`` + ``Y``.
+      Array of pointers holding the ``Y`` vectors, overwritten by ``total_batch_count`` ``copy`` operations.
 
 .. container:: section
 
@@ -266,9 +250,8 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
 .. code-block:: cpp
 
    namespace oneapi::mkl::blas::column_major {
-       sycl::event axpy_batch(sycl::queue &queue,
+       sycl::event copy_batch(sycl::queue &queue,
                               std::int64_t n,
-                              T alpha,
                               const T *x,
                               std::int64_t incx,
                               std::int64_t stridex,
@@ -281,9 +264,8 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
 .. code-block:: cpp
 
    namespace oneapi::mkl::blas::row_major {
-       sycl::event axpy_batch(sycl::queue &queue,
+       sycl::event copy_batch(sycl::queue &queue,
                               std::int64_t n,
-                              T alpha,
                               const T *x,
                               std::int64_t incx,
                               std::int64_t stridex,
@@ -304,9 +286,6 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
    n
       Number of elements in ``X`` and ``Y``.
 
-   alpha
-       Specifies the scalar ``alpha``.
-
    x
       Pointer to input vectors ``X`` with size ``stridex`` * ``batch_size``.
 
@@ -326,7 +305,7 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
       Stride between different ``Y`` vectors.
 
    batch_size 
-      Specifies the number of ``axpy`` operations to perform.
+      Specifies the number of ``copy`` operations to perform.
   
    dependencies
       List of events to wait for before starting computation, if any.
@@ -337,8 +316,7 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
    .. rubric:: Output Parameters
 
    y
-      Output vectors, overwritten by ``batch_size`` ``axpy`` operations of the form 
-      ``alpha`` * ``X`` + ``Y``.
+      Output vectors, overwritten by ``batch_size`` ``copy`` operations
 
 .. container:: section
 

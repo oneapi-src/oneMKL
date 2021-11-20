@@ -19,6 +19,7 @@ operation perform a matrix-matrix product with general matrices.
       :header-rows: 1
 
       * -  T 
+      * -  ``half``
       * -  ``float`` 
       * -  ``double`` 
       * -  ``std::complex<float>`` 
@@ -186,7 +187,7 @@ of matrices in ``a``, ``b`` and ``c`` buffers is given by the ``batch_size`` par
       Buffer holding input/output matrices ``C`` with size ``stridec`` * ``batch_size``.
 
    ldc
-      The leading dimension of the mattrices ``C``. It must be positive and at least
+      The leading dimension of the matrices ``C``. It must be positive and at least
       ``m`` if column major layout is used to store matrices or at
       least ``n`` if column major layout is used to store matrices.
 
@@ -212,7 +213,6 @@ of matrices in ``a``, ``b`` and ``c`` buffers is given by the ``batch_size`` par
    If ``beta`` = 0, matrix ``C`` does not need to be initialized before
    calling ``gemm_batch``.
 
-      
 
 .. _onemkl_blas_gemm_batch_usm:
 
@@ -221,7 +221,8 @@ gemm_batch (USM Version)
 
 .. rubric:: Description
 
-The USM version of ``gemm_batch`` supports the group API and strided API. 
+The USM version of ``gemm_batch`` supports the group API and the strided API.
+The group API supports pointer and span inputs.
 
 The group API operation is defined as:
 ::
@@ -234,6 +235,25 @@ The group API operation is defined as:
            idx = idx + 1
        end for
    end for
+
+The advantage of using span instead of pointer is that the sizes of
+the array can vary and the size of the span can be queried at
+runtime. For each GEMM parameter, except the output matrices, the span
+can be of size 1, the number of groups or the total batch size. For
+the output matrices, to ensure all computation are independent, the size
+of the span must be the total batch size.
+
+Depending on the size of the spans, each parameter for the GEMM computation is used as follows:
+
+  - If the span has size 1, the parameter is reused for all GEMM
+    computation.
+
+  - If the span has size group_count, the parameter is reused for all
+    GEMM within a group, but each group will have a different value
+    for this parameter.  This is like the gemm_batch group API with pointers.
+
+  - If the span has size equal to the total batch size, each GEMM
+    computation will use a different value for this parameter.
 
 The strided API operation is defined as
 ::
@@ -288,6 +308,24 @@ in ``a``, ``b`` and ``c`` are given by the ``batch_size`` parameter.
                               std::int64_t group_count,
                               std::int64_t *group_size,
                               const std::vector<sycl::event> &dependencies = {})
+
+       sycl::event gemm_batch(sycl::queue &queue,
+                              const sycl::span<onemkl::transpose> &transa,
+                              const sycl::span<onemkl::transpose> &transb,
+                              const sycl::span<std::int64_t> &m,
+                              const sycl::span<std::int64_t> &n,
+                              const sycl::span<std::int64_t> &k,
+                              const sycl::span<std::int64_t> &alpha,
+                              const sycl::span<const T*> &a,
+                              const sycl::span<std::int64_t> &lda,
+                              const sycl::span<const T*> &b,
+                              const sycl::span<std::int64_t> &ldb,
+                              const sycl::span<T> &beta,
+                              sycl::span<T*> &c,
+                              const sycl::span<std::int64_t> &ldc,
+                              size_t group_count,
+                              const sycl::span<size_t> &group_sizes,
+                              const std::vector<sycl::event> &dependencies = {})
    }
 .. code-block:: cpp
 
@@ -309,6 +347,24 @@ in ``a``, ``b`` and ``c`` are given by the ``batch_size`` parameter.
                               std::int64_t group_count,
                               std::int64_t *group_size,
                               const std::vector<sycl::event> &dependencies = {})
+
+       sycl::event gemm_batch(sycl::queue &queue,
+                              const sycl::span<onemkl::transpose> &transa,
+                              const sycl::span<onemkl::transpose> &transb,
+                              const sycl::span<std::int64_t> &m,
+                              const sycl::span<std::int64_t> &n,
+                              const sycl::span<std::int64_t> &k,
+                              const sycl::span<std::int64_t> &alpha,
+                              const sycl::span<const T*> &a,
+                              const sycl::span<std::int64_t> &lda,
+                              const sycl::span<const T*> &b,
+                              const sycl::span<std::int64_t> &ldb,
+                              const sycl::span<T> &beta,
+                              sycl::span<T*> &c,
+                              const sycl::span<std::int64_t> &ldc,
+                              size_t group_count,
+                              const sycl::span<size_t> &group_sizes,
+                              const std::vector<sycl::event> &dependencies = {})
    }
 
 .. container:: section
@@ -319,37 +375,37 @@ in ``a``, ``b`` and ``c`` are given by the ``batch_size`` parameter.
       The queue where the routine should be executed.
 
    transa
-      Array of ``group_count`` ``onemkl::transpose`` values. ``transa[i]`` specifies the form of op(``A``) used in
+      Array or span of ``group_count`` ``onemkl::transpose`` values. ``transa[i]`` specifies the form of op(``A``) used in
       the matrix multiplication in group ``i``. See :ref:`onemkl_datatypes` for more details.
 
    transb
-      Array of ``group_count`` ``onemkl::transpose`` values. ``transb[i]`` specifies the form of op(``B``) used in
+      Array or span of ``group_count`` ``onemkl::transpose`` values. ``transb[i]`` specifies the form of op(``B``) used in
       the matrix multiplication in group ``i``. See :ref:`onemkl_datatypes` for more details.
 
    m
-      Array of ``group_count`` integers. ``m[i]`` specifies the
+      Array or span of ``group_count`` integers. ``m[i]`` specifies the
       number of rows of op(``A``) and ``C`` for every matrix in group ``i``. All entries must be at least zero.
 
    n
-      Array of ``group_count`` integers. ``n[i]`` specifies the
+      Array or span of ``group_count`` integers. ``n[i]`` specifies the
       number of columns of op(``B``) and ``C`` for every matrix in group ``i``. All entries must be at least zero.
 
    k
-      Array of ``group_count`` integers. ``k[i]`` specifies the
+      Array or span of ``group_count`` integers. ``k[i]`` specifies the
       number of columns of op(``A``) and rows of op(``B``) for every matrix in group ``i``. All entries must be at
       least zero.
 
    alpha
-      Array of ``group_count`` scalar elements. ``alpha[i]`` specifies the scaling factor for every matrix-matrix
+      Array or span of ``group_count`` scalar elements. ``alpha[i]`` specifies the scaling factor for every matrix-matrix
       product in group ``i``.
 
    a
-      Array of pointers to input matrices ``A`` with size ``total_batch_count``. 
+      Array of pointers or span of input matrices ``A`` with size ``total_batch_count``. 
       
       See :ref:`matrix-storage` for more details.
 
    lda
-      Array of ``group_count`` integers. ``lda[i]`` specifies the
+      Array or span of ``group_count`` integers. ``lda[i]`` specifies the
       leading dimension of ``A`` for every matrix in group ``i``. All
       entries must be positive.
 
@@ -367,13 +423,12 @@ in ``a``, ``b`` and ``c`` are given by the ``batch_size`` parameter.
            - ``lda[i]`` must be at least ``m[i]``.
              
    b
-      Array of pointers to input matrices ``B`` with size ``total_batch_count``. 
+      Array of pointers or span of input matrices ``B`` with size ``total_batch_count``. 
       
       See :ref:`matrix-storage` for more details.
 
    ldb
-   
-      Array of ``group_count`` integers. ``ldb[i]`` specifies the
+      Array or span of ``group_count`` integers. ``ldb[i]`` specifies the
       leading dimension of ``B`` for every matrix in group ``i``. All
       entries must be positive.
 
@@ -391,16 +446,16 @@ in ``a``, ``b`` and ``c`` are given by the ``batch_size`` parameter.
            - ``ldb[i]`` must be at least ``k[i]``.
              
    beta
-      Array of ``group_count`` scalar elements. ``beta[i]`` specifies the scaling factor for matrix ``C`` 
+      Array or span of ``group_count`` scalar elements. ``beta[i]`` specifies the scaling factor for matrix ``C`` 
       for every matrix in group ``i``.
 
    c
-      Array of pointers to input/output matrices ``C`` with size ``total_batch_count``. 
+      Array of pointers or span of input/output matrices ``C`` with size ``total_batch_count``. 
       
       See :ref:`matrix-storage` for more details.
 
    ldc
-      Array of ``group_count`` integers. ``ldc[i]`` specifies the
+      Array or span of ``group_count`` integers. ``ldc[i]`` specifies the
       leading dimension of ``C`` for every matrix in group ``i``.  All
       entries must be positive and ``ldc[i]`` must be at least
       ``m[i]`` if column major layout is used to store matrices or at
@@ -410,7 +465,7 @@ in ``a``, ``b`` and ``c`` are given by the ``batch_size`` parameter.
       Specifies the number of groups. Must be at least 0.
 
    group_size
-      Array of ``group_count`` integers. ``group_size[i]`` specifies the
+      Array or span of ``group_count`` integers. ``group_size[i]`` specifies the
       number of matrix multiply products in group ``i``. All entries must be at least 0.
 
    dependencies
@@ -423,6 +478,27 @@ in ``a``, ``b`` and ``c`` are given by the ``batch_size`` parameter.
 
    c
       Overwritten by the ``m[i]``-by-``n[i]`` matrix calculated by 
+      (``alpha[i]`` * op(``A``)*op(``B``) + ``beta[i]`` * ``C``) for group ``i``.
+
+.. container:: section
+
+   .. rubric:: Notes
+
+   If ``beta`` = 0, matrix ``C`` does not need to be initialized
+   before calling ``gemm_batch``.
+
+.. container:: section
+
+   .. rubric:: Return Values
+
+   Output event to wait on to ensure computation is complete.
+
+.. container:: section
+
+   .. rubric:: Output Parameters
+
+   c
+      Overwritten by the ``m[i]``-by-``n[i]`` matrix calculated by
       (``alpha[i]`` * op(``A``)*op(``B``) + ``beta[i]`` * ``C``) for group ``i``.
 
 .. container:: section
@@ -568,7 +644,7 @@ in ``a``, ``b`` and ``c`` are given by the ``batch_size`` parameter.
       Pointer to input/output matrices ``C`` with size ``stridec`` * ``batch_size``.
 
    ldc
-      The leading dimension of the mattrices ``C``. It must be positive and at least
+      The leading dimension of the matrices ``C``. It must be positive and at least
       ``m`` if column major layout is used to store matrices or at
       least ``n`` if column major layout is used to store matrices.
 
