@@ -19,6 +19,7 @@ operation perform a matrix-matrix product with general matrices.
       :header-rows: 1
 
       * -  T 
+      * -  ``half``
       * -  ``float`` 
       * -  ``double`` 
       * -  ``std::complex<float>`` 
@@ -186,7 +187,7 @@ of matrices in ``a``, ``b`` and ``c`` buffers is given by the ``batch_size`` par
       Buffer holding input/output matrices ``C`` with size ``stridec`` * ``batch_size``.
 
    ldc
-      The leading dimension of the mattrices ``C``. It must be positive and at least
+      The leading dimension of the matrices ``C``. It must be positive and at least
       ``m`` if column major layout is used to store matrices or at
       least ``n`` if column major layout is used to store matrices.
 
@@ -212,7 +213,6 @@ of matrices in ``a``, ``b`` and ``c`` buffers is given by the ``batch_size`` par
    If ``beta`` = 0, matrix ``C`` does not need to be initialized before
    calling ``gemm_batch``.
 
-      
 
 .. _onemkl_blas_gemm_batch_usm:
 
@@ -221,7 +221,7 @@ gemm_batch (USM Version)
 
 .. rubric:: Description
 
-The USM version of ``gemm_batch`` supports the group API and strided API. 
+The USM version of ``gemm_batch`` supports the group API and strided API.
 
 The group API operation is defined as:
 ::
@@ -372,7 +372,6 @@ in ``a``, ``b`` and ``c`` are given by the ``batch_size`` parameter.
       See :ref:`matrix-storage` for more details.
 
    ldb
-   
       Array of ``group_count`` integers. ``ldb[i]`` specifies the
       leading dimension of ``B`` for every matrix in group ``i``. All
       entries must be positive.
@@ -568,7 +567,7 @@ in ``a``, ``b`` and ``c`` are given by the ``batch_size`` parameter.
       Pointer to input/output matrices ``C`` with size ``stridec`` * ``batch_size``.
 
    ldc
-      The leading dimension of the mattrices ``C``. It must be positive and at least
+      The leading dimension of the matrices ``C``. It must be positive and at least
       ``m`` if column major layout is used to store matrices or at
       least ``n`` if column major layout is used to store matrices.
 

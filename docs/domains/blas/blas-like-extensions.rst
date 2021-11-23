@@ -42,7 +42,12 @@ BLAS-like Extensions
     :hidden:
 
     axpy_batch
+    axpby
+    copy_batch
+    dgmm_batch
     gemm_batch
+    gemv_batch
+    syrk_batch
     trsm_batch
     gemmt
     gemm_bias
