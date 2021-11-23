@@ -377,9 +377,10 @@ static inline void gemm(cl::sycl::queue &queue, transpose transa, transpose tran
 }
 
 static inline void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                        std::int64_t n, std::int64_t k, half alpha, cl::sycl::buffer<half, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
-                        cl::sycl::buffer<half, 1> &c, std::int64_t ldc) {
+                        std::int64_t n, std::int64_t k, sycl::half alpha,
+                        cl::sycl::buffer<sycl::half, 1> &a, std::int64_t lda,
+                        cl::sycl::buffer<sycl::half, 1> &b, std::int64_t ldb, sycl::half beta,
+                        cl::sycl::buffer<sycl::half, 1> &c, std::int64_t ldc) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
     detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
                  c, ldc);
@@ -387,9 +388,10 @@ static inline void gemm(cl::sycl::queue &queue, transpose transa, transpose tran
 }
 
 static inline void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                        std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<half, 1> &a,
-                        std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb,
-                        float beta, cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
+                        std::int64_t n, std::int64_t k, float alpha,
+                        cl::sycl::buffer<sycl::half, 1> &a, std::int64_t lda,
+                        cl::sycl::buffer<sycl::half, 1> &b, std::int64_t ldb, float beta,
+                        cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
     detail::gemm(get_device_id(queue), queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
                  c, ldc);
@@ -470,10 +472,11 @@ static inline void gemm_batch(cl::sycl::queue &queue, transpose transa, transpos
 }
 
 static inline void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
-                              std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
-                              cl::sycl::buffer<half, 1> &a, std::int64_t lda, std::int64_t stride_a,
-                              cl::sycl::buffer<half, 1> &b, std::int64_t ldb, std::int64_t stride_b,
-                              half beta, cl::sycl::buffer<half, 1> &c, std::int64_t ldc,
+                              std::int64_t m, std::int64_t n, std::int64_t k, sycl::half alpha,
+                              cl::sycl::buffer<sycl::half, 1> &a, std::int64_t lda,
+                              std::int64_t stride_a, cl::sycl::buffer<sycl::half, 1> &b,
+                              std::int64_t ldb, std::int64_t stride_b, sycl::half beta,
+                              cl::sycl::buffer<sycl::half, 1> &c, std::int64_t ldc,
                               std::int64_t stride_c, std::int64_t batch_size) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                             stride_b, beta, c, ldc, stride_c, batch_size);
@@ -2509,9 +2512,10 @@ static inline cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, tra
 }
 
 static inline cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
-                                   std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
-                                   const half *a, std::int64_t lda, const half *b, std::int64_t ldb,
-                                   half beta, half *c, std::int64_t ldc,
+                                   std::int64_t m, std::int64_t n, std::int64_t k, sycl::half alpha,
+                                   const sycl::half *a, std::int64_t lda, const sycl::half *b,
+                                   std::int64_t ldb, sycl::half beta, sycl::half *c,
+                                   std::int64_t ldc,
                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
@@ -2524,8 +2528,8 @@ static inline cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, tra
 
 static inline cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
                                    std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-                                   const half *a, std::int64_t lda, const half *b, std::int64_t ldb,
-                                   float beta, float *c, std::int64_t ldc,
+                                   const sycl::half *a, std::int64_t lda, const sycl::half *b,
+                                   std::int64_t ldb, float beta, float *c, std::int64_t ldc,
                                    const std::vector<cl::sycl::event> &dependencies = {}) {
     gemm_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
                       dependencies);
@@ -2618,9 +2622,9 @@ static inline cl::sycl::event gemm_batch(
 
 static inline cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa,
                                          transpose *transb, std::int64_t *m, std::int64_t *n,
-                                         std::int64_t *k, half *alpha, const half **a,
-                                         std::int64_t *lda, const half **b, std::int64_t *ldb,
-                                         half *beta, half **c, std::int64_t *ldc,
+                                         std::int64_t *k, sycl::half *alpha, const sycl::half **a,
+                                         std::int64_t *lda, const sycl::half **b, std::int64_t *ldb,
+                                         sycl::half *beta, sycl::half **c, std::int64_t *ldc,
                                          std::int64_t group_count, std::int64_t *group_size,
                                          const std::vector<cl::sycl::event> &dependencies = {}) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
@@ -2702,11 +2706,12 @@ static inline cl::sycl::event gemm_batch(
 }
 
 static inline cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb,
-                                         std::int64_t m, std::int64_t n, std::int64_t k, half alpha,
-                                         const half *a, std::int64_t lda, std::int64_t stride_a,
-                                         const half *b, std::int64_t ldb, std::int64_t stride_b,
-                                         half beta, half *c, std::int64_t ldc,
-                                         std::int64_t stride_c, std::int64_t batch_size,
+                                         std::int64_t m, std::int64_t n, std::int64_t k,
+                                         sycl::half alpha, const sycl::half *a, std::int64_t lda,
+                                         std::int64_t stride_a, const sycl::half *b,
+                                         std::int64_t ldb, std::int64_t stride_b, sycl::half beta,
+                                         sycl::half *c, std::int64_t ldc, std::int64_t stride_c,
+                                         std::int64_t batch_size,
                                          const std::vector<cl::sycl::event> &dependencies = {}) {
     gemm_batch_precondition(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
                             stride_b, beta, c, ldc, stride_c, batch_size, dependencies);

@@ -54,16 +54,16 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64
 }
 
 void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-          std::int64_t n, std::int64_t k, half alpha, cl::sycl::buffer<half, 1> &a,
-          std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb, half beta,
-          cl::sycl::buffer<half, 1> &c, std::int64_t ldc) {
+          std::int64_t n, std::int64_t k, sycl::half alpha, cl::sycl::buffer<sycl::half, 1> &a,
+          std::int64_t lda, cl::sycl::buffer<sycl::half, 1> &b, std::int64_t ldb, sycl::half beta,
+          cl::sycl::buffer<sycl::half, 1> &c, std::int64_t ldc) {
     ::oneapi::mkl::gpu::hgemm(queue, MAJOR, mkl_convert(transa), mkl_convert(transb), m, n, k,
                               alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
 void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-          std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<half, 1> &a,
-          std::int64_t lda, cl::sycl::buffer<half, 1> &b, std::int64_t ldb, float beta,
+          std::int64_t n, std::int64_t k, float alpha, cl::sycl::buffer<sycl::half, 1> &a,
+          std::int64_t lda, cl::sycl::buffer<sycl::half, 1> &b, std::int64_t ldb, float beta,
           cl::sycl::buffer<float, 1> &c, std::int64_t ldc) {
     ::oneapi::mkl::gpu::gemm_f16f16f32(queue, MAJOR, mkl_convert(transa), mkl_convert(transb), m, n,
                                        k, alpha, a, lda, b, ldb, beta, c, ldc);
@@ -333,8 +333,9 @@ cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
 }
 
 cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                     std::int64_t n, std::int64_t k, half alpha, const half *a, std::int64_t lda,
-                     const half *b, std::int64_t ldb, half beta, half *c, std::int64_t ldc,
+                     std::int64_t n, std::int64_t k, sycl::half alpha, const sycl::half *a,
+                     std::int64_t lda, const sycl::half *b, std::int64_t ldb, sycl::half beta,
+                     sycl::half *c, std::int64_t ldc,
                      const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::hgemm_sycl(&queue, MAJOR, mkl_convert(transa), mkl_convert(transb),
                                           m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
@@ -342,9 +343,9 @@ cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
 }
 
 cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                     std::int64_t n, std::int64_t k, float alpha, const half *a, std::int64_t lda,
-                     const half *b, std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
+                     std::int64_t n, std::int64_t k, float alpha, const sycl::half *a,
+                     std::int64_t lda, const sycl::half *b, std::int64_t ldb, float beta, float *c,
+                     std::int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::gemm_f16f16f32_sycl(&queue, MAJOR, mkl_convert(transa),
                                                    mkl_convert(transb), m, n, k, alpha, a, lda, b,
                                                    ldb, beta, c, ldc, dependencies);

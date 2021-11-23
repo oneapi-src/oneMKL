@@ -267,9 +267,10 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
 }
 
 void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                int64_t k, half alpha, cl::sycl::buffer<half, 1> &a, int64_t lda, int64_t stride_a,
-                cl::sycl::buffer<half, 1> &b, int64_t ldb, int64_t stride_b, half beta,
-                cl::sycl::buffer<half, 1> &c, int64_t ldc, int64_t stride_c, int64_t batch_size) {
+                int64_t k, sycl::half alpha, cl::sycl::buffer<sycl::half, 1> &a, int64_t lda,
+                int64_t stride_a, cl::sycl::buffer<sycl::half, 1> &b, int64_t ldb, int64_t stride_b,
+                sycl::half beta, cl::sycl::buffer<sycl::half, 1> &c, int64_t ldc, int64_t stride_c,
+                int64_t batch_size) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemm_batch", "for column_major layout");
 #endif
@@ -828,9 +829,9 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
 }
 
 cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
-                           int64_t *n, int64_t *k, half *alpha, const half **a, int64_t *lda,
-                           const half **b, int64_t *ldb, half *beta, half **c, int64_t *ldc,
-                           int64_t group_count, int64_t *groupsize,
+                           int64_t *n, int64_t *k, sycl::half *alpha, const sycl::half **a,
+                           int64_t *lda, const sycl::half **b, int64_t *ldb, sycl::half *beta,
+                           sycl::half **c, int64_t *ldc, int64_t group_count, int64_t *groupsize,
                            const std::vector<cl::sycl::event> &dependencies) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemm_batch", "for column_major layout");
@@ -897,10 +898,10 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
 }
 
 cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
-                           int64_t n, int64_t k, half alpha, const half *a, int64_t lda,
-                           int64_t stride_a, const half *b, int64_t ldb, int64_t stride_b,
-                           half beta, half *c, int64_t ldc, int64_t stride_c, int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
+                           int64_t n, int64_t k, sycl::half alpha, const sycl::half *a, int64_t lda,
+                           int64_t stride_a, const sycl::half *b, int64_t ldb, int64_t stride_b,
+                           sycl::half beta, sycl::half *c, int64_t ldc, int64_t stride_c,
+                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemm_batch", "for column_major layout");
 #endif

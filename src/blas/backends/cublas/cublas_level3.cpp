@@ -111,8 +111,8 @@ inline void gemm_ex(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C, cl::sycl:
                 alpha, a, lda, b, ldb, beta, c, ldc);                                            \
     }
 
-GEMM_EX_LAUNCHER(half, half, float, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
-GEMM_EX_LAUNCHER(half, half, half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
+GEMM_EX_LAUNCHER(sycl::half, sycl::half, float, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
+GEMM_EX_LAUNCHER(sycl::half, sycl::half, sycl::half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
 
 #undef GEMM_EX_LAUNCHER
 
@@ -506,8 +506,8 @@ inline cl::sycl::event gemm_ex_usm(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C 
                            m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);           \
     }
 
-GEMM_EX_LAUNCHER_USM(half, half, float, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
-GEMM_EX_LAUNCHER_USM(half, half, half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
+GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, float, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
+GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
 
 #undef GEMM_EX_LAUNCHER_USM
 
@@ -893,8 +893,8 @@ inline void gemm_ex(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C, cl::sycl:
                 alpha, a, lda, b, ldb, beta, c, ldc);                                            \
     }
 
-GEMM_EX_LAUNCHER(half, half, float, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
-GEMM_EX_LAUNCHER(half, half, half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
+GEMM_EX_LAUNCHER(sycl::half, sycl::half, float, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
+GEMM_EX_LAUNCHER(sycl::half, sycl::half, sycl::half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
 
 #undef GEMM_EX_LAUNCHER
 
@@ -1125,8 +1125,8 @@ inline cl::sycl::event gemm_ex_usm(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C 
                            m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);           \
     }
 
-GEMM_EX_LAUNCHER_USM(half, half, float, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
-GEMM_EX_LAUNCHER_USM(half, half, half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
+GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, float, CUDA_R_16F, CUDA_R_16F, CUDA_R_32F)
+GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, CUDA_R_16F, CUDA_R_16F, CUDA_R_16F)
 
 #undef GEMM_EX_LAUNCHER_USM
 
