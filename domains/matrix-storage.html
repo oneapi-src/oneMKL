@@ -1,15 +1,12 @@
 
 <!DOCTYPE html>
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
     <title>Matrix Storage &#8212; oneAPI Math Kernel Library Interfaces 0.1 documentation</title>
     
-  <link href="../_static/css/theme.css" rel="stylesheet" />
-  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../_static/css/index.73d71520a4ca3b99cfee5594769eaaae.css">
 
     
   <link rel="stylesheet"
@@ -21,32 +18,37 @@
 
     
       
+  <link rel="stylesheet"
+    href="../_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="../_static/vendor/lato_latin-ext/1.44.1/index.css">
 
     
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.da26317cf37e5c4af2fa3e6253912353.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+  <link rel="preload" as="script" href="../_static/js/index.3da636dd464baa7582d2.js">
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../_static/favicons.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="BLAS Routines" href="blas/blas.html" />
     <link rel="prev" title="Dense Linear Algebra" href="dense_linear_algebra.html" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
-    
+
+
+
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-    <div class="container-fluid" id="banner"></div>
-
     
 
     <div class="container-xl">
@@ -55,60 +57,45 @@
 <div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
     
         <div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="../index.html">
-      
-      <img src="../_static/oneAPI-rgb-rev-100.png" class="logo" alt="logo">
-      
-      
-      <h1 class="site-logo" id="site-title">oneAPI Math Kernel Library Interfaces 0.1 documentation</h1>
-      
-    </a>
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  <img src="../_static/oneAPI-rgb-rev-100.png" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">oneAPI Math Kernel Library Interfaces 0.1 documentation</h1>
+  
+</a>
 </div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-    <div class="bd-toc-item active">
-        <ul class="current nav bd-sidenav">
+</form>
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <ul class="current nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../onemkl-datatypes.html">
    oneMKL defined datatypes
   </a>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 current active collapsible-parent">
   <a class="reference internal" href="dense_linear_algebra.html">
    Dense Linear Algebra
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
-  <label for="toctree-checkbox-1">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul class="current">
+  <ul class="current collapse-ul">
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
      Matrix Storage
     </a>
    </li>
-   <li class="toctree-l2 has-children">
+   <li class="toctree-l2 collapsible-parent">
     <a class="reference internal" href="blas/blas.html">
      BLAS Routines
     </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-    <label for="toctree-checkbox-2">
-     <i class="fas fa-chevron-down">
-     </i>
-    </label>
-    <ul>
-     <li class="toctree-l3 has-children">
+    <ul class="collapse-ul">
+     <li class="toctree-l3 collapsible-parent">
       <a class="reference internal" href="blas/blas-level-1-routines.html">
        BLAS Level 1 Routines
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-      <label for="toctree-checkbox-3">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
+      <ul class="collapse-ul">
        <li class="toctree-l4">
         <a class="reference internal" href="blas/asum.html">
          asum
@@ -190,17 +177,14 @@
         </a>
        </li>
       </ul>
+      <i class="fas fa-chevron-down">
+      </i>
      </li>
-     <li class="toctree-l3 has-children">
+     <li class="toctree-l3 collapsible-parent">
       <a class="reference internal" href="blas/blas-level-2-routines.html">
        BLAS Level 2 Routines
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
-      <label for="toctree-checkbox-4">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
+      <ul class="collapse-ul">
        <li class="toctree-l4">
         <a class="reference internal" href="blas/gbmv.html">
          gbmv
@@ -327,17 +311,14 @@
         </a>
        </li>
       </ul>
+      <i class="fas fa-chevron-down">
+      </i>
      </li>
-     <li class="toctree-l3 has-children">
+     <li class="toctree-l3 collapsible-parent">
       <a class="reference internal" href="blas/blas-level-3-routines.html">
        BLAS Level 3 Routines
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
-      <label for="toctree-checkbox-5">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
+      <ul class="collapse-ul">
        <li class="toctree-l4">
         <a class="reference internal" href="blas/gemm.html">
          gemm
@@ -384,25 +365,47 @@
         </a>
        </li>
       </ul>
+      <i class="fas fa-chevron-down">
+      </i>
      </li>
-     <li class="toctree-l3 has-children">
+     <li class="toctree-l3 collapsible-parent">
       <a class="reference internal" href="blas/blas-like-extensions.html">
        BLAS-like Extensions
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
-      <label for="toctree-checkbox-6">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
+      <ul class="collapse-ul">
        <li class="toctree-l4">
         <a class="reference internal" href="blas/axpy_batch.html">
          axpy_batch
         </a>
        </li>
        <li class="toctree-l4">
+        <a class="reference internal" href="blas/axpby.html">
+         axpby
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/copy_batch.html">
+         copy_batch
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/dgmm_batch.html">
+         dgmm_batch
+        </a>
+       </li>
+       <li class="toctree-l4">
         <a class="reference internal" href="blas/gemm_batch.html">
          gemm_batch
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/gemv_batch.html">
+         gemv_batch
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="blas/syrk_batch.html">
+         syrk_batch
         </a>
        </li>
        <li class="toctree-l4">
@@ -421,359 +424,423 @@
         </a>
        </li>
       </ul>
+      <i class="fas fa-chevron-down">
+      </i>
      </li>
     </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="lapack/lapack.html">
+     LAPACK Routines
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/geqrf.html">
+       geqrf
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/geqrf_scratchpad_size.html">
+       geqrf_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/gerqf.html">
+       gerqf
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/gerqf_scratchpad_size.html">
+       gerqf_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/getrf.html">
+       getrf
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/getrf_scratchpad_size.html">
+       getrf_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/getri.html">
+       getri
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/getri_scratchpad_size.html">
+       getri_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/getrs.html">
+       getrs
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/getrs_scratchpad_size.html">
+       getrs_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/hetrf.html">
+       hetrf
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/hetrf_scratchpad_size.html">
+       hetrf_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/orgqr.html">
+       orgqr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/orgqr_scratchpad_size.html">
+       orgqr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/ormqr.html">
+       ormqr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/ormqr_scratchpad_size.html">
+       ormqr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/ormrq.html">
+       ormrq
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/ormrq_scratchpad_size.html">
+       ormrq_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/potrf.html">
+       potrf
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/potrf_scratchpad_size.html">
+       potrf_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/potri.html">
+       potri
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/potri_scratchpad_size.html">
+       potri_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/potrs.html">
+       potrs
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/potrs_scratchpad_size.html">
+       potrs_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/sytrf.html">
+       sytrf
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/sytrf_scratchpad_size.html">
+       sytrf_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/trtrs.html">
+       trtrs
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/trtrs_scratchpad_size.html">
+       trtrs_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/ungqr.html">
+       ungqr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/ungqr_scratchpad_size.html">
+       ungqr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/unmqr.html">
+       unmqr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/unmqr_scratchpad_size.html">
+       unmqr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/unmrq.html">
+       unmrq
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/unmrq_scratchpad_size.html">
+       unmrq_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/gebrd.html">
+       gebrd
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/gebrd_scratchpad_size.html">
+       gebrd_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/gesvd.html">
+       gesvd
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/gesvd_scratchpad_size.html">
+       gesvd_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/heevd.html">
+       heevd
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/heevd_scratchpad_size.html">
+       heevd_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/hegvd.html">
+       hegvd
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/hegvd_scratchpad_size.html">
+       hegvd_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/hetrd.html">
+       hetrd
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/hetrd_scratchpad_size.html">
+       hetrd_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/orgbr.html">
+       orgbr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/orgbr_scratchpad_size.html">
+       orgbr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/orgtr.html">
+       orgtr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/orgtr_scratchpad_size.html">
+       orgtr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/ormtr.html">
+       ormtr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/ormtr_scratchpad_size.html">
+       ormtr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/syevd.html">
+       syevd
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/syevd_scratchpad_size.html">
+       syevd_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/sygvd.html">
+       sygvd
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/sygvd_scratchpad_size.html">
+       sygvd_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/sytrd.html">
+       sytrd
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/sytrd_scratchpad_size.html">
+       sytrd_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/ungbr.html">
+       ungbr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/ungbr_scratchpad_size.html">
+       ungbr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/ungtr.html">
+       ungtr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/ungtr_scratchpad_size.html">
+       ungtr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/unmtr.html">
+       unmtr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/unmtr_scratchpad_size.html">
+       unmtr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/geqrf_batch.html">
+       geqrf_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/geqrf_batch_scratchpad_size.html">
+       geqrf_batch_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/getrf_batch.html">
+       getrf_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/getrf_batch_scratchpad_size.html">
+       getrf_batch_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/getri_batch.html">
+       getri_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/getri_batch_scratchpad_size.html">
+       getri_batch_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/getrs_batch.html">
+       getrs_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/getrs_batch_scratchpad_size.html">
+       getrs_batch_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/orgqr_batch.html">
+       orgqr_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/orgqr_batch_scratchpad_size.html">
+       orgqr_batch_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/potrf_batch.html">
+       potrf_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/potrf_batch_scratchpad_size.html">
+       potrf_batch_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/potrs_batch.html">
+       potrs_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/potrs_batch_scratchpad_size.html">
+       potrs_batch_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/ungqr_batch.html">
+       ungqr_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="lapack/ungqr_batch_scratchpad_size.html">
+       ungqr_batch_scratchpad_size
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
    </li>
   </ul>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Matrix Storage
-  </a>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="blas/blas.html">
-   BLAS Routines
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
-  <label for="toctree-checkbox-7">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2 has-children">
-    <a class="reference internal" href="blas/blas-level-1-routines.html">
-     BLAS Level 1 Routines
-    </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
-    <label for="toctree-checkbox-8">
-     <i class="fas fa-chevron-down">
-     </i>
-    </label>
-    <ul>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/asum.html">
-       asum
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/axpy.html">
-       axpy
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/copy.html">
-       copy
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/dot.html">
-       dot
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/sdsdot.html">
-       sdsdot
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/dotc.html">
-       dotc
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/dotu.html">
-       dotu
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/nrm2.html">
-       nrm2
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/rot.html">
-       rot
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/rotg.html">
-       rotg
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/rotm.html">
-       rotm
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/rotmg.html">
-       rotmg
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/scal.html">
-       scal
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/swap.html">
-       swap
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/iamax.html">
-       iamax
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/iamin.html">
-       iamin
-      </a>
-     </li>
-    </ul>
-   </li>
-   <li class="toctree-l2 has-children">
-    <a class="reference internal" href="blas/blas-level-2-routines.html">
-     BLAS Level 2 Routines
-    </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
-    <label for="toctree-checkbox-9">
-     <i class="fas fa-chevron-down">
-     </i>
-    </label>
-    <ul>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/gbmv.html">
-       gbmv
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/gemv.html">
-       gemv
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/ger.html">
-       ger
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/gerc.html">
-       gerc
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/geru.html">
-       geru
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/hbmv.html">
-       hbmv
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/hemv.html">
-       hemv
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/her.html">
-       her
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/her2.html">
-       her2
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/hpmv.html">
-       hpmv
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/hpr.html">
-       hpr
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/hpr2.html">
-       hpr2
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/sbmv.html">
-       sbmv
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/spmv.html">
-       spmv
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/spr.html">
-       spr
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/spr2.html">
-       spr2
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/symv.html">
-       symv
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/syr.html">
-       syr
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/syr2.html">
-       syr2
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/tbmv.html">
-       tbmv
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/tbsv.html">
-       tbsv
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/tpmv.html">
-       tpmv
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/tpsv.html">
-       tpsv
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/trmv.html">
-       trmv
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/trsv.html">
-       trsv
-      </a>
-     </li>
-    </ul>
-   </li>
-   <li class="toctree-l2 has-children">
-    <a class="reference internal" href="blas/blas-level-3-routines.html">
-     BLAS Level 3 Routines
-    </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/>
-    <label for="toctree-checkbox-10">
-     <i class="fas fa-chevron-down">
-     </i>
-    </label>
-    <ul>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/gemm.html">
-       gemm
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/hemm.html">
-       hemm
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/herk.html">
-       herk
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/her2k.html">
-       her2k
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/symm.html">
-       symm
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/syrk.html">
-       syrk
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/syr2k.html">
-       syr2k
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/trmm.html">
-       trmm
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/trsm.html">
-       trsm
-      </a>
-     </li>
-    </ul>
-   </li>
-   <li class="toctree-l2 has-children">
-    <a class="reference internal" href="blas/blas-like-extensions.html">
-     BLAS-like Extensions
-    </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/>
-    <label for="toctree-checkbox-11">
-     <i class="fas fa-chevron-down">
-     </i>
-    </label>
-    <ul>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/axpy_batch.html">
-       axpy_batch
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/gemm_batch.html">
-       gemm_batch
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/trsm_batch.html">
-       trsm_batch
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/gemmt.html">
-       gemmt
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="blas/gemm_bias.html">
-       gemm_bias
-      </a>
-     </li>
-    </ul>
-   </li>
-  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../create_new_backend.html">
-   Integrating a Third-party Library to oneAPI Math Kernel Library (oneMKL) Interfaces
+   Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMKL) Interfaces
   </a>
  </li>
 </ul>
 
-    </div>
 </nav> <!-- To handle the deprecated key -->
 
 <div class="navbar_extra_footer">
@@ -838,12 +905,12 @@
     </div>
 </div>
 
-            <!-- Full screen (wrap in <a> to have style consistency -->
 
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
+            <!-- Full screen (wrap in <a> to have style consistency -->
+            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                    title="Fullscreen mode"><i
+                        class="fas fa-expand"></i></button></a>
 
             <!-- Launch buttons -->
 
@@ -860,7 +927,7 @@
         
               <div>
                 
-  <section id="matrix-storage">
+  <div class="section" id="matrix-storage">
 <span id="id1"></span><h1>Matrix Storage<a class="headerlink" href="#matrix-storage" title="Permalink to this headline">¶</a></h1>
 <div class="docutils container">
 <p>The oneMKL BLAS and LAPACK routines for DPC++ use several matrix and
@@ -1356,7 +1423,7 @@ represented as a one dimensional array <code class="docutils literal notranslate
     }_\text{1 + (1-n) x incx}] \quad if \:incx \:&lt; \:0\]</div>
 </div>
 </div>
-</section>
+</div>
 
 
               </div>
@@ -1389,9 +1456,11 @@ represented as a one dimensional array <code class="docutils literal notranslate
 
       </div>
     </div>
-  
-  <script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
 
-  
+    
+  <script src="../_static/js/index.3da636dd464baa7582d2.js"></script>
+
+
+    
   </body>
 </html>

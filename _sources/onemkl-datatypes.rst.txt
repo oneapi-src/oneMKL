@@ -17,7 +17,7 @@ name. The two names are exactly equivalent and may be used
 interchangeably.
 
 
-Transpose
+transpose
 ---------
 
 The ``transpose`` type specifies whether an input matrix should be

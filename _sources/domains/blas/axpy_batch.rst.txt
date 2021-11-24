@@ -24,6 +24,109 @@ operation adds a scalar-vector product to a vector.
       * -  ``std::complex<float>`` 
       * -  ``std::complex<double>`` 
 
+.. _onemkl_blas_axpy_batch_buffer:
+
+axpy_batch (Buffer Version)
+---------------------------
+
+.. rubric:: Description
+
+The buffer version of ``axpy_batch`` supports only the strided API. 
+
+The strided API operation is defined as:
+::
+  
+   for i = 0 … batch_size – 1
+      X and Y are vectors at offset i * stridex, i * stridey in x and y
+      Y := alpha * X + Y
+   end for
+
+where:
+
+``alpha`` is scalar,
+
+``X`` and ``Y`` are vectors.
+   
+**Strided API**
+
+.. rubric:: Syntax
+ 
+.. code-block:: cpp
+
+   namespace oneapi::mkl::blas::column_major {
+       void axpy_batch(sycl::queue &queue,
+                       std::int64_t n,
+                       T alpha,
+                       sycl::buffer<T,
+                       1> &x,
+                       std::int64_t incx,
+                       std::int64_t stridex,
+                       sycl::buffer<T,
+                       1> &y,
+                       std::int64_t incy,
+                       std::int64_t stridey,
+                       std::int64_t batch_size)
+   }
+.. code-block:: cpp
+
+   namespace oneapi::mkl::blas::row_major {
+       void axpy_batch(sycl::queue &queue,
+                       std::int64_t n,
+                       T alpha,
+                       sycl::buffer<T,
+                       1> &x,
+                       std::int64_t incx,
+                       std::int64_t stridex,
+                       sycl::buffer<T,
+                       1> &y,
+                       std::int64_t incy,
+                       std::int64_t stridey,
+                       std::int64_t batch_size)
+   }
+
+.. container:: section
+
+   .. rubric:: Input Parameters
+
+   queue
+      The queue where the routine should be executed.
+
+   n
+      Number of elements in ``X`` and ``Y``.
+
+   alpha
+       Specifies the scalar ``alpha``.
+
+   x
+      Buffer holding input vectors ``X`` with size ``stridex`` * ``batch_size``.
+
+   incx 
+      Stride of vector ``X``.
+
+   stridex 
+      Stride between different ``X`` vectors.
+
+   y
+      Buffer holding input/output vectors ``Y`` with size ``stridey`` * ``batch_size``.
+
+   incy 
+      Stride of vector ``Y``.
+   
+   stridey 
+      Stride between different ``Y`` vectors.
+
+   batch_size 
+      Specifies the number of ``axpy`` operations to perform.
+
+.. container:: section
+
+   .. rubric:: Output Parameters
+
+   y
+      Output buffer, overwritten by ``batch_size`` ``axpy`` operations of the form 
+      ``alpha`` * ``X`` + ``Y``.
+
+
 .. _onemkl_blas_axpy_batch_usm:
 
 axpy_batch (USM Version)
@@ -85,7 +188,7 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
                               std::int64_t *incy,
                               std::int64_t group_count,
                               std::int64_t *group_size,
-                              const sycl::vector_class<sycl::event> &dependencies = {})
+                              const std::vector<sycl::event> &dependencies = {})
    }
 .. code-block:: cpp
 
@@ -99,7 +202,7 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
                               std::int64_t *incy,
                               std::int64_t group_count,
                               std::int64_t *group_size,
-                              const sycl::vector_class<sycl::event> &dependencies = {})
+                              const std::vector<sycl::event> &dependencies = {})
    }
 
 .. container:: section
@@ -117,7 +220,7 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
 
    x
       Array of pointers to input vectors ``X`` with size ``total_batch_count``.
-      The size of array allocated for the ``X`` vector of the group ``i`` must be at least (1 + (``n[i]`` – 1)*abs(``incx[i]``))``. 
+      The size of array allocated for the ``X`` vector of the group ``i`` must be at least (1 + (``n[i]`` – 1)*abs(``incx[i]``)). 
       See :ref:`matrix-storage` for more details.
 
    incx
@@ -125,7 +228,7 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
  
    y
       Array of pointers to input/output vectors ``Y`` with size ``total_batch_count``.
-      The size of array allocated for the ``Y`` vector of the group ``i`` must be at least (1 + (``n[i]`` – 1)*abs(``incy[i]``))``. 
+      The size of array allocated for the ``Y`` vector of the group ``i`` must be at least (1 + (``n[i]`` – 1)*abs(``incy[i]``)). 
       See :ref:`matrix-storage` for more details.
 
    incy
@@ -173,7 +276,7 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
                               std::int64_t incy,
                               std::int64_t stridey,
                               std::int64_t batch_size,
-                              const sycl::vector_class<sycl::event> &dependencies = {})
+                              const std::vector<sycl::event> &dependencies = {})
    }
 .. code-block:: cpp
 
@@ -188,7 +291,7 @@ The total number of vectors in ``x`` and ``y`` are given by the ``batch_size`` p
                               std::int64_t incy,
                               std::int64_t stridey,
                               std::int64_t batch_size,
-                              const sycl::vector_class<sycl::event> &dependencies = {})
+                              const std::vector<sycl::event> &dependencies = {})
    }
 
 .. container:: section

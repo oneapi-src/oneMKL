@@ -181,7 +181,7 @@ syrk (USM Version)
                         T beta,
                         T* c,
                         std::int64_t ldc,
-                        const sycl::vector_class<sycl::event> &dependencies = {})
+                        const std::vector<sycl::event> &dependencies = {})
    }
 .. code-block:: cpp
 
@@ -197,7 +197,7 @@ syrk (USM Version)
                         T beta,
                         T* c,
                         std::int64_t ldc,
-                        const sycl::vector_class<sycl::event> &dependencies = {})
+                        const std::vector<sycl::event> &dependencies = {})
    }
 
 .. container:: section
