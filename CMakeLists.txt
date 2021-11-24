@@ -75,7 +75,7 @@ if(ENABLE_MKLCPU_BACKEND
 endif()
 
 # Define required CXX compilers before project
-if(CMAKE_CXX_COMPILER)
+if(CMAKE_CXX_COMPILER OR NOT ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++")
   if(WIN32)
     string(REPLACE "\\" "/" CMAKE_CXX_COMPILER ${CMAKE_CXX_COMPILER})
   endif()
@@ -101,14 +101,14 @@ else()
 endif()
 
 # Define required C compilers for Windows before project
-if(WIN32)
+if(WIN32 AND ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++")
   set(CMAKE_C_COMPILER "clang-cl")
 endif()
 
 project(oneMKL VERSION 0.1.0 LANGUAGES CXX)
 
 # Override default CXX compile/link lines for Windows after project
-if(WIN32)
+if(WIN32 AND ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function -w")
   foreach (flag_var
            CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
@@ -121,7 +121,9 @@ if(WIN32)
 endif()
 
 # Temporary disable sycl 2020 deprecations warnings
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSYCL2020_DISABLE_DEPRECATION_WARNINGS")
+if(ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSYCL2020_DISABLE_DEPRECATION_WARNINGS")
+endif()
 
 # Target domains
 if(NOT TARGET_DOMAINS OR TARGET_DOMAINS STREQUAL "None")
