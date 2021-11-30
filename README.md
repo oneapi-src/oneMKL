@@ -374,8 +374,8 @@ Python | 3.6 or higher | No | *N/A* | *Pre-installed or Installed by user* | [PS
 A compiler needs to be chosen according to the required backend of your application.
 
 - If your application requires Intel GPU, use [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) `dpcpp`.
-- If your application requires NVIDIA GPU, use the latest release of `clang++` from [Intel project for LLVM* technology](https://github.com/intel/llvm/releases/tag/2021-07).
-- If neither Intel GPU nor NVIDIA GPU is required, you can use `dpcpp` or `clang++` on Linux and `dpcpp` or `clang-cl` from [Intel project for LLVM* technology](https://github.com/intel/llvm/releases/tag/2021-07) on Windows.
+- If your application requires NVIDIA GPU, use the latest release of `clang++` from [Intel project for LLVM* technology](https://github.com/intel/llvm/releases).
+- If neither Intel GPU nor NVIDIA GPU is required, you can use either [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) `dpcpp` or `clang++` on Linux and `clang-cl` on Windows from [Intel project for LLVM* technology](https://github.com/intel/llvm/releases).
 
 ---
 
@@ -558,10 +558,10 @@ With the cuBLAS backend:
 ```bash
 # Inside <path to onemkl>
 mkdir build && cd build
-cmake .. -DENABLE_CUBLAS_BACKEND=True  \
+cmake .. [-DCMAKE_CXX_COMPILER=<path_to_clang++_compiler>/bin/clang++] \  # required only if clang++ is not found in environment variable PATH
+         -DENABLE_CUBLAS_BACKEND=True  \
          -DENABLE_MKLCPU_BACKEND=False \                                  # disable Intel MKL CPU backend
          -DENABLE_MKLGPU_BACKEND=False \                                  # disable Intel MKL GPU backend
-         [-DCMAKE_CXX_COMPILER=<path_to_clang++_compiler>/bin/clang++] \  # required only if clang++ is not found in environment variable PATH
          [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \              # required only for testing
 cmake --build .
 ctest
