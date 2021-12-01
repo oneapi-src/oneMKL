@@ -103,7 +103,14 @@ endif()
 
 # Define required C compilers for Windows before project
 if(WIN32 AND ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++")
-  set(CMAKE_C_COMPILER "icx")
+  find_program(ICX_PATH icx)
+  if(ICX_PATH)
+    message(STATUS "icx was found in PATH, using icx")
+    set(CMAKE_C_COMPILER "icx")
+  else()
+    message(STATUS "icx was not found in PATH, using clang-cl instead")
+    set(CMAKE_C_COMPILER "clang-cl")
+  endif()
 endif()
 
 project(oneMKL VERSION 0.2.0 LANGUAGES CXX)
