@@ -24,3 +24,7 @@ endif()
 if(ENABLE_MKLGPU_BACKEND)
   add_subdirectory(mklgpu)
 endif()
+
+if(ENABLE_CUSOLVER_BACKEND)
+  add_subdirectory(cusolver)
+endif()

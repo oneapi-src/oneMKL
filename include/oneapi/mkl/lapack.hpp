@@ -27,5 +27,8 @@
 #ifdef ENABLE_MKLGPU_BACKEND
 #include "oneapi/mkl/lapack/detail/mklgpu/lapack_ct.hpp"
 #endif
+#ifdef ENABLE_CUSOLVER_BACKEND
+#include "oneapi/mkl/lapack/detail/cusolver/lapack_ct.hpp"
+#endif
 
 #include "oneapi/mkl/lapack/detail/lapack_rt.hpp"
