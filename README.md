@@ -529,6 +529,7 @@ conan build ..
 # Inside <path to onemkl>
 mkdir build && cd build
 cmake .. [-DCMAKE_CXX_COMPILER=<path_to_dpcpp_compiler>/bin/dpcpp] \  # required only if dpcpp is not found in environment variable PATH
+         [-DCMAKE_C_COMPILER=<path_to_icx_compiler>/bin/icx]       \  # required only if icx is not found in environment variable PATH
          [-DMKL_ROOT=<mkl_install_prefix>] \                          # required only if environment variable MKLROOT is not set
          [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \          # required only for testing
          [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]        # required only for testing
@@ -541,6 +542,7 @@ cmake --install . --prefix <path_to_install_dir>
 # Inside <path to onemkl>
 md build && cd build
 cmake .. -G Ninja [-DCMAKE_CXX_COMPILER=<path_to_dpcpp_compiler>\bin\dpcpp] \  # required only if dpcpp is not found in environment variable PATH
+                  [-DCMAKE_C_COMPILER=<path_to_icx_compiler>\bin\icx]       \  # required only if icx is not found in environment variable PATH
                   [-DMKL_ROOT=<mkl_install_prefix>] \                          # required only if environment variable MKLROOT is not set
                   [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \          # required only for testing
                   [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]        # required only for testing
@@ -559,6 +561,7 @@ With the cuBLAS backend:
 # Inside <path to onemkl>
 mkdir build && cd build
 cmake .. [-DCMAKE_CXX_COMPILER=<path_to_clang++_compiler>/bin/clang++] \  # required only if clang++ is not found in environment variable PATH
+         [-DCMAKE_C_COMPILER=<path_to_clang_compiler>/bin/clang]       \  # required only if clang is not found in environment variable PATH
          -DENABLE_CUBLAS_BACKEND=True  \
          -DENABLE_MKLCPU_BACKEND=False \                                  # disable Intel MKL CPU backend
          -DENABLE_MKLGPU_BACKEND=False \                                  # disable Intel MKL GPU backend
