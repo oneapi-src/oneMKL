@@ -30,16 +30,20 @@ namespace blas {
 namespace mklgpu {
 namespace column_major {
 
-#define MAJOR MKL_COL_MAJOR
+#define MAJOR             MKL_COL_MAJOR
+#define EMPTY_KERNEL_NAME ColMajorEmptyKernel
 #include "mklgpu_batch.cxx"
 #undef MAJOR
+#undef EMPTY_KERNEL_NAME
 
 } // namespace column_major
 namespace row_major {
 
-#define MAJOR MKL_ROW_MAJOR
+#define MAJOR             MKL_ROW_MAJOR
+#define EMPTY_KERNEL_NAME RowMajorEmptyKernel
 #include "mklgpu_batch.cxx"
 #undef MAJOR
+#undef EMPTY_KERNEL_NAME
 
 } // namespace row_major
 } // namespace mklgpu

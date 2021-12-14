@@ -296,7 +296,7 @@ cl::sycl::event *coalesce_events(cl::sycl::queue &queue, std::vector<cl::sycl::e
         return new cl::sycl::event(queue.submit([&](cl::sycl::handler &cgh) {
             for (int64_t i = 0; i < prereqs.size(); i++)
                 cgh.depends_on(*prereqs[i]);
-            cgh.single_task<class MAJOR>([]() {});
+            cgh.single_task<class EMPTY_KERNEL_NAME>([]() {});
         }));
     }
     else
