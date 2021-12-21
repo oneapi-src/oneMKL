@@ -1465,7 +1465,10 @@ int iamin(const int *n, const float *x, const int *incx) {
     for (int logical_i = 0; logical_i < *n; ++logical_i) {
         int i = logical_i * std::abs(*incx);
         auto curr_val = abs_val(x[i]);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wtautological-constant-compare"
         bool is_first_nan = std::isnan(curr_val) && !std::isnan(min_val);
+#pragma clang diagnostic pop
         if (is_first_nan || curr_val < min_val) {
             min_idx = logical_i;
             min_val = curr_val;
@@ -1485,7 +1488,10 @@ int iamin(const int *n, const double *x, const int *incx) {
     for (int logical_i = 0; logical_i < *n; ++logical_i) {
         int i = logical_i * std::abs(*incx);
         auto curr_val = abs_val(x[i]);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wtautological-constant-compare"
         bool is_first_nan = std::isnan(curr_val) && !std::isnan(min_val);
+#pragma clang diagnostic pop
         if (is_first_nan || curr_val < min_val) {
             min_idx = logical_i;
             min_val = curr_val;
@@ -1505,7 +1511,10 @@ int iamin(const int *n, const std::complex<float> *x, const int *incx) {
     for (int logical_i = 0; logical_i < *n; ++logical_i) {
         int i = logical_i * std::abs(*incx);
         auto curr_val = abs_val(x[i]);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wtautological-constant-compare"
         bool is_first_nan = std::isnan(curr_val) && !std::isnan(min_val);
+#pragma clang diagnostic pop
         if (is_first_nan || curr_val < min_val) {
             min_idx = logical_i;
             min_val = curr_val;
@@ -1525,7 +1534,10 @@ int iamin(const int *n, const std::complex<double> *x, const int *incx) {
     for (int logical_i = 0; logical_i < *n; ++logical_i) {
         int i = logical_i * std::abs(*incx);
         auto curr_val = abs_val(x[i]);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wtautological-constant-compare"
         bool is_first_nan = std::isnan(curr_val) && !std::isnan(min_val);
+#pragma clang diagnostic pop
         if (is_first_nan || curr_val < min_val) {
             min_idx = logical_i;
             min_val = curr_val;

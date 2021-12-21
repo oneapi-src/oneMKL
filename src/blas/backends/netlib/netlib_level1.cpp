@@ -49,7 +49,10 @@ int cblas_isamin(int n, const float *x, int incx) {
     for (int logical_i = 0; logical_i < n; ++logical_i) {
         int i = logical_i * std::abs(incx);
         auto curr_val = abs_val(x[i]);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wtautological-constant-compare"
         bool is_first_nan = std::isnan(curr_val) && !std::isnan(min_val);
+#pragma clang diagnostic pop
         if (is_first_nan || curr_val < min_val) {
             min_idx = logical_i;
             min_val = curr_val;
@@ -68,7 +71,10 @@ int cblas_idamin(int n, const double *x, int incx) {
     for (int logical_i = 0; logical_i < n; ++logical_i) {
         int i = logical_i * std::abs(incx);
         auto curr_val = abs_val(x[i]);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wtautological-constant-compare"
         bool is_first_nan = std::isnan(curr_val) && !std::isnan(min_val);
+#pragma clang diagnostic pop
         if (is_first_nan || curr_val < min_val) {
             min_idx = logical_i;
             min_val = curr_val;
@@ -87,7 +93,10 @@ int cblas_icamin(int n, const std::complex<float> *x, int incx) {
     for (int logical_i = 0; logical_i < n; ++logical_i) {
         int i = logical_i * std::abs(incx);
         auto curr_val = abs_val(x[i]);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wtautological-constant-compare"
         bool is_first_nan = std::isnan(curr_val) && !std::isnan(min_val);
+#pragma clang diagnostic pop
         if (is_first_nan || curr_val < min_val) {
             min_idx = logical_i;
             min_val = curr_val;
@@ -106,7 +115,10 @@ int cblas_izamin(int n, const std::complex<double> *x, int incx) {
     for (int logical_i = 0; logical_i < n; ++logical_i) {
         int i = logical_i * std::abs(incx);
         auto curr_val = abs_val(x[i]);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wtautological-constant-compare"
         bool is_first_nan = std::isnan(curr_val) && !std::isnan(min_val);
+#pragma clang diagnostic pop
         if (is_first_nan || curr_val < min_val) {
             min_idx = logical_i;
             min_val = curr_val;
