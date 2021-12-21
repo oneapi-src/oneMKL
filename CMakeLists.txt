@@ -137,10 +137,9 @@ if(WIN32 AND ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++")
   set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> -fsycl /nologo <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
 endif()
 
+# Temporary disable sycl 2020 deprecations warnings
 if(ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++")
-  # Temporary disable sycl 2020 deprecations warnings
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSYCL2020_DISABLE_DEPRECATION_WARNINGS")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-tautological-constant-compare")
 endif()
 
 # Target domains
