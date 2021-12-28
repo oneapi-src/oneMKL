@@ -62,6 +62,7 @@ find_package(cuRAND REQUIRED)
 
 set(SOURCES philox4x32x10.cpp
   mrg32k3a.cpp
+  mcg59.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_rng_curand_wrappers.cpp>)
 
 add_library(${LIB_NAME})

@@ -29,7 +29,7 @@
 #define N_GEN 1000
 
 // Defines for skip_ahead and leapfrog tests
-#define N_ENGINES     5
+#define N_ENGINES     6
 #define N_PORTION     100
 #define N_GEN_SERVICE (N_ENGINES * N_PORTION)
 
@@ -68,6 +68,25 @@ static inline bool check_equal_vector(std::vector<Fp, AllocType>& r1,
         if (!check_equal(r1[i], r2[i])) {
             good = false;
             break;
+        }
+    }
+    return good;
+}
+
+template <typename Fp, typename AllocType>
+static inline bool leapfrog_check(std::vector<Fp, AllocType>& r1,
+                                      std::vector<Fp, AllocType>& r2, int n_portion, int n_engines) {
+    bool good = true;
+    int j = 0;
+    for(int i = 0; i < n_engines; i++) {
+        for(int k = 0; k < n_portion/2; k++) {
+            for ( int p = 0; p < 2; p++)
+            {
+                if(!check_equal(r2[j++], r1[k * n_engines + i*2 + p])) {
+                    good = false;
+                    break;
+                }
+            }
         }
     }
     return good;

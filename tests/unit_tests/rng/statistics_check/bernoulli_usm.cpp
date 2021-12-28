@@ -38,6 +38,11 @@ TEST_P(BernoulliIcdfUsmTests, IntegerPrecision) {
         oneapi::mkl::rng::mrg32k3a>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, BERNOULLI_ARGS)));
+    rng_test<statistics_usm_test<
+        oneapi::mkl::rng::bernoulli<std::int32_t, oneapi::mkl::rng::bernoulli_method::icdf>,
+        oneapi::mkl::rng::mcg59>>
+        test3;
+    EXPECT_TRUEORSKIP((test3(GetParam(), N_GEN, BERNOULLI_ARGS)));
 }
 
 TEST_P(BernoulliIcdfUsmTests, UnsignedIntegerPrecision) {
@@ -47,10 +52,15 @@ TEST_P(BernoulliIcdfUsmTests, UnsignedIntegerPrecision) {
         test1;
     EXPECT_TRUEORSKIP((test1(GetParam(), N_GEN, BERNOULLI_ARGS)));
     rng_test<statistics_usm_test<
-        oneapi::mkl::rng::bernoulli<std::int32_t, oneapi::mkl::rng::bernoulli_method::icdf>,
+        oneapi::mkl::rng::bernoulli<std::uint32_t, oneapi::mkl::rng::bernoulli_method::icdf>,
         oneapi::mkl::rng::mrg32k3a>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, BERNOULLI_ARGS)));
+    rng_test<statistics_usm_test<
+        oneapi::mkl::rng::bernoulli<std::uint32_t, oneapi::mkl::rng::bernoulli_method::icdf>,
+        oneapi::mkl::rng::mcg59>>
+        test3;
+    EXPECT_TRUEORSKIP((test3(GetParam(), N_GEN, BERNOULLI_ARGS)));
 }
 
 INSTANTIATE_TEST_SUITE_P(BernoulliIcdfUsmTestSuite, BernoulliIcdfUsmTests,

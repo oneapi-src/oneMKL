@@ -40,6 +40,12 @@ TEST_P(PoissonIcdfUsmTests, IntegerPrecision) {
         oneapi::mkl::rng::mrg32k3a>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, POISSON_ARGS)));
+    rng_test<statistics_usm_test<
+        oneapi::mkl::rng::poisson<std::int32_t,
+                                  oneapi::mkl::rng::poisson_method::gaussian_icdf_based>,
+        oneapi::mkl::rng::mcg59>>
+        test3;
+    EXPECT_TRUEORSKIP((test3(GetParam(), N_GEN, POISSON_ARGS)));
 }
 
 TEST_P(PoissonIcdfUsmTests, UnsignedIntegerPrecision) {
@@ -55,6 +61,12 @@ TEST_P(PoissonIcdfUsmTests, UnsignedIntegerPrecision) {
         oneapi::mkl::rng::mrg32k3a>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, POISSON_ARGS)));
+    rng_test<statistics_usm_test<
+        oneapi::mkl::rng::poisson<std::int32_t,
+                                  oneapi::mkl::rng::poisson_method::gaussian_icdf_based>,
+        oneapi::mkl::rng::mcg59>>
+        test3;
+    EXPECT_TRUEORSKIP((test3(GetParam(), N_GEN, POISSON_ARGS)));
 }
 
 INSTANTIATE_TEST_SUITE_P(PoissonIcdfUsmTestSuite, PoissonIcdfUsmTests, ::testing::ValuesIn(devices),

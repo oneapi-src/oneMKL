@@ -32,6 +32,19 @@
 
 template <typename Engine>
 class engines_constructors_test {
+
+    template <typename T>
+    void generate(oneapi::mkl::rng::bits<std::uint32_t> distr, T& engine, std::uint64_t n, cl::sycl::buffer<std::uint32_t, 1>& buf)
+    {
+        oneapi::mkl::rng::generate(distr, engine, n, buf);
+    }
+
+    template <>
+    void generate<oneapi::mkl::rng::mcg59>(oneapi::mkl::rng::bits<std::uint32_t> distr, oneapi::mkl::rng::mcg59 &engine, std::uint64_t n, cl::sycl::buffer<std::uint32_t, 1>& buf)
+    {
+        oneapi::mkl::rng::generate(distr, engine, n/2, buf);
+    }
+
 public:
     template <typename Queue, typename... Args>
     void operator()(Queue queue, Args... args) {
@@ -55,10 +68,10 @@ public:
             cl::sycl::buffer<std::uint32_t, 1> r3_buffer(r3.data(), r3.size());
             cl::sycl::buffer<std::uint32_t, 1> r4_buffer(r4.data(), r4.size());
 
-            oneapi::mkl::rng::generate(distr, engine1, N_GEN, r1_buffer);
-            oneapi::mkl::rng::generate(distr, engine2, N_GEN, r2_buffer);
-            oneapi::mkl::rng::generate(distr, engine3, N_GEN, r3_buffer);
-            oneapi::mkl::rng::generate(distr, engine4, N_GEN, r4_buffer);
+            generate(distr, engine1, N_GEN, r1_buffer);
+            generate(distr, engine2, N_GEN, r2_buffer);
+            generate(distr, engine3, N_GEN, r3_buffer);
+            generate(distr, engine4, N_GEN, r4_buffer);
         }
         catch (const oneapi::mkl::unimplemented& e) {
             status = test_skipped;
@@ -81,6 +94,19 @@ public:
 
 template <typename Engine>
 class engines_copy_test {
+
+    template <typename T>
+    void generate(oneapi::mkl::rng::bits<std::uint32_t> distr, T& engine, std::uint64_t n, cl::sycl::buffer<std::uint32_t, 1>& buf)
+    {
+        oneapi::mkl::rng::generate(distr, engine, n, buf);
+    }
+
+    template <>
+    void generate<oneapi::mkl::rng::mcg59>(oneapi::mkl::rng::bits<std::uint32_t> distr, oneapi::mkl::rng::mcg59 &engine, std::uint64_t n, cl::sycl::buffer<std::uint32_t, 1>& buf)
+    {
+        oneapi::mkl::rng::generate(distr, engine, n/2, buf);
+    }
+
 public:
     template <typename Queue>
     void operator()(Queue queue) {
@@ -99,8 +125,8 @@ public:
                 cl::sycl::buffer<std::uint32_t, 1> r1_buffer(r1.data(), r1.size());
                 cl::sycl::buffer<std::uint32_t, 1> r2_buffer(r2.data(), r2.size());
 
-                oneapi::mkl::rng::generate(distr, engine1, N_GEN, r1_buffer);
-                oneapi::mkl::rng::generate(distr, engine2, N_GEN, r2_buffer);
+                generate(distr, engine1, N_GEN, r1_buffer);
+                generate(distr, engine2, N_GEN, r2_buffer);
             }
 
             Engine engine3 = engine1;
@@ -110,9 +136,9 @@ public:
                 cl::sycl::buffer<std::uint32_t, 1> r2_buffer(r2.data(), r2.size());
                 cl::sycl::buffer<std::uint32_t, 1> r3_buffer(r3.data(), r3.size());
 
-                oneapi::mkl::rng::generate(distr, engine1, N_GEN, r1_buffer);
-                oneapi::mkl::rng::generate(distr, engine3, N_GEN, r2_buffer);
-                oneapi::mkl::rng::generate(distr, engine4, N_GEN, r3_buffer);
+                generate(distr, engine1, N_GEN, r1_buffer);
+                generate(distr, engine3, N_GEN, r2_buffer);
+                generate(distr, engine4, N_GEN, r3_buffer);
             }
         }
         catch (const oneapi::mkl::unimplemented& e) {

@@ -32,6 +32,30 @@
 
 template <typename Engine>
 class skip_ahead_test {
+    template <typename T>
+    void generate(oneapi::mkl::rng::bits<std::uint32_t> distr, T& engine, std::uint64_t n, cl::sycl::buffer<std::uint32_t, 1>& buf)
+    {
+        oneapi::mkl::rng::generate(distr, engine, n, buf);
+    }
+
+    template <>
+    void generate<oneapi::mkl::rng::mcg59>(oneapi::mkl::rng::bits<std::uint32_t> distr, oneapi::mkl::rng::mcg59 &engine, std::uint64_t n, cl::sycl::buffer<std::uint32_t, 1>& buf)
+    {
+        oneapi::mkl::rng::generate(distr, engine, n/2, buf);
+    }
+
+    template <typename T>
+    void skip_ahead(T& engine, std::uint64_t n)
+    {
+        oneapi::mkl::rng::skip_ahead(engine, n);
+    }
+
+   template <>
+    void skip_ahead<oneapi::mkl::rng::mcg59>(oneapi::mkl::rng::mcg59 &engine, std::uint64_t n)
+    {
+        oneapi::mkl::rng::skip_ahead(engine, n/2);
+    }
+
 public:
     template <typename Queue>
     void operator()(Queue queue) {
@@ -49,7 +73,7 @@ public:
             // Perform skip
             for (int i = 0; i < N_ENGINES; i++) {
                 engines.push_back(new Engine(queue));
-                oneapi::mkl::rng::skip_ahead(*(engines[i]), i * N_PORTION);
+                skip_ahead(*(engines[i]), i * N_PORTION);
             }
 
             cl::sycl::buffer<std::uint32_t, 1> r_buffer(r1.data(), r1.size());
@@ -59,9 +83,9 @@ public:
                     cl::sycl::buffer<std::uint32_t, 1>(r2.data() + i * N_PORTION, N_PORTION));
             }
 
-            oneapi::mkl::rng::generate(distr, engine, N_GEN_SERVICE, r_buffer);
+            generate(distr, engine, N_GEN_SERVICE, r_buffer);
             for (int i = 0; i < N_ENGINES; i++) {
-                oneapi::mkl::rng::generate(distr, *(engines[i]), N_PORTION, r_buffers[i]);
+                generate(distr, *(engines[i]), N_PORTION, r_buffers[i]);
             }
 
             // Clear memory
@@ -128,6 +152,63 @@ public:
 
         // validation
         status = check_equal_vector(r1, r2);
+    }
+
+    int status = test_passed;
+};
+
+template <typename Engine>
+class leapfrog_test {
+public:
+    template <typename Queue>
+    void operator()(Queue queue) {
+        // Prepare arrays for random numbers
+        std::vector<std::uint32_t> r1(N_GEN);
+        std::vector<std::uint32_t> r2(N_GEN);
+
+        try {
+            // Initialize rng objects
+            Engine engine(queue);
+            std::vector<Engine*> engines;
+
+            oneapi::mkl::rng::bits<std::uint32_t> distr;
+
+            // Perform skip
+            for (int i = 0; i < N_ENGINES; i++) {
+                engines.push_back(new Engine(queue));
+                oneapi::mkl::rng::leapfrog(*(engines[i]), i, N_ENGINES / 2);
+            }
+
+            cl::sycl::buffer<std::uint32_t, 1> r_buffer(r1.data(), r1.size());
+            std::vector<cl::sycl::buffer<std::uint32_t, 1>> r_buffers;
+            for (int i = 0; i < N_ENGINES; i++) {
+                r_buffers.push_back(
+                    cl::sycl::buffer<std::uint32_t, 1>(r2.data() + i * N_PORTION, N_PORTION));
+            }
+
+            oneapi::mkl::rng::generate(distr, engine, N_GEN_SERVICE / 2, r_buffer);
+            for (int i = 0; i < N_ENGINES; i++) {
+                oneapi::mkl::rng::generate(distr, *(engines[i]), N_PORTION / 2, r_buffers[i]);
+            }
+
+            // Clear memory
+            for (int i = 0; i < N_ENGINES; i++) {
+                delete engines[i];
+            }
+        }
+        catch (const oneapi::mkl::unimplemented& e) {
+            status = test_skipped;
+            return;
+        }
+        catch (cl::sycl::exception const& e) {
+            std::cout << "SYCL exception during generation" << std::endl << e.what() << std::endl;
+            print_error_code(e);
+            status = test_failed;
+            return;
+        }
+
+        // Validation
+        status = leapfrog_check(r1, r2, N_PORTION, N_ENGINES);
     }
 
     int status = test_passed;

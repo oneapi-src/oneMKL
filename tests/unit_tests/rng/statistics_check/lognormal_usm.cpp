@@ -40,6 +40,11 @@ TEST_P(LognormalIcdfUsmTest, RealSinglePrecision) {
         oneapi::mkl::rng::mrg32k3a>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, LOGNORMAL_ARGS_FLOAT)));
+    rng_test<statistics_usm_test<
+        oneapi::mkl::rng::lognormal<float, oneapi::mkl::rng::lognormal_method::icdf>,
+        oneapi::mkl::rng::mcg59>>
+        test3;
+    EXPECT_TRUEORSKIP((test3(GetParam(), N_GEN, LOGNORMAL_ARGS_FLOAT)));
 }
 
 TEST_P(LognormalIcdfUsmTest, RealDoublePrecision) {
@@ -53,6 +58,11 @@ TEST_P(LognormalIcdfUsmTest, RealDoublePrecision) {
         oneapi::mkl::rng::mrg32k3a>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, LOGNORMAL_ARGS_DOUBLE)));
+    rng_test<statistics_usm_test<
+        oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::icdf>,
+        oneapi::mkl::rng::mcg59>>
+        test3;
+    EXPECT_TRUEORSKIP((test3(GetParam(), N_GEN, LOGNORMAL_ARGS_DOUBLE)));
 }
 
 TEST_P(LognormalBoxmullerUsmTest, RealSinglePrecision) {
@@ -66,6 +76,11 @@ TEST_P(LognormalBoxmullerUsmTest, RealSinglePrecision) {
         oneapi::mkl::rng::mrg32k3a>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, LOGNORMAL_ARGS_FLOAT)));
+    rng_test<statistics_usm_test<
+        oneapi::mkl::rng::lognormal<float, oneapi::mkl::rng::lognormal_method::box_muller2>,
+        oneapi::mkl::rng::mcg59>>
+        test3;
+    EXPECT_TRUEORSKIP((test3(GetParam(), N_GEN, LOGNORMAL_ARGS_FLOAT)));
 }
 
 TEST_P(LognormalBoxmullerUsmTest, RealDoublePrecision) {
@@ -79,6 +94,11 @@ TEST_P(LognormalBoxmullerUsmTest, RealDoublePrecision) {
         oneapi::mkl::rng::mrg32k3a>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, LOGNORMAL_ARGS_DOUBLE)));
+    rng_test<statistics_usm_test<
+        oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::box_muller2>,
+        oneapi::mkl::rng::mcg59>>
+        test3;
+    EXPECT_TRUEORSKIP((test3(GetParam(), N_GEN, LOGNORMAL_ARGS_DOUBLE)));
 }
 
 INSTANTIATE_TEST_SUITE_P(LognormalIcdfUsmTestSuite, LognormalIcdfUsmTest,

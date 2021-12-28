@@ -40,6 +40,11 @@ TEST_P(GaussianIcdfUsmTest, RealSinglePrecision) {
         oneapi::mkl::rng::mrg32k3a>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, GAUSSIAN_ARGS_FLOAT)));
+    rng_test<statistics_usm_test<
+        oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::icdf>,
+        oneapi::mkl::rng::mcg59>>
+        test3;
+    EXPECT_TRUEORSKIP((test3(GetParam(), N_GEN, GAUSSIAN_ARGS_FLOAT)));
 }
 
 TEST_P(GaussianIcdfUsmTest, RealDoublePrecision) {
@@ -53,6 +58,11 @@ TEST_P(GaussianIcdfUsmTest, RealDoublePrecision) {
         oneapi::mkl::rng::mrg32k3a>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, GAUSSIAN_ARGS_DOUBLE)));
+    rng_test<statistics_usm_test<
+        oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>,
+        oneapi::mkl::rng::mcg59>>
+        test3;
+    EXPECT_TRUEORSKIP((test3(GetParam(), N_GEN, GAUSSIAN_ARGS_DOUBLE)));
 }
 
 TEST_P(GaussianBoxmullerUsmTest, RealSinglePrecision) {
@@ -66,6 +76,11 @@ TEST_P(GaussianBoxmullerUsmTest, RealSinglePrecision) {
         oneapi::mkl::rng::mrg32k3a>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, GAUSSIAN_ARGS_FLOAT)));
+    rng_test<statistics_usm_test<
+        oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::box_muller2>,
+        oneapi::mkl::rng::mcg59>>
+        test3;
+    EXPECT_TRUEORSKIP((test3(GetParam(), N_GEN, GAUSSIAN_ARGS_FLOAT)));
 }
 
 TEST_P(GaussianBoxmullerUsmTest, RealDoublePrecision) {
@@ -79,6 +94,11 @@ TEST_P(GaussianBoxmullerUsmTest, RealDoublePrecision) {
         oneapi::mkl::rng::mrg32k3a>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, GAUSSIAN_ARGS_DOUBLE)));
+    rng_test<statistics_usm_test<
+        oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::box_muller2>,
+        oneapi::mkl::rng::mcg59>>
+        test3;
+    EXPECT_TRUEORSKIP((test3(GetParam(), N_GEN, GAUSSIAN_ARGS_DOUBLE)));
 }
 
 INSTANTIATE_TEST_SUITE_P(GaussianIcdfUsmTestSuite, GaussianIcdfUsmTest,

@@ -358,7 +358,8 @@ private:
 template <typename UIntType = std::uint32_t>
 class bits {
 public:
-    static_assert(std::is_same<UIntType, std::uint32_t>::value, "rng bits type is not supported");
+    static_assert(std::is_same<UIntType, std::uint32_t>::value || std::is_same<UIntType, std::uint64_t>::value, 
+            "rng bits type is not supported");
     using result_type = UIntType;
 };
 

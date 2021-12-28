@@ -67,4 +67,25 @@ INSTANTIATE_TEST_SUITE_P(Mrg32k3aConstructorsTestsuite, Mrg32k3aConstructorsTest
 INSTANTIATE_TEST_SUITE_P(Mrg32k3aCopyTestsuite, Mrg32k3aCopyTests, ::testing::ValuesIn(devices),
                          ::DeviceNamePrint());
 
+class Mcg59ConstructorsTests : public ::testing::TestWithParam<cl::sycl::device*> {};
+
+class Mcg59CopyTests : public ::testing::TestWithParam<cl::sycl::device*> {};
+
+TEST_P(Mcg59ConstructorsTests, BinaryPrecision) {
+    rng_test<engines_constructors_test<oneapi::mkl::rng::mcg59>> test;
+    std::uint64_t seed = SEED;
+    EXPECT_TRUEORSKIP((test(GetParam(), seed)));
+}
+
+TEST_P(Mcg59CopyTests, BinaryPrecision) {
+    rng_test<engines_copy_test<oneapi::mkl::rng::mcg59>> test;
+    EXPECT_TRUEORSKIP((test(GetParam())));
+}
+
+INSTANTIATE_TEST_SUITE_P(Mcg59ConstructorsTestsuite, Mcg59ConstructorsTests,
+                         ::testing::ValuesIn(devices), ::DeviceNamePrint());
+
+INSTANTIATE_TEST_SUITE_P(Mcg59CopyTestsuite, Mcg59CopyTests,
+                         ::testing::ValuesIn(devices), ::DeviceNamePrint());
+
 } // anonymous namespace

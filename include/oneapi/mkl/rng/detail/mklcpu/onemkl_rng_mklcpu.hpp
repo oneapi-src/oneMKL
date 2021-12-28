@@ -43,6 +43,12 @@ ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(cl::sycl::q
 ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(
     cl::sycl::queue queue, std::initializer_list<std::uint32_t> seed);
 
+ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mcg59(cl::sycl::queue queue,
+                                                                    std::uint64_t seed);
+
+ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mcg59(
+    cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed);
+
 } // namespace mklcpu
 } // namespace rng
 } // namespace mkl
