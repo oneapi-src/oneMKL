@@ -173,6 +173,24 @@ public:
         throw cusolver_error(std::string(#name) + std::string(" : "), err); \
     }
 
+inline signed char get_cusolver_jobsvd(oneapi::mkl::jobsvd job) {
+    switch (job) {
+        case oneapi::mkl::jobsvd::N: return 'N';
+        case oneapi::mkl::jobsvd::A: return 'A';
+        case oneapi::mkl::jobsvd::O: return 'O';
+        case oneapi::mkl::jobsvd::S: return 'S';
+    }
+}
+
+inline cublasOperation_t get_cublas_operation(oneapi::mkl::transpose trn) {
+    switch (trn) {
+        case oneapi::mkl::transpose::nontrans: return CUBLAS_OP_N;
+        case oneapi::mkl::transpose::trans: return CUBLAS_OP_T;
+        case oneapi::mkl::transpose::conjtrans: return CUBLAS_OP_C;
+        default: throw "Wrong transpose Operation.";
+    }
+}
+
 inline cublasFillMode_t get_cublas_fill_mode(oneapi::mkl::uplo ul) {
     switch (ul) {
         case oneapi::mkl::uplo::upper: return CUBLAS_FILL_MODE_UPPER;
