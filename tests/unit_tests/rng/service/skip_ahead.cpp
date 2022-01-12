@@ -79,10 +79,10 @@ TEST_P(Mcg59LeapfrogTests, BinaryPrecision) {
     EXPECT_TRUEORSKIP((test(GetParam())));
 }
 
-INSTANTIATE_TEST_SUITE_P(Mcg59SkipAheadTestSuite, Mcg59SkipAheadTests,
-                         ::testing::ValuesIn(devices), ::DeviceNamePrint());   
+INSTANTIATE_TEST_SUITE_P(Mcg59SkipAheadTestSuite, Mcg59SkipAheadTests, ::testing::ValuesIn(devices),
+                         ::DeviceNamePrint());
 
-INSTANTIATE_TEST_SUITE_P(Mcg59LeapfrogTestSuite, Mcg59LeapfrogTests,
-                         ::testing::ValuesIn(devices), ::DeviceNamePrint()); 
+INSTANTIATE_TEST_SUITE_P(Mcg59LeapfrogTestSuite, Mcg59LeapfrogTests, ::testing::ValuesIn(devices),
+                         ::DeviceNamePrint());
 
 } // anonymous namespace

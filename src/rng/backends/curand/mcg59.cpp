@@ -98,8 +98,8 @@ oneapi::mkl::rng::detail::engine_impl* create_mcg59(sycl::queue queue, std::uint
     return nullptr;
 }
 
-oneapi::mkl::rng::detail::engine_impl* create_mcg59(
-    cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed) {
+oneapi::mkl::rng::detail::engine_impl* create_mcg59(cl::sycl::queue queue,
+                                                    std::initializer_list<std::uint64_t> seed) {
     throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     return nullptr;
 }

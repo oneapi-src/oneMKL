@@ -46,10 +46,10 @@ ONEMKL_EXPORT engine_impl* create_mrg32k3a(oneapi::mkl::device libkey, cl::sycl:
                                            std::initializer_list<std::uint32_t> seed);
 
 ONEMKL_EXPORT engine_impl* create_mcg59(oneapi::mkl::device libkey, cl::sycl::queue queue,
-                                           std::uint64_t seed);
+                                        std::uint64_t seed);
 
 ONEMKL_EXPORT engine_impl* create_mcg59(oneapi::mkl::device libkey, cl::sycl::queue queue,
-                                           std::initializer_list<std::uint64_t> seed);
+                                        std::initializer_list<std::uint64_t> seed);
 
 } // namespace detail
 } // namespace rng

@@ -39,7 +39,7 @@ class mcg59_impl : public oneapi::mkl::rng::detail::engine_impl {
 public:
     mcg59_impl(cl::sycl::queue queue, std::uint64_t seed)
             : oneapi::mkl::rng::detail::engine_impl(queue) {
-     engine_ =
+        engine_ =
             oneapi::mkl::rng::detail::gpu::create_engine<oneapi::mkl::rng::mcg59>(queue, seed);
     }
 
@@ -576,8 +576,8 @@ oneapi::mkl::rng::detail::engine_impl* create_mcg59(sycl::queue queue, std::uint
 }
 
 oneapi::mkl::rng::detail::engine_impl* create_mcg59(cl::sycl::queue queue,
-                                                       std::initializer_list<std::uint64_t> seed) {
-     throw oneapi::mkl::unimplemented("rng", "mcg59 skipAheadEx");
+                                                    std::initializer_list<std::uint64_t> seed) {
+    throw oneapi::mkl::unimplemented("rng", "mcg59 skipAheadEx");
 }
 
 } // namespace mklgpu

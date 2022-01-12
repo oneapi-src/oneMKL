@@ -33,27 +33,26 @@
 template <typename Engine>
 class skip_ahead_test {
     template <typename T>
-    void generate(oneapi::mkl::rng::bits<std::uint32_t> distr, T& engine, std::uint64_t n, cl::sycl::buffer<std::uint32_t, 1>& buf)
-    {
+    void generate(oneapi::mkl::rng::bits<std::uint32_t> distr, T& engine, std::uint64_t n,
+                  cl::sycl::buffer<std::uint32_t, 1>& buf) {
         oneapi::mkl::rng::generate(distr, engine, n, buf);
     }
 
     template <>
-    void generate<oneapi::mkl::rng::mcg59>(oneapi::mkl::rng::bits<std::uint32_t> distr, oneapi::mkl::rng::mcg59 &engine, std::uint64_t n, cl::sycl::buffer<std::uint32_t, 1>& buf)
-    {
-        oneapi::mkl::rng::generate(distr, engine, n/2, buf);
+    void generate<oneapi::mkl::rng::mcg59>(oneapi::mkl::rng::bits<std::uint32_t> distr,
+                                           oneapi::mkl::rng::mcg59& engine, std::uint64_t n,
+                                           cl::sycl::buffer<std::uint32_t, 1>& buf) {
+        oneapi::mkl::rng::generate(distr, engine, n / 2, buf);
     }
 
     template <typename T>
-    void skip_ahead(T& engine, std::uint64_t n)
-    {
+    void skip_ahead(T& engine, std::uint64_t n) {
         oneapi::mkl::rng::skip_ahead(engine, n);
     }
 
-   template <>
-    void skip_ahead<oneapi::mkl::rng::mcg59>(oneapi::mkl::rng::mcg59 &engine, std::uint64_t n)
-    {
-        oneapi::mkl::rng::skip_ahead(engine, n/2);
+    template <>
+    void skip_ahead<oneapi::mkl::rng::mcg59>(oneapi::mkl::rng::mcg59& engine, std::uint64_t n) {
+        oneapi::mkl::rng::skip_ahead(engine, n / 2);
     }
 
 public:

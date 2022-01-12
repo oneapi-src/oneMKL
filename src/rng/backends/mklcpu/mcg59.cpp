@@ -532,9 +532,10 @@ public:
         cl::sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
-            host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(
-                cgh, [=]() { viRngUniformBits(VSL_RNG_METHOD_UNIFORMBITS_STD, stream, n, reinterpret_cast<uint32_t*>(r)); 
-                });
+            host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
+                viRngUniformBits(VSL_RNG_METHOD_UNIFORMBITS_STD, stream, n,
+                                 reinterpret_cast<uint32_t*>(r));
+            });
         });
     }
 
@@ -568,7 +569,7 @@ oneapi::mkl::rng::detail::engine_impl* create_mcg59(cl::sycl::queue queue, std::
 }
 
 oneapi::mkl::rng::detail::engine_impl* create_mcg59(cl::sycl::queue queue,
-                                                       std::initializer_list<std::uint64_t> seed) {
+                                                    std::initializer_list<std::uint64_t> seed) {
     throw oneapi::mkl::unimplemented("rng", "mcg59 skipAheadEx");
 }
 

@@ -85,7 +85,7 @@ TEST_P(Mcg59CopyTests, BinaryPrecision) {
 INSTANTIATE_TEST_SUITE_P(Mcg59ConstructorsTestsuite, Mcg59ConstructorsTests,
                          ::testing::ValuesIn(devices), ::DeviceNamePrint());
 
-INSTANTIATE_TEST_SUITE_P(Mcg59CopyTestsuite, Mcg59CopyTests,
-                         ::testing::ValuesIn(devices), ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(Mcg59CopyTestsuite, Mcg59CopyTests, ::testing::ValuesIn(devices),
+                         ::DeviceNamePrint());
 
 } // anonymous namespace

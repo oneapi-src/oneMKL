@@ -39,10 +39,10 @@ typedef struct {
         cl::sycl::queue queue, std::initializer_list<std::uint32_t> seed);
 
     oneapi::mkl::rng::detail::engine_impl* (*create_mcg59_sycl)(cl::sycl::queue queue,
-                                                                   std::uint64_t seed);
+                                                                std::uint64_t seed);
     oneapi::mkl::rng::detail::engine_impl* (*create_mcg59_ex_sycl)(
         cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed);
-        
+
 } rng_function_table_t;
 
 #endif //_RNG_FUNCTION_TABLE_HPP_
