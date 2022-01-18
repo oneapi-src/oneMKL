@@ -26,6 +26,7 @@
 #include "oneapi/mkl/exceptions.hpp"
 
 #define INTEL_ID  32902
+#define AMD_ID    1022
 #define NVIDIA_ID 4318
 #define AMD_ID    1022
 
