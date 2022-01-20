@@ -207,7 +207,7 @@ template <typename T>
 static inline void range_transform_fp(cl::sycl::queue& queue, T a, T b, std::int64_t n,
                                       cl::sycl::buffer<T, 1>& r) {
     queue.submit([&](cl::sycl::handler& cgh) {
-        auto acc = r.template get_access<cl::sycl::read_write>(cgh);
+        cl::sycl::accessor acc{ r, cgh, cl::sycl::read_write };
         cgh.parallel_for(cl::sycl::range<1>(n),
                          [=](cl::sycl::id<1> id) { acc[id] = acc[id] * (b - a) + a; });
     });
@@ -224,7 +224,7 @@ template <typename T>
 static inline void range_transform_fp_accurate(cl::sycl::queue& queue, T a, T b, std::int64_t n,
                                                cl::sycl::buffer<T, 1>& r) {
     queue.submit([&](cl::sycl::handler& cgh) {
-        auto acc = r.template get_access<cl::sycl::read_write>(cgh);
+        cl::sycl::accessor acc{ r, cgh, cl::sycl::read_write };
         cgh.parallel_for(cl::sycl::range<1>(n), [=](cl::sycl::id<1> id) {
             acc[id] = acc[id] * (b - a) + a;
             if (acc[id] < a) {
