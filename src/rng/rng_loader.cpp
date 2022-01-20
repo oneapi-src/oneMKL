@@ -22,8 +22,6 @@
 #include "function_table_initializer.hpp"
 #include "rng/function_table.hpp"
 
-using namespace cl;
-
 namespace oneapi::mkl::rng::detail {
 
 static oneapi::mkl::detail::table_initializer<domain::rng, rng_function_table_t> function_tables;
