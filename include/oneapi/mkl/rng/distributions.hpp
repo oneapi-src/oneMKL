@@ -26,9 +26,8 @@
 
 #include "oneapi/mkl/exceptions.hpp"
 
-namespace oneapi {
-namespace mkl {
-namespace rng {
+namespace oneapi::mkl::rng {
+
 
 // Class template oneapi::mkl::rng::uniform
 //
@@ -364,8 +363,6 @@ public:
     using result_type = UIntType;
 };
 
-} // namespace rng
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::rng
 
 #endif //_ONEMKL_RNG_DISTRIBUTIONS_HPP_

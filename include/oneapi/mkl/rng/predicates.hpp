@@ -26,15 +26,13 @@
 #include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/types.hpp"
 
-namespace oneapi {
-namespace mkl {
-namespace rng {
+namespace oneapi::mkl::rng {
 
 // Buffer APIs
 
 template <typename Distr, typename Engine>
 inline void generate_precondition(const Distr& distr, Engine& engine, std::int64_t n,
-                                  sycl::buffer<typename Distr::result_type, 1>& r) {
+                                  cl::sycl::buffer<typename Distr::result_type>& r) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     if (n < 0 || n > r.get_count()) {
         throw oneapi::mkl::invalid_argument("rng", "generate", "n");
@@ -58,8 +56,6 @@ inline void generate_precondition(const Distr& distr, Engine& engine, std::int64
 #endif
 }
 
-} // namespace rng
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::rng
 
 #endif //_ONEMKL_RNG_PREDICATES_HPP_

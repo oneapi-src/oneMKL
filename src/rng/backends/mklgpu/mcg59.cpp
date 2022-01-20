@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2021 Intel Corporation
+* Copyright 2022 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -29,10 +29,7 @@
 
 #include "mkl_internal_rng_gpu.hpp"
 
-namespace oneapi {
-namespace mkl {
-namespace rng {
-namespace mklgpu {
+namespace oneapi::mkl::rng::mklgpu {
 
 #if !defined(_WIN64)
 class mcg59_impl : public oneapi::mkl::rng::detail::engine_impl {
@@ -44,7 +41,7 @@ public:
     }
 
     mcg59_impl(const mcg59_impl* other) : oneapi::mkl::rng::detail::engine_impl(*other) {
-        sycl::queue queue(other->queue_);
+        cl::sycl::queue queue(other->queue_);
         engine_ = oneapi::mkl::rng::detail::gpu::create_engine<oneapi::mkl::rng::mcg59>(
             queue, other->engine_);
     }
@@ -53,104 +50,104 @@ public:
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::standard>& distr,
-        std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<float>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::standard>& distr,
-        std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<double>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(const oneapi::mkl::rng::uniform<
                               std::int32_t, oneapi::mkl::rng::uniform_method::standard>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::accurate>& distr,
-        std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<float>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::accurate>& distr,
-        std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<double>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(const oneapi::mkl::rng::gaussian<
                               float, oneapi::mkl::rng::gaussian_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<float>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(const oneapi::mkl::rng::gaussian<
                               double, oneapi::mkl::rng::gaussian_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<double>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(
         const oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::icdf>& distr,
-        std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<float>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(
         const oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>& distr,
-        std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<double>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(const oneapi::mkl::rng::lognormal<
                               float, oneapi::mkl::rng::lognormal_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<float>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(const oneapi::mkl::rng::lognormal<
                               double, oneapi::mkl::rng::lognormal_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<double>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(
         const oneapi::mkl::rng::lognormal<float, oneapi::mkl::rng::lognormal_method::icdf>& distr,
-        std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<float>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(
         const oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::icdf>& distr,
-        std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<double>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::uint32_t>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::uint32_t>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
     virtual void generate(const bits<std::uint32_t>& distr, std::int64_t n,
-                          cl::sycl::buffer<std::uint32_t, 1>& r) override {
+                          cl::sycl::buffer<std::uint32_t>& r) override {
         oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r);
     }
 
@@ -315,104 +312,104 @@ public:
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::standard>& distr,
-        std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<float>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::standard>& distr,
-        std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<double>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(const oneapi::mkl::rng::uniform<
                               std::int32_t, oneapi::mkl::rng::uniform_method::standard>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::accurate>& distr,
-        std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<float>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::accurate>& distr,
-        std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<double>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(const oneapi::mkl::rng::gaussian<
                               float, oneapi::mkl::rng::gaussian_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<float>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(const oneapi::mkl::rng::gaussian<
                               double, oneapi::mkl::rng::gaussian_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<double>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::icdf>& distr,
-        std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<float>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>& distr,
-        std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<double>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(const oneapi::mkl::rng::lognormal<
                               float, oneapi::mkl::rng::lognormal_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<float>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(const oneapi::mkl::rng::lognormal<
                               double, oneapi::mkl::rng::lognormal_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<double>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::lognormal<float, oneapi::mkl::rng::lognormal_method::icdf>& distr,
-        std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<float>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::icdf>& distr,
-        std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<double>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::uint32_t>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::uint32_t>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
     virtual void generate(const bits<std::uint32_t>& distr, std::int64_t n,
-                          cl::sycl::buffer<std::uint32_t, 1>& r) override {
+                          cl::sycl::buffer<std::uint32_t>& r) override {
         throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     }
 
@@ -571,7 +568,7 @@ public:
 };
 #endif
 
-oneapi::mkl::rng::detail::engine_impl* create_mcg59(sycl::queue queue, std::uint64_t seed) {
+oneapi::mkl::rng::detail::engine_impl* create_mcg59(cl::sycl::queue queue, std::uint64_t seed) {
     return new mcg59_impl(queue, seed);
 }
 
@@ -580,7 +577,4 @@ oneapi::mkl::rng::detail::engine_impl* create_mcg59(cl::sycl::queue queue,
     throw oneapi::mkl::unimplemented("rng", "mcg59 skipAheadEx");
 }
 
-} // namespace mklgpu
-} // namespace rng
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::rng::mklgpu

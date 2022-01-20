@@ -41,9 +41,7 @@
 #include "oneapi/mkl/rng/detail/curand/onemkl_rng_curand.hpp"
 #endif
 
-namespace oneapi {
-namespace mkl {
-namespace rng {
+namespace oneapi::mkl::rng {
 
 // Class oneapi::mkl::rng::philox4x32x10
 //
@@ -55,10 +53,10 @@ class philox4x32x10 {
 public:
     static constexpr std::uint64_t default_seed = 0;
 
-    philox4x32x10(sycl::queue queue, std::uint64_t seed = default_seed)
+    philox4x32x10(cl::sycl::queue queue, std::uint64_t seed = default_seed)
             : pimpl_(detail::create_philox4x32x10(get_device_id(queue), queue, seed)) {}
 
-    philox4x32x10(sycl::queue queue, std::initializer_list<std::uint64_t> seed)
+    philox4x32x10(cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed)
             : pimpl_(detail::create_philox4x32x10(get_device_id(queue), queue, seed)) {}
 
 #ifdef ENABLE_MKLCPU_BACKEND
@@ -121,12 +119,12 @@ private:
 
     template <typename Distr, typename Engine>
     friend void generate(const Distr& distr, Engine& engine, std::int64_t n,
-                         sycl::buffer<typename Distr::result_type, 1>& r);
+                         cl::sycl::buffer<typename Distr::result_type>& r);
 
     template <typename Distr, typename Engine>
-    friend sycl::event generate(const Distr& distr, Engine& engine, std::int64_t n,
+    friend cl::sycl::event generate(const Distr& distr, Engine& engine, std::int64_t n,
                                 typename Distr::result_type* r,
-                                const std::vector<sycl::event>& dependencies);
+                                const std::vector<cl::sycl::event>& dependencies);
 };
 
 // Class oneapi::mkl::rng::mrg32k3a
@@ -139,10 +137,10 @@ class mrg32k3a {
 public:
     static constexpr std::uint32_t default_seed = 1;
 
-    mrg32k3a(sycl::queue queue, std::uint32_t seed = default_seed)
+    mrg32k3a(cl::sycl::queue queue, std::uint32_t seed = default_seed)
             : pimpl_(detail::create_mrg32k3a(get_device_id(queue), queue, seed)) {}
 
-    mrg32k3a(sycl::queue queue, std::initializer_list<std::uint32_t> seed)
+    mrg32k3a(cl::sycl::queue queue, std::initializer_list<std::uint32_t> seed)
             : pimpl_(detail::create_mrg32k3a(get_device_id(queue), queue, seed)) {}
 
 #ifdef ENABLE_MKLCPU_BACKEND
@@ -202,17 +200,17 @@ private:
 
     template <typename Distr, typename Engine>
     friend void generate(const Distr& distr, Engine& engine, std::int64_t n,
-                         sycl::buffer<typename Distr::result_type, 1>& r);
+                         cl::sycl::buffer<typename Distr::result_type>& r);
 
     template <typename Distr, typename Engine>
-    friend sycl::event generate(const Distr& distr, Engine& engine, std::int64_t n,
+    friend cl::sycl::event generate(const Distr& distr, Engine& engine, std::int64_t n,
                                 typename Distr::result_type* r,
-                                const std::vector<sycl::event>& dependencies);
+                                const std::vector<cl::sycl::event>& dependencies);
 };
 
 // Class oneapi::mkl::rng::mcg59
 //
-// Represents Mcg59 counter-based pseudorandom number generator
+// Represents MCG59 counter-based pseudorandom number generator
 //
 // Supported parallelization methods:
 //      leapfrog
@@ -220,7 +218,7 @@ class mcg59 {
 public:
     static constexpr std::uint64_t default_seed = 0;
 
-    mcg59(sycl::queue queue, std::uint64_t seed = default_seed)
+    mcg59(cl::sycl::queue queue, std::uint64_t seed = default_seed)
             : pimpl_(detail::create_mcg59(get_device_id(queue), queue, seed)) {}
 
 #ifdef ENABLE_MKLCPU_BACKEND
@@ -273,19 +271,17 @@ private:
 
     template <typename Distr, typename Engine>
     friend void generate(const Distr& distr, Engine& engine, std::int64_t n,
-                         sycl::buffer<typename Distr::result_type, 1>& r);
+                         cl::sycl::buffer<typename Distr::result_type>& r);
 
     template <typename Distr, typename Engine>
-    friend sycl::event generate(const Distr& distr, Engine& engine, std::int64_t n,
+    friend cl::sycl::event generate(const Distr& distr, Engine& engine, std::int64_t n,
                                 typename Distr::result_type* r,
-                                const std::vector<sycl::event>& dependencies);
+                                const std::vector<cl::sycl::event>& dependencies);
 };
 
 // Default engine to be used for common cases
 using default_engine = philox4x32x10;
 
-} // namespace rng
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::rng
 
 #endif //_ONEMKL_RNG_ENGINES_HPP_

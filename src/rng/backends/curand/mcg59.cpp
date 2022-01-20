@@ -1,5 +1,5 @@
 /*******************************************************************************
- * cuRAND back-end Copyright (c) 2021, The Regents of the University of
+ * cuRAND back-end Copyright (c) 2022, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject to receipt
  * of any required approvals from the U.S. Dept. of Energy). All rights
  * reserved.
@@ -66,10 +66,7 @@
 #include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/rng/detail/curand/onemkl_rng_curand.hpp"
 
-namespace oneapi {
-namespace mkl {
-namespace rng {
-namespace curand {
+namespace oneapi:: mkl::rng::curand {
 /*
  * Note that cuRAND consists of two pieces: a host (CPU) API and a device (GPU)
  * API. The host API acts like any standard library; the `curand.h' header is
@@ -93,7 +90,7 @@ namespace curand {
  *
  */
 
-oneapi::mkl::rng::detail::engine_impl* create_mcg59(sycl::queue queue, std::uint64_t seed) {
+oneapi::mkl::rng::detail::engine_impl* create_mcg59(cl::sycl::queue queue, std::uint64_t seed) {
     throw oneapi::mkl::unimplemented("rng", "mcg59 engine");
     return nullptr;
 }
@@ -104,7 +101,4 @@ oneapi::mkl::rng::detail::engine_impl* create_mcg59(cl::sycl::queue queue,
     return nullptr;
 }
 
-} // namespace curand
-} // namespace rng
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi:: mkl::rng::curand

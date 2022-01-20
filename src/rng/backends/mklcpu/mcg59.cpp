@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2021 Intel Corporation
+* Copyright 2022 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -28,12 +28,7 @@
 
 #include "cpu_common.hpp"
 
-namespace oneapi {
-namespace mkl {
-namespace rng {
-namespace mklcpu {
-
-using namespace cl;
+namespace oneapi::mkl::rng::mklcpu {
 
 class mcg59_impl : public oneapi::mkl::rng::detail::engine_impl {
 public:
@@ -51,11 +46,11 @@ public:
     // Buffers APIs
 
     virtual void generate(const uniform<float, uniform_method::standard>& distr, std::int64_t n,
-                          cl::sycl::buffer<float, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          cl::sycl::buffer<float>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngUniform(VSL_RNG_METHOD_UNIFORM_STD,
                              static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
@@ -65,11 +60,11 @@ public:
     }
 
     virtual void generate(const uniform<double, uniform_method::standard>& distr, std::int64_t n,
-                          cl::sycl::buffer<double, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          cl::sycl::buffer<double>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngUniform(VSL_RNG_METHOD_UNIFORM_STD,
                              static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
@@ -79,11 +74,11 @@ public:
     }
 
     virtual void generate(const uniform<std::int32_t, uniform_method::standard>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 viRngUniform(VSL_RNG_METHOD_UNIFORM_STD,
                              static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
@@ -93,11 +88,11 @@ public:
     }
 
     virtual void generate(const uniform<float, uniform_method::accurate>& distr, std::int64_t n,
-                          cl::sycl::buffer<float, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          cl::sycl::buffer<float>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngUniform(VSL_RNG_METHOD_UNIFORM_STD_ACCURATE,
                              static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
@@ -107,11 +102,11 @@ public:
     }
 
     virtual void generate(const uniform<double, uniform_method::accurate>& distr, std::int64_t n,
-                          cl::sycl::buffer<double, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          cl::sycl::buffer<double>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngUniform(VSL_RNG_METHOD_UNIFORM_STD_ACCURATE,
                              static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
@@ -121,11 +116,11 @@ public:
     }
 
     virtual void generate(const gaussian<float, gaussian_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          std::int64_t n, cl::sycl::buffer<float>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngGaussian(VSL_RNG_METHOD_GAUSSIAN_BOXMULLER2,
                               static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
@@ -135,11 +130,11 @@ public:
     }
 
     virtual void generate(const gaussian<double, gaussian_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          std::int64_t n, cl::sycl::buffer<double>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_BOXMULLER2,
                               static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
@@ -149,11 +144,11 @@ public:
     }
 
     virtual void generate(const gaussian<float, gaussian_method::icdf>& distr, std::int64_t n,
-                          cl::sycl::buffer<float, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          cl::sycl::buffer<float>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF,
                               static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
@@ -163,11 +158,11 @@ public:
     }
 
     virtual void generate(const gaussian<double, gaussian_method::icdf>& distr, std::int64_t n,
-                          cl::sycl::buffer<double, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          cl::sycl::buffer<double>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF,
                               static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
@@ -177,11 +172,11 @@ public:
     }
 
     virtual void generate(const lognormal<float, lognormal_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          std::int64_t n, cl::sycl::buffer<float>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngLognormal(VSL_RNG_METHOD_LOGNORMAL_BOXMULLER2,
                                static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
@@ -192,11 +187,11 @@ public:
     }
 
     virtual void generate(const lognormal<double, lognormal_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          std::int64_t n, cl::sycl::buffer<double>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngLognormal(VSL_RNG_METHOD_LOGNORMAL_BOXMULLER2,
                                static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
@@ -207,11 +202,11 @@ public:
     }
 
     virtual void generate(const lognormal<float, lognormal_method::icdf>& distr, std::int64_t n,
-                          cl::sycl::buffer<float, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          cl::sycl::buffer<float>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngLognormal(VSL_RNG_METHOD_LOGNORMAL_ICDF,
                                static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
@@ -222,11 +217,11 @@ public:
     }
 
     virtual void generate(const lognormal<double, lognormal_method::icdf>& distr, std::int64_t n,
-                          cl::sycl::buffer<double, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          cl::sycl::buffer<double>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngLognormal(VSL_RNG_METHOD_LOGNORMAL_ICDF,
                                static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
@@ -237,11 +232,11 @@ public:
     }
 
     virtual void generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 viRngBernoulli(VSL_RNG_METHOD_BERNOULLI_ICDF,
                                static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
@@ -251,11 +246,11 @@ public:
     }
 
     virtual void generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          std::int64_t n, cl::sycl::buffer<std::uint32_t>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 std::uint32_t* r_ptr = acc_r.get_pointer();
                 viRngBernoulli(VSL_RNG_METHOD_BERNOULLI_ICDF,
@@ -266,11 +261,11 @@ public:
     }
 
     virtual void generate(const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 viRngPoisson(VSL_RNG_METHOD_POISSON_POISNORM,
                              static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
@@ -280,11 +275,11 @@ public:
     }
 
     virtual void generate(const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          std::int64_t n, cl::sycl::buffer<std::uint32_t>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 std::uint32_t* r_ptr = acc_r.get_pointer();
                 viRngPoisson(VSL_RNG_METHOD_POISSON_POISNORM,
@@ -295,11 +290,11 @@ public:
     }
 
     virtual void generate(const bits<std::uint32_t>& distr, std::int64_t n,
-                          cl::sycl::buffer<std::uint32_t, 1>& r) override {
-        sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
-        queue_.submit([&](sycl::handler& cgh) {
-            auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
+                          cl::sycl::buffer<std::uint32_t>& r) override {
+        cl::sycl::buffer<char> stream_buf(static_cast<char*>(stream_), state_size_);
+        queue_.submit([&](cl::sycl::handler& cgh) {
+            cl::sycl::accessor acc_stream{ stream_buf, cgh, cl::sycl::read_write };
+            cl::sycl::accessor acc_r{ r, cgh, cl::sycl::read_write };
             host_task<kernel_name<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 viRngUniformBits(VSL_RNG_METHOD_UNIFORMBITS_STD,
                                  static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
@@ -314,7 +309,7 @@ public:
                                      std::int64_t n, float* r,
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngUniform(VSL_RNG_METHOD_UNIFORM_STD, stream, n, r, distr.a(), distr.b());
@@ -326,7 +321,7 @@ public:
                                      std::int64_t n, double* r,
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngUniform(VSL_RNG_METHOD_UNIFORM_STD, stream, n, r, distr.a(), distr.b());
@@ -338,7 +333,7 @@ public:
                                      std::int64_t n, std::int32_t* r,
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 viRngUniform(VSL_RNG_METHOD_UNIFORM_STD, stream, n, r, distr.a(), distr.b());
@@ -350,7 +345,7 @@ public:
                                      std::int64_t n, float* r,
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngUniform(VSL_RNG_METHOD_UNIFORM_STD_ACCURATE, stream, n, r, distr.a(),
@@ -363,7 +358,7 @@ public:
                                      std::int64_t n, double* r,
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngUniform(VSL_RNG_METHOD_UNIFORM_STD_ACCURATE, stream, n, r, distr.a(),
@@ -376,7 +371,7 @@ public:
                                      std::int64_t n, float* r,
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngGaussian(VSL_RNG_METHOD_GAUSSIAN_BOXMULLER2, stream, n, r, distr.mean(),
@@ -389,7 +384,7 @@ public:
                                      std::int64_t n, double* r,
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_BOXMULLER2, stream, n, r, distr.mean(),
@@ -402,7 +397,7 @@ public:
                                      std::int64_t n, float* r,
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, stream, n, r, distr.mean(),
@@ -415,7 +410,7 @@ public:
                                      std::int64_t n, double* r,
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF, stream, n, r, distr.mean(),
@@ -428,7 +423,7 @@ public:
                                      std::int64_t n, float* r,
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngLognormal(VSL_RNG_METHOD_LOGNORMAL_BOXMULLER2, stream, n, r, distr.m(),
@@ -441,7 +436,7 @@ public:
                                      std::int64_t n, double* r,
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngLognormal(VSL_RNG_METHOD_LOGNORMAL_BOXMULLER2, stream, n, r, distr.m(),
@@ -454,7 +449,7 @@ public:
                                      std::int64_t n, float* r,
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vsRngLognormal(VSL_RNG_METHOD_LOGNORMAL_ICDF, stream, n, r, distr.m(), distr.s(),
@@ -467,7 +462,7 @@ public:
                                      std::int64_t n, double* r,
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 vdRngLognormal(VSL_RNG_METHOD_LOGNORMAL_ICDF, stream, n, r, distr.m(), distr.s(),
@@ -480,7 +475,7 @@ public:
                                      std::int64_t n, std::int32_t* r,
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 viRngBernoulli(VSL_RNG_METHOD_BERNOULLI_ICDF, stream, n, r, distr.p());
@@ -492,7 +487,7 @@ public:
                                      std::int64_t n, std::uint32_t* r,
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 viRngBernoulli(VSL_RNG_METHOD_BERNOULLI_ICDF, stream, n,
@@ -505,7 +500,7 @@ public:
         const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
         std::int32_t* r, const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 viRngPoisson(VSL_RNG_METHOD_POISSON_POISNORM, stream, n, r, distr.lambda());
@@ -517,7 +512,7 @@ public:
         const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
         std::uint32_t* r, const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 viRngPoisson(VSL_RNG_METHOD_POISSON_POISNORM, stream, n,
@@ -530,7 +525,7 @@ public:
                                      std::uint32_t* r,
                                      const std::vector<cl::sycl::event>& dependencies) override {
         cl::sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        return queue_.submit([&](cl::sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<mcg59_impl, decltype(distr)>>(cgh, [=]() {
                 viRngUniformBits(VSL_RNG_METHOD_UNIFORMBITS_STD, stream, n,
@@ -573,7 +568,4 @@ oneapi::mkl::rng::detail::engine_impl* create_mcg59(cl::sycl::queue queue,
     throw oneapi::mkl::unimplemented("rng", "mcg59 skipAheadEx");
 }
 
-} // namespace mklcpu
-} // namespace rng
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::rng::mklcpu

@@ -34,14 +34,14 @@ template <typename Engine>
 class skip_ahead_test {
     template <typename T>
     void generate(oneapi::mkl::rng::bits<std::uint32_t> distr, T& engine, std::uint64_t n,
-                  cl::sycl::buffer<std::uint32_t, 1>& buf) {
+                  cl::sycl::buffer<std::uint32_t>& buf) {
         oneapi::mkl::rng::generate(distr, engine, n, buf);
     }
 
     template <>
     void generate<oneapi::mkl::rng::mcg59>(oneapi::mkl::rng::bits<std::uint32_t> distr,
                                            oneapi::mkl::rng::mcg59& engine, std::uint64_t n,
-                                           cl::sycl::buffer<std::uint32_t, 1>& buf) {
+                                           cl::sycl::buffer<std::uint32_t>& buf) {
         oneapi::mkl::rng::generate(distr, engine, n / 2, buf);
     }
 
@@ -75,11 +75,11 @@ public:
                 skip_ahead(*(engines[i]), i * N_PORTION);
             }
 
-            cl::sycl::buffer<std::uint32_t, 1> r_buffer(r1.data(), r1.size());
-            std::vector<cl::sycl::buffer<std::uint32_t, 1>> r_buffers;
+            cl::sycl::buffer<std::uint32_t> r_buffer(r1.data(), r1.size());
+            std::vector<cl::sycl::buffer<std::uint32_t>> r_buffers;
             for (int i = 0; i < N_ENGINES; i++) {
                 r_buffers.push_back(
-                    cl::sycl::buffer<std::uint32_t, 1>(r2.data() + i * N_PORTION, N_PORTION));
+                    cl::sycl::buffer<std::uint32_t>(r2.data() + i * N_PORTION, N_PORTION));
             }
 
             generate(distr, engine, N_GEN_SERVICE, r_buffer);
@@ -132,8 +132,8 @@ public:
             }
             oneapi::mkl::rng::skip_ahead(engine2, NUM_TO_SKIP);
 
-            cl::sycl::buffer<std::uint32_t, 1> r1_buffer(r1.data(), r1.size());
-            cl::sycl::buffer<std::uint32_t, 1> r2_buffer(r2.data(), r2.size());
+            cl::sycl::buffer<std::uint32_t> r1_buffer(r1.data(), r1.size());
+            cl::sycl::buffer<std::uint32_t> r2_buffer(r2.data(), r2.size());
 
             oneapi::mkl::rng::generate(distr, engine1, N_GEN, r1_buffer);
             oneapi::mkl::rng::generate(distr, engine2, N_GEN, r2_buffer);
@@ -178,11 +178,11 @@ public:
                 oneapi::mkl::rng::leapfrog(*(engines[i]), i, N_ENGINES / 2);
             }
 
-            cl::sycl::buffer<std::uint32_t, 1> r_buffer(r1.data(), r1.size());
-            std::vector<cl::sycl::buffer<std::uint32_t, 1>> r_buffers;
+            cl::sycl::buffer<std::uint32_t> r_buffer(r1.data(), r1.size());
+            std::vector<cl::sycl::buffer<std::uint32_t>> r_buffers;
             for (int i = 0; i < N_ENGINES; i++) {
                 r_buffers.push_back(
-                    cl::sycl::buffer<std::uint32_t, 1>(r2.data() + i * N_PORTION, N_PORTION));
+                    cl::sycl::buffer<std::uint32_t>(r2.data() + i * N_PORTION, N_PORTION));
             }
 
             oneapi::mkl::rng::generate(distr, engine, N_GEN_SERVICE / 2, r_buffer);

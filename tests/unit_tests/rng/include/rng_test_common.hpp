@@ -63,32 +63,30 @@ static inline bool check_equal(std::uint64_t x, std::uint64_t x_ref) {
 template <typename Fp, typename AllocType>
 static inline bool check_equal_vector(std::vector<Fp, AllocType>& r1,
                                       std::vector<Fp, AllocType>& r2) {
-    bool good = true;
     for (int i = 0; i < r1.size(); i++) {
         if (!check_equal(r1[i], r2[i])) {
-            good = false;
+            return false;
             break;
         }
     }
-    return good;
+    return true;
 }
 
 template <typename Fp, typename AllocType>
 static inline bool leapfrog_check(std::vector<Fp, AllocType>& r1, std::vector<Fp, AllocType>& r2,
                                   int n_portion, int n_engines) {
-    bool good = true;
     int j = 0;
     for (int i = 0; i < n_engines; i++) {
         for (int k = 0; k < n_portion / 2; k++) {
             for (int p = 0; p < 2; p++) {
                 if (!check_equal(r2[j++], r1[k * n_engines + i * 2 + p])) {
-                    good = false;
+                    return false;
                     break;
                 }
             }
         }
     }
-    return good;
+    return true;
 }
 
 template <typename Test>
@@ -111,15 +109,15 @@ public:
         };
 
 #ifdef ENABLE_CURAND_BACKEND // w/a for cuda backend hangs when there are several queues with different contexts
-        static sycl::device* previous_device = nullptr;
-        static sycl::context* context = nullptr;
+        static cl::sycl::device* previous_device = nullptr;
+        static cl::sycl::context* context = nullptr;
 
         if ((previous_device != dev)) {
             previous_device = dev;
             if (context != nullptr) {
                 delete context;
             }
-            context = new sycl::context(*dev);
+            context = new cl::sycl::context(*dev);
         }
 
         cl::sycl::queue queue(*context, *dev, exception_handler);

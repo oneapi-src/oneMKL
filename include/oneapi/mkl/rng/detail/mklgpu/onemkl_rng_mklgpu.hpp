@@ -26,10 +26,7 @@
 #include "oneapi/mkl/detail/export.hpp"
 #include "oneapi/mkl/rng/detail/engine_impl.hpp"
 
-namespace oneapi {
-namespace mkl {
-namespace rng {
-namespace mklgpu {
+namespace oneapi::mkl::rng::mklgpu {
 
 ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(cl::sycl::queue queue,
                                                                           std::uint64_t seed);
@@ -49,9 +46,6 @@ ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mcg59(cl::sycl::queu
 ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mcg59(
     cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed);
 
-} // namespace mklgpu
-} // namespace rng
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::rng::mklgpu
 
 #endif //_ONEMKL_RNG_MKLGPU_HPP_
