@@ -34,14 +34,14 @@ template <typename Engine>
 class engines_constructors_test {
     template <typename T>
     void test_generate(oneapi::mkl::rng::bits<std::uint32_t> distr, T& engine, std::uint64_t n,
-                  cl::sycl::buffer<std::uint32_t>& buf) {
+                       cl::sycl::buffer<std::uint32_t>& buf) {
         oneapi::mkl::rng::generate(distr, engine, n, buf);
     }
 
     template <>
     void test_generate<oneapi::mkl::rng::mcg59>(oneapi::mkl::rng::bits<std::uint32_t> distr,
-                                           oneapi::mkl::rng::mcg59& engine, std::uint64_t n,
-                                           cl::sycl::buffer<std::uint32_t>& buf) {
+                                                oneapi::mkl::rng::mcg59& engine, std::uint64_t n,
+                                                cl::sycl::buffer<std::uint32_t>& buf) {
         oneapi::mkl::rng::generate(distr, engine, n / 2, buf);
     }
 
@@ -96,14 +96,14 @@ template <typename Engine>
 class engines_copy_test {
     template <typename T>
     void test_generate(oneapi::mkl::rng::bits<std::uint32_t> distr, T& engine, std::uint64_t n,
-                  cl::sycl::buffer<std::uint32_t>& buf) {
+                       cl::sycl::buffer<std::uint32_t>& buf) {
         oneapi::mkl::rng::generate(distr, engine, n, buf);
     }
 
     template <>
     void test_generate<oneapi::mkl::rng::mcg59>(oneapi::mkl::rng::bits<std::uint32_t> distr,
-                                           oneapi::mkl::rng::mcg59& engine, std::uint64_t n,
-                                           cl::sycl::buffer<std::uint32_t>& buf) {
+                                                oneapi::mkl::rng::mcg59& engine, std::uint64_t n,
+                                                cl::sycl::buffer<std::uint32_t>& buf) {
         // mcg59 generates numbers with type uint64_t, but retruns uint32_t
         // so it necessary to use n/2 here to generate n/2 numbers with type uint64_t and retrun n numbers with type uint32_t
         oneapi::mkl::rng::generate(distr, engine, n / 2, buf);

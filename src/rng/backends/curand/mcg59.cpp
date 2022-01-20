@@ -66,7 +66,7 @@
 #include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/rng/detail/curand/onemkl_rng_curand.hpp"
 
-namespace oneapi:: mkl::rng::curand {
+namespace oneapi::mkl::rng::curand {
 /*
  * Note that cuRAND consists of two pieces: a host (CPU) API and a device (GPU)
  * API. The host API acts like any standard library; the `curand.h' header is
@@ -101,4 +101,4 @@ oneapi::mkl::rng::detail::engine_impl* create_mcg59(cl::sycl::queue queue,
     return nullptr;
 }
 
-} // namespace oneapi:: mkl::rng::curand
+} // namespace oneapi::mkl::rng::curand

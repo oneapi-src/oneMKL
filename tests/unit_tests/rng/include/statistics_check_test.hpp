@@ -89,7 +89,8 @@ public:
 #ifdef CALL_RT_API
         auto ua = cl::sycl::usm_allocator<Type, cl::sycl::usm::alloc::shared, 64>(queue);
 #else
-        auto ua = cl::sycl::usm_allocator<Type, cl::sycl::usm::alloc::shared, 64>(queue.get_queue());
+        auto ua =
+            cl::sycl::usm_allocator<Type, cl::sycl::usm::alloc::shared, 64>(queue.get_queue());
 #endif
         std::vector<Type, decltype(ua)> r(n_gen, ua);
 

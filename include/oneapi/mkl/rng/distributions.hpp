@@ -28,7 +28,6 @@
 
 namespace oneapi::mkl::rng {
 
-
 // Class template oneapi::mkl::rng::uniform
 //
 // Represents continuous and discrete uniform random number distribution

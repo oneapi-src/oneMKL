@@ -865,7 +865,8 @@ public:
 };
 #endif
 
-oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(cl::sycl::queue queue, std::uint64_t seed) {
+oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(cl::sycl::queue queue,
+                                                            std::uint64_t seed) {
     return new philox4x32x10_impl(queue, seed);
 }
 
