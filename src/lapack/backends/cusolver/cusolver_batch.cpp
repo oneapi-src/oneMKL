@@ -731,8 +731,6 @@ std::int64_t geqrf_batch_scratchpad_size<std::complex<double>>(sycl::queue &queu
     throw unimplemented("lapack", "geqrf_batch_scratchpad_size");
 }
 
-// cusolverDnXpotrfBatched does not use scratchpad memory. Uses upper or lower part of
-// matrix as workspace.
 template <>
 std::int64_t potrf_batch_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::uplo uplo,
                                                 std::int64_t n, std::int64_t lda,

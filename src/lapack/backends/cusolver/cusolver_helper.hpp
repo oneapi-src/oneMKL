@@ -173,6 +173,23 @@ public:
         throw cusolver_error(std::string(#name) + std::string(" : "), err); \
     }
 
+inline cusolverEigType_t get_cusolver_itype(std::int64_t itype) {
+    switch (itype) {
+        case 1: return CUSOLVER_EIG_TYPE_1;
+        case 2: return CUSOLVER_EIG_TYPE_2;
+        case 3: return CUSOLVER_EIG_TYPE_3;
+        default: throw "Wrong itype.";
+    }
+}
+
+inline cusolverEigMode_t get_cusolver_job(oneapi::mkl::job jobz) {
+    switch (jobz) {
+        case oneapi::mkl::job::N: return CUSOLVER_EIG_MODE_NOVECTOR;
+        case oneapi::mkl::job::V: return CUSOLVER_EIG_MODE_VECTOR;
+        default: throw "Wrong jobz.";
+    }
+}
+
 inline signed char get_cusolver_jobsvd(oneapi::mkl::jobsvd job) {
     switch (job) {
         case oneapi::mkl::jobsvd::N: return 'N';
@@ -204,6 +221,14 @@ inline cublasSideMode_t get_cublas_side_mode(oneapi::mkl::side lr) {
         case oneapi::mkl::side::left: return CUBLAS_SIDE_LEFT;
         case oneapi::mkl::side::right: return CUBLAS_SIDE_RIGHT;
         default: throw "Wrong side mode.";
+    }
+}
+
+inline cublasSideMode_t get_cublas_generate(oneapi::mkl::generate qp) {
+    switch (qp) {
+        case oneapi::mkl::generate::Q: return CUBLAS_SIDE_LEFT;
+        case oneapi::mkl::generate::P: return CUBLAS_SIDE_RIGHT;
+        default: throw "Wrong generate.";
     }
 }
 
