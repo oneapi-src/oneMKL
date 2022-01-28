@@ -63,14 +63,13 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
 
     upper_lower = (oneapi::mkl::uplo)(std::rand() % 2);
     if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
-        trans = (oneapi::mkl::transpose)(std::rand() % 2);
+        trans = (std::rand() % 2) == 0 ? oneapi::mkl::transpose::nontrans
+                                       : (std::rand() % 2) == 0 ? oneapi::mkl::transpose::trans
+                                                                : oneapi::mkl::transpose::conjtrans;
     }
     else {
-        tmp = std::rand() % 3;
-        if (tmp == 2)
-            trans = oneapi::mkl::transpose::conjtrans;
-        else
-            trans = (oneapi::mkl::transpose)tmp;
+        trans = (std::rand() % 2) == 0 ? oneapi::mkl::transpose::nontrans
+                                       : oneapi::mkl::transpose::trans;
     }
 
     int64_t stride_a, stride_c;
