@@ -7,17 +7,31 @@
 oneMKL Interfaces
 *****************
 
-Introduction
-============
-
-oneMKL Interfaces is an open-source implementation of oneMKL Data Parallel C++
-(DPC++) interfaces according to the `oneMKL specification <https://spec.oneapi.com/versions/latest/elements/oneMKL/source/index.html>`_
-that can work with multiple devices (backends) using device-specific
-libraries underneath.
-
+Contents
+========
 
 .. toctree::
    :maxdepth: 2
+   :caption: About
+
+   introduction.rst
+   support_and_requirements.rst
+   faqs.rst
+   license.rst
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Get Started
+
+   selecting_a_compiler.rst
+   build_setup.rst
+   building_with_conan.rst
+   building_with_cmake.rst
+   project_cleanup.rst
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Developer Reference
    :includehidden:
 
    onemkl-datatypes.rst

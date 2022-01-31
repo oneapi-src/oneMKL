@@ -1,6 +1,6 @@
 .. _onemkl_datatypes:
 
-oneMKL defined datatypes
+oneMKL Defined Datatypes
 ========================
 
 
