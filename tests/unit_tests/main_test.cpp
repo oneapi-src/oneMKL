@@ -96,6 +96,7 @@ int main(int argc, char** argv) {
         if(plat.get_info<cl::sycl::info::platform::name>().find(
                                 "Level-Zero") != std::string::npos){
             level_zero_enabled = true;
+            break;
         }
     }
     
@@ -104,8 +105,9 @@ int main(int argc, char** argv) {
             auto plat_devs = plat.get_devices();
             for (auto dev : plat_devs) {
                 try {
-                    /* Do not test for OpenCL backend on GPU */
-                    if (dev.is_gpu() && level_zero_enabled && plat.get_info<cl::sycl::info::platform::name>().find(
+                    /* Do not test for OpenCL backend on GPU when Level-Zero is available */
+                    if (dev.is_gpu() && level_zero_enabled && 
+                                            plat.get_info<cl::sycl::info::platform::name>().find(
                                             "OpenCL") != std::string::npos)
                         continue;
                     if (unique_devices.find(dev.get_info<cl::sycl::info::device::name>()) ==
