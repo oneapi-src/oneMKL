@@ -91,10 +91,11 @@ int main(int argc, char** argv) {
 
     auto platforms = cl::sycl::platform::get_platforms();
     
-    bool level_zero_enabled=false;
+    bool level_zero_enabled = false;
+    
     for (auto plat : platforms) {
         if(plat.get_info<cl::sycl::info::platform::name>().find(
-                                "Level-Zero") != std::string::npos){
+                "Level-Zero") != std::string::npos) {
             level_zero_enabled = true;
             break;
         }
@@ -107,9 +108,10 @@ int main(int argc, char** argv) {
                 try {
                     /* Do not test for OpenCL backend on GPU when Level-Zero is available */
                     if (dev.is_gpu() && level_zero_enabled && 
-                                            plat.get_info<cl::sycl::info::platform::name>().find(
-                                            "OpenCL") != std::string::npos)
+                            plat.get_info<cl::sycl::info::platform::name>().find(
+                            "OpenCL") != std::string::npos) {
                         continue;
+                    }
                     if (unique_devices.find(dev.get_info<cl::sycl::info::device::name>()) ==
                         unique_devices.end()) {
                         unique_devices.insert(dev.get_info<cl::sycl::info::device::name>());
