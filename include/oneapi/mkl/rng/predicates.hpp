@@ -36,7 +36,7 @@ template <typename Distr, typename Engine>
 inline void generate_precondition(const Distr& distr, Engine& engine, std::int64_t n,
                                   sycl::buffer<typename Distr::result_type, 1>& r) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-    if (n < 0 || n > r.get_count()) {
+    if (n < 0 || n > r.size()) {
         throw oneapi::mkl::invalid_argument("rng", "generate", "n");
     }
 #endif
