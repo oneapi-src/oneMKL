@@ -125,7 +125,7 @@ getrs (USM Version)
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      sycl::event getrs(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs, T *a, std::int64_t lda, std::int64_t *ipiv, T *b, std::int64_t ldb, T *scratchpad, std::int64_t scratchpad_size, const sycl::vector_class<sycl::event> &events = {})
+      sycl::event getrs(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs, T *a, std::int64_t lda, std::int64_t *ipiv, T *b, std::int64_t ldb, T *scratchpad, std::int64_t scratchpad_size, const std::vector<sycl::event> &events = {})
     }
 
 .. container:: section

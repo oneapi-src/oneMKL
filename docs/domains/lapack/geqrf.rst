@@ -94,7 +94,7 @@ geqrf (USM Version)
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      sycl::event geqrf(sycl::queue &queue, std::int64_t m, std::int64_t n, T *a, std::int64_t lda, T *tau, T *scratchpad, std::int64_t scratchpad_size, const sycl::vector_class<sycl::event> &events = {})
+      sycl::event geqrf(sycl::queue &queue, std::int64_t m, std::int64_t n, T *a, std::int64_t lda, T *tau, T *scratchpad, std::int64_t scratchpad_size, const std::vector<sycl::event> &events = {})
     }
 
 .. container:: section

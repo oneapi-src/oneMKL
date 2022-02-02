@@ -117,7 +117,7 @@ The USM version of ``potrf_batch`` supports the group API and strided API.
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      sycl::event potrf_batch(sycl::queue &queue, mkl::uplo *uplo, std::int64_t *n, T **a, std::int64_t *lda, std::int64_t group_count, std::int64_t *group_sizes, T *scratchpad, std::int64_t scratchpad_size, const sycl::vector_class<sycl::event> &events = {})
+      sycl::event potrf_batch(sycl::queue &queue, mkl::uplo *uplo, std::int64_t *n, T **a, std::int64_t *lda, std::int64_t group_count, std::int64_t *group_sizes, T *scratchpad, std::int64_t scratchpad_size, const std::vector<sycl::event> &events = {})
     }
 
 .. container:: section
@@ -183,7 +183,7 @@ Output event to wait on to ensure computation is complete.
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      sycl::event potrf_batch(sycl::queue &queue, mkl::uplo uplo, std::int64_t n, T *a, std::int64_t lda, std::int64_t stride_a, std::int64_t batch_size, T *scratchpad, std::int64_t scratchpad_size, const sycl::vector_class<sycl::event> &events = {})
+      sycl::event potrf_batch(sycl::queue &queue, mkl::uplo uplo, std::int64_t n, T *a, std::int64_t lda, std::int64_t stride_a, std::int64_t batch_size, T *scratchpad, std::int64_t scratchpad_size, const std::vector<sycl::event> &events = {})
     };
 
 .. container:: section

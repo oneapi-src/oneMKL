@@ -147,7 +147,7 @@ ungbr (USM Version)
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      sycl::event ungbr(sycl::queue &queue, oneapi::mkl::generate gen, std::int64_t m, std::int64_t n, std::int64_t k, T *a, std::int64_t lda, T *tau, T *scratchpad, std::int64_t scratchpad_size, const sycl::vector_class<sycl::event> &events = {})
+      sycl::event ungbr(sycl::queue &queue, oneapi::mkl::generate gen, std::int64_t m, std::int64_t n, std::int64_t k, T *a, std::int64_t lda, T *tau, T *scratchpad, std::int64_t scratchpad_size, const std::vector<sycl::event> &events = {})
     }
 
 .. container:: section

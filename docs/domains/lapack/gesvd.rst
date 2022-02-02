@@ -208,7 +208,7 @@ are returned in descending order. The first :math:`\min(m, n)` columns of
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      sycl::event gesvd(sycl::queue &queue, oneapi::mkl::job jobu, oneapi::mkl::job jobvt, std::int64_t m, std::int64_t n, T *a, std::int64_t lda, RealT *s, T *u, std::int64_t ldu, T *vt, std::int64_t ldvt, T *scratchpad, std::int64_t scratchpad_size, const sycl::vector_class<sycl::event> &events = {})
+      sycl::event gesvd(sycl::queue &queue, oneapi::mkl::job jobu, oneapi::mkl::job jobvt, std::int64_t m, std::int64_t n, T *a, std::int64_t lda, RealT *s, T *u, std::int64_t ldu, T *vt, std::int64_t ldvt, T *scratchpad, std::int64_t scratchpad_size, const std::vector<sycl::event> &events = {})
     }
 
 .. container:: section
