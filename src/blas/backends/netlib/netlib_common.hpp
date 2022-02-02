@@ -73,8 +73,8 @@ inline CBLAS_OFFSET convert_to_cblas_offset(offset offsetc) {
 // host_task automatically uses run_on_host_intel if it is supported by the
 //  compiler. Otherwise, it falls back to single_task.
 template <typename K, typename H, typename F>
-static inline auto host_task_internal(H &cgh, F f, int) -> decltype(cgh.run_on_host_intel(f)) {
-    return cgh.run_on_host_intel(f);
+static inline auto host_task_internal(H &cgh, F f, int) -> decltype(cgh.host_task(f)) {
+    return cgh.host_task(f);
 }
 
 template <typename K, typename H, typename F>
