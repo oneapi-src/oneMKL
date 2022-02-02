@@ -81,7 +81,7 @@ void print_error_code(sycl::exception const& e) {
 #ifdef __HIPSYCL__
     std::cout << "Backend status: " << e.code() << std::endl;
 #else
-    std::cout << "OpenCL status: " << e.get_cl_code() << std::endl;
+    std::cout << "OpenCL status: " << e.code() << std::endl;
 #endif
 }
 
