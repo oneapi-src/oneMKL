@@ -45,12 +45,15 @@ int cblas_isamin(int n, const float *x, int incx) {
     }
     int min_idx = 0;
     auto min_val = abs_val(x[0]);
+    if (sycl::isnan(min_val))
+        return 0;
 
-    for (int logical_i = 0; logical_i < n; ++logical_i) {
+    for (int logical_i = 1; logical_i < n; ++logical_i) {
         int i = logical_i * std::abs(incx);
         auto curr_val = abs_val(x[i]);
-        bool is_first_nan = std::isnan(curr_val) && !std::isnan(min_val);
-        if (is_first_nan || curr_val < min_val) {
+        if (sycl::isnan(curr_val))
+            return logical_i;
+        if (curr_val < min_val) {
             min_idx = logical_i;
             min_val = curr_val;
         }
@@ -64,12 +67,15 @@ int cblas_idamin(int n, const double *x, int incx) {
     }
     int min_idx = 0;
     auto min_val = abs_val(x[0]);
+    if (sycl::isnan(min_val))
+        return 0;
 
-    for (int logical_i = 0; logical_i < n; ++logical_i) {
+    for (int logical_i = 1; logical_i < n; ++logical_i) {
         int i = logical_i * std::abs(incx);
         auto curr_val = abs_val(x[i]);
-        bool is_first_nan = std::isnan(curr_val) && !std::isnan(min_val);
-        if (is_first_nan || curr_val < min_val) {
+        if (sycl::isnan(curr_val))
+            return logical_i;
+        if (curr_val < min_val) {
             min_idx = logical_i;
             min_val = curr_val;
         }
@@ -83,12 +89,15 @@ int cblas_icamin(int n, const std::complex<float> *x, int incx) {
     }
     int min_idx = 0;
     auto min_val = abs_val(x[0]);
+    if (sycl::isnan(min_val))
+        return 0;
 
-    for (int logical_i = 0; logical_i < n; ++logical_i) {
+    for (int logical_i = 1; logical_i < n; ++logical_i) {
         int i = logical_i * std::abs(incx);
         auto curr_val = abs_val(x[i]);
-        bool is_first_nan = std::isnan(curr_val) && !std::isnan(min_val);
-        if (is_first_nan || curr_val < min_val) {
+        if (sycl::isnan(curr_val))
+            return logical_i;
+        if (curr_val < min_val) {
             min_idx = logical_i;
             min_val = curr_val;
         }
@@ -102,12 +111,15 @@ int cblas_izamin(int n, const std::complex<double> *x, int incx) {
     }
     int min_idx = 0;
     auto min_val = abs_val(x[0]);
+    if (sycl::isnan(min_val))
+        return 0;
 
-    for (int logical_i = 0; logical_i < n; ++logical_i) {
+    for (int logical_i = 1; logical_i < n; ++logical_i) {
         int i = logical_i * std::abs(incx);
         auto curr_val = abs_val(x[i]);
-        bool is_first_nan = std::isnan(curr_val) && !std::isnan(min_val);
-        if (is_first_nan || curr_val < min_val) {
+        if (sycl::isnan(curr_val))
+            return logical_i;
+        if (curr_val < min_val) {
             min_idx = logical_i;
             min_val = curr_val;
         }
