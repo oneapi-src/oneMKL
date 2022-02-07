@@ -11,17 +11,16 @@ Contents
 ========
 
 .. toctree::
-   :maxdepth: 2
    :caption: About
+   :maxdepth: 2
 
    introduction.rst
    support_and_requirements.rst
-   faqs.rst
    license.rst
 
 .. toctree::
-   :maxdepth: 2
    :caption: Get Started
+   :maxdepth: 2
 
    selecting_a_compiler.rst
    build_setup.rst
@@ -30,8 +29,8 @@ Contents
    project_cleanup.rst
 
 .. toctree::
-   :maxdepth: 2
    :caption: Developer Reference
+   :maxdepth: 2
    :includehidden:
 
    onemkl-datatypes.rst

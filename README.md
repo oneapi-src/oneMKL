@@ -44,6 +44,7 @@ oneMKL is part of [oneAPI](https://oneapi.io).
 
 ## Table of Contents
 
+- [Documentation](#documentation)
 - [Support and Requirements](#support-and-requirements)
 - [Selection of Compilers](#selection-of-compilers)
 - [Build Setup](#build-setup)
@@ -54,6 +55,12 @@ oneMKL is part of [oneAPI](https://oneapi.io).
 - [Legal Information](#legal-information)
 
 ---
+
+## Documentation
+- [Contents](https://oneapi-src.github.io/oneMKL/)
+- [About](https://oneapi-src.github.io/oneMKL/introduction.html)
+- [Get Started](https://oneapi-src.github.io/oneMKL/selecting_a_compiler.html)
+- [Developer Reference](https://oneapi-src.github.io/oneMKL/onemkl-datatypes.html)
 
 ## Support and Requirements
 
