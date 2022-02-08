@@ -16,7 +16,6 @@ Contents
 
    introduction.rst
    support_and_requirements.rst
-   license.rst
 
 .. toctree::
    :caption: Get Started
