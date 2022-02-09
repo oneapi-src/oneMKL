@@ -4,7 +4,8 @@ Build Setup
 ===========
 
 #. 
-   Install Intel(R) oneAPI DPC++ Compiler (select variant as per requirement).
+   Install Intel(R) oneAPI DPC++ Compiler (select the variant as described in
+   :ref:`Selecting a Compiler<selecting_a_compiler>`).
 
 #. 
    Clone this project to ``<path to onemkl>``\ , where ``<path to onemkl>``
