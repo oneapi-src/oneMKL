@@ -14,6 +14,7 @@ Building for oneMKL
 ^^^^^^^^^^^^^^^^^^^
 
 * On Linux*
+
   .. code-block:: bash
 
      # Inside <path to onemkl>
@@ -28,6 +29,7 @@ Building for oneMKL
      cmake --install . --prefix <path_to_install_dir>
 
 * On Windows*
+
   .. code-block:: bash
 
      # Inside <path to onemkl>
@@ -132,4 +134,4 @@ CMake.
      - All domains
 
 .. note::
-  `build_functional_tests`` and related CMake option affects all domains at a global scope.
+  ``build_functional_tests`` and related CMake option affects all domains at a global scope.

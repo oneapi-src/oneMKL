@@ -5,12 +5,12 @@ Building with Conan
 
 ** This method currently works on Linux* only **
 
-** Make sure you have completed `Build Setup <#build-setup>`_. **
+** Make sure you have completed :ref:`Build Setup <build_setup>`. **
 
 .. note::
   To understand how dependencies are resolved, refer to "Product and Version
   Information" under :ref:`Support and Requirements <support_and_requirements>`.
-  For details about Conan package manager, refer to
+  For details about Conan package manager, refer to the
   `Conan Documentation <https://docs.conan.io/en/latest/>`_.
 
 Getting Conan
@@ -29,7 +29,7 @@ Conan Default Directory
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 Conan stores all files and data in ``~/.conan``. If you are fine with this
-behavior, you can skip to `Conan Profiles <#conan-profiles>`_ section.
+behavior, you can skip to the :ref:`Conan Profiles <conan-profiles>` section.
 
 To change this behavior, set the environment variable ``CONAN_USER_HOME`` to a
 path of your choice. A ``.conan/`` directory will be created in this path and
@@ -39,7 +39,7 @@ download dependent packages. Packages will be downloaded into
 refer to the ``[storage]`` section of ``conan.conf`` file.
 
 To make this setting persistent across terminal sessions, you can add the
-line below to your ``~/.bashrc`` or custom runscript. Refer to
+line below to your ``~/.bashrc`` or custom runscript. Refer to the
 `Conan Documentation <https://docs.conan.io/en/latest/reference/env_vars.html#conan-user-home>`_
 for more details.
 
@@ -47,6 +47,7 @@ for more details.
 
    export CONAN_USER_HOME=/usr/local/my_workspace/conan_cache
 
+.. _conan-profiles:
 Conan Profiles
 ~~~~~~~~~~~~~~
 
@@ -152,12 +153,14 @@ Tells Conan where to find the built project.
 ``-if | --install-folder``
 Tells Conan where to install the package. It is similar to specifying ``CMAKE_INSTALL_PREFIX``
 
-*Note: For a detailed list of commands and options, refer to the `Conan Command Reference <https://docs.conan.io/en/latest/reference/commands.html>`_.*
+.. note::
+   For a detailed list of commands and options, refer to the
+   `Conan Command Reference <https://docs.conan.io/en/latest/reference/commands.html>`_.
 
 Conan Build Options
 ^^^^^^^^^^^^^^^^^^^
 
-Backend-related Options
+Backend-Related Options
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 The following ``options`` are available to pass on ``conan install`` when
@@ -170,7 +173,7 @@ building the oneMKL library:
 * ``enable_mklgpu_backend=[True | False]``. Setting it to ``True`` enables the building of oneMKL mklgpu backend. The default value is ``True``.
 * ``enable_mklcpu_thread_tbb=[True | False]``. Setting it to ``True`` enables oneMKL on CPU with TBB threading instead of sequential. The default value is ``True``.
 
-Testing-related Options
+Testing-Related Options
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 * ``build_functional_tests=[True | False]``. Setting it to ``True`` enables
@@ -183,7 +186,7 @@ Documentation
 
 .. note::
   For a mapping between Conan and CMake options, refer to
-  `build options <#build-options>`_ under the CMake section.*
+  :ref:`Building with CMake <building_with_cmake>`.
 
 Example
 ^^^^^^^

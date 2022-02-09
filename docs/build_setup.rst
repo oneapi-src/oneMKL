@@ -11,10 +11,10 @@ Build Setup
    is the root directory of this repository.
 
 #. 
-   You can `Build with Conan <#building-with-conan>`_ to automate the process
-   of getting dependencies or you can download and install the required
-   dependencies manually and `Build with CMake <#building-with-cmake>`_
-   directly.
+   You can :ref:`Build with Conan <building_with_conan>` to automate the
+   process of getting dependencies or you can download and install the
+   required dependencies manually and
+   :ref:`Build with CMake <building_with_cmake>` directly.
 
 .. note::
   Conan package manager automates the process of getting required packages
