@@ -38,7 +38,7 @@ Usage:
 
 Example:
 The command below will generate "mcg59.cpp"
-python3 {script} "../../src/rng/backends/curand/mcg59.cpp" curand mcg59 uint64_t
+python3 {script} "../../src/rng/backends/curand/mcg59.cpp" curand mcg59 std::uint64_t
 '''.format(script = argv[0]))
 
 if len(argv) <= 4:
@@ -52,7 +52,7 @@ if re.search(r'[-]*\b[h]([e][l][p])?\b' ,argv[1]):
 out_filename = argv[1]
 backend = argv[2]
 engine = argv[3]
-seed_type = argv[4]
+seed_type=[argv[i] for i in range(4, len(argv))]
 
 # Generate wrappers
 print("Generate " + out_filename)
@@ -74,20 +74,23 @@ out_file.write("""//Copyright
 #include "oneapi/mkl/rng/detail/curand/onemkl_rng_{backend}.hpp"
 
 namespace oneapi::mkl::rng::{backend} {{
-
-oneapi::mkl::rng::detail::engine_impl* create_{e}(cl::sycl::queue queue, std::{type} seed) {{
+""".format(backend=backend)) 
+for t in seed_type:
+    out_file.write("""
+oneapi::mkl::rng::detail::engine_impl* create_{e}(cl::sycl::queue queue, {type} seed) {{
     //throw oneapi::mkl::unimplemented("rng", "{e} engine");
     //return nullptr;
 }}
 
 oneapi::mkl::rng::detail::engine_impl* create_{e}(cl::sycl::queue queue,
-                                                    std::initializer_list<std::{type}> seed) {{
+                                                    std::initializer_list<{type}> seed) {{
     //throw oneapi::mkl::unimplemented("rng", "{e} engine");
     //return nullptr;
 }}
-
+""".format(type=t, e=engine))
+out_file.write("""
 }} // namespace oneapi::mkl::rng::{backend}
-""".format(backend=backend, type=seed_type, e=engine))
+""".format(backend=backend))
 
 out_file.close()
 

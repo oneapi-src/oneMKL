@@ -24,6 +24,7 @@ from pprint import pprint
 from collections import defaultdict
 import errno
 import re
+import json
 import os
 
 def usage(err = None):
@@ -80,24 +81,23 @@ except OSError as exc:
     else:
         raise
 
-table_list = "engine_list.txt"
-seed_list = "seed_type.txt"
+table_list = "engine_list.json"
 
 with open(table_list, "r") as f:
-    with open(seed_list, "r") as f2:
-        table = f.readlines()
-        types = f2.readlines()
+    table = json.load(f)
+    for i, seeds in table.items():
+        out_file = src_dir + "{name}.cpp".format(name=i)
+        try:
+            lc = ["python3", "generate_engine.py", out_file, backend, i]
+            for j in seeds:
+                lc.append(j)
+            call(lc)
+        except OSError as exc:
+            if exc.errno == errno.ENOENT:
+                print("Error: script generate_engine.py is not found")
+            else:
+                raise
 
-        for i in range(len(table)):
-            out_file = src_dir + "{name}.cpp".format(name=table[i].strip())
-            try:
-                lc = ["python3", "generate_engine.py", out_file, backend, table[i].strip(), types[i].strip()]
-                call(lc)
-            except OSError as exc:
-                if exc.errno == errno.ENOENT:
-                    print("Error: script generate_engine.py is not found")
-                else:
-                    raise
                     
 try:
     lc = ["python3", "generate_cmake.py", src_dir, backend]

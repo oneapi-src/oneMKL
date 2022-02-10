@@ -25,6 +25,7 @@ from collections import defaultdict
 import errno
 import re
 import os
+import json
 
 def usage(err = None):
     if err:
@@ -38,7 +39,7 @@ Usage:
 
 Example:
 The command below will generate "onemkl_rng_curand.hpp"
-python3 {script} "../../include/rng/detail/curand/onemkl_rng_curand.hpp" curand
+python3 {script} "../../include/oneapi/mkl/rng/detail/curand/onemkl_rng_curand.hpp" curand
 '''.format(script = argv[0]))
 
 if len(argv) <= 2:
@@ -52,8 +53,7 @@ if re.search(r'[-]*\b[h]([e][l][p])?\b' ,argv[1]):
 out_filename = argv[1]
 backend = argv[2]
 
-table_list = "engine_list.txt"
-seed_list = "seed_type.txt"
+table_list = "engine_list.json"
 
 print("Generate " + out_filename)
 
@@ -79,17 +79,17 @@ out_file.write("""//Copyright
 namespace oneapi::mkl::rng::{header} {{
 """.format(HEADER=backend.upper(), header=backend))
 
-with open(table_list, "r") as f1:
-    with open(seed_list, "r") as f2:
-        table = f1.readlines()
-        seed = f2.readlines()
+with open(table_list, "r") as f:
+    table = json.load(f)
 
-        for i in range(len(table)):
+    for i, seeds in table.items():
+        for j in seeds:
             out_file.write("""
-ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_{engine}(cl::sycl::queue queue, std::{type} seed);
+ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_{engine}(cl::sycl::queue queue, {type} seed);
 
-ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_{engine}(cl::sycl::queue queue, std::initializer_list<std::{type}> seed);
-""".format(type=seed[i].strip(), engine=table[i].strip()))
+ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_{engine}(cl::sycl::queue queue, std::initializer_list<{type}> seed);
+""".format(type=j, engine=i))
+
 
 out_file.write("""
 }} // namespace oneapi::mkl::rng::{header}

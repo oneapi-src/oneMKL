@@ -25,6 +25,7 @@ from collections import defaultdict
 import errno
 import re
 import os
+import json
 
 def usage(err = None):
     if err:
@@ -52,7 +53,7 @@ if re.search(r'[-]*\b[h]([e][l][p])?\b' ,argv[1]):
 out_filename = argv[1]
 backend = argv[2]
 
-table_list = "engine_list.txt"
+table_list = "engine_list.json"
 
 print("Generate " + out_filename)
 
@@ -74,18 +75,22 @@ extern "C" ONEMKL_EXPORT rng_function_table_t mkl_rng_table = {{
     WRAPPER_VERSION,
     """.format(header=backend))
 
+
 with open(table_list, "r") as f:
-    table = f.readlines()
-
-    for t in table[:len(table) - 1]:
-        out_file.write("""oneapi::mkl::rng::{namespace}::create_{engine},
+    table = json.load(f)
+    engines = table.keys()
+    i = 0
+    for e in engines:
+        if i < len(engines) - 1:
+            out_file.write("""oneapi::mkl::rng::{namespace}::create_{engine},
     oneapi::mkl::rng::{namespace}::create_{engine},
-    """.format(namespace=backend, engine=t.strip()))
-
-    out_file.write("""oneapi::mkl::rng::{namespace}::create_{engine},
+    """.format(namespace=backend, engine=e))
+        else:
+            out_file.write("""oneapi::mkl::rng::{namespace}::create_{engine},
     oneapi::mkl::rng::{namespace}::create_{engine}
-}}
-""".format(namespace=backend, engine=table[len(table) - 1].strip()))
+    }};
+""".format(namespace=backend, engine=e))
+        i = i + 1
 
 out_file.close()
 

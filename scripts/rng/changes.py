@@ -125,8 +125,8 @@ with open(backends_file, "r+") as file:
     x = file.read()
 	
 with open(backends_file, "wt") as file:
-    x = x.replace(", cublas, ", ", cublas, {backend}, ".format(backend=backend))
-    x = x.replace("""{ backend::cublas, "cublas" }, """, """{{ backend::cublas, "cublas" }}, {{ backend::{backend}, "{backend}" }}, """.format(backend=backend))
+    x = x.replace(" cublas,", " cublas, {backend},".format(backend=backend))
+    x = x.replace("""{ backend::cublas, "cublas" },""", """{{ backend::cublas, "cublas" }}, {{ backend::{backend}, "{backend}" }},""".format(backend=backend))
     file.write(x)
 
 print("Formatting with clang-format " + backends_file)
