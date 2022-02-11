@@ -31,6 +31,10 @@ oneMKL is part of [oneAPI](https://oneapi.io).
             <td align="center"><a href="https://developer.nvidia.com/cublas"> NVIDIA cuBLAS</a> for NVIDIA GPU </td>
             <td align="center">NVIDIA GPU</td>
         </tr>
+	<tr>
+            <td align="center"><a href="https://developer.nvidia.com/cusolver"> NVIDIA cuSOLVER</a> for NVIDIA GPU </td>
+            <td align="center">NVIDIA GPU</td>
+	</tr>
         <tr>
             <td align="center"><a href="https://developer.nvidia.com/curand"> NVIDIA cuRAND</a> for NVIDIA GPU </td>
             <td align="center">NVIDIA GPU</td>
@@ -157,6 +161,11 @@ Supported domains: BLAS, LAPACK, RNG
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">NVIDIA GPU</td>
+            <td align="center">NVIDIA cuSOLVER</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -571,12 +580,18 @@ ctest
 cmake --install . --prefix <path_to_install_dir>
 ```
 
-To build with the cuRAND backend instead simply replace:
+To build with the cuSOLVER or cuRAND backend instead simply replace:
 ```bash
 -DENABLE_CUBLAS_BACKEND=True   \
 ```
 
 With:
+```bash
+-DENABLE_CUSOLVER_BACKEND=True   \
+```
+
+or
+
 ```bash
 -DENABLE_CURAND_BACKEND=True   \
 ```
@@ -592,6 +607,7 @@ build_shared_libs        | BUILD_SHARED_LIBS        | True, False         | True
 enable_mklcpu_backend    | ENABLE_MKLCPU_BACKEND    | True, False         | True
 enable_mklgpu_backend    | ENABLE_MKLGPU_BACKEND    | True, False         | True
 *Not Supported*          | ENABLE_CUBLAS_BACKEND    | True, False         | False
+*Not Supported*          | ENABLE_CUSOLVER_BACKEND  | True, False         | False
 *Not Supported*          | ENABLE_CURAND_BACKEND    | True, False         | False
 *Not Supported*          | ENABLE_NETLIB_BACKEND    | True, False         | False
 enable_mklcpu_thread_tbb | ENABLE_MKLCPU_THREAD_TBB | True, False         | True
