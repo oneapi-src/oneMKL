@@ -24,6 +24,7 @@ from pprint import pprint
 from collections import defaultdict
 import re
 import os
+import errno
 
 def usage(err = None):
     if err:
@@ -54,6 +55,26 @@ backends_file = in_dir + "/include/oneapi/mkl/detail/backends.hpp"
 if not os.path.exists(in_dir):
     print("Error: directory " + in_dir + " doesn't exist\n")
     exit(1)
+
+with open(engines_file, 'r+') as f:
+    contents = f.readlines()
+    target_line = """#ifdef ENABLE_{BACKEND}_BACKEND""".format(BACKEND=backend.upper())
+    for line in contents:
+        if line.strip() == target_line:
+            print("Some files has been changed before")
+            print("Formatting with clang-format " + engines_file)
+            print("Formatting with clang-format " + backends_file)
+            try:
+                lc = ["clang-format", "-style=file", "-i", engines_file]
+                call(lc)
+                lc = ["clang-format", "-style=file", "-i", backends_file]
+                call(lc)
+            except OSError as exc:
+                if exc.errno == errno.ENOENT:
+                    print("Error: clang-format is not found")
+                else:
+                    raise   
+            exit(1)
 
 with open(engines_file, 'r+') as f:
     contents = f.readlines()
