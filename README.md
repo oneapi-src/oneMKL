@@ -709,28 +709,45 @@ All options specified in the Conan section are available to CMake. You can speci
 
 The following table provides a detailed mapping of options between Conan and CMake.
 
-Conan Option | CMake Option | Supported Values | Default Value | Supported Compilers
- :---------- | :----------- | :--------------- | :---          | :---
-build_shared_libs        | BUILD_SHARED_LIBS        | True, False         | True      | All
-enable_mklcpu_backend    | ENABLE_MKLCPU_BACKEND    | True, False         | True      | All
-enable_mklgpu_backend    | ENABLE_MKLGPU_BACKEND    | True, False         | True      | dpc++, LLVM
-*Not Supported*          | ENABLE_CUBLAS_BACKEND    | True, False         | False     | LLVM
-*Not Supported*          | ENABLE_CUSOLVER_BACKEND  | True, False         | False     | LLVM
-*Not Supported*          | ENABLE_CURAND_BACKEND    | True, False         | False     | LLVM
-*Not Supported*          | ENABLE_NETLIB_BACKEND    | True, False         | False     | All
-*Not Supported*          | ENABLE_ROCBLAS_BACKEND   | True, False         | False     | hipSYCL
-enable_mklcpu_thread_tbb | ENABLE_MKLCPU_THREAD_TBB | True, False         | True      | All
-build_functional_tests   | BUILD_FUNCTIONAL_TESTS   | True, False         | True      | All
-build_doc                | BUILD_DOC                | True, False         | False     | All
-target_domains (list)    | TARGET_DOMAINS (list)    | blas, lapack, rng   | All domains | see table below
+Conan Option | CMake Option | Supported Values | Default Value 
+ :---------- | :----------- | :--------------- | :---          
+build_shared_libs        | BUILD_SHARED_LIBS        | True, False         | True      
+enable_mklcpu_backend    | ENABLE_MKLCPU_BACKEND    | True, False         | True      
+enable_mklgpu_backend    | ENABLE_MKLGPU_BACKEND    | True, False         | True      
+*Not Supported*          | ENABLE_CUBLAS_BACKEND    | True, False         | False     
+*Not Supported*          | ENABLE_CUSOLVER_BACKEND  | True, False         | False     
+*Not Supported*          | ENABLE_CURAND_BACKEND    | True, False         | False     
+*Not Supported*          | ENABLE_NETLIB_BACKEND    | True, False         | False     
+*Not Supported*          | ENABLE_ROCBLAS_BACKEND   | True, False         | False     
+enable_mklcpu_thread_tbb | ENABLE_MKLCPU_THREAD_TBB | True, False         | True      
+build_functional_tests   | BUILD_FUNCTIONAL_TESTS   | True, False         | True      
+build_doc                | BUILD_DOC                | True, False         | False     
+target_domains (list)    | TARGET_DOMAINS (list)    | blas, lapack, rng   | All domains 
 
-**Domain Support of Compilers**
+**Backend Support of Compilers in the BLAS Domain**
 
-Compiler | blas | lapack | rng |
------    | ---- | ------ | --- |
-dpc++    | Yes | Yes   | Yes|
-LLVM     | Yes | Yes   | Yes|
-hipSYCL  | Yes | No    | No |
+Compiler | mklcpu | netlib | mklgpu | cublas | rocblas
+-----    | ----   | ------ | ----   | ---    | ---
+dpc++    | Yes    | Yes    | Yes    | No     | No
+LLVM     | Yes    | Yes    | Yes    | Yes    | No
+hipSYCL  | Yes    | Yes    | No     | No     | Yes
+
+**Backend Support of Compilers in the lapack Domain**
+
+Compiler | mklcpu | mklgpu | cusolver 
+-----    | ----   | ------ | ---      
+dpc++    | Yes    | Yes    | No       
+LLVM     | Yes    | Yes    | Yes      
+hipSYCL  | No     | No     | No       
+
+**Backend Support of Compilers in the rng Domain**
+
+Compiler | mklcpu | mklgpu | curand 
+-----    | ----   | ------ | ---    
+dpc++    | Yes    | Yes    | No     
+LLVM     | Yes    | Yes    | Yes    
+hipSYCL  | No     | No     | No     
+
 
 *Note: `build_functional_tests` and related CMake option affects all domains at a global scope.*
 
