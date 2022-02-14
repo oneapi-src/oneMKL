@@ -703,43 +703,34 @@ When building oneMKL the SYCL implementation can be determined, by setting the `
 - `dpc++` (default) for the [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) and for the `clang++` from [Intel project for LLVM* technology](https://github.com/intel/llvm/releases) compilers. 
 - `hipsycl` for the [hipSYCL](https://github.com/illuhad/hipSYCL) SYCL implementation
 
-In the following tables, the supported options for each type of SYCL implementation are listed.
+In the following table, the supported options for each type of SYCL implementation are listed.
 
 All options specified in the Conan section are available to CMake. You can specify these options using `-D<cmake_option>=<value>`.
 
 The following table provides a detailed mapping of options between Conan and CMake.
 
-**ONEMKL_SYCL_IMPLEMENTATION=dpc++(default)**
-Conan Option | CMake Option | Supported Values | Default Value
- :---------- | :----------- | :--------------- | :---
-build_shared_libs        | BUILD_SHARED_LIBS        | True, False         | True
-enable_mklcpu_backend    | ENABLE_MKLCPU_BACKEND    | True, False         | True
-enable_mklgpu_backend    | ENABLE_MKLGPU_BACKEND    | True, False         | True
-*Not Supported*          | ENABLE_CUBLAS_BACKEND    | True, False         | False
-*Not Supported*          | ENABLE_CUSOLVER_BACKEND  | True, False         | False
-*Not Supported*          | ENABLE_CURAND_BACKEND    | True, False         | False
-*Not Supported*          | ENABLE_NETLIB_BACKEND    | True, False         | False
-*Not Supported*          | ENABLE_ROCBLAS_BACKEND   | False               | False
-enable_mklcpu_thread_tbb | ENABLE_MKLCPU_THREAD_TBB | True, False         | True
-build_functional_tests   | BUILD_FUNCTIONAL_TESTS   | True, False         | True
-build_doc                | BUILD_DOC                | True, False         | False
-target_domains (list)    | TARGET_DOMAINS (list)    | blas, lapack, rng   | All domains
+Conan Option | CMake Option | Supported Values | Default Value | Supported Compilers
+ :---------- | :----------- | :--------------- | :---          | :---
+build_shared_libs        | BUILD_SHARED_LIBS        | True, False         | True      | All
+enable_mklcpu_backend    | ENABLE_MKLCPU_BACKEND    | True, False         | True      | All
+enable_mklgpu_backend    | ENABLE_MKLGPU_BACKEND    | True, False         | True      | All
+*Not Supported*          | ENABLE_CUBLAS_BACKEND    | True, False         | False     | LLVM
+*Not Supported*          | ENABLE_CUSOLVER_BACKEND  | True, False         | False     | LLVM
+*Not Supported*          | ENABLE_CURAND_BACKEND    | True, False         | False     | LLVM
+*Not Supported*          | ENABLE_NETLIB_BACKEND    | True, False         | False     | All
+*Not Supported*          | ENABLE_ROCBLAS_BACKEND   | False               | False     | hipSYCL
+enable_mklcpu_thread_tbb | ENABLE_MKLCPU_THREAD_TBB | True, False         | True      | All
+build_functional_tests   | BUILD_FUNCTIONAL_TESTS   | True, False         | True      | All
+build_doc                | BUILD_DOC                | True, False         | False     | All
+target_domains (list)    | TARGET_DOMAINS (list)    | blas, lapack, rng   | All domains | see table below
 
-**ONEMKL_SYCL_IMPLEMENTATION=hipsycl**
-Conan Option | CMake Option | Supported Values | Default Value
- :---------- | :----------- | :--------------- | :---
-build_shared_libs        | BUILD_SHARED_LIBS        | True, False         | True
-enable_mklcpu_backend    | ENABLE_MKLCPU_BACKEND    | True, False         | True
-enable_mklgpu_backend    | ENABLE_MKLGPU_BACKEND    | False               | False
-*Not Supported*          | ENABLE_CUBLAS_BACKEND    | False               | False
-*Not Supported*          | ENABLE_CURAND_BACKEND    | False               | False
-*Not Supported*          | ENABLE_NETLIB_BACKEND    | True, False         | False
-*Not Supported*          | ENABLE_ROCBLAS_BACKEND   | True, False         | False
-enable_mklcpu_thread_tbb | ENABLE_MKLCPU_THREAD_TBB | True, False         | True
-build_functional_tests   | BUILD_FUNCTIONAL_TESTS   | True, False         | True
-build_doc                | BUILD_DOC                | True, False         | False
-target_domains (list)    | TARGET_DOMAINS (list)    | blas                | All domains
-N/A                      | HIPSYCL_TARGETS          | depends on target device | none
+**Domain Support of Compilers**
+
+Compiler | blas | lapack | rng |
+-----    | ---- | ------ | --- |
+dpc++    | Yes | Yes   | Yes|
+LLVM     | Yes | Yes   | Yes|
+hipSYCL  | Yes | No    | No |
 
 *Note: `build_functional_tests` and related CMake option affects all domains at a global scope.*
 
