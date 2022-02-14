@@ -718,7 +718,7 @@ enable_mklgpu_backend    | ENABLE_MKLGPU_BACKEND    | True, False         | True
 *Not Supported*          | ENABLE_CUSOLVER_BACKEND  | True, False         | False     | LLVM
 *Not Supported*          | ENABLE_CURAND_BACKEND    | True, False         | False     | LLVM
 *Not Supported*          | ENABLE_NETLIB_BACKEND    | True, False         | False     | All
-*Not Supported*          | ENABLE_ROCBLAS_BACKEND   | False               | False     | hipSYCL
+*Not Supported*          | ENABLE_ROCBLAS_BACKEND   | True, False         | False     | hipSYCL
 enable_mklcpu_thread_tbb | ENABLE_MKLCPU_THREAD_TBB | True, False         | True      | All
 build_functional_tests   | BUILD_FUNCTIONAL_TESTS   | True, False         | True      | All
 build_doc                | BUILD_DOC                | True, False         | False     | All
