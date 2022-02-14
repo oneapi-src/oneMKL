@@ -18,8 +18,8 @@ oneMKL is part of [oneAPI](https://oneapi.io).
     </thead>
     <tbody>
         <tr>
-            <td rowspan=6 align="center">oneMKL interface</td>
-            <td rowspan=6 align="center">oneMKL selector</td>
+            <td rowspan=7 align="center">oneMKL interface</td>
+            <td rowspan=7 align="center">oneMKL selector</td>
             <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for x86 CPU</td>
             <td align="center">x86 CPU</td>
         </tr>
@@ -724,15 +724,17 @@ build_functional_tests   | BUILD_FUNCTIONAL_TESTS   | True, False         | True
 build_doc                | BUILD_DOC                | True, False         | False     
 target_domains (list)    | TARGET_DOMAINS (list)    | blas, lapack, rng   | All domains 
 
+The following tables summarize the supported backends for each domain and compiler combination:
+
 **Backend Support of Compilers in the BLAS Domain**
 
-Compiler | mklcpu | netlib | mklgpu | cublas | rocblas
+Compiler | mklcpu | mklgpu | netlib | cublas | rocblas
 -----    | ----   | ------ | ----   | ---    | ---
 dpc++    | Yes    | Yes    | Yes    | No     | No
 LLVM     | Yes    | Yes    | Yes    | Yes    | No
-hipSYCL  | Yes    | Yes    | No     | No     | Yes
+hipSYCL  | Yes    | No     | Yes    | No     | Yes
 
-**Backend Support of Compilers in the lapack Domain**
+**Backend Support of Compilers in the LAPACK Domain**
 
 Compiler | mklcpu | mklgpu | cusolver 
 -----    | ----   | ------ | ---      
@@ -740,7 +742,7 @@ dpc++    | Yes    | Yes    | No
 LLVM     | Yes    | Yes    | Yes      
 hipSYCL  | No     | No     | No       
 
-**Backend Support of Compilers in the rng Domain**
+**Backend Support of Compilers in the RNG Domain**
 
 Compiler | mklcpu | mklgpu | curand 
 -----    | ----   | ------ | ---    
