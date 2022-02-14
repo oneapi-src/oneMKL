@@ -724,7 +724,7 @@ build_functional_tests   | BUILD_FUNCTIONAL_TESTS   | True, False         | True
 build_doc                | BUILD_DOC                | True, False         | False     
 target_domains (list)    | TARGET_DOMAINS (list)    | blas, lapack, rng   | All domains 
 
-The following tables summarize the supported backends for each domain and compiler combination:
+The following tables summarize the supported compilers for each domain and backend combination:
 
 **Backend Support of Compilers in the BLAS Domain**
 
