@@ -713,7 +713,7 @@ Conan Option | CMake Option | Supported Values | Default Value | Supported Compi
  :---------- | :----------- | :--------------- | :---          | :---
 build_shared_libs        | BUILD_SHARED_LIBS        | True, False         | True      | All
 enable_mklcpu_backend    | ENABLE_MKLCPU_BACKEND    | True, False         | True      | All
-enable_mklgpu_backend    | ENABLE_MKLGPU_BACKEND    | True, False         | True      | All
+enable_mklgpu_backend    | ENABLE_MKLGPU_BACKEND    | True, False         | True      | dpc++, LLVM
 *Not Supported*          | ENABLE_CUBLAS_BACKEND    | True, False         | False     | LLVM
 *Not Supported*          | ENABLE_CUSOLVER_BACKEND  | True, False         | False     | LLVM
 *Not Supported*          | ENABLE_CURAND_BACKEND    | True, False         | False     | LLVM
