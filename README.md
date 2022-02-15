@@ -751,6 +751,7 @@ target_domains (list)    | TARGET_DOMAINS (list)    | blas, lapack, rng   | All 
 *Note: `build_functional_tests` and related CMake option affects all domains at a global scope.*
 
 *Note: When building with hipSYCL, `-DHIPSYCL_TARGETS` additionally needs to be provided according to the targeted hardware. For the options, see the tables in the hipSYCL specific sections*
+
 ---
 
 ## Project Cleanup
