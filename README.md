@@ -122,7 +122,7 @@ $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl_blas_mklcpu –lonemkl_blas_c
 
 *Refer to [Selection of Compilers](#selection-of-compilers) for the choice between `dpcpp` and `clang++` compilers.*
 
-### Supported Configurations with DPC++ compiler:
+### Supported Configurations:
 
 Supported domains: BLAS, LAPACK, RNG
 
@@ -135,58 +135,75 @@ Supported domains: BLAS, LAPACK, RNG
             <th>Backend</th>
             <th>Library</th>
             <th>Supported Link Type</th>
+            <th>Supported Compiler</th>		
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td rowspan=4 align="center">BLAS</td>
+            <td rowspan=5 align="center">BLAS</td>
             <td align="center">x86 CPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++, LLVM*, hipSYCL</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
             <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++</td>
         </tr>
         <tr>
             <td align="center">NVIDIA GPU</td>
             <td align="center">NVIDIA cuBLAS</td>
             <td align="center">Dynamic, Static</td>
+            <td align="center">LLVM*, hipSYCL</td>
         </tr>
         <tr>
             <td align="center">x86 CPU</td>
             <td align="center">NETLIB LAPACK</td>
             <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++, LLVM*, hipSYCL</td>
+        </tr>
+	    <tr >
+            <td align="center">AMD GPU</td>
+            <td align="center">AMD rocBLAS </td>
+            <td align="center">Dynamic, Static</td>
+            <td align="center">hipSYCL</td>
         </tr>
         <tr>
-            <td rowspan=2 align="center">LAPACK</td>
+            <td rowspan=3 align="center">LAPACK</td>
             <td align="center">x86 CPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++, LLVM*</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
             <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++</td>
         </tr>
         <tr>
             <td align="center">NVIDIA GPU</td>
             <td align="center">NVIDIA cuSOLVER</td>
             <td align="center">Dynamic, Static</td>
+            <td align="center">LLVM*</td>
         </tr>
         <tr>
             <td rowspan=3 align="center">RNG</td>
             <td align="center">x86 CPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++, LLVM*</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
             <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++</td>
         </tr>
         <tr>
             <td align="center">NVIDIA GPU</td>
             <td align="center">NVIDIA cuRAND</td>
             <td align="center">Dynamic, Static</td>
+            <td align="center">LLVM*</td>
         </tr>
     </tbody>
 </table>
@@ -200,6 +217,7 @@ Supported domains: BLAS, LAPACK, RNG
             <th>Backend</th>
             <th>Library</th>
             <th>Supported Link Type</th>
+            <th>Supported Compiler</th>	
         </tr>
     </thead>
     <tbody>
@@ -208,34 +226,42 @@ Supported domains: BLAS, LAPACK, RNG
             <td align="center">x86 CPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++, LLVM*</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
             <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++</td>
         </tr>
         <tr>
             <td align="center">x86 CPU</td>
             <td align="center">NETLIB LAPACK</td>
             <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++, LLVM*</td>
         </tr>
         <tr>
             <td rowspan=2 align="center">LAPACK</td>
             <td align="center">x86 CPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++, LLVM*</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
             <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++</td>
         </tr>
         <tr>
             <td align="center">RNG</td>
             <td align="center">x86 CPU</td>
             <td align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++, LLVM*</td>
         </tr>
     </tbody>
 </table>
+
+\* LLVM - [Intel project for LLVM* technology](https://github.com/intel/llvm) with support for [NVIDIA CUDA](https://intel.github.io/llvm-docs/GetStartedGuide.html#build-dpc-toolchain-with-support-for-nvidia-cuda)
 
 ### Supported Configurations with hipSYCL:
 
@@ -703,8 +729,6 @@ When building oneMKL the SYCL implementation can be determined, by setting the `
 - `dpc++` (default) for the [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) and for the `clang++` from [Intel project for LLVM* technology](https://github.com/intel/llvm/releases) compilers. 
 - `hipsycl` for the [hipSYCL](https://github.com/illuhad/hipSYCL) SYCL implementation
 
-In the following table, the supported options for each type of SYCL implementation are listed.
-
 All options specified in the Conan section are available to CMake. You can specify these options using `-D<cmake_option>=<value>`.
 
 The following table provides a detailed mapping of options between Conan and CMake.
@@ -723,33 +747,6 @@ enable_mklcpu_thread_tbb | ENABLE_MKLCPU_THREAD_TBB | True, False         | True
 build_functional_tests   | BUILD_FUNCTIONAL_TESTS   | True, False         | True      
 build_doc                | BUILD_DOC                | True, False         | False     
 target_domains (list)    | TARGET_DOMAINS (list)    | blas, lapack, rng   | All domains 
-
-The following tables summarize the supported compilers for each domain and backend combination:
-
-**Backend Support of Compilers in the BLAS Domain**
-
-Compiler | mklcpu | mklgpu | netlib | cublas | rocblas
------    | ----   | ------ | ----   | ---    | ---
-dpc++    | Yes    | Yes    | Yes    | No     | No
-LLVM     | Yes    | Yes    | Yes    | Yes    | No
-hipSYCL  | Yes    | No     | Yes    | No     | Yes
-
-**Backend Support of Compilers in the LAPACK Domain**
-
-Compiler | mklcpu | mklgpu | cusolver 
------    | ----   | ------ | ---      
-dpc++    | Yes    | Yes    | No       
-LLVM     | Yes    | Yes    | Yes      
-hipSYCL  | No     | No     | No       
-
-**Backend Support of Compilers in the RNG Domain**
-
-Compiler | mklcpu | mklgpu | curand 
------    | ----   | ------ | ---    
-dpc++    | Yes    | Yes    | No     
-LLVM     | Yes    | Yes    | Yes    
-hipSYCL  | No     | No     | No     
-
 
 *Note: `build_functional_tests` and related CMake option affects all domains at a global scope.*
 
