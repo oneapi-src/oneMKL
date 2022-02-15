@@ -23,6 +23,10 @@
 #include "oneapi/mkl/bfloat16.hpp"
 #include <CL/sycl.hpp>
 
+#ifdef __HIPSYCL__
+namespace sycl = cl::sycl;
+#endif
+
 namespace oneapi {
 namespace mkl {
 

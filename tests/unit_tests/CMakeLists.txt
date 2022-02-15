@@ -108,6 +108,11 @@ foreach(domain ${TARGET_DOMAINS})
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_cublas)
   endif()
 
+  if(domain STREQUAL "blas" AND ENABLE_ROCBLAS_BACKEND)
+    add_dependencies(test_main_${domain}_ct onemkl_${domain}_rocblas)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_rocblas)
+  endif()
+
   if(domain STREQUAL "blas" AND ENABLE_NETLIB_BACKEND)
     add_dependencies(test_main_${domain}_ct onemkl_${domain}_netlib)
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_netlib)
