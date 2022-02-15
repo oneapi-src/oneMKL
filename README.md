@@ -155,7 +155,7 @@ Supported domains: BLAS, LAPACK, RNG
             <td align="center">NVIDIA GPU</td>
             <td align="center">NVIDIA cuBLAS</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">LLVM*, hipSYCL</td>
+            <td align="center">LLVM*</td>
         </tr>
         <tr>
             <td align="center">x86 CPU</td>
