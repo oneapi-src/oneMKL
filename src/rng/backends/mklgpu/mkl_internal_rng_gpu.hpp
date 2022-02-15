@@ -22,10 +22,7 @@
 
 #include <CL/sycl.hpp>
 
-namespace oneapi {
-namespace mkl {
-namespace rng {
-namespace detail {
+namespace oneapi::mkl::rng::detail {
 
 template <typename EngineType>
 class engine_base_impl;
@@ -33,45 +30,43 @@ class engine_base_impl;
 namespace gpu {
 
 template <typename EngineType>
-engine_base_impl<EngineType>* create_engine(sycl::queue& queue, std::uint64_t seed);
+engine_base_impl<EngineType>* create_engine(cl::sycl::queue& queue, std::uint64_t seed);
 
 template <typename EngineType>
-engine_base_impl<EngineType>* create_engine(sycl::queue& queue, std::int64_t n,
+engine_base_impl<EngineType>* create_engine(cl::sycl::queue& queue, std::int64_t n,
                                             const unsigned int* seed_ptr);
 
 template <typename EngineType>
-engine_base_impl<EngineType>* create_engine(sycl::queue& queue,
+engine_base_impl<EngineType>* create_engine(cl::sycl::queue& queue,
                                             engine_base_impl<EngineType>* other_impl);
 
 template <typename EngineType>
-void skip_ahead(sycl::queue& queue, engine_base_impl<EngineType>* impl, std::uint64_t num_to_skip);
+void skip_ahead(cl::sycl::queue& queue, engine_base_impl<EngineType>* impl,
+                std::uint64_t num_to_skip);
 
 template <typename EngineType>
-void skip_ahead(sycl::queue& queue, engine_base_impl<EngineType>* impl,
+void skip_ahead(cl::sycl::queue& queue, engine_base_impl<EngineType>* impl,
                 std::initializer_list<std::uint64_t> num_to_skip);
 
 template <typename EngineType>
-void leapfrog(sycl::queue& queue, engine_base_impl<EngineType>* impl, std::uint64_t idx,
+void leapfrog(cl::sycl::queue& queue, engine_base_impl<EngineType>* impl, std::uint64_t idx,
               std::uint64_t stride);
 
 template <typename EngineType>
-void delete_engine(sycl::queue& queue, engine_base_impl<EngineType>* impl);
+void delete_engine(cl::sycl::queue& queue, engine_base_impl<EngineType>* impl);
 
 template <typename EngineType, typename DistrType>
-sycl::event generate(sycl::queue& queue, const DistrType& distr,
-                     engine_base_impl<EngineType>* engine, std::int64_t n,
-                     sycl::buffer<typename DistrType::result_type, 1>& r);
+cl::sycl::event generate(cl::sycl::queue& queue, const DistrType& distr,
+                         engine_base_impl<EngineType>* engine, std::int64_t n,
+                         cl::sycl::buffer<typename DistrType::result_type>& r);
 
 template <typename EngineType, typename DistrType>
-sycl::event generate(sycl::queue& queue, const DistrType& distr,
-                     engine_base_impl<EngineType>* engine, std::int64_t n,
-                     typename DistrType::result_type* r,
-                     const std::vector<sycl::event>& dependencies = {});
+cl::sycl::event generate(cl::sycl::queue& queue, const DistrType& distr,
+                         engine_base_impl<EngineType>* engine, std::int64_t n,
+                         typename DistrType::result_type* r,
+                         const std::vector<cl::sycl::event>& dependencies = {});
 
 } // namespace gpu
-} // namespace detail
-} // namespace rng
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::rng::detail
 
 #endif //_MKL_INTERNAL_RNG_GPU_HPP_

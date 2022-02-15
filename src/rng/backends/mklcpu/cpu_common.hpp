@@ -22,10 +22,7 @@
 
 #include <CL/sycl.hpp>
 
-namespace oneapi {
-namespace mkl {
-namespace rng {
-namespace mklcpu {
+namespace oneapi::mkl::rng::mklcpu {
 
 // host_task automatically uses run_on_host_intel if it is supported by the
 //  compiler. Otherwise, it falls back to single_task.
@@ -50,9 +47,6 @@ class kernel_name {};
 template <typename Engine, typename Distr>
 class kernel_name_usm {};
 
-} // namespace mklcpu
-} // namespace rng
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::rng::mklcpu
 
 #endif //_RNG_CPU_COMMON_HPP_

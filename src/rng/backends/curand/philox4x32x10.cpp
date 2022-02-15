@@ -66,10 +66,7 @@
 #include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/rng/detail/curand/onemkl_rng_curand.hpp"
 
-namespace oneapi {
-namespace mkl {
-namespace rng {
-namespace curand {
+namespace oneapi::mkl::rng::curand {
 
 #if !defined(_WIN64)
 /*
@@ -119,10 +116,10 @@ public:
 
     virtual inline void generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::standard>& distr,
-        std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<float>& r) override {
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
+                cl::sycl::accessor acc{ r, cgh, cl::sycl::read_write };
                 cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
@@ -136,10 +133,10 @@ public:
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::standard>& distr,
-        std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<double>& r) override {
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
+                cl::sycl::accessor acc{ r, cgh, cl::sycl::read_write };
                 cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<double*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
@@ -153,11 +150,11 @@ public:
 
     virtual void generate(const oneapi::mkl::rng::uniform<
                               std::int32_t, oneapi::mkl::rng::uniform_method::standard>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
-        cl::sycl::buffer<std::uint32_t, 1> ib(n);
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) override {
+        cl::sycl::buffer<std::uint32_t> ib(n);
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                auto acc = ib.get_access<cl::sycl::access::mode::read_write>(cgh);
+                cl::sycl::accessor acc{ ib, cgh, cl::sycl::read_write };
                 cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr = reinterpret_cast<std::uint32_t*>(
                         ih.get_native_mem<cl::sycl::backend::cuda>(acc));
@@ -171,10 +168,10 @@ public:
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::accurate>& distr,
-        std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<float>& r) override {
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
+                cl::sycl::accessor acc{ r, cgh, cl::sycl::read_write };
                 cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
@@ -188,10 +185,10 @@ public:
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::accurate>& distr,
-        std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<double>& r) override {
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
+                cl::sycl::accessor acc{ r, cgh, cl::sycl::read_write };
                 cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<double*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
@@ -205,10 +202,10 @@ public:
 
     virtual void generate(const oneapi::mkl::rng::gaussian<
                               float, oneapi::mkl::rng::gaussian_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<float>& r) override {
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
+                cl::sycl::accessor acc{ r, cgh, cl::sycl::read_write };
                 cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
@@ -222,10 +219,10 @@ public:
 
     virtual void generate(const oneapi::mkl::rng::gaussian<
                               double, oneapi::mkl::rng::gaussian_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<double>& r) override {
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
+                cl::sycl::accessor acc{ r, cgh, cl::sycl::read_write };
                 cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<double*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
@@ -239,7 +236,7 @@ public:
 
     virtual void generate(
         const oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::icdf>& distr,
-        std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<float>& r) override {
         throw oneapi::mkl::unimplemented(
             "rng", "philox4x32x10 engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
@@ -247,7 +244,7 @@ public:
 
     virtual void generate(
         const oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>& distr,
-        std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<double>& r) override {
         throw oneapi::mkl::unimplemented(
             "rng", "philox4x32x10 engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
@@ -255,10 +252,10 @@ public:
 
     virtual void generate(const oneapi::mkl::rng::lognormal<
                               float, oneapi::mkl::rng::lognormal_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<float>& r) override {
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
+                cl::sycl::accessor acc{ r, cgh, cl::sycl::read_write };
                 cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<float*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
@@ -272,10 +269,10 @@ public:
 
     virtual void generate(const oneapi::mkl::rng::lognormal<
                               double, oneapi::mkl::rng::lognormal_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<double>& r) override {
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                auto acc = r.get_access<cl::sycl::access::mode::read_write>(cgh);
+                cl::sycl::accessor acc{ r, cgh, cl::sycl::read_write };
                 cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr =
                         reinterpret_cast<double*>(ih.get_native_mem<cl::sycl::backend::cuda>(acc));
@@ -289,7 +286,7 @@ public:
 
     virtual void generate(
         const oneapi::mkl::rng::lognormal<float, oneapi::mkl::rng::lognormal_method::icdf>& distr,
-        std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<float>& r) override {
         throw oneapi::mkl::unimplemented(
             "rng", "philox4x32x10 engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
@@ -297,45 +294,45 @@ public:
 
     virtual void generate(
         const oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::icdf>& distr,
-        std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<double>& r) override {
         throw oneapi::mkl::unimplemented(
             "rng", "philox4x32x10 engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
     }
 
     virtual void generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) override {
         throw oneapi::mkl::unimplemented(
             "rng", "philox4x32x10 engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
     }
 
     virtual void generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::uint32_t>& r) override {
         throw oneapi::mkl::unimplemented(
             "rng", "philox4x32x10 engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
     }
 
     virtual void generate(const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) override {
         throw oneapi::mkl::unimplemented(
             "rng", "philox4x32x10 engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
     }
 
     virtual void generate(const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::uint32_t>& r) override {
         throw oneapi::mkl::unimplemented(
             "rng", "philox4x32x10 engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
     }
 
     virtual void generate(const bits<std::uint32_t>& distr, std::int64_t n,
-                          cl::sycl::buffer<std::uint32_t, 1>& r) override {
+                          cl::sycl::buffer<std::uint32_t>& r) override {
         queue_
             .submit([&](cl::sycl::handler& cgh) {
-                auto acc = r.template get_access<cl::sycl::access::mode::read_write>(cgh);
+                cl::sycl::accessor acc{ r, cgh, cl::sycl::read_write };
                 cgh.host_task([=](cl::sycl::interop_handle ih) {
                     auto r_ptr = reinterpret_cast<std::uint32_t*>(
                         ih.get_native_mem<cl::sycl::backend::cuda>(acc));
@@ -612,104 +609,104 @@ public:
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::standard>& distr,
-        std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<float>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::standard>& distr,
-        std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<double>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(const oneapi::mkl::rng::uniform<
                               std::int32_t, oneapi::mkl::rng::uniform_method::standard>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::accurate>& distr,
-        std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<float>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::accurate>& distr,
-        std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<double>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(const oneapi::mkl::rng::gaussian<
                               float, oneapi::mkl::rng::gaussian_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<float>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(const oneapi::mkl::rng::gaussian<
                               double, oneapi::mkl::rng::gaussian_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<double>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::icdf>& distr,
-        std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<float>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>& distr,
-        std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<double>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(const oneapi::mkl::rng::lognormal<
                               float, oneapi::mkl::rng::lognormal_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<float>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(const oneapi::mkl::rng::lognormal<
                               double, oneapi::mkl::rng::lognormal_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<double>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::lognormal<float, oneapi::mkl::rng::lognormal_method::icdf>& distr,
-        std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<float>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(
         const oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::icdf>& distr,
-        std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+        std::int64_t n, cl::sycl::buffer<double>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::uint32_t>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) override {
+                          std::int64_t n, cl::sycl::buffer<std::uint32_t>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
     virtual void generate(const bits<std::uint32_t>& distr, std::int64_t n,
-                          cl::sycl::buffer<std::uint32_t, 1>& r) override {
+                          cl::sycl::buffer<std::uint32_t>& r) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
     }
 
@@ -868,7 +865,8 @@ public:
 };
 #endif
 
-oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(sycl::queue queue, std::uint64_t seed) {
+oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(cl::sycl::queue queue,
+                                                            std::uint64_t seed) {
     return new philox4x32x10_impl(queue, seed);
 }
 
@@ -877,7 +875,4 @@ oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(
     return new philox4x32x10_impl(queue, seed);
 }
 
-} // namespace curand
-} // namespace rng
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::rng::curand

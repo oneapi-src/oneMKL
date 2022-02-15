@@ -22,10 +22,7 @@
 #include "function_table_initializer.hpp"
 #include "rng/function_table.hpp"
 
-namespace oneapi {
-namespace mkl {
-namespace rng {
-namespace detail {
+namespace oneapi::mkl::rng::detail {
 
 static oneapi::mkl::detail::table_initializer<domain::rng, rng_function_table_t> function_tables;
 
@@ -49,7 +46,13 @@ engine_impl* create_mrg32k3a(oneapi::mkl::device libkey, cl::sycl::queue queue,
     return function_tables[libkey].create_mrg32k3a_ex_sycl(queue, seed);
 }
 
-} // namespace detail
-} // namespace rng
-} // namespace mkl
-} // namespace oneapi
+engine_impl* create_mcg59(oneapi::mkl::device libkey, cl::sycl::queue queue, std::uint64_t seed) {
+    return function_tables[libkey].create_mcg59_sycl(queue, seed);
+}
+
+engine_impl* create_mcg59(oneapi::mkl::device libkey, cl::sycl::queue queue,
+                          std::initializer_list<std::uint64_t> seed) {
+    return function_tables[libkey].create_mcg59_ex_sycl(queue, seed);
+}
+
+} // namespace oneapi::mkl::rng::detail

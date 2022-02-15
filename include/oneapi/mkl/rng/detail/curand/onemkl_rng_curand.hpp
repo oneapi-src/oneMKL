@@ -65,10 +65,7 @@
 #include "oneapi/mkl/detail/export.hpp"
 #include "oneapi/mkl/rng/detail/engine_impl.hpp"
 
-namespace oneapi {
-namespace mkl {
-namespace rng {
-namespace curand {
+namespace oneapi::mkl::rng::curand {
 
 ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(cl::sycl::queue queue,
                                                                           std::uint64_t seed);
@@ -82,9 +79,12 @@ ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(cl::sycl::q
 ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(
     cl::sycl::queue queue, std::initializer_list<std::uint32_t> seed);
 
-} // namespace curand
-} // namespace rng
-} // namespace mkl
-} // namespace oneapi
+ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mcg59(cl::sycl::queue queue,
+                                                                  std::uint64_t seed);
+
+ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mcg59(
+    cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed);
+
+} // namespace oneapi::mkl::rng::curand
 
 #endif //_ONEMKL_RNG_CURAND_HPP_

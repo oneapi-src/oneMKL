@@ -26,6 +26,7 @@ add_library(${LIB_OBJ} OBJECT
   mkl_internal_rng_gpu.hpp
   philox4x32x10.cpp
   mrg32k3a.cpp
+  mcg59.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_rng_gpu_wrappers.cpp>
 )
 

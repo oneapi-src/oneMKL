@@ -69,10 +69,7 @@
 
 #include "oneapi/mkl/types.hpp"
 
-namespace oneapi {
-namespace mkl {
-namespace rng {
-namespace curand {
+namespace oneapi::mkl::rng::curand {
 
 class curand_error : virtual public std::runtime_error {
 protected:
@@ -210,7 +207,7 @@ template <typename T>
 static inline void range_transform_fp(cl::sycl::queue& queue, T a, T b, std::int64_t n,
                                       cl::sycl::buffer<T, 1>& r) {
     queue.submit([&](cl::sycl::handler& cgh) {
-        auto acc = r.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        cl::sycl::accessor acc{ r, cgh, cl::sycl::read_write };
         cgh.parallel_for(cl::sycl::range<1>(n),
                          [=](cl::sycl::id<1> id) { acc[id] = acc[id] * (b - a) + a; });
     });
@@ -227,7 +224,7 @@ template <typename T>
 static inline void range_transform_fp_accurate(cl::sycl::queue& queue, T a, T b, std::int64_t n,
                                                cl::sycl::buffer<T, 1>& r) {
     queue.submit([&](cl::sycl::handler& cgh) {
-        auto acc = r.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        cl::sycl::accessor acc{ r, cgh, cl::sycl::read_write };
         cgh.parallel_for(cl::sycl::range<1>(n), [=](cl::sycl::id<1> id) {
             acc[id] = acc[id] * (b - a) + a;
             if (acc[id] < a) {
@@ -276,8 +273,8 @@ inline void range_transform_int(cl::sycl::queue& queue, T a, T b, std::int64_t n
                                 cl::sycl::buffer<std::uint32_t, 1>& in,
                                 cl::sycl::buffer<T, 1>& out) {
     queue.submit([&](cl::sycl::handler& cgh) {
-        auto acc_in = in.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto acc_out = out.template get_access<cl::sycl::access::mode::write>(cgh);
+        auto acc_in = in.template get_access<cl::sycl::read>(cgh);
+        auto acc_out = out.template get_access<cl::sycl::write>(cgh);
         cgh.parallel_for(cl::sycl::range<1>(n),
                          [=](cl::sycl::id<1> id) { acc_out[id] = a + acc_in[id] % (b - a); });
     });
@@ -312,8 +309,8 @@ static inline void sample_bernoulli_from_uniform(cl::sycl::queue& queue, float p
                                                  cl::sycl::buffer<float, 1> in,
                                                  cl::sycl::buffer<T, 1>& out) {
     queue.submit([&](cl::sycl::handler& cgh) {
-        auto acc_in = in.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto acc_out = out.template get_access<cl::sycl::access::mode::write>(cgh);
+        auto acc_in = in.template get_access<cl::sycl::read>(cgh);
+        auto acc_out = out.template get_access<cl::sycl::write>(cgh);
         cgh.parallel_for(cl::sycl::range<1>(n),
                          [=](cl::sycl::id<1> id) { acc_out[id] = acc_in[id] < p; });
     });
@@ -326,9 +323,6 @@ static inline cl::sycl::event sample_bernoulli_from_uniform(cl::sycl::queue& que
     });
 }
 
-} // namespace curand
-} // namespace rng
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::rng::curand
 
 #endif // _MKL_RNG_CURAND_HELPER_HPP_

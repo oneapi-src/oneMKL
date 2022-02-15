@@ -26,10 +26,7 @@
 #include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/rng/predicates.hpp"
 
-namespace oneapi {
-namespace mkl {
-namespace rng {
-
+namespace oneapi::mkl::rng {
 // Function oneapi::mkl::rng::generate().Buffer API
 // Provides random numbers from a given engine with a given statistics
 //
@@ -39,10 +36,10 @@ namespace rng {
 //      std::int64_t n                   - number of random values to be generated
 //
 // Output parameters:
-//      cl::sycl::buffer<typename Distr::result_type, 1>& r - cl::sycl::buffer to the output vector
+//      cl::sycl::buffer<typename Distr::result_type>& r - cl::sycl::buffer to the output vector
 template <typename Distr, typename Engine>
 static inline void generate(const Distr& distr, Engine& engine, std::int64_t n,
-                            sycl::buffer<typename Distr::result_type, 1>& r) {
+                            cl::sycl::buffer<typename Distr::result_type>& r) {
     generate_precondition(distr, engine, n, r);
     engine.pimpl_->generate(distr, n, r);
 }
@@ -109,8 +106,6 @@ static inline void leapfrog(Engine& engine, std::uint64_t idx, std::uint64_t str
     engine.pimpl_->leapfrog(idx, stride);
 }
 
-} // namespace rng
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::rng
 
 #endif //_ONEMKL_RNG_FUNCTIONS_HPP_

@@ -65,4 +65,24 @@ INSTANTIATE_TEST_SUITE_P(Mrg32k3aSkipAheadTestSuite, Mrg32k3aSkipAheadTests,
 INSTANTIATE_TEST_SUITE_P(Mrg32k3aSkipAheadExTestSuite, Mrg32k3aSkipAheadExTests,
                          ::testing::ValuesIn(devices), ::DeviceNamePrint());
 
+class Mcg59SkipAheadTests : public ::testing::TestWithParam<cl::sycl::device*> {};
+
+class Mcg59LeapfrogTests : public ::testing::TestWithParam<cl::sycl::device*> {};
+
+TEST_P(Mcg59SkipAheadTests, BinaryPrecision) {
+    rng_test<skip_ahead_test<oneapi::mkl::rng::mcg59>> test;
+    EXPECT_TRUEORSKIP((test(GetParam())));
+}
+
+TEST_P(Mcg59LeapfrogTests, BinaryPrecision) {
+    rng_test<leapfrog_test<oneapi::mkl::rng::mcg59>> test;
+    EXPECT_TRUEORSKIP((test(GetParam())));
+}
+
+INSTANTIATE_TEST_SUITE_P(Mcg59SkipAheadTestSuite, Mcg59SkipAheadTests, ::testing::ValuesIn(devices),
+                         ::DeviceNamePrint());
+
+INSTANTIATE_TEST_SUITE_P(Mcg59LeapfrogTestSuite, Mcg59LeapfrogTests, ::testing::ValuesIn(devices),
+                         ::DeviceNamePrint());
+
 } // anonymous namespace

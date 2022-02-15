@@ -28,10 +28,7 @@
 
 #include "oneapi/mkl/rng/detail/engine_impl.hpp"
 
-namespace oneapi {
-namespace mkl {
-namespace rng {
-namespace detail {
+namespace oneapi::mkl::rng::detail {
 
 ONEMKL_EXPORT engine_impl* create_philox4x32x10(oneapi::mkl::device libkey, cl::sycl::queue queue,
                                                 std::uint64_t seed);
@@ -45,9 +42,12 @@ ONEMKL_EXPORT engine_impl* create_mrg32k3a(oneapi::mkl::device libkey, cl::sycl:
 ONEMKL_EXPORT engine_impl* create_mrg32k3a(oneapi::mkl::device libkey, cl::sycl::queue queue,
                                            std::initializer_list<std::uint32_t> seed);
 
-} // namespace detail
-} // namespace rng
-} // namespace mkl
-} // namespace oneapi
+ONEMKL_EXPORT engine_impl* create_mcg59(oneapi::mkl::device libkey, cl::sycl::queue queue,
+                                        std::uint64_t seed);
+
+ONEMKL_EXPORT engine_impl* create_mcg59(oneapi::mkl::device libkey, cl::sycl::queue queue,
+                                        std::initializer_list<std::uint64_t> seed);
+
+} // namespace oneapi::mkl::rng::detail
 
 #endif //_ONEMKL_RNG_LOADER_HPP_

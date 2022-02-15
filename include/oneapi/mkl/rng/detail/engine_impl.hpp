@@ -28,10 +28,7 @@
 
 #include "oneapi/mkl/rng/distributions.hpp"
 
-namespace oneapi {
-namespace mkl {
-namespace rng {
-namespace detail {
+namespace oneapi::mkl::rng::detail {
 
 class engine_impl {
 public:
@@ -41,58 +38,58 @@ public:
 
     // Buffers API
     virtual void generate(const uniform<float, uniform_method::standard>& distr, std::int64_t n,
-                          cl::sycl::buffer<float, 1>& r) = 0;
+                          cl::sycl::buffer<float>& r) = 0;
 
     virtual void generate(const uniform<double, uniform_method::standard>& distr, std::int64_t n,
-                          cl::sycl::buffer<double, 1>& r) = 0;
+                          cl::sycl::buffer<double>& r) = 0;
 
     virtual void generate(const uniform<std::int32_t, uniform_method::standard>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) = 0;
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) = 0;
 
     virtual void generate(const uniform<float, uniform_method::accurate>& distr, std::int64_t n,
-                          cl::sycl::buffer<float, 1>& r) = 0;
+                          cl::sycl::buffer<float>& r) = 0;
 
     virtual void generate(const uniform<double, uniform_method::accurate>& distr, std::int64_t n,
-                          cl::sycl::buffer<double, 1>& r) = 0;
+                          cl::sycl::buffer<double>& r) = 0;
 
     virtual void generate(const gaussian<float, gaussian_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<float, 1>& r) = 0;
+                          std::int64_t n, cl::sycl::buffer<float>& r) = 0;
 
     virtual void generate(const gaussian<double, gaussian_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<double, 1>& r) = 0;
+                          std::int64_t n, cl::sycl::buffer<double>& r) = 0;
 
     virtual void generate(const gaussian<float, gaussian_method::icdf>& distr, std::int64_t n,
-                          cl::sycl::buffer<float, 1>& r) = 0;
+                          cl::sycl::buffer<float>& r) = 0;
 
     virtual void generate(const gaussian<double, gaussian_method::icdf>& distr, std::int64_t n,
-                          cl::sycl::buffer<double, 1>& r) = 0;
+                          cl::sycl::buffer<double>& r) = 0;
 
     virtual void generate(const lognormal<float, lognormal_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<float, 1>& r) = 0;
+                          std::int64_t n, cl::sycl::buffer<float>& r) = 0;
 
     virtual void generate(const lognormal<double, lognormal_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<double, 1>& r) = 0;
+                          std::int64_t n, cl::sycl::buffer<double>& r) = 0;
 
     virtual void generate(const lognormal<float, lognormal_method::icdf>& distr, std::int64_t n,
-                          cl::sycl::buffer<float, 1>& r) = 0;
+                          cl::sycl::buffer<float>& r) = 0;
 
     virtual void generate(const lognormal<double, lognormal_method::icdf>& distr, std::int64_t n,
-                          cl::sycl::buffer<double, 1>& r) = 0;
+                          cl::sycl::buffer<double>& r) = 0;
 
     virtual void generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) = 0;
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) = 0;
 
     virtual void generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) = 0;
+                          std::int64_t n, cl::sycl::buffer<std::uint32_t>& r) = 0;
 
     virtual void generate(const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) = 0;
+                          std::int64_t n, cl::sycl::buffer<std::int32_t>& r) = 0;
 
     virtual void generate(const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) = 0;
+                          std::int64_t n, cl::sycl::buffer<std::uint32_t>& r) = 0;
 
     virtual void generate(const bits<std::uint32_t>& distr, std::int64_t n,
-                          cl::sycl::buffer<std::uint32_t, 1>& r) = 0;
+                          cl::sycl::buffer<std::uint32_t>& r) = 0;
 
     // USM APIs
     virtual cl::sycl::event generate(const uniform<float, uniform_method::standard>& distr,
@@ -185,9 +182,6 @@ protected:
     cl::sycl::queue queue_;
 };
 
-} // namespace detail
-} // namespace rng
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::rng::detail
 
 #endif //_ONEMKL_RNG_ENGINE_IMPL_HPP_
