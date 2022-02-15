@@ -263,47 +263,6 @@ Supported domains: BLAS, LAPACK, RNG
 
 \* LLVM - [Intel project for LLVM* technology](https://github.com/intel/llvm) with support for [NVIDIA CUDA](https://intel.github.io/llvm-docs/GetStartedGuide.html#build-dpc-toolchain-with-support-for-nvidia-cuda)
 
-### Supported Configurations with hipSYCL:
-
-Supported domains: BLAS
-
-#### Linux*
-
-<table>
-<thead>
-<tr  align="center">
-<th >Domain</th>
-<th >Backend</th>
-<th >Library</th>
-<th >Supported Link Type</th>
-</tr>
-</thead>
-<tbody>
-<tr >
-<td  rowspan="4" align="center">BLAS</td>
-<td  align="center">x86 CPU</td>
-<td  align="center">Intel(R) oneAPI Math Kernel Library</td>
-<td  align="center">Dynamic, Static</td>
-</tr>
-<tr >
-<td align="center">AMD GPU</td>
-<td align="center">AMD rocBLAS </td>
-<td align="center">Dynamic, Static</td>
-</tr>
-<tr >
-<td  align="center">NVIDIA GPU</td>
-<td  align="center">NVIDIA cuBLAS</td>
-<td  align="center">Dynamic, Static</td>
-</tr>
-<tr >
-<td  align="center">x86 CPU</td>
-<td  align="center">NETLIB LAPACK</td>
-<td  align="center">Dynamic, Static</td>
-</tr>
-</tbody>
-</table>
-
-
 ---
 
 ### Hardware Platform Support
