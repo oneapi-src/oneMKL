@@ -38,9 +38,9 @@ CublasScopedContextHandler::CublasScopedContextHandler(cl::sycl::queue queue,
                                                        cl::sycl::interop_handler &ih)
         : ih(ih),
           needToRecover_(false) {
-    placedContext_ = queue.get_context();
+    placedContext_ = new cl::sycl::context(queue.get_context());
     auto device = queue.get_device();
-    auto desired = cl::sycl::get_native<cl::sycl::backend::cuda>(placedContext_);
+    auto desired = cl::sycl::get_native<cl::sycl::backend::cuda>(*placedContext_);
     CUresult err;
     CUDA_ERROR_FUNC(cuCtxGetCurrent, err, &original_);
     if (original_ != desired) {
@@ -61,6 +61,7 @@ CublasScopedContextHandler::~CublasScopedContextHandler() noexcept(false) {
         CUresult err;
         CUDA_ERROR_FUNC(cuCtxSetCurrent, err, original_);
     }
+    delete placedContext_;
 }
 
 void ContextCallback(void *userData) {
@@ -84,7 +85,7 @@ void ContextCallback(void *userData) {
 
 cublasHandle_t CublasScopedContextHandler::get_handle(const cl::sycl::queue &queue) {
     auto piPlacedContext_ =
-        reinterpret_cast<pi_context>(cl::sycl::get_native<cl::sycl::backend::cuda>(placedContext_));
+        reinterpret_cast<pi_context>(cl::sycl::get_native<cl::sycl::backend::cuda>(*placedContext_));
     CUstream streamId = get_stream(queue);
     cublasStatus_t err;
     auto it = handle_helper.cublas_handle_mapper_.find(piPlacedContext_);
@@ -116,7 +117,7 @@ cublasHandle_t CublasScopedContextHandler::get_handle(const cl::sycl::queue &que
     auto insert_iter = handle_helper.cublas_handle_mapper_.insert(
         std::make_pair(piPlacedContext_, new std::atomic<cublasHandle_t>(handle)));
 
-    sycl::detail::pi::contextSetExtendedDeleter(placedContext_, ContextCallback,
+    sycl::detail::pi::contextSetExtendedDeleter(*placedContext_, ContextCallback,
                                                 insert_iter.first->second);
 
     return handle;
