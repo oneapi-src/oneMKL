@@ -62,7 +62,7 @@ the handle must be destroyed when the context goes out of scope. This will bind 
 
 class CublasScopedContextHandler {
     CUcontext original_;
-    cl::sycl::context* placedContext_;
+    cl::sycl::context *placedContext_;
     bool needToRecover_;
     cl::sycl::interop_handler &ih;
     static thread_local cublas_handle<pi_context> handle_helper;
