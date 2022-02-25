@@ -17,7 +17,7 @@
 *  Content:
 *       This example demonstrates use of DPCPP API oneapi::mkl::blas::gemm
 *       using unified shared memory to perform General
-*       Matrix-Matrix Multiplication on a SYCL device (HOST, CPU, GPU).
+*       Matrix-Matrix Multiplication on an Intel GPU SYCL device.
 *
 *       C = alpha * op(A) * op(B) + beta * C
 *
