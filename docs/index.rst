@@ -1,5 +1,5 @@
 ..
-  Copyright 2020 Intel Corporation
+  Copyright 2020–2022 Intel Corporation
 
 .. _onemkl:
 
@@ -7,13 +7,28 @@
 oneMKL Interfaces
 *****************
 
-Introduction
-============
-
-oneMKL Interfaces is an open-source implementation of oneMKL Data Parallel C++ (DPC++) interfaces accordingly to `oneMKL specification <https://spec.oneapi.com/versions/latest/elements/oneMKL/source/index.html>`_ that can work with multiple devices (backends) using device specific libraries underneath
-
+Contents
+========
 
 .. toctree::
+   :caption: About
+   :maxdepth: 2
+
+   introduction.rst
+
+.. toctree::
+   :caption: Get Started
+   :maxdepth: 2
+
+   selecting_a_compiler.rst
+   build_setup.rst
+   build_setup_with_hipsycl.rst
+   building_with_conan.rst
+   building_with_cmake.rst
+   project_cleanup.rst
+
+.. toctree::
+   :caption: Developer Reference
    :maxdepth: 2
    :includehidden:
 

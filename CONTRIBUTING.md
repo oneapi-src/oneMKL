@@ -1,13 +1,13 @@
 # Contributing Guidelines
-If you have improvements, new libraries integrated under oneAPI Math Kernel Library (oneMKL) interfaces, or new interfaces to contribute to the oneMKL Specification, please send us your pull requests! For getting started, see GitHub [howto](https://help.github.com/en/articles/about-pull-requests).
+If you have improvements, new libraries integrated under oneAPI Math Kernel Library (oneMKL) Interfaces, or new interfaces to contribute to the oneMKL Specification, please send us your pull requests! For getting started, see GitHub [howto](https://help.github.com/en/articles/about-pull-requests).
 
-For how to enable new third-party library see the [guidelines](docs/create_new_backend.rst).
+For how to enable a new third-party library, see the [guidelines](docs/create_new_backend.rst).
 
 ## Pull Request Checklist
 
-Before sending your pull requests, ensure that you follow this checklist.
+Before sending your pull requests, ensure that you follow this checklist:
 
-* If you are contributing a new interface, refer to the [library functionality guidelines](CONTRIBUTING.md#library-functionality-guidelines). It is strongly advised that you first open a [RFC issue](CONTRIBUTING.md#RFC-issue) with a detailed explanation of the expected use cases.
+* If you are contributing a new interface, refer to the [library functionality guidelines](CONTRIBUTING.md#library-functionality-guidelines). It is strongly advised that you first open an [RFC issue](CONTRIBUTING.md#RFC-issue) with a detailed explanation of the expected use cases.
 
 * Ensure that your code includes proper documentation.
 
@@ -25,7 +25,7 @@ oneMKL focuses on the following criteria:
 
 2. *Generality*: Functionality is useful in a wide range of applications.
 
-    This implies that when introducing a new function, its API needs to be general enough to be integrated into multiple applications that have similar functionality and its interface can support multiple hardware (HW).
+    This implies that when you introduce a new function, its API needs to be general enough to be integrated into multiple applications that have similar functionality and that its interface can support multiple hardware (HW).
 
 3. *Complexity*: Functionality that is not trivial to implement directly or by combining existing primitives.
 
@@ -34,13 +34,13 @@ For the new API to become a part of the open source project, it should be accept
 
 ### RFC Issue
 
-Open an Request For Comment (RFC) issue when contributing new interfaces. In the RFC, please provide the following details:
+Open a Request For Comment (RFC) issue when contributing new interfaces. In the RFC, please provide the following details:
 
-* Describe how the new interface meets [library functionality guidelines](CONTRIBUTING.md#library-functionality-guidelines).
+* Description of how the new interface meets [library functionality guidelines](CONTRIBUTING.md#library-functionality-guidelines).
 
 * The definition of the function including the interface and semantics, and how this interface will be extendable for different HW implementations.
 
-* What existing libraries have implementation of this function and can be used under the oneMKL interface.
+* What existing libraries have implementations of this function and can be used under the oneMKL interface.
 
 
 ## Bug Reporting
@@ -50,16 +50,16 @@ If you find a bug or problem, please open a request under [Issues](https://githu
 
 ## Security Issues
 
-Report security issues to onemkl.maintainers@intel.com
+Report security issues to onemkl.maintainers@intel.com.
 
 
 ## Coding Style
 
-The general principle is to follow the style of existing / surrounding code. If you are in doubt, use the `clang-format`:
+The general principle is to follow the style of existing/surrounding code. If you are in doubt, use the `clang-format`:
 ```sh
 clang-format -style=file -i foo.cpp
 ```
-This formats code using the `_clang_format` file found in the oneMKL top level directory.
+This formats code using the `_clang_format` file found in the oneMKL top-level directory.
 
 
 ### GN: General Naming
