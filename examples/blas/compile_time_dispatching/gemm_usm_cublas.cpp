@@ -1,15 +1,20 @@
 /*******************************************************************************
-* Copyright 2018-2022 Intel Corporation.
+* Copyright 2020-2021 Intel Corporation
 *
-* This software and the related documents are Intel copyrighted  materials,  and
-* your use of  them is  governed by the  express license  under which  they were
-* provided to you (License).  Unless the License provides otherwise, you may not
-* use, modify, copy, publish, distribute,  disclose or transmit this software or
-* the related documents without Intel's prior written permission.
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
 *
-* This software and the related documents  are provided as  is,  with no express
-* or implied  warranties,  other  than those  that are  expressly stated  in the
-* License.
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions
+* and limitations under the License.
+*
+*
+* SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
 /*
@@ -17,7 +22,7 @@
 *  Content:
 *       This example demonstrates use of DPCPP API oneapi::mkl::blas::gemm
 *       using unified shared memory to perform General
-*       Matrix-Matrix Multiplication on an Intel GPU SYCL device.
+*       Matrix-Matrix Multiplication on a SYCL device with CUDA backend.
 *
 *       C = alpha * op(A) * op(B) + beta * C
 *
@@ -120,8 +125,8 @@ void run_gemm_example(const cl::sycl::device &dev) {
 
     // add oneapi::mkl::blas::gemm to execution queue
     try {
-        printf("GEMM_MKL_GPU\n");
-        gemm_done = oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklgpu> {main_queue}, transA, transB, m, n, k, alpha, A, ldA, B, ldB, beta, C, ldC);
+        printf("CUBLAS\n");
+        gemm_done = oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas> {main_queue}, transA, transB, m, n, k, alpha, A, ldA, B, ldB, beta,  C, ldC);
     }
     catch(cl::sycl::exception const& e) {
         std::cout << "\t\tCaught synchronous SYCL exception during GEMM:\n"
@@ -183,7 +188,6 @@ void print_example_banner() {
 
 }
 
-
 //
 // Main entry point for example.
 //
@@ -191,13 +195,9 @@ int main (int argc, char ** argv) {
     print_example_banner();
 
     cl::sycl::device dev = cl::sycl::device(cl::sycl::gpu_selector());
-    if (dev.is_gpu()) printf("Running on GPU device\n");
+    if (dev.is_gpu()) printf("Running tests on GPU device\n");
 
-    bool is_level0 = dev.get_info<cl::sycl::info::device::opencl_c_version>().empty();
-    if (is_level0) printf("DPC++ running with Level0 backend\n");
-    else printf("DPC++ running with OpenCL backend\n");
-
-    std::cout << "Running tests on " << dev.get_info<cl::sycl::info::device::name>() << std::endl;
+    std::cout << "Device name is: " << dev.get_info<cl::sycl::info::device::name>() << std::endl;
 
     std::cout << "\tRunning with single precision real data type:" << std::endl;
     run_gemm_example<float>(dev);
