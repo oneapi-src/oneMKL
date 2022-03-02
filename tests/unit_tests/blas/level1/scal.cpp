@@ -34,10 +34,10 @@
 
 #include <gtest/gtest.h>
 
-using namespace cl::sycl;
+using namespace sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
@@ -123,7 +123,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, fp_scalar alp
 }
 
 class ScalTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(ScalTests, RealSinglePrecision) {
     float alpha(2.0);

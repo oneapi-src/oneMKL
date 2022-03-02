@@ -35,137 +35,137 @@ namespace detail {
 
 class engine_impl {
 public:
-    engine_impl(cl::sycl::queue queue) : queue_(queue) {}
+    engine_impl(sycl::queue queue) : queue_(queue) {}
 
     engine_impl(const engine_impl& other) : queue_(other.queue_) {}
 
     // Buffers API
     virtual void generate(const uniform<float, uniform_method::standard>& distr, std::int64_t n,
-                          cl::sycl::buffer<float, 1>& r) = 0;
+                          sycl::buffer<float, 1>& r) = 0;
 
     virtual void generate(const uniform<double, uniform_method::standard>& distr, std::int64_t n,
-                          cl::sycl::buffer<double, 1>& r) = 0;
+                          sycl::buffer<double, 1>& r) = 0;
 
     virtual void generate(const uniform<std::int32_t, uniform_method::standard>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) = 0;
+                          std::int64_t n, sycl::buffer<std::int32_t, 1>& r) = 0;
 
     virtual void generate(const uniform<float, uniform_method::accurate>& distr, std::int64_t n,
-                          cl::sycl::buffer<float, 1>& r) = 0;
+                          sycl::buffer<float, 1>& r) = 0;
 
     virtual void generate(const uniform<double, uniform_method::accurate>& distr, std::int64_t n,
-                          cl::sycl::buffer<double, 1>& r) = 0;
+                          sycl::buffer<double, 1>& r) = 0;
 
     virtual void generate(const gaussian<float, gaussian_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<float, 1>& r) = 0;
+                          std::int64_t n, sycl::buffer<float, 1>& r) = 0;
 
     virtual void generate(const gaussian<double, gaussian_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<double, 1>& r) = 0;
+                          std::int64_t n, sycl::buffer<double, 1>& r) = 0;
 
     virtual void generate(const gaussian<float, gaussian_method::icdf>& distr, std::int64_t n,
-                          cl::sycl::buffer<float, 1>& r) = 0;
+                          sycl::buffer<float, 1>& r) = 0;
 
     virtual void generate(const gaussian<double, gaussian_method::icdf>& distr, std::int64_t n,
-                          cl::sycl::buffer<double, 1>& r) = 0;
+                          sycl::buffer<double, 1>& r) = 0;
 
     virtual void generate(const lognormal<float, lognormal_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<float, 1>& r) = 0;
+                          std::int64_t n, sycl::buffer<float, 1>& r) = 0;
 
     virtual void generate(const lognormal<double, lognormal_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<double, 1>& r) = 0;
+                          std::int64_t n, sycl::buffer<double, 1>& r) = 0;
 
     virtual void generate(const lognormal<float, lognormal_method::icdf>& distr, std::int64_t n,
-                          cl::sycl::buffer<float, 1>& r) = 0;
+                          sycl::buffer<float, 1>& r) = 0;
 
     virtual void generate(const lognormal<double, lognormal_method::icdf>& distr, std::int64_t n,
-                          cl::sycl::buffer<double, 1>& r) = 0;
+                          sycl::buffer<double, 1>& r) = 0;
 
     virtual void generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) = 0;
+                          std::int64_t n, sycl::buffer<std::int32_t, 1>& r) = 0;
 
     virtual void generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) = 0;
+                          std::int64_t n, sycl::buffer<std::uint32_t, 1>& r) = 0;
 
     virtual void generate(const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) = 0;
+                          std::int64_t n, sycl::buffer<std::int32_t, 1>& r) = 0;
 
     virtual void generate(const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) = 0;
+                          std::int64_t n, sycl::buffer<std::uint32_t, 1>& r) = 0;
 
     virtual void generate(const bits<std::uint32_t>& distr, std::int64_t n,
-                          cl::sycl::buffer<std::uint32_t, 1>& r) = 0;
+                          sycl::buffer<std::uint32_t, 1>& r) = 0;
 
     // USM APIs
-    virtual cl::sycl::event generate(const uniform<float, uniform_method::standard>& distr,
+    virtual sycl::event generate(const uniform<float, uniform_method::standard>& distr,
                                      std::int64_t n, float* r,
-                                     const std::vector<cl::sycl::event>& dependencies) = 0;
+                                     const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(const uniform<double, uniform_method::standard>& distr,
+    virtual sycl::event generate(const uniform<double, uniform_method::standard>& distr,
                                      std::int64_t n, double* r,
-                                     const std::vector<cl::sycl::event>& dependencies) = 0;
+                                     const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(const uniform<std::int32_t, uniform_method::standard>& distr,
+    virtual sycl::event generate(const uniform<std::int32_t, uniform_method::standard>& distr,
                                      std::int64_t n, std::int32_t* r,
-                                     const std::vector<cl::sycl::event>& dependencies) = 0;
+                                     const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(const uniform<float, uniform_method::accurate>& distr,
+    virtual sycl::event generate(const uniform<float, uniform_method::accurate>& distr,
                                      std::int64_t n, float* r,
-                                     const std::vector<cl::sycl::event>& dependencies) = 0;
+                                     const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(const uniform<double, uniform_method::accurate>& distr,
+    virtual sycl::event generate(const uniform<double, uniform_method::accurate>& distr,
                                      std::int64_t n, double* r,
-                                     const std::vector<cl::sycl::event>& dependencies) = 0;
+                                     const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(const gaussian<float, gaussian_method::box_muller2>& distr,
+    virtual sycl::event generate(const gaussian<float, gaussian_method::box_muller2>& distr,
                                      std::int64_t n, float* r,
-                                     const std::vector<cl::sycl::event>& dependencies) = 0;
+                                     const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(const gaussian<double, gaussian_method::box_muller2>& distr,
+    virtual sycl::event generate(const gaussian<double, gaussian_method::box_muller2>& distr,
                                      std::int64_t n, double* r,
-                                     const std::vector<cl::sycl::event>& dependencies) = 0;
+                                     const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(const gaussian<float, gaussian_method::icdf>& distr,
+    virtual sycl::event generate(const gaussian<float, gaussian_method::icdf>& distr,
                                      std::int64_t n, float* r,
-                                     const std::vector<cl::sycl::event>& dependencies) = 0;
+                                     const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(const gaussian<double, gaussian_method::icdf>& distr,
+    virtual sycl::event generate(const gaussian<double, gaussian_method::icdf>& distr,
                                      std::int64_t n, double* r,
-                                     const std::vector<cl::sycl::event>& dependencies) = 0;
+                                     const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(const lognormal<float, lognormal_method::box_muller2>& distr,
+    virtual sycl::event generate(const lognormal<float, lognormal_method::box_muller2>& distr,
                                      std::int64_t n, float* r,
-                                     const std::vector<cl::sycl::event>& dependencies) = 0;
+                                     const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(const lognormal<double, lognormal_method::box_muller2>& distr,
+    virtual sycl::event generate(const lognormal<double, lognormal_method::box_muller2>& distr,
                                      std::int64_t n, double* r,
-                                     const std::vector<cl::sycl::event>& dependencies) = 0;
+                                     const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(const lognormal<float, lognormal_method::icdf>& distr,
+    virtual sycl::event generate(const lognormal<float, lognormal_method::icdf>& distr,
                                      std::int64_t n, float* r,
-                                     const std::vector<cl::sycl::event>& dependencies) = 0;
+                                     const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(const lognormal<double, lognormal_method::icdf>& distr,
+    virtual sycl::event generate(const lognormal<double, lognormal_method::icdf>& distr,
                                      std::int64_t n, double* r,
-                                     const std::vector<cl::sycl::event>& dependencies) = 0;
+                                     const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
+    virtual sycl::event generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
                                      std::int64_t n, std::int32_t* r,
-                                     const std::vector<cl::sycl::event>& dependencies) = 0;
+                                     const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
+    virtual sycl::event generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
                                      std::int64_t n, std::uint32_t* r,
-                                     const std::vector<cl::sycl::event>& dependencies) = 0;
+                                     const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(
+    virtual sycl::event generate(
         const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
-        std::int32_t* r, const std::vector<cl::sycl::event>& dependencies) = 0;
+        std::int32_t* r, const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(
+    virtual sycl::event generate(
         const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
-        std::uint32_t* r, const std::vector<cl::sycl::event>& dependencies) = 0;
+        std::uint32_t* r, const std::vector<sycl::event>& dependencies) = 0;
 
-    virtual cl::sycl::event generate(const bits<std::uint32_t>& distr, std::int64_t n,
+    virtual sycl::event generate(const bits<std::uint32_t>& distr, std::int64_t n,
                                      std::uint32_t* r,
-                                     const std::vector<cl::sycl::event>& dependencies) = 0;
+                                     const std::vector<sycl::event>& dependencies) = 0;
 
     virtual engine_impl* copy_state() = 0;
 
@@ -177,12 +177,12 @@ public:
 
     virtual ~engine_impl() {}
 
-    cl::sycl::queue& get_queue() {
+    sycl::queue& get_queue() {
         return queue_;
     }
 
 protected:
-    cl::sycl::queue queue_;
+    sycl::queue queue_;
 };
 
 } // namespace detail

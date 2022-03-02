@@ -37,14 +37,14 @@ using namespace cl;
 
 class philox4x32x10_impl : public oneapi::mkl::rng::detail::engine_impl {
 public:
-    philox4x32x10_impl(cl::sycl::queue queue, std::uint64_t seed)
+    philox4x32x10_impl(sycl::queue queue, std::uint64_t seed)
             : oneapi::mkl::rng::detail::engine_impl(queue) {
         vslNewStreamEx(&stream_, VSL_BRNG_PHILOX4X32X10, 2,
                        reinterpret_cast<std::uint32_t*>(&seed));
         state_size_ = vslGetStreamSize(stream_);
     }
 
-    philox4x32x10_impl(cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed)
+    philox4x32x10_impl(sycl::queue queue, std::initializer_list<std::uint64_t> seed)
             : oneapi::mkl::rng::detail::engine_impl(queue) {
         vslNewStreamEx(&stream_, VSL_BRNG_PHILOX4X32X10, 2 * seed.size(),
                        reinterpret_cast<const std::uint32_t*>(seed.begin()));
@@ -60,7 +60,7 @@ public:
     // Buffers APIs
 
     virtual void generate(const uniform<float, uniform_method::standard>& distr, std::int64_t n,
-                          cl::sycl::buffer<float, 1>& r) override {
+                          sycl::buffer<float, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -74,7 +74,7 @@ public:
     }
 
     virtual void generate(const uniform<double, uniform_method::standard>& distr, std::int64_t n,
-                          cl::sycl::buffer<double, 1>& r) override {
+                          sycl::buffer<double, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -88,7 +88,7 @@ public:
     }
 
     virtual void generate(const uniform<std::int32_t, uniform_method::standard>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
+                          std::int64_t n, sycl::buffer<std::int32_t, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -102,7 +102,7 @@ public:
     }
 
     virtual void generate(const uniform<float, uniform_method::accurate>& distr, std::int64_t n,
-                          cl::sycl::buffer<float, 1>& r) override {
+                          sycl::buffer<float, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -116,7 +116,7 @@ public:
     }
 
     virtual void generate(const uniform<double, uniform_method::accurate>& distr, std::int64_t n,
-                          cl::sycl::buffer<double, 1>& r) override {
+                          sycl::buffer<double, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -130,7 +130,7 @@ public:
     }
 
     virtual void generate(const gaussian<float, gaussian_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+                          std::int64_t n, sycl::buffer<float, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -144,7 +144,7 @@ public:
     }
 
     virtual void generate(const gaussian<double, gaussian_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+                          std::int64_t n, sycl::buffer<double, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -158,7 +158,7 @@ public:
     }
 
     virtual void generate(const gaussian<float, gaussian_method::icdf>& distr, std::int64_t n,
-                          cl::sycl::buffer<float, 1>& r) override {
+                          sycl::buffer<float, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -172,7 +172,7 @@ public:
     }
 
     virtual void generate(const gaussian<double, gaussian_method::icdf>& distr, std::int64_t n,
-                          cl::sycl::buffer<double, 1>& r) override {
+                          sycl::buffer<double, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -186,7 +186,7 @@ public:
     }
 
     virtual void generate(const lognormal<float, lognormal_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<float, 1>& r) override {
+                          std::int64_t n, sycl::buffer<float, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -201,7 +201,7 @@ public:
     }
 
     virtual void generate(const lognormal<double, lognormal_method::box_muller2>& distr,
-                          std::int64_t n, cl::sycl::buffer<double, 1>& r) override {
+                          std::int64_t n, sycl::buffer<double, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -216,7 +216,7 @@ public:
     }
 
     virtual void generate(const lognormal<float, lognormal_method::icdf>& distr, std::int64_t n,
-                          cl::sycl::buffer<float, 1>& r) override {
+                          sycl::buffer<float, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -231,7 +231,7 @@ public:
     }
 
     virtual void generate(const lognormal<double, lognormal_method::icdf>& distr, std::int64_t n,
-                          cl::sycl::buffer<double, 1>& r) override {
+                          sycl::buffer<double, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -246,7 +246,7 @@ public:
     }
 
     virtual void generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
+                          std::int64_t n, sycl::buffer<std::int32_t, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -260,7 +260,7 @@ public:
     }
 
     virtual void generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) override {
+                          std::int64_t n, sycl::buffer<std::uint32_t, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -275,7 +275,7 @@ public:
     }
 
     virtual void generate(const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::int32_t, 1>& r) override {
+                          std::int64_t n, sycl::buffer<std::int32_t, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -289,7 +289,7 @@ public:
     }
 
     virtual void generate(const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr,
-                          std::int64_t n, cl::sycl::buffer<std::uint32_t, 1>& r) override {
+                          std::int64_t n, sycl::buffer<std::uint32_t, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -304,7 +304,7 @@ public:
     }
 
     virtual void generate(const bits<std::uint32_t>& distr, std::int64_t n,
-                          cl::sycl::buffer<std::uint32_t, 1>& r) override {
+                          sycl::buffer<std::uint32_t, 1>& r) override {
         sycl::buffer<char, 1> stream_buf(static_cast<char*>(stream_), state_size_);
         queue_.submit([&](sycl::handler& cgh) {
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
@@ -319,10 +319,10 @@ public:
 
     // USM APIs
 
-    virtual cl::sycl::event generate(const uniform<float, uniform_method::standard>& distr,
+    virtual sycl::event generate(const uniform<float, uniform_method::standard>& distr,
                                      std::int64_t n, float* r,
-                                     const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+                                     const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -331,10 +331,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(const uniform<double, uniform_method::standard>& distr,
+    virtual sycl::event generate(const uniform<double, uniform_method::standard>& distr,
                                      std::int64_t n, double* r,
-                                     const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+                                     const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -343,10 +343,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(const uniform<std::int32_t, uniform_method::standard>& distr,
+    virtual sycl::event generate(const uniform<std::int32_t, uniform_method::standard>& distr,
                                      std::int64_t n, std::int32_t* r,
-                                     const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+                                     const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -355,10 +355,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(const uniform<float, uniform_method::accurate>& distr,
+    virtual sycl::event generate(const uniform<float, uniform_method::accurate>& distr,
                                      std::int64_t n, float* r,
-                                     const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+                                     const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -368,10 +368,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(const uniform<double, uniform_method::accurate>& distr,
+    virtual sycl::event generate(const uniform<double, uniform_method::accurate>& distr,
                                      std::int64_t n, double* r,
-                                     const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+                                     const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -381,10 +381,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(const gaussian<float, gaussian_method::box_muller2>& distr,
+    virtual sycl::event generate(const gaussian<float, gaussian_method::box_muller2>& distr,
                                      std::int64_t n, float* r,
-                                     const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+                                     const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -394,10 +394,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(const gaussian<double, gaussian_method::box_muller2>& distr,
+    virtual sycl::event generate(const gaussian<double, gaussian_method::box_muller2>& distr,
                                      std::int64_t n, double* r,
-                                     const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+                                     const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -407,10 +407,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(const gaussian<float, gaussian_method::icdf>& distr,
+    virtual sycl::event generate(const gaussian<float, gaussian_method::icdf>& distr,
                                      std::int64_t n, float* r,
-                                     const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+                                     const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -420,10 +420,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(const gaussian<double, gaussian_method::icdf>& distr,
+    virtual sycl::event generate(const gaussian<double, gaussian_method::icdf>& distr,
                                      std::int64_t n, double* r,
-                                     const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+                                     const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -433,10 +433,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(const lognormal<float, lognormal_method::box_muller2>& distr,
+    virtual sycl::event generate(const lognormal<float, lognormal_method::box_muller2>& distr,
                                      std::int64_t n, float* r,
-                                     const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+                                     const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -446,10 +446,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(const lognormal<double, lognormal_method::box_muller2>& distr,
+    virtual sycl::event generate(const lognormal<double, lognormal_method::box_muller2>& distr,
                                      std::int64_t n, double* r,
-                                     const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+                                     const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -459,10 +459,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(const lognormal<float, lognormal_method::icdf>& distr,
+    virtual sycl::event generate(const lognormal<float, lognormal_method::icdf>& distr,
                                      std::int64_t n, float* r,
-                                     const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+                                     const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -472,10 +472,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(const lognormal<double, lognormal_method::icdf>& distr,
+    virtual sycl::event generate(const lognormal<double, lognormal_method::icdf>& distr,
                                      std::int64_t n, double* r,
-                                     const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+                                     const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -485,10 +485,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
+    virtual sycl::event generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
                                      std::int64_t n, std::int32_t* r,
-                                     const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+                                     const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -497,10 +497,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
+    virtual sycl::event generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
                                      std::int64_t n, std::uint32_t* r,
-                                     const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+                                     const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -510,10 +510,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
+    virtual sycl::event generate(
         const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
-        std::int32_t* r, const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+        std::int32_t* r, const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -522,10 +522,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(
+    virtual sycl::event generate(
         const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
-        std::uint32_t* r, const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+        std::uint32_t* r, const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
@@ -535,10 +535,10 @@ public:
         });
     }
 
-    virtual cl::sycl::event generate(const bits<std::uint32_t>& distr, std::int64_t n,
+    virtual sycl::event generate(const bits<std::uint32_t>& distr, std::int64_t n,
                                      std::uint32_t* r,
-                                     const std::vector<cl::sycl::event>& dependencies) override {
-        cl::sycl::event::wait_and_throw(dependencies);
+                                     const std::vector<sycl::event>& dependencies) override {
+        sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             VSLStreamStatePtr stream = stream_;
             host_task<kernel_name_usm<philox4x32x10_impl, decltype(distr)>>(
@@ -571,13 +571,13 @@ private:
     std::int32_t state_size_;
 };
 
-oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(cl::sycl::queue queue,
+oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(sycl::queue queue,
                                                             std::uint64_t seed) {
     return new philox4x32x10_impl(queue, seed);
 }
 
 oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(
-    cl::sycl::queue queue, std::initializer_list<std::uint64_t> seed) {
+    sycl::queue queue, std::initializer_list<std::uint64_t> seed) {
     return new philox4x32x10_impl(queue, seed);
 }
 

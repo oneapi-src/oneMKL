@@ -21,13 +21,13 @@
 
 #include <gtest/gtest.h>
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
-class Philox4x32x10SkipAheadTests : public ::testing::TestWithParam<cl::sycl::device*> {};
+class Philox4x32x10SkipAheadTests : public ::testing::TestWithParam<sycl::device*> {};
 
-class Philox4x32x10SkipAheadExTests : public ::testing::TestWithParam<cl::sycl::device*> {};
+class Philox4x32x10SkipAheadExTests : public ::testing::TestWithParam<sycl::device*> {};
 
 TEST_P(Philox4x32x10SkipAheadTests, BinaryPrecision) {
     rng_test<skip_ahead_test<oneapi::mkl::rng::philox4x32x10>> test;
@@ -45,9 +45,9 @@ INSTANTIATE_TEST_SUITE_P(Philox4x32x10SkipAheadTestSuite, Philox4x32x10SkipAhead
 INSTANTIATE_TEST_SUITE_P(Philox4x32x10SkipAheadExTestSuite, Philox4x32x10SkipAheadExTests,
                          ::testing::ValuesIn(devices), ::DeviceNamePrint());
 
-class Mrg32k3aSkipAheadTests : public ::testing::TestWithParam<cl::sycl::device*> {};
+class Mrg32k3aSkipAheadTests : public ::testing::TestWithParam<sycl::device*> {};
 
-class Mrg32k3aSkipAheadExTests : public ::testing::TestWithParam<cl::sycl::device*> {};
+class Mrg32k3aSkipAheadExTests : public ::testing::TestWithParam<sycl::device*> {};
 
 TEST_P(Mrg32k3aSkipAheadTests, BinaryPrecision) {
     rng_test<skip_ahead_test<oneapi::mkl::rng::mrg32k3a>> test;

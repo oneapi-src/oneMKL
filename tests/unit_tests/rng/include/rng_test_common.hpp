@@ -78,13 +78,13 @@ class rng_test {
 public:
     // method to call any tests, switch between rt and ct
     template <typename... Args>
-    int operator()(cl::sycl::device* dev, Args... args) {
-        auto exception_handler = [](cl::sycl::exception_list exceptions) {
+    int operator()(sycl::device* dev, Args... args) {
+        auto exception_handler = [](sycl::exception_list exceptions) {
             for (std::exception_ptr const& e : exceptions) {
                 try {
                     std::rethrow_exception(e);
                 }
-                catch (cl::sycl::exception const& e) {
+                catch (sycl::exception const& e) {
                     std::cout << "Caught asynchronous SYCL exception during ASUM:\n"
                               << e.what() << std::endl;
                     print_error_code(e);
@@ -104,9 +104,9 @@ public:
             context = new sycl::context(*dev);
         }
 
-        cl::sycl::queue queue(*context, *dev, exception_handler);
+        sycl::queue queue(*context, *dev, exception_handler);
 #else
-        cl::sycl::queue queue(*dev, exception_handler);
+        sycl::queue queue(*dev, exception_handler);
 #endif
 
 #ifdef CALL_RT_API

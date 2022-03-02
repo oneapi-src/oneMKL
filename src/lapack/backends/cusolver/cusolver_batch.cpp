@@ -511,7 +511,7 @@ inline sycl::event potrf_batch(Func func, sycl::queue &queue, oneapi::mkl::uplo 
     auto done_cpy =
         queue.submit([&](sycl::handler &h) { h.memcpy(a_dev, a, batch_size * sizeof(T *)); });
 
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -609,7 +609,7 @@ inline sycl::event potrs_batch(Func func, sycl::queue &queue, oneapi::mkl::uplo 
     auto done_cpy_b =
         queue.submit([&](sycl::handler &h) { h.memcpy(b_dev, b, batch_size * sizeof(T *)); });
 
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);

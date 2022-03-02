@@ -39,7 +39,7 @@ getri (BUFFER Version)
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      void getri(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<T,1> &a, std::int64_t lda, cl::sycl::buffer<std::int64_t,1> &ipiv, cl::sycl::buffer<T,1> &scratchpad, std::int64_t scratchpad_size)
+      void getri(sycl::queue &queue, std::int64_t n, sycl::buffer<T,1> &a, std::int64_t lda, sycl::buffer<std::int64_t,1> &ipiv, sycl::buffer<T,1> &scratchpad, std::int64_t scratchpad_size)
     }
 
 .. container:: section
@@ -87,7 +87,7 @@ getri (USM Version)
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      cl::sycl::event getri(cl::sycl::queue &queue, std::int64_t n, T *a, std::int64_t lda, std::int64_t *ipiv, T *scratchpad, std::int64_t scratchpad_size, const cl::sycl::vector_class<cl::sycl::event> &events = {})
+      sycl::event getri(sycl::queue &queue, std::int64_t n, T *a, std::int64_t lda, std::int64_t *ipiv, T *scratchpad, std::int64_t scratchpad_size, const sycl::vector_class<sycl::event> &events = {})
     }
 
 .. container:: section

@@ -21,11 +21,11 @@
 
 #include <gtest/gtest.h>
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
-class PoissonIcdfTests : public ::testing::TestWithParam<cl::sycl::device*> {};
+class PoissonIcdfTests : public ::testing::TestWithParam<sycl::device*> {};
 
 TEST_P(PoissonIcdfTests, IntegerPrecision) {
     rng_test<

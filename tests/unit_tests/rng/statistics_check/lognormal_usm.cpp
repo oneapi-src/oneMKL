@@ -21,13 +21,13 @@
 
 #include <gtest/gtest.h>
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
-class LognormalBoxmullerUsmTest : public ::testing::TestWithParam<cl::sycl::device*> {};
+class LognormalBoxmullerUsmTest : public ::testing::TestWithParam<sycl::device*> {};
 
-class LognormalIcdfUsmTest : public ::testing::TestWithParam<cl::sycl::device*> {};
+class LognormalIcdfUsmTest : public ::testing::TestWithParam<sycl::device*> {};
 
 TEST_P(LognormalIcdfUsmTest, RealSinglePrecision) {
     rng_test<statistics_usm_test<

@@ -19,12 +19,12 @@
 
 // Buffer APIs
 
-void copy_batch(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x, int64_t incx,
-                int64_t stridex, cl::sycl::buffer<float, 1> &y, int64_t incy, int64_t stridey,
+void copy_batch(sycl::queue &queue, int64_t n, sycl::buffer<float, 1> &x, int64_t incx,
+                int64_t stridex, sycl::buffer<float, 1> &y, int64_t incy, int64_t stridey,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto accessor_x = x.template get_access<sycl::access::mode::read>(cgh);
+        auto accessor_y = y.template get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_scopy_batch_strided>(cgh, [=]() {
             int64_t i;
             for (i = 0; i < batch_size; i++) {
@@ -35,12 +35,12 @@ void copy_batch(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<float, 1> &x
     });
 }
 
-void copy_batch(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<double, 1> &x, int64_t incx,
-                int64_t stridex, cl::sycl::buffer<double, 1> &y, int64_t incy, int64_t stridey,
+void copy_batch(sycl::queue &queue, int64_t n, sycl::buffer<double, 1> &x, int64_t incx,
+                int64_t stridex, sycl::buffer<double, 1> &y, int64_t incy, int64_t stridey,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto accessor_x = x.template get_access<sycl::access::mode::read>(cgh);
+        auto accessor_y = y.template get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_dcopy_batch_strided>(cgh, [=]() {
             int64_t i;
             for (i = 0; i < batch_size; i++) {
@@ -51,12 +51,12 @@ void copy_batch(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<double, 1> &
     });
 }
 
-void copy_batch(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<float>, 1> &x,
-                int64_t incx, int64_t stridex, cl::sycl::buffer<std::complex<float>, 1> &y,
+void copy_batch(sycl::queue &queue, int64_t n, sycl::buffer<std::complex<float>, 1> &x,
+                int64_t incx, int64_t stridex, sycl::buffer<std::complex<float>, 1> &y,
                 int64_t incy, int64_t stridey, int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto accessor_x = x.template get_access<sycl::access::mode::read>(cgh);
+        auto accessor_y = y.template get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_ccopy_batch_strided>(cgh, [=]() {
             int64_t i;
             for (i = 0; i < batch_size; i++) {
@@ -67,12 +67,12 @@ void copy_batch(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex
     });
 }
 
-void copy_batch(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex<double>, 1> &x,
-                int64_t incx, int64_t stridex, cl::sycl::buffer<std::complex<double>, 1> &y,
+void copy_batch(sycl::queue &queue, int64_t n, sycl::buffer<std::complex<double>, 1> &x,
+                int64_t incx, int64_t stridex, sycl::buffer<std::complex<double>, 1> &y,
                 int64_t incy, int64_t stridey, int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto accessor_x = x.template get_access<sycl::access::mode::read>(cgh);
+        auto accessor_y = y.template get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_zcopy_batch_strided>(cgh, [=]() {
             int64_t i;
             for (i = 0; i < batch_size; i++) {
@@ -83,12 +83,12 @@ void copy_batch(cl::sycl::queue &queue, int64_t n, cl::sycl::buffer<std::complex
     });
 }
 
-void axpy_batch(cl::sycl::queue &queue, int64_t n, float alpha, cl::sycl::buffer<float, 1> &x,
-                int64_t incx, int64_t stridex, cl::sycl::buffer<float, 1> &y, int64_t incy,
+void axpy_batch(sycl::queue &queue, int64_t n, float alpha, sycl::buffer<float, 1> &x,
+                int64_t incx, int64_t stridex, sycl::buffer<float, 1> &y, int64_t incy,
                 int64_t stridey, int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto accessor_x = x.template get_access<sycl::access::mode::read>(cgh);
+        auto accessor_y = y.template get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_saxpy_batch_strided>(cgh, [=]() {
             ::cblas_saxpy_batch_strided(n, alpha, accessor_x.get_pointer(), incx, stridex,
                                         accessor_y.get_pointer(), incy, stridey, batch_size);
@@ -96,12 +96,12 @@ void axpy_batch(cl::sycl::queue &queue, int64_t n, float alpha, cl::sycl::buffer
     });
 }
 
-void axpy_batch(cl::sycl::queue &queue, int64_t n, double alpha, cl::sycl::buffer<double, 1> &x,
-                int64_t incx, int64_t stridex, cl::sycl::buffer<double, 1> &y, int64_t incy,
+void axpy_batch(sycl::queue &queue, int64_t n, double alpha, sycl::buffer<double, 1> &x,
+                int64_t incx, int64_t stridex, sycl::buffer<double, 1> &y, int64_t incy,
                 int64_t stridey, int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto accessor_x = x.template get_access<sycl::access::mode::read>(cgh);
+        auto accessor_y = y.template get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_daxpy_batch_strided>(cgh, [=]() {
             ::cblas_daxpy_batch_strided(n, alpha, accessor_x.get_pointer(), incx, stridex,
                                         accessor_y.get_pointer(), incy, stridey, batch_size);
@@ -109,13 +109,13 @@ void axpy_batch(cl::sycl::queue &queue, int64_t n, double alpha, cl::sycl::buffe
     });
 }
 
-void axpy_batch(cl::sycl::queue &queue, int64_t n, std::complex<float> alpha,
-                cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx, int64_t stridex,
-                cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy, int64_t stridey,
+void axpy_batch(sycl::queue &queue, int64_t n, std::complex<float> alpha,
+                sycl::buffer<std::complex<float>, 1> &x, int64_t incx, int64_t stridex,
+                sycl::buffer<std::complex<float>, 1> &y, int64_t incy, int64_t stridey,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto accessor_x = x.template get_access<sycl::access::mode::read>(cgh);
+        auto accessor_y = y.template get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_caxpy_batch_strided>(cgh, [=]() {
             ::cblas_caxpy_batch_strided(n, (const void *)&alpha, accessor_x.get_pointer(), incx,
                                         stridex, accessor_y.get_pointer(), incy, stridey,
@@ -124,13 +124,13 @@ void axpy_batch(cl::sycl::queue &queue, int64_t n, std::complex<float> alpha,
     });
 }
 
-void axpy_batch(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
-                cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx, int64_t stridex,
-                cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy, int64_t stridey,
+void axpy_batch(sycl::queue &queue, int64_t n, std::complex<double> alpha,
+                sycl::buffer<std::complex<double>, 1> &x, int64_t incx, int64_t stridex,
+                sycl::buffer<std::complex<double>, 1> &y, int64_t incy, int64_t stridey,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto accessor_x = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_y = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto accessor_x = x.template get_access<sycl::access::mode::read>(cgh);
+        auto accessor_y = y.template get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_zaxpy_batch_strided>(cgh, [=]() {
             ::cblas_zaxpy_batch_strided(n, (const void *)&alpha, accessor_x.get_pointer(), incx,
                                         stridex, accessor_y.get_pointer(), incy, stridey,
@@ -139,14 +139,14 @@ void axpy_batch(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
     });
 }
 
-void gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, int64_t n, float alpha,
-                cl::sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
-                cl::sycl::buffer<float, 1> &x, int64_t incx, int64_t stride_x, float beta,
-                cl::sycl::buffer<float, 1> &y, int64_t incy, int64_t stride_y, int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto x_acc = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto y_acc = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+void gemv_batch(sycl::queue &queue, transpose transa, int64_t m, int64_t n, float alpha,
+                sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
+                sycl::buffer<float, 1> &x, int64_t incx, int64_t stride_x, float beta,
+                sycl::buffer<float, 1> &y, int64_t incy, int64_t stride_y, int64_t batch_size) {
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto x_acc = x.template get_access<sycl::access::mode::read>(cgh);
+        auto y_acc = y.template get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         MKL_INT one = 1;
         host_task<class mkl_kernel_sgemv_batch_strided>(cgh, [=]() {
@@ -178,15 +178,15 @@ void gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, int64_t n, 
     });
 }
 
-void gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, int64_t n, double alpha,
-                cl::sycl::buffer<double, 1> &a, int64_t lda, int64_t stride_a,
-                cl::sycl::buffer<double, 1> &x, int64_t incx, int64_t stride_x, double beta,
-                cl::sycl::buffer<double, 1> &y, int64_t incy, int64_t stride_y,
+void gemv_batch(sycl::queue &queue, transpose transa, int64_t m, int64_t n, double alpha,
+                sycl::buffer<double, 1> &a, int64_t lda, int64_t stride_a,
+                sycl::buffer<double, 1> &x, int64_t incx, int64_t stride_x, double beta,
+                sycl::buffer<double, 1> &y, int64_t incy, int64_t stride_y,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto x_acc = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto y_acc = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto x_acc = x.template get_access<sycl::access::mode::read>(cgh);
+        auto y_acc = y.template get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         MKL_INT one = 1;
         host_task<class mkl_kernel_dgemv_batch_strided>(cgh, [=]() {
@@ -218,16 +218,16 @@ void gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, int64_t n, 
     });
 }
 
-void gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, int64_t n,
-                std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
-                int64_t stride_a, cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx,
+void gemv_batch(sycl::queue &queue, transpose transa, int64_t m, int64_t n,
+                std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+                int64_t stride_a, sycl::buffer<std::complex<float>, 1> &x, int64_t incx,
                 int64_t stride_x, std::complex<float> beta,
-                cl::sycl::buffer<std::complex<float>, 1> &y, int64_t incy, int64_t stride_y,
+                sycl::buffer<std::complex<float>, 1> &y, int64_t incy, int64_t stride_y,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto x_acc = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto y_acc = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto x_acc = x.template get_access<sycl::access::mode::read>(cgh);
+        auto y_acc = y.template get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         MKL_INT one = 1;
         host_task<class mkl_kernel_cgemv_batch_strided>(cgh, [=]() {
@@ -259,16 +259,16 @@ void gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, int64_t n,
     });
 }
 
-void gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, int64_t n,
-                std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-                int64_t lda, int64_t stride_a, cl::sycl::buffer<std::complex<double>, 1> &x,
+void gemv_batch(sycl::queue &queue, transpose transa, int64_t m, int64_t n,
+                std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+                int64_t lda, int64_t stride_a, sycl::buffer<std::complex<double>, 1> &x,
                 int64_t incx, int64_t stride_x, std::complex<double> beta,
-                cl::sycl::buffer<std::complex<double>, 1> &y, int64_t incy, int64_t stride_y,
+                sycl::buffer<std::complex<double>, 1> &y, int64_t incy, int64_t stride_y,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto x_acc = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto y_acc = y.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto x_acc = x.template get_access<sycl::access::mode::read>(cgh);
+        auto y_acc = y.template get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         MKL_INT one = 1;
         host_task<class mkl_kernel_zgemv_batch_strided>(cgh, [=]() {
@@ -303,14 +303,14 @@ void gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, int64_t n,
     });
 }
 
-void dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
-                cl::sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
-                cl::sycl::buffer<float, 1> &x, int64_t incx, int64_t stride_x,
-                cl::sycl::buffer<float, 1> &c, int64_t ldc, int64_t stride_c, int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto x_acc = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
+void dgmm_batch(sycl::queue &queue, side left_right, int64_t m, int64_t n,
+                sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
+                sycl::buffer<float, 1> &x, int64_t incx, int64_t stride_x,
+                sycl::buffer<float, 1> &c, int64_t ldc, int64_t stride_c, int64_t batch_size) {
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto x_acc = x.template get_access<sycl::access::mode::read>(cgh);
+        auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         MKL_INT one = 1;
         host_task<class mkl_kernel_sdgmm_batch_strided>(cgh, [=]() {
@@ -341,14 +341,14 @@ void dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
     });
 }
 
-void dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
-                cl::sycl::buffer<double, 1> &a, int64_t lda, int64_t stride_a,
-                cl::sycl::buffer<double, 1> &x, int64_t incx, int64_t stride_x,
-                cl::sycl::buffer<double, 1> &c, int64_t ldc, int64_t stride_c, int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto x_acc = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
+void dgmm_batch(sycl::queue &queue, side left_right, int64_t m, int64_t n,
+                sycl::buffer<double, 1> &a, int64_t lda, int64_t stride_a,
+                sycl::buffer<double, 1> &x, int64_t incx, int64_t stride_x,
+                sycl::buffer<double, 1> &c, int64_t ldc, int64_t stride_c, int64_t batch_size) {
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto x_acc = x.template get_access<sycl::access::mode::read>(cgh);
+        auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         MKL_INT one = 1;
         host_task<class mkl_kernel_ddgmm_batch_strided>(cgh, [=]() {
@@ -380,15 +380,15 @@ void dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
     });
 }
 
-void dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
-                cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda, int64_t stride_a,
-                cl::sycl::buffer<std::complex<float>, 1> &x, int64_t incx, int64_t stride_x,
-                cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc, int64_t stride_c,
+void dgmm_batch(sycl::queue &queue, side left_right, int64_t m, int64_t n,
+                sycl::buffer<std::complex<float>, 1> &a, int64_t lda, int64_t stride_a,
+                sycl::buffer<std::complex<float>, 1> &x, int64_t incx, int64_t stride_x,
+                sycl::buffer<std::complex<float>, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto x_acc = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto x_acc = x.template get_access<sycl::access::mode::read>(cgh);
+        auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         MKL_INT one = 1;
         host_task<class mkl_kernel_cdgmm_batch_strided>(cgh, [=]() {
@@ -419,15 +419,15 @@ void dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
     });
 }
 
-void dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
-                cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda, int64_t stride_a,
-                cl::sycl::buffer<std::complex<double>, 1> &x, int64_t incx, int64_t stride_x,
-                cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc, int64_t stride_c,
+void dgmm_batch(sycl::queue &queue, side left_right, int64_t m, int64_t n,
+                sycl::buffer<std::complex<double>, 1> &a, int64_t lda, int64_t stride_a,
+                sycl::buffer<std::complex<double>, 1> &x, int64_t incx, int64_t stride_x,
+                sycl::buffer<std::complex<double>, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto x_acc = x.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto x_acc = x.template get_access<sycl::access::mode::read>(cgh);
+        auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         MKL_INT one = 1;
         host_task<class mkl_kernel_zdgmm_batch_strided>(cgh, [=]() {
@@ -462,15 +462,15 @@ void dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
     });
 }
 
-void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                int64_t k, float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda,
-                int64_t stride_a, cl::sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b,
-                float beta, cl::sycl::buffer<float, 1> &c, int64_t ldc, int64_t stride_c,
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                int64_t k, float alpha, sycl::buffer<float, 1> &a, int64_t lda,
+                int64_t stride_a, sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b,
+                float beta, sycl::buffer<float, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<sycl::access::mode::read>(cgh);
+        auto c_acc = c.get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
@@ -503,15 +503,15 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
     });
 }
 
-void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                int64_t k, double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda,
-                int64_t stride_a, cl::sycl::buffer<double, 1> &b, int64_t ldb, int64_t stride_b,
-                double beta, cl::sycl::buffer<double, 1> &c, int64_t ldc, int64_t stride_c,
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                int64_t k, double alpha, sycl::buffer<double, 1> &a, int64_t lda,
+                int64_t stride_a, sycl::buffer<double, 1> &b, int64_t ldb, int64_t stride_b,
+                double beta, sycl::buffer<double, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<sycl::access::mode::read>(cgh);
+        auto c_acc = c.get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
@@ -544,16 +544,16 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
     });
 }
 
-void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                int64_t k, std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-                int64_t lda, int64_t stride_a, cl::sycl::buffer<std::complex<float>, 1> &b,
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                int64_t k, std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a,
+                int64_t lda, int64_t stride_a, sycl::buffer<std::complex<float>, 1> &b,
                 int64_t ldb, int64_t stride_b, std::complex<float> beta,
-                cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc, int64_t stride_c,
+                sycl::buffer<std::complex<float>, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<sycl::access::mode::read>(cgh);
+        auto c_acc = c.get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
@@ -586,16 +586,16 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
     });
 }
 
-void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                int64_t k, std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-                int64_t lda, int64_t stride_a, cl::sycl::buffer<std::complex<double>, 1> &b,
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                int64_t k, std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+                int64_t lda, int64_t stride_a, sycl::buffer<std::complex<double>, 1> &b,
                 int64_t ldb, int64_t stride_b, std::complex<double> beta,
-                cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc, int64_t stride_c,
+                sycl::buffer<std::complex<double>, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<sycl::access::mode::read>(cgh);
+        auto c_acc = c.get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
@@ -631,20 +631,20 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
     });
 }
 
-void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                int64_t k, sycl::half alpha, cl::sycl::buffer<sycl::half, 1> &a, int64_t lda,
-                int64_t stride_a, cl::sycl::buffer<sycl::half, 1> &b, int64_t ldb, int64_t stride_b,
-                sycl::half beta, cl::sycl::buffer<sycl::half, 1> &c, int64_t ldc, int64_t stride_c,
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                int64_t k, sycl::half alpha, sycl::buffer<sycl::half, 1> &a, int64_t lda,
+                int64_t stride_a, sycl::buffer<sycl::half, 1> &b, int64_t ldb, int64_t stride_b,
+                sycl::half beta, sycl::buffer<sycl::half, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        if (!verify_support<cl::sycl::half, cl::sycl::half>(queue, cl::sycl::aspect::fp16)) {
+    queue.submit([&](sycl::handler &cgh) {
+        if (!verify_support<sycl::half, sycl::half>(queue, sycl::aspect::fp16)) {
             throw oneapi::mkl::unimplemented(
-                "blas", "cl::sycl::half",
+                "blas", "sycl::half",
                 "half is not supported by the device or the sycl compiler");
         }
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc = b.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
+        auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         MKL_INT one = 1;
@@ -700,13 +700,13 @@ void gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int6
     });
 }
 
-void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
-                diag unit_diag, int64_t m, int64_t n, float alpha, cl::sycl::buffer<float, 1> &a,
-                int64_t lda, int64_t stride_a, cl::sycl::buffer<float, 1> &b, int64_t ldb,
+void trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
+                diag unit_diag, int64_t m, int64_t n, float alpha, sycl::buffer<float, 1> &a,
+                int64_t lda, int64_t stride_a, sycl::buffer<float, 1> &b, int64_t ldb,
                 int64_t stride_b, int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc = b.get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         CBLAS_SIDE side_ = cblas_convert(left_right);
         CBLAS_UPLO uplo_ = cblas_convert(upper_lower);
@@ -736,13 +736,13 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
     });
 }
 
-void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
-                diag unit_diag, int64_t m, int64_t n, double alpha, cl::sycl::buffer<double, 1> &a,
-                int64_t lda, int64_t stride_a, cl::sycl::buffer<double, 1> &b, int64_t ldb,
+void trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
+                diag unit_diag, int64_t m, int64_t n, double alpha, sycl::buffer<double, 1> &a,
+                int64_t lda, int64_t stride_a, sycl::buffer<double, 1> &b, int64_t ldb,
                 int64_t stride_b, int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc = b.get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         CBLAS_SIDE side_ = cblas_convert(left_right);
         CBLAS_UPLO uplo_ = cblas_convert(upper_lower);
@@ -773,14 +773,14 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
     });
 }
 
-void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
+void trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
                 diag unit_diag, int64_t m, int64_t n, std::complex<float> alpha,
-                cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda, int64_t stride_a,
-                cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, int64_t stride_b,
+                sycl::buffer<std::complex<float>, 1> &a, int64_t lda, int64_t stride_a,
+                sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, int64_t stride_b,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc = b.get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         CBLAS_SIDE side_ = cblas_convert(left_right);
         CBLAS_UPLO uplo_ = cblas_convert(upper_lower);
@@ -811,14 +811,14 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
     });
 }
 
-void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
+void trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
                 diag unit_diag, int64_t m, int64_t n, std::complex<double> alpha,
-                cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda, int64_t stride_a,
-                cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, int64_t stride_b,
+                sycl::buffer<std::complex<double>, 1> &a, int64_t lda, int64_t stride_a,
+                sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, int64_t stride_b,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc = b.get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         CBLAS_SIDE side_ = cblas_convert(left_right);
         CBLAS_UPLO uplo_ = cblas_convert(upper_lower);
@@ -850,13 +850,13 @@ void trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower, trans
     });
 }
 
-void syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
-                float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
-                float beta, cl::sycl::buffer<float, 1> &c, int64_t ldc, int64_t stride_c,
+void syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+                float alpha, sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
+                float beta, sycl::buffer<float, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         CBLAS_UPLO uplo_ = cblas_convert(upper_lower);
         host_task<class mkl_kernel_ssyrk_batch_strided>(cgh, [=]() {
@@ -867,13 +867,13 @@ void syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64
     });
 }
 
-void syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
-                double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda, int64_t stride_a,
-                double beta, cl::sycl::buffer<double, 1> &c, int64_t ldc, int64_t stride_c,
+void syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+                double alpha, sycl::buffer<double, 1> &a, int64_t lda, int64_t stride_a,
+                double beta, sycl::buffer<double, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         CBLAS_UPLO uplo_ = cblas_convert(upper_lower);
         host_task<class mkl_kernel_dsyrk_batch_strided>(cgh, [=]() {
@@ -884,14 +884,14 @@ void syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64
     });
 }
 
-void syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
-                std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+void syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+                std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
                 int64_t stride_a, std::complex<float> beta,
-                cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc, int64_t stride_c,
+                sycl::buffer<std::complex<float>, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         CBLAS_UPLO uplo_ = cblas_convert(upper_lower);
         float alpha_real = alpha.real(), alpha_imag = alpha.imag();
@@ -906,14 +906,14 @@ void syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64
     });
 }
 
-void syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
-                std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
+void syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+                std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
                 int64_t lda, int64_t stride_a, std::complex<double> beta,
-                cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc, int64_t stride_c,
+                sycl::buffer<std::complex<double>, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         CBLAS_UPLO uplo_ = cblas_convert(upper_lower);
         double alpha_real = alpha.real(), alpha_imag = alpha.imag();
@@ -930,10 +930,10 @@ void syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64
 
 // USM APIs
 
-cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t *n, const float **x, int64_t *incx,
+sycl::event copy_batch(sycl::queue &queue, int64_t *n, const float **x, int64_t *incx,
                            float **y, int64_t *incy, int64_t group_count, int64_t *group_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -951,10 +951,10 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t *n, const float **x, 
     return done;
 }
 
-cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t *n, const double **x, int64_t *incx,
+sycl::event copy_batch(sycl::queue &queue, int64_t *n, const double **x, int64_t *incx,
                            double **y, int64_t *incy, int64_t group_count, int64_t *group_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -972,11 +972,11 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t *n, const double **x,
     return done;
 }
 
-cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t *n, const std::complex<float> **x,
+sycl::event copy_batch(sycl::queue &queue, int64_t *n, const std::complex<float> **x,
                            int64_t *incx, std::complex<float> **y, int64_t *incy,
                            int64_t group_count, int64_t *group_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -994,11 +994,11 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t *n, const std::comple
     return done;
 }
 
-cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t *n, const std::complex<double> **x,
+sycl::event copy_batch(sycl::queue &queue, int64_t *n, const std::complex<double> **x,
                            int64_t *incx, std::complex<double> **y, int64_t *incy,
                            int64_t group_count, int64_t *group_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1016,11 +1016,11 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t *n, const std::comple
     return done;
 }
 
-cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const float *x, int64_t incx,
+sycl::event copy_batch(sycl::queue &queue, int64_t n, const float *x, int64_t incx,
                            std::int64_t stridex, float *y, int64_t incy, std::int64_t stridey,
                            std::int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1035,11 +1035,11 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const float *x, in
     return done;
 }
 
-cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const double *x, int64_t incx,
+sycl::event copy_batch(sycl::queue &queue, int64_t n, const double *x, int64_t incx,
                            std::int64_t stridex, double *y, int64_t incy, std::int64_t stridey,
                            std::int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1054,11 +1054,11 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const double *x, i
     return done;
 }
 
-cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const std::complex<float> *x,
+sycl::event copy_batch(sycl::queue &queue, int64_t n, const std::complex<float> *x,
                            int64_t incx, std::int64_t stridex, std::complex<float> *y, int64_t incy,
                            std::int64_t stridey, std::int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1073,11 +1073,11 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const std::complex
     return done;
 }
 
-cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const std::complex<double> *x,
+sycl::event copy_batch(sycl::queue &queue, int64_t n, const std::complex<double> *x,
                            int64_t incx, std::int64_t stridex, std::complex<double> *y,
                            int64_t incy, std::int64_t stridey, std::int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1092,10 +1092,10 @@ cl::sycl::event copy_batch(cl::sycl::queue &queue, int64_t n, const std::complex
     return done;
 }
 
-cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, float *alpha, const float **x,
+sycl::event axpy_batch(sycl::queue &queue, int64_t *n, float *alpha, const float **x,
                            int64_t *incx, float **y, int64_t *incy, int64_t group_count,
-                           int64_t *group_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t *group_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1108,10 +1108,10 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, float *alpha, con
     return done;
 }
 
-cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, double *alpha, const double **x,
+sycl::event axpy_batch(sycl::queue &queue, int64_t *n, double *alpha, const double **x,
                            int64_t *incx, double **y, int64_t *incy, int64_t group_count,
-                           int64_t *group_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t *group_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1124,11 +1124,11 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, double *alpha, co
     return done;
 }
 
-cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<float> *alpha,
+sycl::event axpy_batch(sycl::queue &queue, int64_t *n, std::complex<float> *alpha,
                            const std::complex<float> **x, int64_t *incx, std::complex<float> **y,
                            int64_t *incy, int64_t group_count, int64_t *group_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1142,11 +1142,11 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<floa
     return done;
 }
 
-cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<double> *alpha,
+sycl::event axpy_batch(sycl::queue &queue, int64_t *n, std::complex<double> *alpha,
                            const std::complex<double> **x, int64_t *incx, std::complex<double> **y,
                            int64_t *incy, int64_t group_count, int64_t *group_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1160,10 +1160,10 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t *n, std::complex<doub
     return done;
 }
 
-cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, float alpha, const float *x,
+sycl::event axpy_batch(sycl::queue &queue, int64_t n, float alpha, const float *x,
                            int64_t incx, int64_t stridex, float *y, int64_t incy, int64_t stridey,
-                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1175,10 +1175,10 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, float alpha, const
     return done;
 }
 
-cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, double alpha, const double *x,
+sycl::event axpy_batch(sycl::queue &queue, int64_t n, double alpha, const double *x,
                            int64_t incx, int64_t stridex, double *y, int64_t incy, int64_t stridey,
-                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1190,11 +1190,11 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, double alpha, cons
     return done;
 }
 
-cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, std::complex<float> alpha,
+sycl::event axpy_batch(sycl::queue &queue, int64_t n, std::complex<float> alpha,
                            const std::complex<float> *x, int64_t incx, int64_t stridex,
                            std::complex<float> *y, int64_t incy, int64_t stridey,
-                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1207,11 +1207,11 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, std::complex<float
     return done;
 }
 
-cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, std::complex<double> alpha,
+sycl::event axpy_batch(sycl::queue &queue, int64_t n, std::complex<double> alpha,
                            const std::complex<double> *x, int64_t incx, int64_t stridex,
                            std::complex<double> *y, int64_t incy, int64_t stridey,
-                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1224,12 +1224,12 @@ cl::sycl::event axpy_batch(cl::sycl::queue &queue, int64_t n, std::complex<doubl
     return done;
 }
 
-cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, int64_t n,
+sycl::event gemv_batch(sycl::queue &queue, transpose transa, int64_t m, int64_t n,
                            float alpha, const float *a, int64_t lda, int64_t stride_a,
                            const float *x, int64_t incx, int64_t stride_x, float beta, float *y,
                            int64_t incy, int64_t stride_y, int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1266,12 +1266,12 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, 
     return done;
 }
 
-cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, int64_t n,
+sycl::event gemv_batch(sycl::queue &queue, transpose transa, int64_t m, int64_t n,
                            double alpha, const double *a, int64_t lda, int64_t stride_a,
                            const double *x, int64_t incx, int64_t stride_x, double beta, double *y,
                            int64_t incy, int64_t stride_y, int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1308,13 +1308,13 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, 
     return done;
 }
 
-cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, int64_t n,
+sycl::event gemv_batch(sycl::queue &queue, transpose transa, int64_t m, int64_t n,
                            std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
                            int64_t stride_a, const std::complex<float> *x, int64_t incx,
                            int64_t stride_x, std::complex<float> beta, std::complex<float> *y,
                            int64_t incy, int64_t stride_y, int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1354,13 +1354,13 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, 
     return done;
 }
 
-cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, int64_t n,
+sycl::event gemv_batch(sycl::queue &queue, transpose transa, int64_t m, int64_t n,
                            std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
                            int64_t stride_a, const std::complex<double> *x, int64_t incx,
                            int64_t stride_x, std::complex<double> beta, std::complex<double> *y,
                            int64_t incy, int64_t stride_y, int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1400,12 +1400,12 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose transa, int64_t m, 
     return done;
 }
 
-cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *transa, int64_t *m, int64_t *n,
+sycl::event gemv_batch(sycl::queue &queue, transpose *transa, int64_t *m, int64_t *n,
                            float *alpha, const float **a, int64_t *lda, const float **x,
                            int64_t *incx, float *beta, float **y, int64_t *incy,
                            int64_t group_count, int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1431,12 +1431,12 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *transa, int64_t *m
     return done;
 }
 
-cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *transa, int64_t *m, int64_t *n,
+sycl::event gemv_batch(sycl::queue &queue, transpose *transa, int64_t *m, int64_t *n,
                            double *alpha, const double **a, int64_t *lda, const double **x,
                            int64_t *incx, double *beta, double **y, int64_t *incy,
                            int64_t group_count, int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1462,12 +1462,12 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *transa, int64_t *m
     return done;
 }
 
-cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *transa, int64_t *m, int64_t *n,
+sycl::event gemv_batch(sycl::queue &queue, transpose *transa, int64_t *m, int64_t *n,
                            std::complex<float> *alpha, const std::complex<float> **a, int64_t *lda,
                            const std::complex<float> **x, int64_t *incx, std::complex<float> *beta,
                            std::complex<float> **y, int64_t *incy, int64_t group_count,
-                           int64_t *groupsize, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t *groupsize, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1493,13 +1493,13 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *transa, int64_t *m
     return done;
 }
 
-cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *transa, int64_t *m, int64_t *n,
+sycl::event gemv_batch(sycl::queue &queue, transpose *transa, int64_t *m, int64_t *n,
                            std::complex<double> *alpha, const std::complex<double> **a,
                            int64_t *lda, const std::complex<double> **x, int64_t *incx,
                            std::complex<double> *beta, std::complex<double> **y, int64_t *incy,
                            int64_t group_count, int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1525,11 +1525,11 @@ cl::sycl::event gemv_batch(cl::sycl::queue &queue, transpose *transa, int64_t *m
     return done;
 }
 
-cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
+sycl::event dgmm_batch(sycl::queue &queue, side left_right, int64_t m, int64_t n,
                            const float *a, int64_t lda, int64_t stride_a, const float *x,
                            int64_t incx, int64_t stride_x, float *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1565,11 +1565,11 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
     return done;
 }
 
-cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
+sycl::event dgmm_batch(sycl::queue &queue, side left_right, int64_t m, int64_t n,
                            const double *a, int64_t lda, int64_t stride_a, const double *x,
                            int64_t incx, int64_t stride_x, double *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1606,12 +1606,12 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
     return done;
 }
 
-cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
+sycl::event dgmm_batch(sycl::queue &queue, side left_right, int64_t m, int64_t n,
                            const std::complex<float> *a, int64_t lda, int64_t stride_a,
                            const std::complex<float> *x, int64_t incx, int64_t stride_x,
                            std::complex<float> *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1650,12 +1650,12 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
     return done;
 }
 
-cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, int64_t n,
+sycl::event dgmm_batch(sycl::queue &queue, side left_right, int64_t m, int64_t n,
                            const std::complex<double> *a, int64_t lda, int64_t stride_a,
                            const std::complex<double> *x, int64_t incx, int64_t stride_x,
                            std::complex<double> *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1694,11 +1694,11 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side left_right, int64_t m, i
     return done;
 }
 
-cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, int64_t *m, int64_t *n,
+sycl::event dgmm_batch(sycl::queue &queue, side *left_right, int64_t *m, int64_t *n,
                            const float **a, int64_t *lda, const float **x, int64_t *incx, float **c,
                            int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1723,11 +1723,11 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, int64_t *m,
     return done;
 }
 
-cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, int64_t *m, int64_t *n,
+sycl::event dgmm_batch(sycl::queue &queue, side *left_right, int64_t *m, int64_t *n,
                            const double **a, int64_t *lda, const double **x, int64_t *incx,
                            double **c, int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1752,12 +1752,12 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, int64_t *m,
     return done;
 }
 
-cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, int64_t *m, int64_t *n,
+sycl::event dgmm_batch(sycl::queue &queue, side *left_right, int64_t *m, int64_t *n,
                            const std::complex<float> **a, int64_t *lda,
                            const std::complex<float> **x, int64_t *incx, std::complex<float> **c,
                            int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1782,12 +1782,12 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, int64_t *m,
     return done;
 }
 
-cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, int64_t *m, int64_t *n,
+sycl::event dgmm_batch(sycl::queue &queue, side *left_right, int64_t *m, int64_t *n,
                            const std::complex<double> **a, int64_t *lda,
                            const std::complex<double> **x, int64_t *incx, std::complex<double> **c,
                            int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1812,12 +1812,12 @@ cl::sycl::event dgmm_batch(cl::sycl::queue &queue, side *left_right, int64_t *m,
     return done;
 }
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
                            int64_t *n, int64_t *k, float *alpha, const float **a, int64_t *lda,
                            const float **b, int64_t *ldb, float *beta, float **c, int64_t *ldc,
                            int64_t group_count, int64_t *group_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1848,12 +1848,12 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
     return done;
 }
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
                            int64_t *n, int64_t *k, double *alpha, const double **a, int64_t *lda,
                            const double **b, int64_t *ldb, double *beta, double **c, int64_t *ldc,
                            int64_t group_count, int64_t *group_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1885,13 +1885,13 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
     return done;
 }
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
                            int64_t *n, int64_t *k, std::complex<float> *alpha,
                            const std::complex<float> **a, int64_t *lda,
                            const std::complex<float> **b, int64_t *ldb, std::complex<float> *beta,
                            std::complex<float> **c, int64_t *ldc, int64_t group_count,
-                           int64_t *group_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t *group_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1923,13 +1923,13 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
     return done;
 }
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
                            int64_t *n, int64_t *k, std::complex<double> *alpha,
                            const std::complex<double> **a, int64_t *lda,
                            const std::complex<double> **b, int64_t *ldb, std::complex<double> *beta,
                            std::complex<double> **c, int64_t *ldc, int64_t group_count,
-                           int64_t *group_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t *group_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1961,15 +1961,15 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
     return done;
 }
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
                            int64_t *n, int64_t *k, sycl::half *alpha, const sycl::half **a,
                            int64_t *lda, const sycl::half **b, int64_t *ldb, sycl::half *beta,
                            sycl::half **c, int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
-        if (!verify_support<cl::sycl::half, cl::sycl::half>(queue, cl::sycl::aspect::fp16)) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        if (!verify_support<sycl::half, sycl::half>(queue, sycl::aspect::fp16)) {
             throw oneapi::mkl::unimplemented(
-                "blas", "cl::sycl::half",
+                "blas", "sycl::half",
                 "half is not supported by the device or the sycl compiler");
         }
         int64_t num_events = dependencies.size();
@@ -2058,12 +2058,12 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose *transa, transpose 
     return done;
 }
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                            int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
                            int64_t stride_a, const float *b, int64_t ldb, int64_t stride_b,
                            float beta, float *c, int64_t ldc, int64_t stride_c, int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2101,12 +2101,12 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
     return done;
 }
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                            int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
                            int64_t stride_a, const double *b, int64_t ldb, int64_t stride_b,
                            double beta, double *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2144,14 +2144,14 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
     return done;
 }
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                            int64_t n, int64_t k, std::complex<float> alpha,
                            const std::complex<float> *a, int64_t lda, int64_t stride_a,
                            const std::complex<float> *b, int64_t ldb, int64_t stride_b,
                            std::complex<float> beta, std::complex<float> *c, int64_t ldc,
                            int64_t stride_c, int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2192,14 +2192,14 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
     return done;
 }
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                            int64_t n, int64_t k, std::complex<double> alpha,
                            const std::complex<double> *a, int64_t lda, int64_t stride_a,
                            const std::complex<double> *b, int64_t ldb, int64_t stride_b,
                            std::complex<double> beta, std::complex<double> *c, int64_t ldc,
                            int64_t stride_c, int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2240,15 +2240,15 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
     return done;
 }
 
-cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                            int64_t n, int64_t k, sycl::half alpha, const sycl::half *a, int64_t lda,
                            int64_t stride_a, const sycl::half *b, int64_t ldb, int64_t stride_b,
                            sycl::half beta, sycl::half *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
-        if (!verify_support<cl::sycl::half, cl::sycl::half>(queue, cl::sycl::aspect::fp16)) {
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        if (!verify_support<sycl::half, sycl::half>(queue, sycl::aspect::fp16)) {
             throw oneapi::mkl::unimplemented(
-                "blas", "cl::sycl::half",
+                "blas", "sycl::half",
                 "half is not supported by the device or the sycl compiler");
         }
         int64_t num_events = dependencies.size();
@@ -2325,12 +2325,12 @@ cl::sycl::event gemm_batch(cl::sycl::queue &queue, transpose transa, transpose t
     return done;
 }
 
-cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+sycl::event trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower,
                            transpose trans, diag unit_diag, int64_t m, int64_t n, float alpha,
                            const float *a, int64_t lda, int64_t stride_a, float *b, int64_t ldb,
                            int64_t stride_b, int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2364,12 +2364,12 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_l
     return done;
 }
 
-cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+sycl::event trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower,
                            transpose trans, diag unit_diag, int64_t m, int64_t n, double alpha,
                            const double *a, int64_t lda, int64_t stride_a, double *b, int64_t ldb,
                            int64_t stride_b, int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2403,12 +2403,12 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_l
     return done;
 }
 
-cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+sycl::event trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower,
                            transpose trans, diag unit_diag, int64_t m, int64_t n,
                            std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
                            int64_t stride_a, std::complex<float> *b, int64_t ldb, int64_t stride_b,
-                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2444,12 +2444,12 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_l
     return done;
 }
 
-cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_lower,
+sycl::event trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower,
                            transpose trans, diag unit_diag, int64_t m, int64_t n,
                            std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
                            int64_t stride_a, std::complex<double> *b, int64_t ldb, int64_t stride_b,
-                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2485,12 +2485,12 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side left_right, uplo upper_l
     return done;
 }
 
-cl::sycl::event trsm_batch(cl::sycl::queue &queue, side *left_right, uplo *upper_lower,
+sycl::event trsm_batch(sycl::queue &queue, side *left_right, uplo *upper_lower,
                            transpose *trans, diag *unit_diag, int64_t *m, int64_t *n, float *alpha,
                            const float **a, int64_t *lda, float **b, int64_t *ldb,
                            int64_t group_count, int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2529,12 +2529,12 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side *left_right, uplo *upper
     return done;
 }
 
-cl::sycl::event trsm_batch(cl::sycl::queue &queue, side *left_right, uplo *upper_lower,
+sycl::event trsm_batch(sycl::queue &queue, side *left_right, uplo *upper_lower,
                            transpose *trans, diag *unit_diag, int64_t *m, int64_t *n, double *alpha,
                            const double **a, int64_t *lda, double **b, int64_t *ldb,
                            int64_t group_count, int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2573,12 +2573,12 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side *left_right, uplo *upper
     return done;
 }
 
-cl::sycl::event trsm_batch(cl::sycl::queue &queue, side *left_right, uplo *upper_lower,
+sycl::event trsm_batch(sycl::queue &queue, side *left_right, uplo *upper_lower,
                            transpose *trans, diag *unit_diag, int64_t *m, int64_t *n,
                            std::complex<float> *alpha, const std::complex<float> **a, int64_t *lda,
                            std::complex<float> **b, int64_t *ldb, int64_t group_count,
-                           int64_t *groupsize, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t *groupsize, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2617,13 +2617,13 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side *left_right, uplo *upper
     return done;
 }
 
-cl::sycl::event trsm_batch(cl::sycl::queue &queue, side *left_right, uplo *upper_lower,
+sycl::event trsm_batch(sycl::queue &queue, side *left_right, uplo *upper_lower,
                            transpose *trans, diag *unit_diag, int64_t *m, int64_t *n,
                            std::complex<double> *alpha, const std::complex<double> **a,
                            int64_t *lda, std::complex<double> **b, int64_t *ldb,
                            int64_t group_count, int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2662,11 +2662,11 @@ cl::sycl::event trsm_batch(cl::sycl::queue &queue, side *left_right, uplo *upper
     return done;
 }
 
-cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower, transpose *trans, int64_t *n,
+sycl::event syrk_batch(sycl::queue &queue, uplo *upper_lower, transpose *trans, int64_t *n,
                            int64_t *k, float *alpha, const float **a, int64_t *lda, float *beta,
                            float **c, int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2689,11 +2689,11 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower, transpose 
     return done;
 }
 
-cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower, transpose *trans, int64_t *n,
+sycl::event syrk_batch(sycl::queue &queue, uplo *upper_lower, transpose *trans, int64_t *n,
                            int64_t *k, double *alpha, const double **a, int64_t *lda, double *beta,
                            double **c, int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2716,12 +2716,12 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower, transpose 
     return done;
 }
 
-cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower, transpose *trans, int64_t *n,
+sycl::event syrk_batch(sycl::queue &queue, uplo *upper_lower, transpose *trans, int64_t *n,
                            int64_t *k, std::complex<float> *alpha, const std::complex<float> **a,
                            int64_t *lda, std::complex<float> *beta, std::complex<float> **c,
                            int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2745,12 +2745,12 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower, transpose 
     return done;
 }
 
-cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower, transpose *trans, int64_t *n,
+sycl::event syrk_batch(sycl::queue &queue, uplo *upper_lower, transpose *trans, int64_t *n,
                            int64_t *k, std::complex<double> *alpha, const std::complex<double> **a,
                            int64_t *lda, std::complex<double> *beta, std::complex<double> **c,
                            int64_t *ldc, int64_t group_count, int64_t *groupsize,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2774,11 +2774,11 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo *upper_lower, transpose 
     return done;
 }
 
-cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
+sycl::event syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                            int64_t k, float alpha, const float *a, int64_t lda, int64_t stride_a,
                            float beta, float *c, int64_t ldc, int64_t stride_c, int64_t batch_size,
-                           const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2793,11 +2793,11 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose t
     return done;
 }
 
-cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
+sycl::event syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                            int64_t k, double alpha, const double *a, int64_t lda, int64_t stride_a,
                            double beta, double *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2812,12 +2812,12 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose t
     return done;
 }
 
-cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
+sycl::event syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                            int64_t k, std::complex<float> alpha, const std::complex<float> *a,
                            int64_t lda, int64_t stride_a, std::complex<float> beta,
                            std::complex<float> *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2837,12 +2837,12 @@ cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose t
     return done;
 }
 
-cl::sycl::event syrk_batch(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
+sycl::event syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                            int64_t k, std::complex<double> alpha, const std::complex<double> *a,
                            int64_t lda, int64_t stride_a, std::complex<double> beta,
                            std::complex<double> *c, int64_t ldc, int64_t stride_c,
-                           int64_t batch_size, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);

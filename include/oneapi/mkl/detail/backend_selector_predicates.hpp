@@ -31,10 +31,10 @@ namespace oneapi {
 namespace mkl {
 
 template <backend Backend>
-inline void backend_selector_precondition(cl::sycl::queue& queue){};
+inline void backend_selector_precondition(sycl::queue& queue){};
 
 template <>
-inline void backend_selector_precondition<backend::netlib>(cl::sycl::queue& queue) {
+inline void backend_selector_precondition<backend::netlib>(sycl::queue& queue) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     if (!(queue.is_host() || queue.get_device().is_cpu())) {
         throw unsupported_device("",
@@ -45,7 +45,7 @@ inline void backend_selector_precondition<backend::netlib>(cl::sycl::queue& queu
 }
 
 template <>
-inline void backend_selector_precondition<backend::mklcpu>(cl::sycl::queue& queue) {
+inline void backend_selector_precondition<backend::mklcpu>(sycl::queue& queue) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     if (!(queue.is_host() || queue.get_device().is_cpu())) {
         throw unsupported_device("",
@@ -56,10 +56,10 @@ inline void backend_selector_precondition<backend::mklcpu>(cl::sycl::queue& queu
 }
 
 template <>
-inline void backend_selector_precondition<backend::mklgpu>(cl::sycl::queue& queue) {
+inline void backend_selector_precondition<backend::mklgpu>(sycl::queue& queue) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     unsigned int vendor_id =
-        static_cast<unsigned int>(queue.get_device().get_info<cl::sycl::info::device::vendor_id>());
+        static_cast<unsigned int>(queue.get_device().get_info<sycl::info::device::vendor_id>());
     if (!(queue.get_device().is_gpu() && vendor_id == INTEL_ID)) {
         throw unsupported_device("",
                                  "backend_selector<backend::" + backend_map[backend::mklgpu] + ">",
@@ -69,10 +69,10 @@ inline void backend_selector_precondition<backend::mklgpu>(cl::sycl::queue& queu
 }
 
 template <>
-inline void backend_selector_precondition<backend::cublas>(cl::sycl::queue& queue) {
+inline void backend_selector_precondition<backend::cublas>(sycl::queue& queue) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     unsigned int vendor_id =
-        static_cast<unsigned int>(queue.get_device().get_info<cl::sycl::info::device::vendor_id>());
+        static_cast<unsigned int>(queue.get_device().get_info<sycl::info::device::vendor_id>());
     if (!(queue.get_device().is_gpu() && vendor_id == NVIDIA_ID)) {
         throw unsupported_device("",
                                  "backend_selector<backend::" + backend_map[backend::cublas] + ">",
@@ -82,10 +82,10 @@ inline void backend_selector_precondition<backend::cublas>(cl::sycl::queue& queu
 }
 
 template <>
-inline void backend_selector_precondition<backend::cusolver>(cl::sycl::queue& queue) {
+inline void backend_selector_precondition<backend::cusolver>(sycl::queue& queue) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     unsigned int vendor_id =
-        static_cast<unsigned int>(queue.get_device().get_info<cl::sycl::info::device::vendor_id>());
+        static_cast<unsigned int>(queue.get_device().get_info<sycl::info::device::vendor_id>());
     if (!(queue.get_device().is_gpu() && vendor_id == NVIDIA_ID)) {
         throw unsupported_device(
             "", "backend_selector<backend::" + backend_map[backend::cusolver] + ">",
@@ -95,10 +95,10 @@ inline void backend_selector_precondition<backend::cusolver>(cl::sycl::queue& qu
 }
 
 template <>
-inline void backend_selector_precondition<backend::rocblas>(cl::sycl::queue& queue) {
+inline void backend_selector_precondition<backend::rocblas>(sycl::queue& queue) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     unsigned int vendor_id =
-        static_cast<unsigned int>(queue.get_device().get_info<cl::sycl::info::device::vendor_id>());
+        static_cast<unsigned int>(queue.get_device().get_info<sycl::info::device::vendor_id>());
     if (!(queue.get_device().is_gpu() && vendor_id == AMD_ID)) {
         throw unsupported_device("",
                                  "backend_selector<backend::" + backend_map[backend::rocblas] + ">",

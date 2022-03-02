@@ -34,13 +34,13 @@ namespace cusolver {
 thread_local cusolver_handle<pi_context> CusolverScopedContextHandler::handle_helper =
     cusolver_handle<pi_context>{};
 
-CusolverScopedContextHandler::CusolverScopedContextHandler(cl::sycl::queue queue,
-                                                           cl::sycl::interop_handler &ih)
+CusolverScopedContextHandler::CusolverScopedContextHandler(sycl::queue queue,
+                                                           sycl::interop_handler &ih)
         : ih(ih),
           needToRecover_(false) {
     placedContext_ = queue.get_context();
     auto device = queue.get_device();
-    auto desired = cl::sycl::get_native<cl::sycl::backend::cuda>(placedContext_);
+    auto desired = sycl::get_native<sycl::backend::cuda>(placedContext_);
     CUresult err;
     CUDA_ERROR_FUNC(cuCtxGetCurrent, err, &original_);
     if (original_ != desired) {
@@ -82,9 +82,9 @@ void ContextCallback(void *userData) {
     }
 }
 
-cusolverDnHandle_t CusolverScopedContextHandler::get_handle(const cl::sycl::queue &queue) {
+cusolverDnHandle_t CusolverScopedContextHandler::get_handle(const sycl::queue &queue) {
     auto piPlacedContext_ =
-        reinterpret_cast<pi_context>(cl::sycl::get_native<cl::sycl::backend::cuda>(placedContext_));
+        reinterpret_cast<pi_context>(sycl::get_native<sycl::backend::cuda>(placedContext_));
     CUstream streamId = get_stream(queue);
     cusolverStatus_t err;
     auto it = handle_helper.cusolver_handle_mapper_.find(piPlacedContext_);
@@ -122,10 +122,10 @@ cusolverDnHandle_t CusolverScopedContextHandler::get_handle(const cl::sycl::queu
     return handle;
 }
 
-CUstream CusolverScopedContextHandler::get_stream(const cl::sycl::queue &queue) {
-    return cl::sycl::get_native<cl::sycl::backend::cuda>(queue);
+CUstream CusolverScopedContextHandler::get_stream(const sycl::queue &queue) {
+    return sycl::get_native<sycl::backend::cuda>(queue);
 }
-cl::sycl::context CusolverScopedContextHandler::get_context(const cl::sycl::queue &queue) {
+sycl::context CusolverScopedContextHandler::get_context(const sycl::queue &queue) {
     return queue.get_context();
 }
 

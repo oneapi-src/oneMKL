@@ -47,7 +47,7 @@ The buffer version of ``orgqr_batch`` supports only the strided API.
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      void orgqr_batch(cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k, cl::sycl::buffer<T> &a, std::int64_t lda, std::int64_t stride_a, cl::sycl::buffer<T> &tau, std::int64_t stride_tau, std::int64_t batch_size, cl::sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size)
+      void orgqr_batch(sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k, sycl::buffer<T> &a, std::int64_t lda, std::int64_t stride_a, sycl::buffer<T> &tau, std::int64_t stride_tau, std::int64_t batch_size, sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size)
     }
 
 .. container:: section
@@ -124,7 +124,7 @@ The USM version of ``orgqr_batch`` supports the group API and strided API.
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      cl::sycl::event orgqr_batch(cl::sycl::queue &queue, std::int64_t *m, std::int64_t *n, std::int64_t *k, T **a, std::int64_t *lda, T **tau, std::int64_t group_count, std::int64_t *group_sizes, T *scratchpad, std::int64_t scratchpad_size, const cl::sycl::vector_class<cl::sycl::event> &events = {})
+      sycl::event orgqr_batch(sycl::queue &queue, std::int64_t *m, std::int64_t *n, std::int64_t *k, T **a, std::int64_t *lda, T **tau, std::int64_t group_count, std::int64_t *group_sizes, T *scratchpad, std::int64_t scratchpad_size, const sycl::vector_class<sycl::event> &events = {})
     }
 
 .. container:: section
@@ -199,7 +199,7 @@ Output event to wait on to ensure computation is complete.
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      cl::sycl::event orgqr_batch(cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k, T *a, std::int64_t lda, std::int64_t stride_a, T *tau, std::int64_t stride_tau, std::int64_t batch_size, T *scratchpad, std::int64_t scratchpad_size, const cl::sycl::vector_class<cl::sycl::event> &events = {})
+      sycl::event orgqr_batch(sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t k, T *a, std::int64_t lda, std::int64_t stride_a, T *tau, std::int64_t stride_tau, std::int64_t batch_size, T *scratchpad, std::int64_t scratchpad_size, const sycl::vector_class<sycl::event> &events = {})
     };
 
 .. container:: section

@@ -49,10 +49,10 @@ public:
 class unsupported_device : public oneapi::mkl::exception {
 public:
     unsupported_device(const std::string &domain, const std::string &function,
-                       const cl::sycl::device &device)
+                       const sycl::device &device)
             : oneapi::mkl::exception(
                   domain, function,
-                  device.get_info<cl::sycl::info::device::name>() + " is not supported") {}
+                  device.get_info<sycl::info::device::name>() + " is not supported") {}
 };
 
 class host_bad_alloc : public oneapi::mkl::exception {
@@ -64,10 +64,10 @@ public:
 class device_bad_alloc : public oneapi::mkl::exception {
 public:
     device_bad_alloc(const std::string &domain, const std::string &function,
-                     const cl::sycl::device &device)
+                     const sycl::device &device)
             : oneapi::mkl::exception(
                   domain, function,
-                  "cannot allocate memory on " + device.get_info<cl::sycl::info::device::name>()) {}
+                  "cannot allocate memory on " + device.get_info<sycl::info::device::name>()) {}
 };
 
 class unimplemented : public oneapi::mkl::exception {

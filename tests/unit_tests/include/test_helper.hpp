@@ -101,7 +101,7 @@
             TEST_RUN_INTELCPU_SELECT(q, func, __VA_ARGS__);                    \
         else if (q.get_device().is_gpu()) {                                    \
             unsigned int vendor_id = static_cast<unsigned int>(                \
-                q.get_device().get_info<cl::sycl::info::device::vendor_id>()); \
+                q.get_device().get_info<sycl::info::device::vendor_id>()); \
             if (vendor_id == INTEL_ID)                                         \
                 TEST_RUN_INTELGPU_SELECT(q, func, __VA_ARGS__);                \
             else if (vendor_id == NVIDIA_ID) {                                 \
@@ -115,12 +115,12 @@
         }                                                                      \
     } while (0);
 
-void print_error_code(cl::sycl::exception const &e);
+void print_error_code(sycl::exception const &e);
 
 class DeviceNamePrint {
 public:
-    std::string operator()(testing::TestParamInfo<cl::sycl::device *> dev) const {
-        std::string dev_name = dev.param->get_info<cl::sycl::info::device::name>();
+    std::string operator()(testing::TestParamInfo<sycl::device *> dev) const {
+        std::string dev_name = dev.param->get_info<sycl::info::device::name>();
         for (std::string::size_type i = 0; i < dev_name.size(); ++i) {
             if (!isalnum(dev_name[i]))
                 dev_name[i] = '_';
@@ -132,11 +132,11 @@ public:
 class LayoutDeviceNamePrint {
 public:
     std::string operator()(
-        testing::TestParamInfo<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> dev) const {
+        testing::TestParamInfo<std::tuple<sycl::device *, oneapi::mkl::layout>> dev) const {
         std::string layout_name = std::get<1>(dev.param) == oneapi::mkl::layout::column_major
                                       ? "Column_Major"
                                       : "Row_Major";
-        std::string dev_name = std::get<0>(dev.param)->get_info<cl::sycl::info::device::name>();
+        std::string dev_name = std::get<0>(dev.param)->get_info<sycl::info::device::name>();
         for (std::string::size_type i = 0; i < dev_name.size(); ++i) {
             if (!isalnum(dev_name[i]))
                 dev_name[i] = '_';
@@ -168,22 +168,22 @@ static inline void aligned_free(void *p) {
 }
 
 /* Support for Unified Shared Memory allocations for different backends */
-static inline void *malloc_shared(size_t align, size_t size, cl::sycl::device dev,
-                                  cl::sycl::context ctx) {
+static inline void *malloc_shared(size_t align, size_t size, sycl::device dev,
+                                  sycl::context ctx) {
 #ifdef _WIN64
-    return cl::sycl::malloc_shared(size, dev, ctx);
+    return sycl::malloc_shared(size, dev, ctx);
 #else
 #if defined(ENABLE_CUBLAS_BACKEND) || defined(ENABLE_ROCBLAS_BACKEND)
-    return cl::sycl::aligned_alloc_shared(align, size, dev, ctx);
+    return sycl::aligned_alloc_shared(align, size, dev, ctx);
 #endif
 #if !defined(ENABLE_CUBLAS_BACKEND) && !defined(ENABLE_ROCBLAS_BACKEND)
-    return cl::sycl::malloc_shared(size, dev, ctx);
+    return sycl::malloc_shared(size, dev, ctx);
 #endif
 #endif
 }
 
-static inline void free_shared(void *p, cl::sycl::context ctx) {
-    cl::sycl::free(p, ctx);
+static inline void free_shared(void *p, sycl::context ctx) {
+    sycl::free(p, ctx);
 }
 
 } // namespace mkl
