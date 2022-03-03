@@ -64,8 +64,8 @@ static inline void generate(const Distr& distr, Engine& engine, std::int64_t n,
 //      sycl::event - event for the submitted to the engine's queue task
 template <typename Distr, typename Engine>
 static inline sycl::event generate(const Distr& distr, Engine& engine, std::int64_t n,
-                                       typename Distr::result_type* r,
-                                       const std::vector<sycl::event>& dependencies = {}) {
+                                   typename Distr::result_type* r,
+                                   const std::vector<sycl::event>& dependencies = {}) {
     generate_precondition(distr, engine, n, r, dependencies);
     return engine.pimpl_->generate(distr, n, r, dependencies);
 }

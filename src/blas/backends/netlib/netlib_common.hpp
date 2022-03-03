@@ -79,9 +79,9 @@ static inline auto host_task_internal(H &cgh, F f, int) -> decltype(cgh.host_tas
 
 template <typename K, typename H, typename F>
 static inline void host_task_internal(H &cgh, F f, long) {
-    #ifndef __SYCL_DEVICE_ONLY__
+#ifndef __SYCL_DEVICE_ONLY__
     cgh.template single_task<K>(f);
-    #endif
+#endif
 }
 
 template <typename K, typename H, typename F>

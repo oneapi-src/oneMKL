@@ -81,9 +81,9 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
 #ifdef ENABLE_MKLGPU_BACKEND
               LIB_NAME("lapack_mklgpu")
 #endif
-	  } },
-	{ device::nvidiagpu,
-	  {
+          } },
+        { device::nvidiagpu,
+          {
 #ifdef ENABLE_CUSOLVER_BACKEND
               LIB_NAME("lapack_cusolver")
 #endif

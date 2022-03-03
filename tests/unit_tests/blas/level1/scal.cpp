@@ -122,8 +122,8 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, fp_scalar alp
     return (int)good;
 }
 
-class ScalTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::mkl::layout>> {};
+class ScalTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::mkl::layout>> {
+};
 
 TEST_P(ScalTests, RealSinglePrecision) {
     float alpha(2.0);

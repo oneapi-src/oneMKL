@@ -131,8 +131,8 @@ int test(device *dev, oneapi::mkl::layout layout, int m, int n, fp alpha, int in
     return (int)good;
 }
 
-class GerTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {};
+class GerTests : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {
+};
 
 TEST_P(GerTests, RealSinglePrecision) {
     float alpha(2.0);

@@ -141,8 +141,8 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
     return (int)good;
 }
 
-class TrmmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::mkl::layout>> {};
+class TrmmTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::mkl::layout>> {
+};
 
 TEST_P(TrmmTests, RealSinglePrecision) {
     float alpha(2.0);

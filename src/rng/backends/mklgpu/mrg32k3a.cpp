@@ -177,8 +177,7 @@ public:
     virtual sycl::event generate(
         const oneapi::mkl::rng::uniform<std::int32_t, oneapi::mkl::rng::uniform_method::standard>&
             distr,
-        std::int64_t n, std::int32_t* r,
-        const std::vector<sycl::event>& dependencies) override {
+        std::int64_t n, std::int32_t* r, const std::vector<sycl::event>& dependencies) override {
         ;
         return oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r, dependencies);
     }
@@ -248,14 +247,14 @@ public:
     }
 
     virtual sycl::event generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
-                                     std::int64_t n, std::int32_t* r,
-                                     const std::vector<sycl::event>& dependencies) override {
+                                 std::int64_t n, std::int32_t* r,
+                                 const std::vector<sycl::event>& dependencies) override {
         return oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r, dependencies);
     }
 
     virtual sycl::event generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
-                                     std::int64_t n, std::uint32_t* r,
-                                     const std::vector<sycl::event>& dependencies) override {
+                                 std::int64_t n, std::uint32_t* r,
+                                 const std::vector<sycl::event>& dependencies) override {
         return oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r, dependencies);
     }
 
@@ -271,9 +270,8 @@ public:
         return oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r, dependencies);
     }
 
-    virtual sycl::event generate(const bits<std::uint32_t>& distr, std::int64_t n,
-                                     std::uint32_t* r,
-                                     const std::vector<sycl::event>& dependencies) override {
+    virtual sycl::event generate(const bits<std::uint32_t>& distr, std::int64_t n, std::uint32_t* r,
+                                 const std::vector<sycl::event>& dependencies) override {
         return oneapi::mkl::rng::detail::gpu::generate(queue_, distr, engine_, n, r, dependencies);
     }
 
@@ -441,8 +439,7 @@ public:
     virtual sycl::event generate(
         const oneapi::mkl::rng::uniform<std::int32_t, oneapi::mkl::rng::uniform_method::standard>&
             distr,
-        std::int64_t n, std::int32_t* r,
-        const std::vector<sycl::event>& dependencies) override {
+        std::int64_t n, std::int32_t* r, const std::vector<sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return sycl::event{};
     }
@@ -522,15 +519,15 @@ public:
     }
 
     virtual sycl::event generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
-                                     std::int64_t n, std::int32_t* r,
-                                     const std::vector<sycl::event>& dependencies) override {
+                                 std::int64_t n, std::int32_t* r,
+                                 const std::vector<sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return sycl::event{};
     }
 
     virtual sycl::event generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
-                                     std::int64_t n, std::uint32_t* r,
-                                     const std::vector<sycl::event>& dependencies) override {
+                                 std::int64_t n, std::uint32_t* r,
+                                 const std::vector<sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return sycl::event{};
     }
@@ -549,9 +546,8 @@ public:
         return sycl::event{};
     }
 
-    virtual sycl::event generate(const bits<std::uint32_t>& distr, std::int64_t n,
-                                     std::uint32_t* r,
-                                     const std::vector<sycl::event>& dependencies) override {
+    virtual sycl::event generate(const bits<std::uint32_t>& distr, std::int64_t n, std::uint32_t* r,
+                                 const std::vector<sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "mrg32k3a engine");
         return sycl::event{};
     }

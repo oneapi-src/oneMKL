@@ -122,8 +122,8 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx) {
     return (int)good;
 }
 
-class IaminTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::mkl::layout>> {};
+class IaminTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::mkl::layout>> {
+};
 
 TEST_P(IaminTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2));

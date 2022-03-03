@@ -34,8 +34,7 @@ namespace cublas {
 thread_local cublas_handle<pi_context> CublasScopedContextHandler::handle_helper =
     cublas_handle<pi_context>{};
 
-CublasScopedContextHandler::CublasScopedContextHandler(sycl::queue queue,
-                                                       sycl::interop_handler &ih)
+CublasScopedContextHandler::CublasScopedContextHandler(sycl::queue queue, sycl::interop_handler &ih)
         : ih(ih),
           needToRecover_(false) {
     placedContext_ = new sycl::context(queue.get_context());
@@ -84,8 +83,8 @@ void ContextCallback(void *userData) {
 }
 
 cublasHandle_t CublasScopedContextHandler::get_handle(const sycl::queue &queue) {
-    auto piPlacedContext_ = reinterpret_cast<pi_context>(
-        sycl::get_native<sycl::backend::cuda>(*placedContext_));
+    auto piPlacedContext_ =
+        reinterpret_cast<pi_context>(sycl::get_native<sycl::backend::cuda>(*placedContext_));
     CUstream streamId = get_stream(queue);
     cublasStatus_t err;
     auto it = handle_helper.cublas_handle_mapper_.find(piPlacedContext_);

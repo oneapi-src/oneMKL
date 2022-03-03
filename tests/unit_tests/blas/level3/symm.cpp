@@ -141,8 +141,8 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
     return (int)good;
 }
 
-class SymmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::mkl::layout>> {};
+class SymmTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::mkl::layout>> {
+};
 
 TEST_P(SymmTests, RealSinglePrecision) {
     float alpha(2.0);

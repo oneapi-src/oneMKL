@@ -129,8 +129,8 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     return (int)good;
 }
 
-class Hpr2Tests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {};
+class Hpr2Tests : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {
+};
 
 TEST_P(Hpr2Tests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);

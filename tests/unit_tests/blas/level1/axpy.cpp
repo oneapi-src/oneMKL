@@ -126,8 +126,8 @@ int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp 
     return (int)good;
 }
 
-class AxpyTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {};
+class AxpyTests : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {
+};
 
 TEST_P(AxpyTests, RealSinglePrecision) {
     float alpha(2.0);

@@ -132,8 +132,8 @@ int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp 
     return (int)good;
 }
 
-class RotmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {};
+class RotmTests : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {
+};
 
 TEST_P(RotmTests, RealSinglePrecision) {
     float flag(-1.0);

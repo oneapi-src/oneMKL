@@ -133,8 +133,8 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
     return (int)good;
 }
 
-class GemvTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {};
+class GemvTests : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {
+};
 
 TEST_P(GemvTests, RealSinglePrecision) {
     float alpha(2.0);

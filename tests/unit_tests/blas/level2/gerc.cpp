@@ -131,8 +131,8 @@ int test(device *dev, oneapi::mkl::layout layout, int m, int n, fp alpha, int in
     return (int)good;
 }
 
-class GercTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {};
+class GercTests : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {
+};
 
 TEST_P(GercTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);

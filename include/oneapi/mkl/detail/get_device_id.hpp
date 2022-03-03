@@ -27,7 +27,7 @@
 
 #define INTEL_ID  32902
 #define NVIDIA_ID 4318
-#define AMD_ID 1022
+#define AMD_ID    1022
 
 namespace oneapi {
 namespace mkl {
@@ -39,8 +39,8 @@ inline oneapi::mkl::device get_device_id(sycl::queue &queue) {
     else if (queue.get_device().is_cpu())
         device_id = device::x86cpu;
     else if (queue.get_device().is_gpu()) {
-        unsigned int vendor_id = static_cast<unsigned int>(
-            queue.get_device().get_info<sycl::info::device::vendor_id>());
+        unsigned int vendor_id =
+            static_cast<unsigned int>(queue.get_device().get_info<sycl::info::device::vendor_id>());
 
         if (vendor_id == INTEL_ID)
             device_id = device::intelgpu;

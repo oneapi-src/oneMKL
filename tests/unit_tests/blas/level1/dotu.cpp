@@ -127,8 +127,8 @@ int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
     return (int)good;
 }
 
-class DotuTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {};
+class DotuTests : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {
+};
 
 TEST_P(DotuTests, ComplexSinglePrecision) {
     EXPECT_TRUEORSKIP(

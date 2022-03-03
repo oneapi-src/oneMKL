@@ -216,11 +216,9 @@ static inline void range_transform_fp(sycl::queue& queue, T a, T b, std::int64_t
     });
 }
 template <typename T>
-static inline sycl::event range_transform_fp(sycl::queue& queue, T a, T b, std::int64_t n,
-                                                 T* r) {
+static inline sycl::event range_transform_fp(sycl::queue& queue, T a, T b, std::int64_t n, T* r) {
     return queue.submit([&](sycl::handler& cgh) {
-        cgh.parallel_for(sycl::range<1>(n),
-                         [=](sycl::id<1> id) { r[id] = r[id] * (b - a) + a; });
+        cgh.parallel_for(sycl::range<1>(n), [=](sycl::id<1> id) { r[id] = r[id] * (b - a) + a; });
     });
 }
 template <typename T>
@@ -240,8 +238,8 @@ static inline void range_transform_fp_accurate(sycl::queue& queue, T a, T b, std
     });
 }
 template <typename T>
-static inline sycl::event range_transform_fp_accurate(sycl::queue& queue, T a, T b,
-                                                          std::int64_t n, T* r) {
+static inline sycl::event range_transform_fp_accurate(sycl::queue& queue, T a, T b, std::int64_t n,
+                                                      T* r) {
     return queue.submit([&](sycl::handler& cgh) {
         cgh.parallel_for(sycl::range<1>(n), [=](sycl::id<1> id) {
             r[id] = r[id] * (b - a) + a;
@@ -273,8 +271,7 @@ static inline sycl::event range_transform_fp_accurate(sycl::queue& queue, T a, T
 //      r     - buffer to store transformed random numbers
 template <typename T>
 inline void range_transform_int(sycl::queue& queue, T a, T b, std::int64_t n,
-                                sycl::buffer<std::uint32_t, 1>& in,
-                                sycl::buffer<T, 1>& out) {
+                                sycl::buffer<std::uint32_t, 1>& in, sycl::buffer<T, 1>& out) {
     queue.submit([&](sycl::handler& cgh) {
         auto acc_in = in.template get_access<sycl::access::mode::read>(cgh);
         auto acc_out = out.template get_access<sycl::access::mode::write>(cgh);
@@ -284,7 +281,7 @@ inline void range_transform_int(sycl::queue& queue, T a, T b, std::int64_t n,
 }
 template <typename T>
 inline sycl::event range_transform_int(sycl::queue& queue, T a, T b, std::int64_t n,
-                                           std::uint32_t* in, T* out) {
+                                       std::uint32_t* in, T* out) {
     return queue.submit([&](sycl::handler& cgh) {
         cgh.parallel_for(sycl::range<1>(n),
                          [=](sycl::id<1> id) { out[id] = a + in[id] % (b - a); });
@@ -314,13 +311,12 @@ static inline void sample_bernoulli_from_uniform(sycl::queue& queue, float p, st
     queue.submit([&](sycl::handler& cgh) {
         auto acc_in = in.template get_access<sycl::access::mode::read>(cgh);
         auto acc_out = out.template get_access<sycl::access::mode::write>(cgh);
-        cgh.parallel_for(sycl::range<1>(n),
-                         [=](sycl::id<1> id) { acc_out[id] = acc_in[id] < p; });
+        cgh.parallel_for(sycl::range<1>(n), [=](sycl::id<1> id) { acc_out[id] = acc_in[id] < p; });
     });
 }
 template <typename T>
-static inline sycl::event sample_bernoulli_from_uniform(sycl::queue& queue, float p,
-                                                            std::int64_t n, float* in, T* out) {
+static inline sycl::event sample_bernoulli_from_uniform(sycl::queue& queue, float p, std::int64_t n,
+                                                        float* in, T* out) {
     return queue.submit([&](sycl::handler& cgh) {
         cgh.parallel_for(sycl::range<1>(n), [=](sycl::id<1> id) { out[id] = in[id] < p; });
     });

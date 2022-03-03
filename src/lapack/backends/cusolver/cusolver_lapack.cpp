@@ -1272,7 +1272,7 @@ inline sycl::event getrf(Func func, sycl::queue &queue, std::int64_t m, std::int
     // To get around the limitation.
     // Allocate memory with 32-bit ints then copy over results
     std::uint64_t ipiv_size = std::min(n, m);
-    int *ipiv32 = (int *)malloc_device(sizeof(int)*ipiv_size, queue);
+    int *ipiv32 = (int *)malloc_device(sizeof(int) * ipiv_size, queue);
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
@@ -1355,7 +1355,7 @@ inline sycl::event getrs(Func func, sycl::queue &queue, oneapi::mkl::transpose t
     // To get around the limitation.
     // Create new buffer and convert 64-bit values.
     std::uint64_t ipiv_size = n;
-    int *ipiv32 = (int *)malloc_device(sizeof(int)*ipiv_size, queue);
+    int *ipiv32 = (int *)malloc_device(sizeof(int) * ipiv_size, queue);
 
     auto done_casting = queue.submit([&](sycl::handler &cgh) {
         cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
@@ -2066,7 +2066,7 @@ inline sycl::event sytrf(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, 
     // To get around the limitation.
     // Allocate memory with 32-bit ints then copy over results
     std::uint64_t ipiv_size = n;
-    int *ipiv32 = (int *)malloc_device(sizeof(int)*ipiv_size, queue);
+    int *ipiv32 = (int *)malloc_device(sizeof(int) * ipiv_size, queue);
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
