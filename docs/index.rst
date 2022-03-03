@@ -21,11 +21,7 @@ Contents
    :maxdepth: 2
 
    selecting_a_compiler.rst
-   build_setup.rst
-   build_setup_with_hipsycl.rst
-   building_with_conan.rst
-   building_with_cmake.rst
-   project_cleanup.rst
+   building_the_project.rst
 
 .. toctree::
    :caption: Developer Reference
