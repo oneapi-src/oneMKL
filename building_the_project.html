@@ -1,0 +1,1596 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Building the Project &#8212; oneAPI Math Kernel Library Interfaces 0.1 documentation</title>
+    
+  <link href="_static/css/theme.css" rel="stylesheet" />
+  <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <link rel="shortcut icon" href="_static/favicons.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="oneMKL Defined Datatypes" href="onemkl-datatypes.html" />
+    <link rel="prev" title="Selecting a Compiler" href="selecting_a_compiler.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      <img src="_static/oneAPI-rgb-rev-100.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">oneAPI Math Kernel Library Interfaces 0.1 documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <div class="bd-toc-item active">
+        <p>
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="introduction.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p>
+ <span class="caption-text">
+  Get Started
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="selecting_a_compiler.html">
+   Selecting a Compiler
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Building the Project
+  </a>
+ </li>
+</ul>
+<p>
+ <span class="caption-text">
+  Developer Reference
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="onemkl-datatypes.html">
+   oneMKL Defined Datatypes
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="domains/dense_linear_algebra.html">
+   Dense Linear Algebra
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="domains/matrix-storage.html">
+     Matrix Storage
+    </a>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="domains/blas/blas.html">
+     BLAS Routines
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+    <label for="toctree-checkbox-2">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3 has-children">
+      <a class="reference internal" href="domains/blas/blas-level-1-routines.html">
+       BLAS Level 1 Routines
+      </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+      <label for="toctree-checkbox-3">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/asum.html">
+         asum
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/axpy.html">
+         axpy
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/copy.html">
+         copy
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/dot.html">
+         dot
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/sdsdot.html">
+         sdsdot
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/dotc.html">
+         dotc
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/dotu.html">
+         dotu
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/nrm2.html">
+         nrm2
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/rot.html">
+         rot
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/rotg.html">
+         rotg
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/rotm.html">
+         rotm
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/rotmg.html">
+         rotmg
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/scal.html">
+         scal
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/swap.html">
+         swap
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/iamax.html">
+         iamax
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/iamin.html">
+         iamin
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toctree-l3 has-children">
+      <a class="reference internal" href="domains/blas/blas-level-2-routines.html">
+       BLAS Level 2 Routines
+      </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+      <label for="toctree-checkbox-4">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/gbmv.html">
+         gbmv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/gemv.html">
+         gemv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/ger.html">
+         ger
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/gerc.html">
+         gerc
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/geru.html">
+         geru
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/hbmv.html">
+         hbmv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/hemv.html">
+         hemv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/her.html">
+         her
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/her2.html">
+         her2
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/hpmv.html">
+         hpmv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/hpr.html">
+         hpr
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/hpr2.html">
+         hpr2
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/sbmv.html">
+         sbmv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/spmv.html">
+         spmv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/spr.html">
+         spr
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/spr2.html">
+         spr2
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/symv.html">
+         symv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/syr.html">
+         syr
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/syr2.html">
+         syr2
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/tbmv.html">
+         tbmv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/tbsv.html">
+         tbsv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/tpmv.html">
+         tpmv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/tpsv.html">
+         tpsv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/trmv.html">
+         trmv
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/trsv.html">
+         trsv
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toctree-l3 has-children">
+      <a class="reference internal" href="domains/blas/blas-level-3-routines.html">
+       BLAS Level 3 Routines
+      </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+      <label for="toctree-checkbox-5">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/gemm.html">
+         gemm
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/hemm.html">
+         hemm
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/herk.html">
+         herk
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/her2k.html">
+         her2k
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/symm.html">
+         symm
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/syrk.html">
+         syrk
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/syr2k.html">
+         syr2k
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/trmm.html">
+         trmm
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/trsm.html">
+         trsm
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toctree-l3 has-children">
+      <a class="reference internal" href="domains/blas/blas-like-extensions.html">
+       BLAS-like Extensions
+      </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+      <label for="toctree-checkbox-6">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/axpy_batch.html">
+         axpy_batch
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/axpby.html">
+         axpby
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/copy_batch.html">
+         copy_batch
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/dgmm_batch.html">
+         dgmm_batch
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/gemm_batch.html">
+         gemm_batch
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/gemv_batch.html">
+         gemv_batch
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/syrk_batch.html">
+         syrk_batch
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/trsm_batch.html">
+         trsm_batch
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/gemmt.html">
+         gemmt
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="domains/blas/gemm_bias.html">
+         gemm_bias
+        </a>
+       </li>
+      </ul>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="domains/lapack/lapack.html">
+     LAPACK Routines
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+    <label for="toctree-checkbox-7">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/geqrf.html">
+       geqrf
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/geqrf_scratchpad_size.html">
+       geqrf_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/gerqf.html">
+       gerqf
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/gerqf_scratchpad_size.html">
+       gerqf_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/getrf.html">
+       getrf
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/getrf_scratchpad_size.html">
+       getrf_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/getri.html">
+       getri
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/getri_scratchpad_size.html">
+       getri_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/getrs.html">
+       getrs
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/getrs_scratchpad_size.html">
+       getrs_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/hetrf.html">
+       hetrf
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/hetrf_scratchpad_size.html">
+       hetrf_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/orgqr.html">
+       orgqr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/orgqr_scratchpad_size.html">
+       orgqr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/ormqr.html">
+       ormqr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/ormqr_scratchpad_size.html">
+       ormqr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/ormrq.html">
+       ormrq
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/ormrq_scratchpad_size.html">
+       ormrq_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/potrf.html">
+       potrf
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/potrf_scratchpad_size.html">
+       potrf_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/potri.html">
+       potri
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/potri_scratchpad_size.html">
+       potri_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/potrs.html">
+       potrs
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/potrs_scratchpad_size.html">
+       potrs_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/sytrf.html">
+       sytrf
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/sytrf_scratchpad_size.html">
+       sytrf_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/trtrs.html">
+       trtrs
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/trtrs_scratchpad_size.html">
+       trtrs_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/ungqr.html">
+       ungqr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/ungqr_scratchpad_size.html">
+       ungqr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/unmqr.html">
+       unmqr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/unmqr_scratchpad_size.html">
+       unmqr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/unmrq.html">
+       unmrq
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/unmrq_scratchpad_size.html">
+       unmrq_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/gebrd.html">
+       gebrd
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/gebrd_scratchpad_size.html">
+       gebrd_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/gesvd.html">
+       gesvd
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/gesvd_scratchpad_size.html">
+       gesvd_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/heevd.html">
+       heevd
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/heevd_scratchpad_size.html">
+       heevd_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/hegvd.html">
+       hegvd
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/hegvd_scratchpad_size.html">
+       hegvd_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/hetrd.html">
+       hetrd
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/hetrd_scratchpad_size.html">
+       hetrd_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/orgbr.html">
+       orgbr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/orgbr_scratchpad_size.html">
+       orgbr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/orgtr.html">
+       orgtr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/orgtr_scratchpad_size.html">
+       orgtr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/ormtr.html">
+       ormtr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/ormtr_scratchpad_size.html">
+       ormtr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/syevd.html">
+       syevd
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/syevd_scratchpad_size.html">
+       syevd_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/sygvd.html">
+       sygvd
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/sygvd_scratchpad_size.html">
+       sygvd_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/sytrd.html">
+       sytrd
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/sytrd_scratchpad_size.html">
+       sytrd_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/ungbr.html">
+       ungbr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/ungbr_scratchpad_size.html">
+       ungbr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/ungtr.html">
+       ungtr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/ungtr_scratchpad_size.html">
+       ungtr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/unmtr.html">
+       unmtr
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/unmtr_scratchpad_size.html">
+       unmtr_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/geqrf_batch.html">
+       geqrf_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/geqrf_batch_scratchpad_size.html">
+       geqrf_batch_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/getrf_batch.html">
+       getrf_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/getrf_batch_scratchpad_size.html">
+       getrf_batch_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/getri_batch.html">
+       getri_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/getri_batch_scratchpad_size.html">
+       getri_batch_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/getrs_batch.html">
+       getrs_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/getrs_batch_scratchpad_size.html">
+       getrs_batch_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/orgqr_batch.html">
+       orgqr_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/orgqr_batch_scratchpad_size.html">
+       orgqr_batch_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/potrf_batch.html">
+       potrf_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/potrf_batch_scratchpad_size.html">
+       potrf_batch_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/potrs_batch.html">
+       potrs_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/potrs_batch_scratchpad_size.html">
+       potrs_batch_scratchpad_size
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/ungqr_batch.html">
+       ungqr_batch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="domains/lapack/ungqr_batch_scratchpad_size.html">
+       ungqr_batch_scratchpad_size
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="create_new_backend.html">
+   Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMKL) Interfaces
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/building_the_project.rst.txt"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        
+        <a class="issues-button"
+            href="https://github.com/oneapi-src/oneMKL/issues/new?title=Issue%20on%20page%20%2Fbuilding_the_project.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/oneapi-src/oneMKL/edit/develop/docs/building_the_project.rst"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#build-setup-1">
+   Build Setup
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#build-setup-with-hipsycl-1">
+   Build Setup with hipSYCL
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#building-with-conan-1">
+   Building with Conan
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#getting-conan">
+     Getting Conan
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#setting-up-conan">
+     Setting up Conan
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#conan-default-directory">
+       Conan Default Directory
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#conan-profiles-1">
+       Conan Profiles
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#building">
+     Building
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#conan-build-options">
+     Conan Build Options
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#backend-related-options">
+       Backend-Related Options
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#testing-related-options">
+       Testing-Related Options
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#documentation">
+       Documentation
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example">
+     Example
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#build-onemkl-as-a-static-library-for-onemkl-cpu-and-gpu-backend">
+       Build oneMKL as a static library for oneMKL cpu and gpu backend:
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#building-with-cmake-1">
+   Building with CMake
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#building-for-onemkl">
+     Building for oneMKL
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#building-for-cuda">
+     Building for CUDA
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#building-for-rocm-with-hipsycl">
+       Building for ROCm (with hipSYCL)
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#build-options">
+     Build Options
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#project-cleanup-1">
+   Project Cleanup
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <section id="building-the-project-1">
+<span id="building-the-project"></span><h1>Building the Project<a class="headerlink" href="#building-the-project-1" title="Permalink to this headline">¶</a></h1>
+<section id="build-setup-1">
+<span id="build-setup"></span><h2>Build Setup<a class="headerlink" href="#build-setup-1" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Install Intel(R) oneAPI DPC++ Compiler (select the variant as described in
+<a class="reference internal" href="selecting_a_compiler.html#selecting-a-compiler"><span class="std std-ref">Selecting a Compiler</span></a>).</p></li>
+<li><p>Clone this project to <code class="docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">onemkl&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">onemkl&gt;</span></code>
+is the root directory of this repository.</p></li>
+<li><p>You can <a class="reference internal" href="#building-with-conan"><span class="std std-ref">Build with Conan</span></a> to automate the
+process of getting dependencies or you can download and install the
+required dependencies manually and
+<a class="reference internal" href="#building-with-cmake"><span class="std std-ref">Build with CMake</span></a> directly.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Conan package manager automates the process of getting required packages
+so that you do not have to go to different web location and follow different
+instructions to install them.</p>
+</aside>
+</section>
+<section id="build-setup-with-hipsycl-1">
+<span id="build-setup-with-hipsycl"></span><h2>Build Setup with hipSYCL<a class="headerlink" href="#build-setup-with-hipsycl-1" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Make sure that the dependencies of hipSYCL are fulfilled. For a detailed
+description, see the
+<a class="reference external" href="https://github.com/illuhad/hipSYCL/blob/develop/doc/installing.md#software-dependencies">hipSYCL installation readme</a>.</p></li>
+<li><p>Install hipSYCL with the prefered backends enabled. hipSYCL supports
+various backends. You can customize support for the target system at
+compile time by setting the appropriate configuration flags; see the
+<a class="reference external" href="https://github.com/illuhad/hipSYCL/blob/develop/doc/installing.md">hipSYCL documentation</a>
+for instructions.</p></li>
+<li><p>Install <a class="reference external" href="https://rocblas.readthedocs.io/en/master/install.html">AMD rocBLAS</a>.</p></li>
+<li><p>Clone this project to <code class="docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">onemkl&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">onemkl&gt;</span></code> is
+the root directory of this repository.</p></li>
+<li><p>Download and install the required dependencies manually and
+<a class="reference internal" href="#building-with-cmake"><span class="std std-ref">Build with CMake</span></a>.</p></li>
+</ol>
+</section>
+<section id="building-with-conan-1">
+<span id="building-with-conan"></span><h2>Building with Conan<a class="headerlink" href="#building-with-conan-1" title="Permalink to this headline">¶</a></h2>
+<p>** This method currently works on Linux* only **</p>
+<p>** Make sure you have completed <a class="reference internal" href="#build-setup"><span class="std std-ref">Build Setup</span></a>. **</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To understand how dependencies are resolved, refer to “Product and Version
+Information” under
+<a class="reference external" href="https://github.com/oneapi-src/oneMKL#support-and-requirements">Support and Requirements</a>.
+For details about Conan package manager, refer to the
+<a class="reference external" href="https://docs.conan.io/en/latest/">Conan Documentation</a>.</p>
+</aside>
+<section id="getting-conan">
+<h3>Getting Conan<a class="headerlink" href="#getting-conan" title="Permalink to this headline">¶</a></h3>
+<p>Conan can be <a class="reference external" href="https://docs.conan.io/en/latest/installation.html">installed</a> from pip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install conan
+</pre></div>
+</div>
+</section>
+<section id="setting-up-conan">
+<h3>Setting up Conan<a class="headerlink" href="#setting-up-conan" title="Permalink to this headline">¶</a></h3>
+<section id="conan-default-directory">
+<h4>Conan Default Directory<a class="headerlink" href="#conan-default-directory" title="Permalink to this headline">¶</a></h4>
+<p>Conan stores all files and data in <code class="docutils literal notranslate"><span class="pre">~/.conan</span></code>. If you are fine with this
+behavior, you can skip to the <a class="reference internal" href="#conan-profiles"><span class="std std-ref">Conan Profiles</span></a> section.</p>
+<p>To change this behavior, set the environment variable <code class="docutils literal notranslate"><span class="pre">CONAN_USER_HOME</span></code> to a
+path of your choice. A <code class="docutils literal notranslate"><span class="pre">.conan/</span></code> directory will be created in this path and
+future Conan commands will use this directory to find configuration files and
+download dependent packages. Packages will be downloaded into
+<code class="docutils literal notranslate"><span class="pre">$CONAN_USER_HOME/data</span></code>. To change the <code class="docutils literal notranslate"><span class="pre">&quot;/data&quot;</span></code> part of this directory,
+refer to the <code class="docutils literal notranslate"><span class="pre">[storage]</span></code> section of <code class="docutils literal notranslate"><span class="pre">conan.conf</span></code> file.</p>
+<p>To make this setting persistent across terminal sessions, you can add the
+line below to your <code class="docutils literal notranslate"><span class="pre">~/.bashrc</span></code> or custom runscript. Refer to the
+<a class="reference external" href="https://docs.conan.io/en/latest/reference/env_vars.html#conan-user-home">Conan Documentation</a>
+for more details.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">CONAN_USER_HOME</span><span class="o">=</span>/usr/local/my_workspace/conan_cache
+</pre></div>
+</div>
+</section>
+<section id="conan-profiles-1">
+<span id="conan-profiles"></span><h4>Conan Profiles<a class="headerlink" href="#conan-profiles-1" title="Permalink to this headline">¶</a></h4>
+<p>Profiles are a way for Conan to determine a basic environment to use for
+building a project. This project ships with profiles for:</p>
+<ul class="simple">
+<li><p>Intel(R) oneAPI DPC++ Compiler for x86 CPU and Intel GPU backend: <code class="docutils literal notranslate"><span class="pre">inteldpcpp_lnx</span></code></p></li>
+</ul>
+<ol class="arabic simple">
+<li><p>Open the profile you wish to use from <code class="docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">onemkl&gt;/conan/profiles/</span></code>
+and set <code class="docutils literal notranslate"><span class="pre">COMPILER_PREFIX</span></code> to the path to the root folder of compiler.
+The root folder is the one that contains the <code class="docutils literal notranslate"><span class="pre">bin</span></code> and <code class="docutils literal notranslate"><span class="pre">lib</span></code>
+directories. For example, Intel(R) oneAPI DPC++ Compiler root folder for
+default installation on Linux is
+<code class="docutils literal notranslate"><span class="pre">/opt/intel/inteloneapi/compiler/&lt;version&gt;/linux</span></code>. The user can define a
+custom path for installing the compiler.</p></li>
+</ol>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">COMPILER_PREFIX</span><span class="o">=</span><span class="s">&lt;path to Intel(R) oneAPI DPC++ Compiler&gt;</span><span class="w"></span>
+</pre></div>
+</div>
+<ol class="arabic">
+<li><p>You can customize the <code class="docutils literal notranslate"><span class="pre">[env]</span></code> section of the profile based on individual
+requirements.</p></li>
+<li><p>Install configurations for this project:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
+$ conan config install conan/
+</pre></div>
+</div>
+<p>This command installs all contents of <code class="docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">onemkl&gt;/conan/</span></code>, most
+importantly profiles, to conan default directory.</p>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you change the profile, you must re-run the above command before you can
+use the new profile.</p>
+</aside>
+</section>
+</section>
+<section id="building">
+<h3>Building<a class="headerlink" href="#building" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p>Out-of-source build</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
+mkdir build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build
+</pre></div>
+</div>
+</li>
+<li><p>If you choose to build backends with the Intel(R) oneAPI
+Math Kernel Library, install the GPG key as mentioned here:
+<a class="reference external" href="https://software.intel.com/en-us/articles/oneapi-repo-instructions#aptpkg">https://software.intel.com/en-us/articles/oneapi-repo-instructions#aptpkg</a></p></li>
+<li><p>Install dependencies</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conan install .. --profile &lt;profile_name&gt; --build missing <span class="o">[</span>-o &lt;option1&gt;<span class="o">=</span>&lt;value1&gt;<span class="o">]</span> <span class="o">[</span>-o &lt;option2&gt;<span class="o">=</span>&lt;value2&gt;<span class="o">]</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">conan</span> <span class="pre">install</span></code> command downloads and installs all requirements for
+the oneMKL DPC++ Interfaces project as defined in
+<code class="docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">onemkl&gt;/conanfile.py</span></code> based on the options passed. It also
+creates <code class="docutils literal notranslate"><span class="pre">conanbuildinfo.cmake</span></code> file that contains information about all
+dependencies and their directories. This file is used in top-level
+<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>.</p>
+</li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">-pr</span> <span class="pre">|</span> <span class="pre">--profile</span> <span class="pre">&lt;profile_name&gt;</span></code>
+Defines a profile for Conan to use for building the project.</p>
+<p><code class="docutils literal notranslate"><span class="pre">-b</span> <span class="pre">|</span> <span class="pre">--build</span> <span class="pre">&lt;package_name|missing&gt;</span></code>
+Tells Conan to build or re-build a specific package. If <code class="docutils literal notranslate"><span class="pre">missing</span></code> is passed
+as a value, all missing packages are built. This option is recommended when
+you build the project for the first time, because it caches required packages.
+You can skip this option for later use of this command.</p>
+<ol class="arabic">
+<li><p>Build Project
+.. code-block:: sh</p>
+<blockquote>
+<div><p>conan build .. [–configure] [–build] [–test]  # Default is all</p>
+</div></blockquote>
+</li>
+</ol>
+<p>The <code class="docutils literal notranslate"><span class="pre">conan</span> <span class="pre">build</span></code> command executes the <code class="docutils literal notranslate"><span class="pre">build()</span></code> procedure from
+<code class="docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">onemkl&gt;/conanfile.py</span></code>. Since this project uses <code class="docutils literal notranslate"><span class="pre">CMake</span></code>, you
+can choose to <code class="docutils literal notranslate"><span class="pre">configure</span></code>, <code class="docutils literal notranslate"><span class="pre">build</span></code>, <code class="docutils literal notranslate"><span class="pre">test</span></code> individually or perform
+all steps by passing no optional arguments.</p>
+<ol class="arabic simple">
+<li><p>Optionally, you can also install the package. Similar to <code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">--install</span> <span class="pre">.</span> <span class="pre">--prefix</span> <span class="pre">&lt;install_dir&gt;</span></code>.</p></li>
+</ol>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conan package .. --build-folder . --install-folder &lt;install_dir&gt;
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">-bf</span> <span class="pre">|</span> <span class="pre">--build-folder</span></code>
+Tells Conan where to find the built project.</p>
+<p><code class="docutils literal notranslate"><span class="pre">-if</span> <span class="pre">|</span> <span class="pre">--install-folder</span></code>
+Tells Conan where to install the package. It is similar to specifying <code class="docutils literal notranslate"><span class="pre">CMAKE_INSTALL_PREFIX</span></code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For a detailed list of commands and options, refer to the
+<a class="reference external" href="https://docs.conan.io/en/latest/reference/commands.html">Conan Command Reference</a>.</p>
+</aside>
+</section>
+<section id="conan-build-options">
+<h3>Conan Build Options<a class="headerlink" href="#conan-build-options" title="Permalink to this headline">¶</a></h3>
+<section id="backend-related-options">
+<h4>Backend-Related Options<a class="headerlink" href="#backend-related-options" title="Permalink to this headline">¶</a></h4>
+<p>The following <code class="docutils literal notranslate"><span class="pre">options</span></code> are available to pass on <code class="docutils literal notranslate"><span class="pre">conan</span> <span class="pre">install</span></code> when
+building the oneMKL library:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">build_shared_libs=[True</span> <span class="pre">|</span> <span class="pre">False]</span></code>. Setting it to <code class="docutils literal notranslate"><span class="pre">True</span></code> enables the building of dynamic libraries. The default value is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">target_domains=[&lt;list</span> <span class="pre">of</span> <span class="pre">values&gt;]</span></code>. Setting it to <code class="docutils literal notranslate"><span class="pre">blas</span></code> or any other list of domain(s), enables building of those specific domain(s) only. If not defined, the default value is all supported domains.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enable_mklcpu_backend=[True</span> <span class="pre">|</span> <span class="pre">False]</span></code>. Setting it to <code class="docutils literal notranslate"><span class="pre">True</span></code> enables the building of oneMKL mklcpu backend. The default value is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enable_mklgpu_backend=[True</span> <span class="pre">|</span> <span class="pre">False]</span></code>. Setting it to <code class="docutils literal notranslate"><span class="pre">True</span></code> enables the building of oneMKL mklgpu backend. The default value is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enable_mklcpu_thread_tbb=[True</span> <span class="pre">|</span> <span class="pre">False]</span></code>. Setting it to <code class="docutils literal notranslate"><span class="pre">True</span></code> enables oneMKL on CPU with TBB threading instead of sequential. The default value is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</section>
+<section id="testing-related-options">
+<h4>Testing-Related Options<a class="headerlink" href="#testing-related-options" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">build_functional_tests=[True</span> <span class="pre">|</span> <span class="pre">False]</span></code>. Setting it to <code class="docutils literal notranslate"><span class="pre">True</span></code> enables
+the building of functional tests. The default value is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</section>
+<section id="documentation">
+<h4>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">build_doc=[True</span> <span class="pre">|</span> <span class="pre">False]</span></code>. Setting it to <code class="docutils literal notranslate"><span class="pre">True</span></code> enables the building of rst files to generate HTML files for updated documentation. The default value is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For a mapping between Conan and CMake options, refer to
+<a class="reference internal" href="#building-with-cmake"><span class="std std-ref">Building with CMake</span></a>.</p>
+</aside>
+</section>
+</section>
+<section id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<section id="build-onemkl-as-a-static-library-for-onemkl-cpu-and-gpu-backend">
+<h4>Build oneMKL as a static library for oneMKL cpu and gpu backend:<a class="headerlink" href="#build-onemkl-as-a-static-library-for-onemkl-cpu-and-gpu-backend" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
+mkdir build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build
+conan install .. --build missing --profile inteldpcpp_lnx -o <span class="nv">build_shared_libs</span><span class="o">=</span>False
+conan build ..
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="building-with-cmake-1">
+<span id="building-with-cmake"></span><h2>Building with CMake<a class="headerlink" href="#building-with-cmake-1" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Make sure you have completed <a class="reference external" href="#build-setup">Build Setup</a>.</p></li>
+<li><p>Build and install all required <a class="reference external" href="#software-requirements">dependencies</a>.</p></li>
+</ol>
+<section id="building-for-onemkl">
+<h3>Building for oneMKL<a class="headerlink" href="#building-for-onemkl" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p>On Linux*</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
+mkdir build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build
+cmake .. <span class="o">[</span>-DCMAKE_CXX_COMPILER<span class="o">=</span>&lt;path_to_dpcpp_compiler&gt;/bin/dpcpp<span class="o">]</span>  <span class="c1"># required only if dpcpp is not found in environment variable PATH</span>
+         <span class="o">[</span>-DCMAKE_C_COMPILER<span class="o">=</span>&lt;path_to_icx_compiler&gt;/bin/icx<span class="o">]</span>        <span class="c1"># required only if icx is not found in environment variable PATH</span>
+         <span class="o">[</span>-DMKL_ROOT<span class="o">=</span>&lt;mkl_install_prefix&gt;<span class="o">]</span>                          <span class="c1"># required only if environment variable MKLROOT is not set</span>
+         <span class="o">[</span>-DREF_BLAS_ROOT<span class="o">=</span>&lt;reference_blas_install_prefix&gt;<span class="o">]</span>          <span class="c1"># required only for testing</span>
+         <span class="o">[</span>-DREF_LAPACK_ROOT<span class="o">=</span>&lt;reference_lapack_install_prefix&gt;<span class="o">]</span>      <span class="c1"># required only for testing</span>
+cmake --build .
+ctest
+cmake --install . --prefix &lt;path_to_install_dir&gt;
+</pre></div>
+</div>
+</li>
+<li><p>On Windows*</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
+md build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build
+cmake .. -G Ninja <span class="o">[</span>-DCMAKE_CXX_COMPILER<span class="o">=</span>&lt;path_to_dpcpp_compiler&gt;<span class="se">\b</span>in<span class="se">\d</span>pcpp<span class="o">]</span>  <span class="c1"># required only if dpcpp is not found in environment variable PATH</span>
+                  <span class="o">[</span>-DCMAKE_C_COMPILER<span class="o">=</span>&lt;path_to_icx_compiler&gt;<span class="se">\b</span>in<span class="se">\i</span>cx<span class="o">]</span>        <span class="c1"># required only if icx is not found in environment variable PATH</span>
+                  <span class="o">[</span>-DMKL_ROOT<span class="o">=</span>&lt;mkl_install_prefix&gt;<span class="o">]</span>                          <span class="c1"># required only if environment variable MKLROOT is not set</span>
+                  <span class="o">[</span>-DREF_BLAS_ROOT<span class="o">=</span>&lt;reference_blas_install_prefix&gt;<span class="o">]</span>          <span class="c1"># required only for testing</span>
+                  <span class="o">[</span>-DREF_LAPACK_ROOT<span class="o">=</span>&lt;reference_lapack_install_prefix&gt;<span class="o">]</span>      <span class="c1"># required only for testing</span>
+ninja
+ctest
+cmake --install . --prefix &lt;path_to_install_dir&gt;
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="building-for-cuda">
+<h3>Building for CUDA<a class="headerlink" href="#building-for-cuda" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>On Linux*</p></li>
+</ul>
+<p>With the cuBLAS backend:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
+mkdir build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build
+cmake .. <span class="o">[</span>-DCMAKE_CXX_COMPILER<span class="o">=</span>&lt;path_to_clang++_compiler&gt;/bin/clang++<span class="o">]</span>  <span class="c1"># required only if clang++ is not found in environment variable PATH</span>
+         <span class="o">[</span>-DCMAKE_C_COMPILER<span class="o">=</span>&lt;path_to_clang_compiler&gt;/bin/clang<span class="o">]</span>        <span class="c1"># required only if clang is not found in environment variable PATH</span>
+         -DENABLE_CUBLAS_BACKEND<span class="o">=</span>True  <span class="se">\</span>
+         -DENABLE_MKLCPU_BACKEND<span class="o">=</span>False                                  <span class="c1"># disable Intel MKL CPU backend</span>
+         -DENABLE_MKLGPU_BACKEND<span class="o">=</span>False                                  <span class="c1"># disable Intel MKL GPU backend</span>
+         <span class="o">[</span>-DREF_BLAS_ROOT<span class="o">=</span>&lt;reference_blas_install_prefix&gt;<span class="o">]</span>              <span class="c1"># required only for testing</span>
+cmake --build .
+ctest
+cmake --install . --prefix &lt;path_to_install_dir&gt;
+</pre></div>
+</div>
+<p>To build with the cuRAND backend instead simply replace:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-DENABLE_CUBLAS_BACKEND<span class="o">=</span>True   <span class="se">\</span>
+</pre></div>
+</div>
+<p>With:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-DENABLE_CURAND_BACKEND<span class="o">=</span>True   <span class="se">\</span>
+</pre></div>
+</div>
+<section id="building-for-rocm-with-hipsycl">
+<h4>Building for ROCm (with hipSYCL)<a class="headerlink" href="#building-for-rocm-with-hipsycl" title="Permalink to this headline">¶</a></h4>
+<p>With the AMD rocBLAS backend:</p>
+<ul class="simple">
+<li><p>On Linux*</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
+mkdir build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build
+cmake .. -DENABLE_CUBLAS_BACKEND<span class="o">=</span>False                     <span class="se">\</span>
+         -DENABLE_MKLCPU_BACKEND<span class="o">=</span>False/True                  <span class="c1"># hipSYCL supports MKLCPU backend</span>
+         -DENABLE_NETLIB_BACKEND<span class="o">=</span>False/True                  <span class="c1"># hipSYCL supports NETLIB backend</span>
+         -DENABLE_MKLGPU_BACKEND<span class="o">=</span>False                       <span class="c1"># disable Intel MKL GPU backend</span>
+         -DENABLE_ROCBLAS_BACKEND<span class="o">=</span>True                     <span class="se">\</span>
+         -DTARGET_DOMAINS<span class="o">=</span>blas                               <span class="c1"># hipSYCL only supports the BLAS domain</span>
+         -DHIPSYCL_TARGETS<span class="o">=</span>omp<span class="se">\;</span>hip:gfx906                   <span class="c1"># Specify the targetted device architectures</span>
+         -DONEMKL_SYCL_IMPLEMENTATION<span class="o">=</span>hipSYCL                <span class="c1"># Use the hipSYCL cmake integration</span>
+         <span class="o">[</span>-DREF_BLAS_ROOT<span class="o">=</span>&lt;reference_blas_install_prefix&gt;<span class="o">]</span>   <span class="c1"># required only for testing</span>
+cmake --build .
+ctest
+cmake --install . --prefix &lt;path_to_install_dir&gt;
+</pre></div>
+</div>
+<p><strong>AMD GPU device architectures</strong></p>
+<p>The device architecture can be retrieved via the <code class="docutils literal notranslate"><span class="pre">rocminfo</span></code> tool. The architecture will be displayed in the <code class="docutils literal notranslate"><span class="pre">Name:</span></code> row.</p>
+<p>A few often-used architectures are listed below:</p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Architecture</p></th>
+<th class="head"><p>AMD GPU name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>gfx906</p></td>
+<td><div class="line-block">
+<div class="line">AMD Radeon Instinct(TM) MI50/60 Accelerator</div>
+<div class="line">AMD Radeon(TM) (Pro) VII Graphics Card</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>gfx908</p></td>
+<td><p>AMD Instinct(TM) MI 100 Accelerator</p></td>
+</tr>
+<tr class="row-even"><td><p>gfx900</p></td>
+<td><div class="line-block">
+<div class="line">Radeon Instinct(TM) MI 25 Accelerator</div>
+<div class="line">Radeon(TM) RX Vega 64/56 Graphics</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="build-options">
+<h3>Build Options<a class="headerlink" href="#build-options" title="Permalink to this headline">¶</a></h3>
+<p>When building oneMKL the SYCL implementation can be determined, by setting the
+<code class="docutils literal notranslate"><span class="pre">ONEMKL_SYCL_IMPLEMENTATION</span></code> option. Possible values are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dpc++</span></code> (default) for the
+<a class="reference external" href="https://software.intel.com/en-us/oneapi/dpc-compiler">Intel(R) oneAPI DPC++ Compiler</a>
+and for the <code class="docutils literal notranslate"><span class="pre">clang++</span></code> from
+<a class="reference external" href="https://github.com/intel/llvm/releases">Intel project for LLVM* technology</a> compilers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hipsycl</span></code> for the <a class="reference external" href="https://github.com/illuhad/hipSYCL">hipSYCL</a> SYCL implementation.</p></li>
+</ul>
+<p>All options specified in the Conan section are available to CMake. You can
+specify these options using <code class="docutils literal notranslate"><span class="pre">-D&lt;cmake_option&gt;=&lt;value&gt;</span></code>.</p>
+<p>The following table provides a detailed mapping of options between Conan and
+CMake.</p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Conan Option</p></th>
+<th class="head"><p>CMake Option</p></th>
+<th class="head"><p>Supported Values</p></th>
+<th class="head"><p>Default Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>build_shared_libs</p></td>
+<td><p>BUILD_SHARED_LIBS</p></td>
+<td><p>True, False</p></td>
+<td><p>True</p></td>
+</tr>
+<tr class="row-odd"><td><p>enable_mklcpu_backend</p></td>
+<td><p>ENABLE_MKLCPU_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>True</p></td>
+</tr>
+<tr class="row-even"><td><p>enable_mklgpu_backend</p></td>
+<td><p>ENABLE_MKLGPU_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>True</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>Not Supported</em></p></td>
+<td><p>ENABLE_CUBLAS_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-even"><td><p><em>Not Supported</em></p></td>
+<td><p>ENABLE_CUSOLVER_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>Not Supported</em></p></td>
+<td><p>ENABLE_CURAND_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-even"><td><p><em>Not Supported</em></p></td>
+<td><p>ENABLE_NETLIB_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>Not Supported</em></p></td>
+<td><p>ENABLE_ROCBLAS_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-even"><td><p>enable_mklcpu_thread_tbb</p></td>
+<td><p>ENABLE_MKLCPU_THREAD_TBB</p></td>
+<td><p>True, False</p></td>
+<td><p>True</p></td>
+</tr>
+<tr class="row-odd"><td><p>build_functional_tests</p></td>
+<td><p>BUILD_FUNCTIONAL_TESTS</p></td>
+<td><p>True, False</p></td>
+<td><p>True</p></td>
+</tr>
+<tr class="row-even"><td><p>build_doc</p></td>
+<td><p>BUILD_DOC</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-odd"><td><p>target_domains (list)</p></td>
+<td><p>TARGET_DOMAINS (list)</p></td>
+<td><p>blas, lapack, rng</p></td>
+<td><p>All domains</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">build_functional_tests</span></code> and related CMake options affect all domains at a
+global scope.</p>
+</aside>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When building with hipSYCL, you must additionally provide
+<code class="docutils literal notranslate"><span class="pre">-DHIPSYCL_TARGETS</span></code> according to the targeted hardware. For the options,
+see the tables in the hipSYCL-specific sections.</p>
+</aside>
+</section>
+</section>
+<section id="project-cleanup-1">
+<span id="project-cleanup"></span><h2>Project Cleanup<a class="headerlink" href="#project-cleanup-1" title="Permalink to this headline">¶</a></h2>
+<p>Most use-cases involve building the project without the need to cleanup the
+build directory. However, if you wish to cleanup the build directory, you can
+delete the <code class="docutils literal notranslate"><span class="pre">build</span></code> folder and create a new one. If you wish to cleanup the
+build files but retain the build configuration, following commands will help
+you do so. They apply to both <code class="docutils literal notranslate"><span class="pre">Conan</span></code> and <code class="docutils literal notranslate"><span class="pre">CMake</span></code> methods of building
+this project.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># If you use &quot;GNU/Unix Makefiles&quot; for building,</span>
+make clean
+
+<span class="c1"># If you use &quot;Ninja&quot; for building</span>
+ninja -t clean
+</pre></div>
+</div>
+</section>
+</section>
+
+
+              </div>
+              
+        
+        <div class='prev-next-bottom'>
+            
+    <a class='left-prev' id="prev-link" href="selecting_a_compiler.html" title="previous page">Selecting a Compiler</a>
+    <a class='right-next' id="next-link" href="onemkl-datatypes.html" title="next page">oneMKL Defined Datatypes</a>
+
+        </div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Intel Corporation<br/>
+        
+            &copy; Copyright 2020-2022, Intel Corporation.<br/>
+          <div class="extra_footer">
+            <p align="right"><a href="https://www.intel.com/content/www/us/en/privacy/intel-cookie-notice.html">Cookies</a></p>
+          </div>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+
+  
+  </body>
+</html>

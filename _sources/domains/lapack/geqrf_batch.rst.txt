@@ -91,8 +91,6 @@ a
 tau 
     Array to store batch of :math:`\tau_i`, each of size :math:`\min(m,n)`, containing scalars that define elementary reflectors for the matrices :math:`Q_i` in its decomposition in a product of elementary reflectors.
 
-.. _onemkl_lapack_geqrf_batch_usm:
-
 geqrf_batch (USM Version)
 -------------------------
 
