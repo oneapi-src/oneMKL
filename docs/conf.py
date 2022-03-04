@@ -10,7 +10,7 @@
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
+# documentation root, use os.path.abspath to make it absolute, as shown here.
 #
 # import os
 # import sys
@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'oneAPI Math Kernel Library Interfaces'
-copyright = '2020, Intel Corporation'
+copyright = '2020-2022, Intel Corporation'
 author = 'Intel Corporation'
 
 # The short X.Y version

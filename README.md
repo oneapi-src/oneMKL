@@ -2,7 +2,7 @@
 
 <img align="left" src="https://spec.oneapi.io/oneapi-logo-white-scaled.jpg" alt="oneAPI logo">
 
-oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel C++ (DPC++) interface according to the [oneMKL specification](https://spec.oneapi.com/versions/latest/elements/oneMKL/source/index.html). It works with multiple devices (backends) using device-specific libraries underneath.
+oneMKL Interfaces is an open-source implementation of the oneMKL Data Parallel C++ (DPC++) interface according to the [oneMKL specification](https://spec.oneapi.com/versions/latest/elements/oneMKL/source/index.html). It works with multiple devices (backends) using device-specific libraries underneath.
 
 oneMKL is part of [oneAPI](https://oneapi.io).
 <br/><br/>
@@ -54,11 +54,7 @@ oneMKL is part of [oneAPI](https://oneapi.io).
 ## Table of Contents
 
 - [Support and Requirements](#support-and-requirements)
-- [Selection of Compilers](#selection-of-compilers)
-- [Build Setup](#build-setup)
-- [Building with Conan](#building-with-conan)
-- [Building with CMake](#building-with-cmake)
-- [Project Cleanup](#project-cleanup)
+- [Documentation](#documentation)
 - [FAQs](#faqs)
 - [Legal Information](#legal-information)
 
@@ -386,7 +382,7 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
 *If [Building with CMake](#building-with-cmake), above packages must be installed manually.*
 
 #### Notice for Use of Conan Package Manager
-**LEGAL NOTICE: By downloading and using this container or script as applicable (the “Software Package”) and the included software or software made available for download, you agree to the terms and conditions of the software license agreements for the Software Package, which may also include notices, disclaimers, or license terms for third party software (together, the “Agreements”) included in this README file.**
+**LEGAL NOTICE: By downloading and using this container or script as applicable (the "Software Package") and the included software or software made available for download, you agree to the terms and conditions of the software license agreements for the Software Package, which may also include notices, disclaimers, or license terms for third party software (together, the "Agreements") included in this README file.**
 
 **If the Software Package is installed through a silent install, your download and use of the
 Software Package indicates your acceptance of the Agreements.**
@@ -416,320 +412,19 @@ Python | 3.6 or higher | No | *N/A* | *Pre-installed or Installed by user* | [PS
 
 ---
 
-## Selection of Compilers
-
-A compiler needs to be chosen according to the required backend of your application.
-
-- If your application requires Intel GPU, use [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) `dpcpp`.
-- If your application requires NVIDIA GPU, use the latest release of `clang++` from [Intel project for LLVM* technology](https://github.com/intel/llvm/releases).
-- If your application requires AMD GPU, use `hipSYCL` from the [hipSYCL repository](https://github.com/illuhad/hipSYCL)
-- If no Intel GPU, NVIDIA GPU or AMD GPU is required, you can use either [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) `dpcpp`, `clang++` or `hipSYCL` on Linux and `clang-cl` on Windows from [Intel project for LLVM* technology](https://github.com/intel/llvm/releases).
-
----
-
-## Build Setup
-
-1. Install Intel(R) oneAPI DPC++ Compiler (select variant as per requirement).
-
-2. Clone this project to `<path to onemkl>`, where `<path to onemkl>` is the root directory of this repository.
-
-3. You can [Build with Conan](#building-with-conan) to automate the process of getting dependencies or you can download and install the required dependencies manually and [Build with CMake](#building-with-cmake) directly.
-
-*Note: Conan package manager automates the process of getting required packages, so that you do not have to go to different web location and follow different instructions to install them.*
-
----
-## Build Setup with hipSYCL
-
-1. Make sure that the dependencies of hipSYCL are fulfilled. For detailed description see the [hipSYCL installation readme](https://github.com/illuhad/hipSYCL/blob/develop/doc/installing.md#software-dependencies)
-
-2. Install hipSYCL with the prefered backends enabled. HipSYCL supports various backends. Support can be customized for the target system in compile time by setting the appropriate configuration flags: see the [hipSYCL documentation](https://github.com/illuhad/hipSYCL/blob/develop/doc/installing.md) for instructions.
-
-3. Install AMD rocBLAS see instructions [here](https://rocblas.readthedocs.io/en/master/install.html)
-
-4. Clone this project to `<path to onemkl>`, where `<path to onemkl>` is the root directory of this repository.
-
-5. Download and install the required dependencies manually and [Build with CMake](#building-with-cmake).
-
----
-
-## Building with Conan
-
-** This method currently works on Linux* only **
-
-** Make sure you have completed [Build Setup](#build-setup). **
-
-*Note: To understand how dependencies are resolved, refer to the [Product and Version Information](#product-and-version-information) section. For details about Conan package manager, refer to [Conan Documentation](https://docs.conan.io/en/latest/).*
-
-### Getting Conan
-Conan can be [installed](https://docs.conan.io/en/latest/installation.html) from pip:
-```bash
-pip3 install conan
-```
-
-### Setting up Conan
-
-#### Conan Default Directory
-
-Conan stores all files and data in `~/.conan`. If you are fine with this behavior, you can skip to [Conan Profiles](#conan-profiles) section.
-
-To change this behavior, set the environment variable `CONAN_USER_HOME` to a path of your choice. A `.conan/` directory will be created in this path and future Conan commands will use this directory to find configuration files and download dependent packages. Packages will be downloaded into `$CONAN_USER_HOME/data`. To change the `"/data"` part of this directory, refer to the `[storage]` section of `conan.conf` file.
-
-To make this setting persistent across terminal sessions, you can add below line to your `~/.bashrc` or custom runscript. Refer to [Conan Documentation](https://docs.conan.io/en/latest/reference/env_vars.html#conan-user-home) for more details.
-
-```sh
-export CONAN_USER_HOME=/usr/local/my_workspace/conan_cache
-```
-
-#### Conan Profiles
-
-Profiles are a way for Conan to determine a basic environment to use for building a project. This project ships with profiles for:
-
-- Intel(R) oneAPI DPC++ Compiler for x86 CPU and Intel GPU backend: `inteldpcpp_lnx`
-
-1. Open the profile you wish to use from `<path to onemkl>/conan/profiles/` and set `COMPILER_PREFIX` to the path to the root folder of compiler. The root folder is the one that contains the `bin` and `lib` directories. For example, Intel(R) oneAPI DPC++ Compiler root folder for default installation on Linux is `/opt/intel/inteloneapi/compiler/<version>/linux`. User can define custom path for installing the compiler.
-
-```ini
-COMPILER_PREFIX=<path to Intel(R) oneAPI DPC++ Compiler>
-```
-
-2. You can customize the `[env]` section of the profile based on individual requirements.
-
-3. Install configurations for this project:
-```sh
-# Inside <path to onemkl>
-$ conan config install conan/
-```
-This command installs all contents of `<path to onemkl>/conan/`, most importantly profiles, to conan default directory.
-
-*Note: If you change the profile, you must re-run the above command before you can use the new profile.*
-
-### Building
-
-1. Out-of-source build
-```bash
-# Inside <path to onemkl>
-mkdir build && cd build
-```
-
-2. If you choose to build backends with the Intel(R) oneAPI Math Kernel Library, install the GPG key as mentioned here, https://software.intel.com/en-us/articles/oneapi-repo-instructions#aptpkg
-
-3. Install dependencies
-```sh
-conan install .. --profile <profile_name> --build missing [-o <option1>=<value1>] [-o <option2>=<value2>]
-```
-The `conan install` command downloads and installs all requirements for the oneMKL DPC++ Interfaces project as defined in `<path to onemkl>/conanfile.py` based on the options passed. It also creates `conanbuildinfo.cmake` file that contains information about all dependencies and their directories. This file is used in top-level `CMakeLists.txt`.
-
-`-pr | --profile <profile_name>`
-Defines a profile for Conan to use for building the project.
-
-`-b | --build <package_name|missing>`
-Tells Conan to build or re-build a specific package. If `missing` is passed as a value, all missing packages are built. This option is recommended when you build the project for the first time, because it caches required packages. You can skip this option for later use of this command.
-
-4. Build Project
-```sh
-conan build .. [--configure] [--build] [--test]  # Default is all
-```
-
-The `conan build` command executes the `build()` procedure from `<path to onemkl>/conanfile.py`. Since this project uses `CMake`, you can choose to `configure`, `build`, `test` individually or perform all steps by passing no optional arguments.
-
-5. Optionally, you can also install the package. Similar to `cmake --install . --prefix <install_dir>`.
-
-```sh
-conan package .. --build-folder . --install-folder <install_dir>
-```
-
-`-bf | --build-folder`
-Tells Conan where to find the built project.
-
-`-if | --install-folder`
-Tells Conan where to install the package. It is similar to specifying `CMAKE_INSTALL_PREFIX`
-
-*Note: For a detailed list of commands and options, refer to the [Conan Command Reference](https://docs.conan.io/en/latest/reference/commands.html).*
-
-### Conan Build Options
-
-#### Backend-related Options
-
-The following `options` are available to pass on `conan install` when building the oneMKL library:
-
-- `build_shared_libs=[True | False]`. Setting it to `True` enables the building of dynamic libraries. The default value is `True`.
-- `target_domains=[<list of values>]`. Setting it to `blas` or any other list of domain(s), enables building of those specific domain(s) only. If not defined, the default value is all supported domains.
-- `enable_mklcpu_backend=[True | False]`. Setting it to `True` enables the building of oneMKL mklcpu backend. The default value is `True`.
-- `enable_mklgpu_backend=[True | False]`. Setting it to `True` enables the building of oneMKL mklgpu backend. The default value is `True`.
-- `enable_mklcpu_thread_tbb=[True | False]`. Setting it to `True` enables oneMKL on CPU with TBB threading instead of sequential. The default value is `True`.
-
-#### Testing-related Options
-- `build_functional_tests=[True | False]`. Setting it to `True` enables the building of functional tests. The default value is `True`.
-
-#### Documentation
-- `build_doc=[True | False]`. Setting it to `True` enables the building of rst files to generate HTML files for updated documentation. The default value is `False`.
-
-*Note: For a mapping between Conan and CMake options, refer to [build options](#build-options) under the CMake section.*
-
-### Example
-#### Build oneMKL as a static library for oneMKL cpu and gpu backend:
-```sh
-# Inside <path to onemkl>
-mkdir build && cd build
-conan install .. --build missing --profile inteldpcpp_lnx -o build_shared_libs=False
-conan build ..
-```
-
----
-
-## Building with CMake
-
-1. Make sure you have completed [Build Setup](#build-setup). 
-
-2. Build and install all required [dependencies](#software-requirements). 
-
-### Building for oneMKL
-
-- On Linux*
-```bash
-# Inside <path to onemkl>
-mkdir build && cd build
-cmake .. [-DCMAKE_CXX_COMPILER=<path_to_dpcpp_compiler>/bin/dpcpp] \  # required only if dpcpp is not found in environment variable PATH
-         [-DCMAKE_C_COMPILER=<path_to_icx_compiler>/bin/icx]       \  # required only if icx is not found in environment variable PATH
-         [-DMKL_ROOT=<mkl_install_prefix>] \                          # required only if environment variable MKLROOT is not set
-         [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \          # required only for testing
-         [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]        # required only for testing
-cmake --build .
-ctest
-cmake --install . --prefix <path_to_install_dir>
-```
-- On Windows*
-```bash
-# Inside <path to onemkl>
-md build && cd build
-cmake .. -G Ninja [-DCMAKE_CXX_COMPILER=<path_to_dpcpp_compiler>\bin\dpcpp] \  # required only if dpcpp is not found in environment variable PATH
-                  [-DCMAKE_C_COMPILER=<path_to_icx_compiler>\bin\icx]       \  # required only if icx is not found in environment variable PATH
-                  [-DMKL_ROOT=<mkl_install_prefix>] \                          # required only if environment variable MKLROOT is not set
-                  [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \          # required only for testing
-                  [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]        # required only for testing
-ninja 
-ctest
-cmake --install . --prefix <path_to_install_dir>
-```
-
-### Building for CUDA
-
-- On Linux*
-
-With the cuBLAS backend:
-
-```bash
-# Inside <path to onemkl>
-mkdir build && cd build
-cmake .. [-DCMAKE_CXX_COMPILER=<path_to_clang++_compiler>/bin/clang++] \  # required only if clang++ is not found in environment variable PATH
-         [-DCMAKE_C_COMPILER=<path_to_clang_compiler>/bin/clang]       \  # required only if clang is not found in environment variable PATH
-         -DENABLE_CUBLAS_BACKEND=True  \
-         -DENABLE_MKLCPU_BACKEND=False \                                  # disable Intel MKL CPU backend
-         -DENABLE_MKLGPU_BACKEND=False \                                  # disable Intel MKL GPU backend
-         [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \              # required only for testing
-cmake --build .
-ctest
-cmake --install . --prefix <path_to_install_dir>
-```
-
-To build with the cuSOLVER or cuRAND backend instead simply replace:
-```bash
--DENABLE_CUBLAS_BACKEND=True   \
-```
-
-With:
-```bash
--DENABLE_CUSOLVER_BACKEND=True   \
-```
-
-or
-
-```bash
--DENABLE_CURAND_BACKEND=True   \
-```
-
-#### Building for ROCm (with hipSYCL)
-
-With the AMD rocBLAS backend:
-
-- On Linux*
-
-```bash
-# Inside <path to onemkl>
-mkdir build && cd build
-cmake .. -DENABLE_CUBLAS_BACKEND=False                     \
-         -DENABLE_MKLCPU_BACKEND=False/True                \   # hipSYCL supports MKLCPU backend     
-         -DENABLE_NETLIB_BACKEND=False/True                \   # hipSYCL supports NETLIB backend
-         -DENABLE_MKLGPU_BACKEND=False                     \   # disable Intel MKL GPU backend
-         -DENABLE_ROCBLAS_BACKEND=True                     \
-         -DTARGET_DOMAINS=blas                             \   # hipSYCL only supports the BLAS domain
-         -DHIPSYCL_TARGETS=omp\;hip:gfx906                 \   # Specify the targetted device architectures 
-         -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL              \   # Use the hipSYCL cmake integration
-         [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \   # required only for testing
-cmake --build .
-ctest
-cmake --install . --prefix <path_to_install_dir>
-```
-
-**AMD GPU device architectures**  
-
-The device architecture can be retrieved via the `rocminfo` tool. The architecture will be displayed in the `Name:` row.
-
-A few often used architectures are listed below:
-| architecture | AMD GPU name |
-| ----         | ----         |
-| gfx906       | AMD Radeon Instinct(TM) MI50/60 Accelerator <br> AMD Radeon(TM) (Pro) VII Graphics Card|
-| gfx908       | AMD Instinct(TM) MI 100 Accelerator |
-| gfx900       | Radeon Instinct(TM) MI 25 Accelerator<br> Radeon(TM) RX Vega 64/56 Graphics|
-
-
-### Build Options
-When building oneMKL the SYCL implementation can be determined, by setting the `ONEMKL_SYCL_IMPLEMENTATION` option. Possible values are 
-- `dpc++` (default) for the [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) and for the `clang++` from [Intel project for LLVM* technology](https://github.com/intel/llvm/releases) compilers. 
-- `hipsycl` for the [hipSYCL](https://github.com/illuhad/hipSYCL) SYCL implementation
-
-All options specified in the Conan section are available to CMake. You can specify these options using `-D<cmake_option>=<value>`.
-
-The following table provides a detailed mapping of options between Conan and CMake.
-
-Conan Option | CMake Option | Supported Values | Default Value 
- :---------- | :----------- | :--------------- | :---          
-build_shared_libs        | BUILD_SHARED_LIBS        | True, False         | True      
-enable_mklcpu_backend    | ENABLE_MKLCPU_BACKEND    | True, False         | True      
-enable_mklgpu_backend    | ENABLE_MKLGPU_BACKEND    | True, False         | True      
-*Not Supported*          | ENABLE_CUBLAS_BACKEND    | True, False         | False     
-*Not Supported*          | ENABLE_CUSOLVER_BACKEND  | True, False         | False     
-*Not Supported*          | ENABLE_CURAND_BACKEND    | True, False         | False     
-*Not Supported*          | ENABLE_NETLIB_BACKEND    | True, False         | False     
-*Not Supported*          | ENABLE_ROCBLAS_BACKEND   | True, False         | False     
-enable_mklcpu_thread_tbb | ENABLE_MKLCPU_THREAD_TBB | True, False         | True      
-build_functional_tests   | BUILD_FUNCTIONAL_TESTS   | True, False         | True      
-build_doc                | BUILD_DOC                | True, False         | False     
-target_domains (list)    | TARGET_DOMAINS (list)    | blas, lapack, rng   | All domains 
-
-*Note: `build_functional_tests` and related CMake option affects all domains at a global scope.*
-
-*Note: When building with hipSYCL, `-DHIPSYCL_TARGETS` additionally needs to be provided according to the targeted hardware. For the options, see the tables in the hipSYCL specific sections*
-
----
-
-## Project Cleanup
-
-Most use-cases involve building the project without the need to cleanup the build directory. However, if you wish to cleanup the build directory, you can delete the `build` folder and create a new one. If you wish to cleanup the build files but retain the build configuration, following commands will help you do so. They apply to both `Conan` and `CMake` methods of building this project.
-
-```sh
-# If you use "GNU/Unix Makefiles" for building,
-make clean
-
-# If you use "Ninja" for building
-ninja -t clean
-```
+## Documentation
+- [Contents](https://oneapi-src.github.io/oneMKL/)
+- [About](https://oneapi-src.github.io/oneMKL/introduction.html)
+- [Get Started](https://oneapi-src.github.io/oneMKL/selecting_a_compiler.html)
+- [Developer Reference](https://oneapi-src.github.io/oneMKL/onemkl-datatypes.html)
 
 ---
 
 ## Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md) for more information.
+
+---
 
 ## License
 
