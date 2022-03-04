@@ -176,6 +176,12 @@ public:
         throw cublas_error(std::string(#name) + std::string(" : "), err); \
     }
 
+#define CUBLAS_ERROR_FUNC_T(name, func, err, ...)                        \
+    err = func(__VA_ARGS__);                                             \
+    if (err != CUBLAS_STATUS_SUCCESS) {                                  \
+        throw cublas_error(std::string(name) + std::string(" : "), err); \
+    }
+
 inline cublasOperation_t get_cublas_operation(oneapi::mkl::transpose trn) {
     switch (trn) {
         case oneapi::mkl::transpose::nontrans: return CUBLAS_OP_N;
