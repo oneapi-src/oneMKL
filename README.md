@@ -116,7 +116,7 @@ $> clang++ -fsycl –I$ONEMKL/include app.cpp
 $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl_blas_mklcpu –lonemkl_blas_cublas
 ```
 
-*Refer to [Selection of Compilers](#selection-of-compilers) for the choice between `dpcpp` and `clang++` compilers.*
+*Refer to [Selecting a Compiler](https://oneapi-src.github.io/oneMKL/selecting_a_compiler.html) for the choice between `dpcpp` and `clang++` compilers.*
 
 ### Supported Configurations:
 
@@ -377,9 +377,9 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
     </tbody>
 </table>
 
-*If [Building with Conan](#building-with-conan), above packages marked as "No" must be installed manually.*
+*If [Building with Conan](https://oneapi-src.github.io/oneMKL/building_the_project.html#building-with-conan), above packages marked as "No" must be installed manually.*
 
-*If [Building with CMake](#building-with-cmake), above packages must be installed manually.*
+*If [Building with CMake](https://oneapi-src.github.io/oneMKL/building_the_project.html#building-with-cmake), above packages must be installed manually.*
 
 #### Notice for Use of Conan Package Manager
 **LEGAL NOTICE: By downloading and using this container or script as applicable (the "Software Package") and the included software or software made available for download, you agree to the terms and conditions of the software license agreements for the Software Package, which may also include notices, disclaimers, or license terms for third party software (together, the "Agreements") included in this README file.**
@@ -415,8 +415,13 @@ Python | 3.6 or higher | No | *N/A* | *Pre-installed or Installed by user* | [PS
 ## Documentation
 - [Contents](https://oneapi-src.github.io/oneMKL/)
 - [About](https://oneapi-src.github.io/oneMKL/introduction.html)
-- [Get Started](https://oneapi-src.github.io/oneMKL/selecting_a_compiler.html)
-- [Developer Reference](https://oneapi-src.github.io/oneMKL/onemkl-datatypes.html)
+- Get Started
+  - [Selecting a Compiler](https://oneapi-src.github.io/oneMKL/selecting_a_compiler.html)
+  - [Building the Project](https://oneapi-src.github.io/oneMKL/building_the_project.html)
+- Developer Reference
+  - [oneMKL Defined Datatypes](https://oneapi-src.github.io/oneMKL/onemkl-datatypes.html)
+  - [Dense Linear Algebra](https://oneapi-src.github.io/oneMKL/domains/dense_linear_algebra.html)
+- [Integrating a Third-Party Library](https://oneapi-src.github.io/oneMKL/create_new_backend.html)
 
 ---
 
