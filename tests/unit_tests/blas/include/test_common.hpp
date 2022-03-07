@@ -82,8 +82,8 @@ constexpr T matrix_size(oneapi::mkl::layout layout, oneapi::mkl::transpose trans
 
 // SYCL buffer creation helper.
 template <typename vec>
-cl::sycl::buffer<typename vec::value_type, 1> make_buffer(const vec &v) {
-    cl::sycl::buffer<typename vec::value_type, 1> buf(v.data(), cl::sycl::range<1>(v.size()));
+sycl::buffer<typename vec::value_type, 1> make_buffer(const vec &v) {
+    sycl::buffer<typename vec::value_type, 1> buf(v.data(), sycl::range<1>(v.size()));
     return buf;
 }
 

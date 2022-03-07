@@ -35,10 +35,10 @@
 
 #include <gtest/gtest.h>
 
-using namespace cl::sycl;
+using namespace sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
@@ -144,7 +144,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
 }
 
 class TrmmUsmTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::mkl::layout>> {};
 
 TEST_P(TrmmUsmTests, RealSinglePrecision) {
     float alpha(2.0);

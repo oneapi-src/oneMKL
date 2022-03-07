@@ -67,15 +67,15 @@ cuSolver handle to the SYCL context.
 
 class CusolverScopedContextHandler {
     CUcontext original_;
-    cl::sycl::context placedContext_;
+    sycl::context placedContext_;
     bool needToRecover_;
-    cl::sycl::interop_handler &ih;
+    sycl::interop_handler &ih;
     static thread_local cusolver_handle<pi_context> handle_helper;
-    CUstream get_stream(const cl::sycl::queue &queue);
-    cl::sycl::context get_context(const cl::sycl::queue &queue);
+    CUstream get_stream(const sycl::queue &queue);
+    sycl::context get_context(const sycl::queue &queue);
 
 public:
-    CusolverScopedContextHandler(cl::sycl::queue queue, cl::sycl::interop_handler &ih);
+    CusolverScopedContextHandler(sycl::queue queue, sycl::interop_handler &ih);
 
     ~CusolverScopedContextHandler() noexcept(false);
     /**
@@ -85,12 +85,12 @@ public:
    * @param queue sycl queue.
    * @return cusolverDnHandle_t a handle to construct cusolver routines
    */
-    cusolverDnHandle_t get_handle(const cl::sycl::queue &queue);
+    cusolverDnHandle_t get_handle(const sycl::queue &queue);
     // This is a work-around function for reinterpret_casting the memory. This
     // will be fixed when SYCL-2020 has been implemented for Pi backend.
     template <typename T, typename U>
     inline T get_mem(U acc) {
-        CUdeviceptr cudaPtr = ih.get_mem<cl::sycl::backend::cuda>(acc);
+        CUdeviceptr cudaPtr = ih.get_mem<sycl::backend::cuda>(acc);
         return reinterpret_cast<T>(cudaPtr);
     }
 };

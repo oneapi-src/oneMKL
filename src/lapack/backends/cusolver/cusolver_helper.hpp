@@ -233,7 +233,7 @@ inline cublasSideMode_t get_cublas_generate(oneapi::mkl::generate qp) {
 }
 
 /*converting std::complex<T> to cu<T>Complex*/
-/*converting cl::sycl::half to __half*/
+/*converting sycl::half to __half*/
 template <typename T>
 struct CudaEquivalentType {
     using Type = T;

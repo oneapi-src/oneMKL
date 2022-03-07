@@ -19,16 +19,16 @@
 
 // Buffer APIs
 
-void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-          int64_t k, float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda,
-          cl::sycl::buffer<float, 1> &b, int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c,
+void gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+          int64_t k, float alpha, sycl::buffer<float, 1> &a, int64_t lda,
+          sycl::buffer<float, 1> &b, int64_t ldb, float beta, sycl::buffer<float, 1> &c,
           int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_sgemm>(cgh, [=]() {
             ::cblas_sgemm(CBLASMAJOR, transa_, transb_, m, n, k, alpha, accessor_a.get_pointer(),
                           lda, accessor_b.get_pointer(), ldb, beta, accessor_c.get_pointer(), ldc);
@@ -36,16 +36,16 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
     });
 }
 
-void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-          int64_t k, double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda,
-          cl::sycl::buffer<double, 1> &b, int64_t ldb, double beta, cl::sycl::buffer<double, 1> &c,
+void gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+          int64_t k, double alpha, sycl::buffer<double, 1> &a, int64_t lda,
+          sycl::buffer<double, 1> &b, int64_t ldb, double beta, sycl::buffer<double, 1> &c,
           int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_dgemm>(cgh, [=]() {
             ::cblas_dgemm(CBLASMAJOR, transa_, transb_, m, n, k, alpha, accessor_a.get_pointer(),
                           lda, accessor_b.get_pointer(), ldb, beta, accessor_c.get_pointer(), ldc);
@@ -53,18 +53,18 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
     });
 }
 
-void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-          int64_t k, std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a,
-          int64_t lda, cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb,
-          std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+          int64_t k, std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a,
+          int64_t lda, sycl::buffer<std::complex<float>, 1> &b, int64_t ldb,
+          std::complex<float> beta, sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         float alpha_real = alpha.real(), alpha_imag = alpha.imag();
         float beta_real = beta.real(), beta_imag = beta.imag();
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_cgemm>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex8 beta_ = { beta_real, beta_imag };
@@ -75,18 +75,18 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
     });
 }
 
-void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-          int64_t k, std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a,
-          int64_t lda, cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb,
-          std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+          int64_t k, std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+          int64_t lda, sycl::buffer<std::complex<double>, 1> &b, int64_t ldb,
+          std::complex<double> beta, sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         double alpha_real = alpha.real(), alpha_imag = alpha.imag();
         double beta_real = beta.real(), beta_imag = beta.imag();
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_zgemm>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex16 beta_ = { beta_real, beta_imag };
@@ -97,23 +97,23 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
     });
 }
 
-void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-          int64_t k, sycl::half alpha, cl::sycl::buffer<sycl::half, 1> &a, int64_t lda,
-          cl::sycl::buffer<sycl::half, 1> &b, int64_t ldb, sycl::half beta,
-          cl::sycl::buffer<sycl::half, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
-        if (!verify_support<cl::sycl::half, cl::sycl::half>(queue, cl::sycl::aspect::fp16)) {
+void gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+          int64_t k, sycl::half alpha, sycl::buffer<sycl::half, 1> &a, int64_t lda,
+          sycl::buffer<sycl::half, 1> &b, int64_t ldb, sycl::half beta,
+          sycl::buffer<sycl::half, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
+        if (!verify_support<sycl::half, sycl::half>(queue, sycl::aspect::fp16)) {
             throw oneapi::mkl::unimplemented(
-                "blas", "cl::sycl::half",
+                "blas", "sycl::half",
                 "half is not supported by the device or the sycl compiler");
         }
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
         float f32_alpha = (float)alpha;
         float f32_beta = (float)beta;
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_hgemm>(cgh, [=]() {
             int64_t sizea, sizeb, sizec;
 #ifdef COLUMN_MAJOR
@@ -146,20 +146,20 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
     });
 }
 
-void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-          int64_t k, float alpha, cl::sycl::buffer<sycl::half, 1> &a, int64_t lda,
-          cl::sycl::buffer<sycl::half, 1> &b, int64_t ldb, float beta,
-          cl::sycl::buffer<float, 1> &c, int64_t ldc) {
-    if (!verify_support<cl::sycl::half, cl::sycl::half>(queue, cl::sycl::aspect::fp16)) {
+void gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+          int64_t k, float alpha, sycl::buffer<sycl::half, 1> &a, int64_t lda,
+          sycl::buffer<sycl::half, 1> &b, int64_t ldb, float beta,
+          sycl::buffer<float, 1> &c, int64_t ldc) {
+    if (!verify_support<sycl::half, sycl::half>(queue, sycl::aspect::fp16)) {
         throw oneapi::mkl::unimplemented(
-            "blas", "cl::sycl::half", "half is not supported by the device or the sycl compiler");
+            "blas", "sycl::half", "half is not supported by the device or the sycl compiler");
     }
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_gemm_f16f16f32>(cgh, [=]() {
             int64_t sizea, sizeb;
 #ifdef COLUMN_MAJOR
@@ -183,16 +183,16 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
     });
 }
 
-void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-          int64_t k, float alpha, cl::sycl::buffer<bfloat16, 1> &a, int64_t lda,
-          cl::sycl::buffer<bfloat16, 1> &b, int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c,
+void gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+          int64_t k, float alpha, sycl::buffer<bfloat16, 1> &a, int64_t lda,
+          sycl::buffer<bfloat16, 1> &b, int64_t ldb, float beta, sycl::buffer<float, 1> &c,
           int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_TRANSPOSE transb_ = cblas_convert(transb);
-        auto accessor_a = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.template get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.template get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.template get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_gemm_bf16bf16f32>(cgh, [=]() {
             auto a_mat = (MKL_BF16 *)static_cast<void *>(accessor_a.get_pointer());
             auto b_mat = (MKL_BF16 *)static_cast<void *>(accessor_b.get_pointer());
@@ -202,18 +202,18 @@ void gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
     });
 }
 
-void hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, int64_t n,
-          std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
-          cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, std::complex<float> beta,
-          cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void hemm(sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, int64_t n,
+          std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+          sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, std::complex<float> beta,
+          sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         float alpha_real = alpha.real(), alpha_imag = alpha.imag();
         float beta_real = beta.real(), beta_imag = beta.imag();
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_chemm>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex8 beta_ = { beta_real, beta_imag };
@@ -224,18 +224,18 @@ void hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, 
     });
 }
 
-void hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, int64_t n,
-          std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
-          cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, std::complex<double> beta,
-          cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void hemm(sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, int64_t n,
+          std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+          sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, std::complex<double> beta,
+          sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         double alpha_real = alpha.real(), alpha_imag = alpha.imag();
         double beta_real = beta.real(), beta_imag = beta.imag();
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_zhemm>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex16 beta_ = { beta_real, beta_imag };
@@ -246,14 +246,14 @@ void hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, 
     });
 }
 
-void herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
-          float alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda, float beta,
-          cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void herk(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+          float alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda, float beta,
+          sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_cherk>(cgh, [=]() {
             ::cblas_cherk(CBLASMAJOR, upper_lower_, trans_, n, k, alpha, accessor_a.get_pointer(),
                           lda, beta, accessor_c.get_pointer(), ldc);
@@ -261,14 +261,14 @@ void herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, 
     });
 }
 
-void herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
-          double alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda, double beta,
-          cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void herk(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+          double alpha, sycl::buffer<std::complex<double>, 1> &a, int64_t lda, double beta,
+          sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_zherk>(cgh, [=]() {
             ::cblas_zherk(CBLASMAJOR, upper_lower_, trans_, n, k, alpha, accessor_a.get_pointer(),
                           lda, beta, accessor_c.get_pointer(), ldc);
@@ -276,17 +276,17 @@ void herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, 
     });
 }
 
-void her2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
-           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
-           cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, float beta,
-           cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void her2k(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+           std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+           sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, float beta,
+           sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         float alpha_real = alpha.real(), alpha_imag = alpha.imag();
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_cher2k>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
             ::cblas_cher2k(CBLASMAJOR, upper_lower_, trans_, n, k, (const void *)&alpha_,
@@ -296,17 +296,17 @@ void her2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
     });
 }
 
-void her2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
-           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
-           cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, double beta,
-           cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void her2k(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+           std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+           sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, double beta,
+           sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         double alpha_real = alpha.real(), alpha_imag = alpha.imag();
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_zher2k>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
             ::cblas_zher2k(CBLASMAJOR, upper_lower_, trans_, n, k, (const void *)&alpha_,
@@ -316,15 +316,15 @@ void her2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
     });
 }
 
-void symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, int64_t n,
-          float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda, cl::sycl::buffer<float, 1> &b,
-          int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void symm(sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, int64_t n,
+          float alpha, sycl::buffer<float, 1> &a, int64_t lda, sycl::buffer<float, 1> &b,
+          int64_t ldb, float beta, sycl::buffer<float, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_ssymm>(cgh, [=]() {
             ::cblas_ssymm(CBLASMAJOR, left_right_, upper_lower_, m, n, alpha,
                           accessor_a.get_pointer(), lda, accessor_b.get_pointer(), ldb, beta,
@@ -333,15 +333,15 @@ void symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, 
     });
 }
 
-void symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, int64_t n,
-          double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda, cl::sycl::buffer<double, 1> &b,
-          int64_t ldb, double beta, cl::sycl::buffer<double, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void symm(sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, int64_t n,
+          double alpha, sycl::buffer<double, 1> &a, int64_t lda, sycl::buffer<double, 1> &b,
+          int64_t ldb, double beta, sycl::buffer<double, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_dsymm>(cgh, [=]() {
             ::cblas_dsymm(CBLASMAJOR, left_right_, upper_lower_, m, n, alpha,
                           accessor_a.get_pointer(), lda, accessor_b.get_pointer(), ldb, beta,
@@ -350,18 +350,18 @@ void symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, 
     });
 }
 
-void symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, int64_t n,
-          std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
-          cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, std::complex<float> beta,
-          cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void symm(sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, int64_t n,
+          std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+          sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, std::complex<float> beta,
+          sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         float alpha_real = alpha.real(), alpha_imag = alpha.imag();
         float beta_real = beta.real(), beta_imag = beta.imag();
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_csymm>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex8 beta_ = { beta_real, beta_imag };
@@ -372,18 +372,18 @@ void symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, 
     });
 }
 
-void symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, int64_t n,
-          std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
-          cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, std::complex<double> beta,
-          cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void symm(sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, int64_t n,
+          std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+          sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, std::complex<double> beta,
+          sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         double alpha_real = alpha.real(), alpha_imag = alpha.imag();
         double beta_real = beta.real(), beta_imag = beta.imag();
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_zsymm>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex16 beta_ = { beta_real, beta_imag };
@@ -394,14 +394,14 @@ void symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m, 
     });
 }
 
-void syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
-          float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda, float beta,
-          cl::sycl::buffer<float, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void syrk(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+          float alpha, sycl::buffer<float, 1> &a, int64_t lda, float beta,
+          sycl::buffer<float, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_ssyrk>(cgh, [=]() {
             ::cblas_ssyrk(CBLASMAJOR, upper_lower_, trans_, n, k, alpha, accessor_a.get_pointer(),
                           lda, beta, accessor_c.get_pointer(), ldc);
@@ -409,14 +409,14 @@ void syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, 
     });
 }
 
-void syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
-          double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda, double beta,
-          cl::sycl::buffer<double, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void syrk(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+          double alpha, sycl::buffer<double, 1> &a, int64_t lda, double beta,
+          sycl::buffer<double, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_dsyrk>(cgh, [=]() {
             ::cblas_dsyrk(CBLASMAJOR, upper_lower_, trans_, n, k, alpha, accessor_a.get_pointer(),
                           lda, beta, accessor_c.get_pointer(), ldc);
@@ -424,16 +424,16 @@ void syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, 
     });
 }
 
-void syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
-          std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
-          std::complex<float> beta, cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void syrk(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+          std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+          std::complex<float> beta, sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         float alpha_real = alpha.real(), alpha_imag = alpha.imag();
         float beta_real = beta.real(), beta_imag = beta.imag();
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_csyrk>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex8 beta_ = { beta_real, beta_imag };
@@ -444,16 +444,16 @@ void syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, 
     });
 }
 
-void syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
-          std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
-          std::complex<double> beta, cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void syrk(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+          std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+          std::complex<double> beta, sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         double alpha_real = alpha.real(), alpha_imag = alpha.imag();
         double beta_real = beta.real(), beta_imag = beta.imag();
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_zsyrk>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex16 beta_ = { beta_real, beta_imag };
@@ -464,15 +464,15 @@ void syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, 
     });
 }
 
-void syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
-           float alpha, cl::sycl::buffer<float, 1> &a, int64_t lda, cl::sycl::buffer<float, 1> &b,
-           int64_t ldb, float beta, cl::sycl::buffer<float, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void syr2k(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+           float alpha, sycl::buffer<float, 1> &a, int64_t lda, sycl::buffer<float, 1> &b,
+           int64_t ldb, float beta, sycl::buffer<float, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_ssyr2k>(cgh, [=]() {
             ::cblas_ssyr2k(CBLASMAJOR, upper_lower_, trans_, n, k, alpha, accessor_a.get_pointer(),
                            lda, accessor_b.get_pointer(), ldb, beta, accessor_c.get_pointer(), ldc);
@@ -480,16 +480,16 @@ void syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
     });
 }
 
-void syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
-           double alpha, cl::sycl::buffer<double, 1> &a, int64_t lda,
-           cl::sycl::buffer<double, 1> &b, int64_t ldb, double beta, cl::sycl::buffer<double, 1> &c,
+void syr2k(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+           double alpha, sycl::buffer<double, 1> &a, int64_t lda,
+           sycl::buffer<double, 1> &b, int64_t ldb, double beta, sycl::buffer<double, 1> &c,
            int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_dsyr2k>(cgh, [=]() {
             ::cblas_dsyr2k(CBLASMAJOR, upper_lower_, trans_, n, k, alpha, accessor_a.get_pointer(),
                            lda, accessor_b.get_pointer(), ldb, beta, accessor_c.get_pointer(), ldc);
@@ -497,18 +497,18 @@ void syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
     });
 }
 
-void syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
-           std::complex<float> alpha, cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
-           cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, std::complex<float> beta,
-           cl::sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void syr2k(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+           std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+           sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, std::complex<float> beta,
+           sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         float alpha_real = alpha.real(), alpha_imag = alpha.imag();
         float beta_real = beta.real(), beta_imag = beta.imag();
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_csyr2k>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex8 beta_ = { beta_real, beta_imag };
@@ -519,18 +519,18 @@ void syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
     });
 }
 
-void syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
-           std::complex<double> alpha, cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
-           cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, std::complex<double> beta,
-           cl::sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void syr2k(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+           std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+           sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, std::complex<double> beta,
+           sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         double alpha_real = alpha.real(), alpha_imag = alpha.imag();
         double beta_real = beta.real(), beta_imag = beta.imag();
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_c = c.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_zsyr2k>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
             MKL_Complex16 beta_ = { beta_real, beta_imag };
@@ -541,16 +541,16 @@ void syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
     });
 }
 
-void trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
-          diag unit_diag, int64_t m, int64_t n, float alpha, cl::sycl::buffer<float, 1> &a,
-          int64_t lda, cl::sycl::buffer<float, 1> &b, int64_t ldb) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void trmm(sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
+          diag unit_diag, int64_t m, int64_t n, float alpha, sycl::buffer<float, 1> &a,
+          int64_t lda, sycl::buffer<float, 1> &b, int64_t ldb) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_DIAG unit_diag_ = cblas_convert(unit_diag);
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_strmm>(cgh, [=]() {
             ::cblas_strmm(CBLASMAJOR, left_right_, upper_lower_, transa_, unit_diag_, m, n, alpha,
                           accessor_a.get_pointer(), lda, accessor_b.get_pointer(), ldb);
@@ -558,16 +558,16 @@ void trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose t
     });
 }
 
-void trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
-          diag unit_diag, int64_t m, int64_t n, double alpha, cl::sycl::buffer<double, 1> &a,
-          int64_t lda, cl::sycl::buffer<double, 1> &b, int64_t ldb) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void trmm(sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
+          diag unit_diag, int64_t m, int64_t n, double alpha, sycl::buffer<double, 1> &a,
+          int64_t lda, sycl::buffer<double, 1> &b, int64_t ldb) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_DIAG unit_diag_ = cblas_convert(unit_diag);
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_dtrmm>(cgh, [=]() {
             ::cblas_dtrmm(CBLASMAJOR, left_right_, upper_lower_, transa_, unit_diag_, m, n, alpha,
                           accessor_a.get_pointer(), lda, accessor_b.get_pointer(), ldb);
@@ -575,18 +575,18 @@ void trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose t
     });
 }
 
-void trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
+void trmm(sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
           diag unit_diag, int64_t m, int64_t n, std::complex<float> alpha,
-          cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
-          cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+          sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+          sycl::buffer<std::complex<float>, 1> &b, int64_t ldb) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_DIAG unit_diag_ = cblas_convert(unit_diag);
         float alpha_real = alpha.real(), alpha_imag = alpha.imag();
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_ctrmm>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
             ::cblas_ctrmm(CBLASMAJOR, left_right_, upper_lower_, transa_, unit_diag_, m, n,
@@ -596,18 +596,18 @@ void trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose t
     });
 }
 
-void trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
+void trmm(sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
           diag unit_diag, int64_t m, int64_t n, std::complex<double> alpha,
-          cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
-          cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+          sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+          sycl::buffer<std::complex<double>, 1> &b, int64_t ldb) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_DIAG unit_diag_ = cblas_convert(unit_diag);
         double alpha_real = alpha.real(), alpha_imag = alpha.imag();
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_ztrmm>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
             ::cblas_ztrmm(CBLASMAJOR, left_right_, upper_lower_, transa_, unit_diag_, m, n,
@@ -617,16 +617,16 @@ void trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose t
     });
 }
 
-void trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
-          diag unit_diag, int64_t m, int64_t n, float alpha, cl::sycl::buffer<float, 1> &a,
-          int64_t lda, cl::sycl::buffer<float, 1> &b, int64_t ldb) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void trsm(sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
+          diag unit_diag, int64_t m, int64_t n, float alpha, sycl::buffer<float, 1> &a,
+          int64_t lda, sycl::buffer<float, 1> &b, int64_t ldb) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_DIAG unit_diag_ = cblas_convert(unit_diag);
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_strsm>(cgh, [=]() {
             ::cblas_strsm(CBLASMAJOR, left_right_, upper_lower_, transa_, unit_diag_, m, n, alpha,
                           accessor_a.get_pointer(), lda, accessor_b.get_pointer(), ldb);
@@ -634,16 +634,16 @@ void trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose t
     });
 }
 
-void trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
-          diag unit_diag, int64_t m, int64_t n, double alpha, cl::sycl::buffer<double, 1> &a,
-          int64_t lda, cl::sycl::buffer<double, 1> &b, int64_t ldb) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+void trsm(sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
+          diag unit_diag, int64_t m, int64_t n, double alpha, sycl::buffer<double, 1> &a,
+          int64_t lda, sycl::buffer<double, 1> &b, int64_t ldb) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_DIAG unit_diag_ = cblas_convert(unit_diag);
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_dtrsm>(cgh, [=]() {
             ::cblas_dtrsm(CBLASMAJOR, left_right_, upper_lower_, transa_, unit_diag_, m, n, alpha,
                           accessor_a.get_pointer(), lda, accessor_b.get_pointer(), ldb);
@@ -651,18 +651,18 @@ void trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose t
     });
 }
 
-void trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
+void trsm(sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
           diag unit_diag, int64_t m, int64_t n, std::complex<float> alpha,
-          cl::sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
-          cl::sycl::buffer<std::complex<float>, 1> &b, int64_t ldb) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+          sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+          sycl::buffer<std::complex<float>, 1> &b, int64_t ldb) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_DIAG unit_diag_ = cblas_convert(unit_diag);
         float alpha_real = alpha.real(), alpha_imag = alpha.imag();
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_ctrsm>(cgh, [=]() {
             MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
             ::cblas_ctrsm(CBLASMAJOR, left_right_, upper_lower_, transa_, unit_diag_, m, n,
@@ -672,18 +672,18 @@ void trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose t
     });
 }
 
-void trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
+void trsm(sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
           diag unit_diag, int64_t m, int64_t n, std::complex<double> alpha,
-          cl::sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
-          cl::sycl::buffer<std::complex<double>, 1> &b, int64_t ldb) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+          sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+          sycl::buffer<std::complex<double>, 1> &b, int64_t ldb) {
+    queue.submit([&](sycl::handler &cgh) {
         CBLAS_SIDE left_right_ = cblas_convert(left_right);
         CBLAS_UPLO upper_lower_ = cblas_convert(upper_lower);
         CBLAS_TRANSPOSE transa_ = cblas_convert(transa);
         CBLAS_DIAG unit_diag_ = cblas_convert(unit_diag);
         double alpha_real = alpha.real(), alpha_imag = alpha.imag();
-        auto accessor_a = a.get_access<cl::sycl::access::mode::read>(cgh);
-        auto accessor_b = b.get_access<cl::sycl::access::mode::read_write>(cgh);
+        auto accessor_a = a.get_access<sycl::access::mode::read>(cgh);
+        auto accessor_b = b.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class mkl_kernel_ztrsm>(cgh, [=]() {
             MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
             ::cblas_ztrsm(CBLASMAJOR, left_right_, upper_lower_, transa_, unit_diag_, m, n,
@@ -695,11 +695,11 @@ void trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose t
 
 // USM APIs
 
-cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                      int64_t n, int64_t k, float alpha, const float *a, int64_t lda, const float *b,
                      int64_t ldb, float beta, float *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -714,11 +714,11 @@ cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
     return done;
 }
 
-cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                      int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
                      const double *b, int64_t ldb, double beta, double *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -733,12 +733,12 @@ cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
     return done;
 }
 
-cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                      int64_t n, int64_t k, std::complex<float> alpha, const std::complex<float> *a,
                      int64_t lda, const std::complex<float> *b, int64_t ldb,
                      std::complex<float> beta, std::complex<float> *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -757,12 +757,12 @@ cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
     return done;
 }
 
-cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                      int64_t n, int64_t k, std::complex<double> alpha,
                      const std::complex<double> *a, int64_t lda, const std::complex<double> *b,
                      int64_t ldb, std::complex<double> beta, std::complex<double> *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -781,14 +781,14 @@ cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
     return done;
 }
 
-cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                      int64_t n, int64_t k, sycl::half alpha, const sycl::half *a, int64_t lda,
                      const sycl::half *b, int64_t ldb, sycl::half beta, sycl::half *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
-        if (!verify_support<cl::sycl::half, cl::sycl::half>(queue, cl::sycl::aspect::fp16)) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        if (!verify_support<sycl::half, sycl::half>(queue, sycl::aspect::fp16)) {
             throw oneapi::mkl::unimplemented(
-                "blas", "cl::sycl::half",
+                "blas", "sycl::half",
                 "half is not supported by the device or the sycl compiler");
         }
         int64_t num_events = dependencies.size();
@@ -831,14 +831,14 @@ cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
     return done;
 }
 
-cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                      int64_t n, int64_t k, float alpha, const sycl::half *a, int64_t lda,
                      const sycl::half *b, int64_t ldb, float beta, float *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
-        if (!verify_support<cl::sycl::half, cl::sycl::half>(queue, cl::sycl::aspect::fp16)) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        if (!verify_support<sycl::half, sycl::half>(queue, sycl::aspect::fp16)) {
             throw oneapi::mkl::unimplemented(
-                "blas", "cl::sycl::half",
+                "blas", "sycl::half",
                 "half is not supported by the device or the sycl compiler");
         }
         int64_t num_events = dependencies.size();
@@ -873,11 +873,11 @@ cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
     return done;
 }
 
-cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                      int64_t n, int64_t k, float alpha, const bfloat16 *a, int64_t lda,
                      const bfloat16 *b, int64_t ldb, float beta, float *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -892,12 +892,12 @@ cl::sycl::event gemm(cl::sycl::queue &queue, transpose transa, transpose transb,
     return done;
 }
 
-cl::sycl::event hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
+sycl::event hemm(sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
                      int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                      int64_t lda, const std::complex<float> *b, int64_t ldb,
                      std::complex<float> beta, std::complex<float> *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -916,12 +916,12 @@ cl::sycl::event hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
     return done;
 }
 
-cl::sycl::event hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
+sycl::event hemm(sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
                      int64_t n, std::complex<double> alpha, const std::complex<double> *a,
                      int64_t lda, const std::complex<double> *b, int64_t ldb,
                      std::complex<double> beta, std::complex<double> *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -940,11 +940,11 @@ cl::sycl::event hemm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
     return done;
 }
 
-cl::sycl::event herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
+sycl::event herk(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                      int64_t k, float alpha, const std::complex<float> *a, int64_t lda, float beta,
                      std::complex<float> *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -958,11 +958,11 @@ cl::sycl::event herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
     return done;
 }
 
-cl::sycl::event herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
+sycl::event herk(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                      int64_t k, double alpha, const std::complex<double> *a, int64_t lda,
                      double beta, std::complex<double> *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -976,12 +976,12 @@ cl::sycl::event herk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
     return done;
 }
 
-cl::sycl::event her2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
+sycl::event her2k(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                       int64_t k, std::complex<float> alpha, const std::complex<float> *a,
                       int64_t lda, const std::complex<float> *b, int64_t ldb, float beta,
                       std::complex<float> *c, int64_t ldc,
-                      const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                      const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -998,12 +998,12 @@ cl::sycl::event her2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
     return done;
 }
 
-cl::sycl::event her2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
+sycl::event her2k(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                       int64_t k, std::complex<double> alpha, const std::complex<double> *a,
                       int64_t lda, const std::complex<double> *b, int64_t ldb, double beta,
                       std::complex<double> *c, int64_t ldc,
-                      const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                      const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1020,11 +1020,11 @@ cl::sycl::event her2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
     return done;
 }
 
-cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
+sycl::event symm(sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
                      int64_t n, float alpha, const float *a, int64_t lda, const float *b,
                      int64_t ldb, float beta, float *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1039,11 +1039,11 @@ cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
     return done;
 }
 
-cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
+sycl::event symm(sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
                      int64_t n, double alpha, const double *a, int64_t lda, const double *b,
                      int64_t ldb, double beta, double *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1058,12 +1058,12 @@ cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
     return done;
 }
 
-cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
+sycl::event symm(sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
                      int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                      int64_t lda, const std::complex<float> *b, int64_t ldb,
                      std::complex<float> beta, std::complex<float> *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1082,12 +1082,12 @@ cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
     return done;
 }
 
-cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
+sycl::event symm(sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
                      int64_t n, std::complex<double> alpha, const std::complex<double> *a,
                      int64_t lda, const std::complex<double> *b, int64_t ldb,
                      std::complex<double> beta, std::complex<double> *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1106,10 +1106,10 @@ cl::sycl::event symm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
     return done;
 }
 
-cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
+sycl::event syrk(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                      int64_t k, float alpha, const float *a, int64_t lda, float beta, float *c,
-                     int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     int64_t ldc, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1123,10 +1123,10 @@ cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
     return done;
 }
 
-cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
+sycl::event syrk(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                      int64_t k, double alpha, const double *a, int64_t lda, double beta, double *c,
-                     int64_t ldc, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     int64_t ldc, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1140,11 +1140,11 @@ cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
     return done;
 }
 
-cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
+sycl::event syrk(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                      int64_t k, std::complex<float> alpha, const std::complex<float> *a,
                      int64_t lda, std::complex<float> beta, std::complex<float> *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1163,11 +1163,11 @@ cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
     return done;
 }
 
-cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
+sycl::event syrk(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                      int64_t k, std::complex<double> alpha, const std::complex<double> *a,
                      int64_t lda, std::complex<double> beta, std::complex<double> *c, int64_t ldc,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1186,11 +1186,11 @@ cl::sycl::event syrk(cl::sycl::queue &queue, uplo upper_lower, transpose trans, 
     return done;
 }
 
-cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
+sycl::event syr2k(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                       int64_t k, float alpha, const float *a, int64_t lda, const float *b,
                       int64_t ldb, float beta, float *c, int64_t ldc,
-                      const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                      const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1205,11 +1205,11 @@ cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
     return done;
 }
 
-cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
+sycl::event syr2k(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                       int64_t k, double alpha, const double *a, int64_t lda, const double *b,
                       int64_t ldb, double beta, double *c, int64_t ldc,
-                      const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                      const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1224,12 +1224,12 @@ cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
     return done;
 }
 
-cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
+sycl::event syr2k(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                       int64_t k, std::complex<float> alpha, const std::complex<float> *a,
                       int64_t lda, const std::complex<float> *b, int64_t ldb,
                       std::complex<float> beta, std::complex<float> *c, int64_t ldc,
-                      const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                      const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1248,12 +1248,12 @@ cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
     return done;
 }
 
-cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
+sycl::event syr2k(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                       int64_t k, std::complex<double> alpha, const std::complex<double> *a,
                       int64_t lda, const std::complex<double> *b, int64_t ldb,
                       std::complex<double> beta, std::complex<double> *c, int64_t ldc,
-                      const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                      const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1272,10 +1272,10 @@ cl::sycl::event syr2k(cl::sycl::queue &queue, uplo upper_lower, transpose trans,
     return done;
 }
 
-cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
+sycl::event trmm(sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
                      diag unit_diag, int64_t m, int64_t n, float alpha, const float *a, int64_t lda,
-                     float *b, int64_t ldb, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     float *b, int64_t ldb, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1292,11 +1292,11 @@ cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
     return done;
 }
 
-cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
+sycl::event trmm(sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
                      diag unit_diag, int64_t m, int64_t n, double alpha, const double *a,
                      int64_t lda, double *b, int64_t ldb,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1313,11 +1313,11 @@ cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
     return done;
 }
 
-cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
+sycl::event trmm(sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
                      diag unit_diag, int64_t m, int64_t n, std::complex<float> alpha,
                      const std::complex<float> *a, int64_t lda, std::complex<float> *b, int64_t ldb,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1336,11 +1336,11 @@ cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
     return done;
 }
 
-cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
+sycl::event trmm(sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
                      diag unit_diag, int64_t m, int64_t n, std::complex<double> alpha,
                      const std::complex<double> *a, int64_t lda, std::complex<double> *b,
-                     int64_t ldb, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     int64_t ldb, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1359,10 +1359,10 @@ cl::sycl::event trmm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
     return done;
 }
 
-cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
+sycl::event trsm(sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
                      diag unit_diag, int64_t m, int64_t n, float alpha, const float *a, int64_t lda,
-                     float *b, int64_t ldb, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     float *b, int64_t ldb, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1379,11 +1379,11 @@ cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
     return done;
 }
 
-cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
+sycl::event trsm(sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
                      diag unit_diag, int64_t m, int64_t n, double alpha, const double *a,
                      int64_t lda, double *b, int64_t ldb,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1400,11 +1400,11 @@ cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
     return done;
 }
 
-cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
+sycl::event trsm(sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
                      diag unit_diag, int64_t m, int64_t n, std::complex<float> alpha,
                      const std::complex<float> *a, int64_t lda, std::complex<float> *b, int64_t ldb,
-                     const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1423,11 +1423,11 @@ cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, 
     return done;
 }
 
-cl::sycl::event trsm(cl::sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
+sycl::event trsm(sycl::queue &queue, side left_right, uplo upper_lower, transpose transa,
                      diag unit_diag, int64_t m, int64_t n, std::complex<double> alpha,
                      const std::complex<double> *a, int64_t lda, std::complex<double> *b,
-                     int64_t ldb, const std::vector<cl::sycl::event> &dependencies) {
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+                     int64_t ldb, const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);

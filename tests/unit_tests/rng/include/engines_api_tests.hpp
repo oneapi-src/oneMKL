@@ -50,10 +50,10 @@ public:
 
             oneapi::mkl::rng::bits<std::uint32_t> distr;
 
-            cl::sycl::buffer<std::uint32_t, 1> r1_buffer(r1.data(), r1.size());
-            cl::sycl::buffer<std::uint32_t, 1> r2_buffer(r2.data(), r2.size());
-            cl::sycl::buffer<std::uint32_t, 1> r3_buffer(r3.data(), r3.size());
-            cl::sycl::buffer<std::uint32_t, 1> r4_buffer(r4.data(), r4.size());
+            sycl::buffer<std::uint32_t, 1> r1_buffer(r1.data(), r1.size());
+            sycl::buffer<std::uint32_t, 1> r2_buffer(r2.data(), r2.size());
+            sycl::buffer<std::uint32_t, 1> r3_buffer(r3.data(), r3.size());
+            sycl::buffer<std::uint32_t, 1> r4_buffer(r4.data(), r4.size());
 
             oneapi::mkl::rng::generate(distr, engine1, N_GEN, r1_buffer);
             oneapi::mkl::rng::generate(distr, engine2, N_GEN, r2_buffer);
@@ -64,7 +64,7 @@ public:
             status = test_skipped;
             return;
         }
-        catch (cl::sycl::exception const& e) {
+        catch (sycl::exception const& e) {
             std::cout << "SYCL exception during generation" << std::endl << e.what() << std::endl;
             print_error_code(e);
             status = test_failed;
@@ -96,8 +96,8 @@ public:
 
             oneapi::mkl::rng::bits<std::uint32_t> distr;
             {
-                cl::sycl::buffer<std::uint32_t, 1> r1_buffer(r1.data(), r1.size());
-                cl::sycl::buffer<std::uint32_t, 1> r2_buffer(r2.data(), r2.size());
+                sycl::buffer<std::uint32_t, 1> r1_buffer(r1.data(), r1.size());
+                sycl::buffer<std::uint32_t, 1> r2_buffer(r2.data(), r2.size());
 
                 oneapi::mkl::rng::generate(distr, engine1, N_GEN, r1_buffer);
                 oneapi::mkl::rng::generate(distr, engine2, N_GEN, r2_buffer);
@@ -106,9 +106,9 @@ public:
             Engine engine3 = engine1;
             Engine engine4 = std::move(engine2);
             {
-                cl::sycl::buffer<std::uint32_t, 1> r1_buffer(r1.data(), r1.size());
-                cl::sycl::buffer<std::uint32_t, 1> r2_buffer(r2.data(), r2.size());
-                cl::sycl::buffer<std::uint32_t, 1> r3_buffer(r3.data(), r3.size());
+                sycl::buffer<std::uint32_t, 1> r1_buffer(r1.data(), r1.size());
+                sycl::buffer<std::uint32_t, 1> r2_buffer(r2.data(), r2.size());
+                sycl::buffer<std::uint32_t, 1> r3_buffer(r3.data(), r3.size());
 
                 oneapi::mkl::rng::generate(distr, engine1, N_GEN, r1_buffer);
                 oneapi::mkl::rng::generate(distr, engine3, N_GEN, r2_buffer);
@@ -119,7 +119,7 @@ public:
             status = test_skipped;
             return;
         }
-        catch (cl::sycl::exception const& e) {
+        catch (sycl::exception const& e) {
             std::cout << "SYCL exception during generation" << std::endl << e.what() << std::endl;
             print_error_code(e);
             status = test_failed;

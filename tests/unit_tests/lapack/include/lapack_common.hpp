@@ -186,7 +186,7 @@ struct is_buf {
     static constexpr bool value{ false };
 };
 template <typename T, int dimensions, typename AllocatorT>
-struct is_buf<cl::sycl::buffer<T, dimensions, AllocatorT, void>> {
+struct is_buf<sycl::buffer<T, dimensions, AllocatorT, void>> {
     static constexpr bool value{ true };
 };
 

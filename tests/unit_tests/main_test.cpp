@@ -35,7 +35,7 @@ using ::testing::TestInfo;
 using ::testing::TestPartResult;
 using ::testing::UnitTest;
 
-std::vector<cl::sycl::device*> devices;
+std::vector<sycl::device*> devices;
 
 std::string gtestInFile;
 
@@ -77,33 +77,33 @@ private:
 
 } // anonymous namespace
 
-void print_error_code(cl::sycl::exception const& e) {
+void print_error_code(sycl::exception const& e) {
 #ifdef __HIPSYCL__
     std::cout << "Backend status: " << e.code() << std::endl;
 #else
-    std::cout << "OpenCL status: " << e.get_cl_code() << std::endl;
+    std::cout << "OpenCL status: " << e.code() << std::endl;
 #endif
 }
 
 int main(int argc, char** argv) {
     std::set<std::string> unique_devices;
-    std::vector<cl::sycl::device> local_devices;
+    std::vector<sycl::device> local_devices;
 
-    auto platforms = cl::sycl::platform::get_platforms();
+    auto platforms = sycl::platform::get_platforms();
     for (auto plat : platforms) {
         if (!plat.is_host()) {
             auto plat_devs = plat.get_devices();
             for (auto dev : plat_devs) {
                 try {
                     /* Do not test for OpenCL backend on GPU */
-                    if (dev.is_gpu() && plat.get_info<cl::sycl::info::platform::name>().find(
+                    if (dev.is_gpu() && plat.get_info<sycl::info::platform::name>().find(
                                             "OpenCL") != std::string::npos)
                         continue;
-                    if (unique_devices.find(dev.get_info<cl::sycl::info::device::name>()) ==
+                    if (unique_devices.find(dev.get_info<sycl::info::device::name>()) ==
                         unique_devices.end()) {
-                        unique_devices.insert(dev.get_info<cl::sycl::info::device::name>());
+                        unique_devices.insert(dev.get_info<sycl::info::device::name>());
                         unsigned int vendor_id = static_cast<unsigned int>(
-                            dev.get_info<cl::sycl::info::device::vendor_id>());
+                            dev.get_info<sycl::info::device::vendor_id>());
 #ifndef ENABLE_MKLCPU_BACKEND
                         if (dev.is_cpu())
                             continue;
@@ -133,12 +133,12 @@ int main(int argc, char** argv) {
     }
 
 #if defined(ENABLE_MKLCPU_BACKEND) || defined(ENABLE_NETLIB_BACKEND)
-    local_devices.push_back(cl::sycl::device(cl::sycl::host_selector()));
+    local_devices.push_back(sycl::device(sycl::host_selector()));
 #endif
-#define GET_NAME(d) (d).template get_info<cl::sycl::info::device::name>()
+#define GET_NAME(d) (d).template get_info<sycl::info::device::name>()
     for (auto& local_dev : local_devices) {
         // Test only unique devices
-        if (std::find_if(devices.begin(), devices.end(), [&](cl::sycl::device* dev) {
+        if (std::find_if(devices.begin(), devices.end(), [&](sycl::device* dev) {
                 return GET_NAME(*dev) == GET_NAME(local_dev);
             }) == devices.end())
             devices.push_back(&local_dev);

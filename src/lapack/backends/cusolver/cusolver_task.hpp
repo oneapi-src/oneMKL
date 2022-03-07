@@ -33,15 +33,15 @@ namespace lapack {
 namespace cusolver {
 
 template <typename H, typename F>
-static inline void host_task_internal(H &cgh, cl::sycl::queue queue, F f) {
-    cgh.interop_task([f, queue](cl::sycl::interop_handler ih) {
+static inline void host_task_internal(H &cgh, sycl::queue queue, F f) {
+    cgh.interop_task([f, queue](sycl::interop_handler ih) {
         auto sc = CusolverScopedContextHandler(queue, ih);
         f(sc);
     });
 }
 
 template <typename H, typename F>
-static inline void onemkl_cusolver_host_task(H &cgh, cl::sycl::queue queue, F f) {
+static inline void onemkl_cusolver_host_task(H &cgh, sycl::queue queue, F f) {
     (void)host_task_internal(cgh, queue, f);
 }
 

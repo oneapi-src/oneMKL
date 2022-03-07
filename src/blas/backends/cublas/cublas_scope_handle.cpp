@@ -34,13 +34,12 @@ namespace cublas {
 thread_local cublas_handle<pi_context> CublasScopedContextHandler::handle_helper =
     cublas_handle<pi_context>{};
 
-CublasScopedContextHandler::CublasScopedContextHandler(cl::sycl::queue queue,
-                                                       cl::sycl::interop_handler &ih)
+CublasScopedContextHandler::CublasScopedContextHandler(sycl::queue queue, sycl::interop_handler &ih)
         : ih(ih),
           needToRecover_(false) {
-    placedContext_ = new cl::sycl::context(queue.get_context());
+    placedContext_ = new sycl::context(queue.get_context());
     auto device = queue.get_device();
-    auto desired = cl::sycl::get_native<cl::sycl::backend::cuda>(*placedContext_);
+    auto desired = sycl::get_native<sycl::backend::cuda>(*placedContext_);
     CUresult err;
     CUDA_ERROR_FUNC(cuCtxGetCurrent, err, &original_);
     if (original_ != desired) {
@@ -83,9 +82,9 @@ void ContextCallback(void *userData) {
     }
 }
 
-cublasHandle_t CublasScopedContextHandler::get_handle(const cl::sycl::queue &queue) {
-    auto piPlacedContext_ = reinterpret_cast<pi_context>(
-        cl::sycl::get_native<cl::sycl::backend::cuda>(*placedContext_));
+cublasHandle_t CublasScopedContextHandler::get_handle(const sycl::queue &queue) {
+    auto piPlacedContext_ =
+        reinterpret_cast<pi_context>(sycl::get_native<sycl::backend::cuda>(*placedContext_));
     CUstream streamId = get_stream(queue);
     cublasStatus_t err;
     auto it = handle_helper.cublas_handle_mapper_.find(piPlacedContext_);
@@ -123,10 +122,10 @@ cublasHandle_t CublasScopedContextHandler::get_handle(const cl::sycl::queue &que
     return handle;
 }
 
-CUstream CublasScopedContextHandler::get_stream(const cl::sycl::queue &queue) {
-    return cl::sycl::get_native<cl::sycl::backend::cuda>(queue);
+CUstream CublasScopedContextHandler::get_stream(const sycl::queue &queue) {
+    return sycl::get_native<sycl::backend::cuda>(queue);
 }
-cl::sycl::context CublasScopedContextHandler::get_context(const cl::sycl::queue &queue) {
+sycl::context CublasScopedContextHandler::get_context(const sycl::queue &queue) {
     return queue.get_context();
 }
 

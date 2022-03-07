@@ -21,11 +21,11 @@
 
 #include <gtest/gtest.h>
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
-class BernoulliIcdfTests : public ::testing::TestWithParam<cl::sycl::device*> {};
+class BernoulliIcdfTests : public ::testing::TestWithParam<sycl::device*> {};
 
 TEST_P(BernoulliIcdfTests, IntegerPrecision) {
     rng_test<statistics_test<

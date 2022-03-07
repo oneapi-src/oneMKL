@@ -52,11 +52,11 @@ public:
                 oneapi::mkl::rng::skip_ahead(*(engines[i]), i * N_PORTION);
             }
 
-            cl::sycl::buffer<std::uint32_t, 1> r_buffer(r1.data(), r1.size());
-            std::vector<cl::sycl::buffer<std::uint32_t, 1>> r_buffers;
+            sycl::buffer<std::uint32_t, 1> r_buffer(r1.data(), r1.size());
+            std::vector<sycl::buffer<std::uint32_t, 1>> r_buffers;
             for (int i = 0; i < N_ENGINES; i++) {
                 r_buffers.push_back(
-                    cl::sycl::buffer<std::uint32_t, 1>(r2.data() + i * N_PORTION, N_PORTION));
+                    sycl::buffer<std::uint32_t, 1>(r2.data() + i * N_PORTION, N_PORTION));
             }
 
             oneapi::mkl::rng::generate(distr, engine, N_GEN_SERVICE, r_buffer);
@@ -73,7 +73,7 @@ public:
             status = test_skipped;
             return;
         }
-        catch (cl::sycl::exception const& e) {
+        catch (sycl::exception const& e) {
             std::cout << "SYCL exception during generation" << std::endl << e.what() << std::endl;
             print_error_code(e);
             status = test_failed;
@@ -109,8 +109,8 @@ public:
             }
             oneapi::mkl::rng::skip_ahead(engine2, NUM_TO_SKIP);
 
-            cl::sycl::buffer<std::uint32_t, 1> r1_buffer(r1.data(), r1.size());
-            cl::sycl::buffer<std::uint32_t, 1> r2_buffer(r2.data(), r2.size());
+            sycl::buffer<std::uint32_t, 1> r1_buffer(r1.data(), r1.size());
+            sycl::buffer<std::uint32_t, 1> r2_buffer(r2.data(), r2.size());
 
             oneapi::mkl::rng::generate(distr, engine1, N_GEN, r1_buffer);
             oneapi::mkl::rng::generate(distr, engine2, N_GEN, r2_buffer);
@@ -119,7 +119,7 @@ public:
             status = test_skipped;
             return;
         }
-        catch (cl::sycl::exception const& e) {
+        catch (sycl::exception const& e) {
             std::cout << "SYCL exception during generation" << std::endl << e.what() << std::endl;
             print_error_code(e);
             status = test_failed;

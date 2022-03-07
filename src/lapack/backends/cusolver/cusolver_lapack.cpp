@@ -41,13 +41,13 @@ inline void gebrd(Func func, sycl::queue &queue, std::int64_t m, std::int64_t n,
     if (m < n)
         throw unimplemented("lapack", "gebrd", "cusolver gebrd does not support m < n");
 
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto d_acc = d.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto e_acc = e.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto tauq_acc = tauq.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto taup_acc = taup.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto d_acc = d.template get_access<sycl::access::mode::write>(cgh);
+        auto e_acc = e.template get_access<sycl::access::mode::write>(cgh);
+        auto tauq_acc = tauq.template get_access<sycl::access::mode::write>(cgh);
+        auto taup_acc = taup.template get_access<sycl::access::mode::write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType_A *>(a_acc);
@@ -107,10 +107,10 @@ inline void geqrf(Func func, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   std::int64_t scratchpad_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, scratchpad_size);
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto tau_acc = tau.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -150,10 +150,10 @@ void getrf(Func func, sycl::queue &queue, std::int64_t m, std::int64_t n, sycl::
     std::uint64_t ipiv_size = std::min(n, m);
     sycl::buffer<int, 1> ipiv32(sycl::range<1>{ ipiv_size });
 
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto ipiv32_acc = ipiv32.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -165,10 +165,10 @@ void getrf(Func func, sycl::queue &queue, std::int64_t m, std::int64_t n, sycl::
     });
 
     // Copy from 32-bit buffer to 64-bit
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto ipiv32_acc = ipiv32.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto ipiv_acc = ipiv.template get_access<cl::sycl::access::mode::write>(cgh);
-        cgh.parallel_for(cl::sycl::range<1>{ ipiv_size }, [=](cl::sycl::id<1> index) {
+    queue.submit([&](sycl::handler &cgh) {
+        auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::read>(cgh);
+        auto ipiv_acc = ipiv.template get_access<sycl::access::mode::write>(cgh);
+        cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
             ipiv_acc[index] = static_cast<std::int64_t>(ipiv32_acc[index]);
         });
     });
@@ -224,18 +224,18 @@ inline void getrs(Func func, sycl::queue &queue, oneapi::mkl::transpose trans, s
     std::uint64_t ipiv_size = ipiv.size();
     sycl::buffer<int, 1> ipiv32(sycl::range<1>{ ipiv_size });
 
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto ipiv32_acc = ipiv32.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto ipiv_acc = ipiv.template get_access<cl::sycl::access::mode::read>(cgh);
-        cgh.parallel_for(cl::sycl::range<1>{ ipiv_size }, [=](cl::sycl::id<1> index) {
+    queue.submit([&](sycl::handler &cgh) {
+        auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::write>(cgh);
+        auto ipiv_acc = ipiv.template get_access<sycl::access::mode::read>(cgh);
+        cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
             ipiv32_acc[index] = static_cast<std::int32_t>(ipiv_acc[index]);
         });
     });
 
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto ipiv_acc = ipiv32.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc = b.template get_access<cl::sycl::access::mode::write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto ipiv_acc = ipiv32.template get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -273,12 +273,12 @@ inline void gesvd(Func func, sycl::queue &queue, oneapi::mkl::jobsvd jobu,
     using cuDataType_A = typename CudaEquivalentType<T_A>::Type;
     using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
     overflow_check(n, m, lda, ldu, ldvt, scratchpad_size);
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto s_acc = s.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto u_acc = u.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto vt_acc = vt.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto s_acc = s.template get_access<sycl::access::mode::write>(cgh);
+        auto u_acc = u.template get_access<sycl::access::mode::write>(cgh);
+        auto vt_acc = vt.template get_access<sycl::access::mode::write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType_A *>(a_acc);
@@ -320,11 +320,11 @@ inline void heevd(Func func, sycl::queue &queue, oneapi::mkl::job jobz, oneapi::
     using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
     overflow_check(n, lda, scratchpad_size);
     sycl::buffer<int> devInfo{ 1 };
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto w_acc = w.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto devInfo_acc = devInfo.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto w_acc = w.template get_access<sycl::access::mode::write>(cgh);
+        auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType_A *>(a_acc);
@@ -360,12 +360,12 @@ inline void hegvd(Func func, sycl::queue &queue, std::int64_t itype, oneapi::mkl
     using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
     overflow_check(n, lda, ldb, scratchpad_size);
     sycl::buffer<int> devInfo{ 1 };
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto b_acc = b.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto w_acc = w.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto devInfo_acc = devInfo.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
+        auto w_acc = w.template get_access<sycl::access::mode::write>(cgh);
+        auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType_A *>(a_acc);
@@ -404,13 +404,13 @@ inline void hetrd(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, std::in
     using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
     overflow_check(n, lda, scratchpad_size);
     sycl::buffer<int> devInfo{ 1 };
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto d_acc = d.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto e_acc = e.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto tau_acc = tau.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto devInfo_acc = devInfo.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto d_acc = d.template get_access<sycl::access::mode::write>(cgh);
+        auto e_acc = e.template get_access<sycl::access::mode::write>(cgh);
+        auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
+        auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType_A *>(a_acc);
@@ -457,10 +457,10 @@ inline void orgbr(Func func, sycl::queue &queue, oneapi::mkl::generate vec, std:
                   sycl::buffer<T> &tau, sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, scratchpad_size);
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto tau_acc = tau.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto tau_acc = tau.template get_access<sycl::access::mode::read>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -491,10 +491,10 @@ inline void orgqr(Func func, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, scratchpad_size);
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto tau_acc = tau.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto tau_acc = tau.template get_access<sycl::access::mode::read>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -525,10 +525,10 @@ inline void orgtr(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, std::in
                   sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto tau_acc = tau.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto tau_acc = tau.template get_access<sycl::access::mode::read>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -560,11 +560,11 @@ inline void ormtr(Func func, sycl::queue &queue, oneapi::mkl::side side, oneapi:
                   sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldc, scratchpad_size);
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto tau_acc = tau.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto tau_acc = tau.template get_access<sycl::access::mode::read_write>(cgh);
+        auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -614,11 +614,11 @@ inline void ormqr(Func func, sycl::queue &queue, oneapi::mkl::side side,
                   std::int64_t ldc, sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, ldc, scratchpad_size);
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto tau_acc = tau.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto tau_acc = tau.template get_access<sycl::access::mode::read>(cgh);
+        auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -653,9 +653,9 @@ inline void potrf(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, std::in
                   std::int64_t scratchpad_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -686,9 +686,9 @@ inline void potri(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, std::in
                   std::int64_t scratchpad_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -720,9 +720,9 @@ inline void potrs(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, std::in
                   std::int64_t ldb, sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, nrhs, lda, ldb, scratchpad_size);
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto b_acc = b.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -756,11 +756,11 @@ inline void syevd(Func func, sycl::queue &queue, oneapi::mkl::job jobz, oneapi::
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
     sycl::buffer<int> devInfo{ 1 };
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto w_acc = w.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto devInfo_acc = devInfo.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto w_acc = w.template get_access<sycl::access::mode::write>(cgh);
+        auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -795,12 +795,12 @@ inline void sygvd(Func func, sycl::queue &queue, std::int64_t itype, oneapi::mkl
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, ldb, scratchpad_size);
     sycl::buffer<int> devInfo{ 1 };
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto b_acc = b.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto w_acc = w.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto devInfo_acc = devInfo.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
+        auto w_acc = w.template get_access<sycl::access::mode::write>(cgh);
+        auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -836,12 +836,12 @@ inline void sytrd(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, std::in
                   sycl::buffer<T> &tau, sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto d_acc = d.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto e_acc = e.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto tau_acc = tau.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto d_acc = d.template get_access<sycl::access::mode::write>(cgh);
+        auto e_acc = e.template get_access<sycl::access::mode::write>(cgh);
+        auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -883,11 +883,11 @@ inline void sytrf(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, std::in
     std::uint64_t ipiv_size = n;
     sycl::buffer<int, 1> ipiv32(sycl::range<1>{ ipiv_size });
 
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto ipiv32_acc = ipiv32.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto devInfo_acc = devInfo.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::write>(cgh);
+        auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -901,10 +901,10 @@ inline void sytrf(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, std::in
     });
 
     // Copy from 32-bit buffer to 64-bit
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto ipiv32_acc = ipiv32.template get_access<cl::sycl::access::mode::read>(cgh);
-        auto ipiv_acc = ipiv.template get_access<cl::sycl::access::mode::write>(cgh);
-        cgh.parallel_for(cl::sycl::range<1>{ ipiv_size }, [=](cl::sycl::id<1> index) {
+    queue.submit([&](sycl::handler &cgh) {
+        auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::read>(cgh);
+        auto ipiv_acc = ipiv.template get_access<sycl::access::mode::write>(cgh);
+        cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
             ipiv_acc[index] = static_cast<std::int64_t>(ipiv32_acc[index]);
         });
     });
@@ -957,10 +957,10 @@ inline void ungbr(Func func, sycl::queue &queue, oneapi::mkl::generate vec, std:
                   sycl::buffer<T> &tau, sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, scratchpad_size);
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto tau_acc = tau.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -991,10 +991,10 @@ inline void ungqr(Func func, sycl::queue &queue, std::int64_t m, std::int64_t n,
                   sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, scratchpad_size);
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto tau_acc = tau.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -1025,10 +1025,10 @@ inline void ungtr(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, std::in
                   sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto tau_acc = tau.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -1075,11 +1075,11 @@ inline void unmqr(Func func, sycl::queue &queue, oneapi::mkl::side side,
                   std::int64_t ldc, sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto tau_acc = tau.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
+        auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -1115,11 +1115,11 @@ inline void unmtr(Func func, sycl::queue &queue, oneapi::mkl::side side, oneapi:
                   sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldc, scratchpad_size);
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto a_acc = a.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto tau_acc = tau.template get_access<cl::sycl::access::mode::write>(cgh);
-        auto c_acc = c.template get_access<cl::sycl::access::mode::read_write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<cl::sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
+        auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
+        auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
+        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -1163,7 +1163,7 @@ inline sycl::event gebrd(Func func, sycl::queue &queue, std::int64_t m, std::int
     if (m < n)
         throw unimplemented("lapack", "gebrd", "cusolver gebrd does not support m < n");
 
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1227,7 +1227,7 @@ inline sycl::event geqrf(Func func, sycl::queue &queue, std::int64_t m, std::int
                          const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, scratchpad_size);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1272,9 +1272,9 @@ inline sycl::event getrf(Func func, sycl::queue &queue, std::int64_t m, std::int
     // To get around the limitation.
     // Allocate memory with 32-bit ints then copy over results
     std::uint64_t ipiv_size = std::min(n, m);
-    int *ipiv32 = (int *)malloc_device(sizeof(int)*ipiv_size, queue);
+    int *ipiv32 = (int *)malloc_device(sizeof(int) * ipiv_size, queue);
 
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1290,9 +1290,9 @@ inline sycl::event getrf(Func func, sycl::queue &queue, std::int64_t m, std::int
     });
 
     // Copy from 32-bit USM to 64-bit
-    auto done_casting = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done_casting = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(done);
-        cgh.parallel_for(cl::sycl::range<1>{ ipiv_size }, [=](cl::sycl::id<1> index) {
+        cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
             ipiv[index] = static_cast<std::int64_t>(ipiv32[index]);
         });
     });
@@ -1355,15 +1355,15 @@ inline sycl::event getrs(Func func, sycl::queue &queue, oneapi::mkl::transpose t
     // To get around the limitation.
     // Create new buffer and convert 64-bit values.
     std::uint64_t ipiv_size = n;
-    int *ipiv32 = (int *)malloc_device(sizeof(int)*ipiv_size, queue);
+    int *ipiv32 = (int *)malloc_device(sizeof(int) * ipiv_size, queue);
 
-    auto done_casting = queue.submit([&](cl::sycl::handler &cgh) {
-        cgh.parallel_for(cl::sycl::range<1>{ ipiv_size }, [=](cl::sycl::id<1> index) {
+    auto done_casting = queue.submit([&](sycl::handler &cgh) {
+        cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
             ipiv32[index] = static_cast<std::int32_t>(ipiv[index]);
         });
     });
 
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1412,7 +1412,7 @@ inline sycl::event gesvd(Func func, sycl::queue &queue, oneapi::mkl::jobsvd jobu
     using cuDataType_A = typename CudaEquivalentType<T_A>::Type;
     using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
     overflow_check(m, n, lda, ldu, ldvt, scratchpad_size);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1460,7 +1460,7 @@ inline sycl::event heevd(Func func, sycl::queue &queue, oneapi::mkl::job jobz,
     using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
     overflow_check(n, lda, scratchpad_size);
     int *devInfo = (int *)malloc_device(sizeof(int), queue);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1503,7 +1503,7 @@ inline sycl::event hegvd(Func func, sycl::queue &queue, std::int64_t itype, onea
     using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
     overflow_check(n, lda, ldb, scratchpad_size);
     int *devInfo = (int *)malloc_device(sizeof(int), queue);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1548,7 +1548,7 @@ inline sycl::event hetrd(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, 
     using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
     overflow_check(n, lda, scratchpad_size);
     int *devInfo = (int *)malloc_device(sizeof(int), queue);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1603,7 +1603,7 @@ inline sycl::event orgbr(Func func, sycl::queue &queue, oneapi::mkl::generate ve
                          const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, scratchpad_size);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1642,7 +1642,7 @@ inline sycl::event orgqr(Func func, sycl::queue &queue, std::int64_t m, std::int
                          const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, scratchpad_size);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1680,7 +1680,7 @@ inline sycl::event orgtr(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, 
                          const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1719,7 +1719,7 @@ inline sycl::event ormtr(Func func, sycl::queue &queue, oneapi::mkl::side side,
                          const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldc, scratchpad_size);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1775,7 +1775,7 @@ inline sycl::event ormqr(Func func, sycl::queue &queue, oneapi::mkl::side side,
                          const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, ldc, scratchpad_size);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1816,7 +1816,7 @@ inline sycl::event potrf(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, 
                          const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1854,7 +1854,7 @@ inline sycl::event potri(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, 
                          const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1894,7 +1894,7 @@ inline sycl::event potrs(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, 
                          const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, nrhs, lda, ldb, scratchpad_size);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1935,7 +1935,7 @@ inline sycl::event syevd(Func func, sycl::queue &queue, oneapi::mkl::job jobz,
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
     int *devInfo = (int *)malloc_device(sizeof(int), queue);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1977,7 +1977,7 @@ inline sycl::event sygvd(Func func, sycl::queue &queue, std::int64_t itype, onea
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, ldb, scratchpad_size);
     int *devInfo = (int *)malloc_device(sizeof(int), queue);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2019,7 +2019,7 @@ inline sycl::event sytrd(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, 
                          const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2066,9 +2066,9 @@ inline sycl::event sytrf(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, 
     // To get around the limitation.
     // Allocate memory with 32-bit ints then copy over results
     std::uint64_t ipiv_size = n;
-    int *ipiv32 = (int *)malloc_device(sizeof(int)*ipiv_size, queue);
+    int *ipiv32 = (int *)malloc_device(sizeof(int) * ipiv_size, queue);
 
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2086,9 +2086,9 @@ inline sycl::event sytrf(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, 
     });
 
     // Copy from 32-bit USM to 64-bit
-    auto done_casting = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done_casting = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(done);
-        cgh.parallel_for(cl::sycl::range<1>{ ipiv_size }, [=](cl::sycl::id<1> index) {
+        cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
             ipiv[index] = static_cast<std::int64_t>(ipiv32[index]);
         });
     });
@@ -2150,7 +2150,7 @@ inline sycl::event ungbr(Func func, sycl::queue &queue, oneapi::mkl::generate ve
                          const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2189,7 +2189,7 @@ inline sycl::event ungqr(Func func, sycl::queue &queue, std::int64_t m, std::int
                          const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, scratchpad_size);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2227,7 +2227,7 @@ inline sycl::event ungtr(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo, 
                          const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2281,7 +2281,7 @@ inline sycl::event unmqr(Func func, sycl::queue &queue, oneapi::mkl::side side,
                          const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2324,7 +2324,7 @@ inline sycl::event unmtr(Func func, sycl::queue &queue, oneapi::mkl::side side,
                          const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldc, scratchpad_size);
-    auto done = queue.submit([&](cl::sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2364,7 +2364,7 @@ UNMTR_LAUNCHER_USM(std::complex<double>, cusolverDnZunmtr)
 template <typename Func>
 inline void gebrd_scratchpad_size(Func func, sycl::queue &queue, std::int64_t m, std::int64_t n,
                                   std::int64_t lda, int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2413,7 +2413,7 @@ std::int64_t gerqf_scratchpad_size<std::complex<double>>(sycl::queue &queue, std
 template <typename Func>
 inline void geqrf_scratchpad_size(Func func, sycl::queue &queue, std::int64_t m, std::int64_t n,
                                   std::int64_t lda, int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2443,7 +2443,7 @@ inline void gesvd_scratchpad_size(Func func, sycl::queue &queue, oneapi::mkl::jo
                                   oneapi::mkl::jobsvd jobvt, std::int64_t m, std::int64_t n,
                                   std::int64_t lda, std::int64_t ldu, std::int64_t ldvt,
                                   int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2473,7 +2473,7 @@ GESVD_LAUNCHER_SCRATCH(std::complex<double>, cusolverDnZgesvd_bufferSize)
 template <typename Func>
 inline void getrf_scratchpad_size(Func func, sycl::queue &queue, std::int64_t m, std::int64_t n,
                                   std::int64_t lda, int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2537,7 +2537,7 @@ template <typename Func>
 inline void heevd_scratchpad_size(Func func, sycl::queue &queue, oneapi::mkl::job jobz,
                                   oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
                                   int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2566,7 +2566,7 @@ template <typename Func>
 inline void hegvd_scratchpad_size(Func func, sycl::queue &queue, std::int64_t itype,
                                   oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
                                   std::int64_t lda, std::int64_t ldb, int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2596,7 +2596,7 @@ HEGVD_LAUNCHER_SCRATCH(std::complex<double>, cusolverDnZhegvd_bufferSize)
 template <typename Func>
 inline void hetrd_scratchpad_size(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo,
                                   std::int64_t n, std::int64_t lda, int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2635,7 +2635,7 @@ template <typename Func>
 inline void orgbr_scratchpad_size(Func func, sycl::queue &queue, oneapi::mkl::generate vec,
                                   std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
                                   int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2663,7 +2663,7 @@ ORGBR_LAUNCHER_SCRATCH(double, cusolverDnDorgbr_bufferSize)
 template <typename Func>
 inline void orgtr_scratchpad_size(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo,
                                   std::int64_t n, std::int64_t lda, int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2690,7 +2690,7 @@ ORGTR_LAUNCHER_SCRATCH(double, cusolverDnDorgtr_bufferSize)
 template <typename Func>
 inline void orgqr_scratchpad_size(Func func, sycl::queue &queue, std::int64_t m, std::int64_t n,
                                   std::int64_t k, std::int64_t lda, int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2733,7 +2733,7 @@ inline void ormqr_scratchpad_size(Func func, sycl::queue &queue, oneapi::mkl::si
                                   oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
                                   std::int64_t k, std::int64_t lda, std::int64_t ldc,
                                   int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2765,7 +2765,7 @@ inline void ormtr_scratchpad_size(Func func, sycl::queue &queue, oneapi::mkl::si
                                   oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
                                   std::int64_t m, std::int64_t n, std::int64_t lda,
                                   std::int64_t ldc, int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2796,7 +2796,7 @@ ORMTR_LAUNCHER_SCRATCH(double, cusolverDnDormtr_bufferSize)
 template <typename Func>
 inline void potrf_scratchpad_size(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo,
                                   std::int64_t n, std::int64_t lda, int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2841,7 +2841,7 @@ POTRS_LAUNCHER_SCRATCH(std::complex<double>)
 template <typename Func>
 inline void potri_scratchpad_size(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo,
                                   std::int64_t n, std::int64_t lda, int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2870,7 +2870,7 @@ POTRI_LAUNCHER_SCRATCH(std::complex<double>, cusolverDnZpotri_bufferSize)
 template <typename Func>
 inline void sytrf_scratchpad_size(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo,
                                   std::int64_t n, std::int64_t lda, int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2899,7 +2899,7 @@ template <typename Func>
 inline void syevd_scratchpad_size(Func func, sycl::queue &queue, oneapi::mkl::job jobz,
                                   oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
                                   int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2928,7 +2928,7 @@ template <typename Func>
 inline void sygvd_scratchpad_size(Func func, sycl::queue &queue, std::int64_t itype,
                                   oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
                                   std::int64_t lda, std::int64_t ldb, int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2958,7 +2958,7 @@ SYGVD_LAUNCHER_SCRATCH(double, cusolverDnDsygvd_bufferSize)
 template <typename Func>
 inline void sytrd_scratchpad_size(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo,
                                   std::int64_t n, std::int64_t lda, int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -3017,7 +3017,7 @@ template <typename Func>
 inline void ungbr_scratchpad_size(Func func, sycl::queue &queue, oneapi::mkl::generate vec,
                                   std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
                                   int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -3045,7 +3045,7 @@ UNGBR_LAUNCHER_SCRATCH(std::complex<double>, cusolverDnZungbr_bufferSize)
 template <typename Func>
 inline void ungqr_scratchpad_size(Func func, sycl::queue &queue, std::int64_t m, std::int64_t n,
                                   std::int64_t k, std::int64_t lda, int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -3071,7 +3071,7 @@ UNGQR_LAUNCHER_SCRATCH(std::complex<double>, cusolverDnZungqr_bufferSize)
 template <typename Func>
 inline void ungtr_scratchpad_size(Func func, sycl::queue &queue, oneapi::mkl::uplo uplo,
                                   std::int64_t n, std::int64_t lda, int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -3117,7 +3117,7 @@ inline void unmqr_scratchpad_size(Func func, sycl::queue &queue, oneapi::mkl::si
                                   oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
                                   std::int64_t k, std::int64_t lda, std::int64_t ldc,
                                   int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -3149,7 +3149,7 @@ inline void unmtr_scratchpad_size(Func func, sycl::queue &queue, oneapi::mkl::si
                                   oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
                                   std::int64_t m, std::int64_t n, std::int64_t lda,
                                   std::int64_t ldc, int *scratch_size) {
-    queue.submit([&](cl::sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;

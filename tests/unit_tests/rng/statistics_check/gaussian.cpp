@@ -21,13 +21,13 @@
 
 #include <gtest/gtest.h>
 
-extern std::vector<cl::sycl::device*> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
-class GaussianBoxmullerTest : public ::testing::TestWithParam<cl::sycl::device*> {};
+class GaussianBoxmullerTest : public ::testing::TestWithParam<sycl::device*> {};
 
-class GaussianIcdfTest : public ::testing::TestWithParam<cl::sycl::device*> {};
+class GaussianIcdfTest : public ::testing::TestWithParam<sycl::device*> {};
 
 TEST_P(GaussianIcdfTest, RealSinglePrecision) {
     rng_test<

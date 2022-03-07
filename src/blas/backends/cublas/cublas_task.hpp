@@ -10,8 +10,8 @@
 #include <CL/sycl/detail/pi.hpp>
 #else
 #include "cublas_scope_handle_hipsycl.hpp"
-namespace cl::sycl {
-using interop_handler = cl::sycl::interop_handle;
+namespace sycl {
+using interop_handler = sycl::interop_handle;
 }
 #endif
 namespace oneapi {
@@ -21,23 +21,23 @@ namespace cublas {
 
 #ifdef __HIPSYCL__
 template <typename H, typename F>
-static inline void host_task_internal(H &cgh, cl::sycl::queue queue, F f) {
-    cgh.hipSYCL_enqueue_custom_operation([f, queue](cl::sycl::interop_handle ih) {
+static inline void host_task_internal(H &cgh, sycl::queue queue, F f) {
+    cgh.hipSYCL_enqueue_custom_operation([f, queue](sycl::interop_handle ih) {
         auto sc = CublasScopedContextHandler(queue, ih);
         f(sc);
     });
 }
 #else
 template <typename H, typename F>
-static inline void host_task_internal(H &cgh, cl::sycl::queue queue, F f) {
-    cgh.interop_task([f, queue](cl::sycl::interop_handler ih) {
+static inline void host_task_internal(H &cgh, sycl::queue queue, F f) {
+    cgh.interop_task([f, queue](sycl::interop_handler ih) {
         auto sc = CublasScopedContextHandler(queue, ih);
         f(sc);
     });
 }
 #endif
 template <typename H, typename F>
-static inline void onemkl_cublas_host_task(H &cgh, cl::sycl::queue queue, F f) {
+static inline void onemkl_cublas_host_task(H &cgh, sycl::queue queue, F f) {
     (void)host_task_internal(cgh, queue, f);
 }
 

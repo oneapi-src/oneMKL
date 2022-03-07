@@ -36,10 +36,10 @@
 
 #include <gtest/gtest.h>
 
-using namespace cl::sycl;
+using namespace sycl;
 using std::vector;
 
-extern std::vector<cl::sycl::device *> devices;
+extern std::vector<sycl::device *> devices;
 
 namespace {
 
@@ -188,7 +188,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t incx, int64_t incy, in
 }
 
 class GemvBatchStrideTests
-        : public ::testing::TestWithParam<std::tuple<cl::sycl::device *, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(GemvBatchStrideTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 2, 3, 5));
