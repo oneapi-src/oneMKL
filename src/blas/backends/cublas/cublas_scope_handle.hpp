@@ -95,7 +95,7 @@ public:
     // will be fixed when SYCL-2020 has been implemented for Pi backend.
     template <typename T, typename U>
     inline T get_mem(U acc) {
-        CUdeviceptr cudaPtr = ih.get_native_mem<sycl::backend::cuda>(acc);
+        CUdeviceptr cudaPtr = ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(acc);
         return reinterpret_cast<T>(cudaPtr);
     }
 };
