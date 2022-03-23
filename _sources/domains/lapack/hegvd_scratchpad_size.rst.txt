@@ -37,7 +37,7 @@ hegvd_scratchpad_size
 
     namespace oneapi::mkl::lapack {
       template <typename T>
-      std::int64_t hegvd_scratchpad_size(cl::sycl::queue &queue, std::int64_t itype, oneapi::mkl::job jobz, oneapi::mkl::uplo upper_lower, std::int64_t n, std::int64_t lda, std::int64_t ldb) 
+      std::int64_t hegvd_scratchpad_size(sycl::queue &queue, std::int64_t itype, oneapi::mkl::job jobz, oneapi::mkl::uplo upper_lower, std::int64_t n, std::int64_t lda, std::int64_t ldb) 
     }
 
 .. container:: section

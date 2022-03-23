@@ -36,7 +36,7 @@ Computes the number of elements of type ``T`` the scratchpad memory should able 
 
     namespace oneapi::mkl::lapack {
       template <typename T>
-      std::int64_t getrf_batch_scratchpad_size(cl::sycl::queue &queue, std::int64_t *m, std::int64_t *n, std::int64_t *lda, std::int64_t group_count, std::int64_t *group_sizes)
+      std::int64_t getrf_batch_scratchpad_size(sycl::queue &queue, std::int64_t *m, std::int64_t *n, std::int64_t *lda, std::int64_t group_count, std::int64_t *group_sizes)
     }
 
 .. container:: section
@@ -79,7 +79,7 @@ Computes the number of elements of type ``T`` the scratchpad memory should able 
 
     namespace oneapi::mkl::lapack {
       template <typename T>
-      std::int64_t getrf_batch_scratchpad_size(cl::sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t lda, std::int64_t stride_a, std::int64_t stride_ipiv, std::int64_t batch_size)
+      std::int64_t getrf_batch_scratchpad_size(sycl::queue &queue, std::int64_t m, std::int64_t n, std::int64_t lda, std::int64_t stride_a, std::int64_t stride_ipiv, std::int64_t batch_size)
     };
 
 .. container:: section

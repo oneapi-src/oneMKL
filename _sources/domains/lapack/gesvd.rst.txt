@@ -55,7 +55,7 @@ are returned in descending order. The first :math:`\min(m, n)` columns of
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      void gesvd(cl::sycl::queue &queue, oneapi::mkl::job jobu, oneapi::mkl::job jobvt, std::int64_t m, std::int64_t n, cl::sycl::buffer<T,1> &a, std::int64_t lda, cl::sycl::buffer<realT,1> &s, cl::sycl::buffer<T,1> &u, std::int64_t ldu, cl::sycl::buffer<T,1> &vt, std::int64_t ldvt, cl::sycl::buffer<T,1> &scratchpad, std::int64_t scratchpad_size)
+      void gesvd(sycl::queue &queue, oneapi::mkl::job jobu, oneapi::mkl::job jobvt, std::int64_t m, std::int64_t n, sycl::buffer<T,1> &a, std::int64_t lda, sycl::buffer<realT,1> &s, sycl::buffer<T,1> &u, std::int64_t ldu, sycl::buffer<T,1> &vt, std::int64_t ldvt, sycl::buffer<T,1> &scratchpad, std::int64_t scratchpad_size)
     }
 
 .. container:: section
@@ -208,7 +208,7 @@ are returned in descending order. The first :math:`\min(m, n)` columns of
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      cl::sycl::event gesvd(cl::sycl::queue &queue, oneapi::mkl::job jobu, oneapi::mkl::job jobvt, std::int64_t m, std::int64_t n, T *a, std::int64_t lda, RealT *s, T *u, std::int64_t ldu, T *vt, std::int64_t ldvt, T *scratchpad, std::int64_t scratchpad_size, const cl::sycl::vector_class<cl::sycl::event> &events = {})
+      sycl::event gesvd(sycl::queue &queue, oneapi::mkl::job jobu, oneapi::mkl::job jobvt, std::int64_t m, std::int64_t n, T *a, std::int64_t lda, RealT *s, T *u, std::int64_t ldu, T *vt, std::int64_t ldvt, T *scratchpad, std::int64_t scratchpad_size, const std::vector<sycl::event> &events = {})
     }
 
 .. container:: section

@@ -40,7 +40,7 @@ The routine computes the LU factorizations of general :math:`m \times n` matrice
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      void getrf_batch(cl::sycl::queue &queue, std::int64_t m, std::int64_t n, cl::sycl::buffer<T> &a, std::int64_t lda, std::int64_t stride_a, cl::sycl::buffer<std::int64_t> &ipiv, std::int64_t stride_ipiv, std::int64_t batch_size, cl::sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size)
+      void getrf_batch(sycl::queue &queue, std::int64_t m, std::int64_t n, sycl::buffer<T> &a, std::int64_t lda, std::int64_t stride_a, sycl::buffer<std::int64_t> &ipiv, std::int64_t stride_ipiv, std::int64_t batch_size, sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size)
     }
 
 .. container:: section
@@ -105,7 +105,7 @@ The routine computes the batch of LU factorizations of general :math:`m \times n
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      cl::sycl::event getrf_batch(cl::sycl::queue &queue, std::int64_t *m, std::int64_t *n, T **a, std::int64_t *lda, std::int64_t **ipiv, std::int64_t group_count, std::int64_t *group_sizes, T *scratchpad, std::int64_t scratchpad_size, const cl::sycl::vector_class<cl::sycl::event> &events = {})
+      sycl::event getrf_batch(sycl::queue &queue, std::int64_t *m, std::int64_t *n, T **a, std::int64_t *lda, std::int64_t **ipiv, std::int64_t group_count, std::int64_t *group_sizes, T *scratchpad, std::int64_t scratchpad_size, const std::vector<sycl::event> &events = {})
     }
 
 .. container:: section
@@ -167,7 +167,7 @@ The routine computes the LU factorizations of general :math:`m \times n` matrice
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      cl::sycl::event getrf_batch(cl::sycl::queue &queue, std::int64_t m, std::int64_t n, T *a, std::int64_t lda, std::int64_t stride_a, std::int64_t *ipiv, std::int64_t stride_ipiv, std::int64_t batch_size, T *scratchpad, std::int64_t scratchpad_size, const cl::sycl::vector_class<cl::sycl::event> &events = {})
+      sycl::event getrf_batch(sycl::queue &queue, std::int64_t m, std::int64_t n, T *a, std::int64_t lda, std::int64_t stride_a, std::int64_t *ipiv, std::int64_t stride_ipiv, std::int64_t batch_size, T *scratchpad, std::int64_t scratchpad_size, const std::vector<sycl::event> &events = {})
     };
 
 .. container:: section

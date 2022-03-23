@@ -38,7 +38,7 @@ trtrs_scratchpad_size
 
     namespace oneapi::mkl::lapack {
       template <typename T>
-      std::int64_t trtrs_scratchpad_size(cl::sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs, std::int64_t lda, std::int64_t ldb) 
+      std::int64_t trtrs_scratchpad_size(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans, oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs, std::int64_t lda, std::int64_t ldb) 
     }
 
 .. container:: section
