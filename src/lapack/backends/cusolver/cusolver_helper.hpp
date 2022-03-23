@@ -31,6 +31,8 @@
 
 #include "oneapi/mkl/types.hpp"
 #include "runtime_support_helper.hpp"
+#include "oneapi/mkl/exceptions.hpp"
+#include "oneapi/mkl/lapack/exceptions.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -173,6 +175,12 @@ public:
         throw cusolver_error(std::string(#name) + std::string(" : "), err); \
     }
 
+#define CUSOLVER_ERROR_FUNC_T(name, func, err, ...)                        \
+    err = func(__VA_ARGS__);                                               \
+    if (err != CUSOLVER_STATUS_SUCCESS) {                                  \
+        throw cusolver_error(std::string(name) + std::string(" : "), err); \
+    }
+
 inline cusolverEigType_t get_cusolver_itype(std::int64_t itype) {
     switch (itype) {
         case 1: return CUSOLVER_EIG_TYPE_1;
@@ -250,6 +258,30 @@ template <>
 struct CudaEquivalentType<std::complex<double>> {
     using Type = cuDoubleComplex;
 };
+
+/* devinfo */
+
+inline int get_cusolver_devinfo(sycl::queue &queue, sycl::buffer<int> &devInfo) {
+    sycl::host_accessor<int, 1, sycl::access::mode::read> dev_info_{ devInfo };
+    return dev_info_[0];
+}
+
+inline int get_cusolver_devinfo(sycl::queue &queue, const int *devInfo) {
+    int dev_info_;
+    queue.wait();
+    queue.memcpy(&dev_info_, devInfo, sizeof(int));
+    return dev_info_;
+}
+
+template <typename DEVINFO_T>
+inline void lapack_info_check(sycl::queue &queue, DEVINFO_T devinfo, const char *func_name,
+                              const char *cufunc_name) {
+    const int devinfo_ = get_cusolver_devinfo(queue, devinfo);
+    if (devinfo_ > 0)
+        throw oneapi::mkl::lapack::computation_error(
+            func_name, std::string(cufunc_name) + " failed with info = " + std::to_string(devinfo_),
+            devinfo_);
+}
 
 } // namespace cusolver
 } // namespace lapack
