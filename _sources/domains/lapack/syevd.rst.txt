@@ -48,7 +48,7 @@ syevd (Buffer Version)
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      void syevd(cl::sycl::queue &queue, jobz jobz, oneapi::mkl::uplo upper_lower, std::int64_t n, cl::sycl::buffer<T,1> &a, std::int64_t lda, cl::sycl::buffer<T,1> &w, cl::sycl::buffer<T,1> &scratchpad, std::int64_t scratchpad_size)
+      void syevd(sycl::queue &queue, jobz jobz, oneapi::mkl::uplo upper_lower, std::int64_t n, sycl::buffer<T,1> &a, std::int64_t lda, sycl::buffer<T,1> &w, sycl::buffer<T,1> &scratchpad, std::int64_t scratchpad_size)
     }
 
 .. container:: section
@@ -115,7 +115,7 @@ syevd (USM Version)
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      cl::sycl::event syevd(cl::sycl::queue &queue, jobz jobz, oneapi::mkl::uplo upper_lower, std::int64_t n, T *a, std::int64_t lda, T *w, T *scratchpad, std::int64_t scratchpad_size, const cl::sycl::vector_class<cl::sycl::event> &events = {})
+      sycl::event syevd(sycl::queue &queue, jobz jobz, oneapi::mkl::uplo upper_lower, std::int64_t n, T *a, std::int64_t lda, T *w, T *scratchpad, std::int64_t scratchpad_size, const std::vector<sycl::event> &events = {})
     }
 
 .. container:: section

@@ -50,7 +50,7 @@ The buffer version of ``getrs_batch`` supports only the strided API.
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      void getrs_batch(cl::sycl::queue &queue, mkl::transpose trans, std::int64_t n, std::int64_t nrhs, cl::sycl::buffer<T> &a, std::int64_t lda, std::int64_t stride_a, cl::sycl::buffer<std::int64_t> &ipiv, std::int64_t stride_ipiv, cl::sycl::buffer<T> &b, std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size, cl::sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size)
+      void getrs_batch(sycl::queue &queue, mkl::transpose trans, std::int64_t n, std::int64_t nrhs, sycl::buffer<T> &a, std::int64_t lda, std::int64_t stride_a, sycl::buffer<std::int64_t> &ipiv, std::int64_t stride_ipiv, sycl::buffer<T> &b, std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size, sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size)
     }
 
 .. container:: section
@@ -134,7 +134,7 @@ The USM version of ``getrs_batch`` supports the group API and strided API.
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      cl::sycl::event getrs_batch(cl::sycl::queue &queue, mkl::transpose *trans, std::int64_t *n, std::int64_t *nrhs, T **a, std::int64_t *lda, std::int64_t **ipiv, T **b, std::int64_t *ldb, std::int64_t group_count, std::int64_t *group_sizes, T *scratchpad, std::int64_t scratchpad_size, const cl::sycl::vector_class<cl::sycl::event> &events = {})
+      sycl::event getrs_batch(sycl::queue &queue, mkl::transpose *trans, std::int64_t *n, std::int64_t *nrhs, T **a, std::int64_t *lda, std::int64_t **ipiv, T **b, std::int64_t *ldb, std::int64_t group_count, std::int64_t *group_sizes, T *scratchpad, std::int64_t scratchpad_size, const std::vector<sycl::event> &events = {})
     }
 
 .. container:: section
@@ -214,7 +214,7 @@ Output event to wait on to ensure computation is complete.
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      cl::sycl::event getrs_batch(cl::sycl::queue &queue, mkl::transpose trans, std::int64_t n, std::int64_t nrhs, T *a, std::int64_t lda, std::int64_t stride_a, std::int64_t *ipiv, std::int64_t stride_ipiv, T *b, std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size, T *scratchpad, std::int64_t scratchpad_size, const cl::sycl::vector_class<cl::sycl::event> &events = {})
+      sycl::event getrs_batch(sycl::queue &queue, mkl::transpose trans, std::int64_t n, std::int64_t nrhs, T *a, std::int64_t lda, std::int64_t stride_a, std::int64_t *ipiv, std::int64_t stride_ipiv, T *b, std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size, T *scratchpad, std::int64_t scratchpad_size, const std::vector<sycl::event> &events = {})
     };
 
 .. container:: section

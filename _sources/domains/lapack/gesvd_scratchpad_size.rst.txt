@@ -38,7 +38,7 @@ gesvd_scratchpad_size
 
     namespace oneapi::mkl::lapack {
       template <typename T>
-      std::int64_t gesvd_scratchpad_size(cl::sycl::queue &queue, oneapi::mkl::job jobu, oneapi::mkl::job jobvt, std::int64_t m, std::int64_t n, std::int64_t lda, std::int64_t ldu, std::int64_t ldvt) 
+      std::int64_t gesvd_scratchpad_size(sycl::queue &queue, oneapi::mkl::job jobu, oneapi::mkl::job jobvt, std::int64_t m, std::int64_t n, std::int64_t lda, std::int64_t ldu, std::int64_t ldvt) 
     }
 
 .. container:: section
