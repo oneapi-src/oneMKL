@@ -39,9 +39,20 @@
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="potrf" href="potrf.html" />
     <link rel="prev" title="ormrq" href="ormrq.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
-    
+<script type="text/javascript">
+  // Configure TMS settings
+  var wapLocalCode = 'us-en'; // Dynamically set per localized site; see mapping table for values
+  var wapSection = "oneapi-mkl"; // WAP team will give you a unique section for your site
+  // Load TMS
+  if (document.location.href.contains("oneapi-src.github.io")) {
+    (function () {
+      var url = 'https://www.intel.com/content/dam/www/global/wap/tms-loader.js'; // WAP file URL
+      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true; po.src = url;
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
+  }
+</script>
+
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
     
@@ -1024,7 +1035,7 @@ Calls to this routine must specify the template parameter explicitly.</p>
 </div>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">oneapi</span><span class="o">::</span><span class="nn">mkl</span><span class="o">::</span><span class="nn">lapack</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"></span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">ormrq_scratchpad_size</span><span class="p">(</span><span class="n">cl</span><span class="o">::</span><span class="n">sycl</span><span class="o">::</span><span class="n">queue</span><span class="w"> </span><span class="o">&amp;</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">oneapi</span><span class="o">::</span><span class="n">mkl</span><span class="o">::</span><span class="n">side</span><span class="w"> </span><span class="n">side</span><span class="p">,</span><span class="w"> </span><span class="n">oneapi</span><span class="o">::</span><span class="n">mkl</span><span class="o">::</span><span class="n">transpose</span><span class="w"> </span><span class="n">trans</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">lda</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">ldc</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">ormrq_scratchpad_size</span><span class="p">(</span><span class="n">sycl</span><span class="o">::</span><span class="n">queue</span><span class="w"> </span><span class="o">&amp;</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">oneapi</span><span class="o">::</span><span class="n">mkl</span><span class="o">::</span><span class="n">side</span><span class="w"> </span><span class="n">side</span><span class="p">,</span><span class="w"> </span><span class="n">oneapi</span><span class="o">::</span><span class="n">mkl</span><span class="o">::</span><span class="n">transpose</span><span class="w"> </span><span class="n">trans</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">lda</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">ldc</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>

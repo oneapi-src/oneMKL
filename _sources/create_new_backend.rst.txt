@@ -56,8 +56,8 @@ Code snippet of the generated header file ``include/oneapi/mkl/blas/detail/newli
     namespace mkl {
     namespace newlib {
     
-    void asum(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x, std::int64_t incx,
-              cl::sycl::buffer<float, 1> &result);
+    void asum(sycl::queue &queue, std::int64_t n, sycl::buffer<float, 1> &x, std::int64_t incx,
+              sycl::buffer<float, 1> &result);
 
 
 
@@ -81,9 +81,9 @@ Code snippet of the generated header file ``include/oneapi/mkl/blas/detail/newli
     namespace blas {
     
     template <>
-    void asum<library::newlib, backend::newdevice>(cl::sycl::queue &queue, std::int64_t n,
-                                                   cl::sycl::buffer<float, 1> &x, std::int64_t incx,
-                                                   cl::sycl::buffer<float, 1> &result) {
+    void asum<library::newlib, backend::newdevice>(sycl::queue &queue, std::int64_t n,
+                                                   sycl::buffer<float, 1> &x, std::int64_t incx,
+                                                   sycl::buffer<float, 1> &result) {
         asum_precondition(queue, n, x, incx, result);
         oneapi::mkl::newlib::asum(queue, n, x, incx, result);
         asum_postcondition(queue, n, x, incx, result);
@@ -174,7 +174,7 @@ To integrate the new third-party library to a oneMKL header-based part, followin
 
   .. code-block:: diff
     
-        inline oneapi::mkl::device get_device_id(cl::sycl::queue &queue) {
+        inline oneapi::mkl::device get_device_id(sycl::queue &queue) {
             oneapi::mkl::device device_id;
      +      if (queue.is_host())
      +          device_id=device::newdevice;
@@ -282,20 +282,20 @@ The following code snippet is updated for ``src/blas/backends/newlib/newlib_wrap
         namespace mkl {
         namespace newlib {
         
-        void asum(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<float, 1> &x, std::int64_t incx,
-                   cl::sycl::buffer<float, 1> &result) {
+        void asum(sycl::queue &queue, std::int64_t n, sycl::buffer<float, 1> &x, std::int64_t incx,
+                   sycl::buffer<float, 1> &result) {
     -       throw std::runtime_error("Not implemented for newlib");
-    +       queue.submit([&](cl::sycl::handler &cgh) {
-    +           auto accessor_x      = x.get_access<cl::sycl::access::mode::read>(cgh);
-    +           auto accessor_result = result.get_access<cl::sycl::access::mode::write>(cgh);
+    +       queue.submit([&](sycl::handler &cgh) {
+    +           auto accessor_x      = x.get_access<sycl::access::mode::read>(cgh);
+    +           auto accessor_result = result.get_access<sycl::access::mode::write>(cgh);
     +           cgh.single_task<class newlib_sasum>([=]() {
     +               accessor_result[0] = ::newlib_sasum((const int)n, accessor_x.get_pointer(), (const int)incx);
     +           });
     +       });
         }
         
-        void asum(cl::sycl::queue &queue, std::int64_t n, cl::sycl::buffer<double, 1> &x, std::int64_t incx,
-                  cl::sycl::buffer<double, 1> &result) {
+        void asum(sycl::queue &queue, std::int64_t n, sycl::buffer<double, 1> &x, std::int64_t incx,
+                  sycl::buffer<double, 1> &result) {
             throw std::runtime_error("Not implemented for newlib");
         }
 
@@ -492,7 +492,7 @@ Update the following files to enable the new third-party library for unit tests:
             }
      +           
      +  #ifdef ENABLE_NEWLIB_BACKEND
-     +      devices.push_back(cl::sycl::device(cl::sycl::host_selector()));
+     +      devices.push_back(sycl::device(sycl::host_selector()));
      +  #endif
 
 Now you can build and run functional testing for enabled third-party libraries (for more information see `Build with cmake <../README.md#building-with-cmake>`_).

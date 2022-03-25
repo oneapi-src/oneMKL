@@ -48,7 +48,7 @@ heevd (Buffer Version)
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      void heevd(cl::sycl::queue &queue, oneapi::mkl::job jobz, oneapi::mkl::uplo upper_lower, std::int64_t n, butter<T,1> &a, std::int64_t lda, cl::sycl::buffer<realT,1> &w, cl::sycl::buffer<T,1> &scratchpad, std::int64_t scratchpad_size)
+      void heevd(sycl::queue &queue, oneapi::mkl::job jobz, oneapi::mkl::uplo upper_lower, std::int64_t n, butter<T,1> &a, std::int64_t lda, sycl::buffer<realT,1> &w, sycl::buffer<T,1> &scratchpad, std::int64_t scratchpad_size)
     }
 
 .. container:: section
@@ -114,7 +114,7 @@ heevd (USM Version)
 .. code-block:: cpp
 
     namespace oneapi::mkl::lapack {
-      cl::sycl::event heevd(cl::sycl::queue &queue, oneapi::mkl::job jobz, oneapi::mkl::uplo upper_lower, std::int64_t n, butter<T,1> &a, std::int64_t lda, RealT *w, T *scratchpad, std::int64_t scratchpad_size, const cl::sycl::vector_class<cl::sycl::event> &events = {})
+      sycl::event heevd(sycl::queue &queue, oneapi::mkl::job jobz, oneapi::mkl::uplo upper_lower, std::int64_t n, butter<T,1> &a, std::int64_t lda, RealT *w, T *scratchpad, std::int64_t scratchpad_size, const std::vector<sycl::event> &events = {})
     }
 
 .. container:: section
