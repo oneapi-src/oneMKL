@@ -41,6 +41,7 @@ static inline void host_task_internal(H &cgh, sycl::queue queue, F f) {
     cgh.host_task([f, queue](sycl::interop_handle ih) {
         auto sc = CublasScopedContextHandler(queue, ih);
         f(sc);
+        sc.wait_stream(queue);
     });
 }
 #endif

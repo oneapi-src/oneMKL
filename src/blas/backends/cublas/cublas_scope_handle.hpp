@@ -98,6 +98,10 @@ public:
         CUdeviceptr cudaPtr = ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(acc);
         return reinterpret_cast<T>(cudaPtr);
     }
+
+    void wait_stream(const sycl::queue &queue) {
+        cuStreamSynchronize(get_stream(queue));
+    }
 };
 
 } // namespace cublas
