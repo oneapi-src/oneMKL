@@ -50,7 +50,7 @@
 
 #include <CL/sycl.hpp>
 #include "oneapi/mkl.hpp"
-#include "oneapi/mkl/examples/common_helper_functions.hpp"
+#include "example_helper.hpp"
 
 //
 // Main example for Gemm consisting of
