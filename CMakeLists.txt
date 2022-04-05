@@ -215,6 +215,11 @@ if(BUILD_FUNCTIONAL_TESTS)
   add_subdirectory(tests)
 endif()
 
+# Examples
+if (BUILD_EXAMPLES)
+  add_subdirectory(examples)
+endif()
+
 if(BUILD_DOC)
   add_subdirectory(docs)
 endif()
