@@ -49,6 +49,7 @@
 
 #include <CL/sycl.hpp>
 #include "oneapi/mkl.hpp"
+
 #include "example_helper.hpp"
 
 //
