@@ -494,9 +494,9 @@ sycl::event potrf_batch(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t
 }
 
 template <typename Func, typename T>
-inline sycl::event potrf_batch(Func func, sycl::queue &queue, oneapi::mkl::uplo *uplo,
-                               std::int64_t *n, T **a, std::int64_t *lda, std::int64_t group_count,
-                               std::int64_t *group_sizes, T *scratchpad,
+inline sycl::event potrf_batch(const char *func_name, Func func, sycl::queue &queue,
+                               oneapi::mkl::uplo *uplo, std::int64_t *n, T **a, std::int64_t *lda,
+                               std::int64_t group_count, std::int64_t *group_sizes, T *scratchpad,
                                std::int64_t scratchpad_size,
                                const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
@@ -523,8 +523,9 @@ inline sycl::event potrf_batch(Func func, sycl::queue &queue, oneapi::mkl::uplo 
             cusolverStatus_t err;
             for (int64_t i = 0; i < group_count; i++) {
                 auto **a_ = reinterpret_cast<cuDataType **>(a_dev);
-                CUSOLVER_ERROR_FUNC(func, err, handle, get_cublas_fill_mode(uplo[i]), (int)n[i],
-                                    a_ + offset, (int)lda[i], nullptr, (int)group_sizes[i]);
+                CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo[i]),
+                                      (int)n[i], a_ + offset, (int)lda[i], nullptr,
+                                      (int)group_sizes[i]);
                 offset += group_sizes[i];
             }
         });
@@ -538,8 +539,8 @@ inline sycl::event potrf_batch(Func func, sycl::queue &queue, oneapi::mkl::uplo 
         sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n, TYPE **a, std::int64_t *lda, \
         std::int64_t group_count, std::int64_t *group_sizes, TYPE *scratchpad,                     \
         std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {              \
-        return potrf_batch(CUSOLVER_ROUTINE, queue, uplo, n, a, lda, group_count, group_sizes,     \
-                           scratchpad, scratchpad_size, dependencies);                             \
+        return potrf_batch(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, uplo, n, a, lda,            \
+                           group_count, group_sizes, scratchpad, scratchpad_size, dependencies);   \
     }
 
 POTRF_BATCH_LAUNCHER_USM(float, cusolverDnSpotrfBatched)
@@ -581,10 +582,10 @@ sycl::event potrs_batch(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t
 }
 
 template <typename Func, typename T>
-inline sycl::event potrs_batch(Func func, sycl::queue &queue, oneapi::mkl::uplo *uplo,
-                               std::int64_t *n, std::int64_t *nrhs, T **a, std::int64_t *lda, T **b,
-                               std::int64_t *ldb, std::int64_t group_count,
-                               std::int64_t *group_sizes, T *scratchpad,
+inline sycl::event potrs_batch(const char *func_name, Func func, sycl::queue &queue,
+                               oneapi::mkl::uplo *uplo, std::int64_t *n, std::int64_t *nrhs, T **a,
+                               std::int64_t *lda, T **b, std::int64_t *ldb,
+                               std::int64_t group_count, std::int64_t *group_sizes, T *scratchpad,
                                std::int64_t scratchpad_size,
                                const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
@@ -624,9 +625,9 @@ inline sycl::event potrs_batch(Func func, sycl::queue &queue, oneapi::mkl::uplo 
                 auto **a_ = reinterpret_cast<cuDataType **>(a_dev);
                 auto **b_ = reinterpret_cast<cuDataType **>(b_dev);
                 auto info_ = reinterpret_cast<int *>(info);
-                CUSOLVER_ERROR_FUNC(func, err, handle, get_cublas_fill_mode(uplo[i]), (int)n[i],
-                                    (int)nrhs[i], a_ + offset, (int)lda[i], b_ + offset,
-                                    (int)ldb[i], info_, (int)group_sizes[i]);
+                CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo[i]),
+                                      (int)n[i], (int)nrhs[i], a_ + offset, (int)lda[i],
+                                      b_ + offset, (int)ldb[i], info_, (int)group_sizes[i]);
                 offset += group_sizes[i];
             }
         });
@@ -635,14 +636,15 @@ inline sycl::event potrs_batch(Func func, sycl::queue &queue, oneapi::mkl::uplo 
 }
 
 // Scratchpad memory not needed as parts of buffer a is used as workspace memory
-#define POTRS_BATCH_LAUNCHER_USM(TYPE, CUSOLVER_ROUTINE)                                        \
-    sycl::event potrs_batch(                                                                    \
-        sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n, std::int64_t *nrhs,       \
-        TYPE **a, std::int64_t *lda, TYPE **b, std::int64_t *ldb, std::int64_t group_count,     \
-        std::int64_t *group_sizes, TYPE *scratchpad, std::int64_t scratchpad_size,              \
-        const std::vector<sycl::event> &dependencies) {                                         \
-        return potrs_batch(CUSOLVER_ROUTINE, queue, uplo, n, nrhs, a, lda, b, ldb, group_count, \
-                           group_sizes, scratchpad, scratchpad_size, dependencies);             \
+#define POTRS_BATCH_LAUNCHER_USM(TYPE, CUSOLVER_ROUTINE)                                         \
+    sycl::event potrs_batch(                                                                     \
+        sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n, std::int64_t *nrhs,        \
+        TYPE **a, std::int64_t *lda, TYPE **b, std::int64_t *ldb, std::int64_t group_count,      \
+        std::int64_t *group_sizes, TYPE *scratchpad, std::int64_t scratchpad_size,               \
+        const std::vector<sycl::event> &dependencies) {                                          \
+        return potrs_batch(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, uplo, n, nrhs, a, lda, b, \
+                           ldb, group_count, group_sizes, scratchpad, scratchpad_size,           \
+                           dependencies);                                                        \
     }
 
 POTRS_BATCH_LAUNCHER_USM(float, cusolverDnSpotrsBatched)
