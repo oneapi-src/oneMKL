@@ -20,24 +20,42 @@
 #Build object from all sources
 if(ENABLE_MKLCPU_BACKEND)
   set(BLAS_CT_SOURCES "gemm_usm_mklcpu.cpp")
-elseif(ENABLE_MKLGPU_BACKEND)
+endif()
+if(ENABLE_MKLGPU_BACKEND)
   set(BLAS_CT_SOURCES "gemm_usm_mklgpu.cpp")
-elseif(ENABLE_CUBLAS_BACKEND)
+endif()
+if(ENABLE_CUBLAS_BACKEND)
   set(BLAS_CT_SOURCES "gemm_usm_cublas.cpp")
-elseif(ENABLE_ROCBLAS_BACKEND)
+endif()
+if(ENABLE_ROCBLAS_BACKEND)
   set(BLAS_CT_SOURCES "gemm_usm_rocblas.cpp")
 endif()
 
-add_library(blas_source_ct OBJECT ${BLAS_CT_SOURCES}))
-target_compile_options(blas_source_ct PRIVATE  -DNOMINMAX)
-target_include_directories(blas_source_ct
+add_executable(example_blas_source_ct ${BLAS_CT_SOURCES})
+target_compile_options(example_blas_source_ct PRIVATE  -DNOMINMAX)
+target_include_directories(example_blas_source_ct
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     PUBLIC ${CMAKE_BINARY_DIR}/bin
 )
+
+if(ENABLE_MKLCPU_BACKEND)
+  add_dependencies(example_blas_source_ct onemkl_${domain}_mklcpu)
+  list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu)
+endif()
+
+if(ENABLE_MKLGPU_BACKEND)
+  add_dependencies(example_blas_source_ct onemkl_${domain}_mklgpu)
+  list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklgpu)
+endif()
+
 if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
-  add_sycl_to_target(TARGET blas_source_ct SOURCES ${BLAS_CT_SOURCES})
+  add_sycl_to_target(TARGET example_blas_source_ct SOURCES ${BLAS_CT_SOURCES})
 else()
-  target_link_libraries(blas_source_ct PUBLIC ONEMKL::SYCL::SYCL)
+  target_link_libraries(example_blas_source_ct PUBLIC
+      ${CMAKE_BINARY_DIR}/lib/libonemkl_blas_mklgpu.a
+      ${ONEMKL_LIBRARIES_${domain}}
+      ONEMKL::SYCL::SYCL
+  )
 endif()
