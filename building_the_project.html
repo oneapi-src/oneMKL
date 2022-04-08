@@ -23,12 +23,12 @@
       
 
     
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" />
     
   <link rel="preload" as="script" href="_static/js/index.1c5a1a01449ed65a7b51.js">
 
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -43,7 +43,7 @@
   var wapLocalCode = 'us-en'; // Dynamically set per localized site; see mapping table for values
   var wapSection = "oneapi-mkl"; // WAP team will give you a unique section for your site
   // Load TMS
-  if (document.location.href.contains("oneapi-src.github.io")) {
+  if (document.location.href.includes("oneapi-src.github.io")) {
     (function () {
       var url = 'https://www.intel.com/content/dam/www/global/wap/tms-loader.js'; // WAP file URL
       var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true; po.src = url;
@@ -78,7 +78,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
     <div class="bd-toc-item active">
-        <p>
+        <p class="caption" role="heading">
  <span class="caption-text">
   About
  </span>
@@ -90,7 +90,7 @@
   </a>
  </li>
 </ul>
-<p>
+<p class="caption" role="heading">
  <span class="caption-text">
   Get Started
  </span>
@@ -107,7 +107,7 @@
   </a>
  </li>
 </ul>
-<p>
+<p class="caption" role="heading">
  <span class="caption-text">
   Developer Reference
  </span>
@@ -989,17 +989,17 @@
             <nav id="bd-toc-nav">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#build-setup-1">
+  <a class="reference internal nav-link" href="#build-setup">
    Build Setup
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#build-setup-with-hipsycl-1">
+  <a class="reference internal nav-link" href="#build-setup-with-hipsycl">
    Build Setup with hipSYCL
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#building-with-conan-1">
+  <a class="reference internal nav-link" href="#building-with-conan">
    Building with Conan
   </a>
   <ul class="nav section-nav flex-column">
@@ -1019,7 +1019,7 @@
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#conan-profiles-1">
+      <a class="reference internal nav-link" href="#conan-profiles">
        Conan Profiles
       </a>
      </li>
@@ -1067,7 +1067,7 @@
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#building-with-cmake-1">
+  <a class="reference internal nav-link" href="#building-with-cmake">
    Building with CMake
   </a>
   <ul class="nav section-nav flex-column">
@@ -1096,7 +1096,7 @@
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#project-cleanup-1">
+  <a class="reference internal nav-link" href="#project-cleanup">
    Project Cleanup
   </a>
  </li>
@@ -1111,10 +1111,10 @@
         
               <div>
                 
-  <section id="building-the-project-1">
-<span id="building-the-project"></span><h1>Building the Project<a class="headerlink" href="#building-the-project-1" title="Permalink to this headline">¶</a></h1>
-<section id="build-setup-1">
-<span id="build-setup"></span><h2>Build Setup<a class="headerlink" href="#build-setup-1" title="Permalink to this headline">¶</a></h2>
+  <section id="building-the-project">
+<span id="id1"></span><h1>Building the Project<a class="headerlink" href="#building-the-project" title="Permalink to this headline">¶</a></h1>
+<section id="build-setup">
+<span id="id2"></span><h2>Build Setup<a class="headerlink" href="#build-setup" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li><p>Install Intel(R) oneAPI DPC++ Compiler (select the variant as described in
 <a class="reference internal" href="selecting_a_compiler.html#selecting-a-compiler"><span class="std std-ref">Selecting a Compiler</span></a>).</p></li>
@@ -1130,10 +1130,10 @@ required dependencies manually and
 <p>Conan package manager automates the process of getting required packages
 so that you do not have to go to different web location and follow different
 instructions to install them.</p>
-</aside>
+</div>
 </section>
-<section id="build-setup-with-hipsycl-1">
-<span id="build-setup-with-hipsycl"></span><h2>Build Setup with hipSYCL<a class="headerlink" href="#build-setup-with-hipsycl-1" title="Permalink to this headline">¶</a></h2>
+<section id="build-setup-with-hipsycl">
+<span id="id3"></span><h2>Build Setup with hipSYCL<a class="headerlink" href="#build-setup-with-hipsycl" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li><p>Make sure that the dependencies of hipSYCL are fulfilled. For a detailed
 description, see the
@@ -1150,8 +1150,8 @@ the root directory of this repository.</p></li>
 <a class="reference internal" href="#building-with-cmake"><span class="std std-ref">Build with CMake</span></a>.</p></li>
 </ol>
 </section>
-<section id="building-with-conan-1">
-<span id="building-with-conan"></span><h2>Building with Conan<a class="headerlink" href="#building-with-conan-1" title="Permalink to this headline">¶</a></h2>
+<section id="building-with-conan">
+<span id="id4"></span><h2>Building with Conan<a class="headerlink" href="#building-with-conan" title="Permalink to this headline">¶</a></h2>
 <p>** This method currently works on Linux* only **</p>
 <p>** Make sure you have completed <a class="reference internal" href="#build-setup"><span class="std std-ref">Build Setup</span></a>. **</p>
 <div class="admonition note">
@@ -1161,7 +1161,7 @@ Information” under
 <a class="reference external" href="https://github.com/oneapi-src/oneMKL#support-and-requirements">Support and Requirements</a>.
 For details about Conan package manager, refer to the
 <a class="reference external" href="https://docs.conan.io/en/latest/">Conan Documentation</a>.</p>
-</aside>
+</div>
 <section id="getting-conan">
 <h3>Getting Conan<a class="headerlink" href="#getting-conan" title="Permalink to this headline">¶</a></h3>
 <p>Conan can be <a class="reference external" href="https://docs.conan.io/en/latest/installation.html">installed</a> from pip:</p>
@@ -1189,8 +1189,8 @@ for more details.</p>
 </pre></div>
 </div>
 </section>
-<section id="conan-profiles-1">
-<span id="conan-profiles"></span><h4>Conan Profiles<a class="headerlink" href="#conan-profiles-1" title="Permalink to this headline">¶</a></h4>
+<section id="conan-profiles">
+<span id="id6"></span><h4>Conan Profiles<a class="headerlink" href="#conan-profiles" title="Permalink to this headline">¶</a></h4>
 <p>Profiles are a way for Conan to determine a basic environment to use for
 building a project. This project ships with profiles for:</p>
 <ul class="simple">
@@ -1224,7 +1224,7 @@ importantly profiles, to conan default directory.</p>
 <p class="admonition-title">Note</p>
 <p>If you change the profile, you must re-run the above command before you can
 use the new profile.</p>
-</aside>
+</div>
 </section>
 </section>
 <section id="building">
@@ -1284,7 +1284,7 @@ Tells Conan where to install the package. It is similar to specifying <code clas
 <p class="admonition-title">Note</p>
 <p>For a detailed list of commands and options, refer to the
 <a class="reference external" href="https://docs.conan.io/en/latest/reference/commands.html">Conan Command Reference</a>.</p>
-</aside>
+</div>
 </section>
 <section id="conan-build-options">
 <h3>Conan Build Options<a class="headerlink" href="#conan-build-options" title="Permalink to this headline">¶</a></h3>
@@ -1316,7 +1316,7 @@ the building of functional tests. The default value is <code class="docutils lit
 <p class="admonition-title">Note</p>
 <p>For a mapping between Conan and CMake options, refer to
 <a class="reference internal" href="#building-with-cmake"><span class="std std-ref">Building with CMake</span></a>.</p>
-</aside>
+</div>
 </section>
 </section>
 <section id="example">
@@ -1332,8 +1332,8 @@ conan build ..
 </section>
 </section>
 </section>
-<section id="building-with-cmake-1">
-<span id="building-with-cmake"></span><h2>Building with CMake<a class="headerlink" href="#building-with-cmake-1" title="Permalink to this headline">¶</a></h2>
+<section id="building-with-cmake">
+<span id="id7"></span><h2>Building with CMake<a class="headerlink" href="#building-with-cmake" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li><p>Make sure you have completed <a class="reference external" href="#build-setup">Build Setup</a>.</p></li>
 <li><p>Build and install all required <a class="reference external" href="#software-requirements">dependencies</a>.</p></li>
@@ -1541,17 +1541,17 @@ CMake.</p>
 <p class="admonition-title">Note</p>
 <p><code class="docutils literal notranslate"><span class="pre">build_functional_tests</span></code> and related CMake options affect all domains at a
 global scope.</p>
-</aside>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>When building with hipSYCL, you must additionally provide
 <code class="docutils literal notranslate"><span class="pre">-DHIPSYCL_TARGETS</span></code> according to the targeted hardware. For the options,
 see the tables in the hipSYCL-specific sections.</p>
-</aside>
+</div>
 </section>
 </section>
-<section id="project-cleanup-1">
-<span id="project-cleanup"></span><h2>Project Cleanup<a class="headerlink" href="#project-cleanup-1" title="Permalink to this headline">¶</a></h2>
+<section id="project-cleanup">
+<span id="id9"></span><h2>Project Cleanup<a class="headerlink" href="#project-cleanup" title="Permalink to this headline">¶</a></h2>
 <p>Most use-cases involve building the project without the need to cleanup the
 build directory. However, if you wish to cleanup the build directory, you can
 delete the <code class="docutils literal notranslate"><span class="pre">build</span></code> folder and create a new one. If you wish to cleanup the
