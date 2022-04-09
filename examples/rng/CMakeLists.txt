@@ -18,7 +18,9 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-add_subdirectory(level3)
-# add_subdirectory(level1)
-# add_subdirectory(level2)
-# add_subdirectory(batch)
+add_subdirectory(compile_time_dispatching)
+
+# runtime compilation is only possible with dynamic librarie
+if (BUILD_SHARED_LIBS)
+  add_subdirectory(run_time_dispatching)
+endif()

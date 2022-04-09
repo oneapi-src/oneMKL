@@ -22,7 +22,7 @@
 *  Content:
 *       This example demonstrates use of DPCPP API oneapi::mkl::blas::gemm
 *       using unified shared memory to perform General
-*       Matrix-Matrix Multiplication on a SYCL device with CUDA backend.
+*       Matrix-Matrix Multiplication on an Intel CPU SYCL device.
 *
 *       C = alpha * op(A) * op(B) + beta * C
 *
@@ -52,6 +52,7 @@
 
 #include "example_helper.hpp"
 
+
 //
 // Main example for Gemm consisting of
 // initialization of A, B and C matrices as well as
@@ -61,8 +62,7 @@
 //
 // is performed and finally the results are post processed.
 //
-template <typename fp>
-void run_gemm_example(const cl::sycl::device &dev) {
+void run_gemm_example(const sycl::device &dev) {
 
     //
     // Initialize data for Gemm
@@ -84,16 +84,16 @@ void run_gemm_example(const cl::sycl::device &dev) {
     int ldC = 106;
     int sizea, sizeb, sizec = ldC * n;
 
-    // set scalar fp values
-    fp alpha = set_fp_value(fp(2.0), fp(-0.5));
-    fp beta  = set_fp_value(fp(3.0), fp(-1.5));
+    // set scalar float values
+    float alpha = set_fp_value(float(2.0), float(-0.5));
+    float beta  = set_fp_value(float(3.0), float(-1.5));
 
     // Catch asynchronous exceptions
-    auto exception_handler = [] (cl::sycl::exception_list exceptions) {
+    auto exception_handler = [] (sycl::exception_list exceptions) {
         for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
-            } catch(cl::sycl::exception const& e) {
+            } catch(sycl::exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during GEMM:\n"
                 << e.what() << std::endl;
             }
@@ -101,16 +101,16 @@ void run_gemm_example(const cl::sycl::device &dev) {
     };
 
     // create execution queue and buffers of matrix data
-    cl::sycl::queue main_queue(dev, exception_handler);
-    cl::sycl::event gemm_done;
-    std::vector<cl::sycl::event> gemm_dependencies;
-    cl::sycl::context cxt = main_queue.get_context();
+    sycl::queue main_queue(dev, exception_handler);
+    sycl::event gemm_done;
+    std::vector<sycl::event> gemm_dependencies;
+    sycl::context cxt = main_queue.get_context();
     sizea = (transA == oneapi::mkl::transpose::nontrans) ? ldA * k : ldA * m;
     sizeb = (transB == oneapi::mkl::transpose::nontrans) ? ldB * n : ldB * k;
 
-    auto A = (fp *) malloc_shared(sizea * sizeof(fp), dev, cxt);
-    auto B = (fp *) malloc_shared(sizeb * sizeof(fp), dev, cxt);
-    auto C = (fp *) malloc_shared(sizec * sizeof(fp), dev, cxt);
+    auto A = (float *) malloc_shared(sizea * sizeof(float), dev, cxt);
+    auto B = (float *) malloc_shared(sizeb * sizeof(float), dev, cxt);
+    auto C = (float *) malloc_shared(sizec * sizeof(float), dev, cxt);
 
     if (!A || !B || !C)
         throw std::runtime_error("Failed to allocate USM memory.");
@@ -126,10 +126,10 @@ void run_gemm_example(const cl::sycl::device &dev) {
 
     // add oneapi::mkl::blas::gemm to execution queue
     try {
-        printf("CUBLAS\n");
-        gemm_done = oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas> {main_queue}, transA, transB, m, n, k, alpha, A, ldA, B, ldB, beta,  C, ldC);
+        printf("GEMM_MKL_CPU\n");
+        gemm_done = oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> {main_queue}, transA, transB, m, n, k, alpha, A, ldA, B, ldB, beta, C, ldC);
     }
-    catch(cl::sycl::exception const& e) {
+    catch(sycl::exception const& e) {
         std::cout << "\t\tCaught synchronous SYCL exception during GEMM:\n"
                   << e.what() << std::endl << "OpenCL status: " << get_error_code(e) << std::endl;
     }
@@ -189,19 +189,18 @@ void print_example_banner() {
 
 }
 
+
 //
-// Main entry point for example.
+// Main entry point for example
 //
 int main (int argc, char ** argv) {
     print_example_banner();
 
-    cl::sycl::device dev = cl::sycl::device(cl::sycl::gpu_selector());
-    if (dev.is_gpu()) printf("Running tests on GPU device\n");
-
-    std::cout << "Device name is: " << dev.get_info<cl::sycl::info::device::name>() << std::endl;
+    sycl::device dev = sycl::device(sycl::cpu_selector());
+    if (dev.is_cpu()) std::cout << "Running tests on CPU device. Device name is: " << dev.get_info<sycl::info::device::name>() << ".\n"; 
 
     std::cout << "\tRunning with single precision real data type:" << std::endl;
-    run_gemm_example<float>(dev);
+    run_gemm_example(dev);
 
     return 0;
 }
