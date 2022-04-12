@@ -20,13 +20,13 @@
 #Build object from all sources
 set(LAPACK_CT_SOURCES "")
 if(ENABLE_MKLCPU_BACKEND)
-  list(APPEND LAPACK_CT_SOURCES "getrf_usm_mklcpu")
+  list(APPEND LAPACK_CT_SOURCES "getrs_usm_mklcpu")
 endif()
 if(ENABLE_MKLGPU_BACKEND)
-  list(APPEND LAPACK_CT_SOURCES "getrf_usm_mklgpu")
+  list(APPEND LAPACK_CT_SOURCES "getrs_usm_mklgpu")
 endif()
 if(ENABLE_CUSOLVER_BACKEND)
-  list(APPEND LAPACK_CT_SOURCES "getrf_usm_cusolver")
+  list(APPEND LAPACK_CT_SOURCES "getrs_usm_cusolver")
 endif()
 
 foreach(lapack_ct_source ${LAPACK_CT_SOURCES})

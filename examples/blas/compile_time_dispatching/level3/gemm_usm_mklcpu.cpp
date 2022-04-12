@@ -197,7 +197,7 @@ int main (int argc, char ** argv) {
     print_example_banner();
 
     sycl::device dev = sycl::device(sycl::cpu_selector());
-    if (dev.is_cpu()) std::cout << "Running tests on CPU device. Device name is: " << dev.get_info<sycl::info::device::name>() << ".\n"; 
+    if (dev.is_cpu()) std::cout << "Running BLAS gemm usm example on CPU device. Device name is: " << dev.get_info<sycl::info::device::name>() << ".\n"; 
 
     std::cout << "\tRunning with single precision real data type:" << std::endl;
     run_gemm_example(dev);

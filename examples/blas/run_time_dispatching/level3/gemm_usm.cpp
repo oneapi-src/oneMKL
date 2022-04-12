@@ -199,7 +199,7 @@ int main (int argc, char ** argv) {
 
 
     if (dev.is_gpu()) {
-        std::cout << "Running tests on GPU device. Device name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
+        std::cout << "Running BLAS gemm usm example on GPU device. Device name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
         unsigned int vendor_id = static_cast<unsigned int>(dev.get_info<sycl::info::device::vendor_id>());
         if (vendor_id == INTEL_ID) {
             bool is_level0 = dev.get_info<sycl::info::device::opencl_c_version>().empty();
@@ -207,7 +207,7 @@ int main (int argc, char ** argv) {
             else std::cout << "DPC++ running with OpenCL backend\n";
         }
     } else {
-        std::cout << "Running tests on CPU device. Device name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
+        std::cout << "Running BLAS gemm usm example on CPU device. Device name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
     }
 
     std::cout << "\tRunning with single precision real data type:" << std::endl;

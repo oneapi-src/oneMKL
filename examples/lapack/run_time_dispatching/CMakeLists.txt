@@ -21,7 +21,7 @@
 # NOTE: user need to set env var SYCL_DEVICE_FILTER to use runtime example without specifying backend in CMake
 
 # Build object from all example sources
-set(LAPACK_RT_SOURCES "getrf_usm")
+set(LAPACK_RT_SOURCES "getrs_usm")
 
 foreach(lapack_rt_source ${LAPACK_RT_SOURCES})
   add_executable(example_${domain}_${lapack_rt_source} ${lapack_rt_source}.cpp)

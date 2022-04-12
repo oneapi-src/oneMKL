@@ -20,7 +20,7 @@
 
 add_subdirectory(compile_time_dispatching)
 
-# runtime compilation is only possible with dynamic librarie
+# runtime compilation is only possible with dynamic libraries
 if (BUILD_SHARED_LIBS)
   add_subdirectory(run_time_dispatching)
 endif()
