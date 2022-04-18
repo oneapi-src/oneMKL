@@ -23,6 +23,21 @@
 # Build object from all example sources
 set(RNG_RT_SOURCES "uniform_usm")
 
+# Set up for the right backend for run-time dispatching examples
+# If users build more than one backend (i.e. mklcpu and mklgpu, or mklcpu and CUDA), they may need to
+# overwrite SYCL_DEVICE_FILTER in their environment to run on the desired backend
+if(ENABLE_MKLCPU_BACKEND)
+  set(ENV{SYCL_DEVICE_FILTER} "cpu")
+endif()
+if(ENABLE_MKLGPU_BACKEND)
+  set(ENV{SYCL_DEVICE_FILTER} "gpu")
+endif()
+if(ENABLE_CURAND_BACKEND)
+  set(ENV{SYCL_DEVICE_FILTER} "cuda:gpu")
+endif()
+
+message("-- SYCL_DEVICE_FILTER is set to: $ENV{SYCL_DEVICE_FILTER}")
+
 foreach(rng_rt_source ${RNG_RT_SOURCES})
   add_executable(example_${domain}_${rng_rt_source} ${rng_rt_source}.cpp)
   target_compile_options(example_${domain}_${rng_rt_source} PRIVATE -DNOMINMAX)
@@ -42,4 +57,7 @@ foreach(rng_rt_source ${RNG_RT_SOURCES})
         ONEMKL::SYCL::SYCL
     )
   endif()
+
+  # Register example as ctest
+  add_test(NAME example_${domain}_${rng_rt_source} COMMAND example_${domain}_${rng_rt_source})
 endforeach()

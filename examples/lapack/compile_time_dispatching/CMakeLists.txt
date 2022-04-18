@@ -61,4 +61,7 @@ foreach(lapack_ct_source ${LAPACK_CT_SOURCES})
         ONEMKL::SYCL::SYCL
     )
   endif()
+
+  # Register example as ctest
+ add_test(NAME example_${domain}_${lapack_ct_source} COMMAND example_${domain}_${lapack_ct_source})
 endforeach(lapack_ct_source)

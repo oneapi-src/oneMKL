@@ -217,6 +217,7 @@ endif()
 
 # Examples
 if (BUILD_EXAMPLES)
+  enable_testing()
   add_subdirectory(examples)
 endif()
 
