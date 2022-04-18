@@ -184,10 +184,6 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    bool is_level0 = dev.get_info<sycl::info::device::opencl_c_version>().empty();
-    if (is_level0) std::cout << "DPC++ running with Level0 backend.\n";
-    else std::cout << "DPC++ running with OpenCL backend.\n";
-
     std::cout << "\tRunning with single precision real data type:" << std::endl;
     run_getrs_example(dev);
 

@@ -139,12 +139,6 @@ int main (int argc, char ** argv) {
 
     if (my_dev.is_gpu()) {
         std::cout << "Running RNG uniform usm example on GPU device.\n";
-        unsigned int vendor_id = static_cast<unsigned int>(my_dev.get_info<sycl::info::device::vendor_id>());
-        if (vendor_id == INTEL_ID) {
-            bool is_level0 = my_dev.get_info<sycl::info::device::opencl_c_version>().empty();
-            if (is_level0) std::cout << "DPC++ running with Level0 backend.\n";
-            else std::cout << "DPC++ running with OpenCL backend.\n";
-        }
     } else {
         std::cout << "Running RNG uniform usm example on CPU device.\n";
     }

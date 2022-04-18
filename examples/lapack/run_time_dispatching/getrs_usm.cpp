@@ -180,12 +180,6 @@ int main(int argc, char **argv) {
     sycl::device dev = sycl::device(sycl::default_selector());
     if (dev.is_gpu()) {
         std::cout << "Running LAPACK getrs example on GPU device. Device name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
-        unsigned int vendor_id = static_cast<unsigned int>(dev.get_info<sycl::info::device::vendor_id>());
-        if (vendor_id == INTEL_ID) {
-            bool is_level0 = dev.get_info<sycl::info::device::opencl_c_version>().empty();
-            if (is_level0) std::cout << "DPC++ running with Level0 backend\n";
-            else std::cout << "DPC++ running with OpenCL backend\n";
-        }
     } else {
         std::cout << "Running LAPACK getrs example on CPU device. Device name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
     }
