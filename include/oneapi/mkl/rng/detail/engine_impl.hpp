@@ -27,6 +27,7 @@
 #include "oneapi/mkl/detail/get_device_id.hpp"
 
 #include "oneapi/mkl/rng/distributions.hpp"
+#include "oneapi/mkl/types.hpp"
 
 namespace oneapi {
 namespace mkl {
