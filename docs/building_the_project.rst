@@ -238,6 +238,12 @@ Testing-Related Options
 * ``build_functional_tests=[True | False]``. Setting it to ``True`` enables
   the building of functional tests. The default value is ``True``.
 
+Example-Related Options
+~~~~~~~~~~~~~~~~~~~~~~~
+
+* ``build_examples=[True | False]``. Setting it to ``True`` enables
+  the building of examples. The default value is ``False``. Compile_time_dispatching examples will always be built if this value is set to true. Run_time_dispatching examples will be build if both this value and  ``build_shared_libs`` is set to true
+  
 Documentation
 ~~~~~~~~~~~~~
 
@@ -447,6 +453,10 @@ CMake.
      - BUILD_FUNCTIONAL_TESTS
      - True, False
      - True      
+   * - build_examples
+     - BUILD_EXAMPLES
+     - True, False
+     - False      
    * - build_doc
      - BUILD_DOC
      - True, False
