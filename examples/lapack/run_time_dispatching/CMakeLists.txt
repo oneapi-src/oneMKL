@@ -37,7 +37,7 @@ if(ENABLE_CUSOLVER_BACKEND)
   list(APPEND DEVICE_FILTERS "cuda:gpu")
 endif()
 
-message("-- SYCL_DEVICE_FILTER will be set to the following value(s): [${DEVICE_FILTERS}] for run-time dispatching examples")
+message(STATUS "SYCL_DEVICE_FILTER will be set to the following value(s): [${DEVICE_FILTERS}] for run-time dispatching examples")
 
 foreach(lapack_rt_source ${LAPACK_RT_SOURCES})
   add_executable(example_${domain}_${lapack_rt_source} ${lapack_rt_source}.cpp)

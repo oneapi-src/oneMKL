@@ -42,7 +42,7 @@ if(ENABLE_ROCBLAS_BACKEND)
   list(APPEND DEVICE_FILTERS "hip:gpu")
 endif()
 
-message("-- SYCL_DEVICE_FILTER will be set to the following value(s): [${DEVICE_FILTERS}] for run-time dispatching examples")
+message(STATUS "SYCL_DEVICE_FILTER will be set to the following value(s): [${DEVICE_FILTERS}] for run-time dispatching examples")
 
 foreach(blas_rt_source ${BLAS_RT_SOURCES})
   add_executable(example_${domain}_${blas_rt_source} ${blas_rt_source}.cpp)
