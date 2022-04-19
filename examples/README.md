@@ -1,67 +1,220 @@
-TODO: update description for users before merging
-
-#### Examples are added for routines in each domain:  
-- blas routine: gemm_usm  
-- rng routine: uniform_usm  
-- lapack routine: getrf followed by getrs with usm  
+# oneAPI Math Kernel Library (oneMKL) Interfaces Examples 
+oneAPI Math Kernel Library (oneMKL) Interfaces offers examples with the following routines: 
+- blas: level3/gemm_usm  
+- rng: uniform_usm  
+- lapack: getrs_usm
 
 Each routine has a run-time dispatching example and three compile-time idspatching examples (for mklcpu, mklgpu, and cuda backeds), located in `example/<$domain>/run_time_dispatching` and `example/<$domain>/compile_time_dispatching` subfolders, respectively.
 
-One new cmake build option `-DBUILD_EXAMPLES` is added.  
+To build examples, use cmake build option `-DBUILD_EXAMPLES=true`.  
 Compile_time_dispatching will always be built if `-DBUILD_EXAMPLES=true`.   
 Run_time_dispatching will be build if `-DBUILD_EXAMPLES=true` and `-DBUILD_SHARED_LIBS=true`
-  
-Example executables are inside `bin/`. The executable naming convention follows `example_<$domain>_<$routine>_<$backend>` for compile-time dispatching examples 
+
+The example executable naming convention follows `example_<$domain>_<$routine>_<$backend>` for compile-time dispatching examples 
   or `example_<$domain>_<$routine>` for run-time dispatching examples. 
   E.g. `example_blas_gemm_usm_mklcpu `  `example_blas_gemm_usm`
 
 ## Test outputs (blas, rng, lapack)
   
-### 1. blas: gemm with USM
-  
-###   blas compile time dispatching examples (mklcpu backend on jflmkl109)
-![blas_ct_mklcpu](https://user-images.githubusercontent.com/46687831/163023906-8f033920-f345-4016-bfdd-9d5363927b09.JPG)
-  
-  
-###   blas compile time dispatching examples (mklgpu backend on jflmkl109)
-![blas_ct_mklgpu](https://user-images.githubusercontent.com/46687831/163023920-c24ccc90-7f22-4804-9f8e-ba316d638ebf.JPG)
-  
-  
-###   blas compile time dispatching examples (mklcpu and cublas backend on jflmkl125)
-![blas_ct_nvidia](https://user-images.githubusercontent.com/46687831/163025370-6a266c2c-4f96-4843-a305-c810a352a6eb.JPG)
+## blas
+Compile-time dispatching examples with mklcpu backend
+```
+$ ./bin/example_blas_gemm_usm_mklcpu
 
-  
-### blas run time dispatching examples on jflmkl111
-  ![blas_rt_111_(1)](https://user-images.githubusercontent.com/46687831/163025751-59f53222-cd1c-4b6d-aa42-5020d51fa4ce.JPG)
-  
-  
- ### blas run time dispatching examples on jflmkl125
-  ![blas_rt_125](https://user-images.githubusercontent.com/46687831/163025094-112c419a-4b1e-4e69-9626-3ad47065d920.JPG)
+########################################################################
+# General Matrix-Matrix Multiplication using Unified Shared Memory Example:
+#
+# C = alpha * A * B + beta * C
+#
+# where A, B and C are general dense matrices and alpha, beta are
+# floating point type precision scalars.
+#
+# Using apis:
+#   gemm
+#
+# Supported floating point type precisions:
+#   float
+#
+########################################################################
 
-  
-  
-## 2. rng: uniform with USM
-  
-### rng compile time dispatching examples on jflmkl125
-  ![rng_ct_125](https://user-images.githubusercontent.com/46687831/163026432-e28a320b-4415-4688-9a7a-f03f72770f60.JPG)
-  
-### rng compile time dispatching examples on jflmkl111
-![rng_ct_mkl](https://user-images.githubusercontent.com/46687831/163026471-9dd9e85e-f456-4294-8e62-ea19a95e7487.JPG)
+Running BLAS gemm usm example on CPU device. Device name is: Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz.
+        Running with single precision real data type:
+GEMM_MKL_CPU
 
-### rng run time dispatching examples on jflmkl109
-![rng_rt_111](https://user-images.githubusercontent.com/46687831/163026484-a434d377-18cf-4374-b226-052b30082cf0.JPG)
-  
-### rng run time dispatching examples on jflmkl125
-![rng_rt_125](https://user-images.githubusercontent.com/46687831/163026495-2c973f85-0173-4fbb-b55a-7658ebff4748.JPG)
+                GEMM parameters:
+                        transA = trans, transB = nontrans
+                        m = 45, n = 98, k = 67
+                        lda = 103, ldB = 105, ldC = 106
+                        alpha = 2, beta = 3
+
+                Outputting 2x2 block of A,B,C matrices:
+
+                        A = [ 0.340188, 0.260249, ...
+                            [ -0.105617, 0.0125354, ...
+                            [ ...
+
+
+                        B = [ -0.326421, -0.192968, ...
+                            [ 0.363891, 0.251295, ...
+                            [ ...
+
+
+                        C = [ 0.00698781, 0.525862, ...
+                            [ 0.585167, 1.59017, ...
+                            [ ...
+```
+
+Run-time dispatching examples with mklcpu backend
+```
+$ export SYCL_DEVICE_FILTER=cpu
+$ ./bin/example_blas_gemm_usm
+
+########################################################################
+# General Matrix-Matrix Multiplication using Unified Shared Memory Example:
+#
+# C = alpha * A * B + beta * C
+#
+# where A, B and C are general dense matrices and alpha, beta are
+# floating point type precision scalars.
+#
+# Using apis:
+#   gemm
+#
+# Supported floating point type precisions:
+#   float
+#
+########################################################################
+
+Running BLAS gemm usm example on CPU device. Device name is: Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz.
+        Running with single precision real data type:
+Runtime compilation, backend not specified
+
+                GEMM parameters:
+                        transA = trans, transB = nontrans
+                        m = 45, n = 98, k = 67
+                        lda = 103, ldB = 105, ldC = 106
+                        alpha = 2, beta = 3
+
+                Outputting 2x2 block of A,B,C matrices:
+
+                        A = [ 0.340188, 0.260249, ...
+                            [ -0.105617, 0.0125354, ...
+                            [ ...
+
+
+                        B = [ -0.326421, -0.192968, ...
+                            [ 0.363891, 0.251295, ...
+                            [ ...
+
+
+                        C = [ 0.00698781, 0.525862, ...
+                            [ 0.585167, 1.59017, ...
+                            [ ...
+```
+
+Run-time dispatching examples with cublas backend
+```
+$ export SYCL_DEVICE_FILTER=cuda:gpu
+$ ./bin/example_blas_gemm_usm
+
+########################################################################
+# General Matrix-Matrix Multiplication using Unified Shared Memory Example:
+#
+# C = alpha * A * B + beta * C
+#
+# where A, B and C are general dense matrices and alpha, beta are
+# floating point type precision scalars.
+#
+# Using apis:
+#   gemm
+#
+# Supported floating point type precisions:
+#   float
+#
+########################################################################
+
+Running BLAS gemm usm example on GPU device. Device name is: TITAN RTX.
+        Running with single precision real data type:
+Runtime compilation, backend not specified
+
+                GEMM parameters:
+                        transA = trans, transB = nontrans
+                        m = 45, n = 98, k = 67
+                        lda = 103, ldB = 105, ldC = 106
+                        alpha = 2, beta = 3
+
+                Outputting 2x2 block of A,B,C matrices:
+
+                        A = [ 0.340188, 0.260249, ...
+                            [ -0.105617, 0.0125354, ...
+                            [ ...
+
+
+                        B = [ -0.326421, -0.192968, ...
+                            [ 0.363891, 0.251295, ...
+                            [ ...
+
+
+                        C = [ 0.00698793, 0.525862, ...
+                            [ 0.585168, 1.59017, ...
+                            [ ...
+```
  
-## 3. lapack: getrf followed by getrs with USM
+## lapack 
+Run-time dispatching example with mklgpu backend:
+```
+$ export SYCL_DEVICE_FILTER=gpu
+$ ./bin/example_lapack_getrs_usm
+########################################################################
+# LU Factorization and Solve Example:
+#
+# Computes LU Factorization A = P * L * U
+# and uses it to solve for X in a system of linear equations:
+#   AX = B
+# where A is a general dense matrix and B is a matrix whose columns
+# are the right-hand sides for the systems of equations.
+#
+# Using apis:
+#   getrf and getrs
+#
+# Supported floating point type precisions:
+#   float
+#
+########################################################################
+Running LAPACK getrs example on GPU device. Device name is: Intel(R) Iris(R) Pro Graphics 580 [0x193b].
+  Running with single precision real data type:
+getrs ran OK
+```
 
-### lapack compile time dispatching examples on jflmkl109
-  ![lapack_ct_mklcpugpu](https://user-images.githubusercontent.com/46687831/163026270-a581002f-e26d-4e03-b21b-5e3f8b446109.JPG)
+## rng
+Run-time dispatching example with mklcpu backend:
+```
+$ export SYCL_DEVICE_FILTER=cpu
+$ ./bin/example_rng_uniform_usm
+########################################################################
+# Generate uniformly distributed random numbers with philox4x32x10
+# generator example:
+#
+# Using APIs:
+#   default_engine uniform
+#  
+# Supported precisions:
+#   float
+# 
+########################################################################
 
-### lapack run time dispatching examples jflmkl109**
-  ![lapack_rt_111](https://user-images.githubusercontent.com/46687831/163026288-b0770197-9009-4b0f-9301-9171d0734187.JPG)
+Running RNG uniform usm example on CPU device.
+Device name is: Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz
+        Running with single precision real data type:
 
+                generation parameters:
+                        seed = 777, a = 0, b = 10
 
+                Output of generator:
+first 10 numbers of 1000:
+8.52971 1.76033 6.04753 3.68079 9.04039 2.61014 3.75788 3.94859 7.93444 8.60436
+Success: sample moments (mean=5.01785, variance=8.4075) agree with theory (mean=5, variance=8.33333)
+PASSED
+```
 
 
