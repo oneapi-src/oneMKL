@@ -59,5 +59,8 @@ foreach(lapack_rt_source ${LAPACK_RT_SOURCES})
   endif()
 
   # Register example as ctest
- add_test(NAME example_${domain}_${lapack_rt_source} COMMAND example_${domain}_${lapack_rt_source})
+  add_test(NAME example_${domain}_${lapack_rt_source} COMMAND example_${domain}_${lapack_rt_source})
+  set_property(TEST example_${domain}_${lapack_rt_source} PROPERTY
+    ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH})
+
 endforeach(lapack_rt_source)

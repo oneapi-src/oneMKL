@@ -63,6 +63,9 @@ foreach(blas_rt_source ${BLAS_RT_SOURCES})
     )
   endif()
 
- # Register example as ctest
- add_test(NAME example_${domain}_${blas_rt_source} COMMAND example_${domain}_${blas_rt_source})
+  # Register example as ctest
+  add_test(NAME example_${domain}_${blas_rt_source} COMMAND example_${domain}_${blas_rt_source})
+  set_property(TEST example_${domain}_${blas_rt_source} PROPERTY
+    ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH})
+
 endforeach(blas_rt_source)

@@ -60,4 +60,7 @@ foreach(rng_rt_source ${RNG_RT_SOURCES})
 
   # Register example as ctest
   add_test(NAME example_${domain}_${rng_rt_source} COMMAND example_${domain}_${rng_rt_source})
+  set_property(TEST example_${domain}_${rng_rt_source} PROPERTY
+    ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH})
+
 endforeach()
