@@ -4,7 +4,7 @@ oneAPI Math Kernel Library (oneMKL) Interfaces offers examples with the followin
 - rng: uniform_usm  
 - lapack: getrs_usm
 
-Each routine has a run-time dispatching example and three compile-time idspatching examples (for mklcpu, mklgpu, and cuda backeds), located in `example/<$domain>/run_time_dispatching` and `example/<$domain>/compile_time_dispatching` subfolders, respectively.
+Each routine has a run-time dispatching example and three compile-time dispatching examples (for mklcpu, mklgpu, and cuda backends), located in `example/<$domain>/run_time_dispatching` and `example/<$domain>/compile_time_dispatching` subfolders, respectively.
 
 To build examples, use cmake build option `-DBUILD_EXAMPLES=true`.  
 Compile_time_dispatching will always be built if `-DBUILD_EXAMPLES=true`.   
@@ -37,9 +37,9 @@ $ ./bin/example_blas_gemm_usm_mklcpu
 #
 ########################################################################
 
-Running BLAS gemm usm example on CPU device. Device name is: Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz.
+Running BLAS gemm usm example on CPU device. 
+Device name is: Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz.
         Running with single precision real data type:
-GEMM_MKL_CPU
 
                 GEMM parameters:
                         transA = trans, transB = nontrans
@@ -85,9 +85,9 @@ $ ./bin/example_blas_gemm_usm
 #
 ########################################################################
 
-Running BLAS gemm usm example on CPU device. Device name is: Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz.
+Running BLAS gemm usm example on CPU device. 
+Device name is: Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz.
         Running with single precision real data type:
-Runtime compilation, backend not specified
 
                 GEMM parameters:
                         transA = trans, transB = nontrans
@@ -133,9 +133,9 @@ $ ./bin/example_blas_gemm_usm
 #
 ########################################################################
 
-Running BLAS gemm usm example on GPU device. Device name is: TITAN RTX.
+Running BLAS gemm usm example on GPU device. 
+Device name is: TITAN RTX.
         Running with single precision real data type:
-Runtime compilation, backend not specified
 
                 GEMM parameters:
                         transA = trans, transB = nontrans
@@ -181,7 +181,8 @@ $ ./bin/example_lapack_getrs_usm
 #   float
 #
 ########################################################################
-Running LAPACK getrs example on GPU device. Device name is: Intel(R) Iris(R) Pro Graphics 580 [0x193b].
+Running LAPACK getrs example on GPU device. 
+Device name is: Intel(R) Iris(R) Pro Graphics 580 [0x193b].
   Running with single precision real data type:
 getrs ran OK
 ```
