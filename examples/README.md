@@ -4,7 +4,7 @@ oneAPI Math Kernel Library (oneMKL) Interfaces offers examples with the followin
 - rng: uniform_usm  
 - lapack: getrs_usm
 
-Each routine has a run-time dispatching example and three compile-time idspatching examples (for mklcpu, mklgpu, and cuda backeds), located in `example/<$domain>/run_time_dispatching` and `example/<$domain>/compile_time_dispatching` subfolders, respectively.
+Each routine has a run-time dispatching example and three compile-time dispatching examples (for mklcpu, mklgpu, and cuda backends), located in `example/<$domain>/run_time_dispatching` and `example/<$domain>/compile_time_dispatching` subfolders, respectively.
 
 To build examples, use cmake build option `-DBUILD_EXAMPLES=true`.  
 Compile_time_dispatching will always be built if `-DBUILD_EXAMPLES=true`.   
