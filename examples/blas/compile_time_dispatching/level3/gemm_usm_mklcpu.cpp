@@ -126,7 +126,6 @@ void run_gemm_example(const sycl::device &dev) {
 
     // add oneapi::mkl::blas::gemm to execution queue
     try {
-        printf("GEMM_MKL_CPU\n");
         gemm_done = oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> {main_queue}, transA, transB, m, n, k, alpha, A, ldA, B, ldB, beta, C, ldC);
     }
     catch(sycl::exception const& e) {
@@ -197,7 +196,7 @@ int main (int argc, char ** argv) {
     print_example_banner();
 
     sycl::device dev = sycl::device(sycl::cpu_selector());
-    if (dev.is_cpu()) std::cout << "Running BLAS gemm usm example on CPU device. Device name is: " << dev.get_info<sycl::info::device::name>() << ".\n"; 
+    if (dev.is_cpu()) std::cout << "Running BLAS gemm usm example on CPU device. \nDevice name is: " << dev.get_info<sycl::info::device::name>() << ".\n"; 
 
     std::cout << "\tRunning with single precision real data type:" << std::endl;
     run_gemm_example(dev);

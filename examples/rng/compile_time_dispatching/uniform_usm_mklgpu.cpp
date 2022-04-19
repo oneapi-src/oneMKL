@@ -138,7 +138,7 @@ int main (int argc, char ** argv) {
 
     unsigned int vendor_id = static_cast<unsigned int>(my_dev.get_info<sycl::info::device::vendor_id>());
     if (my_dev.is_gpu() && vendor_id == INTEL_ID) {
-        std::cout << "Running RNG uniform usm example on GPU device. Device name is: " << my_dev.get_info<sycl::info::device::name>() << ".\n";
+        std::cout << "Running RNG uniform usm example on GPU device. \nDevice name is: " << my_dev.get_info<sycl::info::device::name>() << ".\n";
     } else {
         std::cout << "FAILED: INTEL GPU device not found.\n";
         return 1;

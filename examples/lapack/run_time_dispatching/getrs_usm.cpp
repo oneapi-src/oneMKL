@@ -179,9 +179,9 @@ int main(int argc, char **argv) {
 
     sycl::device dev = sycl::device(sycl::default_selector());
     if (dev.is_gpu()) {
-        std::cout << "Running LAPACK getrs example on GPU device. Device name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
+        std::cout << "Running LAPACK getrs example on GPU device. \nDevice name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
     } else {
-        std::cout << "Running LAPACK getrs example on CPU device. Device name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
+        std::cout << "Running LAPACK getrs example on CPU device. \nDevice name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
     }
 
     std::cout << "\tRunning with single precision real data type:" << std::endl;

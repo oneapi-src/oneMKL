@@ -126,7 +126,6 @@ void run_gemm_example(const sycl::device &dev) {
 
     // add oneapi::mkl::blas::gemm to execution queue
     try {
-        printf("Runtime compilation, backend not specified\n");
         gemm_done = oneapi::mkl::blas::column_major::gemm(main_queue, transA, transB, m, n, k, alpha, A, ldA, B, ldB, beta, C, ldC);
     }
     catch(sycl::exception const& e) {
@@ -199,9 +198,9 @@ int main (int argc, char ** argv) {
 
 
     if (dev.is_gpu()) {
-        std::cout << "Running BLAS gemm usm example on GPU device. Device name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
+        std::cout << "Running BLAS gemm usm example on GPU device. \nDevice name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
     } else {
-        std::cout << "Running BLAS gemm usm example on CPU device. Device name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
+        std::cout << "Running BLAS gemm usm example on CPU device. \nDevice name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
     }
 
     std::cout << "\tRunning with single precision real data type:" << std::endl;

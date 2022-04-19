@@ -136,7 +136,7 @@ int main (int argc, char ** argv) {
 
     sycl::device my_dev = sycl::device(sycl::cpu_selector());
 
-    if (my_dev.is_cpu()) std::cout << "Running RNG uniform usm example on CPU device. Device name is: " << my_dev.get_info<sycl::info::device::name>() << ".\n";
+    if (my_dev.is_cpu()) std::cout << "Running RNG uniform usm example on CPU device. \nDevice name is: " << my_dev.get_info<sycl::info::device::name>() << ".\n";
 
     std::cout << "\tRunning with single precision real data type:" << std::endl;
     if(!run_uniform_example(my_dev)) {

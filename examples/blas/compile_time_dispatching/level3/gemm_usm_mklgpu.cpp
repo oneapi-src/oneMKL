@@ -125,7 +125,6 @@ void run_gemm_example(const sycl::device &dev) {
 
     // add oneapi::mkl::blas::gemm to execution queue
     try {
-        printf("GEMM_MKL_GPU\n");
         gemm_done = oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklgpu> {main_queue}, transA, transB, m, n, k, alpha, A, ldA, B, ldB, beta, C, ldC);
     }
     catch(sycl::exception const& e) {
@@ -199,7 +198,7 @@ int main (int argc, char ** argv) {
 
     unsigned int vendor_id = static_cast<unsigned int>(dev.get_info<sycl::info::device::vendor_id>());
     if (dev.is_gpu() && vendor_id == INTEL_ID) {
-        std::cout << "Running BLAS gemm usm example on GPU device. Device name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
+        std::cout << "Running BLAS gemm usm example on GPU device. \nDevice name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
     } else {
         std::cout << "FAILED: INTEL GPU device not found.\n";
         return 1;

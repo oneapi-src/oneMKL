@@ -178,7 +178,7 @@ int main(int argc, char **argv) {
 
     unsigned int vendor_id = static_cast<unsigned int>(dev.get_info<sycl::info::device::vendor_id>());
     if (dev.is_gpu() && vendor_id == INTEL_ID) {
-        std::cout << "Running LAPACK getrs example on GPU device. Device name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
+        std::cout << "Running LAPACK getrs example on GPU device. \nDevice name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
     } else {
         std::cout << "FAILED: INTEL GPU device not found.\n";
         return 1;
