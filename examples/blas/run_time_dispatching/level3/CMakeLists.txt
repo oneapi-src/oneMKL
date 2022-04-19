@@ -28,20 +28,21 @@ set(BLAS_RT_SOURCES "gemm_usm")
 # Set up for the right backend for run-time dispatching examples
 # If users build more than one backend (i.e. mklcpu and mklgpu, or mklcpu and CUDA), they may need to
 # overwrite SYCL_DEVICE_FILTER in their environment to run on the desired backend
+set(DEVICE_FILTERS "")
 if(ENABLE_MKLCPU_BACKEND)
-  set(ENV{SYCL_DEVICE_FILTER} "cpu")
+  list(APPEND DEVICE_FILTERS "cpu")
 endif()
 if(ENABLE_MKLGPU_BACKEND)
-  set(ENV{SYCL_DEVICE_FILTER} "gpu")
+  list(APPEND DEVICE_FILTERS "gpu")
 endif()
 if(ENABLE_CUBLAS_BACKEND)
-  set(ENV{SYCL_DEVICE_FILTER} "cuda:gpu")
+  list(APPEND DEVICE_FILTERS "cuda:gpu")
 endif()
 if(ENABLE_ROCBLAS_BACKEND)
-  set(ENV{SYCL_DEVICE_FILTER} "hip:gpu")
+  list(APPEND DEVICE_FILTERS "hip:gpu")
 endif()
 
-message("-- SYCL_DEVICE_FILTER is set to: $ENV{SYCL_DEVICE_FILTER}")
+message("-- SYCL_DEVICE_FILTER will be set to the following value(s): [${DEVICE_FILTERS}] for run-time dispatching examples")
 
 foreach(blas_rt_source ${BLAS_RT_SOURCES})
   add_executable(example_${domain}_${blas_rt_source} ${blas_rt_source}.cpp)
@@ -64,8 +65,11 @@ foreach(blas_rt_source ${BLAS_RT_SOURCES})
   endif()
 
   # Register example as ctest
-  add_test(NAME example_${domain}_${blas_rt_source} COMMAND example_${domain}_${blas_rt_source})
-  set_property(TEST example_${domain}_${blas_rt_source} PROPERTY
-    ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH})
+  foreach(device_filter ${DEVICE_FILTERS})
+    add_test(NAME ${domain}/EXAMPLE/RT/${blas_rt_source}/${device_filter} COMMAND example_${domain}_${blas_rt_source})
+    set_property(TEST ${domain}/EXAMPLE/RT/${blas_rt_source}/${device_filter} PROPERTY
+      ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH}
+      ENVIRONMENT SYCL_DEVICE_FILTER=${device_filter})
+  endforeach(device_filter)
 
 endforeach(blas_rt_source)

@@ -71,6 +71,6 @@ foreach(blas_ct_source ${BLAS_CT_SOURCES})
   endif()
 
   # Register example as ctest
-  add_test(NAME example_${domain}_${blas_ct_source} COMMAND example_${domain}_${blas_ct_source})
+  add_test(NAME ${domain}/EXAMPLE/CT/${blas_ct_source} COMMAND example_${domain}_${blas_ct_source})
 
 endforeach(blas_ct_source)

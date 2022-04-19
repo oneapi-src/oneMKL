@@ -63,5 +63,5 @@ foreach(rng_ct_source ${RNG_CT_SOURCES})
   endif()
 
   # Register example as ctest
-  add_test(NAME example_${domain}_${rng_ct_source} COMMAND example_${domain}_${rng_ct_source})
+  add_test(NAME ${domain}/EXAMPLE/CT/${rng_ct_source} COMMAND example_${domain}_${rng_ct_source})
 endforeach(rng_ct_source)
