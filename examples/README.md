@@ -37,9 +37,9 @@ $ ./bin/example_blas_gemm_usm_mklcpu
 #
 ########################################################################
 
-Running BLAS gemm usm example on CPU device. Device name is: Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz.
+Running BLAS gemm usm example on CPU device. 
+Device name is: Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz.
         Running with single precision real data type:
-GEMM_MKL_CPU
 
                 GEMM parameters:
                         transA = trans, transB = nontrans
@@ -85,9 +85,9 @@ $ ./bin/example_blas_gemm_usm
 #
 ########################################################################
 
-Running BLAS gemm usm example on CPU device. Device name is: Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz.
+Running BLAS gemm usm example on CPU device. 
+Device name is: Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz.
         Running with single precision real data type:
-Runtime compilation, backend not specified
 
                 GEMM parameters:
                         transA = trans, transB = nontrans
@@ -133,9 +133,9 @@ $ ./bin/example_blas_gemm_usm
 #
 ########################################################################
 
-Running BLAS gemm usm example on GPU device. Device name is: TITAN RTX.
+Running BLAS gemm usm example on GPU device. 
+Device name is: TITAN RTX.
         Running with single precision real data type:
-Runtime compilation, backend not specified
 
                 GEMM parameters:
                         transA = trans, transB = nontrans
@@ -181,7 +181,8 @@ $ ./bin/example_lapack_getrs_usm
 #   float
 #
 ########################################################################
-Running LAPACK getrs example on GPU device. Device name is: Intel(R) Iris(R) Pro Graphics 580 [0x193b].
+Running LAPACK getrs example on GPU device. 
+Device name is: Intel(R) Iris(R) Pro Graphics 580 [0x193b].
   Running with single precision real data type:
 getrs ran OK
 ```
