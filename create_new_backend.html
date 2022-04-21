@@ -23,12 +23,12 @@
       
 
     
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" />
     
   <link rel="preload" as="script" href="_static/js/index.1c5a1a01449ed65a7b51.js">
 
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -42,7 +42,7 @@
   var wapLocalCode = 'us-en'; // Dynamically set per localized site; see mapping table for values
   var wapSection = "oneapi-mkl"; // WAP team will give you a unique section for your site
   // Load TMS
-  if (document.location.href.contains("oneapi-src.github.io")) {
+  if (document.location.href.includes("oneapi-src.github.io")) {
     (function () {
       var url = 'https://www.intel.com/content/dam/www/global/wap/tms-loader.js'; // WAP file URL
       var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true; po.src = url;
@@ -77,7 +77,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
     <div class="bd-toc-item active">
-        <p>
+        <p class="caption" role="heading">
  <span class="caption-text">
   About
  </span>
@@ -89,7 +89,7 @@
   </a>
  </li>
 </ul>
-<p>
+<p class="caption" role="heading">
  <span class="caption-text">
   Get Started
  </span>
@@ -106,7 +106,7 @@
   </a>
  </li>
 </ul>
-<p>
+<p class="caption" role="heading">
  <span class="caption-text">
   Developer Reference
  </span>
@@ -993,7 +993,7 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#integrate-header-files-1">
+  <a class="reference internal nav-link" href="#integrate-header-files">
    2. Integrate Header Files
   </a>
  </li>
@@ -1034,7 +1034,7 @@
 <p>Where <code class="docutils literal notranslate"><span class="pre">&lt;wrapper</span> <span class="pre">for</span> <span class="pre">specific</span> <span class="pre">target&gt;</span></code> is required only if multiple wrappers are provided from the same 3rd-party library, e.g., wrappers with Intel oneMKL C API for CPU target <code class="docutils literal notranslate"><span class="pre">onemkl_blas_mklcpu.so</span></code> and wrappers with Intel oneMKL DPC++ API for GPU target <code class="docutils literal notranslate"><span class="pre">onemkl_blas_mklgpu.so</span></code>.</p>
 <p>If there is no need for multiple wrappers only <code class="docutils literal notranslate"><span class="pre">&lt;domain&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;3rd-party</span> <span class="pre">library</span> <span class="pre">short</span> <span class="pre">name&gt;</span></code> are required, e.g. <code class="docutils literal notranslate"><span class="pre">onemkl_rng_curand.so</span></code></p>
 <p><a class="reference internal" href="#create-header-files">1. Create Header Files</a></p>
-<p><a class="reference internal" href="#integrate-header-files-1">2. Integrate Header Files</a></p>
+<p><a class="reference internal" href="#id1">2. Integrate Header Files</a></p>
 <p><a class="reference internal" href="#create-wrappers">3. Create Wrappers</a></p>
 <p><a class="reference internal" href="#integrate-wrappers-to-the-build-system">4. Integrate Wrappers To the Build System</a></p>
 <p><a class="reference internal" href="#update-the-test-system">5. Update the Test System</a></p>
@@ -1085,8 +1085,8 @@
 </pre></div>
 </div>
 </section>
-<section id="integrate-header-files-1">
-<span id="integrate-header-files"></span><h2>2. Integrate Header Files<a class="headerlink" href="#integrate-header-files-1" title="Permalink to this headline">¶</a></h2>
+<section id="integrate-header-files">
+<span id="id1"></span><h2>2. Integrate Header Files<a class="headerlink" href="#integrate-header-files" title="Permalink to this headline">¶</a></h2>
 <p>Below you can see structure of oneMKL top-level include directory:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">include</span><span class="o">/</span>
     <span class="n">oneapi</span><span class="o">/</span>

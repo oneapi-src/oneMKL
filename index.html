@@ -23,12 +23,12 @@
       
 
     
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" />
     
   <link rel="preload" as="script" href="_static/js/index.1c5a1a01449ed65a7b51.js">
 
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -42,7 +42,7 @@
   var wapLocalCode = 'us-en'; // Dynamically set per localized site; see mapping table for values
   var wapSection = "oneapi-mkl"; // WAP team will give you a unique section for your site
   // Load TMS
-  if (document.location.href.contains("oneapi-src.github.io")) {
+  if (document.location.href.includes("oneapi-src.github.io")) {
     (function () {
       var url = 'https://www.intel.com/content/dam/www/global/wap/tms-loader.js'; // WAP file URL
       var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true; po.src = url;
@@ -77,7 +77,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
     <div class="bd-toc-item active">
-        <p>
+        <p class="caption" role="heading">
  <span class="caption-text">
   About
  </span>
@@ -89,7 +89,7 @@
   </a>
  </li>
 </ul>
-<p>
+<p class="caption" role="heading">
  <span class="caption-text">
   Get Started
  </span>
@@ -106,7 +106,7 @@
   </a>
  </li>
 </ul>
-<p>
+<p class="caption" role="heading">
  <span class="caption-text">
   Developer Reference
  </span>
@@ -1010,27 +1010,27 @@
 <section id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
-<p><span class="caption-text">About</span></p>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p><span class="caption-text">Get Started</span></p>
+<p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="selecting_a_compiler.html">Selecting a Compiler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_the_project.html">Building the Project</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="building_the_project.html#build-setup-1">Build Setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="building_the_project.html#build-setup-with-hipsycl-1">Build Setup with hipSYCL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="building_the_project.html#building-with-conan-1">Building with Conan</a></li>
-<li class="toctree-l2"><a class="reference internal" href="building_the_project.html#building-with-cmake-1">Building with CMake</a></li>
-<li class="toctree-l2"><a class="reference internal" href="building_the_project.html#project-cleanup-1">Project Cleanup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_project.html#build-setup">Build Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_project.html#build-setup-with-hipsycl">Build Setup with hipSYCL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_project.html#building-with-conan">Building with Conan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_project.html#building-with-cmake">Building with CMake</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_project.html#project-cleanup">Project Cleanup</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p><span class="caption-text">Developer Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="onemkl-datatypes.html">oneMKL Defined Datatypes</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="onemkl-datatypes.html#transpose">transpose</a></li>
@@ -1048,7 +1048,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="create_new_backend.html">Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMKL) Interfaces</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="create_new_backend.html#create-header-files">1. Create Header Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="create_new_backend.html#integrate-header-files-1">2. Integrate Header Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create_new_backend.html#integrate-header-files">2. Integrate Header Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="create_new_backend.html#create-wrappers">3. Create Wrappers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="create_new_backend.html#integrate-wrappers-to-the-build-system">4. Integrate Wrappers to the Build System</a></li>
 <li class="toctree-l2"><a class="reference internal" href="create_new_backend.html#update-the-test-system">5. Update the Test System</a></li>
