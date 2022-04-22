@@ -19,17 +19,8 @@
 
 #Build object from all sources
 set(BLAS_CT_SOURCES "")
-if(ENABLE_MKLCPU_BACKEND)
-  list(APPEND BLAS_CT_SOURCES "gemm_usm_mklcpu")
-endif()
-if(ENABLE_MKLGPU_BACKEND)
-  list(APPEND BLAS_CT_SOURCES "gemm_usm_mklgpu")
-endif()
-if(ENABLE_CUBLAS_BACKEND)
-  list(APPEND BLAS_CT_SOURCES "gemm_usm_cublas")
-endif()
-if(ENABLE_ROCBLAS_BACKEND)
-  list(APPEND BLAS_CT_SOURCES "gemm_usm_rocblas")
+if(ENABLE_MKLCPU_BACKEND AND ENABLE_CUBLAS_BACKEND)
+  list(APPEND BLAS_CT_SOURCES "gemm_usm_mklcpu_cublas")
 endif()
 
 foreach(blas_ct_source ${BLAS_CT_SOURCES})
@@ -41,24 +32,9 @@ foreach(blas_ct_source ${BLAS_CT_SOURCES})
       PUBLIC ${CMAKE_BINARY_DIR}/bin
   )
 
-  if(ENABLE_MKLCPU_BACKEND)
-    add_dependencies(example_${domain}_${blas_ct_source} onemkl_${domain}_mklcpu)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu)
-  endif()
-
-  if(ENABLE_MKLGPU_BACKEND)
-    add_dependencies(example_${domain}_${blas_ct_source} onemkl_${domain}_mklgpu)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklgpu)
-  endif()
-
-  if(domain STREQUAL "blas" AND ENABLE_CUBLAS_BACKEND)
-    add_dependencies(example_${domain}_${blas_ct_source} onemkl_${domain}_cublas)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_cublas)
-  endif()
-
-  if(domain STREQUAL "blas" AND ENABLE_NETLIB_BACKEND)
-    add_dependencies(example_${domain}_${blas_ct_source} onemkl_${domain}_netlib)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_netlib)
+  if(domain STREQUAL "blas" AND ENABLE_MKLCPU_BACKEND AND ENABLE_CUBLAS_BACKEND)
+    add_dependencies(example_${domain}_${blas_ct_source} onemkl_${domain}_mklcpu onemkl_${domain}_cublas)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu onemkl_${domain}_cublas)
   endif()
 
   if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)

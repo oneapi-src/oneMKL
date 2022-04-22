@@ -22,8 +22,7 @@
 *  Content:
 *       This example demonstrates use of DPCPP API oneapi::mkl::blas::gemm
 *       using unified shared memory to perform General Matrix-Matrix
-*       Multiplication on a SYCL device (HOST, CPU, GPU) that is selected
-*       during runtime.
+*       Multiplication on a INTEL CPU SYCL device and an NVIDIA GPU SYCL device
 *
 *       C = alpha * op(A) * op(B) + beta * C
 *
@@ -36,7 +35,6 @@
 *
 *******************************************************************************/
 
-
 // stl includes
 #include <iostream>
 #include <cstdlib>
@@ -47,10 +45,11 @@
 #include <list>
 #include <iterator>
 
-
+// oneMKL/SYCL includes
 #include <CL/sycl.hpp>
 #include "oneapi/mkl.hpp"
 
+// local includes
 #include "example_helper.hpp"
 
 #define MKL_ALIGN 64
@@ -64,14 +63,13 @@
 //
 // is performed and finally the results are post processed.
 //
-void run_gemm_example(const sycl::device &dev) {
+void run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
 
     //
     // Initialize data for Gemm
     //
     // C = alpha * op(A) * op(B)  + beta * C
     //
-
     oneapi::mkl::transpose transA = oneapi::mkl::transpose::trans;
     oneapi::mkl::transpose transB = oneapi::mkl::transpose::nontrans;
 
@@ -92,87 +90,122 @@ void run_gemm_example(const sycl::device &dev) {
     float alpha = set_fp_value(float(2.0), float(-0.5));
     float beta  = set_fp_value(float(3.0), float(-1.5));
 
-    // Catch asynchronous exceptions
-    auto exception_handler = [] (sycl::exception_list exceptions) {
+    // Catch asynchronous exceptions for CPU and GPU
+    auto cpu_exception_handler = [] (sycl::exception_list exceptions) {
         for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             } catch(sycl::exception const& e) {
-                std::cerr << "Caught asynchronous SYCL exception during GEMM:\n"
+                std::cerr << "Caught asynchronous SYCL exception on CPU device during GEMM:\n"
+                << e.what() << std::endl;
+            }
+        }
+        std::exit(2);
+    };
+    auto gpu_exception_handler = [] (sycl::exception_list exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
+            try {
+                std::rethrow_exception(e);
+            } catch(sycl::exception const& e) {
+                std::cerr << "Caught asynchronous SYCL exception on GPU device during GEMM:\n"
                 << e.what() << std::endl;
             }
         }
         std::exit(2);
     };
 
-    // create execution queue
-    sycl::queue main_queue(dev, exception_handler);
-    sycl::event gemm_done;
-    sycl::context cxt = main_queue.get_context();
 
-    // allocate matrix on host
+    //
+    // Data Preparation on host
+    //
     float *A = (float *)calloc(sizea * sizeof(float), MKL_ALIGN);
     float *B = (float *)calloc(sizeb * sizeof(float), MKL_ALIGN);
     float *C = (float *)calloc(sizec * sizeof(float), MKL_ALIGN);
-    if (!A || !B || !C) {
+    float *result_cpu = (float *)calloc(sizec * sizeof(float), MKL_ALIGN);
+    float *result_gpu = (float *)calloc(sizec * sizeof(float), MKL_ALIGN);
+    if (!A || !B || !C || !result_cpu || !result_gpu) {
         throw std::runtime_error("Failed to allocate memory on host.");
     }
     rand_matrix(A, transA, m, k, ldA);
     rand_matrix(B, transB, k, n, ldB);
     rand_matrix(C, oneapi::mkl::transpose::nontrans, m, n, ldC);
 
-    // allocate memory on device
-    auto dev_A = sycl::malloc_device<float>(sizea * sizeof(float), main_queue);
-    auto dev_B = sycl::malloc_device<float>(sizeb * sizeof(float), main_queue);
-    auto dev_C = sycl::malloc_device<float>(sizec * sizeof(float), main_queue);
-    if (!dev_A || !dev_B || !dev_C) {
+
+    //
+    // Preparation on CPU
+    //
+    sycl::queue cpu_queue(cpu_dev, cpu_exception_handler);
+    sycl::event cpu_gemm_done;
+    sycl::context cpu_cxt = cpu_queue.get_context();
+
+    // allocate on CPU device and copy data from host to SYCL CPU device
+    auto cpu_A = sycl::malloc_device<float>(sizea * sizeof(float), cpu_queue);
+    auto cpu_B = sycl::malloc_device<float>(sizeb * sizeof(float), cpu_queue);
+    auto cpu_C = sycl::malloc_device<float>(sizec * sizeof(float), cpu_queue);
+    if (!cpu_A || !cpu_B || !cpu_C ) {
+       throw std::runtime_error("Failed to allocate USM memory.");
+    }
+    cpu_queue.memcpy(cpu_A, A, sizea * sizeof(float)).wait();
+    cpu_queue.memcpy(cpu_B, B, sizeb * sizeof(float)).wait();
+    cpu_queue.memcpy(cpu_C, C, sizec * sizeof(float)).wait();
+
+
+    //
+    // Preparation on GPU
+    //
+    sycl::queue gpu_queue(gpu_dev, gpu_exception_handler);
+    sycl::event gpu_gemm_done;
+    sycl::context gpu_cxt = gpu_queue.get_context();
+
+    // allocate on GPU device and copy data from host to SYCL GPU device
+    auto gpu_A = sycl::malloc_device<float>(sizea * sizeof(float), gpu_queue);
+    auto gpu_B = sycl::malloc_device<float>(sizeb * sizeof(float), gpu_queue);
+    auto gpu_C = sycl::malloc_device<float>(sizec * sizeof(float), gpu_queue);
+    if (!gpu_A || !gpu_B || !gpu_C ) {
         throw std::runtime_error("Failed to allocate USM memory.");
     }
-
-    // copy data from host to device
-    main_queue.memcpy(dev_A, A, sizea * sizeof(float)).wait();
-    main_queue.memcpy(dev_B, B, sizeb * sizeof(float)).wait();
-    main_queue.memcpy(dev_C, C, sizec * sizeof(float)).wait();
+    gpu_queue.memcpy(gpu_A, A, sizea * sizeof(float)).wait();
+    gpu_queue.memcpy(gpu_B, B, sizeb * sizeof(float)).wait();
+    gpu_queue.memcpy(gpu_C, C, sizec * sizeof(float)).wait();
 
 
     //
-    // Execute Gemm
+    // Execute Gemm on CPU and GPU device
     //
     // add oneapi::mkl::blas::gemm to execution queue
-    gemm_done = oneapi::mkl::blas::column_major::gemm(main_queue, transA, transB, m, n, k, alpha, dev_A, ldA, dev_B, ldB, beta, dev_C, ldC);
-    gemm_done.wait();
+    cpu_gemm_done = oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> {cpu_queue}, transA, transB, m, n, k, alpha, cpu_A, ldA, cpu_B, ldB, beta,  cpu_C, ldC);
+    gpu_gemm_done = oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas> {gpu_queue}, transA, transB, m, n, k, alpha, gpu_A, ldA, gpu_B, ldB, beta,  gpu_C, ldC);
+    cpu_gemm_done.wait();
+    gpu_gemm_done.wait();
 
 
     //
     // Post Processing
     //
-    // copy data from device back to host
-    main_queue.memcpy(C, dev_C, sizec * sizeof(float)).wait();
+    // copy data from CPU back to host
+    cpu_queue.memcpy(result_cpu, cpu_C, sizec * sizeof(float)).wait();
 
-    std::cout << "\n\t\tGEMM parameters:\n";
-    std::cout << "\t\t\ttransA = " << ( transA == oneapi::mkl::transpose::nontrans ? "nontrans" : ( transA == oneapi::mkl::transpose::trans ? "trans" : "conjtrans"))
-              <<   ", transB = " << ( transB == oneapi::mkl::transpose::nontrans ? "nontrans" : ( transB == oneapi::mkl::transpose::trans ? "trans" : "conjtrans")) << std::endl;
-    std::cout << "\t\t\tm = " << m << ", n = " << n << ", k = " << k << std::endl;
-    std::cout << "\t\t\tlda = " << ldA << ", ldB = " << ldB << ", ldC = " << ldC << std::endl;
-    std::cout << "\t\t\talpha = " << alpha << ", beta = " << beta << std::endl;
+    // copy data from GPU back to host
+    gpu_queue.memcpy(result_gpu, gpu_C, sizec * sizeof(float)).wait();
 
-    std::cout << "\n\t\tOutputting 2x2 block of A,B,C matrices:" << std::endl;
+    // compare
+    if (check_equal_matrix(result_cpu, result_gpu, oneapi::mkl::transpose::nontrans, m, n, ldC)) {
+        std::cout << "\n\t\tSUCCESS: CPU and GPU results match." << std::endl;
+    } else {
+        std::cerr << "\n\t\tFAILED: CPU and GPU results do not match." << std::endl;
+    }
 
-    // output the top 2x2 block of A matrix
-    print_2x2_matrix_values(A, ldA, "A");
-
-    // output the top 2x2 block of B matrix
-    print_2x2_matrix_values(B, ldB, "B");
-
-    // output the top 2x2 block of C matrix
-    print_2x2_matrix_values(C, ldC, "C");
-
-    sycl::free(dev_A, main_queue);
-    sycl::free(dev_B, main_queue);
-    sycl::free(dev_C, main_queue);
+    sycl::free(cpu_A, cpu_queue);
+    sycl::free(cpu_B, cpu_queue);
+    sycl::free(cpu_C, cpu_queue);
+    sycl::free(gpu_A, gpu_queue);
+    sycl::free(gpu_B, gpu_queue);
+    sycl::free(gpu_C, gpu_queue);
     free(A);
     free(B);
     free(C);
+    free(result_cpu);
+    free(result_gpu);
 }
 
 //
@@ -194,8 +227,7 @@ void print_example_banner() {
     std::cout << "# " << std::endl;
     std::cout << "# Using single precision (float) data type" << std::endl;
     std::cout << "# " << std::endl;
-    std::cout << "# Device will be selected during runtime." << std::endl;
-    std::cout << "# The environment variable SYCL_DEVICE_FILTER can be used to specify SYCL device" << std::endl;
+    std::cout << "# Running on both Intel CPU and Nvidia GPU devices" << std::endl;
     std::cout << "# " << std::endl;
     std::cout << "########################################################################" << std::endl;
     std::cout << std::endl;
@@ -203,31 +235,29 @@ void print_example_banner() {
 }
 
 //
-// Main entry point for example
+// Main entry point for example.
 //
 int main (int argc, char ** argv) {
     print_example_banner();
 
     try{
-        sycl::device dev((sycl::default_selector()));
+        sycl::device cpu_dev ((sycl::cpu_selector()));
+        sycl::device gpu_dev ((sycl::gpu_selector()));
 
-        if (dev.is_gpu()) {
-            std::cout << "Running BLAS gemm usm example on GPU device. \nDevice name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
-        } else {
-            std::cout << "Running BLAS gemm usm example on CPU device. \nDevice name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
+        unsigned int vendor_id = gpu_dev.get_info<sycl::info::device::vendor_id>();
+        if (vendor_id != NVIDIA_ID) {
+            std::cerr << "FAILED: NVIDIA GPU device not found.\n";
         }
         std::cout << "Running with single precision real data type:" << std::endl;
-
-        run_gemm_example(dev);
+        run_gemm_example(cpu_dev, gpu_dev);
     }
     catch(sycl::exception const& e) {
         std::cerr << "Caught synchronous SYCL exception during GEMM:\n"
                   << e.what() << std::endl << "OpenCL status: " << e.code().value() << std::endl;
     }
     catch(std::exception const& e) {
-        std::cerr << "Caught std::exception during GEMM:\n"
-                  << e.what() << std::endl;
+        std::cerr << "Caught std::exception during GEMM:\n" << e.what() << std::endl;
+        return 1;
     }
-
     return 0;
 }
