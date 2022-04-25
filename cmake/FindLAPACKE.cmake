@@ -20,13 +20,13 @@
 include_guard()
 
 find_library(LAPACKE64_file NAMES lapacke64.dll.lib lapacke64.lib lapacke64 HINTS ${REF_LAPACK_ROOT} PATH_SUFFIXES lib lib64)
-find_package_handle_standard_args(LAPACKE64 REQUIRED_VARS LAPACKE64_file)
+find_package_handle_standard_args(LAPACKE REQUIRED_VARS LAPACKE64_file)
 find_library(LAPACK64_file NAMES lapack64.dll.lib lapack64.lib lapack64 HINTS ${REF_LAPACK_ROOT} PATH_SUFFIXES lib lib64)
-find_package_handle_standard_args(LAPACK64 REQUIRED_VARS LAPACK64_file)
+find_package_handle_standard_args(LAPACKE REQUIRED_VARS LAPACK64_file)
 find_library(CBLAS64_file NAMES cblas64.dll.lib cblas64.lib cblas64 HINTS ${REF_LAPACK_ROOT} PATH_SUFFIXES lib lib64)
-find_package_handle_standard_args(CBLAS64 REQUIRED_VARS CBLAS64_file)
+find_package_handle_standard_args(LAPACKE REQUIRED_VARS CBLAS64_file)
 find_library(BLAS64_file NAMES blas64.dll.lib blas64.lib blas64 HINTS ${REF_LAPACK_ROOT} PATH_SUFFIXES lib lib64)
-find_package_handle_standard_args(BLAS64 REQUIRED_VARS BLAS64_file)
+find_package_handle_standard_args(LAPACKE REQUIRED_VARS BLAS64_file)
 
 get_filename_component(LAPACKE64_LIB_DIR ${LAPACKE64_file} DIRECTORY)
 find_path(LAPACKE_INCLUDE lapacke.h HINTS ${REF_LAPACK_ROOT} PATH_SUFFIXES include)
@@ -40,4 +40,4 @@ list(APPEND LAPACKE_LINK ${CBLAS64_file})
 list(APPEND LAPACKE_LINK ${BLAS64_file})
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(LAPACKE64 REQUIRED_VARS LAPACKE_INCLUDE LAPACKE_LINK)
+find_package_handle_standard_args(LAPACKE REQUIRED_VARS LAPACKE_INCLUDE LAPACKE_LINK)
