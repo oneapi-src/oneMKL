@@ -27,7 +27,7 @@ jobs:
       run: |
         sudo apt install libnuma-dev cmake unzip
         wget -q -O - https://repo.radeon.com/rocm/rocm.gpg.key | sudo apt-key add -
-        echo 'deb [arch=amd64] https://repo.radeon.com/rocm/apt/${{matrix.rocm_version}} xenial main' | sudo tee /etc/apt/sources.list.d/rocm.list
+        echo 'deb [arch=amd64] https://repo.radeon.com/rocm/apt/${{matrix.rocm_version}} bionic main' | sudo tee /etc/apt/sources.list.d/rocm.list
         sudo apt update
         sudo apt install rocm-dev
     - name: install LLVM
