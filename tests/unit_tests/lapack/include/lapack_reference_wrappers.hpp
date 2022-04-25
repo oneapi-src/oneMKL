@@ -25,6 +25,7 @@
 #ifndef CBLAS_INT
 #define CBLAS_INT int64_t
 #endif
+#define WeirdNEC
 extern "C" {
 #ifdef USE_MKLREF
 #include "mkl_cblas.h"
