@@ -9,8 +9,8 @@ jobs:
     strategy:
       matrix:
         clang_version: [13]
-        rocm_version: ['5.1.1']
-        os: [ubuntu-20.04, ubuntu-18.04]
+        rocm_version: ['5.1.0']
+        os: [ubuntu-20.04]
         cuda: [11.0]
     steps:
     - uses: actions/checkout@v2
