@@ -33,17 +33,17 @@ sycl::event create_dependency(sycl::queue queue) {
     return host_to_device_copy(queue, ::host_data.data(), ::device_data, ::host_data.size());
 }
 
-void print_status(const char* name, sycl::info::event_command_status status) {
-    global::log << name << " command execution status: ";
+void log_status(const char* name, sycl::info::event_command_status status) {
+    test_log::lout << name << " command execution status: ";
     if (sycl::info::event_command_status::submitted == status)
-        global::log << "submitted";
+        test_log::lout << "submitted";
     else if (sycl::info::event_command_status::running == status)
-        global::log << "running";
+        test_log::lout << "running";
     else if (sycl::info::event_command_status::complete == status)
-        global::log << "complete";
+        test_log::lout << "complete";
     else
-        global::log << "status unknown";
-    global::log << " (" << static_cast<int64_t>(status) << ")" << std::endl;
+        test_log::lout << "status unknown";
+    test_log::lout << " (" << static_cast<int64_t>(status) << ")" << std::endl;
 }
 
 bool check_dependency(sycl::queue queue, sycl::event in_event, sycl::event func_event) {
@@ -59,8 +59,8 @@ bool check_dependency(sycl::queue queue, sycl::event in_event, sycl::event func_
     /* Print results */
     auto result = (in_status == sycl::info::event_command_status::complete);
     if (!result) {
-        print_status("in_event", in_status);
-        print_status("func_event", func_status);
+        log_status("in_event", in_status);
+        log_status("func_event", func_status);
     }
 
     device_free(queue, ::device_data);

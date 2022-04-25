@@ -199,7 +199,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
                     1.0, UD.data(), ldud, U.data(), ldu, 0.0, UDU.data(), ldudu);
 
     if (!rel_mat_err_check(n, n, UDU, ldudu, A_initial, lda)) {
-        global::log << "Factorization check failed" << std::endl;
+        test_log::lout << "Factorization check failed" << std::endl;
         result = false;
     }
 

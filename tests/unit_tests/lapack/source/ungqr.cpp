@@ -52,7 +52,7 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t k, int64_t 
 
     auto info = reference::geqrf(m, k, A.data(), lda, tau.data());
     if (0 != info) {
-        global::log << "reference geqrf failed with info: " << info << std::endl;
+        test_log::lout << "reference geqrf failed with info: " << info << std::endl;
         return false;
     }
 
@@ -112,7 +112,7 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t k, in
 
     auto info = reference::geqrf(m, k, A.data(), lda, tau.data());
     if (0 != info) {
-        global::log << "reference geqrf failed with info: " << info << std::endl;
+        test_log::lout << "reference geqrf failed with info: " << info << std::endl;
         return false;
     }
 

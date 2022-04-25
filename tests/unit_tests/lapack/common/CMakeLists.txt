@@ -18,7 +18,7 @@
 #===============================================================================
 
 # Build object from all test sources
-set(LAPACK_COMMON_SOURCES "dependency_check.cpp" "global.cpp")
+set(LAPACK_COMMON_SOURCES "dependency_check.cpp")
 
 if(BUILD_SHARED_LIBS)
   target_sources(lapack_source_rt PRIVATE ${LAPACK_COMMON_SOURCES})

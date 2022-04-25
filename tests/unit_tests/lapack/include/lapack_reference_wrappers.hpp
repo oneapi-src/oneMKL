@@ -26,8 +26,13 @@
 #define CBLAS_INT int64_t
 #endif
 extern "C" {
+#ifdef USE_MKLREF
+#include "mkl_cblas.h"
+#include "mkl_lapacke.h"
+#else
 #include "cblas.h"
 #include "lapacke.h"
+#endif
 }
 static_assert(sizeof(lapack_int) == 8);
 static_assert(sizeof(CBLAS_INT) == 8);

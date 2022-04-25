@@ -71,7 +71,7 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
             auto& tau = tau_list.back();
             auto info = reference::geqrf(m, k, A.data(), lda, tau.data());
             if (0 != info) {
-                global::log << "reference geqrf failed with info = " << info << std::endl;
+                test_log::lout << "reference geqrf failed with info = " << info << std::endl;
                 return false;
             }
         }
@@ -157,7 +157,7 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
         for (int64_t local_id = 0; local_id < group_size;
              local_id++, global_id++, A_iter++, tau_iter++) {
             if (!check_or_un_gqr_accuracy(m, n, *A_iter, lda)) {
-                global::log << "batch routine (" << global_id << ", " << group_id << ", "
+                test_log::lout << "batch routine (" << global_id << ", " << group_id << ", "
                             << local_id << ") (global_id, group_id, local_id) failed" << std::endl;
                 result = false;
             }
@@ -205,7 +205,7 @@ bool usm_dependency(const sycl::device& dev, uint64_t seed) {
             auto& tau = tau_list.back();
             auto info = reference::geqrf(m, k, A.data(), lda, tau.data());
             if (0 != info) {
-                global::log << "reference geqrf failed with info = " << info << std::endl;
+                test_log::lout << "reference geqrf failed with info = " << info << std::endl;
                 return false;
             }
         }

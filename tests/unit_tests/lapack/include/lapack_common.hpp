@@ -28,15 +28,39 @@
 #include <CL/sycl.hpp>
 
 #include "oneapi/mkl/types.hpp"
-#include "oneapi/mkl/lapack/types.hpp"
 
-namespace global {
+namespace test_log {
 
-extern std::stringstream log;
-extern std::array<char, 1024> buffer;
-extern std::string pad;
+static std::stringstream lout{};
+static std::array<char, 1024> buffer{};
+static std::string padding{};
 
-} // namespace global
+inline void print() {
+    std::cout.clear();
+    if (lout.rdbuf()->in_avail()) { /* check if stream is non-empty */
+        while (lout.good()) {
+            std::string line;
+            std::getline(lout, line);
+            std::cout << padding << "\t" << line << std::endl;
+        }
+    }
+    lout.str("");
+    lout.clear();
+}
+
+} // namespace test_log
+
+inline void print_device_info(const sycl::device& device) {
+    sycl::platform platform = device.get_platform();
+    std::cout << test_log::padding << std::endl;
+    std::cout << test_log::padding << "Device Info" << std::endl;
+    std::cout << test_log::padding << "name : " << device.get_info<sycl::info::device::name>() << std::endl;
+    std::cout << test_log::padding << "driver version : " << device.get_info<sycl::info::device::driver_version>() << std::endl;
+    std::cout << test_log::padding << "platform : " << platform.get_info<sycl::info::platform::name>() << std::endl;
+    std::cout << test_log::padding << "platform version : " << platform.get_info<sycl::info::platform::version>() << std::endl;
+    std::cout << test_log::padding << "vendor         : " << platform.get_info<sycl::info::platform::vendor>() << std::endl;
+    std::cout << test_log::padding << std::endl;
+}
 
 inline void async_error_handler(sycl::exception_list exceptions) {
     if (exceptions.size()) {
@@ -45,7 +69,7 @@ inline void async_error_handler(sycl::exception_list exceptions) {
                 std::rethrow_exception(e);
             }
             catch (std::exception const& e) {
-                global::log << e.what() << std::endl;
+                test_log::lout << e.what() << std::endl;
             }
         }
         std::string message{ std::to_string(exceptions.size()) +
@@ -110,6 +134,26 @@ void rand_matrix(uint64_t& seed, oneapi::mkl::transpose trans, int64_t m, int64_
         for (int64_t row = 0; row < m; row++)
             for (int64_t col = 0; col < n; col++)
                 M[offset + col + row * ld] = rand_scalar<fp>(seed);
+}
+
+template <typename fp>
+void rand_matrix_diag_dom(uint64_t& seed, oneapi::mkl::transpose trans, int64_t m, int64_t n,
+                          std::vector<fp>& M, int64_t ld, int64_t offset = 0) {
+    using fp_real = typename complex_info<fp>::real_type;
+    int64_t minsh;
+    minsh =std::min(m, n);
+    if (trans == oneapi::mkl::transpose::nontrans)
+        for (int64_t col = 0; col < n; col++)
+            for (int64_t row = 0; row < m; row++) {
+                M[offset + row + col * ld] = rand_scalar<fp>(seed);
+                if( row == col )  M[offset + row + col * ld] += static_cast<fp_real>(minsh); 
+            }
+    else
+        for (int64_t row = 0; row < m; row++)
+            for (int64_t col = 0; col < n; col++) {
+                M[offset + col + row * ld] = rand_scalar<fp>(seed);
+                if( row == col ) M[offset + col + row * ld] += static_cast<fp_real>(minsh);  
+            }
 }
 
 template <typename fp>

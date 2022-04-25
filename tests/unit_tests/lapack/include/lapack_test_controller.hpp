@@ -23,13 +23,10 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
 #include <CL/sycl.hpp>
 
 #include "lapack_common.hpp"
 #include "oneapi/mkl/exceptions.hpp"
-
-static const size_t max_size_input_buffer = 10000;
 
 template <class T>
 std::istream& operator>>(std::istream& is, T& t) {
@@ -105,23 +102,6 @@ inline std::ostream& operator<<(std::ostream& os, result_T result) {
     return os;
 }
 
-inline void print_device_info(const sycl::device& device) {
-    sycl::platform platform = device.get_platform();
-    std::cout << global::pad << std::endl;
-    std::cout << global::pad << "Device Info" << std::endl;
-    std::cout << global::pad << device.get_info<sycl::info::device::name>() << std::endl;
-    std::cout << global::pad << platform.get_info<sycl::info::platform::name>() << std::endl;
-    std::cout << global::pad
-              << "device version : " << platform.get_info<sycl::info::platform::version>()
-              << std::endl;
-    std::cout << global::pad
-              << "driver version : " << device.get_info<sycl::info::device::driver_version>()
-              << std::endl;
-    std::cout << global::pad
-              << "vendor         : " << platform.get_info<sycl::info::platform::vendor>()
-              << std::endl;
-    std::cout << global::pad << std::endl;
-}
 
 template <typename T>
 struct function_info;
@@ -174,21 +154,13 @@ struct InputTestController {
     }
 
     template <size_t... I>
-    void print_log(size_t input_file_line, result_T result, const ArgTuple_T& args = {},
+    void print_result(size_t input_file_line, result_T result, const ArgTuple_T& args = {},
                    std::index_sequence<I...> = std::make_index_sequence<0>{}) {
         std::cout.clear();
-        std::cout << global::pad << "[" << input_file_line << "]: ";
+        std::cout << test_log::padding << "[" << input_file_line << "]: ";
         (..., (std::cout << std::get<I>(args) << " "));
         std::cout << "# " << result << std::endl;
-        if (global::log.rdbuf()->in_avail()) { /* check if stream is non-empty */
-            while (global::log.good()) {
-                std::string line;
-                std::getline(global::log, line);
-                std::cout << global::pad << "\t" << line << std::endl;
-            }
-        }
-        global::log.str("");
-        global::log.clear();
+        test_log::print();
     }
 
     result_T call_test(TestPointer tp, const sycl::device& dev, ArgTuple_T args) {
@@ -213,13 +185,13 @@ struct InputTestController {
         print_device_info(dev);
         if constexpr (arg_count == 0) { /* test does not take input */
             result_T result = call_test(tp, dev, {});
-            print_log(0, result);
+            print_result(0, result);
             return result;
         }
         else {
             if (!vargs.size()) {
-                global::log << arg_count << " inputs expected, found none" << std::endl;
-                print_log(1, false);
+                test_log::lout << arg_count << " inputs expected, found none" << std::endl;
+                print_result(1, false);
             }
             result_T aggregate_result;
             size_t input_file_line = 1;
@@ -228,7 +200,7 @@ struct InputTestController {
                 if (!result) {
                     aggregate_result = result;
                 }
-                print_log(input_file_line++, result, args, std::make_index_sequence<arg_count>());
+                print_result(input_file_line++, result, args, std::make_index_sequence<arg_count>());
             }
             return aggregate_result;
         }
@@ -238,18 +210,18 @@ struct InputTestController {
         if constexpr (arg_count == 0) { /* test does not take input */
             result_T result = call_test(tp, dev, {});
             if (!result) {
-                print_log(0, result);
+                print_result(0, result);
             }
             else {
-                global::log.str("");
-                global::log.clear();
+                test_log::lout.str("");
+                test_log::lout.clear();
             }
             return result;
         }
         else {
             if (!vargs.size()) {
-                global::log << arg_count << " inputs expected, found none" << std::endl;
-                print_log(1, false);
+                test_log::lout << arg_count << " inputs expected, found none" << std::endl;
+                print_result(1, false);
             }
             result_T aggregate_result;
             size_t input_file_line = 0;
@@ -257,11 +229,11 @@ struct InputTestController {
                 input_file_line++;
                 result_T result = call_test(tp, dev, args);
                 if (!result) {
-                    print_log(input_file_line, result, args, std::make_index_sequence<arg_count>());
+                    print_result(input_file_line, result, args, std::make_index_sequence<arg_count>());
                 }
                 else {
-                    global::log.str("");
-                    global::log.clear();
+                    test_log::lout.str("");
+                    test_log::lout.clear();
                 }
                 if (!result)
                     aggregate_result = result;

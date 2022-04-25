@@ -52,7 +52,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
 
     auto info = reference::potrf(uplo, n, A.data(), lda);
     if (0 != info) {
-        global::log << "reference potrf failed with info = " << info << std::endl;
+        test_log::lout << "reference potrf failed with info = " << info << std::endl;
         return false;
     }
 
@@ -117,7 +117,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, 
 
     auto info = reference::potrf(uplo, n, A.data(), lda);
     if (0 != info) {
-        global::log << "reference potrf failed with info = " << info << std::endl;
+        test_log::lout << "reference potrf failed with info = " << info << std::endl;
         return false;
     }
 

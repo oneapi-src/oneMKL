@@ -51,7 +51,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
 
     auto info = reference::potrf(uplo, n, A.data(), lda);
     if (0 != info) {
-        global::log << "Reference potrf failed with info: " << info << std::endl;
+        test_log::lout << "Reference potrf failed with info: " << info << std::endl;
         return false;
     }
 
@@ -106,11 +106,11 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
 
     bool result = rel_err < threshold;
     if (!result) {
-        snprintf(global::buffer.data(), global::buffer.size(),
+        snprintf(test_log::buffer.data(), test_log::buffer.size(),
                  "|A inv(A) - I| / ( |A| |inv(A)| n ulp ) = |%e|/(|%e|*|%e|*%d*%e) = %e\n",
                  norm_resid, norm_A, norm_Ainv, static_cast<int>(n), ulp, rel_err);
-        global::log << global::buffer.data();
-        global::log << "threshold = " << threshold << std::endl;
+        test_log::lout << test_log::buffer.data();
+        test_log::lout << "threshold = " << threshold << std::endl;
     }
 
     return result;
@@ -133,7 +133,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, 
 
     auto info = reference::potrf(uplo, n, A.data(), lda);
     if (0 != info) {
-        global::log << "Reference potrf failed with info: " << info << std::endl;
+        test_log::lout << "Reference potrf failed with info: " << info << std::endl;
         return false;
     }
 
