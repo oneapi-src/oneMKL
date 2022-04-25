@@ -50,7 +50,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::side left_right, oneapi::mkl
     if (left_right == oneapi::mkl::side::left) {
         if (k > m) {
             test_log::lout << "Bad test input, side == left and k > m (" << k << " > " << m << ")"
-                        << std::endl;
+                           << std::endl;
             return false;
         }
         nq = m;
@@ -58,7 +58,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::side left_right, oneapi::mkl
     else {
         if (k > n) {
             test_log::lout << "Bad test input, side == right and k > n (" << k << " > " << n << ")"
-                        << std::endl;
+                           << std::endl;
             return false;
         }
         nq = n;

@@ -158,7 +158,8 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
              local_id++, global_id++, A_iter++, tau_iter++) {
             if (!check_or_un_gqr_accuracy(m, n, *A_iter, lda)) {
                 test_log::lout << "batch routine (" << global_id << ", " << group_id << ", "
-                            << local_id << ") (global_id, group_id, local_id) failed" << std::endl;
+                               << local_id << ") (global_id, group_id, local_id) failed"
+                               << std::endl;
                 result = false;
             }
         }

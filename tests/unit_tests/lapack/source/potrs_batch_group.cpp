@@ -177,7 +177,8 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
             if (!check_potrs_accuracy(uplo, n, nrhs, *B_iter, ldb, *A_initial_iter, lda,
                                       *B_initial_iter)) {
                 test_log::lout << "batch routine (" << global_id << ", " << group_id << ", "
-                            << local_id << ") (global_id, group_id, local_id) failed" << std::endl;
+                               << local_id << ") (global_id, group_id, local_id) failed"
+                               << std::endl;
                 result = false;
             }
         }

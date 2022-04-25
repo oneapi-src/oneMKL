@@ -54,11 +54,19 @@ inline void print_device_info(const sycl::device& device) {
     sycl::platform platform = device.get_platform();
     std::cout << test_log::padding << std::endl;
     std::cout << test_log::padding << "Device Info" << std::endl;
-    std::cout << test_log::padding << "name : " << device.get_info<sycl::info::device::name>() << std::endl;
-    std::cout << test_log::padding << "driver version : " << device.get_info<sycl::info::device::driver_version>() << std::endl;
-    std::cout << test_log::padding << "platform : " << platform.get_info<sycl::info::platform::name>() << std::endl;
-    std::cout << test_log::padding << "platform version : " << platform.get_info<sycl::info::platform::version>() << std::endl;
-    std::cout << test_log::padding << "vendor         : " << platform.get_info<sycl::info::platform::vendor>() << std::endl;
+    std::cout << test_log::padding << "name : " << device.get_info<sycl::info::device::name>()
+              << std::endl;
+    std::cout << test_log::padding
+              << "driver version : " << device.get_info<sycl::info::device::driver_version>()
+              << std::endl;
+    std::cout << test_log::padding
+              << "platform : " << platform.get_info<sycl::info::platform::name>() << std::endl;
+    std::cout << test_log::padding
+              << "platform version : " << platform.get_info<sycl::info::platform::version>()
+              << std::endl;
+    std::cout << test_log::padding
+              << "vendor         : " << platform.get_info<sycl::info::platform::vendor>()
+              << std::endl;
     std::cout << test_log::padding << std::endl;
 }
 
@@ -141,18 +149,20 @@ void rand_matrix_diag_dom(uint64_t& seed, oneapi::mkl::transpose trans, int64_t 
                           std::vector<fp>& M, int64_t ld, int64_t offset = 0) {
     using fp_real = typename complex_info<fp>::real_type;
     int64_t minsh;
-    minsh =std::min(m, n);
+    minsh = std::min(m, n);
     if (trans == oneapi::mkl::transpose::nontrans)
         for (int64_t col = 0; col < n; col++)
             for (int64_t row = 0; row < m; row++) {
                 M[offset + row + col * ld] = rand_scalar<fp>(seed);
-                if( row == col )  M[offset + row + col * ld] += static_cast<fp_real>(minsh); 
+                if (row == col)
+                    M[offset + row + col * ld] += static_cast<fp_real>(minsh);
             }
     else
         for (int64_t row = 0; row < m; row++)
             for (int64_t col = 0; col < n; col++) {
                 M[offset + col + row * ld] = rand_scalar<fp>(seed);
-                if( row == col ) M[offset + col + row * ld] += static_cast<fp_real>(minsh);  
+                if (row == col)
+                    M[offset + col + row * ld] += static_cast<fp_real>(minsh);
             }
 }
 

@@ -161,7 +161,8 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
              local_id++, global_id++, A_iter++, ipiv_iter++, A_initial_iter++) {
             if (!check_getri_accuracy(n, *A_iter, lda, *ipiv_iter, *A_initial_iter)) {
                 test_log::lout << "batch routine (" << global_id << ", " << group_id << ", "
-                            << local_id << ") (global_id, group_id, local_id) failed" << std::endl;
+                               << local_id << ") (global_id, group_id, local_id) failed"
+                               << std::endl;
                 result = false;
             }
         }

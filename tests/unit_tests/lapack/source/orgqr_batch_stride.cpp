@@ -51,7 +51,7 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t k, int64_t 
             reference::geqrf(m, k, A.data() + i * stride_a, lda, tau.data() + i * stride_tau);
         if (0 != info) {
             test_log::lout << "batch routine index " << i
-                        << ": reference geqrf failed with info: " << info << std::endl;
+                           << ": reference geqrf failed with info: " << info << std::endl;
             return false;
         }
     }
@@ -127,7 +127,7 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t k, in
             reference::geqrf(m, k, A.data() + i * stride_a, lda, tau.data() + i * stride_tau);
         if (0 != info) {
             test_log::lout << "batch routine index " << i
-                        << ": reference geqrf failed with info: " << info << std::endl;
+                           << ": reference geqrf failed with info: " << info << std::endl;
             return false;
         }
     }

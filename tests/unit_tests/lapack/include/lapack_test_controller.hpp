@@ -102,7 +102,6 @@ inline std::ostream& operator<<(std::ostream& os, result_T result) {
     return os;
 }
 
-
 template <typename T>
 struct function_info;
 
@@ -155,7 +154,7 @@ struct InputTestController {
 
     template <size_t... I>
     void print_result(size_t input_file_line, result_T result, const ArgTuple_T& args = {},
-                   std::index_sequence<I...> = std::make_index_sequence<0>{}) {
+                      std::index_sequence<I...> = std::make_index_sequence<0>{}) {
         std::cout.clear();
         std::cout << test_log::padding << "[" << input_file_line << "]: ";
         (..., (std::cout << std::get<I>(args) << " "));
@@ -200,7 +199,8 @@ struct InputTestController {
                 if (!result) {
                     aggregate_result = result;
                 }
-                print_result(input_file_line++, result, args, std::make_index_sequence<arg_count>());
+                print_result(input_file_line++, result, args,
+                             std::make_index_sequence<arg_count>());
             }
             return aggregate_result;
         }
@@ -229,7 +229,8 @@ struct InputTestController {
                 input_file_line++;
                 result_T result = call_test(tp, dev, args);
                 if (!result) {
-                    print_result(input_file_line, result, args, std::make_index_sequence<arg_count>());
+                    print_result(input_file_line, result, args,
+                                 std::make_index_sequence<arg_count>());
                 }
                 else {
                     test_log::lout.str("");
