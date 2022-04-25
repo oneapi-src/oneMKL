@@ -45,13 +45,13 @@ rocblas_handle_container::~rocblas_handle_container() noexcept(false) {
 thread_local rocblas_handle_container RocblasScopedContextHandler::handle_helper =
     rocblas_handle_container{};
 
-RocblasScopedContextHandler::RocblasScopedContextHandler(cl::sycl::queue queue,
-                                                         cl::sycl::interop_handle &ih)
+RocblasScopedContextHandler::RocblasScopedContextHandler(sycl::queue queue,
+                                                         sycl::interop_handle &ih)
         : interop_h(ih) {}
 
-rocblas_handle RocblasScopedContextHandler::get_handle(const cl::sycl::queue &queue) {
-    cl::sycl::device device = queue.get_device();
-    int current_device = interop_h.get_native_device<cl::sycl::backend::hip>();
+rocblas_handle RocblasScopedContextHandler::get_handle(const sycl::queue &queue) {
+    sycl::device device = queue.get_device();
+    int current_device = interop_h.get_native_device<sycl::backend::hip>();
     hipStream_t streamId = get_stream(queue);
     rocblas_status err;
     auto it = handle_helper.rocblas_handle_mapper_.find(current_device);
@@ -84,8 +84,8 @@ rocblas_handle RocblasScopedContextHandler::get_handle(const cl::sycl::queue &qu
     return handle;
 }
 
-hipStream_t RocblasScopedContextHandler::get_stream(const cl::sycl::queue &queue) {
-    return interop_h.get_native_queue<cl::sycl::backend::hip>();
+hipStream_t RocblasScopedContextHandler::get_stream(const sycl::queue &queue) {
+    return interop_h.get_native_queue<sycl::backend::hip>();
 }
 
 } // namespace rocblas
