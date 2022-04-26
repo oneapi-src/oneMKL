@@ -2025,6 +2025,12 @@ void symv(backend_selector<backend::mklgpu> selector, uplo upper_lower, std::int
     symv_postcondition(selector.get_queue(), upper_lower, n, alpha, a, lda, x, incx, beta, y, incy);
 }
 
+void imatcopy_batch() {
+}
+
+void omatcopy_batch() {
+}
+
 // USM APIs
 
 sycl::event syr2(backend_selector<backend::mklgpu> selector, uplo upper_lower, std::int64_t n,
@@ -4956,4 +4962,10 @@ sycl::event symv(backend_selector<backend::mklgpu> selector, uplo upper_lower, s
     symv_postcondition(selector.get_queue(), upper_lower, n, alpha, a, lda, x, incx, beta, y, incy,
                        dependencies);
     return done;
+}
+
+sycl::event imatcopy_batch() {
+}
+
+sycl::event omatcopy_batch() {
 }

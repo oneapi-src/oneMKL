@@ -1452,6 +1452,12 @@ void gemm_bias(oneapi::mkl::device libkey, sycl::queue &queue, transpose transa,
         queue, transa, transb, offsetc, m, n, k, alpha, a, lda, ao, b, ldb, bo, beta, c, ldc, co);
 }
 
+void imatcopy_batch() {
+}
+
+void omatcopy_batch() {
+}
+
 // USM APIs
 
 sycl::event asum(oneapi::mkl::device libkey, sycl::queue &queue, std::int64_t n,

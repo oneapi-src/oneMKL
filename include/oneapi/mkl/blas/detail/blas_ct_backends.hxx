@@ -1083,6 +1083,10 @@ static inline void symv(backend_selector<backend::BACKEND> selector, uplo upper_
                         std::int64_t lda, sycl::buffer<double, 1> &x, std::int64_t incx,
                         double beta, sycl::buffer<double, 1> &y, std::int64_t incy);
 
+static inline void imatcopy_batch();
+
+static inline void omatcopy_batch();
+
 // USM APIs
 
 static inline sycl::event syr2(backend_selector<backend::BACKEND> selector, uplo upper_lower,
@@ -2484,3 +2488,11 @@ static inline sycl::event symv(backend_selector<backend::BACKEND> selector, uplo
                                    const double *x, std::int64_t incx, double beta, double *y,
                                    std::int64_t incy,
                                    const std::vector<sycl::event> &dependencies = {});
+
+static inline sycl::event imatcopy_batch(); // stride
+
+static inline sycl::event omatcopy_batch(); // stride
+
+static inline sycl::event imatcopy_batch(); // group
+
+static inline sycl::event omatcopy_batch(); // group

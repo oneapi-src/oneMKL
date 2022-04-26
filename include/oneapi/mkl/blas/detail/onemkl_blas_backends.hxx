@@ -1064,6 +1064,10 @@ ONEMKL_EXPORT void gemm_bias(sycl::queue &queue, oneapi::mkl::transpose transa,
                              float beta, sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
                              sycl::buffer<int32_t, 1> &co);
 
+ONEMKL_EXPORT void imatcopy_batch();
+
+ONEMKL_EXPORT void omatcopy_batch();
+
 // USM APIs
 
 ONEMKL_EXPORT sycl::event gemm(sycl::queue &queue, oneapi::mkl::transpose transa,
@@ -2470,3 +2474,11 @@ ONEMKL_EXPORT sycl::event gemmt(sycl::queue &queue, oneapi::mkl::uplo upper_lowe
                                     std::complex<double> beta, std::complex<double> *c,
                                     std::int64_t ldc,
                                     const std::vector<sycl::event> &dependencies = {});
+
+ONEMKL_EXPORT sycl::event imatcopy_batch();
+
+ONEMKL_EXPORT sycl::event omatcopy_batch();
+
+ONEMKL_EXPORT sycl::event imatcopy_batch();
+
+ONEMKL_EXPORT sycl::event omatcopy_batch();

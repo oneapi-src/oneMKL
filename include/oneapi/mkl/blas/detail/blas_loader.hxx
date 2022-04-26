@@ -960,6 +960,9 @@ ONEMKL_EXPORT void rotg(oneapi::mkl::device libkey, sycl::queue &queue,
                         sycl::buffer<double, 1> &c,
                         sycl::buffer<std::complex<double>, 1> &s);
 
+ONEMKL_EXPORT void imatcopy_batch();
+ONEMKL_EXPORT void omatcopy_batch();
+
 // USM APIs
 
 ONEMKL_EXPORT sycl::event herk(oneapi::mkl::device libkey, sycl::queue &queue,
@@ -2271,3 +2274,9 @@ ONEMKL_EXPORT sycl::event rotg(oneapi::mkl::device libkey, sycl::queue &queue,
                                    std::complex<double> *a, std::complex<double> *b, double *c,
                                    std::complex<double> *s,
                                    const std::vector<sycl::event> &dependencies = {});
+
+ONEMKL_EXPORT sycl::event imatcopy_batch();
+ONEMKL_EXPORT sycl::event omatcopy_batch();
+ONEMKL_EXPORT sycl::event imatcopy_batch();
+ONEMKL_EXPORT sycl::event omatcopy_batch();
+

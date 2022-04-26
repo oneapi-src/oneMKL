@@ -1937,6 +1937,12 @@ static inline void trsv(sycl::queue &queue, uplo upper_lower, transpose trans, d
     trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
 }
 
+static inline void imatcopy_batch() {
+}
+
+static inline void omatcopy_batch() {
+}
+
 // USM APIs
 
 static inline sycl::event asum(sycl::queue &queue, std::int64_t n,
@@ -4774,4 +4780,20 @@ static inline sycl::event trsv(sycl::queue &queue, uplo upper_lower, transpose t
                              x, incx, dependencies);
     trsv_postcondition(queue, upper_lower, trans, unit_diag, n, a, lda, x, incx, dependencies);
     return done;
+}
+
+static inline sycl::event imatcopy_batch() {
+    // stride
+}
+
+static inline sycl::event omatcopy_batch() {
+    // stride
+}
+
+static inline sycl::event imatcopy_batch() {
+    // group
+}
+
+static inline sycl::event omatcopy_batch() {
+    // group
 }

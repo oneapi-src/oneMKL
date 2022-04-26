@@ -1283,7 +1283,6 @@ sycl::event omatcopy_batch(sycl::queue &queue, transpose trans,
                                              b, ldb, stride_b, batch_size, dependencies);
 }
 
-// group batch
 sycl::event imatcopy_batch(sycl::queue &queue, const transpose *trans,
                            const std::int64_t *m, const std::int64_t *n, const float *alpha, float **ab,
                            const std::int64_t *lda, const std::int64_t *ldb, std::int64_t group_count,
