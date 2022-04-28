@@ -927,6 +927,124 @@ void syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n
         });
     });
 }
+void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                    sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
+                    sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b, int64_t batch_size) {
+    queue.submit([&](sycl::handler &cgh) {
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
+        host_task<class mkl_kernel_somatcopy_batch>(cgh, [=]() {
+            ::mkl_simatcopy_batch_strided(&queue, CBLASMAJOR, trans_, m, n, alpha,
+                                          a_acc.get_pointer(), lda, stride_a, b_acc.get_pointer(),
+                                          ldb, stride_b, batch_size);
+        });
+    });
+}
+
+void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                    sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
+                    sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b, int64_t batch_size) {
+    queue.submit([&](sycl::handler &cgh) {
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
+        host_task<class mkl_kernel_domatcopy_batch>(cgh, [=]() {
+            ::mkl_dimatcopy_batch_strided(&queue, CBLASMAJOR, trans_, m, n, alpha,
+                                          a_acc.get_pointer(), lda, stride_a, b_acc.get_pointer(),
+                                          ldb, stride_b, batch_size);
+        });
+    });
+}
+
+void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                    sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
+                    sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b, int64_t batch_size) {
+    queue.submit([&](sycl::handler &cgh) {
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        std::complex<float> alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
+        host_task<class mkl_kernel_comatcopy_batch>(cgh, [=]() {
+            MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
+            ::mkl_cimatcopy_batch_strided(&queue, CBLASMAJOR, trans_, m, n, (const void *)&alpha_,
+                                          a_acc.get_pointer(), lda, stride_a, b_acc.get_pointer(),
+                                          ldb, stride_b, batch_size);
+        });
+    });
+}
+
+void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                    sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
+                    sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b, int64_t batch_size) {
+    queue.submit([&](sycl::handler &cgh) {
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        std::complex<double> alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
+        host_task<class mkl_kernel_zomatcopy_batch>(cgh, [=]() {
+            MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
+            ::mkl_zimatcopy_batch_strided(&queue, CBLASMAJOR, trans_, m, n, (const void *)&alpha_,
+                                          a_acc.get_pointer(), lda, stride_a, b_acc.get_pointer(),
+                                          ldb, stride_b, batch_size);
+        });
+    });
+}
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                    sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
+                    int64_t batch_size) {
+    queue.submit([&](sycl::handler &cgh) {
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        auto ab_acc = ab.template get_access<sycl::access::mode::read_write>(cgh);
+        host_task<class mkl_kernel_simatcopy_batch>(cgh, [=]() {
+            ::mkl_simatcopy_batch_strided(&queue, CBLASMAJOR, trans_, m, n, alpha,
+                                          ab_acc.get_pointer(), lda, ldb, stride, batch_size);
+        });
+    });
+}
+
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                    sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
+                    int64_t batch_size) {
+    queue.submit([&](sycl::handler &cgh) {
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        auto ab_acc = ab.template get_access<sycl::access::mode::read_write>(cgh);
+        host_task<class mkl_kernel_dimatcopy_batch>(cgh, [=]() {
+            ::mkl_dimatcopy_batch_strided(&queue, CBLASMAJOR, trans_, m, n, alpha,
+                                          ab_acc.get_pointer(), lda, ldb, stride, batch_size);
+        });
+    });
+}
+
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                    sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
+                    int64_t batch_size) {
+    queue.submit([&](sycl::handler &cgh) {
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        std::complex<float> alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        auto ab_acc = ab.template get_access<sycl::access::mode::read_write>(cgh);
+        host_task<class mkl_kernel_cimatcopy_batch>(cgh, [=]() {
+            MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
+            ::mkl_cimatcopy_batch_strided(&queue, CBLASMAJOR, trans_, m, n, (const void *)&alpha_,
+                                          ab_acc.get_pointer(), lda, ldb, stride, batch_size);
+        });
+    });
+}
+
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                    sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
+                    int64_t batch_size) {
+    queue.submit([&](sycl::handler &cgh) {
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        std::complex<double> alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        auto ab_acc = ab.template get_access<sycl::access::mode::read_write>(cgh);
+        host_task<class mkl_kernel_zimatcopy_batch>(cgh, [=]() {
+            MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
+            ::mkl_zimatcopy_batch_strided(&queue, CBLASMAJOR, trans_, m, n, (const void *)&alpha_,
+                                          ab_acc.get_pointer(), lda, ldb, stride, batch_size);
+        });
+    });
+}
 
 // USM APIs
 
@@ -2857,6 +2975,156 @@ sycl::event syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, in
             ::cblas_zsyrk_batch_strided(CBLASMAJOR, uplo_, trans_, n, k, (const void *)&alpha_, a,
                                         lda, stride_a, (const void *)&beta_, c, ldc, stride_c,
                                         batch_size);
+        });
+    });
+    return done;
+}
+
+sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                           const float *a, int64_t lda, int64_t stride_a, float *b, int64_t ldb,
+                           int64_t stride_b, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        host_task<class mkl_kernel_somatcopy_batch_usm>(cgh, [=]() {
+            ::mkl_simatcopy_batch_strided(&queue, CBLASMAJOR, trans_, m, n, alpha, a, lda, stride_a,
+                                          b, ldb, stride_b, batch_size, dependencies);
+        });
+    });
+    return done;
+}
+
+sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                           const float *a, int64_t lda, int64_t stride_a, float *b, int64_t ldb,
+                           int64_t stride_b, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        host_task<class mkl_kernel_domatcopy_batch_usm>(cgh, [=]() {
+            ::mkl_dimatcopy_batch_strided(&queue, CBLASMAJOR, trans_, m, n, alpha, a, lda, stride_a,
+                                          b, ldb, stride_b, batch_size, dependencies);
+        });
+    });
+    return done;
+}
+
+sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                           const float *a, int64_t lda, int64_t stride_a, float *b, int64_t ldb,
+                           int64_t stride_b, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        std::complex<float> alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        host_task<class mkl_kernel_comatcopy_batch_usm>(cgh, [=]() {
+            MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
+            ::mkl_cimatcopy_batch_strided(&queue, CBLASMAJOR, trans_, m, n, (const void *)&alpha_,
+                                          a, lda, stride_a, b, ldb, stride_b, batch_size,
+                                          dependencies);
+        });
+    });
+    return done;
+}
+
+sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                           const float *a, int64_t lda, int64_t stride_a, float *b, int64_t ldb,
+                           int64_t stride_b, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        std::complex<double> alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        host_task<class mkl_kernel_zomatcopy_batch_usm>(cgh, [=]() {
+            MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
+            ::mkl_zimatcopy_batch_strided(&queue, CBLASMAJOR, trans_, m, n, (const void *)&alpha_,
+                                          a, lda, stride_a, b, ldb, stride_b, batch_size,
+                                          dependencies);
+        });
+    });
+    return done;
+}
+
+sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                           float *ab, int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        host_task<class mkl_kernel_simatcopy_batch_usm>(cgh, [=]() {
+            ::mkl_simatcopy_batch_strided(&queue, CBLASMAJOR, trans_, m, n, alpha, ab, lda, ldb,
+                                          stride, batch_size, dependencies);
+        });
+    });
+    return done;
+}
+
+sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                           float *ab, int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        host_task<class mkl_kernel_dimatcopy_batch_usm>(cgh, [=]() {
+            ::mkl_dimatcopy_batch_strided(&queue, CBLASMAJOR, trans_, m, n, alpha, ab, lda, ldb,
+                                          stride, batch_size, dependencies);
+        });
+    });
+    return done;
+}
+
+sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                           float *ab, int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        std::complex<float> alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        host_task<class mkl_kernel_cimatcopy_batch_usm>(cgh, [=]() {
+            MKL_Complex8 alpha_ = { alpha_real, alpha_imag };
+            ::mkl_cimatcopy_batch_strided(&queue, CBLASMAJOR, trans_, m, n, (const void *)&alpha_,
+                                          ab, lda, ldb, stride, batch_size, dependencies);
+        });
+    });
+    return done;
+}
+
+sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                           float *ab, int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
+        std::complex<double> alpha_real = alpha.real(), alpha_imag = alpha.imag();
+        host_task<class mkl_kernel_zimatcopy_batch_usm>(cgh, [=]() {
+            MKL_Complex16 alpha_ = { alpha_real, alpha_imag };
+            ::mkl_zimatcopy_batch_strided(&queue, CBLASMAJOR, trans_, m, n, (const void *)&alpha_,
+                                          ab, lda, ldb, stride, batch_size, dependencies);
         });
     });
     return done;
