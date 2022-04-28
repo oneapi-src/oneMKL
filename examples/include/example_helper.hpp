@@ -56,7 +56,7 @@ void print_2x2_matrix_values(T M, int ldM, std::string M_name)
 }
 
 template <typename fp>
-int check_equal_matrix(fp *M, fp *N, oneapi::mkl::transpose trans, int m, int n, int ld) {
+int check_equal_matrix(fp *M, fp *N, int m, int n, int ld) {
     for (int j = 0; j < n; j++) {
         for (int i = 0; i < m; i++) {
             if (M[i + j * ld] != N[i + j * ld]) return 1;

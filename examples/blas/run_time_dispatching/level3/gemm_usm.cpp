@@ -53,8 +53,6 @@
 
 #include "example_helper.hpp"
 
-#define MKL_ALIGN 64
-
 //
 // Main example for Gemm consisting of
 // initialization of A, B and C matrices as well as
@@ -98,9 +96,9 @@ void run_gemm_example(const sycl::device &dev) {
             try {
                 std::rethrow_exception(e);
             } catch(sycl::exception const& e) {
-                std::cerr << "Caught asynchronous SYCL exception during GEMM:\n"
-                << e.what() << std::endl;
-            }
+                std::cerr << "Caught asynchronous SYCL exception during GEMM:" << std::endl;
+                std::cerr << "\t" << e.what() << std::endl;
+           }
         }
         std::exit(2);
     };
@@ -111,9 +109,9 @@ void run_gemm_example(const sycl::device &dev) {
     sycl::context cxt = main_queue.get_context();
 
     // allocate matrix on host
-    float *A = (float *)calloc(sizea * sizeof(float), MKL_ALIGN);
-    float *B = (float *)calloc(sizeb * sizeof(float), MKL_ALIGN);
-    float *C = (float *)calloc(sizec * sizeof(float), MKL_ALIGN);
+    float *A = (float *)calloc(sizea, sizeof(float));
+    float *B = (float *)calloc(sizeb, sizeof(float));
+    float *C = (float *)calloc(sizec, sizeof(float));
     if (!A || !B || !C) {
         throw std::runtime_error("Failed to allocate memory on host.");
     }
@@ -140,8 +138,9 @@ void run_gemm_example(const sycl::device &dev) {
     //
     // add oneapi::mkl::blas::gemm to execution queue
     gemm_done = oneapi::mkl::blas::column_major::gemm(main_queue, transA, transB, m, n, k, alpha, dev_A, ldA, dev_B, ldB, beta, dev_C, ldC);
-    gemm_done.wait();
 
+    // Wait until calculations are done
+    main_queue.wait_and_throw();
 
     //
     // Post Processing
@@ -149,7 +148,7 @@ void run_gemm_example(const sycl::device &dev) {
     // copy data from device back to host
     main_queue.memcpy(C, dev_C, sizec * sizeof(float)).wait();
 
-    std::cout << "\n\t\tGEMM parameters:\n";
+    std::cout << "\n\t\tGEMM parameters:" << std::endl;
     std::cout << "\t\t\ttransA = " << ( transA == oneapi::mkl::transpose::nontrans ? "nontrans" : ( transA == oneapi::mkl::transpose::trans ? "trans" : "conjtrans"))
               <<   ", transB = " << ( transB == oneapi::mkl::transpose::nontrans ? "nontrans" : ( transB == oneapi::mkl::transpose::trans ? "trans" : "conjtrans")) << std::endl;
     std::cout << "\t\t\tm = " << m << ", n = " << n << ", k = " << k << std::endl;
@@ -212,21 +211,26 @@ int main (int argc, char ** argv) {
         sycl::device dev((sycl::default_selector()));
 
         if (dev.is_gpu()) {
-            std::cout << "Running BLAS gemm usm example on GPU device. \nDevice name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
+            std::cout << "Running BLAS GEMM USM example on GPU device." << std::endl;
+            std::cout << "Device name is: " << dev.get_info<sycl::info::device::name>() << std::endl;
         } else {
-            std::cout << "Running BLAS gemm usm example on CPU device. \nDevice name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
+            std::cout << "Running BLAS GEMM USM example on CPU device." << std::endl;
+            std::cout << "Device name is: " << dev.get_info<sycl::info::device::name>() << std::endl;
         }
         std::cout << "Running with single precision real data type:" << std::endl;
 
         run_gemm_example(dev);
     }
     catch(sycl::exception const& e) {
-        std::cerr << "Caught synchronous SYCL exception during GEMM:\n"
-                  << e.what() << std::endl << "OpenCL status: " << e.code().value() << std::endl;
+        std::cerr << "Caught synchronous SYCL exception during GEMM:" << std::endl;
+        std::cerr << "\t" << e.what() << std::endl;
+        std::cerr << "\tSYCL error code: " << e.code().value() << std::endl;
+        return 1;
     }
     catch(std::exception const& e) {
-        std::cerr << "Caught std::exception during GEMM:\n"
-                  << e.what() << std::endl;
+        std::cerr << "Caught std::exception during GEMM:" << std::endl;
+        std::cerr << "\t" << e.what() << std::endl;
+        return 1;
     }
 
     return 0;

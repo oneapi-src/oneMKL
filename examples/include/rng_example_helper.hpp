@@ -33,40 +33,8 @@
 #include <CL/sycl.hpp>
 #include "oneapi/mkl.hpp"
 
-// local includes
+// local includes for common example helper functions
 #include "example_helper.hpp"
-
-constexpr double _pi = 3.141592653589793238462643383279502884197;
-
-// Catch asynchronous exceptions
-auto exception_handler = [] (sycl::exception_list exceptions) {
-    for (std::exception_ptr const& e : exceptions) {
-        try {
-            std::rethrow_exception(e);
-        } catch(sycl::exception const& e) {
-            std::cout << "Caught asynchronous SYCL exception during generation:\n"
-            << e.what() << std::endl;
-        }
-    }
-};
-
-
-// function to print rng output from USM pointer
-template<typename Type>
-void print_output(Type* r, std::size_t n, int n_print) {
-    std::cout << "First "<< n_print << " numbers of " << n << ": " << std::endl;
-    for(int i = 0 ; i < n_print; i++) {
-        std::cout << r[i] << " ";
-    }
-    std::cout << std::endl;
-}
-
-// function to print rng output from buffer
-template<typename Type>
-void print_output(sycl::buffer<Type>& r, int n_print) {
-    auto r_accessor = sycl::host_accessor(r, sycl::read_only);
-    print_output(r_accessor.get_pointer(), r.size(), n_print);
-}
 
 // function to compare theoretical moments and sample moments
 template<typename Type>
@@ -119,10 +87,4 @@ check_statistics(Type* r, std::size_t size, const oneapi::mkl::rng::uniform<Type
     tQ = ((b - a) * (b - a) * (b - a) * (b - a)) / 80.0;
 
     return compare_moments(r, size, tM, tD, tQ);
-}
-
-
-template<typename Type, typename Allocator, typename Distribution>
-bool check_statistics(std::vector<Type, Allocator>& r, const Distribution& distr) {
-    return check_statistics(r.data(), r.size(), distr);
 }
