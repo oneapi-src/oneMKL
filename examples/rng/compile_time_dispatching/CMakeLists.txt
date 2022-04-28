@@ -19,14 +19,8 @@
 
 #Build object from all sources
 set(RNG_CT_SOURCES "")
-if(ENABLE_MKLCPU_BACKEND)
-  list(APPEND RNG_CT_SOURCES "uniform_usm_mklcpu")
-endif()
-if(ENABLE_MKLGPU_BACKEND)
-  list(APPEND RNG_CT_SOURCES "uniform_usm_mklgpu")
-endif()
-if(ENABLE_CURAND_BACKEND)
-  list(APPEND RNG_CT_SOURCES "uniform_usm_curand")
+if(ENABLE_MKLCPU_BACKEND AND ENABLE_CURAND_BACKEND)
+  list(APPEND RNG_CT_SOURCES "uniform_usm_mklcpu_curand")
 endif()
 
 foreach(rng_ct_source ${RNG_CT_SOURCES})
@@ -38,19 +32,13 @@ foreach(rng_ct_source ${RNG_CT_SOURCES})
       PUBLIC ${CMAKE_BINARY_DIR}/bin
   )
 
-  if(ENABLE_MKLCPU_BACKEND)
-    add_dependencies(example_${domain}_${rng_ct_source} onemkl_${domain}_mklcpu)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu)
-  endif()
-
-  if(ENABLE_MKLGPU_BACKEND)
-    add_dependencies(example_${domain}_${rng_ct_source} onemkl_${domain}_mklgpu)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklgpu)
-  endif()
-
-  if(domain STREQUAL "rng" AND ENABLE_CURAND_BACKEND)
-    add_dependencies(example_${domain}_${rng_ct_source} onemkl_${domain}_curand)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_curand)
+  if(domain STREQUAL "rng" AND ENABLE_MKLCPU_BACKEND AND ENABLE_CURAND_BACKEND)
+    add_dependencies(example_${domain}_${rng_ct_source}
+        onemkl_${domain}_mklcpu
+        onemkl_${domain}_curand)
+    list(APPEND ONEMKL_LIBRARIES_${domain}
+        onemkl_${domain}_mklcpu
+        onemkl_${domain}_curand)
   endif()
 
   if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
