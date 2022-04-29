@@ -28,14 +28,13 @@ template <typename T, typename = void>
 struct has_member_code_meta : std::false_type {};
 
 template <typename T>
-struct has_member_code_meta<T, std::void_t<decltype( std::declval<T>().code() )> > : std::true_type {};
+struct has_member_code_meta<T, std::void_t<decltype(std::declval<T>().code())>> : std::true_type {};
 
 //
 // helpers for initializing templated scalar data type values.
 //
 template <typename fp>
-fp set_fp_value(fp arg1, fp arg2 = 0.0)
-{
+fp set_fp_value(fp arg1, fp arg2 = 0.0) {
     return arg1;
 }
 
@@ -47,38 +46,42 @@ fp set_fp_value(fp arg1, fp arg2 = 0.0)
 //     [ ...
 //
 template <typename T>
-void print_2x2_matrix_values(T M, int ldM, std::string M_name)
-{
-
+void print_2x2_matrix_values(T M, int ldM, std::string M_name) {
     std::cout << std::endl;
-    std::cout << "\t\t\t" << M_name << " = [ " << M[0*ldM + 0] << ", " << M[1*ldM + 0]         << ", ...\n";
-    std::cout << "\t\t\t    [ "                << M[0*ldM + 1] << ", " << M[1*ldM + 1] << ", ...\n";
-    std::cout << "\t\t\t    [ "                << "...\n";
+    std::cout << "\t\t\t" << M_name << " = [ " << M[0 * ldM + 0] << ", " << M[1 * ldM + 0]
+              << ", ...\n";
+    std::cout << "\t\t\t    [ " << M[0 * ldM + 1] << ", " << M[1 * ldM + 1] << ", ...\n";
+    std::cout << "\t\t\t    [ "
+              << "...\n";
     std::cout << std::endl;
-
 }
 
 template <typename fp>
 int check_equal_matrix(fp *M, fp *N, int m, int n, int ld) {
     for (int j = 0; j < n; j++) {
         for (int i = 0; i < m; i++) {
-            if (M[i + j * ld] != N[i + j * ld]) return 1;
+            if (M[i + j * ld] != N[i + j * ld])
+                return 1;
         }
     }
     return 0;
 }
 
-template <typename fp> fp rand_scalar() { return fp(std::rand()) / fp(RAND_MAX) - fp(0.5); }
+template <typename fp>
+fp rand_scalar() {
+    return fp(std::rand()) / fp(RAND_MAX) - fp(0.5);
+}
 
-template <typename vec> void rand_matrix(vec &M, oneapi::mkl::transpose trans, int m, int n, int ld)
-{
+template <typename vec>
+void rand_matrix(vec &M, oneapi::mkl::transpose trans, int m, int n, int ld) {
     using fp = typename vec::value_type;
 
     if (trans == oneapi::mkl::transpose::nontrans) {
         for (int j = 0; j < n; j++)
             for (int i = 0; i < m; i++)
                 M.at(i + j * ld) = rand_scalar<fp>();
-    } else {
+    }
+    else {
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
                 M.at(j + i * ld) = rand_scalar<fp>();

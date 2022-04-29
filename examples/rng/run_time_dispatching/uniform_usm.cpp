@@ -30,7 +30,6 @@
 *
 *******************************************************************************/
 
-
 // stl includes
 #include <iostream>
 #include <vector>
@@ -48,8 +47,7 @@
 // object. Then random number generation performed and
 // the output is post-processed and validated.
 //
-int run_uniform_example(const sycl::device &dev) {
-
+int run_uniform_example(const sycl::device& dev) {
     //
     // Initialization
     //
@@ -60,11 +58,12 @@ int run_uniform_example(const sycl::device &dev) {
     constexpr std::size_t alignment = 64;
 
     // Catch asynchronous exceptions
-    auto exception_handler = [] (sycl::exception_list exceptions) {
+    auto exception_handler = [](sycl::exception_list exceptions) {
         for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
-            } catch(sycl::exception const& e) {
+            }
+            catch (sycl::exception const& e) {
                 std::cerr << "Caught asynchronous SYCL exception during generation:" << std::endl;
                 std::cerr << "\t" << e.what() << std::endl;
             }
@@ -87,7 +86,7 @@ int run_uniform_example(const sycl::device &dev) {
     std::vector<float> r(n);
 
     // Data preparation on selected device
-    float *dev_r = sycl::malloc_device<float>(n * sizeof(float), queue);
+    float* dev_r = sycl::malloc_device<float>(n * sizeof(float), queue);
     if (!dev_r) {
         throw std::runtime_error("Failed to allocate USM memory.");
     }
@@ -110,8 +109,8 @@ int run_uniform_example(const sycl::device &dev) {
     std::cout << "\t\t\tseed = " << seed << ", a = " << a << ", b = " << b << std::endl;
 
     std::cout << "\t\tOutput of generator:" << std::endl;
-    std::cout << "\t\t\tfirst "<< n_print << " numbers of " << n << ": " << std::endl;
-    for(int i = 0 ; i < n_print; i++) {
+    std::cout << "\t\t\tfirst " << n_print << " numbers of " << n << ": " << std::endl;
+    for (int i = 0; i < n_print; i++) {
         std::cout << r.at(i) << " ";
     }
     std::cout << std::endl;
@@ -128,10 +127,12 @@ int run_uniform_example(const sycl::device &dev) {
 // Description of example setup, APIs used and supported floating point type precisions
 //
 void print_example_banner() {
-
     std::cout << "" << std::endl;
-    std::cout << "########################################################################" << std::endl;
-    std::cout << "# Generate uniformly distributed random numbers with philox4x32x10\n# generator example: " << std::endl;
+    std::cout << "########################################################################"
+              << std::endl;
+    std::cout
+        << "# Generate uniformly distributed random numbers with philox4x32x10\n# generator example: "
+        << std::endl;
     std::cout << "# " << std::endl;
     std::cout << "# Using APIs:" << std::endl;
     std::cout << "#   default_engine uniform" << std::endl;
@@ -139,46 +140,52 @@ void print_example_banner() {
     std::cout << "# Using single precision (float) data type" << std::endl;
     std::cout << "# " << std::endl;
     std::cout << "# Device will be selected during runtime." << std::endl;
-    std::cout << "# The environment variable SYCL_DEVICE_FILTER can be used to specify" << std::endl;
+    std::cout << "# The environment variable SYCL_DEVICE_FILTER can be used to specify"
+              << std::endl;
     std::cout << "# SYCL device" << std::endl;
     std::cout << "# " << std::endl;
-    std::cout << "########################################################################" << std::endl;
+    std::cout << "########################################################################"
+              << std::endl;
     std::cout << std::endl;
-
 }
-
 
 //
 // Main entry point for example.
 //
 
-int main (int argc, char ** argv) {
+int main(int argc, char** argv) {
     print_example_banner();
 
-    try{
+    try {
         sycl::device my_dev((sycl::default_selector()));
 
         if (my_dev.is_gpu()) {
             std::cout << "Running RNG uniform usm example on GPU device" << std::endl;
-            std::cout << "Device name is: " << my_dev.get_info<sycl::info::device::name>() << std::endl;
-        } else {
+            std::cout << "Device name is: " << my_dev.get_info<sycl::info::device::name>()
+                      << std::endl;
+        }
+        else {
             std::cout << "Running RNG uniform usm example on CPU device" << std::endl;
-            std::cout << "Device name is: " << my_dev.get_info<sycl::info::device::name>() << std::endl;
+            std::cout << "Device name is: " << my_dev.get_info<sycl::info::device::name>()
+                      << std::endl;
         }
         std::cout << "Running with single precision real data type:" << std::endl;
 
         int ret = run_uniform_example(my_dev);
         if (ret) {
             std::cout << "Random number generator with uniform distribution ran OK" << std::endl;
-        } else {
+        }
+        else {
             std::cout << "Random number generator with uniform distribution FAILED" << std::endl;
         }
-    } catch(sycl::exception const& e) {
+    }
+    catch (sycl::exception const& e) {
         std::cerr << "Caught synchronous SYCL exception:" << std::endl;
         std::cerr << "\t" << e.what() << std::endl;
         std::cerr << "\tSYCL error code: " << e.code().value() << std::endl;
         return 1;
-    } catch(std::exception const& e) {
+    }
+    catch (std::exception const& e) {
         std::cerr << "Caught std::exception during generation:" << std::endl;
         std::cerr << "\t" << e.what() << std::endl;
         return 1;

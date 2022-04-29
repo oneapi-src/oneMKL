@@ -17,7 +17,6 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-
 /*
 *
 *  Content:
@@ -32,13 +31,13 @@
 #include "example_helper.hpp"
 
 // function to compare theoretical moments and sample moments
-template<typename Type>
+template <typename Type>
 bool compare_moments(Type* r, std::size_t size, double tM, double tD, double tQ) {
     // sample moments
     double sum = 0.0;
     double sum2 = 0.0;
     double cur = 0.0;
-    for(int i = 0; i < size; i++) {
+    for (int i = 0; i < size; i++) {
         cur = static_cast<double>(r[i]);
         sum += cur;
         sum2 += cur * cur;
@@ -49,29 +48,27 @@ bool compare_moments(Type* r, std::size_t size, double tM, double tD, double tQ)
 
     // comparison of theoretical and sample moments
     double tD2 = tD * tD;
-    double s = ((tQ-tD2) / n_d) - ( 2 * (tQ - 2 * tD2) / (n_d * n_d))+((tQ - 3 * tD2) /
-                                                            (n_d * n_d * n_d));
+    double s = ((tQ - tD2) / n_d) - (2 * (tQ - 2 * tD2) / (n_d * n_d)) +
+               ((tQ - 3 * tD2) / (n_d * n_d * n_d));
 
     double DeltaM = (tM - sM) / std::sqrt(tD / n_d);
     double DeltaD = (tD - sD) / std::sqrt(s);
-    if(std::fabs(DeltaM) > 3.0 || std::fabs(DeltaD) > 3.0) {
+    if (std::fabs(DeltaM) > 3.0 || std::fabs(DeltaD) > 3.0) {
         std::cout << "Error: sample moments (mean=" << sM << ", variance=" << sD
-            << ") disagree with theory (mean=" << tM << ", variance=" << tD <<
-            ")" << std:: endl;
+                  << ") disagree with theory (mean=" << tM << ", variance=" << tD << ")"
+                  << std::endl;
         return false;
     }
     std::cout << "Success: sample moments (mean=" << sM << ", variance=" << sD
-        << ") agree with theory (mean=" << tM << ", variance=" << tD <<
-        ")" << std:: endl;
+              << ") agree with theory (mean=" << tM << ", variance=" << tD << ")" << std::endl;
     return true;
 }
 
-
 // it is used to calculate theoretical moments of particular distribution
 // and compare them with sample moments
-template<typename Type, typename Method>
-std::enable_if_t<!std::is_integral_v<Type>, bool>
-check_statistics(Type* r, std::size_t size, const oneapi::mkl::rng::uniform<Type, Method>& distr) {
+template <typename Type, typename Method>
+std::enable_if_t<!std::is_integral_v<Type>, bool> check_statistics(
+    Type* r, std::size_t size, const oneapi::mkl::rng::uniform<Type, Method>& distr) {
     double tM, tD, tQ;
     Type a = distr.a();
     Type b = distr.b();

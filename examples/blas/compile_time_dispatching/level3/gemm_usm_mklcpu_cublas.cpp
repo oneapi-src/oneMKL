@@ -62,7 +62,6 @@
 // is performed and finally the results are post processed.
 //
 int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
-
     //
     // Initialize data for Gemm
     //
@@ -86,32 +85,35 @@ int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
 
     // set scalar fp values
     float alpha = set_fp_value(float(2.0), float(-0.5));
-    float beta  = set_fp_value(float(3.0), float(-1.5));
+    float beta = set_fp_value(float(3.0), float(-1.5));
 
     // Catch asynchronous exceptions for CPU and GPU
-    auto cpu_exception_handler = [] (sycl::exception_list exceptions) {
-        for (std::exception_ptr const& e : exceptions) {
+    auto cpu_exception_handler = [](sycl::exception_list exceptions) {
+        for (std::exception_ptr const &e : exceptions) {
             try {
                 std::rethrow_exception(e);
-            } catch(sycl::exception const& e) {
-                std::cerr << "Caught asynchronous SYCL exception on CPU device during GEMM:" << std::endl;
+            }
+            catch (sycl::exception const &e) {
+                std::cerr << "Caught asynchronous SYCL exception on CPU device during GEMM:"
+                          << std::endl;
                 std::cerr << "\t" << e.what() << std::endl;
             }
         }
         std::exit(2);
     };
-    auto gpu_exception_handler = [] (sycl::exception_list exceptions) {
-        for (std::exception_ptr const& e : exceptions) {
+    auto gpu_exception_handler = [](sycl::exception_list exceptions) {
+        for (std::exception_ptr const &e : exceptions) {
             try {
                 std::rethrow_exception(e);
-            } catch(sycl::exception const& e) {
-                std::cerr << "Caught asynchronous SYCL exception on GPU device during GEMM:" << std::endl;
+            }
+            catch (sycl::exception const &e) {
+                std::cerr << "Caught asynchronous SYCL exception on GPU device during GEMM:"
+                          << std::endl;
                 std::cerr << "\t" << e.what() << std::endl;
             }
         }
         std::exit(2);
     };
-
 
     //
     // Data Preparation on host
@@ -131,7 +133,6 @@ int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
     rand_matrix(B, transB, k, n, ldB);
     rand_matrix(C, oneapi::mkl::transpose::nontrans, m, n, ldC);
 
-
     //
     // Preparation on CPU
     //
@@ -143,13 +144,12 @@ int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
     float *cpu_A = sycl::malloc_device<float>(sizea * sizeof(float), cpu_queue);
     float *cpu_B = sycl::malloc_device<float>(sizeb * sizeof(float), cpu_queue);
     float *cpu_C = sycl::malloc_device<float>(sizec * sizeof(float), cpu_queue);
-    if (!cpu_A || !cpu_B || !cpu_C ) {
-       throw std::runtime_error("Failed to allocate USM memory.");
+    if (!cpu_A || !cpu_B || !cpu_C) {
+        throw std::runtime_error("Failed to allocate USM memory.");
     }
     cpu_queue.memcpy(cpu_A, A.data(), sizea * sizeof(float)).wait();
     cpu_queue.memcpy(cpu_B, B.data(), sizeb * sizeof(float)).wait();
     cpu_queue.memcpy(cpu_C, C.data(), sizec * sizeof(float)).wait();
-
 
     //
     // Preparation on GPU
@@ -162,20 +162,23 @@ int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
     float *gpu_A = sycl::malloc_device<float>(sizea * sizeof(float), gpu_queue);
     float *gpu_B = sycl::malloc_device<float>(sizeb * sizeof(float), gpu_queue);
     float *gpu_C = sycl::malloc_device<float>(sizec * sizeof(float), gpu_queue);
-    if (!gpu_A || !gpu_B || !gpu_C ) {
+    if (!gpu_A || !gpu_B || !gpu_C) {
         throw std::runtime_error("Failed to allocate USM memory.");
     }
     gpu_queue.memcpy(gpu_A, A.data(), sizea * sizeof(float)).wait();
     gpu_queue.memcpy(gpu_B, B.data(), sizeb * sizeof(float)).wait();
     gpu_queue.memcpy(gpu_C, C.data(), sizec * sizeof(float)).wait();
 
-
     //
     // Execute Gemm on CPU and GPU device
     //
     // add oneapi::mkl::blas::gemm to execution queue
-    cpu_gemm_done = oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> {cpu_queue}, transA, transB, m, n, k, alpha, cpu_A, ldA, cpu_B, ldB, beta,  cpu_C, ldC);
-    gpu_gemm_done = oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas> {gpu_queue}, transA, transB, m, n, k, alpha, gpu_A, ldA, gpu_B, ldB, beta,  gpu_C, ldC);
+    cpu_gemm_done = oneapi::mkl::blas::column_major::gemm(
+        oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue }, transA, transB, m,
+        n, k, alpha, cpu_A, ldA, cpu_B, ldB, beta, cpu_C, ldC);
+    gpu_gemm_done = oneapi::mkl::blas::column_major::gemm(
+        oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas>{ gpu_queue }, transA, transB, m,
+        n, k, alpha, gpu_A, ldA, gpu_B, ldB, beta, gpu_C, ldC);
 
     // Wait until calculations are done
     cpu_gemm_done.wait_and_throw();
@@ -207,10 +210,11 @@ int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
 // Description of example setup, apis used and supported floating point type precisions
 //
 void print_example_banner() {
-
     std::cout << "" << std::endl;
-    std::cout << "########################################################################" << std::endl;
-    std::cout << "# General Matrix-Matrix Multiplication using Unified Shared Memory Example: " << std::endl;
+    std::cout << "########################################################################"
+              << std::endl;
+    std::cout << "# General Matrix-Matrix Multiplication using Unified Shared Memory Example: "
+              << std::endl;
     std::cout << "# " << std::endl;
     std::cout << "# C = alpha * A * B + beta * C" << std::endl;
     std::cout << "# " << std::endl;
@@ -224,26 +228,25 @@ void print_example_banner() {
     std::cout << "# " << std::endl;
     std::cout << "# Running on both Intel CPU and Nvidia GPU devices" << std::endl;
     std::cout << "# " << std::endl;
-    std::cout << "########################################################################" << std::endl;
+    std::cout << "########################################################################"
+              << std::endl;
     std::cout << std::endl;
-
 }
 
 //
 // Main entry point for example.
 //
-int main (int argc, char ** argv) {
+int main(int argc, char **argv) {
     print_example_banner();
 
-    try{
-        sycl::device cpu_dev ((sycl::cpu_selector()));
-        sycl::device gpu_dev ((sycl::gpu_selector()));
+    try {
+        sycl::device cpu_dev((sycl::cpu_selector()));
+        sycl::device gpu_dev((sycl::gpu_selector()));
 
         unsigned int vendor_id = gpu_dev.get_info<sycl::info::device::vendor_id>();
         if (vendor_id != NVIDIA_ID) {
             std::cerr << "FAILED: NVIDIA GPU device not found" << std::endl;
-                return 1;
-
+            return 1;
         }
         std::cout << "Running BLAS GEMM USM example" << std::endl;
         std::cout << "Running with single precision real data type on:" << std::endl;
@@ -252,17 +255,19 @@ int main (int argc, char ** argv) {
         int ret = run_gemm_example(cpu_dev, gpu_dev);
         if (ret) {
             std::cout << "BLAS GEMM USM example ran OK: CPU and GPU results match" << std::endl;
-        } else {
-            std::cerr << "BLAS GEMM USM example FAILED: CPU and GPU results do not match" << std::endl;
         }
-   }
-    catch(sycl::exception const& e) {
+        else {
+            std::cerr << "BLAS GEMM USM example FAILED: CPU and GPU results do not match"
+                      << std::endl;
+        }
+    }
+    catch (sycl::exception const &e) {
         std::cerr << "Caught synchronous SYCL exception during GEMM:" << std::endl;
         std::cerr << "\t" << e.what() << std::endl;
         std::cerr << "\tSYCL error code: " << e.code().value() << std::endl;
         return 1;
     }
-    catch(std::exception const& e) {
+    catch (std::exception const &e) {
         std::cerr << "Caught std::exception during GEMM:";
         std::cerr << "\t" << e.what() << std::endl;
         return 1;

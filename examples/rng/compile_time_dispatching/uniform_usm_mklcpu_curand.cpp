@@ -30,7 +30,6 @@
 *
 *******************************************************************************/
 
-
 // stl includes
 #include <iostream>
 #include <vector>
@@ -48,8 +47,7 @@
 // object. Then random number generation performed and
 // the output is post-processed and validated.
 //
-int run_uniform_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
-
+int run_uniform_example(const sycl::device& cpu_dev, const sycl::device& gpu_dev) {
     //
     // Initialization
     //
@@ -60,23 +58,27 @@ int run_uniform_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev
     constexpr std::size_t alignment = 64;
 
     // Catch asynchronous exceptions for CPU and GPU
-    auto cpu_exception_handler = [] (sycl::exception_list exceptions) {
+    auto cpu_exception_handler = [](sycl::exception_list exceptions) {
         for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
-            } catch(sycl::exception const& e) {
-                std::cerr << "Caught asynchronous SYCL exception on CPU device during generation:" << std::endl;
+            }
+            catch (sycl::exception const& e) {
+                std::cerr << "Caught asynchronous SYCL exception on CPU device during generation:"
+                          << std::endl;
                 std::cerr << "\t" << e.what() << std::endl;
             }
         }
         std::exit(2);
     };
-    auto gpu_exception_handler = [] (sycl::exception_list exceptions) {
+    auto gpu_exception_handler = [](sycl::exception_list exceptions) {
         for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
-            } catch(sycl::exception const& e) {
-                std::cerr << "Caught asynchronous SYCL exception on GPU device during generation:" << std::endl;
+            }
+            catch (sycl::exception const& e) {
+                std::cerr << "Caught asynchronous SYCL exception on GPU device during generation:"
+                          << std::endl;
                 std::cerr << "\t" << e.what() << std::endl;
             }
         }
@@ -90,8 +92,10 @@ int run_uniform_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev
     // preparation on CPU device and GPU device
     sycl::queue cpu_queue(cpu_dev, cpu_exception_handler);
     sycl::queue gpu_queue(gpu_dev, gpu_exception_handler);
-    oneapi::mkl::rng::default_engine cpu_engine(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> {cpu_queue}, seed);
-    oneapi::mkl::rng::default_engine gpu_engine(oneapi::mkl::backend_selector<oneapi::mkl::backend::curand> {gpu_queue}, seed);
+    oneapi::mkl::rng::default_engine cpu_engine(
+        oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue }, seed);
+    oneapi::mkl::rng::default_engine gpu_engine(
+        oneapi::mkl::backend_selector<oneapi::mkl::backend::curand>{ gpu_queue }, seed);
 
     oneapi::mkl::rng::uniform<float> distribution(a, b);
 
@@ -106,8 +110,8 @@ int run_uniform_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev
     //
     // Data preparation on CPU device and GPU device
     //
-    float *dev_cpu = sycl::malloc_device<float>(n * sizeof(float), cpu_queue);
-    float *dev_gpu = sycl::malloc_device<float>(n * sizeof(float), gpu_queue);
+    float* dev_cpu = sycl::malloc_device<float>(n * sizeof(float), cpu_queue);
+    float* dev_gpu = sycl::malloc_device<float>(n * sizeof(float), gpu_queue);
     if (!dev_cpu || !dev_gpu) {
         throw std::runtime_error("Failed to allocate USM memory.");
     }
@@ -134,22 +138,22 @@ int run_uniform_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev
     std::cout << "\t\t\tseed = " << seed << ", a = " << a << ", b = " << b << std::endl;
 
     std::cout << "\t\tOutput of generator on CPU device:" << std::endl;
-    std::cout << "\t\t\tfirst "<< n_print << " numbers of " << n << ": " << std::endl;
-    for(int i = 0 ; i < n_print; i++) {
+    std::cout << "\t\t\tfirst " << n_print << " numbers of " << n << ": " << std::endl;
+    for (int i = 0; i < n_print; i++) {
         std::cout << r_cpu.at(i) << " ";
     }
     std::cout << std::endl;
 
     std::cout << "\t\tOutput of generator on GPU device:" << std::endl;
-    std::cout << "\t\t\tfirst "<< n_print << " numbers of " << n << ": " << std::endl;
-    for(int i = 0 ; i < n_print; i++) {
+    std::cout << "\t\t\tfirst " << n_print << " numbers of " << n << ": " << std::endl;
+    for (int i = 0; i < n_print; i++) {
         std::cout << r_gpu.at(i) << " ";
     }
     std::cout << std::endl;
 
-
     // Validation
-    int ret = (check_statistics(r_cpu.data(), n, distribution) && check_statistics(r_gpu.data(), n, distribution));
+    int ret = (check_statistics(r_cpu.data(), n, distribution) &&
+               check_statistics(r_gpu.data(), n, distribution));
 
     sycl::free(dev_gpu, gpu_queue);
     sycl::free(dev_cpu, cpu_queue);
@@ -157,15 +161,16 @@ int run_uniform_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev
     return ret;
 }
 
-
 //
 // Description of example setup, APIs used and supported floating point type precisions
 //
 void print_example_banner() {
-
     std::cout << "" << std::endl;
-    std::cout << "########################################################################" << std::endl;
-    std::cout << "# Generate uniformly distributed random numbers with philox4x32x10\n# generator example: " << std::endl;
+    std::cout << "########################################################################"
+              << std::endl;
+    std::cout
+        << "# Generate uniformly distributed random numbers with philox4x32x10\n# generator example: "
+        << std::endl;
     std::cout << "# " << std::endl;
     std::cout << "# Using APIs:" << std::endl;
     std::cout << "#   default_engine uniform" << std::endl;
@@ -174,26 +179,25 @@ void print_example_banner() {
     std::cout << "# " << std::endl;
     std::cout << "# Running on both Intel CPU and Nvidia GPU devices" << std::endl;
     std::cout << "# " << std::endl;
-    std::cout << "########################################################################" << std::endl;
+    std::cout << "########################################################################"
+              << std::endl;
     std::cout << std::endl;
-
 }
-
 
 //
 // Main entry point for example.
 //
 
-int main (int argc, char ** argv) {
+int main(int argc, char** argv) {
     print_example_banner();
-    try{
+    try {
         sycl::device cpu_dev((sycl::cpu_selector()));
         sycl::device gpu_dev((sycl::gpu_selector()));
 
         unsigned int vendor_id = gpu_dev.get_info<sycl::info::device::vendor_id>();
         if (vendor_id != NVIDIA_ID) {
             std::cerr << "FAILED: NVIDIA GPU device not found" << std::endl;
-                return 1;
+            return 1;
         }
         std::cout << "Running RNG uniform usm example" << std::endl;
         std::cout << "Running with single precision real data type:" << std::endl;
@@ -202,16 +206,23 @@ int main (int argc, char ** argv) {
 
         int ret = run_uniform_example(cpu_dev, gpu_dev);
         if (ret) {
-            std::cout << "Random number generator example with uniform distribution ran OK on CPU and GPU" << std::endl;
-        } else {
-            std::cerr << "Random number generator example with uniform distribution FAILED on CPU and/or GPU" << std::endl;
+            std::cout
+                << "Random number generator example with uniform distribution ran OK on CPU and GPU"
+                << std::endl;
         }
-    } catch(sycl::exception const& e) {
-         std::cerr << "Caught synchronous SYCL exception during generation:" << std::endl;
-         std::cerr << "\t" << e.what() << std::endl;
-         std::cerr << "\tSYCL error code: " << e.code().value() << std::endl;
-         return 1;
-    } catch(std::exception const& e) {
+        else {
+            std::cerr
+                << "Random number generator example with uniform distribution FAILED on CPU and/or GPU"
+                << std::endl;
+        }
+    }
+    catch (sycl::exception const& e) {
+        std::cerr << "Caught synchronous SYCL exception during generation:" << std::endl;
+        std::cerr << "\t" << e.what() << std::endl;
+        std::cerr << "\tSYCL error code: " << e.code().value() << std::endl;
+        return 1;
+    }
+    catch (std::exception const& e) {
         std::cerr << "Caught std::exception during generation:" << std::endl;
         std::cerr << "\t" << e.what() << std::endl;
         return 1;

@@ -36,7 +36,6 @@
 *
 *******************************************************************************/
 
-
 // stl includes
 #include <iostream>
 #include <cstdlib>
@@ -46,7 +45,6 @@
 #include <cstring>
 #include <list>
 #include <iterator>
-
 
 #include <CL/sycl.hpp>
 #include "oneapi/mkl.hpp"
@@ -62,8 +60,7 @@
 //
 // is performed and finally the results are post processed.
 //
-void run_gemm_example(const sycl::device &dev) {
-
+void run_gemm_example(const sycl::device& dev) {
     //
     // Initialize data for Gemm
     //
@@ -88,17 +85,18 @@ void run_gemm_example(const sycl::device &dev) {
 
     // set scalar fp values
     float alpha = set_fp_value(float(2.0), float(-0.5));
-    float beta  = set_fp_value(float(3.0), float(-1.5));
+    float beta = set_fp_value(float(3.0), float(-1.5));
 
     // Catch asynchronous exceptions
-    auto exception_handler = [] (sycl::exception_list exceptions) {
+    auto exception_handler = [](sycl::exception_list exceptions) {
         for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
-            } catch(sycl::exception const& e) {
+            }
+            catch (sycl::exception const& e) {
                 std::cerr << "Caught asynchronous SYCL exception during GEMM:" << std::endl;
                 std::cerr << "\t" << e.what() << std::endl;
-           }
+            }
         }
         std::exit(2);
     };
@@ -133,12 +131,12 @@ void run_gemm_example(const sycl::device &dev) {
     main_queue.memcpy(dev_B, B.data(), sizeb * sizeof(float)).wait();
     main_queue.memcpy(dev_C, C.data(), sizec * sizeof(float)).wait();
 
-
     //
     // Execute Gemm
     //
     // add oneapi::mkl::blas::gemm to execution queue
-    gemm_done = oneapi::mkl::blas::column_major::gemm(main_queue, transA, transB, m, n, k, alpha, dev_A, ldA, dev_B, ldB, beta, dev_C, ldC);
+    gemm_done = oneapi::mkl::blas::column_major::gemm(main_queue, transA, transB, m, n, k, alpha,
+                                                      dev_A, ldA, dev_B, ldB, beta, dev_C, ldC);
 
     // Wait until calculations are done
     main_queue.wait_and_throw();
@@ -150,8 +148,15 @@ void run_gemm_example(const sycl::device &dev) {
     main_queue.memcpy(C.data(), dev_C, sizec * sizeof(float)).wait_and_throw();
 
     std::cout << "\n\t\tGEMM parameters:" << std::endl;
-    std::cout << "\t\t\ttransA = " << ( transA == oneapi::mkl::transpose::nontrans ? "nontrans" : ( transA == oneapi::mkl::transpose::trans ? "trans" : "conjtrans"))
-              <<   ", transB = " << ( transB == oneapi::mkl::transpose::nontrans ? "nontrans" : ( transB == oneapi::mkl::transpose::trans ? "trans" : "conjtrans")) << std::endl;
+    std::cout << "\t\t\ttransA = "
+              << (transA == oneapi::mkl::transpose::nontrans
+                      ? "nontrans"
+                      : (transA == oneapi::mkl::transpose::trans ? "trans" : "conjtrans"))
+              << ", transB = "
+              << (transB == oneapi::mkl::transpose::nontrans
+                      ? "nontrans"
+                      : (transB == oneapi::mkl::transpose::trans ? "trans" : "conjtrans"))
+              << std::endl;
     std::cout << "\t\t\tm = " << m << ", n = " << n << ", k = " << k << std::endl;
     std::cout << "\t\t\tlda = " << ldA << ", ldB = " << ldB << ", ldC = " << ldC << std::endl;
     std::cout << "\t\t\talpha = " << alpha << ", beta = " << beta << std::endl;
@@ -176,10 +181,11 @@ void run_gemm_example(const sycl::device &dev) {
 // Description of example setup, apis used and supported floating point type precisions
 //
 void print_example_banner() {
-
     std::cout << "" << std::endl;
-    std::cout << "########################################################################" << std::endl;
-    std::cout << "# General Matrix-Matrix Multiplication using Unified Shared Memory Example: " << std::endl;
+    std::cout << "########################################################################"
+              << std::endl;
+    std::cout << "# General Matrix-Matrix Multiplication using Unified Shared Memory Example: "
+              << std::endl;
     std::cout << "# " << std::endl;
     std::cout << "# C = alpha * A * B + beta * C" << std::endl;
     std::cout << "# " << std::endl;
@@ -192,41 +198,45 @@ void print_example_banner() {
     std::cout << "# Using single precision (float) data type" << std::endl;
     std::cout << "# " << std::endl;
     std::cout << "# Device will be selected during runtime." << std::endl;
-    std::cout << "# The environment variable SYCL_DEVICE_FILTER can be used to specify" << std::endl;
+    std::cout << "# The environment variable SYCL_DEVICE_FILTER can be used to specify"
+              << std::endl;
     std::cout << "# SYCL device" << std::endl;
     std::cout << "# " << std::endl;
-    std::cout << "########################################################################" << std::endl;
+    std::cout << "########################################################################"
+              << std::endl;
     std::cout << std::endl;
-
 }
 
 //
 // Main entry point for example
 //
-int main (int argc, char ** argv) {
+int main(int argc, char** argv) {
     print_example_banner();
 
-    try{
+    try {
         sycl::device dev((sycl::default_selector()));
 
         if (dev.is_gpu()) {
             std::cout << "Running BLAS GEMM USM example on GPU device." << std::endl;
-            std::cout << "Device name is: " << dev.get_info<sycl::info::device::name>() << std::endl;
-        } else {
+            std::cout << "Device name is: " << dev.get_info<sycl::info::device::name>()
+                      << std::endl;
+        }
+        else {
             std::cout << "Running BLAS GEMM USM example on CPU device." << std::endl;
-            std::cout << "Device name is: " << dev.get_info<sycl::info::device::name>() << std::endl;
+            std::cout << "Device name is: " << dev.get_info<sycl::info::device::name>()
+                      << std::endl;
         }
         std::cout << "Running with single precision real data type:" << std::endl;
 
         run_gemm_example(dev);
     }
-    catch(sycl::exception const& e) {
+    catch (sycl::exception const& e) {
         std::cerr << "Caught synchronous SYCL exception during GEMM:" << std::endl;
         std::cerr << "\t" << e.what() << std::endl;
         std::cerr << "\tSYCL error code: " << e.code().value() << std::endl;
         return 1;
     }
-    catch(std::exception const& e) {
+    catch (std::exception const& e) {
         std::cerr << "Caught std::exception during GEMM:" << std::endl;
         std::cerr << "\t" << e.what() << std::endl;
         return 1;
