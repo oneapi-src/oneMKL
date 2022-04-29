@@ -109,12 +109,13 @@ void run_gemm_example(const sycl::device &dev) {
     sycl::context cxt = main_queue.get_context();
 
     // allocate matrix on host
-    float *A = (float *)calloc(sizea, sizeof(float));
-    float *B = (float *)calloc(sizeb, sizeof(float));
-    float *C = (float *)calloc(sizec, sizeof(float));
-    if (!A || !B || !C) {
-        throw std::runtime_error("Failed to allocate memory on host.");
-    }
+    std::vector<float> A(sizea);
+    std::vector<float> B(sizeb);
+    std::vector<float> C(sizec);
+    std::fill(A.begin(), A.end(), 0);
+    std::fill(B.begin(), B.end(), 0);
+    std::fill(C.begin(), C.end(), 0);
+
     rand_matrix(A, transA, m, k, ldA);
     rand_matrix(B, transB, k, n, ldB);
     rand_matrix(C, oneapi::mkl::transpose::nontrans, m, n, ldC);
@@ -128,9 +129,9 @@ void run_gemm_example(const sycl::device &dev) {
     }
 
     // copy data from host to device
-    main_queue.memcpy(dev_A, A, sizea * sizeof(float)).wait();
-    main_queue.memcpy(dev_B, B, sizeb * sizeof(float)).wait();
-    main_queue.memcpy(dev_C, C, sizec * sizeof(float)).wait();
+    main_queue.memcpy(dev_A, A.data(), sizea * sizeof(float)).wait();
+    main_queue.memcpy(dev_B, B.data(), sizeb * sizeof(float)).wait();
+    main_queue.memcpy(dev_C, C.data(), sizec * sizeof(float)).wait();
 
 
     //
@@ -139,14 +140,11 @@ void run_gemm_example(const sycl::device &dev) {
     // add oneapi::mkl::blas::gemm to execution queue
     gemm_done = oneapi::mkl::blas::column_major::gemm(main_queue, transA, transB, m, n, k, alpha, dev_A, ldA, dev_B, ldB, beta, dev_C, ldC);
 
-    // Wait until calculations are done
-    main_queue.wait_and_throw();
-
     //
     // Post Processing
     //
     // copy data from device back to host
-    main_queue.memcpy(C, dev_C, sizec * sizeof(float)).wait();
+    main_queue.memcpy(C.data(), dev_C, sizec * sizeof(float)).wait_and_throw();
 
     std::cout << "\n\t\tGEMM parameters:" << std::endl;
     std::cout << "\t\t\ttransA = " << ( transA == oneapi::mkl::transpose::nontrans ? "nontrans" : ( transA == oneapi::mkl::transpose::trans ? "trans" : "conjtrans"))
@@ -158,20 +156,17 @@ void run_gemm_example(const sycl::device &dev) {
     std::cout << "\n\t\tOutputting 2x2 block of A,B,C matrices:" << std::endl;
 
     // output the top 2x2 block of A matrix
-    print_2x2_matrix_values(A, ldA, "A");
+    print_2x2_matrix_values(A.data(), ldA, "A");
 
     // output the top 2x2 block of B matrix
-    print_2x2_matrix_values(B, ldB, "B");
+    print_2x2_matrix_values(B.data(), ldB, "B");
 
     // output the top 2x2 block of C matrix
-    print_2x2_matrix_values(C, ldC, "C");
+    print_2x2_matrix_values(C.data(), ldC, "C");
 
     sycl::free(dev_A, main_queue);
     sycl::free(dev_B, main_queue);
     sycl::free(dev_C, main_queue);
-    free(A);
-    free(B);
-    free(C);
 }
 
 //

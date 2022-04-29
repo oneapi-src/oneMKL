@@ -98,13 +98,14 @@ int run_uniform_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev
     //
     // Data preparation on host: prepare array for random numbers
     //
-    float *r_cpu = (float *)calloc(n, sizeof(float));
-    float *r_gpu = (float *)calloc(n, sizeof(float));
-    if (!r_cpu || !r_gpu) {
-        throw std::runtime_error("Failed to allocate memory on host.");
-    }
+    std::vector<float> r_cpu(n);
+    std::vector<float> r_gpu(n);
+    std::fill(r_cpu.begin(), r_cpu.end(), 0);
+    std::fill(r_gpu.begin(), r_gpu.end(), 0);
 
+    //
     // Data preparation on CPU device and GPU device
+    //
     float *dev_cpu = sycl::malloc_device<float>(n * sizeof(float), cpu_queue);
     float *dev_gpu = sycl::malloc_device<float>(n * sizeof(float), gpu_queue);
     if (!dev_cpu || !dev_gpu) {
@@ -118,16 +119,14 @@ int run_uniform_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev
     sycl::event event_out_gpu;
     event_out_cpu = oneapi::mkl::rng::generate(distribution, cpu_engine, n, dev_cpu);
     event_out_gpu = oneapi::mkl::rng::generate(distribution, gpu_engine, n, dev_gpu);
-    event_out_cpu.wait_and_throw();
-    event_out_gpu.wait_and_throw();
 
     //
     // Post Processing
     //
 
     // copy data from CPU device and GPU device back to host
-    cpu_queue.memcpy(r_cpu, dev_cpu, n * sizeof(float)).wait();
-    gpu_queue.memcpy(r_gpu, dev_gpu, n * sizeof(float)).wait();
+    cpu_queue.memcpy(r_cpu.data(), dev_cpu, n * sizeof(float)).wait_and_throw();
+    gpu_queue.memcpy(r_gpu.data(), dev_gpu, n * sizeof(float)).wait_and_throw();
 
     std::cout << "\t\tgeneration parameters:" << std::endl;
     std::cout << "\t\t\tseed = " << seed << ", a = " << a << ", b = " << b << std::endl;
@@ -135,25 +134,23 @@ int run_uniform_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev
     std::cout << "\t\tOutput of generator on CPU device:" << std::endl;
     std::cout << "\t\t\tfirst "<< n_print << " numbers of " << n << ": " << std::endl;
     for(int i = 0 ; i < n_print; i++) {
-        std::cout << r_cpu[i] << " ";
+        std::cout << r_cpu.at(i) << " ";
     }
     std::cout << std::endl;
 
     std::cout << "\t\tOutput of generator on GPU device:" << std::endl;
     std::cout << "\t\t\tfirst "<< n_print << " numbers of " << n << ": " << std::endl;
     for(int i = 0 ; i < n_print; i++) {
-        std::cout << r_gpu[i] << " ";
+        std::cout << r_gpu.at(i) << " ";
     }
     std::cout << std::endl;
 
 
     // Validation
-    int ret = (check_statistics(r_cpu, n, distribution) && check_statistics(r_gpu, n, distribution));
+    int ret = (check_statistics(r_cpu.data(), n, distribution) && check_statistics(r_gpu.data(), n, distribution));
 
     sycl::free(dev_cpu, cpu_queue);
     sycl::free(dev_gpu, gpu_queue);
-    free(r_cpu);
-    free(r_gpu);
 
     return ret;
 }

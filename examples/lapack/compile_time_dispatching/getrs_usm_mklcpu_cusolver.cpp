@@ -102,16 +102,17 @@ int run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_de
     //
     // Data preparation on host
     //
-    float *A = (float *)calloc(A_size, sizeof(float));
-    float *B = (float *)calloc(B_size, sizeof(float));
-    float *result_cpu = (float *)calloc(B_size, sizeof(float));
-    float *result_gpu = (float *)calloc(B_size, sizeof(float));
-    if (!A || !B || !result_cpu || !result_gpu) {
-        throw std::runtime_error("Failed to allocate memory on host.");
-    }
+    std::vector<float> A(A_size);
+    std::vector<float> B(B_size);
+    std::vector<float> result_cpu(B_size);
+    std::vector<float> result_gpu(B_size);
+    std::fill(A.begin(), A.end(), 0);
+    std::fill(B.begin(), B.end(), 0);
+    std::fill(result_cpu.begin(), result_cpu.end(), 0);
+    std::fill(result_gpu.begin(), result_gpu.end(), 0);
+
     rand_matrix(A, oneapi::mkl::transpose::nontrans, n, n, lda);
     rand_matrix(B, oneapi::mkl::transpose::nontrans, n, nrhs, ldb);
-
 
     //
     // Preparation on CPU
@@ -134,8 +135,8 @@ int run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_de
     }
 
     // copy data from host to CPU device
-    cpu_queue.memcpy(cpu_A, A, A_size * sizeof(float)).wait();
-    cpu_queue.memcpy(cpu_B, B, B_size * sizeof(float)).wait();
+    cpu_queue.memcpy(cpu_A, A.data(), A_size * sizeof(float)).wait();
+    cpu_queue.memcpy(cpu_B, B.data(), B_size * sizeof(float)).wait();
 
 
     //
@@ -159,8 +160,8 @@ int run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_de
     }
 
     // copy data from host to CPU device
-    gpu_queue.memcpy(gpu_A, A, A_size * sizeof(float)).wait();
-    gpu_queue.memcpy(gpu_B, B, B_size * sizeof(float)).wait();
+    gpu_queue.memcpy(gpu_A, A.data(), A_size * sizeof(float)).wait();
+    gpu_queue.memcpy(gpu_B, B.data(), B_size * sizeof(float)).wait();
 
 
     //
@@ -173,22 +174,17 @@ int run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_de
     gpu_getrs_done = oneapi::mkl::lapack::getrs(oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver> {gpu_queue}, oneapi::mkl::transpose::nontrans, n, nrhs, gpu_A, lda, gpu_ipiv, gpu_B, ldb, gpu_getrs_scratchpad, gpu_getrs_scratchpad_size, {cpu_getrf_done});
 
 
-    // Wait until calculations are done
-    cpu_queue.wait_and_throw();
-    gpu_queue.wait_and_throw();
-
-
     //
     // Post Processing
     //
     // copy data from CPU device back to host
-    cpu_queue.memcpy(result_cpu, cpu_B, B_size * sizeof(float)).wait();
+    cpu_queue.memcpy(result_cpu.data(), cpu_B, B_size * sizeof(float)).wait_and_throw();
 
     // copy data from GPU device back to host
-    gpu_queue.memcpy(result_gpu, gpu_B, B_size * sizeof(float)).wait();
+    gpu_queue.memcpy(result_gpu.data(), gpu_B, B_size * sizeof(float)).wait_and_throw();
 
     // compare results from CPU and GPU devices
-    int ret = check_equal_matrix(result_cpu, result_gpu, n, nrhs, ldb);
+    int ret = check_equal_matrix(result_cpu.data(), result_gpu.data(), n, nrhs, ldb);
 
     sycl::free(cpu_A, cpu_queue);
     sycl::free(cpu_B, cpu_queue);
@@ -201,11 +197,6 @@ int run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_de
     sycl::free(gpu_ipiv, gpu_queue);
     sycl::free(gpu_getrf_scratchpad, gpu_queue);
     sycl::free(gpu_getrs_scratchpad, gpu_queue);
-
-    free(A);
-    free(B);
-    free(result_cpu);
-    free(result_gpu);
 
     return ret;
 }

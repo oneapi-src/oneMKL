@@ -17,6 +17,9 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
+#ifndef __EXAMPLE_HELPER_HPP__
+#define __EXAMPLE_HELPER_HPP__
+
 // common helper functions for examples
 //
 // helpers for getting error code
@@ -67,17 +70,19 @@ int check_equal_matrix(fp *M, fp *N, int m, int n, int ld) {
 
 template <typename fp> fp rand_scalar() { return fp(std::rand()) / fp(RAND_MAX) - fp(0.5); }
 
-template <typename fp> void rand_matrix(fp *M, oneapi::mkl::transpose trans, int m, int n, int ld)
+template <typename vec> void rand_matrix(vec &M, oneapi::mkl::transpose trans, int m, int n, int ld)
 {
+    using fp = typename vec::value_type;
 
     if (trans == oneapi::mkl::transpose::nontrans) {
         for (int j = 0; j < n; j++)
             for (int i = 0; i < m; i++)
-                M[i + j * ld] = rand_scalar<fp>();
+                M.at(i + j * ld) = rand_scalar<fp>();
     } else {
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
-                M[j + i * ld] = rand_scalar<fp>();
+                M.at(j + i * ld) = rand_scalar<fp>();
     }
 }
 
+#endif //__EXAMPLE_HELPER_HPP__

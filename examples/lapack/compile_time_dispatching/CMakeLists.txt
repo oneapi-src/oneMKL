@@ -25,6 +25,7 @@ endif()
 
 if(domain STREQUAL "lapack" AND ENABLE_MKLCPU_BACKEND)
   find_library(OPENCL_LIBRARY NAMES OpenCL)
+  message(STATUS "Found OpenCL: ${OPENCL_LIBRARY}")
 endif()
 
 foreach(lapack_ct_source ${LAPACK_CT_SOURCES})

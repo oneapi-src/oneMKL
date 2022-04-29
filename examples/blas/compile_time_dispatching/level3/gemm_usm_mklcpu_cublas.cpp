@@ -116,14 +116,17 @@ int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
     //
     // Data Preparation on host
     //
-    float *A = (float *)calloc(sizea, sizeof(float));
-    float *B = (float *)calloc(sizeb, sizeof(float));
-    float *C = (float *)calloc(sizec, sizeof(float));
-    float *result_cpu = (float *)calloc(sizec, sizeof(float));
-    float *result_gpu = (float *)calloc(sizec, sizeof(float));
-    if (!A || !B || !C || !result_cpu || !result_gpu) {
-        throw std::runtime_error("Failed to allocate memory on host.");
-    }
+    std::vector<float> A(sizea);
+    std::vector<float> B(sizeb);
+    std::vector<float> C(sizec);
+    std::vector<float> result_cpu(sizec);
+    std::vector<float> result_gpu(sizec);
+    std::fill(A.begin(), A.end(), 0);
+    std::fill(B.begin(), B.end(), 0);
+    std::fill(C.begin(), C.end(), 0);
+    std::fill(result_cpu.begin(), result_cpu.end(), 0);
+    std::fill(result_gpu.begin(), result_gpu.end(), 0);
+
     rand_matrix(A, transA, m, k, ldA);
     rand_matrix(B, transB, k, n, ldB);
     rand_matrix(C, oneapi::mkl::transpose::nontrans, m, n, ldC);
@@ -143,9 +146,9 @@ int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
     if (!cpu_A || !cpu_B || !cpu_C ) {
        throw std::runtime_error("Failed to allocate USM memory.");
     }
-    cpu_queue.memcpy(cpu_A, A, sizea * sizeof(float)).wait();
-    cpu_queue.memcpy(cpu_B, B, sizeb * sizeof(float)).wait();
-    cpu_queue.memcpy(cpu_C, C, sizec * sizeof(float)).wait();
+    cpu_queue.memcpy(cpu_A, A.data(), sizea * sizeof(float)).wait();
+    cpu_queue.memcpy(cpu_B, B.data(), sizeb * sizeof(float)).wait();
+    cpu_queue.memcpy(cpu_C, C.data(), sizec * sizeof(float)).wait();
 
 
     //
@@ -162,9 +165,9 @@ int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
     if (!gpu_A || !gpu_B || !gpu_C ) {
         throw std::runtime_error("Failed to allocate USM memory.");
     }
-    gpu_queue.memcpy(gpu_A, A, sizea * sizeof(float)).wait();
-    gpu_queue.memcpy(gpu_B, B, sizeb * sizeof(float)).wait();
-    gpu_queue.memcpy(gpu_C, C, sizec * sizeof(float)).wait();
+    gpu_queue.memcpy(gpu_A, A.data(), sizea * sizeof(float)).wait();
+    gpu_queue.memcpy(gpu_B, B.data(), sizeb * sizeof(float)).wait();
+    gpu_queue.memcpy(gpu_C, C.data(), sizec * sizeof(float)).wait();
 
 
     //
@@ -174,22 +177,18 @@ int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
     cpu_gemm_done = oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> {cpu_queue}, transA, transB, m, n, k, alpha, cpu_A, ldA, cpu_B, ldB, beta,  cpu_C, ldC);
     gpu_gemm_done = oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas> {gpu_queue}, transA, transB, m, n, k, alpha, gpu_A, ldA, gpu_B, ldB, beta,  gpu_C, ldC);
 
-    // Wait until calculations are done
-    cpu_gemm_done.wait_and_throw();
-    gpu_gemm_done.wait_and_throw();
-
 
     //
     // Post Processing
     //
     // copy data from CPU back to host
-    cpu_queue.memcpy(result_cpu, cpu_C, sizec * sizeof(float)).wait();
+    cpu_queue.memcpy(result_cpu.data(), cpu_C, sizec * sizeof(float)).wait_and_throw();
 
     // copy data from GPU back to host
-    gpu_queue.memcpy(result_gpu, gpu_C, sizec * sizeof(float)).wait();
+    gpu_queue.memcpy(result_gpu.data(), gpu_C, sizec * sizeof(float)).wait_and_throw();
 
     // compare
-    int ret = check_equal_matrix(result_cpu, result_gpu, m, n, ldC);
+    int ret = check_equal_matrix(result_cpu.data(), result_gpu.data(), m, n, ldC);
 
     sycl::free(cpu_A, cpu_queue);
     sycl::free(cpu_B, cpu_queue);
@@ -197,11 +196,6 @@ int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
     sycl::free(gpu_A, gpu_queue);
     sycl::free(gpu_B, gpu_queue);
     sycl::free(gpu_C, gpu_queue);
-    free(A);
-    free(B);
-    free(C);
-    free(result_cpu);
-    free(result_gpu);
 
     return ret;
 }

@@ -85,11 +85,11 @@ void run_getrs_example(const sycl::device& device)
     };
 
     // Data preparation on host
-    float *A = (float *)calloc(A_size, sizeof(float));
-    float *B = (float *)calloc(B_size, sizeof(float));
-    if (!A || !B) {
-        throw std::runtime_error("Failed to allocate memory on host.");
-    }
+    std::vector<float> A(A_size);
+    std::vector<float> B(B_size);
+    std::fill(A.begin(), A.end(), 0);
+    std::fill(B.begin(), B.end(), 0);
+
     rand_matrix(A, oneapi::mkl::transpose::nontrans, n, n, lda);
     rand_matrix(B, oneapi::mkl::transpose::nontrans, n, nrhs, ldb);
 
@@ -119,18 +119,15 @@ void run_getrs_example(const sycl::device& device)
     }
 
     // copy data from host to device
-    queue.memcpy(dev_A, A, A_size * sizeof(float)).wait();
-    queue.memcpy(dev_B, B, B_size * sizeof(float)).wait();
+    queue.memcpy(dev_A, A.data(), A_size * sizeof(float)).wait();
+    queue.memcpy(dev_B, B.data(), B_size * sizeof(float)).wait();
 
     // Execute on device
     getrf_done = oneapi::mkl::lapack::getrf(queue, m, n, dev_A, lda, dev_ipiv, getrf_scratchpad, getrf_scratchpad_size);
     getrs_done = oneapi::mkl::lapack::getrs(queue, oneapi::mkl::transpose::nontrans, n, nrhs, dev_A, lda, dev_ipiv, dev_B, ldb, getrs_scratchpad, getrs_scratchpad_size, {getrf_done});
 
-    // Wait until calculations are done
-    queue.wait_and_throw();
-
     // copy data from device back to host
-    queue.memcpy(B, dev_B, B_size * sizeof(float)).wait();
+    queue.memcpy(B.data(), dev_B, B_size * sizeof(float)).wait_and_throw();
 
     sycl::free(dev_A, queue);
     sycl::free(dev_B, queue);
@@ -138,8 +135,6 @@ void run_getrs_example(const sycl::device& device)
     sycl::free(getrf_scratchpad, queue);
     sycl::free(getrs_scratchpad, queue);
 
-    free(A);
-    free(B);
 }
 
 

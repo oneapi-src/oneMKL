@@ -84,10 +84,7 @@ int run_uniform_example(const sycl::device &dev) {
     //
     // Data preparation on host: prepare array for random numbers
     //
-    float *r = (float *)calloc(n, sizeof(float));
-    if (!r) {
-        throw std::runtime_error("Failed to allocate memory on host.");
-    }
+    std::vector<float> r(n);
 
     // Data preparation on selected device
     float *dev_r = sycl::malloc_device<float>(n * sizeof(float), queue);
@@ -100,14 +97,13 @@ int run_uniform_example(const sycl::device &dev) {
     //
     sycl::event event_out;
     event_out = oneapi::mkl::rng::generate(distribution, engine, n, dev_r);
-    event_out.wait_and_throw();
 
     //
     // Post Processing
     //
 
     // copy data from device back to host
-    queue.memcpy(r, dev_r, n * sizeof(float)).wait();
+    queue.memcpy(r.data(), dev_r, n * sizeof(float)).wait_and_throw();
 
     std::cout << "\t\tgeneration parameters:" << std::endl;
     std::cout << "\t\t\tseed = " << seed << ", a = " << a << ", b = " << b << std::endl;
@@ -115,15 +111,14 @@ int run_uniform_example(const sycl::device &dev) {
     std::cout << "\t\tOutput of generator:" << std::endl;
     std::cout << "\t\t\tfirst "<< n_print << " numbers of " << n << ": " << std::endl;
     for(int i = 0 ; i < n_print; i++) {
-        std::cout << r[i] << " ";
+        std::cout << r.at(i) << " ";
     }
     std::cout << std::endl;
 
     // Validation
-    int ret = check_statistics(r, n, distribution);
+    int ret = check_statistics(r.data(), n, distribution);
 
     sycl::free(dev_r, queue);
-    free(r);
 
     return ret;
 }

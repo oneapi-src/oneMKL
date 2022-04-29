@@ -25,13 +25,8 @@
 *
 *******************************************************************************/
 
-// stl includes
-#include <iostream>
-#include <vector>
-#include <cmath>
-
-#include <CL/sycl.hpp>
-#include "oneapi/mkl.hpp"
+#ifndef __RNG_EXAMPLE_HELPER_HPP__
+#define __RNG_EXAMPLE_HELPER_HPP__
 
 // local includes for common example helper functions
 #include "example_helper.hpp"
@@ -88,3 +83,5 @@ check_statistics(Type* r, std::size_t size, const oneapi::mkl::rng::uniform<Type
 
     return compare_moments(r, size, tM, tD, tQ);
 }
+
+#endif //__RNG_EXAMPLE_HELPER_HPP__
