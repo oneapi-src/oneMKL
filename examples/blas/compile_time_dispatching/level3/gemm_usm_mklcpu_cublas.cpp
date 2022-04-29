@@ -61,7 +61,7 @@
 //
 // is performed and finally the results are post processed.
 //
-void run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
+int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
 
     //
     // Initialize data for Gemm
@@ -189,11 +189,7 @@ void run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) 
     gpu_queue.memcpy(result_gpu, gpu_C, sizec * sizeof(float)).wait();
 
     // compare
-    if (check_equal_matrix(result_cpu, result_gpu, m, n, ldC)) {
-        std::cout << "\tSUCCESS: CPU and GPU results match." << std::endl;
-    } else {
-        std::cerr << "\tFAILED: CPU and GPU results do not match." << std::endl;
-    }
+    int ret = check_equal_matrix(result_cpu, result_gpu, m, n, ldC);
 
     sycl::free(cpu_A, cpu_queue);
     sycl::free(cpu_B, cpu_queue);
@@ -206,6 +202,8 @@ void run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) 
     free(C);
     free(result_cpu);
     free(result_gpu);
+
+    return ret;
 }
 
 //
@@ -254,8 +252,13 @@ int main (int argc, char ** argv) {
         std::cout << "Running with single precision real data type on:" << std::endl;
         std::cout << "\tCPU device: " << cpu_dev.get_info<sycl::info::device::name>() << std::endl;
         std::cout << "\tGPU device: " << gpu_dev.get_info<sycl::info::device::name>() << std::endl;
-        run_gemm_example(cpu_dev, gpu_dev);
-    }
+        int ret = run_gemm_example(cpu_dev, gpu_dev);
+        if (ret) {
+            std::cout << "BLAS GEMM USM example ran OK: CPU and GPU results match" << std::endl;
+        } else {
+            std::cerr << "BLAS GEMM USM example FAILED: CPU and GPU results do not match" << std::endl;
+        }
+   }
     catch(sycl::exception const& e) {
         std::cerr << "Caught synchronous SYCL exception during GEMM:" << std::endl;
         std::cerr << "\t" << e.what() << std::endl;

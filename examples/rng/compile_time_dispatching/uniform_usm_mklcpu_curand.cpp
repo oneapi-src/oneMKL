@@ -203,9 +203,9 @@ int main (int argc, char ** argv) {
 
         int ret = run_uniform_example(cpu_dev, gpu_dev);
         if (ret) {
-            std::cout << "Random number generator with uniform distribution on CPU and GPU ran OK" << std::endl;
+            std::cout << "Random number generator example with uniform distribution ran OK on CPU and GPU" << std::endl;
         } else {
-            std::cout << "Random number generator with uniform distribution on CPU and/or GPU FAILED" << std::endl;
+            std::cerr << "Random number generator example with uniform distribution FAILED on CPU and/or GPU" << std::endl;
         }
     } catch(sycl::exception const& e) {
          std::cerr << "Caught synchronous SYCL exception during generation:" << std::endl;

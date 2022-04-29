@@ -20,12 +20,13 @@
 /*
 *
 *  Content:
-*       This example demonstrates use of oneapi::mkl::lapack::getrf and oneapi::mkl::lapack::getrs
-*       to perform LU factorization and compute the solution on a SYCL device (HOST, CPU, GPU) that
-*       is selected during runtime.
+*       This example demonstrates use of oneapi::mkl::lapack::getrf and
+*       oneapi::mkl::lapack::getrs to perform LU factorization and compute
+*       the solution on a SYCL device (HOST, CPU, GPU) that is selected
+*       during runtime.
 *
-*       The supported floating point data types for matrix data are:
-*           float
+*       This example demonstrates only single precision (float) data type
+*       for matrix data
 *
 *******************************************************************************/
 
@@ -37,9 +38,6 @@
 // oneMKL/SYCL includes
 #include <CL/sycl.hpp>
 #include "oneapi/mkl.hpp"
-
-// #include "mkl.h"
-// #include "oneapi/mkl/lapack.hpp"
 
 // local includes
 #include "example_helper.hpp"
@@ -58,13 +56,14 @@
 void run_getrs_example(const sycl::device& device)
 {
     // Matrix sizes and leading dimensions
+    std::int64_t m    = 23;
     std::int64_t n    = 23;
     std::int64_t nrhs  = 23;
     std::int64_t lda  = 32;
     std::int64_t ldb  = 32;
-
-    // Variable holding status of calculations
-    std::int64_t info = 0;
+    std::int64_t A_size = n * lda;
+    std::int64_t B_size = nrhs * ldb;
+    std::int64_t ipiv_size = n;
 
     // Asynchronous error handler
     auto error_handler = [&] (sycl::exception_list exceptions) {
@@ -73,72 +72,74 @@ void run_getrs_example(const sycl::device& device)
                 std::rethrow_exception(e);
             } catch(oneapi::mkl::lapack::exception const& e) {
                 // Handle LAPACK related exceptions happened during asynchronous call
-                info = e.info();
-                std::cout << "Unexpected exception caught during asynchronous LAPACK operation:\n" << e.what() << "\ninfo: " << e.info() << std::endl;
+                std::cerr << "Caught asynchronous LAPACK exception on CPU device during GEMM:" << std::endl;
+                std::cerr << "\t" << e.what() << std::endl;
+                std::cerr << "\tinfo: " << e.info() << std::endl;
             } catch(sycl::exception const& e) {
                 // Handle not LAPACK related exceptions happened during asynchronous call
-                std::cout << "Unexpected exception caught during asynchronous operation:\n" << e.what() << std::endl;
-                info = -1;
+                std::cerr << "Caught asynchronous SYCL exception on CPU device during GEMM:" << std::endl;
+                std::cerr << "\t" << e.what() << std::endl;
             }
         }
+        std::exit(2);
     };
 
-    // Create execution queue for selected device
+    // Data preparation on host
+    float *A = (float *)calloc(A_size, sizeof(float));
+    float *B = (float *)calloc(B_size, sizeof(float));
+    if (!A || !B) {
+        throw std::runtime_error("Failed to allocate memory on host.");
+    }
+    rand_matrix(A, oneapi::mkl::transpose::nontrans, n, n, lda);
+    rand_matrix(B, oneapi::mkl::transpose::nontrans, n, nrhs, ldb);
+
+
+    // Data preparation on selected device
     sycl::queue queue(device, error_handler);
     sycl::context context = queue.get_context();
+    sycl::event getrf_done;
+    sycl::event getrs_done;
 
-    // Allocate matrices
-    std::int64_t A_size = n * lda;
-    std::int64_t B_size = nrhs * ldb;
-    std::int64_t ipiv_size = n;
+    float *dev_A = sycl::malloc_device<float>(A_size * sizeof(float), queue);
+    float *dev_B = sycl::malloc_device<float>(B_size * sizeof(float), queue);
+    std::int64_t *dev_ipiv = sycl::malloc_device<std::int64_t>(ipiv_size * sizeof(std::int64_t), queue);
 
-    try {
-        // USM
-        float *A = (float *) sycl::malloc_shared(A_size * sizeof(float), device, context);
-        float *B = (float *) sycl::malloc_shared(B_size * sizeof(float), device, context);
-        std::int64_t *ipiv = (std::int64_t*) sycl::malloc_shared(ipiv_size * sizeof(std::int64_t), device, context);
-
-        // Get sizes of scratchpads for calculations
-        std::int64_t getrf_scratchpad_size = oneapi::mkl::lapack::getrf_scratchpad_size<float>(queue, n, n, lda);
-        std::int64_t getrs_scratchpad_size = oneapi::mkl::lapack::getrs_scratchpad_size<float>(queue, oneapi::mkl::transpose::nontrans, n, nrhs, lda, ldb);
-
-        float *getrf_scratchpad = (float*) sycl::malloc_shared(getrf_scratchpad_size * sizeof(float), device, context);
-        float *getrs_scratchpad = (float*) sycl::malloc_shared(getrs_scratchpad_size * sizeof(float), device, context);
-
-        // Skip checking getrs scratchpad memory allocation because with cusolver backend getrs does not use scrachpad memory
-        if (!A || !B || !ipiv || !getrf_scratchpad)
-            throw std::runtime_error("Failed to allocate USM memory.");
-
-        // Initialize matrix A and B
-        rand_matrix(A, oneapi::mkl::transpose::nontrans, n, n, lda);
-        rand_matrix(B, oneapi::mkl::transpose::nontrans, n, nrhs, ldb);
-
-        // Perform factorization
-        sycl::event getrf_done_event = oneapi::mkl::lapack::getrf(queue, n, n, A, lda, ipiv, getrf_scratchpad, getrf_scratchpad_size);
-        sycl::event getrs_done_event = oneapi::mkl::lapack::getrs(queue, oneapi::mkl::transpose::nontrans, n, nrhs, A, lda, ipiv, B, ldb, getrs_scratchpad, getrs_scratchpad_size, {getrf_done_event});
-
-        // Wait until calculations are done
-        queue.wait_and_throw();
-
-        free(A, context);
-        free(B, context);
-        free(ipiv, context);
-        free(getrf_scratchpad, context);
-        free(getrs_scratchpad, context);
-
-    } catch(oneapi::mkl::lapack::exception const& e) {
-        // Handle LAPACK related exceptions happened during synchronous call
-        std::cout << "Unexpected exception caught during synchronous call to LAPACK API:\nreason: " << e.what() << "\ninfo: " << e.info() << std::endl;
-        info = e.info();
-    } catch(sycl::exception const& e) {
-        // Handle not LAPACK related exceptions happened during synchronous call
-        std::cout << "Unexpected exception caught during synchronous call to SYCL API:\n" << e.what() << std::endl;
-        info = -1;
+    std::int64_t getrf_scratchpad_size = oneapi::mkl::lapack::getrf_scratchpad_size<float>(queue, m, n, lda);
+    std::int64_t getrs_scratchpad_size = oneapi::mkl::lapack::getrs_scratchpad_size<float>(queue, oneapi::mkl::transpose::nontrans, n, nrhs, lda, ldb);
+    float *getrf_scratchpad = sycl::malloc_shared<float>(getrf_scratchpad_size * sizeof(float), device, context);
+    float *getrs_scratchpad = sycl::malloc_shared<float>(getrs_scratchpad_size * sizeof(float), device, context);
+    if (!dev_A || !dev_B || !dev_ipiv || !getrf_scratchpad) {
+        throw std::runtime_error("Failed to allocate USM memory.");
+    }
+    // Skip checking getrs scratchpad memory allocation on cusolver because with cusolver backend getrs does not use scrachpad memory
+    if (device.is_cpu() || device.get_info<sycl::info::device::vendor_id>() != NVIDIA_ID) {
+        if (!getrs_scratchpad) {
+             throw std::runtime_error("Failed to allocate USM memory.");
+        }
     }
 
-    std::cout << "getrs " << ((info == 0) ? "ran OK" : "FAILED") << std::endl;
+    // copy data from host to device
+    queue.memcpy(dev_A, A, A_size * sizeof(float)).wait();
+    queue.memcpy(dev_B, B, B_size * sizeof(float)).wait();
 
-    return;
+    // Execute on device
+    getrf_done = oneapi::mkl::lapack::getrf(queue, m, n, dev_A, lda, dev_ipiv, getrf_scratchpad, getrf_scratchpad_size);
+    getrs_done = oneapi::mkl::lapack::getrs(queue, oneapi::mkl::transpose::nontrans, n, nrhs, dev_A, lda, dev_ipiv, dev_B, ldb, getrs_scratchpad, getrs_scratchpad_size, {getrf_done});
+
+    // Wait until calculations are done
+    queue.wait_and_throw();
+
+    // copy data from device back to host
+    queue.memcpy(B, dev_B, B_size * sizeof(float)).wait();
+
+    sycl::free(dev_A, queue);
+    sycl::free(dev_B, queue);
+    sycl::free(dev_ipiv, queue);
+    sycl::free(getrf_scratchpad, queue);
+    sycl::free(getrs_scratchpad, queue);
+
+    free(A);
+    free(B);
 }
 
 
@@ -155,14 +156,16 @@ void print_example_banner() {
     std::cout << "# Computes LU Factorization A = P * L * U" << std::endl;
     std::cout << "# and uses it to solve for X in a system of linear equations:" << std::endl;
     std::cout << "#   AX = B" << std::endl;
-    std::cout << "# where A is a general dense matrix and B is a matrix whose columns" << std::endl; 
+    std::cout << "# where A is a general dense matrix and B is a matrix whose columns" << std::endl;
     std::cout << "# are the right-hand sides for the systems of equations." << std::endl;
     std::cout << "# " << std::endl;
     std::cout << "# Using apis:" << std::endl;
     std::cout << "#   getrf and getrs" << std::endl;
     std::cout << "# " << std::endl;
-    std::cout << "# Supported floating point type precisions:" << std::endl;
-    std::cout << "#   float" << std::endl;
+    std::cout << "# Using single precision (float) data type" << std::endl;
+    std::cout << "# " << std::endl;
+    std::cout << "# Device will be selected during runtime." << std::endl;
+    std::cout << "# The environment variable SYCL_DEVICE_FILTER can be used to specify SYCL device" << std::endl;
     std::cout << "# " << std::endl;
     std::cout << "########################################################################" << std::endl;
     std::cout << std::endl;
@@ -174,18 +177,39 @@ void print_example_banner() {
 // Main entry point for example.
 //
 int main(int argc, char **argv) {
-
     print_example_banner();
 
-    sycl::device dev = sycl::device(sycl::default_selector());
-    if (dev.is_gpu()) {
-        std::cout << "Running LAPACK getrs example on GPU device. \nDevice name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
-    } else {
-        std::cout << "Running LAPACK getrs example on CPU device. \nDevice name is: " << dev.get_info<sycl::info::device::name>() << ".\n";
+    try{
+        sycl::device dev((sycl::default_selector()));
+        if (dev.is_gpu()) {
+            std::cout << "Running LAPACK getrs example on GPU device." << std::endl;
+            std::cout << "Device name is: " << dev.get_info<sycl::info::device::name>() << std::endl;
+        } else {
+            std::cout << "Running LAPACK getrs example on CPU device." << std::endl;
+            std::cout << "Device name is: " << dev.get_info<sycl::info::device::name>() << std::endl;
+        }
+
+        std::cout << "Running with single precision real data type:" << std::endl;
+        run_getrs_example(dev);
+    } catch(oneapi::mkl::lapack::exception const& e) {
+        // Handle LAPACK related exceptions happened during synchronous call
+        std::cerr << "Caught synchronous LAPACK exception:" << std::endl;
+        std::cerr << "\t" << e.what() << std::endl;
+        std::cerr << "\tinfo: " << e.info() << std::endl;
+        return 1;
+    } catch(sycl::exception const& e) {
+        // Handle not LAPACK related exceptions happened during synchronous call
+        std::cerr << "Caught synchronous SYCL exception:"  << std::endl;
+        std::cerr << "\t" << e.what() << std::endl;
+        std::cerr << "\tSYCL error code: " << e.code().value() << std::endl;
+        return 1;
+    } catch(std::exception const& e) {
+        // Handle not SYCL related exceptions happened during synchronous call
+        std::cerr << "Caught synchronous std::exception:" << std::endl;
+        std::cerr << "\t" << e.what() << std::endl;
+        return 1;
     }
 
-    std::cout << "\tRunning with single precision real data type:" << std::endl;
-    run_getrs_example(dev);
-
+    std::cout << "LAPACK GETRS USM example ran OK" << std::endl;
     return 0;
 }

@@ -233,5 +233,6 @@ int main (int argc, char ** argv) {
         return 1;
     }
 
+    std::cout << "BLAS GEMM USM example ran OK." << std::endl;
     return 0;
 }

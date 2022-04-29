@@ -19,14 +19,12 @@
 
 #Build object from all sources
 set(LAPACK_CT_SOURCES "")
-if(ENABLE_MKLCPU_BACKEND)
-  list(APPEND LAPACK_CT_SOURCES "getrs_usm_mklcpu")
+if(ENABLE_MKLCPU_BACKEND AND ENABLE_CUSOLVER_BACKEND)
+  list(APPEND LAPACK_CT_SOURCES "getrs_usm_mklcpu_cusolver")
 endif()
-if(ENABLE_MKLGPU_BACKEND)
-  list(APPEND LAPACK_CT_SOURCES "getrs_usm_mklgpu")
-endif()
-if(ENABLE_CUSOLVER_BACKEND)
-  list(APPEND LAPACK_CT_SOURCES "getrs_usm_cusolver")
+
+if(domain STREQUAL "lapack" AND ENABLE_MKLCPU_BACKEND)
+  find_library(OPENCL_LIBRARY NAMES OpenCL)
 endif()
 
 foreach(lapack_ct_source ${LAPACK_CT_SOURCES})
@@ -37,22 +35,11 @@ foreach(lapack_ct_source ${LAPACK_CT_SOURCES})
       PUBLIC ${PROJECT_SOURCE_DIR}/include
       PUBLIC ${CMAKE_BINARY_DIR}/bin
   )
-
-  if(ENABLE_MKLCPU_BACKEND)
-    add_dependencies(example_${domain}_${lapack_ct_source} onemkl_${domain}_mklcpu)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu)
+  if(domain STREQUAL "lapack" AND ENABLE_MKLCPU_BACKEND AND ENABLE_CUSOLVER_BACKEND)
+    add_dependencies(example_${domain}_${lapack_ct_source} onemkl_${domain}_mklcpu onemkl_${domain}_cusolver)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu onemkl_${domain}_cusolver)
+    target_link_libraries(example_${domain}_${lapack_ct_source} PUBLIC ${OPENCL_LIBRARY})
   endif()
-
-  if(ENABLE_MKLGPU_BACKEND)
-    add_dependencies(example_${domain}_${lapack_ct_source} onemkl_${domain}_mklgpu)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklgpu)
-  endif()
-
-  if(domain STREQUAL "lapack" AND ENABLE_CUSOLVER_BACKEND)
-    add_dependencies(example_${domain}_${lapack_ct_source} onemkl_${domain}_cusolver)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_cusolver)
-  endif()
-
   if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
     # add_sycl_to_target(TARGET example_${domain}_${lapack_ct_source} SOURCES ${LAPACK_CT_SOURCES})
   else()
@@ -61,7 +48,6 @@ foreach(lapack_ct_source ${LAPACK_CT_SOURCES})
         ONEMKL::SYCL::SYCL
     )
   endif()
-
   # Register example as ctest
  add_test(NAME ${domain}/EXAMPLE/CT/${lapack_ct_source} COMMAND example_${domain}_${lapack_ct_source})
 endforeach(lapack_ct_source)
