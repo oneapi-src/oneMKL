@@ -257,8 +257,8 @@ int main(int argc, char **argv) {
         }
         std::cout << "Running LAPACK GETRS USM example" << std::endl;
         std::cout << "Running with single precision real data type on:" << std::endl;
-        std::cout << "\tCPU device:" << cpu_dev.get_info<sycl::info::device::name>() << std::endl;
-        std::cout << "\tGPU device:" << gpu_dev.get_info<sycl::info::device::name>() << std::endl;
+        std::cout << "\tCPU device :" << cpu_dev.get_info<sycl::info::device::name>() << std::endl;
+        std::cout << "\tGPU device :" << gpu_dev.get_info<sycl::info::device::name>() << std::endl;
 
         int ret = run_getrs_example(cpu_dev, gpu_dev);
         if (ret) {
