@@ -119,6 +119,8 @@ int run_uniform_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev
     sycl::event event_out_gpu;
     event_out_cpu = oneapi::mkl::rng::generate(distribution, cpu_engine, n, dev_cpu);
     event_out_gpu = oneapi::mkl::rng::generate(distribution, gpu_engine, n, dev_gpu);
+    event_out_cpu.wait_and_throw();
+    event_out_gpu.wait_and_throw();
 
     //
     // Post Processing
@@ -149,8 +151,8 @@ int run_uniform_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev
     // Validation
     int ret = (check_statistics(r_cpu.data(), n, distribution) && check_statistics(r_gpu.data(), n, distribution));
 
-    sycl::free(dev_cpu, cpu_queue);
     sycl::free(dev_gpu, gpu_queue);
+    sycl::free(dev_cpu, cpu_queue);
 
     return ret;
 }

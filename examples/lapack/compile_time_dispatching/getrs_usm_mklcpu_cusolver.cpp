@@ -173,6 +173,9 @@ int run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_de
     gpu_getrf_done = oneapi::mkl::lapack::getrf(oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver> {gpu_queue}, m, n, gpu_A, lda, gpu_ipiv, gpu_getrf_scratchpad, gpu_getrf_scratchpad_size);
     gpu_getrs_done = oneapi::mkl::lapack::getrs(oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver> {gpu_queue}, oneapi::mkl::transpose::nontrans, n, nrhs, gpu_A, lda, gpu_ipiv, gpu_B, ldb, gpu_getrs_scratchpad, gpu_getrs_scratchpad_size, {cpu_getrf_done});
 
+    // Wait until calculations are done
+    cpu_queue.wait_and_throw();
+    gpu_queue.wait_and_throw();
 
     //
     // Post Processing
@@ -186,17 +189,17 @@ int run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_de
     // compare results from CPU and GPU devices
     int ret = check_equal_matrix(result_cpu.data(), result_gpu.data(), n, nrhs, ldb);
 
-    sycl::free(cpu_A, cpu_queue);
-    sycl::free(cpu_B, cpu_queue);
-    sycl::free(cpu_ipiv, cpu_queue);
-    sycl::free(cpu_getrf_scratchpad, cpu_queue);
-    sycl::free(cpu_getrs_scratchpad, cpu_queue);
-
-    sycl::free(gpu_A, gpu_queue);
-    sycl::free(gpu_B, gpu_queue);
-    sycl::free(gpu_ipiv, gpu_queue);
-    sycl::free(gpu_getrf_scratchpad, gpu_queue);
     sycl::free(gpu_getrs_scratchpad, gpu_queue);
+    sycl::free(gpu_getrf_scratchpad, gpu_queue);
+    sycl::free(gpu_ipiv, gpu_queue);
+    sycl::free(gpu_B, gpu_queue);
+    sycl::free(gpu_A, gpu_queue);
+
+    sycl::free(cpu_getrs_scratchpad, cpu_queue);
+    sycl::free(cpu_getrf_scratchpad, cpu_queue);
+    sycl::free(cpu_ipiv, cpu_queue);
+    sycl::free(cpu_B, cpu_queue);
+    sycl::free(cpu_A, cpu_queue);
 
     return ret;
 }

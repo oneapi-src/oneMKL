@@ -140,6 +140,9 @@ void run_gemm_example(const sycl::device &dev) {
     // add oneapi::mkl::blas::gemm to execution queue
     gemm_done = oneapi::mkl::blas::column_major::gemm(main_queue, transA, transB, m, n, k, alpha, dev_A, ldA, dev_B, ldB, beta, dev_C, ldC);
 
+    // Wait until calculations are done
+    main_queue.wait_and_throw();
+
     //
     // Post Processing
     //
@@ -164,9 +167,9 @@ void run_gemm_example(const sycl::device &dev) {
     // output the top 2x2 block of C matrix
     print_2x2_matrix_values(C.data(), ldC, "C");
 
-    sycl::free(dev_A, main_queue);
-    sycl::free(dev_B, main_queue);
     sycl::free(dev_C, main_queue);
+    sycl::free(dev_B, main_queue);
+    sycl::free(dev_A, main_queue);
 }
 
 //

@@ -126,14 +126,17 @@ void run_getrs_example(const sycl::device& device)
     getrf_done = oneapi::mkl::lapack::getrf(queue, m, n, dev_A, lda, dev_ipiv, getrf_scratchpad, getrf_scratchpad_size);
     getrs_done = oneapi::mkl::lapack::getrs(queue, oneapi::mkl::transpose::nontrans, n, nrhs, dev_A, lda, dev_ipiv, dev_B, ldb, getrs_scratchpad, getrs_scratchpad_size, {getrf_done});
 
+    // Wait until calculations are done
+    queue.wait_and_throw();
+
     // copy data from device back to host
     queue.memcpy(B.data(), dev_B, B_size * sizeof(float)).wait_and_throw();
 
-    sycl::free(dev_A, queue);
-    sycl::free(dev_B, queue);
-    sycl::free(dev_ipiv, queue);
-    sycl::free(getrf_scratchpad, queue);
     sycl::free(getrs_scratchpad, queue);
+    sycl::free(getrf_scratchpad, queue);
+    sycl::free(dev_ipiv, queue);
+    sycl::free(dev_B, queue);
+    sycl::free(dev_A, queue);
 
 }
 

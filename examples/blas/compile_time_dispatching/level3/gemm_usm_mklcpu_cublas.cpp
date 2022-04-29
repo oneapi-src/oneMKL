@@ -177,6 +177,9 @@ int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
     cpu_gemm_done = oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> {cpu_queue}, transA, transB, m, n, k, alpha, cpu_A, ldA, cpu_B, ldB, beta,  cpu_C, ldC);
     gpu_gemm_done = oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas> {gpu_queue}, transA, transB, m, n, k, alpha, gpu_A, ldA, gpu_B, ldB, beta,  gpu_C, ldC);
 
+    // Wait until calculations are done
+    cpu_gemm_done.wait_and_throw();
+    gpu_gemm_done.wait_and_throw();
 
     //
     // Post Processing
@@ -190,12 +193,12 @@ int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
     // compare
     int ret = check_equal_matrix(result_cpu.data(), result_gpu.data(), m, n, ldC);
 
-    sycl::free(cpu_A, cpu_queue);
-    sycl::free(cpu_B, cpu_queue);
-    sycl::free(cpu_C, cpu_queue);
-    sycl::free(gpu_A, gpu_queue);
-    sycl::free(gpu_B, gpu_queue);
     sycl::free(gpu_C, gpu_queue);
+    sycl::free(gpu_B, gpu_queue);
+    sycl::free(gpu_A, gpu_queue);
+    sycl::free(cpu_C, cpu_queue);
+    sycl::free(cpu_B, cpu_queue);
+    sycl::free(cpu_A, cpu_queue);
 
     return ret;
 }

@@ -97,6 +97,7 @@ int run_uniform_example(const sycl::device &dev) {
     //
     sycl::event event_out;
     event_out = oneapi::mkl::rng::generate(distribution, engine, n, dev_r);
+    event_out.wait_and_throw();
 
     //
     // Post Processing
