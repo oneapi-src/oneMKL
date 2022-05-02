@@ -169,7 +169,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::generate vect, int64_t
                                        scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::ungbr, vect, m, n,
+        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::ungbr, vect, m, n,
                            k, A_dev, lda, tau_dev, scratchpad_dev, scratchpad_size,
                            std::vector<sycl::event>{ in_event });
 #endif
