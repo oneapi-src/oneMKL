@@ -32,8 +32,8 @@
 
 // STL includes
 #include <iostream>
-#include <complex>
 #include <vector>
+#include <algorithm>
 
 // oneMKL/SYCL includes
 #include <CL/sycl.hpp>

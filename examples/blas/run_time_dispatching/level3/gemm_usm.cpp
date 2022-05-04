@@ -38,13 +38,8 @@
 
 // stl includes
 #include <iostream>
-#include <cstdlib>
-#include <limits>
 #include <vector>
 #include <algorithm>
-#include <cstring>
-#include <list>
-#include <iterator>
 
 #include <CL/sycl.hpp>
 #include "oneapi/mkl.hpp"

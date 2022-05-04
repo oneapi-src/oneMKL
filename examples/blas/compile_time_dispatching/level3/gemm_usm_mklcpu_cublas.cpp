@@ -37,13 +37,8 @@
 
 // stl includes
 #include <iostream>
-#include <cstdlib>
-#include <limits>
 #include <vector>
 #include <algorithm>
-#include <cstring>
-#include <list>
-#include <iterator>
 
 // oneMKL/SYCL includes
 #include <CL/sycl.hpp>
