@@ -1,6 +1,6 @@
 
 #===============================================================================
-# Copyright 2020-2021 Intel Corporation
+# Copyright 2022 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -56,6 +56,7 @@ foreach(blas_rt_source ${BLAS_RT_SOURCES})
   add_dependencies(example_${domain}_${blas_rt_source} onemkl)
 
   if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+    # Uncomment this after testing with hipSYCL
     # add_sycl_to_target(TARGET example_${domain}_${blas_rt_source} SOURCES ${BLAS_RT_SOURCES})
   else()
     target_link_libraries(example_${domain}_${blas_rt_source} PUBLIC

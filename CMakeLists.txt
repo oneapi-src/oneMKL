@@ -58,6 +58,9 @@ set(ONEMKL_SYCL_IMPLEMENTATION "dpc++" CACHE STRING "Name of the SYCL compiler")
 ## Testing
 option(BUILD_FUNCTIONAL_TESTS "" ON)
 
+## Examples
+option(BUILD_EXAMPLES "" ON)
+
 ## Documentation
 option(BUILD_DOC "" OFF)
 

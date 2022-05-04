@@ -242,7 +242,7 @@ Example-Related Options
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 * ``build_examples=[True | False]``. Setting it to ``True`` enables
-  the building of examples. The default value is ``False``. Compile_time_dispatching examples will always be built if this value is set to true. Run_time_dispatching examples will be build if both this value and  ``build_shared_libs`` is set to true
+  the building of examples. The default value is ``True``. Compile_time_dispatching examples will always be built if this value is set to true. Run_time_dispatching examples will be build if both this value and  ``build_shared_libs`` is set to true
   
 Documentation
 ~~~~~~~~~~~~~
@@ -456,7 +456,7 @@ CMake.
    * - build_examples
      - BUILD_EXAMPLES
      - True, False
-     - False      
+     - True      
    * - build_doc
      - BUILD_DOC
      - True, False

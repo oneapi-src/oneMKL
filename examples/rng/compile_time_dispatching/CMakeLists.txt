@@ -1,5 +1,5 @@
 #===============================================================================
-# Copyright 2021 Intel Corporation
+# Copyright 2022 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ foreach(rng_ct_source ${RNG_CT_SOURCES})
   endif()
 
   if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+    # Uncomment this after testing with hipSYCL
     # add_sycl_to_target(TARGET example_${domain}_${rng_ct_source} SOURCES ${RNG_CT_SOURCES})
   else()
     target_link_libraries(example_${domain}_${rng_ct_source} PUBLIC
