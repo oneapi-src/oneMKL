@@ -7,7 +7,7 @@ oneAPI Math Kernel Library (oneMKL) Interfaces offers examples with the followin
 Each routine has one run-time dispatching example and one compile-time dispatching example (which uses both mklcpu and cuda backends), located in `example/<$domain>/run_time_dispatching` and `example/<$domain>/compile_time_dispatching` subfolders, respectively.
 
 To build examples, use cmake build option `-DBUILD_EXAMPLES=true`.  
-Compile_time_dispatching will always be built if `-DBUILD_EXAMPLES=true`.   
+Compile_time_dispatching will be built if `-DBUILD_EXAMPLES=true` and CUDA backend is enabled, because the compile-time dispatching example runs on both mklcpu and cuda backends.
 Run_time_dispatching will be build if `-DBUILD_EXAMPLES=true` and `-DBUILD_SHARED_LIBS=true`
 
 The example executable naming convention follows `example_<$domain>_<$routine>_<$backend>` for compile-time dispatching examples 
@@ -71,7 +71,58 @@ Running with single precision real data type:
 BLAS GEMM USM example ran OK.
 
 ```
+Run-time dispatching examples with mklgpu backend
+```
+$ export SYCL_DEVICE_FILTER=gpu
+$ ./bin/example_blas_gemm_usm
 
+########################################################################
+# General Matrix-Matrix Multiplication using Unified Shared Memory Example:
+#
+# C = alpha * A * B + beta * C
+#
+# where A, B and C are general dense matrices and alpha, beta are
+# floating point type precision scalars.
+#
+# Using apis:
+#   gemm
+#
+# Using single precision (float) data type
+#
+# Device will be selected during runtime.
+# The environment variable SYCL_DEVICE_FILTER can be used to specify
+# SYCL device
+#
+########################################################################
+
+Running BLAS GEMM USM example on GPU device.
+Device name is: Intel(R) Iris(R) Pro Graphics 580 [0x193b]
+Running with single precision real data type:
+
+                GEMM parameters:
+                        transA = trans, transB = nontrans
+                        m = 45, n = 98, k = 67
+                        lda = 103, ldB = 105, ldC = 106
+                        alpha = 2, beta = 3
+
+                Outputting 2x2 block of A,B,C matrices:
+
+                        A = [ 0.340188, 0.260249, ...
+                            [ -0.105617, 0.0125354, ...
+                            [ ...
+
+
+                        B = [ -0.326421, -0.192968, ...
+                            [ 0.363891, 0.251295, ...
+                            [ ...
+
+
+                        C = [ 0.00698781, 0.525862, ...
+                            [ 0.585167, 1.59017, ...
+                            [ ...
+
+BLAS GEMM USM example ran OK.
+```
 Compile-time dispatching example with both mklcpu and cublas backend
 ```
 ./bin/example_blas_gemm_usm_mklcpu_cublas
@@ -97,7 +148,35 @@ Running BLAS GEMM USM example
 Running with single precision real data type on:
         CPU device: Intel(R) Core(TM) i9-7920X CPU @ 2.90GHz
         GPU device: TITAN RTX
-BLAS GEMM USM example ran OK: CPU and GPU results match
+
+                GEMM parameters:
+                        transA = trans, transB = nontrans
+                        m = 45, n = 98, k = 67
+                        lda = 103, ldB = 105, ldC = 106
+                        alpha = 2, beta = 3
+
+                Outputting 2x2 block of A,B,C matrices:
+
+                        A = [ 0.340188, 0.260249, ...
+                            [ -0.105617, 0.0125354, ...
+                            [ ...
+
+
+                        B = [ -0.326421, -0.192968, ...
+                            [ 0.363891, 0.251295, ...
+                            [ ...
+
+
+                        (CPU) C = [ 0.00698781, 0.525862, ...
+                            [ 0.585167, 1.59017, ...
+                            [ ...
+
+
+                        (GPU) C = [ 0.00698793, 0.525862, ...
+                            [ 0.585168, 1.59017, ...
+                            [ ...
+
+BLAS GEMM USM example ran OK on MKLCPU and CUBLAS
 
 ```
  
@@ -130,8 +209,24 @@ $ ./bin/example_lapack_getrs_usm
 Running LAPACK getrs example on GPU device.
 Device name is: Intel(R) Iris(R) Pro Graphics 580 [0x193b]
 Running with single precision real data type:
-LAPACK GETRS USM example ran OK
 
+                GETRF and GETRS parameters:
+                        trans = nontrans
+                        m = 23, n = 23, nrhs = 23
+                        lda = 32, ldb = 32
+
+                Outputting 2x2 block of A and X matrices:
+
+                        A = [ 0.340188, 0.304177, ...
+                            [ -0.105617, -0.343321, ...
+                            [ ...
+
+
+                        X = [ -1.1748, 1.84793, ...
+                            [ 1.47856, 0.189481, ...
+                            [ ...
+
+LAPACK GETRS USM example ran OK
 ```
 
 Compile-time dispatching example with both mklcpu and cusolver backend
@@ -158,9 +253,32 @@ $ ./bin/example_lapack_getrs_usm_mklcpu_cusolver
 
 Running LAPACK GETRS USM example
 Running with single precision real data type on:
-        CPU device: Intel(R) Core(TM) i9-7920X CPU @ 2.90GHz
-        GPU device: TITAN RTX
-LAPACK GETRS USM example ran OK: CPU and GPU results match
+        CPU device :Intel(R) Core(TM) i9-7920X CPU @ 2.90GHz
+        GPU device :TITAN RTX
+
+                GETRF and GETRS parameters:
+                        trans = nontrans
+                        m = 23, n = 23, nrhs = 23
+                        lda = 32, ldb = 32
+
+                Outputting 2x2 block of A,B,X matrices:
+
+                        A = [ 0.340188, 0.304177, ...
+                            [ -0.105617, -0.343321, ...
+                            [ ...
+
+
+                        (CPU) X = [ -1.1748, 1.84793, ...
+                            [ 1.47856, 0.189481, ...
+                            [ ...
+
+
+                        (GPU) X = [ -1.1748, 1.84793, ...
+                            [ 1.47856, 0.189481, ...
+                            [ ...
+
+LAPACK GETRS USM example ran OK on MKLCPU and CUSOLVER
+
 ```
 
 ## rng
@@ -192,14 +310,13 @@ Running with single precision real data type:
                 Output of generator:
                         first 10 numbers of 1000:
 8.52971 1.76033 6.04753 3.68079 9.04039 2.61014 3.75788 3.94859 7.93444 8.60436
-Success: sample moments (mean=5.01785, variance=8.4075) agree with theory (mean=5, variance=8.33333)
 Random number generator with uniform distribution ran OK
 
 ```
 
 Compile-time dispatching example with both mklcpu and curand backend
 ```
- ./bin/example_rng_uniform_usm_mklcpu_curand
+$ ./bin/example_rng_uniform_usm_mklcpu_curand
 
 ########################################################################
 # Generate uniformly distributed random numbers with philox4x32x10
@@ -226,8 +343,7 @@ Running with single precision real data type:
                 Output of generator on GPU device:
                         first 10 numbers of 1000:
 3.52971 6.76033 1.04753 8.68079 4.48229 0.501966 6.78265 8.99091 6.39516 9.67955
-Success: sample moments (mean=5.01785, variance=8.4075) agree with theory (mean=5, variance=8.33333)
-Success: sample moments (mean=5.11731, variance=8.59745) agree with theory (mean=5, variance=8.33333)
-Random number generator example with uniform distribution ran OK on CPU and GPU
+Random number generator example with uniform distribution ran OK on MKLCPU and CURAND
+
 ```
 
