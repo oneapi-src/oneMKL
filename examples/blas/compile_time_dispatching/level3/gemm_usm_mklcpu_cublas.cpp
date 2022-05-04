@@ -36,9 +36,10 @@
 *******************************************************************************/
 
 // stl includes
+#include <algorithm>
+#include <cstdlib>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 // oneMKL/SYCL includes
 #include <CL/sycl.hpp>
@@ -248,7 +249,7 @@ int main(int argc, char **argv) {
         std::cout << "\tCPU device: " << cpu_dev.get_info<sycl::info::device::name>() << std::endl;
         std::cout << "\tGPU device: " << gpu_dev.get_info<sycl::info::device::name>() << std::endl;
         int ret = run_gemm_example(cpu_dev, gpu_dev);
-        if (ret) {
+        if (!ret) {
             std::cout << "BLAS GEMM USM example ran OK: CPU and GPU results match" << std::endl;
         }
         else {

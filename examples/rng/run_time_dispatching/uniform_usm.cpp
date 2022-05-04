@@ -31,9 +31,10 @@
 *******************************************************************************/
 
 // stl includes
+#include <algorithm>
+#include <cstdlib>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 // oneMKL/SYCL includes
 #include <CL/sycl.hpp>

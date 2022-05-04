@@ -37,9 +37,10 @@
 *******************************************************************************/
 
 // stl includes
+#include <algorithm>
+#include <cstdlib>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 #include <CL/sycl.hpp>
 #include "oneapi/mkl.hpp"
