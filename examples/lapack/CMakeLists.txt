@@ -18,6 +18,8 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
+# Note: compile-time example uses both MKLCPU and CUSOLVER backends, therefore
+# cmake in the sub-directory will only build it if CUSOLVER backend is enabled
 add_subdirectory(compile_time_dispatching)
 
 # runtime compilation is only possible with dynamic libraries
