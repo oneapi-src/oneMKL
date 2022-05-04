@@ -225,6 +225,7 @@ int main(int argc, char** argv) {
         std::cout << "Running with single precision real data type:" << std::endl;
 
         run_gemm_example(dev);
+        std::cout << "BLAS GEMM USM example ran OK." << std::endl;
     }
     catch (sycl::exception const& e) {
         std::cerr << "Caught synchronous SYCL exception during GEMM:" << std::endl;
@@ -238,6 +239,5 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    std::cout << "BLAS GEMM USM example ran OK." << std::endl;
     return 0;
 }

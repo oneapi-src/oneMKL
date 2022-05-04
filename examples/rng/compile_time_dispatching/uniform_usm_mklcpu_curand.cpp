@@ -41,7 +41,7 @@
 #include "oneapi/mkl.hpp"
 
 // local includes
-#include "rng_example_helper.hpp"
+#include "example_helper.hpp"
 
 //
 // Main example for Uniform random number generation consisting of
@@ -49,7 +49,7 @@
 // object. Then random number generation performed and
 // the output is post-processed and validated.
 //
-int run_uniform_example(const sycl::device& cpu_dev, const sycl::device& gpu_dev) {
+void run_uniform_example(const sycl::device& cpu_dev, const sycl::device& gpu_dev) {
     //
     // Initialization
     //
@@ -153,14 +153,9 @@ int run_uniform_example(const sycl::device& cpu_dev, const sycl::device& gpu_dev
     }
     std::cout << std::endl;
 
-    // Validation
-    int ret = (check_statistics(r_cpu.data(), n, distribution) &&
-               check_statistics(r_gpu.data(), n, distribution));
-
     sycl::free(dev_gpu, gpu_queue);
     sycl::free(dev_cpu, cpu_queue);
 
-    return ret;
 }
 
 //
@@ -206,17 +201,10 @@ int main(int argc, char** argv) {
         std::cout << "\tCPU device: " << cpu_dev.get_info<sycl::info::device::name>() << std::endl;
         std::cout << "\tGPU device: " << gpu_dev.get_info<sycl::info::device::name>() << std::endl;
 
-        int ret = run_uniform_example(cpu_dev, gpu_dev);
-        if (ret) {
-            std::cout
-                << "Random number generator example with uniform distribution ran OK on CPU and GPU"
-                << std::endl;
-        }
-        else {
-            std::cerr
-                << "Random number generator example with uniform distribution FAILED on CPU and/or GPU"
-                << std::endl;
-        }
+        run_uniform_example(cpu_dev, gpu_dev);
+        std::cout
+            << "Random number generator example with uniform distribution ran OK on MKLCPU and CURAND"
+            << std::endl;
     }
     catch (sycl::exception const& e) {
         std::cerr << "Caught synchronous SYCL exception during generation:" << std::endl;

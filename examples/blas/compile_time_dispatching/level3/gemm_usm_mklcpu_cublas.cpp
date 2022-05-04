@@ -57,7 +57,7 @@
 //
 // is performed and finally the results are post processed.
 //
-int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
+void run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
     //
     // Initialize data for Gemm
     //
@@ -189,8 +189,35 @@ int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
     // copy data from GPU back to host
     gpu_queue.memcpy(result_gpu.data(), gpu_C, sizec * sizeof(float)).wait_and_throw();
 
-    // compare
-    int ret = check_equal_matrix(result_cpu.data(), result_gpu.data(), m, n, ldC);
+    // print results
+    std::cout << "\n\t\tGEMM parameters:" << std::endl;
+    std::cout << "\t\t\ttransA = "
+              << (transA == oneapi::mkl::transpose::nontrans
+                      ? "nontrans"
+                      : (transA == oneapi::mkl::transpose::trans ? "trans" : "conjtrans"))
+              << ", transB = "
+              << (transB == oneapi::mkl::transpose::nontrans
+                      ? "nontrans"
+                      : (transB == oneapi::mkl::transpose::trans ? "trans" : "conjtrans"))
+              << std::endl;
+    std::cout << "\t\t\tm = " << m << ", n = " << n << ", k = " << k << std::endl;
+    std::cout << "\t\t\tlda = " << ldA << ", ldB = " << ldB << ", ldC = " << ldC << std::endl;
+    std::cout << "\t\t\talpha = " << alpha << ", beta = " << beta << std::endl;
+
+    std::cout << "\n\t\tOutputting 2x2 block of A,B,C matrices:" << std::endl;
+
+    // output the top 2x2 block of A matrix
+    print_2x2_matrix_values(A.data(), ldA, "A");
+
+    // output the top 2x2 block of B matrix
+    print_2x2_matrix_values(B.data(), ldB, "B");
+
+    // output the top 2x2 block of C matrix from CPU
+    print_2x2_matrix_values(result_cpu.data(), ldC, "(CPU) C");
+
+    // output the top 2x2 block of C matrix from GPU
+    print_2x2_matrix_values(result_gpu.data(), ldC, "(GPU) C");
+
 
     sycl::free(gpu_C, gpu_queue);
     sycl::free(gpu_B, gpu_queue);
@@ -199,7 +226,6 @@ int run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) {
     sycl::free(cpu_B, cpu_queue);
     sycl::free(cpu_A, cpu_queue);
 
-    return ret;
 }
 
 //
@@ -248,14 +274,8 @@ int main(int argc, char **argv) {
         std::cout << "Running with single precision real data type on:" << std::endl;
         std::cout << "\tCPU device: " << cpu_dev.get_info<sycl::info::device::name>() << std::endl;
         std::cout << "\tGPU device: " << gpu_dev.get_info<sycl::info::device::name>() << std::endl;
-        int ret = run_gemm_example(cpu_dev, gpu_dev);
-        if (!ret) {
-            std::cout << "BLAS GEMM USM example ran OK: CPU and GPU results match" << std::endl;
-        }
-        else {
-            std::cerr << "BLAS GEMM USM example FAILED: CPU and GPU results do not match"
-                      << std::endl;
-        }
+        run_gemm_example(cpu_dev, gpu_dev);
+        std::cout << "BLAS GEMM USM example ran OK on MKLCPU and CUBLAS" << std::endl;
     }
     catch (sycl::exception const &e) {
         std::cerr << "Caught synchronous SYCL exception during GEMM:" << std::endl;

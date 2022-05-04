@@ -53,7 +53,7 @@
 // Finally the results are post processed.
 //
 
-int run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_device) {
+void run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_device) {
     // Matrix sizes and leading dimensions
     std::int64_t m = 23;
     std::int64_t n = 23;
@@ -63,6 +63,7 @@ int run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_de
     std::int64_t A_size = n * lda;
     std::int64_t B_size = nrhs * ldb;
     std::int64_t ipiv_size = n;
+    oneapi::mkl::transpose trans = oneapi::mkl::transpose::nontrans;
 
     // Catch asynchronous exceptions for CPU and GPU
     auto cpu_error_handler = [&](sycl::exception_list exceptions) {
@@ -124,8 +125,8 @@ int run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_de
     std::fill(result_cpu.begin(), result_cpu.end(), 0);
     std::fill(result_gpu.begin(), result_gpu.end(), 0);
 
-    rand_matrix(A, oneapi::mkl::transpose::nontrans, n, n, lda);
-    rand_matrix(B, oneapi::mkl::transpose::nontrans, n, nrhs, ldb);
+    rand_matrix(A, trans, m, n, lda);
+    rand_matrix(B, trans, n, nrhs, ldb);
 
     //
     // Preparation on CPU
@@ -144,7 +145,7 @@ int run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_de
         oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue }, m, n, lda);
     std::int64_t cpu_getrs_scratchpad_size = oneapi::mkl::lapack::getrs_scratchpad_size<float>(
         oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue },
-        oneapi::mkl::transpose::nontrans, n, nrhs, lda, ldb);
+        trans, n, nrhs, lda, ldb);
     float* cpu_getrf_scratchpad = sycl::malloc_device<float>(
         cpu_getrf_scratchpad_size * sizeof(float), cpu_device, cpu_context);
     float* cpu_getrs_scratchpad = sycl::malloc_device<float>(
@@ -174,7 +175,7 @@ int run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_de
         oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver>{ gpu_queue }, m, n, lda);
     std::int64_t gpu_getrs_scratchpad_size = oneapi::mkl::lapack::getrs_scratchpad_size<float>(
         oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver>{ gpu_queue },
-        oneapi::mkl::transpose::nontrans, n, nrhs, lda, ldb);
+        trans, n, nrhs, lda, ldb);
     float* gpu_getrf_scratchpad = sycl::malloc_device<float>(
         gpu_getrf_scratchpad_size * sizeof(float), gpu_device, gpu_context);
     float* gpu_getrs_scratchpad = sycl::malloc_device<float>(
@@ -196,14 +197,14 @@ int run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_de
         cpu_ipiv, cpu_getrf_scratchpad, cpu_getrf_scratchpad_size);
     cpu_getrs_done = oneapi::mkl::lapack::getrs(
         oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue },
-        oneapi::mkl::transpose::nontrans, n, nrhs, cpu_A, lda, cpu_ipiv, cpu_B, ldb,
+        trans, n, nrhs, cpu_A, lda, cpu_ipiv, cpu_B, ldb,
         cpu_getrs_scratchpad, cpu_getrs_scratchpad_size, { cpu_getrf_done });
     gpu_getrf_done = oneapi::mkl::lapack::getrf(
         oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver>{ gpu_queue }, m, n, gpu_A,
         lda, gpu_ipiv, gpu_getrf_scratchpad, gpu_getrf_scratchpad_size);
     gpu_getrs_done = oneapi::mkl::lapack::getrs(
         oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver>{ gpu_queue },
-        oneapi::mkl::transpose::nontrans, n, nrhs, gpu_A, lda, gpu_ipiv, gpu_B, ldb,
+        trans, n, nrhs, gpu_A, lda, gpu_ipiv, gpu_B, ldb,
         gpu_getrs_scratchpad, gpu_getrs_scratchpad_size, { cpu_getrf_done });
 
     // Wait until calculations are done
@@ -219,8 +220,26 @@ int run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_de
     // copy data from GPU device back to host
     gpu_queue.memcpy(result_gpu.data(), gpu_B, B_size * sizeof(float)).wait_and_throw();
 
-    // compare results from CPU and GPU devices
-    int ret = check_equal_matrix(result_cpu.data(), result_gpu.data(), n, nrhs, ldb);
+
+    // Print results
+    std::cout << "\n\t\tGETRF and GETRS parameters:" << std::endl;
+    std::cout << "\t\t\ttrans = "
+              << (trans == oneapi::mkl::transpose::nontrans
+                      ? "nontrans"
+                      : (trans == oneapi::mkl::transpose::trans ? "trans" : "conjtrans"))
+              << std::endl;
+    std::cout << "\t\t\tm = " << m << ", n = " << n << ", nrhs = " << nrhs << std::endl;
+    std::cout << "\t\t\tlda = " << lda << ", ldb = " << ldb << std::endl;
+
+    std::cout << "\n\t\tOutputting 2x2 block of A,B,X matrices:" << std::endl;
+    // output the top 2x2 block of A matrix
+    print_2x2_matrix_values(A.data(), lda, "A");
+
+    // output the top 2x2 block of X matrix from CPU
+    print_2x2_matrix_values(result_cpu.data(), ldb, "(CPU) X");
+
+    // output the top 2x2 block of X matrix from GPU
+    print_2x2_matrix_values(result_gpu.data(), ldb, "(GPU) X");
 
     sycl::free(gpu_getrs_scratchpad, gpu_queue);
     sycl::free(gpu_getrf_scratchpad, gpu_queue);
@@ -234,7 +253,6 @@ int run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_de
     sycl::free(cpu_B, cpu_queue);
     sycl::free(cpu_A, cpu_queue);
 
-    return ret;
 }
 
 //
@@ -285,14 +303,8 @@ int main(int argc, char** argv) {
         std::cout << "\tCPU device :" << cpu_dev.get_info<sycl::info::device::name>() << std::endl;
         std::cout << "\tGPU device :" << gpu_dev.get_info<sycl::info::device::name>() << std::endl;
 
-        int ret = run_getrs_example(cpu_dev, gpu_dev);
-        if (ret) {
-            std::cout << "LAPACK GETRS USM example ran OK: CPU and GPU results match" << std::endl;
-        }
-        else {
-            std::cerr << "LAPACK GETRS USM example FAILED: CPU and GPU results do not match"
-                      << std::endl;
-        }
+        run_getrs_example(cpu_dev, gpu_dev);
+        std::cout << "LAPACK GETRS USM example ran OK on MKLCPU and CUSOLVER" << std::endl;
     }
     catch (oneapi::mkl::lapack::exception const& e) {
         // Handle LAPACK related exceptions happened during synchronous call

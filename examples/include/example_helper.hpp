@@ -20,16 +20,6 @@
 #ifndef __EXAMPLE_HELPER_HPP__
 #define __EXAMPLE_HELPER_HPP__
 
-// common helper functions for examples
-//
-// helpers for getting error code
-//
-template <typename T, typename = void>
-struct has_member_code_meta : std::false_type {};
-
-template <typename T>
-struct has_member_code_meta<T, std::void_t<decltype(std::declval<T>().code())>> : std::true_type {};
-
 //
 // helpers for initializing templated scalar data type values.
 //
@@ -56,16 +46,6 @@ void print_2x2_matrix_values(T M, int ldM, std::string M_name) {
     std::cout << std::endl;
 }
 
-template <typename fp>
-int check_equal_matrix(fp *M, fp *N, int m, int n, int ld) {
-    for (int j = 0; j < n; j++) {
-        for (int i = 0; i < m; i++) {
-            if (M[i + j * ld] != N[i + j * ld])
-                return 1;
-        }
-    }
-    return 0;
-}
 
 template <typename fp>
 fp rand_scalar() {

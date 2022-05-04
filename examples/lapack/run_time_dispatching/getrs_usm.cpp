@@ -64,6 +64,8 @@ void run_getrs_example(const sycl::device& device) {
     std::int64_t A_size = n * lda;
     std::int64_t B_size = nrhs * ldb;
     std::int64_t ipiv_size = n;
+    oneapi::mkl::transpose trans = oneapi::mkl::transpose::nontrans;
+
 
     // Asynchronous error handler
     auto error_handler = [&](sycl::exception_list exceptions) {
@@ -96,8 +98,8 @@ void run_getrs_example(const sycl::device& device) {
     std::fill(A.begin(), A.end(), 0);
     std::fill(B.begin(), B.end(), 0);
 
-    rand_matrix(A, oneapi::mkl::transpose::nontrans, n, n, lda);
-    rand_matrix(B, oneapi::mkl::transpose::nontrans, n, nrhs, ldb);
+    rand_matrix(A, trans, m, n, lda);
+    rand_matrix(B, trans, n, nrhs, ldb);
 
     // Data preparation on selected device
     sycl::queue queue(device, error_handler);
@@ -113,7 +115,7 @@ void run_getrs_example(const sycl::device& device) {
     std::int64_t getrf_scratchpad_size =
         oneapi::mkl::lapack::getrf_scratchpad_size<float>(queue, m, n, lda);
     std::int64_t getrs_scratchpad_size = oneapi::mkl::lapack::getrs_scratchpad_size<float>(
-        queue, oneapi::mkl::transpose::nontrans, n, nrhs, lda, ldb);
+        queue, trans, n, nrhs, lda, ldb);
     float* getrf_scratchpad =
         sycl::malloc_shared<float>(getrf_scratchpad_size * sizeof(float), device, context);
     float* getrs_scratchpad =
@@ -135,15 +137,33 @@ void run_getrs_example(const sycl::device& device) {
     // Execute on device
     getrf_done = oneapi::mkl::lapack::getrf(queue, m, n, dev_A, lda, dev_ipiv, getrf_scratchpad,
                                             getrf_scratchpad_size);
-    getrs_done = oneapi::mkl::lapack::getrs(queue, oneapi::mkl::transpose::nontrans, n, nrhs, dev_A,
+    getrs_done = oneapi::mkl::lapack::getrs(queue, trans, n, nrhs, dev_A,
                                             lda, dev_ipiv, dev_B, ldb, getrs_scratchpad,
                                             getrs_scratchpad_size, { getrf_done });
 
     // Wait until calculations are done
     queue.wait_and_throw();
 
-    // copy data from device back to host
+    // Copy data from device back to host
     queue.memcpy(B.data(), dev_B, B_size * sizeof(float)).wait_and_throw();
+
+    // Print results
+    std::cout << "\n\t\tGETRF and GETRS parameters:" << std::endl;
+    std::cout << "\t\t\ttrans = "
+              << (trans == oneapi::mkl::transpose::nontrans
+                      ? "nontrans"
+                      : (trans == oneapi::mkl::transpose::trans ? "trans" : "conjtrans"))
+              << std::endl;
+    std::cout << "\t\t\tm = " << m << ", n = " << n << ", nrhs = " << nrhs << std::endl;
+    std::cout << "\t\t\tlda = " << lda << ", ldb = " << ldb << std::endl;
+
+    std::cout << "\n\t\tOutputting 2x2 block of A and X matrices:" << std::endl;
+    // output the top 2x2 block of A matrix
+    print_2x2_matrix_values(A.data(), lda, "A");
+
+    // output the top 2x2 block of X matrix
+    print_2x2_matrix_values(B.data(), ldb, "X");
+
 
     sycl::free(getrs_scratchpad, queue);
     sycl::free(getrf_scratchpad, queue);
@@ -204,6 +224,7 @@ int main(int argc, char** argv) {
 
         std::cout << "Running with single precision real data type:" << std::endl;
         run_getrs_example(dev);
+        std::cout << "LAPACK GETRS USM example ran OK" << std::endl;
     }
     catch (oneapi::mkl::lapack::exception const& e) {
         // Handle LAPACK related exceptions happened during synchronous call
@@ -226,6 +247,5 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    std::cout << "LAPACK GETRS USM example ran OK" << std::endl;
     return 0;
 }

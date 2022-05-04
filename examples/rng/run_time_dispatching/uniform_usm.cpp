@@ -41,7 +41,7 @@
 #include "oneapi/mkl.hpp"
 
 // local includes
-#include "rng_example_helper.hpp"
+#include "example_helper.hpp"
 
 //
 // Main example for Uniform random number generation consisting of
@@ -49,7 +49,7 @@
 // object. Then random number generation performed and
 // the output is post-processed and validated.
 //
-int run_uniform_example(const sycl::device& dev) {
+void run_uniform_example(const sycl::device& dev) {
     //
     // Initialization
     //
@@ -117,12 +117,8 @@ int run_uniform_example(const sycl::device& dev) {
     }
     std::cout << std::endl;
 
-    // Validation
-    int ret = check_statistics(r.data(), n, distribution);
-
     sycl::free(dev_r, queue);
 
-    return ret;
 }
 
 //
@@ -173,13 +169,8 @@ int main(int argc, char** argv) {
         }
         std::cout << "Running with single precision real data type:" << std::endl;
 
-        int ret = run_uniform_example(my_dev);
-        if (ret) {
-            std::cout << "Random number generator with uniform distribution ran OK" << std::endl;
-        }
-        else {
-            std::cout << "Random number generator with uniform distribution FAILED" << std::endl;
-        }
+        run_uniform_example(my_dev);
+        std::cout << "Random number generator with uniform distribution ran OK" << std::endl;
     }
     catch (sycl::exception const& e) {
         std::cerr << "Caught synchronous SYCL exception:" << std::endl;
