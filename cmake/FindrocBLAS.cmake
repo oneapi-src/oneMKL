@@ -58,7 +58,7 @@ find_package_handle_standard_args(rocBLAS
 if(NOT TARGET ONEMKL::rocBLAS::rocBLAS)
   add_library(ONEMKL::rocBLAS::rocBLAS SHARED IMPORTED)
   set_target_properties(ONEMKL::rocBLAS::rocBLAS PROPERTIES
-      IMPORTED_LOCATION "/opt/rocm/lib/librocblas.so"
+      IMPORTED_LOCATION "${HIP_PATH}/../rocblas/lib/librocblas.so"
       INTERFACE_INCLUDE_DIRECTORIES "${OPENCL_INCLUDE_DIR};${ROCBLAS_INCLUDE_DIR};${HIP_INCLUDE_DIRS};"
       INTERFACE_LINK_LIBRARIES "Threads::Threads;${ROCBLAS_LIBRARIES};"
   )
