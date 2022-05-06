@@ -41,7 +41,6 @@ foreach(blas_ct_source ${BLAS_CT_SOURCES})
       ${ONEMKL_LIBRARIES_${domain}}
       ONEMKL::SYCL::SYCL
   )
-  endif()
 
   # Register example as ctest
   add_test(NAME ${domain}/EXAMPLE/CT/${blas_ct_source} COMMAND example_${domain}_${blas_ct_source})
