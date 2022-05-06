@@ -41,15 +41,10 @@ foreach(lapack_ct_source ${LAPACK_CT_SOURCES})
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu onemkl_${domain}_cusolver)
     target_link_libraries(example_${domain}_${lapack_ct_source} PUBLIC ${OPENCL_LIBRARY})
   endif()
-  if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
-    # Uncomment this after testing with hipSYCL
-    # add_sycl_to_target(TARGET example_${domain}_${lapack_ct_source} SOURCES ${LAPACK_CT_SOURCES})
-  else()
-    target_link_libraries(example_${domain}_${lapack_ct_source} PUBLIC
-        ${ONEMKL_LIBRARIES_${domain}}
-        ONEMKL::SYCL::SYCL
-    )
-  endif()
+  target_link_libraries(example_${domain}_${lapack_ct_source} PUBLIC
+      ${ONEMKL_LIBRARIES_${domain}}
+      ONEMKL::SYCL::SYCL
+  )
   # Register example as ctest
  add_test(NAME ${domain}/EXAMPLE/CT/${lapack_ct_source} COMMAND example_${domain}_${lapack_ct_source})
 endforeach(lapack_ct_source)

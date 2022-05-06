@@ -56,14 +56,14 @@ foreach(blas_rt_source ${BLAS_RT_SOURCES})
   add_dependencies(example_${domain}_${blas_rt_source} onemkl)
 
   if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
-    # Uncomment this after testing with hipSYCL
-    # add_sycl_to_target(TARGET example_${domain}_${blas_rt_source} SOURCES ${BLAS_RT_SOURCES})
-  else()
-    target_link_libraries(example_${domain}_${blas_rt_source} PUBLIC
-        onemkl
-        ONEMKL::SYCL::SYCL
-    )
+    add_sycl_to_target(TARGET example_${domain}_${blas_rt_source} SOURCES ${BLAS_RT_SOURCES})
   endif()
+
+  target_link_libraries(example_${domain}_${blas_rt_source} PUBLIC
+      onemkl
+      ONEMKL::SYCL::SYCL
+      ${CMAKE_DL_LIBS}
+  )
 
   # Register example as ctest
   foreach(device_filter ${DEVICE_FILTERS})
