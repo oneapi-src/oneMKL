@@ -124,6 +124,8 @@ Running with single precision real data type:
 BLAS GEMM USM example ran OK.
 ```
 Compile-time dispatching example with both mklcpu and cublas backend
+
+(Note that the mklcpu and cublas result matrices have a small difference. This is expected due to precision limitation of `float`)
 ```
 ./bin/example_blas_gemm_usm_mklcpu_cublas
 
