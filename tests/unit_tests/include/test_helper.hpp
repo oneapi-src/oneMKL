@@ -102,25 +102,25 @@
 #define TEST_RUN_AMDGPU_ROCRAND_SELECT(q, func, ...)
 #endif
 
-#define TEST_RUN_CT_SELECT(q, func, ...)                                       \
-    do {                                                                       \
-        if (q.is_host() || q.get_device().is_cpu())                            \
-            TEST_RUN_INTELCPU_SELECT(q, func, __VA_ARGS__);                    \
-        else if (q.get_device().is_gpu()) {                                    \
-            unsigned int vendor_id = static_cast<unsigned int>(                \
+#define TEST_RUN_CT_SELECT(q, func, ...)                                   \
+    do {                                                                   \
+        if (q.is_host() || q.get_device().is_cpu())                        \
+            TEST_RUN_INTELCPU_SELECT(q, func, __VA_ARGS__);                \
+        else if (q.get_device().is_gpu()) {                                \
+            unsigned int vendor_id = static_cast<unsigned int>(            \
                 q.get_device().get_info<sycl::info::device::vendor_id>()); \
-            if (vendor_id == INTEL_ID)                                         \
-                TEST_RUN_INTELGPU_SELECT(q, func, __VA_ARGS__);                \
-            else if (vendor_id == NVIDIA_ID) {                                 \
-                TEST_RUN_NVIDIAGPU_CUBLAS_SELECT(q, func, __VA_ARGS__);        \
-                TEST_RUN_NVIDIAGPU_CUSOLVER_SELECT(q, func, __VA_ARGS__);      \
-                TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, __VA_ARGS__);        \
-            }                                                                  \
-            else if (vendor_id == AMD_ID) {                                    \
-                TEST_RUN_AMDGPU_ROCBLAS_SELECT(q, func, __VA_ARGS__);          \
-                TEST_RUN_AMDGPU_ROCRAND_SELECT(q, func, __VA_ARGS__);          \
-            }                                                                  \
-        }                                                                      \
+            if (vendor_id == INTEL_ID)                                     \
+                TEST_RUN_INTELGPU_SELECT(q, func, __VA_ARGS__);            \
+            else if (vendor_id == NVIDIA_ID) {                             \
+                TEST_RUN_NVIDIAGPU_CUBLAS_SELECT(q, func, __VA_ARGS__);    \
+                TEST_RUN_NVIDIAGPU_CUSOLVER_SELECT(q, func, __VA_ARGS__);  \
+                TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, __VA_ARGS__);    \
+            }                                                              \
+            else if (vendor_id == AMD_ID) {                                \
+                TEST_RUN_AMDGPU_ROCBLAS_SELECT(q, func, __VA_ARGS__);      \
+                TEST_RUN_AMDGPU_ROCRAND_SELECT(q, func, __VA_ARGS__);      \
+            }                                                              \
+        }                                                                  \
     } while (0);
 
 void print_error_code(sycl::exception const &e);
