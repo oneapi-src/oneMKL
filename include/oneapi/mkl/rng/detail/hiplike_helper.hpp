@@ -1,5 +1,7 @@
 /*******************************************************************************
- * cuRAND and rocRAND back-end Copyright (c) 2021, The Regents of the University of
+ * Copyright (C) 2022 Heidelberg University, Engineering Mathematics and Computing Lab (EMCL) 
+ * and Computing Centre (URZ)
+ * cuRAND back-end Copyright (c) 2021, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject to receipt
  * of any required approvals from the U.S. Dept. of Energy). All rights
  * reserved.
