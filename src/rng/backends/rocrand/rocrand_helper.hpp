@@ -102,8 +102,7 @@ static inline void range_transform_fp(sycl::queue& queue, T a, T b, std::int64_t
     });
 }
 template <typename T>
-static inline sycl::event range_transform_fp(sycl::queue& queue, T a, T b, std::int64_t n,
-                                                 T* r) {
+static inline sycl::event range_transform_fp(sycl::queue& queue, T a, T b, std::int64_t n, T* r) {
     return queue.submit([&](sycl::handler& cgh) {
         cgh.parallel_for(sycl::range<1>(n),
                          [=](sycl::id<1> id) { r[id[0]] = r[id[0]] * (b - a) + a; });
@@ -126,8 +125,8 @@ static inline void range_transform_fp_accurate(sycl::queue& queue, T a, T b, std
     });
 }
 template <typename T>
-static inline sycl::event range_transform_fp_accurate(sycl::queue& queue, T a, T b,
-                                                          std::int64_t n, T* r) {
+static inline sycl::event range_transform_fp_accurate(sycl::queue& queue, T a, T b, std::int64_t n,
+                                                      T* r) {
     return queue.submit([&](sycl::handler& cgh) {
         cgh.parallel_for(sycl::range<1>(n), [=](sycl::id<1> id) {
             r[id[0]] = r[id[0]] * (b - a) + a;
@@ -159,8 +158,7 @@ static inline sycl::event range_transform_fp_accurate(sycl::queue& queue, T a, T
 //      r     - buffer to store transformed random numbers
 template <typename T>
 inline void range_transform_int(sycl::queue& queue, T a, T b, std::int64_t n,
-                                sycl::buffer<std::uint32_t, 1>& in,
-                                sycl::buffer<T, 1>& out) {
+                                sycl::buffer<std::uint32_t, 1>& in, sycl::buffer<T, 1>& out) {
     queue.submit([&](sycl::handler& cgh) {
         auto acc_in = in.template get_access<sycl::access::mode::read>(cgh);
         auto acc_out = out.template get_access<sycl::access::mode::write>(cgh);
@@ -170,7 +168,7 @@ inline void range_transform_int(sycl::queue& queue, T a, T b, std::int64_t n,
 }
 template <typename T>
 inline sycl::event range_transform_int(sycl::queue& queue, T a, T b, std::int64_t n,
-                                           std::uint32_t* in, T* out) {
+                                       std::uint32_t* in, T* out) {
     return queue.submit([&](sycl::handler& cgh) {
         cgh.parallel_for(sycl::range<1>(n),
                          [=](sycl::id<1> id) { out[id[0]] = a + in[id[0]] % (b - a); });
@@ -205,14 +203,12 @@ static inline void sample_bernoulli_from_uniform(sycl::queue& queue, float p, st
     });
 }
 template <typename T>
-static inline sycl::event sample_bernoulli_from_uniform(sycl::queue& queue, float p,
-                                                            std::int64_t n, float* in, T* out) {
+static inline sycl::event sample_bernoulli_from_uniform(sycl::queue& queue, float p, std::int64_t n,
+                                                        float* in, T* out) {
     return queue.submit([&](sycl::handler& cgh) {
-        cgh.parallel_for(sycl::range<1>(n),
-                         [=](sycl::id<1> id) { out[id[0]] = in[id[0]] < p; });
+        cgh.parallel_for(sycl::range<1>(n), [=](sycl::id<1> id) { out[id[0]] = in[id[0]] < p; });
     });
 }
-
 
 class rocrand_error : virtual public std::runtime_error {
 protected:
@@ -271,19 +267,28 @@ class cuda_error : virtual public std::runtime_error {
 protected:
     inline const char* cuda_error_map(hipError_t result) {
         switch (result) {
-            case HIP_SUCCESS: return "HIP_SUCCESS";
-
-            case HIP_ERROR_NOT_INITIALIZED: return "HIP_ERROR_NOT_INITIALIZED";
-
-            case hipErrorInvalidContext: return "HIP_ERROR_INVALID_CONTEXT";
-
-            case hipErrorInvalidDevice: return "HIP_ERROR_INVALID_DEVICE";
-
-            case HIP_ERROR_INVALID_VALUE: return "HIP_ERROR_INVALID_VALUE";
-
-            case hipErrorRuntimeMemory: return "HIP_ERROR_OUT_OF_MEMORY";
-
-            case HIP_ERROR_LAUNCH_OUT_OF_RESOURCES: return "HIP_ERROR_LAUNCH_OUT_OF_RESOURCES";
+            case hipSuccess: return "hipSuccess";
+            case hipErrorInvalidContext: return "hipErrorInvalidContext";
+            case hipErrorInvalidKernelFile: return "hipErrorInvalidKernelFile";
+            case hipErrorMemoryAllocation: return "hipErrorMemoryAllocation";
+            case hipErrorInitializationError: return "hipErrorInitializationError";
+            case hipErrorLaunchFailure: return "hipErrorLaunchFailure";
+            case hipErrorLaunchOutOfResources: return "hipErrorLaunchOutOfResources";
+            case hipErrorInvalidDevice: return "hipErrorInvalidDevice";
+            case hipErrorInvalidValue: return "hipErrorInvalidValue";
+            case hipErrorInvalidDevicePointer: return "hipErrorInvalidDevicePointer";
+            case hipErrorInvalidMemcpyDirection: return "hipErrorInvalidMemcpyDirection";
+            case hipErrorUnknown: return "hipErrorUnknown";
+            case hipErrorInvalidResourceHandle: return "hipErrorInvalidResourceHandle";
+            case hipErrorNotReady: return "hipErrorNotReady";
+            case hipErrorNoDevice: return "hipErrorNoDevice";
+            case hipErrorPeerAccessAlreadyEnabled: return "hipErrorPeerAccessAlreadyEnabled";
+            case hipErrorPeerAccessNotEnabled: return "hipErrorPeerAccessNotEnabled";
+            case hipErrorRuntimeMemory: return "hipErrorRuntimeMemory";
+            case hipErrorRuntimeOther: return "hipErrorRuntimeOther";
+            case hipErrorHostMemoryAlreadyRegistered: return "hipErrorHostMemoryAlreadyRegistered";
+            case hipErrorHostMemoryNotRegistered: return "hipErrorHostMemoryNotRegistered";
+            case hipErrorMapBufferObjectFailed: return "hipErrorMapBufferObjectFailed";
 
             default: return "<unknown>";
         }
@@ -323,8 +328,6 @@ public:
     if (status != ROCRAND_STATUS_SUCCESS) {                                   \
         throw rocrand_error(std::string(#func) + std::string(" : "), status); \
     }
-
-
 
 } // namespace rocrand
 } // namespace rng
