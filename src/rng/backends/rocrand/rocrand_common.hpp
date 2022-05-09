@@ -43,7 +43,6 @@ static inline void host_task_internal(H &cgh, rocrand_generator engine, F f, lon
 #else
 template <typename H, typename F>
 static inline void host_task_internal(H& cgh, rocrand_generator& engine, F f, long) {
-    //cgh.template single_task(f);
     cgh.host_task(f);
 }
 
