@@ -263,9 +263,9 @@ public:
     }
 };
 
-class cuda_error : virtual public std::runtime_error {
+class rocm_error : virtual public std::runtime_error {
 protected:
-    inline const char* cuda_error_map(hipError_t result) {
+    inline const char* rocm_error_map(hipError_t result) {
         switch (result) {
             case hipSuccess: return "hipSuccess";
             case hipErrorInvalidContext: return "hipErrorInvalidContext";
@@ -299,15 +299,15 @@ public:
    *  @param msg The error message
    *  @param err_num Error number
    */
-    explicit cuda_error(std::string message, hipError_t result)
-            : std::runtime_error((message + std::string(cuda_error_map(result)))) {
+    explicit rocm_error(std::string message, hipError_t result)
+            : std::runtime_error((message + std::string(rocm_error_map(result)))) {
         error_number = static_cast<int>(result);
     }
 
     /** Destructor.
    *  Virtual to allow for subclassing.
    */
-    virtual ~cuda_error() throw() {}
+    virtual ~rocm_error() throw() {}
 
     /** Returns error number.
    *  @return #error_number
