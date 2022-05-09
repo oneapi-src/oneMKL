@@ -386,8 +386,7 @@ public:
     virtual sycl::event generate(
         const oneapi::mkl::rng::uniform<std::int32_t, oneapi::mkl::rng::uniform_method::standard>&
             distr,
-        std::int64_t n, std::int32_t* r,
-        const std::vector<sycl::event>& dependencies) override {
+        std::int64_t n, std::int32_t* r, const std::vector<sycl::event>& dependencies) override {
         std::uint32_t* ib = (std::uint32_t*)malloc_device(
             n * sizeof(std::uint32_t), queue_.get_device(), queue_.get_context());
         queue_
@@ -524,8 +523,8 @@ public:
     }
 
     virtual sycl::event generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
-                                     std::int64_t n, std::int32_t* r,
-                                     const std::vector<sycl::event>& dependencies) override {
+                                 std::int64_t n, std::int32_t* r,
+                                 const std::vector<sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented(
             "rng", "philox4x32x10 engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
@@ -533,8 +532,8 @@ public:
     }
 
     virtual sycl::event generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
-                                     std::int64_t n, std::uint32_t* r,
-                                     const std::vector<sycl::event>& dependencies) override {
+                                 std::int64_t n, std::uint32_t* r,
+                                 const std::vector<sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented(
             "rng", "philox4x32x10 engine",
             "ICDF method not used for pseudorandom generators in cuRAND backend");
@@ -559,9 +558,8 @@ public:
         return sycl::event{};
     }
 
-    virtual sycl::event generate(const bits<std::uint32_t>& distr, std::int64_t n,
-                                     std::uint32_t* r,
-                                     const std::vector<sycl::event>& dependencies) override {
+    virtual sycl::event generate(const bits<std::uint32_t>& distr, std::int64_t n, std::uint32_t* r,
+                                 const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
             host_task(cgh, engine_, [=](sycl::interop_handle ih) {
@@ -738,8 +736,7 @@ public:
     virtual sycl::event generate(
         const oneapi::mkl::rng::uniform<std::int32_t, oneapi::mkl::rng::uniform_method::standard>&
             distr,
-        std::int64_t n, std::int32_t* r,
-        const std::vector<sycl::event>& dependencies) override {
+        std::int64_t n, std::int32_t* r, const std::vector<sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
         return sycl::event{};
     }
@@ -819,15 +816,15 @@ public:
     }
 
     virtual sycl::event generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
-                                     std::int64_t n, std::int32_t* r,
-                                     const std::vector<sycl::event>& dependencies) override {
+                                 std::int64_t n, std::int32_t* r,
+                                 const std::vector<sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
         return sycl::event{};
     }
 
     virtual sycl::event generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
-                                     std::int64_t n, std::uint32_t* r,
-                                     const std::vector<sycl::event>& dependencies) override {
+                                 std::int64_t n, std::uint32_t* r,
+                                 const std::vector<sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
         return sycl::event{};
     }
@@ -846,9 +843,8 @@ public:
         return sycl::event{};
     }
 
-    virtual sycl::event generate(const bits<std::uint32_t>& distr, std::int64_t n,
-                                     std::uint32_t* r,
-                                     const std::vector<sycl::event>& dependencies) override {
+    virtual sycl::event generate(const bits<std::uint32_t>& distr, std::int64_t n, std::uint32_t* r,
+                                 const std::vector<sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine");
         return sycl::event{};
     }
@@ -874,8 +870,7 @@ public:
 };
 #endif
 
-oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(sycl::queue queue,
-                                                            std::uint64_t seed) {
+oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(sycl::queue queue, std::uint64_t seed) {
     auto a = new philox4x32x10_impl(queue, seed);
     return a;
 }
