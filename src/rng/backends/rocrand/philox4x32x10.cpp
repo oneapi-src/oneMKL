@@ -66,7 +66,6 @@
 
 #include "oneapi/mkl/rng/detail/engine_impl.hpp"
 // #include "oneapi/mkl/rng/engines.hpp"
-#include "oneapi/mkl/rng/detail/hiplike_helper.hpp"
 #include "rocrand_common.hpp"
 #include "rocrand_helper.hpp"
 #include "oneapi/mkl/exceptions.hpp"

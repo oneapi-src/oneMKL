@@ -64,7 +64,6 @@
 #endif
 #include <iostream>
 
-#include "oneapi/mkl/rng/detail/hiplike_helper.hpp"
 #include "rocrand_common.hpp"
 #include "rocrand_helper.hpp"
 #include "oneapi/mkl/exceptions.hpp"

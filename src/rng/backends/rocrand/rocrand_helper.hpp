@@ -76,6 +76,144 @@ namespace mkl {
 namespace rng {
 namespace rocrand {
 
+// Static template functions oneapi::mkl::rng::rocrand::range_transform_fp for
+// Buffer and USM APIs
+//
+// rocRAND has no built-in functionality to specify a custom range for sampling
+// random numbers; `curandGenerateUniform' generates uniform random numbers on
+// [0, 1). This function is used to convert to range [a, b).
+//
+// Supported types:
+//      float
+//      double
+//
+// Input arguments:
+//      queue - the queue to submit the kernel to
+//      a     - range lower bound (inclusive)
+//      b     - range upper bound (exclusive)
+//      r     - buffer to store transformed random numbers
+template <typename T>
+static inline void range_transform_fp(cl::sycl::queue& queue, T a, T b, std::int64_t n,
+                                      cl::sycl::buffer<T, 1>& r) {
+    queue.submit([&](cl::sycl::handler& cgh) {
+        auto acc = r.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        cgh.parallel_for(cl::sycl::range<1>(n),
+                         [=](cl::sycl::id<1> id) { acc[id[0]] = acc[id[0]] * (b - a) + a; });
+    });
+}
+template <typename T>
+static inline cl::sycl::event range_transform_fp(cl::sycl::queue& queue, T a, T b, std::int64_t n,
+                                                 T* r) {
+    return queue.submit([&](cl::sycl::handler& cgh) {
+        cgh.parallel_for(cl::sycl::range<1>(n),
+                         [=](cl::sycl::id<1> id) { r[id[0]] = r[id[0]] * (b - a) + a; });
+    });
+}
+template <typename T>
+static inline void range_transform_fp_accurate(cl::sycl::queue& queue, T a, T b, std::int64_t n,
+                                               cl::sycl::buffer<T, 1>& r) {
+    queue.submit([&](cl::sycl::handler& cgh) {
+        auto acc = r.template get_access<cl::sycl::access::mode::read_write>(cgh);
+        cgh.parallel_for(cl::sycl::range<1>(n), [=](cl::sycl::id<1> id) {
+            acc[id[0]] = acc[id[0]] * (b - a) + a;
+            if (acc[id[0]] < a) {
+                acc[id[0]] = a;
+            }
+            else if (acc[id[0]] > b) {
+                acc[id[0]] = b;
+            }
+        });
+    });
+}
+template <typename T>
+static inline cl::sycl::event range_transform_fp_accurate(cl::sycl::queue& queue, T a, T b,
+                                                          std::int64_t n, T* r) {
+    return queue.submit([&](cl::sycl::handler& cgh) {
+        cgh.parallel_for(cl::sycl::range<1>(n), [=](cl::sycl::id<1> id) {
+            r[id[0]] = r[id[0]] * (b - a) + a;
+            if (r[id[0]] < a) {
+                r[id[0]] = a;
+            }
+            else if (r[id[0]] > b) {
+                r[id[0]] = b;
+            }
+        });
+    });
+}
+
+// Static template functions oneapi::mkl::rng::rocrand::range_transform_int for
+// Buffer and USM APIs
+//
+// rocRAND has no built-in functionality to specify a custom range for sampling
+// random numbers; `curandGenerateUniform' generates uniform random numbers on
+// [0, 1). This function is used to convert to range [a, b).
+//
+// Supported types:
+//      std::int32_t
+//      std::uint32_t
+//
+// Input arguments:
+//      queue - the queue to submit the kernel to
+//      a     - range lower bound (inclusive)
+//      b     - range upper bound (exclusive)
+//      r     - buffer to store transformed random numbers
+template <typename T>
+inline void range_transform_int(cl::sycl::queue& queue, T a, T b, std::int64_t n,
+                                cl::sycl::buffer<std::uint32_t, 1>& in,
+                                cl::sycl::buffer<T, 1>& out) {
+    queue.submit([&](cl::sycl::handler& cgh) {
+        auto acc_in = in.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto acc_out = out.template get_access<cl::sycl::access::mode::write>(cgh);
+        cgh.parallel_for(cl::sycl::range<1>(n),
+                         [=](cl::sycl::id<1> id) { acc_out[id[0]] = a + acc_in[id[0]] % (b - a); });
+    });
+}
+template <typename T>
+inline cl::sycl::event range_transform_int(cl::sycl::queue& queue, T a, T b, std::int64_t n,
+                                           std::uint32_t* in, T* out) {
+    return queue.submit([&](cl::sycl::handler& cgh) {
+        cgh.parallel_for(cl::sycl::range<1>(n),
+                         [=](cl::sycl::id<1> id) { out[id[0]] = a + in[id[0]] % (b - a); });
+    });
+}
+
+// Static template functions oneapi::mkl::rng::rocrand::sample_bernoulli for
+// Buffer and USM APIs
+//
+// rocRAND has no built-in functionality to sample from a Bernoulli distribution.
+// The implementation here uses uniformly-generated random numbers and returns
+// the corresponding Bernoulli distribution based on a probability.
+//
+// Supported types:
+//      std::int32_t
+//      std::uint32_t
+//
+// Input arguments:
+//      queue - the queue to submit the kernel to
+//      p     - success probablity of a trial
+//      in    - buffer containing uniformly-generated random numbers
+//      out   - buffer to store Bernoulli
+template <typename T>
+static inline void sample_bernoulli_from_uniform(cl::sycl::queue& queue, float p, std::int64_t n,
+                                                 cl::sycl::buffer<float, 1> in,
+                                                 cl::sycl::buffer<T, 1>& out) {
+    queue.submit([&](cl::sycl::handler& cgh) {
+        auto acc_in = in.template get_access<cl::sycl::access::mode::read>(cgh);
+        auto acc_out = out.template get_access<cl::sycl::access::mode::write>(cgh);
+        cgh.parallel_for(cl::sycl::range<1>(n),
+                         [=](cl::sycl::id<1> id) { acc_out[id[0]] = acc_in[id[0]] < p; });
+    });
+}
+template <typename T>
+static inline cl::sycl::event sample_bernoulli_from_uniform(cl::sycl::queue& queue, float p,
+                                                            std::int64_t n, float* in, T* out) {
+    return queue.submit([&](cl::sycl::handler& cgh) {
+        cgh.parallel_for(cl::sycl::range<1>(n),
+                         [=](cl::sycl::id<1> id) { out[id[0]] = in[id[0]] < p; });
+    });
+}
+
+
 class rocrand_error : virtual public std::runtime_error {
 protected:
     inline const char* rocrand_error_map(rocrand_status error) {
@@ -185,6 +323,8 @@ public:
     if (status != ROCRAND_STATUS_SUCCESS) {                                   \
         throw rocrand_error(std::string(#func) + std::string(" : "), status); \
     }
+
+
 
 } // namespace rocrand
 } // namespace rng
