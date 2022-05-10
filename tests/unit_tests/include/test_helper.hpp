@@ -133,6 +133,8 @@ public:
             if (!isalnum(dev_name[i]))
                 dev_name[i] = '_';
         }
+        if (dev_name.size() == 0)
+            dev_name = dev_name.append("_");
         return dev_name;
     }
 };
