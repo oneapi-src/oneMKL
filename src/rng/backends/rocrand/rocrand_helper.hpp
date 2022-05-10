@@ -59,12 +59,11 @@
  ******************************************************************************/
 
 /**
- * @file curand_helper.cpp : contains the implementation of all the routines
+ * @file rocrand_helper.cpp : contains the implementation of all the routines
  * for HIP backend
  */
 #ifndef _MKL_RNG_ROCRAND_HELPER_HPP_
 #define _MKL_RNG_ROCRAND_HELPER_HPP_
-//#include <cuda.h>
 #include <rocrand.h>
 
 #include <complex>
@@ -80,7 +79,7 @@ namespace rocrand {
 // Buffer and USM APIs
 //
 // rocRAND has no built-in functionality to specify a custom range for sampling
-// random numbers; `curandGenerateUniform' generates uniform random numbers on
+// random numbers; `rocrand_generate_uniform' generates uniform random numbers on
 // [0, 1). This function is used to convert to range [a, b).
 //
 // Supported types:
@@ -144,7 +143,7 @@ static inline sycl::event range_transform_fp_accurate(sycl::queue& queue, T a, T
 // Buffer and USM APIs
 //
 // rocRAND has no built-in functionality to specify a custom range for sampling
-// random numbers; `curandGenerateUniform' generates uniform random numbers on
+// random numbers; `rocrand_generate_uniform' generates uniform random numbers on
 // [0, 1). This function is used to convert to range [a, b).
 //
 // Supported types:
@@ -295,7 +294,7 @@ protected:
     }
     int error_number; ///< error number
 public:
-    /** Constructor (C++ STL string, CUresult).
+    /** Constructor (C++ STL string, hipError_t).
    *  @param msg The error message
    *  @param err_num Error number
    */
