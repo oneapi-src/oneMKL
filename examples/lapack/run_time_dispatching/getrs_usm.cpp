@@ -76,7 +76,7 @@ void run_getrs_example(const sycl::device& device) {
             catch (oneapi::mkl::lapack::exception const& e) {
                 // Handle LAPACK related exceptions that happened during asynchronous call
                 std::cerr
-                    << "Caught asynchronous LAPACK exception on CPU device during GETRF or GETRS:"
+                    << "Caught asynchronous LAPACK exception during GETRF or GETRS:"
                     << std::endl;
                 std::cerr << "\t" << e.what() << std::endl;
                 std::cerr << "\tinfo: " << e.info() << std::endl;
@@ -84,7 +84,7 @@ void run_getrs_example(const sycl::device& device) {
             catch (sycl::exception const& e) {
                 // Handle not LAPACK related exceptions that happened during asynchronous call
                 std::cerr
-                    << "Caught asynchronous SYCL exception on CPU device during GETRF or GETRS:"
+                    << "Caught asynchronous SYCL exception during GETRF or GETRS:"
                     << std::endl;
                 std::cerr << "\t" << e.what() << std::endl;
             }
