@@ -25,7 +25,6 @@ endif()
 
 foreach(blas_ct_source ${BLAS_CT_SOURCES})
   add_executable(example_${domain}_${blas_ct_source} ${blas_ct_source}.cpp)
-  target_compile_options(example_${domain}_${blas_ct_source} PRIVATE  -DNOMINMAX)
   target_include_directories(example_${domain}_${blas_ct_source}
       PUBLIC ${PROJECT_SOURCE_DIR}/examples/include
       PUBLIC ${PROJECT_SOURCE_DIR}/include

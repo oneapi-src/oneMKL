@@ -72,7 +72,7 @@ void run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_d
                 std::rethrow_exception(e);
             }
             catch (oneapi::mkl::lapack::exception const& e) {
-                // Handle LAPACK related exceptions happened during asynchronous call
+                // Handle LAPACK related exceptions that happened during asynchronous call
                 std::cerr
                     << "Caught asynchronous LAPACK exception on CPU device during GETRF or GETRS:"
                     << std::endl;
@@ -80,7 +80,7 @@ void run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_d
                 std::cerr << "\tinfo: " << e.info() << std::endl;
             }
             catch (sycl::exception const& e) {
-                // Handle not LAPACK related exceptions happened during asynchronous call
+                // Handle not LAPACK related exceptions that happened during asynchronous call
                 std::cerr
                     << "Caught asynchronous SYCL exception on CPU device during GETRF or GETRS:"
                     << std::endl;
@@ -95,17 +95,17 @@ void run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_d
                 std::rethrow_exception(e);
             }
             catch (oneapi::mkl::lapack::exception const& e) {
-                // Handle LAPACK related exceptions happened during asynchronous call
+                // Handle LAPACK related exceptions that happened during asynchronous call
                 std::cerr
-                    << "Caught asynchronous LAPACK exception on CPU device during GETRF or GETRS:"
+                    << "Caught asynchronous LAPACK exception on GPU device during GETRF or GETRS:"
                     << std::endl;
                 std::cerr << "\t" << e.what() << std::endl;
                 std::cerr << "\tinfo: " << e.info() << std::endl;
             }
             catch (sycl::exception const& e) {
-                // Handle not LAPACK related exceptions happened during asynchronous call
+                // Handle not LAPACK related exceptions that happened during asynchronous call
                 std::cerr
-                    << "Caught asynchronous SYCL exception on CPU device during GETRF or GETRS:"
+                    << "Caught asynchronous SYCL exception on GPU device during GETRF or GETRS:"
                     << std::endl;
                 std::cerr << "\t" << e.what() << std::endl;
             }
@@ -205,7 +205,7 @@ void run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_d
     gpu_getrs_done = oneapi::mkl::lapack::getrs(
         oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver>{ gpu_queue },
         trans, n, nrhs, gpu_A, lda, gpu_ipiv, gpu_B, ldb,
-        gpu_getrs_scratchpad, gpu_getrs_scratchpad_size, { cpu_getrf_done });
+        gpu_getrs_scratchpad, gpu_getrs_scratchpad_size, { gpu_getrf_done });
 
     // Wait until calculations are done
     cpu_queue.wait_and_throw();
@@ -231,7 +231,7 @@ void run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_d
     std::cout << "\t\t\tm = " << m << ", n = " << n << ", nrhs = " << nrhs << std::endl;
     std::cout << "\t\t\tlda = " << lda << ", ldb = " << ldb << std::endl;
 
-    std::cout << "\n\t\tOutputting 2x2 block of A,B,X matrices:" << std::endl;
+    std::cout << "\n\t\tOutputting 2x2 block of A and X matrices:" << std::endl;
     // output the top 2x2 block of A matrix
     print_2x2_matrix_values(A.data(), lda, "A");
 
@@ -307,21 +307,21 @@ int main(int argc, char** argv) {
         std::cout << "LAPACK GETRS USM example ran OK on MKLCPU and CUSOLVER" << std::endl;
     }
     catch (oneapi::mkl::lapack::exception const& e) {
-        // Handle LAPACK related exceptions happened during synchronous call
+        // Handle LAPACK related exceptions that happened during synchronous call
         std::cerr << "Caught synchronous LAPACK exception:" << std::endl;
         std::cerr << "\t" << e.what() << std::endl;
         std::cerr << "\tinfo: " << e.info() << std::endl;
         return 1;
     }
     catch (sycl::exception const& e) {
-        // Handle not LAPACK related exceptions happened during synchronous call
+        // Handle not LAPACK related exceptions that happened during synchronous call
         std::cerr << "Caught synchronous SYCL exception:" << std::endl;
         std::cerr << "\t" << e.what() << std::endl;
         std::cerr << "\tSYCL error code: " << e.code().value() << std::endl;
         return 1;
     }
     catch (std::exception const& e) {
-        // Handle not SYCL related exceptions happened during synchronous call
+        // Handle not SYCL related exceptions that happened during synchronous call
         std::cerr << "Caught synchronous std::exception:" << std::endl;
         std::cerr << "\t" << e.what() << std::endl;
         return 1;

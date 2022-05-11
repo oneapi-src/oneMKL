@@ -74,7 +74,7 @@ void run_getrs_example(const sycl::device& device) {
                 std::rethrow_exception(e);
             }
             catch (oneapi::mkl::lapack::exception const& e) {
-                // Handle LAPACK related exceptions happened during asynchronous call
+                // Handle LAPACK related exceptions that happened during asynchronous call
                 std::cerr
                     << "Caught asynchronous LAPACK exception on CPU device during GETRF or GETRS:"
                     << std::endl;
@@ -82,7 +82,7 @@ void run_getrs_example(const sycl::device& device) {
                 std::cerr << "\tinfo: " << e.info() << std::endl;
             }
             catch (sycl::exception const& e) {
-                // Handle not LAPACK related exceptions happened during asynchronous call
+                // Handle not LAPACK related exceptions that happened during asynchronous call
                 std::cerr
                     << "Caught asynchronous SYCL exception on CPU device during GETRF or GETRS:"
                     << std::endl;
@@ -227,21 +227,21 @@ int main(int argc, char** argv) {
         std::cout << "LAPACK GETRS USM example ran OK" << std::endl;
     }
     catch (oneapi::mkl::lapack::exception const& e) {
-        // Handle LAPACK related exceptions happened during synchronous call
+        // Handle LAPACK related exceptions that happened during synchronous call
         std::cerr << "Caught synchronous LAPACK exception:" << std::endl;
         std::cerr << "\t" << e.what() << std::endl;
         std::cerr << "\tinfo: " << e.info() << std::endl;
         return 1;
     }
     catch (sycl::exception const& e) {
-        // Handle not LAPACK related exceptions happened during synchronous call
+        // Handle not LAPACK related exceptions that happened during synchronous call
         std::cerr << "Caught synchronous SYCL exception:" << std::endl;
         std::cerr << "\t" << e.what() << std::endl;
         std::cerr << "\tSYCL error code: " << e.code().value() << std::endl;
         return 1;
     }
     catch (std::exception const& e) {
-        // Handle not SYCL related exceptions happened during synchronous call
+        // Handle not SYCL related exceptions that happened during synchronous call
         std::cerr << "Caught synchronous std::exception:" << std::endl;
         std::cerr << "\t" << e.what() << std::endl;
         return 1;

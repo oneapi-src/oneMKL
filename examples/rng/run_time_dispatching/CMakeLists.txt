@@ -1,4 +1,3 @@
-
 #===============================================================================
 # Copyright 2022 Intel Corporation
 #
@@ -18,7 +17,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-# NOTE: user need to set env var SYCL_DEVICE_FILTER to use runtime example (no need to specify backend when building with CMake)
+# NOTE: user needs to set env var SYCL_DEVICE_FILTER to use runtime example (no need to specify backend when building with CMake)
 
 # Build object from all example sources
 set(RNG_RT_SOURCES "uniform_usm")
@@ -41,7 +40,6 @@ message(STATUS "SYCL_DEVICE_FILTER will be set to the following value(s): [${DEV
 
 foreach(rng_rt_source ${RNG_RT_SOURCES})
   add_executable(example_${domain}_${rng_rt_source} ${rng_rt_source}.cpp)
-  target_compile_options(example_${domain}_${rng_rt_source} PRIVATE -DNOMINMAX)
   target_include_directories(example_${domain}_${rng_rt_source}
       PUBLIC ${PROJECT_SOURCE_DIR}/examples/include
       PUBLIC ${PROJECT_SOURCE_DIR}/include

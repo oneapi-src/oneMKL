@@ -7,14 +7,14 @@ oneAPI Math Kernel Library (oneMKL) Interfaces offers examples with the followin
 Each routine has one run-time dispatching example and one compile-time dispatching example (which uses both mklcpu and cuda backends), located in `example/<$domain>/run_time_dispatching` and `example/<$domain>/compile_time_dispatching` subfolders, respectively.
 
 To build examples, use cmake build option `-DBUILD_EXAMPLES=true`.  
-Compile_time_dispatching will be built if `-DBUILD_EXAMPLES=true` and CUDA backend is enabled, because the compile-time dispatching example runs on both mklcpu and cuda backends.
-Run_time_dispatching will be build if `-DBUILD_EXAMPLES=true` and `-DBUILD_SHARED_LIBS=true`
+Compile_time_dispatching will be built if `-DBUILD_EXAMPLES=true` and cuda backend is enabled, because the compile-time dispatching example runs on both mklcpu and cuda backends.
+Run_time_dispatching will be built if `-DBUILD_EXAMPLES=true` and `-DBUILD_SHARED_LIBS=true`
 
 The example executable naming convention follows `example_<$domain>_<$routine>_<$backend>` for compile-time dispatching examples 
   or `example_<$domain>_<$routine>` for run-time dispatching examples. 
   E.g. `example_blas_gemm_usm_mklcpu_cublas `  `example_blas_gemm_usm`
 
-## Test outputs (blas, rng, lapack)
+## Example outputs (blas, rng, lapack)
   
 ## blas
 

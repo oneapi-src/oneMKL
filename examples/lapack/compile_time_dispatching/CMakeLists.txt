@@ -30,7 +30,6 @@ endif()
 
 foreach(lapack_ct_source ${LAPACK_CT_SOURCES})
   add_executable(example_${domain}_${lapack_ct_source} ${lapack_ct_source}.cpp)
-  target_compile_options(example_${domain}_${lapack_ct_source} PRIVATE  -DNOMINMAX)
   target_include_directories(example_${domain}_${lapack_ct_source}
       PUBLIC ${PROJECT_SOURCE_DIR}/examples/include
       PUBLIC ${PROJECT_SOURCE_DIR}/include
