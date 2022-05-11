@@ -95,6 +95,13 @@
 #define TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, ...)
 #endif
 
+#ifdef ENABLE_ROCRAND_BACKEND
+#define TEST_RUN_AMDGPU_ROCRAND_SELECT(q, func, ...) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::rocrand>{ q }, __VA_ARGS__)
+#else
+#define TEST_RUN_AMDGPU_ROCRAND_SELECT(q, func, ...)
+#endif
+
 #define TEST_RUN_CT_SELECT(q, func, ...)                                   \
     do {                                                                   \
         if (q.is_host() || q.get_device().is_cpu())                        \
@@ -111,6 +118,7 @@
             }                                                              \
             else if (vendor_id == AMD_ID) {                                \
                 TEST_RUN_AMDGPU_ROCBLAS_SELECT(q, func, __VA_ARGS__);      \
+                TEST_RUN_AMDGPU_ROCRAND_SELECT(q, func, __VA_ARGS__);      \
             }                                                              \
         }                                                                  \
     } while (0);
@@ -125,6 +133,8 @@ public:
             if (!isalnum(dev_name[i]))
                 dev_name[i] = '_';
         }
+        if (dev_name.size() == 0)
+            dev_name = dev_name.append("_");
         return dev_name;
     }
 };

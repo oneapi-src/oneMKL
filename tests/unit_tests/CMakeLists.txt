@@ -129,6 +129,11 @@ foreach(domain ${TARGET_DOMAINS})
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_curand)
   endif()
 
+  if(domain STREQUAL "rng" AND ENABLE_ROCRAND_BACKEND)
+    add_dependencies(test_main_${domain}_ct onemkl_${domain}_rocrand)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_rocrand)
+  endif()
+
   target_link_libraries(test_main_${domain}_ct PUBLIC
       gtest
       gtest_main
