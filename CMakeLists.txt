@@ -59,6 +59,9 @@ set(ONEMKL_SYCL_IMPLEMENTATION "dpc++" CACHE STRING "Name of the SYCL compiler")
 ## Testing
 option(BUILD_FUNCTIONAL_TESTS "" ON)
 
+## Examples
+option(BUILD_EXAMPLES "" ON)
+
 ## Documentation
 option(BUILD_DOC "" OFF)
 
@@ -211,9 +214,17 @@ endif()
 add_subdirectory(src bin)
 
 # Functional Tests
-if(BUILD_FUNCTIONAL_TESTS)
+if(BUILD_FUNCTIONAL_TESTS OR BUILD_EXAMPLES)
   enable_testing()
+endif()
+
+if(BUILD_FUNCTIONAL_TESTS)
   add_subdirectory(tests)
+endif()
+
+# Examples
+if (BUILD_EXAMPLES)
+  add_subdirectory(examples)
 endif()
 
 if(BUILD_DOC)
