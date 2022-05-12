@@ -107,6 +107,19 @@ inline void backend_selector_precondition<backend::rocblas>(sycl::queue& queue) 
 #endif
 }
 
+template <>
+inline void backend_selector_precondition<backend::rocrand>(sycl::queue& queue) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    unsigned int vendor_id =
+        static_cast<unsigned int>(queue.get_device().get_info<sycl::info::device::vendor_id>());
+    if (!(queue.get_device().is_gpu() && vendor_id == AMD_ID)) {
+        throw unsupported_device("",
+                                 "backend_selector<backend::" + backend_map[backend::rocrand] + ">",
+                                 queue.get_device());
+    }
+#endif
+}
+
 } // namespace mkl
 } // namespace oneapi
 

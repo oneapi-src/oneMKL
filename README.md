@@ -18,8 +18,8 @@ oneMKL is part of [oneAPI](https://oneapi.io).
     </thead>
     <tbody>
         <tr>
-            <td rowspan=7 align="center">oneMKL interface</td>
-            <td rowspan=7 align="center">oneMKL selector</td>
+            <td rowspan=8 align="center">oneMKL interface</td>
+            <td rowspan=8 align="center">oneMKL selector</td>
             <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for x86 CPU</td>
             <td align="center">x86 CPU</td>
         </tr>
@@ -45,6 +45,10 @@ oneMKL is part of [oneAPI](https://oneapi.io).
         </tr>
         <tr>
             <td align="center"><a href="https://rocblas.readthedocs.io/en/rocm-4.5.2/"> AMD rocBLAS</a> for AMD GPU </td>
+            <td align="center">AMD GPU</td>
+        </tr>
+        <tr>
+            <td align="center"><a href="https://github.com/ROCmSoftwarePlatform/rocRAND"> AMD rocRAND</a> for AMD GPU </td>
             <td align="center">AMD GPU</td>
         </tr>
     </tbody>
@@ -184,11 +188,11 @@ Supported domains: BLAS, LAPACK, RNG
             <td align="center">LLVM*</td>
         </tr>
         <tr>
-            <td rowspan=3 align="center">RNG</td>
+            <td rowspan=4 align="center">RNG</td>
             <td align="center">x86 CPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">DPC++, LLVM*</td>
+            <td align="center">DPC++, LLVM*, hipSYCL</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
@@ -200,6 +204,12 @@ Supported domains: BLAS, LAPACK, RNG
             <td align="center">NVIDIA cuRAND</td>
             <td align="center">Dynamic, Static</td>
             <td align="center">LLVM*</td>
+        </tr>
+        <tr>
+            <td align="center">AMD GPU</td>
+            <td align="center">AMD rocRAND</td>
+            <td align="center">Dynamic, Static</td>
+            <td align="center">hipSYCL</td>
         </tr>
     </tbody>
 </table>
@@ -403,6 +413,7 @@ Python | 3.6 or higher | No | *N/A* | *Pre-installed or Installed by user* | [PS
 [Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) | latest | Yes | apt | /opt/intel/inteloneapi/mkl | [Intel Simplified Software License](https://software.intel.com/en-us/license/intel-simplified-software-license)
 [NVIDIA CUDA SDK](https://developer.nvidia.com/cublas) | 10.2 | No | *N/A* | *Installed by user* |[End User License Agreement](https://docs.nvidia.com/cuda/eula/index.html)
 [AMD rocBLAS](https://rocblas.readthedocs.io/en/rocm-4.5.2/) | 4.5 | No | *N/A* | *Installed by user* |[AMD License](https://github.com/ROCmSoftwarePlatform/rocBLAS/blob/develop/LICENSE.md)
+[AMD rocRAND](https://github.com/ROCmSoftwarePlatform/rocRAND) | 5.1.0 | No | *N/A* | *Installed by user* |[AMD License](https://github.com/ROCmSoftwarePlatform/rocRAND/blob/develop/LICENSE.txt)
 [NETLIB LAPACK](https://www.netlib.org/) | 3.7.1 | Yes | conan-community | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [BSD like license](http://www.netlib.org/lapack/LICENSE.txt)
 [Sphinx](https://www.sphinx-doc.org/en/master/) | 2.4.4 | Yes | pip | ~/.local/bin (or similar user local directory) | [BSD License](https://github.com/sphinx-doc/sphinx/blob/3.x/LICENSE)
 
