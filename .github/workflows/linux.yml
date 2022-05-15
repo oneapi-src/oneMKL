@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   test-clang-based:
     name: clang ${{ matrix.clang_version }}, ${{ matrix.os }}, CUDA ${{matrix.cuda}}
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         clang_version: [13]
@@ -54,7 +54,7 @@ jobs:
         git clone https://github.com/illuhad/hipSYCL.git
         cd hipSYCL
         mkdir build && cd build
-        cmake -DCMAKE_CXX_COMPILER=/usr/bin/clang++-${{matrix.clang_version}} -DCLANG_EXECUTABLE_PATH=/usr/bin/clang++-${{matrix.clang_version}} -DLLVM_DIR=/usr/lib/llvm-${{matrix.clang_version}}/cmake -DWITH_CUDA_BACKEND=ON -DWITH_ROCM_BACKEND=ON -DWITH_LEVEL_ZERO_BACKEND=ON -DCMAKE_INSTALL_PREFIX=`pwd`/install -DCUDA_TOOLKIT_ROOT_DIR=/opt/hipSYCL/cuda -DROCM_PATH=/opt/rocm ..
+        cmake -DCMAKE_CXX_COMPILER=/usr/bin/clang++-${{matrix.clang_version}} -DCLANG_EXECUTABLE_PATH=/usr/bin/clang++-${{matrix.clang_version}} -DLLVM_DIR=/usr/lib/llvm-${{matrix.clang_version}}/cmake -DWITH_CUDA_BACKEND=ON -DWITH_ROCM_BACKEND=ON -DWITH_LEVEL_ZERO_BACKEND=OFF -DCMAKE_INSTALL_PREFIX=`pwd`/install -DCUDA_TOOLKIT_ROOT_DIR=/opt/hipSYCL/cuda -DROCM_PATH=/opt/rocm ..
         make -j2 install
         cp /opt/hipSYCL/cuda/lib64/stubs/libcuda.so `pwd`/install/lib/libcuda.so
         cp /opt/hipSYCL/cuda/lib64/stubs/libcuda.so `pwd`/install/lib/libcuda.so.1
@@ -80,3 +80,32 @@ jobs:
       run: |
         cd /home/runner/work/hipSYCL/hipSYCL/build/tests-cpu
         LD_LIBRARY_PATH=/home/runner/work/hipSYCL/hipSYCL/build/install/lib ./sycl_tests
+
+  test-dpcpp-based:
+    name: Test dpcpp based compilation
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+    - name: Install dpcpp
+      run: |
+        wget https://registrationcenter-download.intel.com/akdlm/irc_nas/18236/l_BaseKit_p_2021.4.0.3422.sh
+        bash l_BaseKit_p_2021.4.0.3422.sh \
+          -a --action install  \
+          -s --eula accept  \
+          --components=\
+          intel.oneapi.lin.tbb.devel:\
+          intel.oneapi.lin.dpcpp-cpp-compiler:\
+          intel.oneapi.lin.mkl.devel \
+          --install-dir /opt/intel/ \
+          --download-dir /opt/intel/dw/ \
+          --download-cache /opt/intel/dw/ \
+          --package-path /opt/intel/intel
+
+    - name: Clone oneMKL
+      run: |
+        git clone https://github.com/oneapi-src/oneMKL.git
+
+
+
