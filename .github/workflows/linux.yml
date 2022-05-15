@@ -9,13 +9,20 @@ jobs:
     strategy:
       matrix:
         clang_version: [13]
-        rocm_version: ['5.1.0']
+        rocm_version: ['5.1.1']
         os: [ubuntu-20.04]
         cuda: [11.0]
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: 'recursive'
+    - name: install ROCm
+      run: |
+        sudo apt install libnuma-dev cmake unzip
+        wget -q -O - https://repo.radeon.com/rocm/rocm.gpg.key | sudo apt-key add -
+        echo 'deb [arch=amd64] https://repo.radeon.com/rocm/apt/${{matrix.rocm_version}}/ ubuntu main' | sudo tee /etc/apt/sources.list.d/rocm.list
+        sudo apt update
+        sudo apt install rocm-dev
     - name: install CUDA 11.0
       if: matrix.cuda == 11.0
       run: |
@@ -23,13 +30,6 @@ jobs:
         wget -q -O cuda.sh http://developer.download.nvidia.com/compute/cuda/11.0.2/local_installers/cuda_11.0.2_450.51.05_linux.run
         sudo sh ./cuda.sh --override --silent --toolkit --no-man-page --no-drm --no-opengl-libs --installpath=/opt/hipSYCL/cuda || true
         echo "CUDA Version 11.0.0" | sudo tee /opt/hipSYCL/cuda/version.txt
-    - name: install ROCm
-      run: |
-        sudo apt install libnuma-dev cmake unzip
-        wget -q -O - https://repo.radeon.com/rocm/rocm.gpg.key | sudo apt-key add -
-        echo 'deb [arch=amd64] https://repo.radeon.com/rocm/apt/${{matrix.rocm_version}} bionic main' | sudo tee /etc/apt/sources.list.d/rocm.list
-        sudo apt update
-        sudo apt install rocm-dev
     - name: install LLVM
       run: |
         wget https://apt.llvm.org/llvm.sh
