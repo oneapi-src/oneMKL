@@ -65,7 +65,7 @@ inline void print_device_info(const sycl::device& device) {
               << "platform version : " << platform.get_info<sycl::info::platform::version>()
               << std::endl;
     std::cout << test_log::padding
-              << "vendor         : " << platform.get_info<sycl::info::platform::vendor>()
+              << "vendor : " << platform.get_info<sycl::info::platform::vendor>()
               << std::endl;
     std::cout << test_log::padding << std::endl;
 }
