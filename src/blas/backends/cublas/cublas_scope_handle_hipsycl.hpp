@@ -18,7 +18,11 @@
 **************************************************************************/
 #ifndef CUBLAS_SCOPED_HANDLE_HIPSYCL_HPP
 #define CUBLAS_SCOPED_HANDLE_HIPSYCL_HPP
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include <memory>
 #include <thread>
 #include <unordered_map>

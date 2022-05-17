@@ -20,7 +20,11 @@
 #ifndef _ONEMKL_EXCEPTIONS_HPP_
 #define _ONEMKL_EXCEPTIONS_HPP_
 
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include <exception>
 #include <string>
 

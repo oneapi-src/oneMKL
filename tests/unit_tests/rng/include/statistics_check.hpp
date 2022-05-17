@@ -20,7 +20,11 @@
 #ifndef _RNG_TEST_STATISTICS_CHECK_HPP__
 #define _RNG_TEST_STATISTICS_CHECK_HPP__
 
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 
 #include "oneapi/mkl.hpp"
 

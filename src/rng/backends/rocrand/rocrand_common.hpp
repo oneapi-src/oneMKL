@@ -22,7 +22,11 @@
 #ifndef _RNG_ROCRAND_COMMON_HPP_
 #define _RNG_ROCRAND_COMMON_HPP_
 
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include "rocrand_helper.hpp"
 
 namespace oneapi {

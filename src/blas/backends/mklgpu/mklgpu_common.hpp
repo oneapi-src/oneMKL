@@ -20,7 +20,11 @@
 #ifndef _MKLGPU_COMMON_HPP_
 #define _MKLGPU_COMMON_HPP_
 
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include <complex>
 
 typedef enum { MKL_ROW_MAJOR = 101, MKL_COL_MAJOR = 102 } MKL_LAYOUT;

@@ -58,7 +58,11 @@
  * so.
  ******************************************************************************/
 
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #ifndef __HIPSYCL__
 #include <CL/sycl/backend/cuda.hpp>
 #endif

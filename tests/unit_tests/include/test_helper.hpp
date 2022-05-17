@@ -24,7 +24,11 @@
 #include <string>
 #include <tuple>
 #include <gtest/gtest.h>
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 
 #include "oneapi/mkl.hpp"
 #include "oneapi/mkl/detail/config.hpp"

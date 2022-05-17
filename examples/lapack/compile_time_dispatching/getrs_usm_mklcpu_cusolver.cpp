@@ -36,7 +36,11 @@
 #include <vector>
 
 // oneMKL/SYCL includes
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include "oneapi/mkl.hpp"
 
 // local includes
@@ -144,8 +148,8 @@ void run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_d
     std::int64_t cpu_getrf_scratchpad_size = oneapi::mkl::lapack::getrf_scratchpad_size<float>(
         oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue }, m, n, lda);
     std::int64_t cpu_getrs_scratchpad_size = oneapi::mkl::lapack::getrs_scratchpad_size<float>(
-        oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue },
-        trans, n, nrhs, lda, ldb);
+        oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue }, trans, n, nrhs,
+        lda, ldb);
     float* cpu_getrf_scratchpad = sycl::malloc_device<float>(
         cpu_getrf_scratchpad_size * sizeof(float), cpu_device, cpu_context);
     float* cpu_getrs_scratchpad = sycl::malloc_device<float>(
@@ -174,8 +178,8 @@ void run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_d
     std::int64_t gpu_getrf_scratchpad_size = oneapi::mkl::lapack::getrf_scratchpad_size<float>(
         oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver>{ gpu_queue }, m, n, lda);
     std::int64_t gpu_getrs_scratchpad_size = oneapi::mkl::lapack::getrs_scratchpad_size<float>(
-        oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver>{ gpu_queue },
-        trans, n, nrhs, lda, ldb);
+        oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver>{ gpu_queue }, trans, n, nrhs,
+        lda, ldb);
     float* gpu_getrf_scratchpad = sycl::malloc_device<float>(
         gpu_getrf_scratchpad_size * sizeof(float), gpu_device, gpu_context);
     float* gpu_getrs_scratchpad = sycl::malloc_device<float>(
@@ -196,16 +200,16 @@ void run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_d
         oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue }, m, n, cpu_A, lda,
         cpu_ipiv, cpu_getrf_scratchpad, cpu_getrf_scratchpad_size);
     cpu_getrs_done = oneapi::mkl::lapack::getrs(
-        oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue },
-        trans, n, nrhs, cpu_A, lda, cpu_ipiv, cpu_B, ldb,
-        cpu_getrs_scratchpad, cpu_getrs_scratchpad_size, { cpu_getrf_done });
+        oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue }, trans, n, nrhs,
+        cpu_A, lda, cpu_ipiv, cpu_B, ldb, cpu_getrs_scratchpad, cpu_getrs_scratchpad_size,
+        { cpu_getrf_done });
     gpu_getrf_done = oneapi::mkl::lapack::getrf(
         oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver>{ gpu_queue }, m, n, gpu_A,
         lda, gpu_ipiv, gpu_getrf_scratchpad, gpu_getrf_scratchpad_size);
     gpu_getrs_done = oneapi::mkl::lapack::getrs(
-        oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver>{ gpu_queue },
-        trans, n, nrhs, gpu_A, lda, gpu_ipiv, gpu_B, ldb,
-        gpu_getrs_scratchpad, gpu_getrs_scratchpad_size, { gpu_getrf_done });
+        oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver>{ gpu_queue }, trans, n, nrhs,
+        gpu_A, lda, gpu_ipiv, gpu_B, ldb, gpu_getrs_scratchpad, gpu_getrs_scratchpad_size,
+        { gpu_getrf_done });
 
     // Wait until calculations are done
     cpu_queue.wait_and_throw();
@@ -219,7 +223,6 @@ void run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_d
 
     // copy data from GPU device back to host
     gpu_queue.memcpy(result_gpu.data(), gpu_B, B_size * sizeof(float)).wait_and_throw();
-
 
     // Print results
     std::cout << "\n\t\tGETRF and GETRS parameters:" << std::endl;
@@ -252,7 +255,6 @@ void run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_d
     sycl::free(cpu_ipiv, cpu_queue);
     sycl::free(cpu_B, cpu_queue);
     sycl::free(cpu_A, cpu_queue);
-
 }
 
 //

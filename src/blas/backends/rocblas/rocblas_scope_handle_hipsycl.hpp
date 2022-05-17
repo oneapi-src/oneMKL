@@ -20,7 +20,11 @@
 **************************************************************************/
 #ifndef _ROCBLAS_SCOPED_HANDLE_HPP_
 #define _ROCBLAS_SCOPED_HANDLE_HPP_
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include <memory>
 #include <thread>
 #include <unordered_map>

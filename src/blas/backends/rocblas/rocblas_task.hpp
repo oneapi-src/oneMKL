@@ -22,7 +22,11 @@
 #define _ROCBLAS_TASK_HPP_
 #include <rocblas.h>
 #include <complex>
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include "oneapi/mkl/types.hpp"
 #ifndef __HIPSYCL__
 #include "rocblas_scope_handle.hpp"

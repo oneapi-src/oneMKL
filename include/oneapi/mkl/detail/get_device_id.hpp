@@ -20,7 +20,11 @@
 #ifndef _ONEMKL_GET_DEVICE_ID_HPP_
 #define _ONEMKL_GET_DEVICE_ID_HPP_
 
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 
 #include "oneapi/mkl/detail/backends_table.hpp"
 #include "oneapi/mkl/exceptions.hpp"

@@ -18,7 +18,11 @@
 **************************************************************************/
 #ifndef _CUBLAS_SCOPED_HANDLE_HPP_
 #define _CUBLAS_SCOPED_HANDLE_HPP_
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include <CL/sycl/backend/cuda.hpp>
 #include <CL/sycl/context.hpp>
 #include <CL/sycl/detail/pi.hpp>
