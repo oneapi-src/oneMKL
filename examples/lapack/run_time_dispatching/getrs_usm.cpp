@@ -37,7 +37,11 @@
 #include <vector>
 
 // oneMKL/SYCL includes
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include "oneapi/mkl.hpp"
 
 // local includes
@@ -66,7 +70,6 @@ void run_getrs_example(const sycl::device& device) {
     std::int64_t ipiv_size = n;
     oneapi::mkl::transpose trans = oneapi::mkl::transpose::nontrans;
 
-
     // Asynchronous error handler
     auto error_handler = [&](sycl::exception_list exceptions) {
         for (auto const& e : exceptions) {
@@ -75,17 +78,15 @@ void run_getrs_example(const sycl::device& device) {
             }
             catch (oneapi::mkl::lapack::exception const& e) {
                 // Handle LAPACK related exceptions that happened during asynchronous call
-                std::cerr
-                    << "Caught asynchronous LAPACK exception during GETRF or GETRS:"
-                    << std::endl;
+                std::cerr << "Caught asynchronous LAPACK exception during GETRF or GETRS:"
+                          << std::endl;
                 std::cerr << "\t" << e.what() << std::endl;
                 std::cerr << "\tinfo: " << e.info() << std::endl;
             }
             catch (sycl::exception const& e) {
                 // Handle not LAPACK related exceptions that happened during asynchronous call
-                std::cerr
-                    << "Caught asynchronous SYCL exception during GETRF or GETRS:"
-                    << std::endl;
+                std::cerr << "Caught asynchronous SYCL exception during GETRF or GETRS:"
+                          << std::endl;
                 std::cerr << "\t" << e.what() << std::endl;
             }
         }
@@ -114,8 +115,8 @@ void run_getrs_example(const sycl::device& device) {
 
     std::int64_t getrf_scratchpad_size =
         oneapi::mkl::lapack::getrf_scratchpad_size<float>(queue, m, n, lda);
-    std::int64_t getrs_scratchpad_size = oneapi::mkl::lapack::getrs_scratchpad_size<float>(
-        queue, trans, n, nrhs, lda, ldb);
+    std::int64_t getrs_scratchpad_size =
+        oneapi::mkl::lapack::getrs_scratchpad_size<float>(queue, trans, n, nrhs, lda, ldb);
     float* getrf_scratchpad =
         sycl::malloc_shared<float>(getrf_scratchpad_size * sizeof(float), device, context);
     float* getrs_scratchpad =
@@ -137,9 +138,9 @@ void run_getrs_example(const sycl::device& device) {
     // Execute on device
     getrf_done = oneapi::mkl::lapack::getrf(queue, m, n, dev_A, lda, dev_ipiv, getrf_scratchpad,
                                             getrf_scratchpad_size);
-    getrs_done = oneapi::mkl::lapack::getrs(queue, trans, n, nrhs, dev_A,
-                                            lda, dev_ipiv, dev_B, ldb, getrs_scratchpad,
-                                            getrs_scratchpad_size, { getrf_done });
+    getrs_done =
+        oneapi::mkl::lapack::getrs(queue, trans, n, nrhs, dev_A, lda, dev_ipiv, dev_B, ldb,
+                                   getrs_scratchpad, getrs_scratchpad_size, { getrf_done });
 
     // Wait until calculations are done
     queue.wait_and_throw();
@@ -163,7 +164,6 @@ void run_getrs_example(const sycl::device& device) {
 
     // output the top 2x2 block of X matrix
     print_2x2_matrix_values(B.data(), ldb, "X");
-
 
     sycl::free(getrs_scratchpad, queue);
     sycl::free(getrf_scratchpad, queue);

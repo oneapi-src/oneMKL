@@ -42,7 +42,11 @@
 #include <vector>
 
 // oneMKL/SYCL includes
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include "oneapi/mkl.hpp"
 
 // local includes
@@ -218,14 +222,12 @@ void run_gemm_example(const sycl::device &cpu_dev, const sycl::device &gpu_dev) 
     // output the top 2x2 block of C matrix from GPU
     print_2x2_matrix_values(result_gpu.data(), ldC, "(GPU) C");
 
-
     sycl::free(gpu_C, gpu_queue);
     sycl::free(gpu_B, gpu_queue);
     sycl::free(gpu_A, gpu_queue);
     sycl::free(cpu_C, cpu_queue);
     sycl::free(cpu_B, cpu_queue);
     sycl::free(cpu_A, cpu_queue);
-
 }
 
 //

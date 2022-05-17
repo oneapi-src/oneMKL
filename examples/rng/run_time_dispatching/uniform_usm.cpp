@@ -37,7 +37,11 @@
 #include <vector>
 
 // oneMKL/SYCL includes
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include "oneapi/mkl.hpp"
 
 // local includes
@@ -118,7 +122,6 @@ void run_uniform_example(const sycl::device& dev) {
     std::cout << std::endl;
 
     sycl::free(dev_r, queue);
-
 }
 
 //

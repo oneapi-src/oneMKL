@@ -20,7 +20,11 @@
 #ifndef _ONEMKL_RUNTIME_SUPPORT_HELPER_HPP_
 #define _ONEMKL_RUNTIME_SUPPORT_HELPER_HPP_
 
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include <type_traits>
 
 // Utility function to verify that a given set of types is supported by the

@@ -18,7 +18,11 @@
 **************************************************************************/
 #ifndef _ONEMKL_BLAS_CUBLAS_HPP_
 #define _ONEMKL_BLAS_CUBLAS_HPP_
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include <complex>
 #include <cstdint>
 #include <string>

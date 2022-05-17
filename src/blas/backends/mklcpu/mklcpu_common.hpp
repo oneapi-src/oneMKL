@@ -23,7 +23,11 @@
 #define MKL_Complex8  std::complex<float>
 #define MKL_Complex16 std::complex<double>
 
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include <complex>
 
 #include "mkl_blas.h"

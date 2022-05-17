@@ -24,7 +24,11 @@
 #include <limits>
 #include <vector>
 
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include "cblas.h"
 #include "oneapi/mkl/detail/config.hpp"
 #include "oneapi/mkl.hpp"

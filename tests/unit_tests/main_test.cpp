@@ -18,7 +18,11 @@
 *******************************************************************************/
 
 #include <gtest/gtest.h>
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include <string>
 #include "test_helper.hpp"
 #include "oneapi/mkl/detail/config.hpp"

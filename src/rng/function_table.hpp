@@ -21,7 +21,11 @@
 #define _RNG_FUNCTION_TABLE_HPP_
 
 #include <cstdint>
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 
 #include "oneapi/mkl/rng/detail/engine_impl.hpp"
 

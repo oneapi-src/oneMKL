@@ -20,7 +20,11 @@
 #ifndef _RNG_CPU_COMMON_HPP_
 #define _RNG_CPU_COMMON_HPP_
 
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 
 namespace oneapi {
 namespace mkl {

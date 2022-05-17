@@ -24,7 +24,11 @@
 #include <iostream>
 #include <vector>
 
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 
 #include "oneapi/mkl.hpp"
 
@@ -44,7 +48,6 @@
 
 #define POISSON_ARGS 0.5
 
-using namespace cl;
 template <typename Distr, typename Engine>
 class statistics_test {
 public:

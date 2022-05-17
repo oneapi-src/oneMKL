@@ -21,10 +21,10 @@
 #define _ONEMKL_TYPES_HPP_
 
 #include "oneapi/mkl/bfloat16.hpp"
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
-
-#ifdef __HIPSYCL__
-namespace sycl = cl::sycl;
 #endif
 
 namespace oneapi {
