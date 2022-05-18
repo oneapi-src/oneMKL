@@ -207,6 +207,7 @@ struct InputTestController {
     }
 
     result_T run_print_on_fail(TestPointer tp, const sycl::device& dev) {
+        print_device_info(dev);
         if constexpr (arg_count == 0) { /* test does not take input */
             result_T result = call_test(tp, dev, {});
             if (!result) {

@@ -31,22 +31,10 @@
 
 namespace test_log {
 
-static std::stringstream lout{};
-static std::array<char, 1024> buffer{};
-static std::string padding{};
-
-inline void print() {
-    std::cout.clear();
-    if (lout.rdbuf()->in_avail()) { /* check if stream is non-empty */
-        while (lout.good()) {
-            std::string line;
-            std::getline(lout, line);
-            std::cout << padding << "\t" << line << std::endl;
-        }
-    }
-    lout.str("");
-    lout.clear();
-}
+extern std::stringstream lout;
+extern std::array<char, 1024> buffer;
+extern std::string padding;
+void print();
 
 } // namespace test_log
 
@@ -65,8 +53,7 @@ inline void print_device_info(const sycl::device& device) {
               << "platform version : " << platform.get_info<sycl::info::platform::version>()
               << std::endl;
     std::cout << test_log::padding
-              << "vendor : " << platform.get_info<sycl::info::platform::vendor>()
-              << std::endl;
+              << "vendor : " << platform.get_info<sycl::info::platform::vendor>() << std::endl;
     std::cout << test_log::padding << std::endl;
 }
 
