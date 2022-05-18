@@ -23,7 +23,11 @@
  */
 #ifndef _CUBLAS_HELPER_HPP_
 #define _CUBLAS_HELPER_HPP_
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include <cublas_v2.h>
 #include <cuda.h>
 #include <cuda_fp16.h>

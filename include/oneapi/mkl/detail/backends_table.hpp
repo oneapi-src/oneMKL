@@ -23,7 +23,11 @@
 #include <string>
 #include <vector>
 #include <map>
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 
 #include "oneapi/mkl/detail/config.hpp"
 
@@ -100,6 +104,12 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
           {
 #ifdef ENABLE_MKLGPU_BACKEND
               LIB_NAME("rng_mklgpu")
+#endif
+          } },
+        { device::amdgpu,
+          {
+#ifdef ENABLE_ROCRAND_BACKEND
+              LIB_NAME("rng_rocrand")
 #endif
           } },
         { device::nvidiagpu,

@@ -26,7 +26,11 @@
 #include <stdexcept>
 #include <type_traits>
 
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 
 #define MAX_NUM_PRINT 20
 

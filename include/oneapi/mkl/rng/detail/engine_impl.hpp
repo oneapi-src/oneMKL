@@ -21,12 +21,17 @@
 #define _ONEMKL_RNG_ENGINE_IMPL_HPP_
 
 #include <cstdint>
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 
 #include "oneapi/mkl/detail/export.hpp"
 #include "oneapi/mkl/detail/get_device_id.hpp"
 
 #include "oneapi/mkl/rng/distributions.hpp"
+#include "oneapi/mkl/types.hpp"
 
 namespace oneapi {
 namespace mkl {

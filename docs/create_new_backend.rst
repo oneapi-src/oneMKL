@@ -270,7 +270,11 @@ The following code snippet is updated for ``src/blas/backends/newlib/newlib_wrap
 
 .. code-block:: diff
 
+        #if __has_include(<sycl/sycl.hpp>)
+        #include <sycl/sycl.hpp>
+        #else
         #include <CL/sycl.hpp>
+        #endif
         
         #include "oneapi/mkl/types.hpp"
         

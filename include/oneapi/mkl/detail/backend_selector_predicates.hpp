@@ -21,7 +21,11 @@
 #define _ONEMKL_BACKEND_SELECTOR_PREDICATES_HPP_
 
 #include <cstdint>
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 
 #include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/detail/backends.hpp"
@@ -102,6 +106,19 @@ inline void backend_selector_precondition<backend::rocblas>(sycl::queue& queue) 
     if (!(queue.get_device().is_gpu() && vendor_id == AMD_ID)) {
         throw unsupported_device("",
                                  "backend_selector<backend::" + backend_map[backend::rocblas] + ">",
+                                 queue.get_device());
+    }
+#endif
+}
+
+template <>
+inline void backend_selector_precondition<backend::rocrand>(sycl::queue& queue) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    unsigned int vendor_id =
+        static_cast<unsigned int>(queue.get_device().get_info<sycl::info::device::vendor_id>());
+    if (!(queue.get_device().is_gpu() && vendor_id == AMD_ID)) {
+        throw unsupported_device("",
+                                 "backend_selector<backend::" + backend_map[backend::rocrand] + ">",
                                  queue.get_device());
     }
 #endif

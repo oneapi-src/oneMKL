@@ -18,7 +18,11 @@
 *******************************************************************************/
 
 #include <iostream>
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 
 #include "mkl_vsl.h"
 
@@ -32,8 +36,6 @@ namespace oneapi {
 namespace mkl {
 namespace rng {
 namespace mklcpu {
-
-using namespace cl;
 
 class mrg32k3a_impl : public oneapi::mkl::rng::detail::engine_impl {
 public:

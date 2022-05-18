@@ -18,7 +18,11 @@
 *******************************************************************************/
 
 #include <gtest/gtest.h>
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include <string>
 #include "test_helper.hpp"
 #include "oneapi/mkl/detail/config.hpp"
@@ -112,9 +116,13 @@ int main(int argc, char** argv) {
                         if (dev.is_gpu() && vendor_id == INTEL_ID)
                             continue;
 #endif
-#if !defined(ENABLE_CUBLAS_BACKEND) && !defined(ENABLE_CUSOLVER_BACKEND) && \
-    !defined(ENABLE_CURAND_BACKEND) && !defined(ENABLE_ROCBLAS_BACKEND)
+#if !defined(ENABLE_CUBLAS_BACKEND) && !defined(ENABLE_CURAND_BACKEND) && \
+    !defined(ENABLE_CUSOLVER_BACKEND)
                         if (dev.is_gpu() && vendor_id == NVIDIA_ID)
+                            continue;
+#endif
+#if !defined(ENABLE_ROCBLAS_BACKEND) && !defined(ENABLE_ROCRAND_BACKEND)
+                        if (dev.is_gpu() && vendor_id == AMD_ID)
                             continue;
 #endif
 #ifdef __HIPSYCL__
