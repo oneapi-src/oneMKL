@@ -183,9 +183,9 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::transpose trans, int64
             std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::getrs_batch, trans,
-                           n, nrhs, A_dev, lda, stride_a, ipiv_dev, stride_ipiv, B_dev, ldb,
-                           stride_b, batch_size, scratchpad_dev, scratchpad_size,
+        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::getrs_batch, trans, n, nrhs,
+                           A_dev, lda, stride_a, ipiv_dev, stride_ipiv, B_dev, ldb, stride_b,
+                           batch_size, scratchpad_dev, scratchpad_size,
                            std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);
