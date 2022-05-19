@@ -2025,10 +2025,10 @@ void symv(backend_selector<backend::mklcpu> selector, uplo upper_lower, std::int
     symv_postcondition(selector.get_queue(), upper_lower, n, alpha, a, lda, x, incx, beta, y, incy);
 }
 
-void omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, int64_t m,
-                    int64_t n, float alpha, sycl::buffer<float, 1> &a, int64_t lda,
-                    int64_t stride_a, sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b,
-                    int64_t batch_size) {
+void omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, std::int64_t m,
+                    std::int64_t n, float alpha, sycl::buffer<float, 1> &a, std::int64_t lda,
+                    std::int64_t stride_a, sycl::buffer<float, 1> &b, std::int64_t ldb,
+                    std::int64_t stride_b, std::int64_t batch_size) {
     omatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb,
                                 stride_b, batch_size);
     oneapi::mkl::blas::mklcpu::MAJOR::omatcopy_batch(selector.get_queue(), trans, m, n, alpha, a,
@@ -2037,10 +2037,10 @@ void omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans,
                                  stride_b, batch_size);
 }
 
-void omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, int64_t m,
-                    int64_t n, double alpha, sycl::buffer<double, 1> &a, int64_t lda,
-                    int64_t stride_a, sycl::buffer<double, 1> &b, int64_t ldb, int64_t stride_b,
-                    int64_t batch_size) {
+void omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, std::int64_t m,
+                    std::int64_t n, double alpha, sycl::buffer<double, 1> &a, std::int64_t lda,
+                    std::int64_t stride_a, sycl::buffer<double, 1> &b, std::int64_t ldb,
+                    std::int64_t stride_b, std::int64_t batch_size) {
     omatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb,
                                 stride_b, batch_size);
     oneapi::mkl::blas::mklcpu::MAJOR::omatcopy_batch(selector.get_queue(), trans, m, n, alpha, a,
@@ -2049,10 +2049,11 @@ void omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans,
                                  stride_b, batch_size);
 }
 
-void omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, int64_t m,
-                    int64_t n, std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a,
-                    int64_t lda, int64_t stride_a, sycl::buffer<std::complex<float>, 1> &b,
-                    int64_t ldb, int64_t stride_b, int64_t batch_size) {
+void omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, std::int64_t m,
+                    std::int64_t n, std::complex<float> alpha,
+                    sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+                    std::int64_t stride_a, sycl::buffer<std::complex<float>, 1> &b,
+                    std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
     omatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb,
                                 stride_b, batch_size);
     oneapi::mkl::blas::mklcpu::MAJOR::omatcopy_batch(selector.get_queue(), trans, m, n, alpha, a,
@@ -2061,10 +2062,11 @@ void omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans,
                                  stride_b, batch_size);
 }
 
-void omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, int64_t m,
-                    int64_t n, std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
-                    int64_t lda, int64_t stride_a, sycl::buffer<std::complex<double>, 1> &b,
-                    int64_t ldb, int64_t stride_b, int64_t batch_size) {
+void omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, std::int64_t m,
+                    std::int64_t n, std::complex<double> alpha,
+                    sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+                    std::int64_t stride_a, sycl::buffer<std::complex<double>, 1> &b,
+                    std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size) {
     omatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb,
                                 stride_b, batch_size);
     oneapi::mkl::blas::mklcpu::MAJOR::omatcopy_batch(selector.get_queue(), trans, m, n, alpha, a,
@@ -2073,9 +2075,9 @@ void omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans,
                                  stride_b, batch_size);
 }
 
-void imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, int64_t m,
-                    int64_t n, float alpha, sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb,
-                    int64_t stride, int64_t batch_size) {
+void imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, std::int64_t m,
+                    std::int64_t n, float alpha, sycl::buffer<float, 1> &ab, std::int64_t lda,
+                    std::int64_t ldb, std::int64_t stride, std::int64_t batch_size) {
     imatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride,
                                 batch_size);
     oneapi::mkl::blas::mklcpu::MAJOR::imatcopy_batch(selector.get_queue(), trans, m, n, alpha, ab,
@@ -2084,9 +2086,9 @@ void imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans,
                                  batch_size);
 }
 
-void imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, int64_t m,
-                    int64_t n, double alpha, sycl::buffer<double, 1> &ab, int64_t lda, int64_t ldb,
-                    int64_t stride, int64_t batch_size) {
+void imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, std::int64_t m,
+                    std::int64_t n, double alpha, sycl::buffer<double, 1> &ab, std::int64_t lda,
+                    std::int64_t ldb, std::int64_t stride, std::int64_t batch_size) {
     imatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride,
                                 batch_size);
     oneapi::mkl::blas::mklcpu::MAJOR::imatcopy_batch(selector.get_queue(), trans, m, n, alpha, ab,
@@ -2095,9 +2097,10 @@ void imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans,
                                  batch_size);
 }
 
-void imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, int64_t m,
-                    int64_t n, std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &ab,
-                    int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size) {
+void imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, std::int64_t m,
+                    std::int64_t n, std::complex<float> alpha,
+                    sycl::buffer<std::complex<float>, 1> &ab, std::int64_t lda, std::int64_t ldb,
+                    std::int64_t stride, std::int64_t batch_size) {
     imatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride,
                                 batch_size);
     oneapi::mkl::blas::mklcpu::MAJOR::imatcopy_batch(selector.get_queue(), trans, m, n, alpha, ab,
@@ -2106,10 +2109,10 @@ void imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans,
                                  batch_size);
 }
 
-void imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, int64_t m,
-                    int64_t n, std::complex<double> alpha,
-                    sycl::buffer<std::complex<double>, 1> &ab, int64_t lda, int64_t ldb,
-                    int64_t stride, int64_t batch_size) {
+void imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, std::int64_t m,
+                    std::int64_t n, std::complex<double> alpha,
+                    sycl::buffer<std::complex<double>, 1> &ab, std::int64_t lda, std::int64_t ldb,
+                    std::int64_t stride, std::int64_t batch_size) {
     imatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride,
                                 batch_size);
     oneapi::mkl::blas::mklcpu::MAJOR::imatcopy_batch(selector.get_queue(), trans, m, n, alpha, ab,
@@ -5051,111 +5054,115 @@ sycl::event symv(backend_selector<backend::mklcpu> selector, uplo upper_lower, s
     return done;
 }
 
-sycl::event omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, int64_t m,
-                           int64_t n, float alpha, const float *a, int64_t lda, int64_t stride_a,
-                           float *b, int64_t ldb, int64_t stride_b, int64_t batch_size,
+sycl::event omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans,
+                           std::int64_t m, std::int64_t n, float alpha, const float *a,
+                           std::int64_t lda, std::int64_t stride_a, float *b, std::int64_t ldb,
+                           std::int64_t stride_b, std::int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
     omatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb,
                                 stride_b, batch_size, dependencies);
-    oneapi::mkl::blas::mklcpu::MAJOR::omatcopy_batch(selector.get_queue(), trans, m, n, alpha, a,
-                                                     lda, stride_a, b, ldb, stride_b, batch_size,
-                                                     dependencies);
+    auto done = oneapi::mkl::blas::mklcpu::MAJOR::omatcopy_batch(
+        selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb, stride_b, batch_size,
+        dependencies);
     omatcopy_batch_postcondition(selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb,
                                  stride_b, batch_size, dependencies);
     return done;
 }
 
-sycl::event omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, int64_t m,
-                           int64_t n, double alpha, const double *a, int64_t lda, int64_t stride_a,
-                           double *b, int64_t ldb, int64_t stride_b, int64_t batch_size,
+sycl::event omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans,
+                           std::int64_t m, std::int64_t n, double alpha, const double *a,
+                           std::int64_t lda, std::int64_t stride_a, double *b, std::int64_t ldb,
+                           std::int64_t stride_b, std::int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
     omatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb,
                                 stride_b, batch_size, dependencies);
-    oneapi::mkl::blas::mklcpu::MAJOR::omatcopy_batch(selector.get_queue(), trans, m, n, alpha, a,
-                                                     lda, stride_a, b, ldb, stride_b, batch_size,
-                                                     dependencies);
+    auto done = oneapi::mkl::blas::mklcpu::MAJOR::omatcopy_batch(
+        selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb, stride_b, batch_size,
+        dependencies);
     omatcopy_batch_postcondition(selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb,
                                  stride_b, batch_size, dependencies);
     return done;
 }
 
-sycl::event omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, int64_t m,
-                           int64_t n, std::complex<float> alpha, const std::complex<float> *a,
-                           int64_t lda, int64_t stride_a, std::complex<float> *b, int64_t ldb,
-                           int64_t stride_b, int64_t batch_size,
-                           const std::vector<sycl::event> &dependencies) {
+sycl::event omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans,
+                           std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                           const std::complex<float> *a, std::int64_t lda, std::int64_t stride_a,
+                           std::complex<float> *b, std::int64_t ldb, std::int64_t stride_b,
+                           std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
     omatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb,
                                 stride_b, batch_size, dependencies);
-    oneapi::mkl::blas::mklcpu::MAJOR::omatcopy_batch(selector.get_queue(), trans, m, n, alpha, a,
-                                                     lda, stride_a, b, ldb, stride_b, batch_size,
-                                                     dependencies);
+    auto done = oneapi::mkl::blas::mklcpu::MAJOR::omatcopy_batch(
+        selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb, stride_b, batch_size,
+        dependencies);
     omatcopy_batch_postcondition(selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb,
                                  stride_b, batch_size, dependencies);
     return done;
 }
 
-sycl::event omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, int64_t m,
-                           int64_t n, std::complex<double> alpha, const std::complex<double> *a,
-                           int64_t lda, int64_t stride_a, std::complex<double> *b, int64_t ldb,
-                           int64_t stride_b, int64_t batch_size,
-                           const std::vector<sycl::event> &dependencies) {
+sycl::event omatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans,
+                           std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                           const std::complex<double> *a, std::int64_t lda, std::int64_t stride_a,
+                           std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
+                           std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
     omatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb,
                                 stride_b, batch_size, dependencies);
-    oneapi::mkl::blas::mklcpu::MAJOR::omatcopy_batch(selector.get_queue(), trans, m, n, alpha, a,
-                                                     lda, stride_a, b, ldb, stride_b, batch_size,
-                                                     dependencies);
+    auto done = oneapi::mkl::blas::mklcpu::MAJOR::omatcopy_batch(
+        selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb, stride_b, batch_size,
+        dependencies);
     omatcopy_batch_postcondition(selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb,
                                  stride_b, batch_size, dependencies);
     return done;
 }
 
-sycl::event imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, int64_t m,
-                           int64_t n, float alpha, float *ab, int64_t lda, int64_t ldb,
-                           int64_t stride, int64_t batch_size,
+sycl::event imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans,
+                           std::int64_t m, std::int64_t n, float alpha, float *ab, std::int64_t lda,
+                           std::int64_t ldb, std::int64_t stride, std::int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
     imatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride,
                                 batch_size, dependencies);
-    oneapi::mkl::blas::mklcpu::MAJOR::imatcopy_batch(selector.get_queue(), trans, m, n, alpha, ab,
-                                                     lda, ldb, stride, batch_size, dependencies);
+    auto done = oneapi::mkl::blas::mklcpu::MAJOR::imatcopy_batch(
+        selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride, batch_size, dependencies);
     imatcopy_batch_postcondition(selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride,
                                  batch_size, dependencies);
     return done;
 }
 
-sycl::event imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, int64_t m,
-                           int64_t n, double alpha, double *ab, int64_t lda, int64_t ldb,
-                           int64_t stride, int64_t batch_size,
-                           const std::vector<sycl::event> &dependencies) {
+sycl::event imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans,
+                           std::int64_t m, std::int64_t n, double alpha, double *ab,
+                           std::int64_t lda, std::int64_t ldb, std::int64_t stride,
+                           std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
     imatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride,
                                 batch_size, dependencies);
-    oneapi::mkl::blas::mklcpu::MAJOR::imatcopy_batch(selector.get_queue(), trans, m, n, alpha, ab,
-                                                     lda, ldb, stride, batch_size, dependencies);
+    auto done = oneapi::mkl::blas::mklcpu::MAJOR::imatcopy_batch(
+        selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride, batch_size, dependencies);
     imatcopy_batch_postcondition(selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride,
                                  batch_size, dependencies);
     return done;
 }
 
-sycl::event imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, int64_t m,
-                           int64_t n, std::complex<float> alpha, std::complex<float> *ab,
-                           int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
+sycl::event imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans,
+                           std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                           std::complex<float> *ab, std::int64_t lda, std::int64_t ldb,
+                           std::int64_t stride, std::int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
     imatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride,
                                 batch_size, dependencies);
-    oneapi::mkl::blas::mklcpu::MAJOR::imatcopy_batch(selector.get_queue(), trans, m, n, alpha, ab,
-                                                     lda, ldb, stride, batch_size, dependencies);
+    auto done = oneapi::mkl::blas::mklcpu::MAJOR::imatcopy_batch(
+        selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride, batch_size, dependencies);
     imatcopy_batch_postcondition(selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride,
                                  batch_size, dependencies);
     return done;
 }
 
-sycl::event imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans, int64_t m,
-                           int64_t n, std::complex<double> alpha, std::complex<double> *ab,
-                           int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
+sycl::event imatcopy_batch(backend_selector<backend::mklcpu> selector, transpose trans,
+                           std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                           std::complex<double> *ab, std::int64_t lda, std::int64_t ldb,
+                           std::int64_t stride, std::int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
     imatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride,
                                 batch_size, dependencies);
-    oneapi::mkl::blas::mklcpu::MAJOR::imatcopy_batch(selector.get_queue(), trans, m, n, alpha, ab,
-                                                     lda, ldb, stride, batch_size, dependencies);
+    auto done = oneapi::mkl::blas::mklcpu::MAJOR::imatcopy_batch(
+        selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride, batch_size, dependencies);
     imatcopy_batch_postcondition(selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride,
                                  batch_size, dependencies);
     return done;
