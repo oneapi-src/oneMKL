@@ -29,14 +29,14 @@ set(DEVICE_FILTERS "")
 if(ENABLE_MKLCPU_BACKEND)
   list(APPEND DEVICE_FILTERS "cpu")
 endif()
-# RNG only supports CPU backend on Windows
+# RNG only supports mklcpu backend on Windows
 if(UNIX AND ENABLE_MKLGPU_BACKEND)
   list(APPEND DEVICE_FILTERS "gpu")
 endif()
-if(ENABLE_CURAND_BACKEND)
+if(UNIX AND ENABLE_CURAND_BACKEND)
   list(APPEND DEVICE_FILTERS "cuda:gpu")
 endif()
-if(ENABLE_ROCRAND_BACKEND)
+if(UNIX AND ENABLE_ROCRAND_BACKEND)
   list(APPEND DEVICE_FILTERS "hip:gpu")
 endif()
 
