@@ -3699,6 +3699,78 @@ inline void rotg_postcondition(sycl::queue &queue, sycl::buffer<std::complex<dou
 #endif
 }
 
+inline void omatcopy_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                           float alpha, sycl::buffer<float, 1> &a, std::int64_t lda,
+                           std::int64_t stride_a, sycl::buffer<float, 1> &b, std::int64_t ldb,
+                           std::int64_t stride_b, std::int64_t batch_size) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    /* add prechecks to queue here for input args.  */
+#endif
+}
+
+inline void omatcopy_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                           double alpha, sycl::buffer<double, 1> &a, std::int64_t lda,
+                           std::int64_t stride_a, sycl::buffer<double, 1> &b, std::int64_t ldb,
+                           std::int64_t stride_b, std::int64_t batch_size) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    /* add prechecks to queue here for input args.  */
+#endif
+}
+
+inline void omatcopy_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                           std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a,
+                           std::int64_t lda, std::int64_t stride_a,
+                           sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
+                           std::int64_t stride_b, std::int64_t batch_size) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    /* add prechecks to queue here for input args.  */
+#endif
+}
+
+inline void omatcopy_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                           std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+                           std::int64_t lda, std::int64_t stride_a,
+                           sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
+                           std::int64_t stride_b, std::int64_t batch_size) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    /* add prechecks to queue here for input args.  */
+#endif
+}
+
+inline void imatcopy_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                           float alpha, sycl::buffer<float, 1> &ab, std::int64_t lda,
+                           std::int64_t ldb, std::int64_t stride, std::int64_t batch_size) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    /* add prechecks to queue here for input args.  */
+#endif
+}
+
+inline void imatcopy_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                           double alpha, sycl::buffer<double, 1> &ab, std::int64_t lda,
+                           std::int64_t ldb, std::int64_t stride, std::int64_t batch_size) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    /* add prechecks to queue here for input args.  */
+#endif
+}
+
+inline void imatcopy_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                           std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &ab,
+                           std::int64_t lda, std::int64_t ldb, std::int64_t stride,
+                           std::int64_t batch_size) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    /* add prechecks to queue here for input args.  */
+#endif
+}
+
+inline void imatcopy_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                           std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &ab,
+                           std::int64_t lda, std::int64_t ldb, std::int64_t stride,
+                           std::int64_t batch_size) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    /* add prechecks to queue here for input args.  */
+#endif
+}
+
 // USM APIs
 
 inline void herk_precondition(sycl::queue &queue, uplo upper_lower, transpose trans,
@@ -8047,5 +8119,77 @@ inline void rotg_postcondition(sycl::queue &queue, std::complex<double> *a,
                                const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add postchecks to queue here for input args.  */
+#endif
+}
+inline void omatcopy_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                           float alpha, const float *a, std::int64_t lda, std::int64_t stride_a,
+                           float *b, std::int64_t ldb, std::int64_t stride_b,
+                           std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    /* add prechecks to queue here for input args.  */
+#endif
+}
+
+inline void omatcopy_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                           double alpha, const double *a, std::int64_t lda, std::int64_t stride_a,
+                           double *b, std::int64_t ldb, std::int64_t stride_b,
+                           std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    /* add prechecks to queue here for input args.  */
+#endif
+}
+
+inline void omatcopy_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                           std::complex<float> alpha, const std::complex<float> *a,
+                           std::int64_t lda, std::int64_t stride_a, std::complex<float> *b,
+                           std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    /* add prechecks to queue here for input args.  */
+#endif
+}
+
+inline void omatcopy_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                           std::complex<double> alpha, const std::complex<double> *a,
+                           std::int64_t lda, std::int64_t stride_a, std::complex<double> *b,
+                           std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    /* add prechecks to queue here for input args.  */
+#endif
+}
+inline void imatcopy_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                           float alpha, float *ab, std::int64_t lda, std::int64_t ldb,
+                           std::int64_t stride, std::int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    /* add prechecks to queue here for input args.  */
+#endif
+}
+
+inline void imatcopy_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                           double alpha, double *ab, std::int64_t lda, std::int64_t ldb,
+                           std::int64_t stride, std::int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    /* add prechecks to queue here for input args.  */
+#endif
+}
+
+inline void imatcopy_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                           std::complex<float> alpha, std::complex<float> *ab, std::int64_t lda,
+                           std::int64_t ldb, std::int64_t stride, std::int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    /* add prechecks to queue here for input args.  */
+#endif
+}
+
+inline void imatcopy_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                           std::complex<double> alpha, std::complex<double> *ab, std::int64_t lda,
+                           std::int64_t ldb, std::int64_t stride, std::int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    /* add prechecks to queue here for input args.  */
 #endif
 }
