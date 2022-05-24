@@ -1064,9 +1064,49 @@ ONEMKL_EXPORT void gemm_bias(sycl::queue &queue, oneapi::mkl::transpose transa,
                              float beta, sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
                              sycl::buffer<int32_t, 1> &co);
 
-ONEMKL_EXPORT void imatcopy_batch();
+ONEMKL_EXPORT void omatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                                  std::int64_t n, float alpha, sycl::buffer<float, 1> &a,
+                                  std::int64_t lda, std::int64_t stride_a,
+                                  sycl::buffer<float, 1> &b, std::int64_t ldb,
+                                  std::int64_t stride_b, std::int64_t batch_size);
 
-ONEMKL_EXPORT void omatcopy_batch();
+ONEMKL_EXPORT void omatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                                  std::int64_t n, double alpha, sycl::buffer<double, 1> &a,
+                                  std::int64_t lda, std::int64_t stride_a,
+                                  sycl::buffer<double, 1> &b, std::int64_t ldb,
+                                  std::int64_t stride_b, std::int64_t batch_size);
+
+ONEMKL_EXPORT void omatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                                  std::int64_t n, std::complex<float> alpha,
+                                  sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+                                  std::int64_t stride_a, sycl::buffer<std::complex<float>, 1> &b,
+                                  std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size);
+
+ONEMKL_EXPORT void omatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                                  std::int64_t n, std::complex<double> alpha,
+                                  sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+                                  std::int64_t stride_a, sycl::buffer<std::complex<double>, 1> &b,
+                                  std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size);
+
+ONEMKL_EXPORT void imatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                                  std::int64_t n, float alpha, sycl::buffer<float, 1> &ab,
+                                  std::int64_t lda, std::int64_t ldb, std::int64_t stride,
+                                  std::int64_t batch_size);
+
+ONEMKL_EXPORT void imatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                                  std::int64_t n, double alpha, sycl::buffer<double, 1> &ab,
+                                  std::int64_t lda, std::int64_t ldb, std::int64_t stride,
+                                  std::int64_t batch_size);
+
+ONEMKL_EXPORT void imatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                                  std::int64_t n, std::complex<float> alpha,
+                                  sycl::buffer<std::complex<float>, 1> &ab, std::int64_t lda,
+                                  std::int64_t ldb, std::int64_t stride, std::int64_t batch_size);
+
+ONEMKL_EXPORT void imatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                                  std::int64_t n, std::complex<double> alpha,
+                                  sycl::buffer<std::complex<double>, 1> &ab, std::int64_t lda,
+                                  std::int64_t ldb, std::int64_t stride, std::int64_t batch_size);
 
 // USM APIs
 
@@ -2475,10 +2515,58 @@ ONEMKL_EXPORT sycl::event gemmt(sycl::queue &queue, oneapi::mkl::uplo upper_lowe
                                     std::int64_t ldc,
                                     const std::vector<sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT sycl::event imatcopy_batch();
+ONEMKL_EXPORT sycl::event omatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans,
+                                         std::int64_t m, std::int64_t n, float alpha,
+                                         const float *a, std::int64_t lda, std::int64_t stride_a,
+                                         float *b, std::int64_t ldb, std::int64_t stride_b,
+                                         std::int64_t batch_size,
+                                         const std::vector<sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT sycl::event omatcopy_batch();
+ONEMKL_EXPORT sycl::event omatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans,
+                                         std::int64_t m, std::int64_t n, double alpha,
+                                         const double *a, std::int64_t lda, std::int64_t stride_a,
+                                         double *b, std::int64_t ldb, std::int64_t stride_b,
+                                         std::int64_t batch_size,
+                                         const std::vector<sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT sycl::event imatcopy_batch();
+ONEMKL_EXPORT sycl::event omatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans,
+                                         std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                                         const std::complex<float> *a, std::int64_t lda,
+                                         std::int64_t stride_a, std::complex<float> *b,
+                                         std::int64_t ldb, std::int64_t stride_b,
+                                         std::int64_t batch_size,
+                                         const std::vector<sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT sycl::event omatcopy_batch();
+ONEMKL_EXPORT sycl::event omatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans,
+                                         std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                                         const std::complex<double> *a, std::int64_t lda,
+                                         std::int64_t stride_a, std::complex<double> *b,
+                                         std::int64_t ldb, std::int64_t stride_b,
+                                         std::int64_t batch_size,
+                                         const std::vector<sycl::event> &dependencies = {});
+
+ONEMKL_EXPORT sycl::event imatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans,
+                                         std::int64_t m, std::int64_t n, float alpha, float *ab,
+                                         std::int64_t lda, std::int64_t ldb, std::int64_t stride,
+                                         std::int64_t batch_size,
+                                         const std::vector<sycl::event> &dependencies = {});
+
+ONEMKL_EXPORT sycl::event imatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans,
+                                         std::int64_t m, std::int64_t n, double alpha, double *ab,
+                                         std::int64_t lda, std::int64_t ldb, std::int64_t stride,
+                                         std::int64_t batch_size,
+                                         const std::vector<sycl::event> &dependencies = {});
+
+ONEMKL_EXPORT sycl::event imatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans,
+                                         std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                                         std::complex<float> *ab, std::int64_t lda,
+                                         std::int64_t ldb, std::int64_t stride,
+                                         std::int64_t batch_size,
+                                         const std::vector<sycl::event> &dependencies = {});
+
+ONEMKL_EXPORT sycl::event imatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans,
+                                         std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                                         std::complex<double> *ab, std::int64_t lda,
+                                         std::int64_t ldb, std::int64_t stride,
+                                         std::int64_t batch_size,
+                                         const std::vector<sycl::event> &dependencies = {});
