@@ -1083,9 +1083,49 @@ static inline void symv(backend_selector<backend::BACKEND> selector, uplo upper_
                         std::int64_t lda, sycl::buffer<double, 1> &x, std::int64_t incx,
                         double beta, sycl::buffer<double, 1> &y, std::int64_t incy);
 
-static inline void imatcopy_batch();
+static inline void omatcopy_batch(backend_selector<backend::BACKEND> selector, transpose trans,
+                                  std::int64_t m, std::int64_t n, float alpha,
+                                  sycl::buffer<float, 1> &a, std::int64_t lda,
+                                  std::int64_t stride_a, sycl::buffer<float, 1> &b,
+                                  std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size);
 
-static inline void omatcopy_batch();
+static inline void omatcopy_batch(backend_selector<backend::BACKEND> selector, transpose trans,
+                                  std::int64_t m, std::int64_t n, double alpha,
+                                  sycl::buffer<double, 1> &a, std::int64_t lda,
+                                  std::int64_t stride_a, sycl::buffer<double, 1> &b,
+                                  std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size);
+
+static inline void omatcopy_batch(backend_selector<backend::BACKEND> selector, transpose trans,
+                                  std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                                  sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+                                  std::int64_t stride_a, sycl::buffer<std::complex<float>, 1> &b,
+                                  std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size);
+
+static inline void omatcopy_batch(backend_selector<backend::BACKEND> selector, transpose trans,
+                                  std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                                  sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+                                  std::int64_t stride_a, sycl::buffer<std::complex<double>, 1> &b,
+                                  std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size);
+
+static inline void imatcopy_batch(backend_selector<backend::BACKEND> selector, transpose trans,
+                                  std::int64_t m, std::int64_t n, float alpha,
+                                  sycl::buffer<float, 1> &ab, std::int64_t lda, std::int64_t ldb,
+                                  std::int64_t stride, std::int64_t batch_size);
+
+static inline void imatcopy_batch(backend_selector<backend::BACKEND> selector, transpose trans,
+                                  std::int64_t m, std::int64_t n, double alpha,
+                                  sycl::buffer<double, 1> &ab, std::int64_t lda, std::int64_t ldb,
+                                  std::int64_t stride, std::int64_t batch_size);
+
+static inline void imatcopy_batch(backend_selector<backend::BACKEND> selector, transpose trans,
+                                  std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                                  sycl::buffer<std::complex<float>, 1> &ab, std::int64_t lda,
+                                  std::int64_t ldb, std::int64_t stride, std::int64_t batch_size);
+
+static inline void imatcopy_batch(backend_selector<backend::BACKEND> selector, transpose trans,
+                                  std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                                  sycl::buffer<std::complex<double>, 1> &ab, std::int64_t lda,
+                                  std::int64_t ldb, std::int64_t stride, std::int64_t batch_size);
 
 // USM APIs
 
@@ -2489,10 +2529,59 @@ static inline sycl::event symv(backend_selector<backend::BACKEND> selector, uplo
                                    std::int64_t incy,
                                    const std::vector<sycl::event> &dependencies = {});
 
-static inline sycl::event imatcopy_batch(); // stride
+static inline sycl::event omatcopy_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose trans, std::int64_t m, std::int64_t n,
+                                         float alpha, const float *a, std::int64_t lda,
+                                         std::int64_t stride_a, float *b, std::int64_t ldb,
+                                         std::int64_t stride_b, std::int64_t batch_size,
+                                         const std::vector<sycl::event> &dependencies = {});
 
-static inline sycl::event omatcopy_batch(); // stride
+static inline sycl::event omatcopy_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose trans, std::int64_t m, std::int64_t n,
+                                         double alpha, const double *a, std::int64_t lda,
+                                         std::int64_t stride_a, double *b, std::int64_t ldb,
+                                         std::int64_t stride_b, std::int64_t batch_size,
+                                         const std::vector<sycl::event> &dependencies = {});
 
-static inline sycl::event imatcopy_batch(); // group
+static inline sycl::event omatcopy_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose trans, std::int64_t m, std::int64_t n,
+                                         std::complex<float> alpha, const std::complex<float> *a,
+                                         std::int64_t lda, std::int64_t stride_a,
+                                         std::complex<float> *b, std::int64_t ldb,
+                                         std::int64_t stride_b, std::int64_t batch_size,
+                                         const std::vector<sycl::event> &dependencies = {});
 
-static inline sycl::event omatcopy_batch(); // group
+static inline sycl::event omatcopy_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose trans, std::int64_t m, std::int64_t n,
+                                         std::complex<double> alpha, const std::complex<double> *a,
+                                         std::int64_t lda, std::int64_t stride_a,
+                                         std::complex<double> *b, std::int64_t ldb,
+                                         std::int64_t stride_b, std::int64_t batch_size,
+                                         const std::vector<sycl::event> &dependencies = {});
+
+static inline sycl::event imatcopy_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose trans, std::int64_t m, std::int64_t n,
+                                         float alpha, float *ab, std::int64_t lda, std::int64_t ldb,
+                                         std::int64_t stride, std::int64_t batch_size,
+                                         const std::vector<sycl::event> &dependencies = {});
+
+static inline sycl::event imatcopy_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose trans, std::int64_t m, std::int64_t n,
+                                         double alpha, double *ab, std::int64_t lda,
+                                         std::int64_t ldb, std::int64_t stride,
+                                         std::int64_t batch_size,
+                                         const std::vector<sycl::event> &dependencies = {});
+
+static inline sycl::event imatcopy_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose trans, std::int64_t m, std::int64_t n,
+                                         std::complex<float> alpha, std::complex<float> *ab,
+                                         std::int64_t lda, std::int64_t ldb, std::int64_t stride,
+                                         std::int64_t batch_size,
+                                         const std::vector<sycl::event> &dependencies = {});
+
+static inline sycl::event imatcopy_batch(backend_selector<backend::BACKEND> selector,
+                                         transpose trans, std::int64_t m, std::int64_t n,
+                                         std::complex<double> alpha, std::complex<double> *ab,
+                                         std::int64_t lda, std::int64_t ldb, std::int64_t stride,
+                                         std::int64_t batch_size,
+                                         const std::vector<sycl::event> &dependencies = {});
