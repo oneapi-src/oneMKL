@@ -942,9 +942,9 @@ void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, f
     });
 }
 
-void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
-                    sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
-                    sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b, int64_t batch_size) {
+void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                    sycl::buffer<double, 1> &a, int64_t lda, int64_t stride_a,
+                    sycl::buffer<double, 1> &b, int64_t ldb, int64_t stride_b, int64_t batch_size) {
     queue.submit([&](sycl::handler &cgh) {
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
@@ -957,9 +957,10 @@ void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, f
     });
 }
 
-void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
-                    sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
-                    sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b, int64_t batch_size) {
+void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                    std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+                    int64_t stride_a, sycl::buffer<std::complex<float>, 1> &b, int64_t ldb,
+                    int64_t stride_b, int64_t batch_size) {
     queue.submit([&](sycl::handler &cgh) {
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         std::complex<float> alpha_real = alpha.real(), alpha_imag = alpha.imag();
@@ -974,9 +975,10 @@ void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, f
     });
 }
 
-void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
-                    sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
-                    sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b, int64_t batch_size) {
+void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                    std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+                    int64_t lda, int64_t stride_a, sycl::buffer<std::complex<double>, 1> &b,
+                    int64_t ldb, int64_t stride_b, int64_t batch_size) {
     queue.submit([&](sycl::handler &cgh) {
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         std::complex<double> alpha_real = alpha.real(), alpha_imag = alpha.imag();
@@ -1003,8 +1005,8 @@ void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, f
     });
 }
 
-void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
-                    sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                    sycl::buffer<double, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
                     int64_t batch_size) {
     queue.submit([&](sycl::handler &cgh) {
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
@@ -1016,9 +1018,9 @@ void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, f
     });
 }
 
-void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
-                    sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
-                    int64_t batch_size) {
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                    std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &ab,
+                    int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size) {
     queue.submit([&](sycl::handler &cgh) {
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         std::complex<float> alpha_real = alpha.real(), alpha_imag = alpha.imag();
@@ -1031,9 +1033,9 @@ void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, f
     });
 }
 
-void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
-                    sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
-                    int64_t batch_size) {
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                    std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &ab,
+                    int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size) {
     queue.submit([&](sycl::handler &cgh) {
         CBLAS_TRANSPOSE trans_ = cblas_convert(trans);
         std::complex<double> alpha_real = alpha.real(), alpha_imag = alpha.imag();
@@ -2998,8 +3000,8 @@ sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64
     return done;
 }
 
-sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
-                           const float *a, int64_t lda, int64_t stride_a, float *b, int64_t ldb,
+sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                           const double *a, int64_t lda, int64_t stride_a, double *b, int64_t ldb,
                            int64_t stride_b, int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
     auto done = queue.submit([&](sycl::handler &cgh) {
@@ -3016,10 +3018,10 @@ sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64
     return done;
 }
 
-sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
-                           const float *a, int64_t lda, int64_t stride_a, float *b, int64_t ldb,
-                           int64_t stride_b, int64_t batch_size,
-                           const std::vector<sycl::event> &dependencies) {
+sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                           std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                           int64_t stride_a, std::complex<float> *b, int64_t ldb, int64_t stride_b,
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -3037,10 +3039,10 @@ sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64
     return done;
 }
 
-sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
-                           const float *a, int64_t lda, int64_t stride_a, float *b, int64_t ldb,
-                           int64_t stride_b, int64_t batch_size,
-                           const std::vector<sycl::event> &dependencies) {
+sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                           std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                           int64_t stride_a, std::complex<double> *b, int64_t ldb, int64_t stride_b,
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -3075,8 +3077,8 @@ sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64
     return done;
 }
 
-sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
-                           float *ab, int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
+sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                           double *ab, int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
@@ -3092,8 +3094,9 @@ sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64
     return done;
 }
 
-sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
-                           float *ab, int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
+sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                           std::complex<float> alpha, std::complex<float> *ab, int64_t lda,
+                           int64_t ldb, int64_t stride, int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
@@ -3111,8 +3114,9 @@ sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64
     return done;
 }
 
-sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
-                           float *ab, int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
+sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                           std::complex<double> alpha, std::complex<double> *ab, int64_t lda,
+                           int64_t ldb, int64_t stride, int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
