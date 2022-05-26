@@ -943,6 +943,42 @@ typedef struct {
         sycl::buffer<uint8_t, 1> &a, std::int64_t lda, uint8_t ao, sycl::buffer<uint8_t, 1> &b,
         std::int64_t ldb, uint8_t bo, float beta, sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
         sycl::buffer<int32_t, 1> &co);
+    void (*column_major_somatcopy_batch_strided_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        float alpha, sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a,
+        sycl::buffer<float, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+        std::int64_t batch_size);
+    void (*column_major_domatcopy_batch_strided_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        double alpha, sycl::buffer<double, 1> &a, std::int64_t lda, std::int64_t stride_a,
+        sycl::buffer<double, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+        std::int64_t batch_size);
+    void (*column_major_comatcopy_batch_strided_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> & a, std::int64_t lda,
+        std::int64_t stride_a, sycl::buffer<std::complex<float>, 1> & b, std::int64_t ldb,
+        std::int64_t stride_b, std::int64_t batch_size);
+    void (*column_major_zomatcopy_batch_strided_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> & a, std::int64_t lda,
+        std::int64_t stride_a, sycl::buffer<std::complex<double>, 1> & b, std::int64_t ldb,
+        std::int64_t stride_b, std::int64_t batch_size);
+    void (*column_major_simatcopy_batch_strided_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        float alpha, sycl::buffer<float, 1> &ab, std::int64_t lda, std::int64_t ldb,
+        std::int64_t stride, std::int64_t batch_size);
+    void (*column_major_dimatcopy_batch_strided_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        double alpha, sycl::buffer<double, 1> &ab, std::int64_t lda, std::int64_t ldb,
+        std::int64_t stride, std::int64_t batch_size);
+    void (*column_major_cimatcopy_batch_strided_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> & ab, std::int64_t lda,
+        std::int64_t ldb, std::int64_t stride, std::int64_t batch_size);
+    void (*column_major_zimatcopy_batch_strided_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> & ab, std::int64_t lda,
+        std::int64_t ldb, std::int64_t stride, std::int64_t batch_size);
 
     // USM APIs
 
@@ -2112,6 +2148,42 @@ typedef struct {
         const std::uint8_t *a, std::int64_t lda, std::uint8_t ao, const std::uint8_t *b,
         std::int64_t ldb, std::uint8_t bo, float beta, std::int32_t *c, std::int64_t ldc,
         const std::int32_t *co, const std::vector<sycl::event> &dependencies);
+    sycl::event (*column_major_somatcopy_batch_strided_usm_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        float alpha, const float *a, std::int64_t lda, std::int64_t stride_a, float *b,
+        std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
+        const std::vector<sycl::event> &dependencies);
+    sycl::event (*column_major_domatcopy_batch_strided_usm_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        double alpha, const double *a, std::int64_t lda, std::int64_t stride_a, double *b,
+        std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
+        const std::vector<sycl::event> &dependencies);
+    sycl::event (*column_major_comatcopy_batch_strided_usm_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+        std::int64_t stride_a, std::complex<float> *b, std::int64_t ldb, std::int64_t stride_b,
+        std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
+    sycl::event (*column_major_zomatcopy_batch_strided_usm_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+        std::int64_t stride_a, std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
+        std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
+    sycl::event (*column_major_simatcopy_batch_strided_usm_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        float alpha, float *ab, std::int64_t lda, std::int64_t ldb, std::int64_t stride,
+        std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
+    sycl::event (*column_major_dimatcopy_batch_strided_usm_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        double alpha, double *ab, std::int64_t lda, std::int64_t ldb, std::int64_t stride,
+        std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
+    sycl::event (*column_major_cimatcopy_batch_strided_usm_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        std::complex<float> alpha, std::complex<float> * ab, std::int64_t lda, std::int64_t ldb,
+        std::int64_t stride, std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
+    sycl::event (*column_major_zimatcopy_batch_strided_usm_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        std::complex<double> alpha, std::complex<double> * ab, std::int64_t lda, std::int64_t ldb,
+        std::int64_t stride, std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
 
     // Buffer APIs
 
@@ -3002,6 +3074,42 @@ typedef struct {
         sycl::buffer<uint8_t, 1> &a, std::int64_t lda, uint8_t ao, sycl::buffer<uint8_t, 1> &b,
         std::int64_t ldb, uint8_t bo, float beta, sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
         sycl::buffer<int32_t, 1> &co);
+    void (*row_major_somatcopy_batch_strided_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        float alpha, sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a,
+        sycl::buffer<float, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+        std::int64_t batch_size);
+    void (*row_major_domatcopy_batch_strided_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        double alpha, sycl::buffer<double, 1> &a, std::int64_t lda, std::int64_t stride_a,
+        sycl::buffer<double, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+        std::int64_t batch_size);
+    void (*row_major_comatcopy_batch_strided_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> & a, std::int64_t lda,
+        std::int64_t stride_a, sycl::buffer<std::complex<float>, 1> & b, std::int64_t ldb,
+        std::int64_t stride_b, std::int64_t batch_size);
+    void (*row_major_zomatcopy_batch_strided_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> & a, std::int64_t lda,
+        std::int64_t stride_a, sycl::buffer<std::complex<double>, 1> & b, std::int64_t ldb,
+        std::int64_t stride_b, std::int64_t batch_size);
+    void (*row_major_simatcopy_batch_strided_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        float alpha, sycl::buffer<float, 1> &ab, std::int64_t lda, std::int64_t ldb,
+        std::int64_t stride, std::int64_t batch_size);
+    void (*row_major_dimatcopy_batch_strided_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        double alpha, sycl::buffer<double, 1> &ab, std::int64_t lda, std::int64_t ldb,
+        std::int64_t stride, std::int64_t batch_size);
+    void (*row_major_cimatcopy_batch_strided_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> & ab, std::int64_t lda,
+        std::int64_t ldb, std::int64_t stride, std::int64_t batch_size);
+    void (*row_major_zimatcopy_batch_strided_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> & ab, std::int64_t lda,
+        std::int64_t ldb, std::int64_t stride, std::int64_t batch_size);
 
     // USM APIs
 
@@ -4175,6 +4283,42 @@ typedef struct {
         const std::uint8_t *a, std::int64_t lda, std::uint8_t ao, const std::uint8_t *b,
         std::int64_t ldb, std::uint8_t bo, float beta, std::int32_t *c, std::int64_t ldc,
         const std::int32_t *co, const std::vector<sycl::event> &dependencies);
+    sycl::event (*row_major_somatcopy_batch_strided_usm_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        float alpha, const float *a, std::int64_t lda, std::int64_t stride_a, float *b,
+        std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
+        const std::vector<sycl::event> &dependencies);
+    sycl::event (*row_major_domatcopy_batch_strided_usm_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        double alpha, const double *a, std::int64_t lda, std::int64_t stride_a, double *b,
+        std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
+        const std::vector<sycl::event> &dependencies);
+    sycl::event (*row_major_comatcopy_batch_strided_usm_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+        std::int64_t stride_a, std::complex<float> *b, std::int64_t ldb, std::int64_t stride_b,
+        std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
+    sycl::event (*row_major_zomatcopy_batch_strided_usm_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+        std::int64_t stride_a, std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
+        std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
+    sycl::event (*row_major_simatcopy_batch_strided_usm_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        float alpha, float *ab, std::int64_t lda, std::int64_t ldb, std::int64_t stride,
+        std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
+    sycl::event (*row_major_dimatcopy_batch_strided_usm_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        double alpha, double *ab, std::int64_t lda, std::int64_t ldb, std::int64_t stride,
+        std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
+    sycl::event (*row_major_cimatcopy_batch_strided_usm_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        std::complex<float> alpha, std::complex<float> * ab, std::int64_t lda, std::int64_t ldb,
+        std::int64_t stride, std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
+    sycl::event (*row_major_zimatcopy_batch_strided_usm_sycl)(
+        sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
+        std::complex<double> alpha, std::complex<double> * ab, std::int64_t lda, std::int64_t ldb,
+        std::int64_t stride, std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
 
 } blas_function_table_t;
 
