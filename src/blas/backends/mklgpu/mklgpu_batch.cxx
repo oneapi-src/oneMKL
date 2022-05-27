@@ -1183,6 +1183,7 @@ sycl::event syrk_batch(sycl::queue &queue, uplo *upper_lower, transpose *trans, 
     return *coalesce_events(queue, coalesced_events);
 }
 
+/*
 sycl::event imatcopy_batch(sycl::queue &queue, const transpose *trans,
                            const std::int64_t *m, const std::int64_t *n, const float *alpha, float **ab,
                            const std::int64_t *lda, const std::int64_t *ldb, std::int64_t group_count,
@@ -1342,6 +1343,7 @@ sycl::event omatcopy_batch(sycl::queue &queue, const transpose *trans,
     }
     return *coalesce_events(queue, coalesced_events);
 }
+*/
 
 sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
                            const float *a, int64_t lda, int64_t stride_a, float *b, int64_t ldb,

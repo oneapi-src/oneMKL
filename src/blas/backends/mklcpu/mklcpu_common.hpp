@@ -32,6 +32,7 @@
 
 #include "mkl_blas.h"
 #include "mkl_cblas.h"
+#include "mkl_trans.h"
 
 #include "oneapi/mkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
 #include "oneapi/mkl/types.hpp"
