@@ -287,31 +287,31 @@ void syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n
 void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
                     sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
                     sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b, int64_t batch_size) {
-    ::oneapi::mkl::gpu::somatcopy_batch_sycl(&queue, MAJOR, mkl_convert(trans), m, n, alpha, &a, lda,
-                                             stride_a, &b, ldb, stride_b, batch_size);
+    ::oneapi::mkl::gpu::somatcopy_batch_sycl(&queue, MAJOR, mkl_convert(trans), m, n, alpha, &a,
+                                             lda, stride_a, &b, ldb, stride_b, batch_size);
 }
 
 void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
                     sycl::buffer<double, 1> &a, int64_t lda, int64_t stride_a,
                     sycl::buffer<double, 1> &b, int64_t ldb, int64_t stride_b, int64_t batch_size) {
-    ::oneapi::mkl::gpu::domatcopy_batch_sycl(&queue, MAJOR, mkl_convert(trans), m, n, alpha, &a, lda,
-                                             stride_a, &b, ldb, stride_b, batch_size);
+    ::oneapi::mkl::gpu::domatcopy_batch_sycl(&queue, MAJOR, mkl_convert(trans), m, n, alpha, &a,
+                                             lda, stride_a, &b, ldb, stride_b, batch_size);
 }
 
 void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                     std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
                     int64_t stride_a, sycl::buffer<std::complex<float>, 1> &b, int64_t ldb,
                     int64_t stride_b, int64_t batch_size) {
-    ::oneapi::mkl::gpu::comatcopy_batch_sycl(&queue, MAJOR, mkl_convert(trans), m, n, alpha, &a, lda,
-                                             stride_a, &b, ldb, stride_b, batch_size);
+    ::oneapi::mkl::gpu::comatcopy_batch_sycl(&queue, MAJOR, mkl_convert(trans), m, n, alpha, &a,
+                                             lda, stride_a, &b, ldb, stride_b, batch_size);
 }
 
 void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                     std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
                     int64_t lda, int64_t stride_a, sycl::buffer<std::complex<double>, 1> &b,
                     int64_t ldb, int64_t stride_b, int64_t batch_size) {
-    ::oneapi::mkl::gpu::zomatcopy_batch_sycl(&queue, MAJOR, mkl_convert(trans), m, n, alpha, &a, lda,
-                                             stride_a, &b, ldb, stride_b, batch_size);
+    ::oneapi::mkl::gpu::zomatcopy_batch_sycl(&queue, MAJOR, mkl_convert(trans), m, n, alpha, &a,
+                                             lda, stride_a, &b, ldb, stride_b, batch_size);
 }
 void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
                     sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,

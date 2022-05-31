@@ -2178,11 +2178,11 @@ typedef struct {
         std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
     sycl::event (*column_major_cimatcopy_batch_strided_usm_sycl)(
         sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
-        std::complex<float> alpha, std::complex<float> * ab, std::int64_t lda, std::int64_t ldb,
+        std::complex<float> alpha, std::complex<float> *ab, std::int64_t lda, std::int64_t ldb,
         std::int64_t stride, std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
     sycl::event (*column_major_zimatcopy_batch_strided_usm_sycl)(
         sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
-        std::complex<double> alpha, std::complex<double> * ab, std::int64_t lda, std::int64_t ldb,
+        std::complex<double> alpha, std::complex<double> *ab, std::int64_t lda, std::int64_t ldb,
         std::int64_t stride, std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
 
     // Buffer APIs
@@ -4313,11 +4313,11 @@ typedef struct {
         std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
     sycl::event (*row_major_cimatcopy_batch_strided_usm_sycl)(
         sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
-        std::complex<float> alpha, std::complex<float> * ab, std::int64_t lda, std::int64_t ldb,
+        std::complex<float> alpha, std::complex<float> *ab, std::int64_t lda, std::int64_t ldb,
         std::int64_t stride, std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
     sycl::event (*row_major_zimatcopy_batch_strided_usm_sycl)(
         sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
-        std::complex<double> alpha, std::complex<double> * ab, std::int64_t lda, std::int64_t ldb,
+        std::complex<double> alpha, std::complex<double> *ab, std::int64_t lda, std::int64_t ldb,
         std::int64_t stride, std::int64_t batch_size, const std::vector<sycl::event> &dependencies);
 
 } blas_function_table_t;
