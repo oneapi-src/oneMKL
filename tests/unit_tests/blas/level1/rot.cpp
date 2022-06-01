@@ -59,8 +59,14 @@ int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp_
     using fp_ref = typename ref_type_info<fp>::type;
     const int N_ref = N, incx_ref = incx, incy_ref = incy;
 
-    ::rot(&N_ref, (fp_ref *)x_ref.data(), &incx_ref, (fp_ref *)y_ref.data(), &incy_ref,
-          (fp_scalar *)&c, (fp_scalar *)&s);
+    try {
+        ::rot(&N_ref, (fp_ref *)x_ref.data(), &incx_ref, (fp_ref *)y_ref.data(), &incy_ref,
+              (fp_scalar *)&c, (fp_scalar *)&s);
+    }
+    catch (const oneapi::mkl::unimplemented &e) { // Did not find the library blas or the symbol
+        std::cout << "Caught synchronous SYCL exception during ROT:\n" << e.what() << std::endl;
+        return test_skipped;
+    }
 
     // Call DPC++ ROT.
 

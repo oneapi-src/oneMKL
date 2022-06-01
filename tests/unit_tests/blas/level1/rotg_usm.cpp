@@ -83,7 +83,13 @@ int test(device *dev, oneapi::mkl::layout layout) {
     // Call Reference ROTG.
     using fp_ref = typename ref_type_info<fp>::type;
 
-    ::rotg((fp_ref *)&a_ref, (fp_ref *)&b_ref, (fp_scalar *)&c_ref, (fp_ref *)&s_ref);
+    try {
+        ::rotg((fp_ref *)&a_ref, (fp_ref *)&b_ref, (fp_scalar *)&c_ref, (fp_ref *)&s_ref);
+    }
+    catch (const oneapi::mkl::unimplemented &e) { // Did not find the library blas or the symbol
+        std::cout << "Caught synchronous SYCL exception during ROTG:\n" << e.what() << std::endl;
+        return test_skipped;
+    }
 
     // Call DPC++ ROTG.
     fp *a_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), *dev, cxt);

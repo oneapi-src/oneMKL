@@ -56,6 +56,13 @@ static LIB_TYPE cblas_library() {
         h = GET_LIB_HANDLE("libblas.so");
 #endif
     }
+    if (h == NULL) {
+#ifdef _WIN64
+        throw oneapi::mkl::unimplemented("blas", "", "- could not find libblas.dll or blas.dll\n");
+#else
+        throw oneapi::mkl::unimplemented("blas", "", "- could not find libblas.so\n");
+#endif
+    }
     return h;
 }
 
@@ -68,8 +75,18 @@ static void csrot_wrapper(const int *N, void *X, const int *incX, void *Y, const
         if (csrot_p == NULL)
             csrot_p = (void (*)(const int *N, void *X, const int *incX, void *Y, const int *incY,
                                 const float *c, const float *s))GET_FUNC(h, "CSROT");
-        if (csrot_p != NULL)
+        if (csrot_p != NULL) {
             csrot_p(N, X, incX, Y, incY, c, s);
+        }
+        else {
+#ifdef _WIN64
+            throw oneapi::mkl::unimplemented(
+                "blas", __func__, "could not find csrot function in libblas.dll or blas.dll\n");
+#else
+            throw oneapi::mkl::unimplemented("blas", __func__,
+                                             "could not find csrot function in libblas.so\n");
+#endif
+        }
     }
 }
 
@@ -82,8 +99,18 @@ static void zdrot_wrapper(const int *N, void *X, const int *incX, void *Y, const
         if (zdrot_p == NULL)
             zdrot_p = (void (*)(const int *N, void *X, const int *incX, void *Y, const int *incY,
                                 const double *c, const double *s))GET_FUNC(h, "ZDROT");
-        if (zdrot_p != NULL)
+        if (zdrot_p != NULL) {
             zdrot_p(N, X, incX, Y, incY, c, s);
+        }
+        else {
+#ifdef _WIN64
+            throw oneapi::mkl::unimplemented(
+                "blas", __func__, "could not find zdrot function in libblas.dll or blas.dll\n");
+#else
+            throw oneapi::mkl::unimplemented("blas", __func__,
+                                             "could not find zdrot function in libblas.so\n");
+#endif
+        }
     }
 }
 
@@ -93,8 +120,18 @@ static void crotg_wrapper(void *a, void *b, const float *c, void *s) {
             crotg_p = (void (*)(void *a, void *b, const float *c, void *s))GET_FUNC(h, "crotg_");
         if (crotg_p == NULL)
             crotg_p = (void (*)(void *a, void *b, const float *c, void *s))GET_FUNC(h, "CROTG");
-        if (crotg_p != NULL)
+        if (crotg_p != NULL) {
             crotg_p(a, b, c, s);
+        }
+        else {
+#ifdef _WIN64
+            throw oneapi::mkl::unimplemented(
+                "blas", __func__, "could not find crotg function in libblas.dll or blas.dll\n");
+#else
+            throw oneapi::mkl::unimplemented("blas", __func__,
+                                             "could not find crotg function in libblas.so\n");
+#endif
+        }
     }
 }
 
@@ -104,8 +141,18 @@ static void zrotg_wrapper(void *a, void *b, const double *c, void *s) {
             zrotg_p = (void (*)(void *a, void *b, const double *c, void *s))GET_FUNC(h, "zrotg_");
         if (zrotg_p == NULL)
             zrotg_p = (void (*)(void *a, void *b, const double *c, void *s))GET_FUNC(h, "ZROTG");
-        if (zrotg_p != NULL)
+        if (zrotg_p != NULL) {
             zrotg_p(a, b, c, s);
+        }
+        else {
+#ifdef _WIN64
+            throw oneapi::mkl::unimplemented(
+                "blas", __func__, "could not find zrotg function in libblas.dll or blas.dll\n");
+#else
+            throw oneapi::mkl::unimplemented("blas", __func__,
+                                             "could not find zrotg function in libblas.so\n");
+#endif
+        }
     }
 }
 }
