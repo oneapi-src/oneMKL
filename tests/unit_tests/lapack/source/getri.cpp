@@ -59,7 +59,7 @@ bool accuracy(const sycl::device& dev, int64_t n, int64_t lda, uint64_t seed) {
 
     auto info = reference::getrf(n, n, A.data(), lda, ipiv.data());
     if (info != 0) {
-        global::log << "Reference getrf failed with info = " << info << std::endl;
+        test_log::lout << "Reference getrf failed with info = " << info << std::endl;
         return false;
     }
 
@@ -120,7 +120,7 @@ bool usm_dependency(const sycl::device& dev, int64_t n, int64_t lda, uint64_t se
     int64_t info = 0;
     info = reference::getrf(n, n, A.data(), lda, ipiv.data());
     if (info != 0) {
-        global::log << "Reference getrf failed with info = " << info << std::endl;
+        test_log::lout << "Reference getrf failed with info = " << info << std::endl;
         return false;
     }
 
@@ -152,9 +152,8 @@ bool usm_dependency(const sycl::device& dev, int64_t n, int64_t lda, uint64_t se
                                        scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::getri, n, A_dev,
-                           lda, ipiv_dev, scratchpad_dev, scratchpad_size,
-                           std::vector<sycl::event>{ in_event });
+        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::getri, n, A_dev, lda, ipiv_dev,
+                           scratchpad_dev, scratchpad_size, std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);
 

@@ -57,7 +57,7 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t k, int64_t 
     rand_matrix(seed, oneapi::mkl::transpose::nontrans, m, n, A, lda);
     auto info = reference::geqrf(m, k, A.data(), lda, tau.data());
     if (0 != info) {
-        global::log << "reference geqrf failed with info: " << info << std::endl;
+        test_log::lout << "reference geqrf failed with info: " << info << std::endl;
         return false;
     }
 
@@ -117,7 +117,7 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t k, in
 
     auto info = reference::geqrf(m, k, A.data(), lda, tau.data());
     if (0 != info) {
-        global::log << "reference geqrf failed with info: " << info << std::endl;
+        test_log::lout << "reference geqrf failed with info: " << info << std::endl;
         return false;
     }
 
@@ -149,8 +149,8 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t k, in
                                        scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::orgqr, m, n, k,
-                           A_dev, lda, tau_dev, scratchpad_dev, scratchpad_size,
+        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::orgqr, m, n, k, A_dev, lda,
+                           tau_dev, scratchpad_dev, scratchpad_size,
                            std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);

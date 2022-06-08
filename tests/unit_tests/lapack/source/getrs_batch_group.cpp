@@ -92,7 +92,7 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
 
             auto info = reference::getrf(n, n, A.data(), lda, ipiv.data());
             if (info != 0) {
-                global::log << "Reference getrf failed with info = " << info << std::endl;
+                test_log::lout << "Reference getrf failed with info = " << info << std::endl;
                 return false;
             }
         }
@@ -200,8 +200,9 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
                      B_iter++, ipiv_iter++, A_initial_iter++, B_initial_iter++) {
             if (!check_getrs_accuracy(trans, n, nrhs, *B_iter, ldb, *A_initial_iter, lda,
                                       *B_initial_iter)) {
-                global::log << "batch routine (" << global_id << ", " << group_id << ", "
-                            << local_id << ") (global_id, group_id, local_id) failed" << std::endl;
+                test_log::lout << "batch routine (" << global_id << ", " << group_id << ", "
+                               << local_id << ") (global_id, group_id, local_id) failed"
+                               << std::endl;
                 result = false;
             }
         }
@@ -264,7 +265,7 @@ bool usm_dependency(const sycl::device& dev, uint64_t seed) {
 
             auto info = reference::getrf(n, n, A.data(), lda, ipiv.data());
             if (info != 0) {
-                global::log << "Reference getrf failed with info = " << info << std::endl;
+                test_log::lout << "Reference getrf failed with info = " << info << std::endl;
                 return false;
             }
         }
@@ -344,10 +345,10 @@ bool usm_dependency(const sycl::device& dev, uint64_t seed) {
             std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::getrs_batch,
-                           trans_vec.data(), n_vec.data(), nrhs_vec.data(), A_dev_ptrs.data(),
-                           lda_vec.data(), ipiv_dev_ptrs.data(), B_dev_ptrs.data(), ldb_vec.data(),
-                           group_count, group_sizes_vec.data(), scratchpad_dev, scratchpad_size,
+        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::getrs_batch, trans_vec.data(),
+                           n_vec.data(), nrhs_vec.data(), A_dev_ptrs.data(), lda_vec.data(),
+                           ipiv_dev_ptrs.data(), B_dev_ptrs.data(), ldb_vec.data(), group_count,
+                           group_sizes_vec.data(), scratchpad_dev, scratchpad_size,
                            std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);

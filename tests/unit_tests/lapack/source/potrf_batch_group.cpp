@@ -143,8 +143,9 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
         for (int64_t local_id = 0; local_id < group_size;
              local_id++, global_id++, A_iter++, A_initial_iter++) {
             if (!check_potrf_accuracy(*A_initial_iter, *A_iter, uplo, n, lda)) {
-                global::log << "batch routine (" << global_id << ", " << group_id << ", "
-                            << local_id << ") (global_id, group_id, local_id) failed" << std::endl;
+                test_log::lout << "batch routine (" << global_id << ", " << group_id << ", "
+                               << local_id << ") (global_id, group_id, local_id) failed"
+                               << std::endl;
                 result = false;
             }
         }
@@ -237,9 +238,9 @@ bool usm_dependency(const sycl::device& dev, uint64_t seed) {
             std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::potrf_batch,
-                           uplo_vec.data(), n_vec.data(), A_dev_ptrs.data(), lda_vec.data(),
-                           group_count, group_sizes_vec.data(), scratchpad_dev, scratchpad_size,
+        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::potrf_batch, uplo_vec.data(),
+                           n_vec.data(), A_dev_ptrs.data(), lda_vec.data(), group_count,
+                           group_sizes_vec.data(), scratchpad_dev, scratchpad_size,
                            std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);

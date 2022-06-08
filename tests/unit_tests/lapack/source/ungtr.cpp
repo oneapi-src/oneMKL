@@ -54,7 +54,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
     rand_matrix(seed, oneapi::mkl::transpose::nontrans, n, n, A, lda);
     auto info = reference::hetrd(uplo, n, A.data(), lda, d.data(), e.data(), tau.data());
     if (0 != info) {
-        global::log << "reference hetrd failed with info = " << info << std::endl;
+        test_log::lout << "reference hetrd failed with info = " << info << std::endl;
         return false;
     }
 
@@ -117,7 +117,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, 
     rand_matrix(seed, oneapi::mkl::transpose::nontrans, n, n, A, lda);
     auto info = reference::hetrd(uplo, n, A.data(), lda, d.data(), e.data(), tau.data());
     if (0 != info) {
-        global::log << "reference hetrd failed with info = " << info << std::endl;
+        test_log::lout << "reference hetrd failed with info = " << info << std::endl;
         return false;
     }
 
@@ -150,8 +150,8 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, 
                                        scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::ungtr, uplo, n,
-                           A_dev, lda, tau_dev, scratchpad_dev, scratchpad_size,
+        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::ungtr, uplo, n, A_dev, lda,
+                           tau_dev, scratchpad_dev, scratchpad_size,
                            std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);

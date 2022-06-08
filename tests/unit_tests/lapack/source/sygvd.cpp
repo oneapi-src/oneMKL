@@ -110,11 +110,11 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
         reference::sygvd(itype, oneapi::mkl::job::novec, uplo, n, std::vector<fp>(A_initial).data(),
                          lda, std::vector<fp>(B_initial).data(), ldb, D_ref.data());
     if (0 != info) {
-        global::log << "reference sygvd failed with info = " << info << std::endl;
+        test_log::lout << "reference sygvd failed with info = " << info << std::endl;
         return false;
     }
     if (!rel_vec_err_check(n, D_ref, D, 10.0)) {
-        global::log << "Eigenvalue check failed" << std::endl;
+        test_log::lout << "Eigenvalue check failed" << std::endl;
         result = false;
     }
 
@@ -138,7 +138,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
                     BZD[row + col * ldbzd] = BZ[row + col * ldbz] * D[col];
 
             if (!rel_mat_err_check(n, n, AZ, ldaz, BZD, ldbzd)) {
-                global::log << "Factorization check failed" << std::endl;
+                test_log::lout << "Factorization check failed" << std::endl;
                 result = false;
             }
 
@@ -148,7 +148,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
             reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n,
                             n, n, 1.0, Z.data(), ldz, BZ.data(), ldbz, 0.0, ZBZ.data(), ldzbz);
             if (!rel_id_err_check(n, ZBZ, ldzbz)) {
-                global::log << "Orthogonality check failed" << std::endl;
+                test_log::lout << "Orthogonality check failed" << std::endl;
                 result = false;
             }
         }
@@ -172,7 +172,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
                     ZD[row + col * ldzd] = Z[row + col * ldz] * D[col];
 
             if (!rel_mat_err_check(n, n, ABZ, ldabz, ZD, ldbz)) {
-                global::log << "Factorization check failed" << std::endl;
+                test_log::lout << "Factorization check failed" << std::endl;
                 result = false;
             }
 
@@ -182,7 +182,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
             reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n,
                             n, n, 1.0, Z.data(), ldz, BZ.data(), ldbz, 0.0, ZBZ.data(), ldzbz);
             if (!rel_id_err_check(n, ZBZ, ldzbz)) {
-                global::log << "Orthogonality check failed" << std::endl;
+                test_log::lout << "Orthogonality check failed" << std::endl;
                 result = false;
             }
         }
@@ -199,7 +199,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
             reference::lacpy('A', n, n, Z.data(), ldz, C.data(), ldc);
             auto info = reference::potrs(uplo, n, n, B.data(), ldb, C.data(), ldc);
             if (0 != info) {
-                global::log << "reference potrs failed with info = " << info << std::endl;
+                test_log::lout << "reference potrs failed with info = " << info << std::endl;
                 return false;
             }
 
@@ -210,7 +210,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
                     CD[row + col * ldcd] = C[row + col * ldc] * D[col];
 
             if (!rel_mat_err_check(n, n, AZ, ldaz, CD, ldcd)) {
-                global::log << "Factorization check failed" << std::endl;
+                test_log::lout << "Factorization check failed" << std::endl;
                 result = false;
             }
 
@@ -220,7 +220,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::mkl::job jobz, one
             reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, n,
                             n, n, 1.0, Z.data(), ldz, C.data(), ldc, 0.0, ZhC.data(), ldzhc);
             if (!rel_id_err_check(n, ZhC, ldzhc)) {
-                global::log << "Orthogonality check failed" << std::endl;
+                test_log::lout << "Orthogonality check failed" << std::endl;
                 result = false;
             }
         }
@@ -277,8 +277,8 @@ bool usm_dependency(const sycl::device& dev, int64_t itype, oneapi::mkl::job job
             scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::sygvd, itype, jobz,
-                           uplo, n, A_dev, lda, B_dev, ldb, w_dev, scratchpad_dev, scratchpad_size,
+        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::sygvd, itype, jobz, uplo, n,
+                           A_dev, lda, B_dev, ldb, w_dev, scratchpad_dev, scratchpad_size,
                            std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);

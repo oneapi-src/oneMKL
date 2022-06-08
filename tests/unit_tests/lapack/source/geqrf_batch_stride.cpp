@@ -98,7 +98,7 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, int64_
         auto tau_ = copy_vector(tau, std::min(m, n), i * stride_tau);
         auto A_initial_ = copy_vector(A_initial, lda * n, i * stride_a);
         if (!check_geqrf_accuracy(m, n, A_, lda, tau_, A_initial_)) {
-            global::log << "batch routine index " << i << " failed" << std::endl;
+            test_log::lout << "batch routine index " << i << " failed" << std::endl;
             result = false;
         }
     }
@@ -154,8 +154,8 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, 
             scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::geqrf_batch, m, n,
-                           A_dev, lda, stride_a, tau_dev, stride_tau, batch_size, scratchpad_dev,
+        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::geqrf_batch, m, n, A_dev, lda,
+                           stride_a, tau_dev, stride_tau, batch_size, scratchpad_dev,
                            scratchpad_size, std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);

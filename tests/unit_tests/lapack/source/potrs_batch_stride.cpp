@@ -59,8 +59,8 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
     for (int64_t i = 0; i < batch_size; i++) {
         auto info = reference::potrf(uplo, n, A.data() + i * stride_a, lda);
         if (0 != info) {
-            global::log << "batch routine index " << i
-                        << ": reference potrf failed with info: " << info << std::endl;
+            test_log::lout << "batch routine index " << i
+                           << ": reference potrf failed with info: " << info << std::endl;
             return false;
         }
     }
@@ -110,7 +110,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
         auto A_initial_ = copy_vector(A_initial, lda * n, i * stride_a);
         auto B_initial_ = copy_vector(B_initial, ldb * nrhs, i * stride_b);
         if (!check_potrs_accuracy(uplo, n, nrhs, B_, ldb, A_initial_, lda, B_initial_)) {
-            global::log << "batch routine index " << i << " failed" << std::endl;
+            test_log::lout << "batch routine index " << i << " failed" << std::endl;
             result = false;
         }
     }
@@ -143,8 +143,8 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, 
     for (int64_t i = 0; i < batch_size; i++) {
         auto info = reference::potrf(uplo, n, A.data() + i * stride_a, lda);
         if (0 != info) {
-            global::log << "batch routine index " << i
-                        << ": reference potrf failed with info: " << info << std::endl;
+            test_log::lout << "batch routine index " << i
+                           << ": reference potrf failed with info: " << info << std::endl;
             return false;
         }
     }
@@ -179,9 +179,9 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, 
             scratchpad_dev, scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::potrs_batch, uplo,
-                           n, nrhs, A_dev, lda, stride_a, B_dev, ldb, stride_b, batch_size,
-                           scratchpad_dev, scratchpad_size, std::vector<sycl::event>{ in_event });
+        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::potrs_batch, uplo, n, nrhs,
+                           A_dev, lda, stride_a, B_dev, ldb, stride_b, batch_size, scratchpad_dev,
+                           scratchpad_size, std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);
 

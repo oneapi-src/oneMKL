@@ -64,7 +64,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::side left_right, oneapi::mkl
 
     auto info = reference::geqrf(nq, k, A.data(), lda, tau.data());
     if (0 != info) {
-        global::log << "reference geqrf failed with info: " << info << std::endl;
+        test_log::lout << "reference geqrf failed with info: " << info << std::endl;
         return false;
     }
 
@@ -115,11 +115,11 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::side left_right, oneapi::mkl
     info = reference::or_un_mqr(left_right, trans, m, n, k, A.data(), lda, tau.data(),
                                 QC_ref.data(), ldqc);
     if (0 != info) {
-        global::log << "reference unmqr failed with info: " << info << std::endl;
+        test_log::lout << "reference unmqr failed with info: " << info << std::endl;
         return false;
     }
     if (!rel_mat_err_check(m, n, QC, ldqc, QC_ref, ldqc, 1.0)) {
-        global::log << "Multiplication check failed" << std::endl;
+        test_log::lout << "Multiplication check failed" << std::endl;
         result = false;
     }
     return result;
@@ -148,7 +148,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::side left_right,
 
     auto info = reference::geqrf(nq, k, A.data(), lda, tau.data());
     if (0 != info) {
-        global::log << "reference geqrf failed with info: " << info << std::endl;
+        test_log::lout << "reference geqrf failed with info: " << info << std::endl;
         return false;
     }
 
@@ -183,9 +183,9 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::side left_right,
             scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::unmqr, left_right,
-                           trans, m, n, k, A_dev, lda, tau_dev, C_dev, ldc, scratchpad_dev,
-                           scratchpad_size, std::vector<sycl::event>{ in_event });
+        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::unmqr, left_right, trans, m, n,
+                           k, A_dev, lda, tau_dev, C_dev, ldc, scratchpad_dev, scratchpad_size,
+                           std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);
 

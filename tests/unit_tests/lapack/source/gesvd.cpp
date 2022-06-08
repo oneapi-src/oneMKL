@@ -118,7 +118,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::mkl::jo
         reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::nontrans, m, n, n,
                         1.0, US.data(), ldus, Vt.data(), ldvt, 0.0, USV.data(), ldusv);
         if (!rel_mat_err_check(m, n, A_initial, lda, USV, ldusv)) {
-            global::log << "Factorization check failed" << std::endl;
+            test_log::lout << "Factorization check failed" << std::endl;
             result = false;
         }
     }
@@ -136,7 +136,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::mkl::jo
         reference::gemm(oneapi::mkl::transpose::conjtrans, oneapi::mkl::transpose::nontrans, ucols,
                         ucols, m, 1.0, U.data(), ldu, U.data(), ldu, 0.0, UU.data(), lduu);
         if (!rel_id_err_check(ucols, UU, lduu)) {
-            global::log << "U Orthogonality check failed" << std::endl;
+            test_log::lout << "U Orthogonality check failed" << std::endl;
             result = false;
         }
     }
@@ -149,7 +149,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::mkl::jo
         reference::gemm(oneapi::mkl::transpose::nontrans, oneapi::mkl::transpose::conjtrans, vtrows,
                         vtrows, n, 1.0, Vt.data(), ldvt, Vt.data(), ldvt, 0.0, VV.data(), ldvv);
         if (!rel_id_err_check(vtrows, VV, ldvv)) {
-            global::log << "V Orthogonality check failed" << std::endl;
+            test_log::lout << "V Orthogonality check failed" << std::endl;
             result = false;
         }
     }
@@ -180,7 +180,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::m
     std::vector<fp> Vt(ldvt * n);
     std::vector<fp_real> s(min_mn);
 
-    rand_matrix(seed, oneapi::mkl::transpose::nontrans, m, n, A, lda);
+    rand_matrix_diag_dom(seed, oneapi::mkl::transpose::nontrans, m, n, A, lda);
     std::vector<fp> A_initial = A;
 
     /* Compute on device */
@@ -212,9 +212,9 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::m
             scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, sycl::event func_event = oneapi::mkl::lapack::gesvd, jobu, jobvt,
-                           m, n, A_dev, lda, s_dev, U_dev, ldu, Vt_dev, ldvt, scratchpad_dev,
-                           scratchpad_size, std::vector<sycl::event>{ in_event });
+        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::gesvd, jobu, jobvt, m, n, A_dev,
+                           lda, s_dev, U_dev, ldu, Vt_dev, ldvt, scratchpad_dev, scratchpad_size,
+                           std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);
 
