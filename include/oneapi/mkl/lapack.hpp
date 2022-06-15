@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2021 Intel Corporation
+* Copyright 2022 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -29,6 +29,9 @@
 #endif
 #ifdef ENABLE_CUSOLVER_BACKEND
 #include "oneapi/mkl/lapack/detail/cusolver/lapack_ct.hpp"
+#endif
+#ifdef ENABLE_ROCSOLVER_BACKEND
+#include "oneapi/mkl/lapack/detail/rocsolver/lapack_ct.hpp"
 #endif
 
 #include "oneapi/mkl/lapack/detail/lapack_rt.hpp"

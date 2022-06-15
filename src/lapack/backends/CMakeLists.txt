@@ -28,3 +28,7 @@ endif()
 if(ENABLE_CUSOLVER_BACKEND)
   add_subdirectory(cusolver)
 endif()
+
+if(ENABLE_ROCSOLVER_BACKEND)
+  add_subdirectory(rocsolver)
+endif()
