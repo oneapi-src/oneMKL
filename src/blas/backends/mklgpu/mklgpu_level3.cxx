@@ -23,8 +23,7 @@ void gemm(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m
           std::int64_t n, std::int64_t k, float alpha, sycl::buffer<float, 1> &a,
           std::int64_t lda, sycl::buffer<float, 1> &b, std::int64_t ldb, float beta,
           sycl::buffer<float, 1> &c, std::int64_t ldc) {
-    ::oneapi::mkl::gpu::sgemm(queue, MAJOR, mkl_convert(transa), mkl_convert(transb), m, n, k,
-                              alpha, a, lda, b, ldb, beta, c, ldc);
+    blas_major::gemm(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
 void gemm(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
