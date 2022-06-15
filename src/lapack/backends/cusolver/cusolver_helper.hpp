@@ -283,6 +283,19 @@ inline void lapack_info_check(sycl::queue &queue, DEVINFO_T devinfo, const char 
             devinfo_);
 }
 
+/* batched helpers */
+
+// Creates list of matrix/vector pointers from initial ptr and stride
+// Note: user is responsible for deallocating memory
+template<typename T>
+T** create_ptr_list_from_stride(T* ptr, int64_t ptr_stride, int64_t batch_size) {
+    T **ptr_list = (T **)malloc(sizeof(T *) * batch_size);
+    for (int64_t i = 0; i < batch_size; i++)
+        ptr_list[i] = ptr + i * ptr_stride;
+
+    return ptr_list;
+}
+
 } // namespace cusolver
 } // namespace lapack
 } // namespace mkl
