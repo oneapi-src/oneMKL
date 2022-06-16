@@ -27,30 +27,24 @@
 #include "mklcpu_common.hpp"
 #include "oneapi/mkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
 
+#include "../mkl_common/mkl_blas_backend.hpp"
+
 namespace oneapi {
 namespace mkl {
 namespace blas {
 namespace mklcpu {
 namespace column_major {
 
-#define CBLASMAJOR CblasColMajor
-#define COLUMN_MAJOR
-#define MKLMAJOR MKL_COL_MAJOR
-#include "mklcpu_level3.cxx"
-#undef CBLASMAJOR
-#undef COLUMN_MAJOR
-#undef MKLMAJOR
+namespace blas_major = ::oneapi::mkl::blas::column_major;
+// TODO: some macro that asserts the queue is a cpu queue?
+#include "../mkl_common/mkl_level3.cxx"
 
 } // namespace column_major
 namespace row_major {
 
-#define CBLASMAJOR CblasRowMajor
-#define ROW_MAJOR
-#define MKLMAJOR MKL_ROW_MAJOR
-#include "mklcpu_level3.cxx"
-#undef CBLASMAJOR
-#undef ROW_MAJOR
-#undef MKLMAJOR
+namespace blas_major = ::oneapi::mkl::blas::row_major;
+// TODO: some macro that asserts the queue is a cpu queue?
+#include "../mkl_common/mkl_level3.cxx"
 
 } // namespace row_major
 } // namespace mklcpu
