@@ -92,12 +92,6 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
               LIB_NAME("lapack_rocsolver")
 #endif
           } },
-         { device::amdgpu,
-          {
-#ifdef ENABLE_ROCSOLVER_BACKEND
-              LIB_NAME("lapack_rocsolver")
-#endif
-          } },
         { device::nvidiagpu,
           {
 #ifdef ENABLE_CUSOLVER_BACKEND
