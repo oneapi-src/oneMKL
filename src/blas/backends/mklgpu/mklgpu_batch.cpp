@@ -24,9 +24,8 @@
 #endif
 
 #include "oneapi/mkl/blas/detail/mklgpu/onemkl_blas_mklgpu.hpp"
-#include "oneapi/mkl/types.hpp"
-#include "mklgpu_common.hpp"
-#include "oneapi/mkl/exceptions.hpp"
+
+#include "../mkl_common/mkl_blas_backend.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -34,20 +33,14 @@ namespace blas {
 namespace mklgpu {
 namespace column_major {
 
-#define MAJOR             MKL_COL_MAJOR
-#define EMPTY_KERNEL_NAME ColMajorEmptyKernel
-#include "mklgpu_batch.cxx"
-#undef MAJOR
-#undef EMPTY_KERNEL_NAME
+namespace blas_major = ::oneapi::mkl::blas::column_major;
+#include "../mkl_common/mkl_batch.cxx"
 
 } // namespace column_major
 namespace row_major {
 
-#define MAJOR             MKL_ROW_MAJOR
-#define EMPTY_KERNEL_NAME RowMajorEmptyKernel
-#include "mklgpu_batch.cxx"
-#undef MAJOR
-#undef EMPTY_KERNEL_NAME
+namespace blas_major = ::oneapi::mkl::blas::row_major;
+#include "../mkl_common/mkl_batch.cxx"
 
 } // namespace row_major
 } // namespace mklgpu

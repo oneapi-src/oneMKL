@@ -1355,3 +1355,746 @@ sycl::event swap(sycl::queue &queue, std::int64_t n, std::complex<float> *x, std
 sycl::event swap(sycl::queue &queue, std::int64_t n, std::complex<double> *x, std::int64_t incx,
                  std::complex<double> *y, std::int64_t incy,
                  const std::vector<sycl::event> &dependencies = {});
+
+// extensions, buffer
+
+void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
+           std::int64_t k, float alpha, sycl::buffer<float, 1> &a, std::int64_t lda,
+           sycl::buffer<float, 1> &b, std::int64_t ldb, float beta, sycl::buffer<float, 1> &c,
+           std::int64_t ldc);
+
+void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
+           std::int64_t k, double alpha, sycl::buffer<double, 1> &a, std::int64_t lda,
+           sycl::buffer<double, 1> &b, std::int64_t ldb, double beta, sycl::buffer<double, 1> &c,
+           std::int64_t ldc);
+
+void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
+           std::int64_t k, std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a,
+           std::int64_t lda, sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
+           std::complex<float> beta, sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc);
+
+void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, std::int64_t n,
+           std::int64_t k, std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+           std::int64_t lda, sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
+           std::complex<double> beta, sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc);
+
+void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
+               std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+               sycl::buffer<std::int8_t, 1> &a, std::int64_t lda, std::int8_t ao,
+               sycl::buffer<std::uint8_t, 1> &b, std::int64_t ldb, std::uint8_t bo, float beta,
+               sycl::buffer<std::int32_t, 1> &c, std::int64_t ldc,
+               sycl::buffer<std::int32_t, 1> &co);
+
+void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
+               std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+               sycl::buffer<std::int8_t, 1> &a, std::int64_t lda, std::int8_t ao,
+               sycl::buffer<std::int8_t, 1> &b, std::int64_t ldb, std::int8_t bo, float beta,
+               sycl::buffer<std::int32_t, 1> &c, std::int64_t ldc,
+               sycl::buffer<std::int32_t, 1> &co);
+
+void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
+               std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+               sycl::buffer<std::uint8_t, 1> &a, std::int64_t lda, std::uint8_t ao,
+               sycl::buffer<std::int8_t, 1> &b, std::int64_t ldb, std::int8_t bo, float beta,
+               sycl::buffer<std::int32_t, 1> &c, std::int64_t ldc,
+               sycl::buffer<std::int32_t, 1> &co);
+
+void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
+               std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+               sycl::buffer<std::uint8_t, 1> &a, std::int64_t lda, std::uint8_t ao,
+               sycl::buffer<std::uint8_t, 1> &b, std::int64_t ldb, std::uint8_t bo, float beta,
+               sycl::buffer<std::int32_t, 1> &c, std::int64_t ldc,
+               sycl::buffer<std::int32_t, 1> &co);
+
+// extensions, USM
+
+sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
+                  std::int64_t n, std::int64_t k, float alpha, const float *a, std::int64_t lda,
+                  const float *b, std::int64_t ldb, float beta, float *c, std::int64_t ldc,
+                  const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
+                  std::int64_t n, std::int64_t k, double alpha, const double *a, std::int64_t lda,
+                  const double *b, std::int64_t ldb, double beta, double *c, std::int64_t ldc,
+                  const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
+                  std::int64_t n, std::int64_t k, std::complex<float> alpha,
+                  const std::complex<float> *a, std::int64_t lda, const std::complex<float> *b,
+                  std::int64_t ldb, std::complex<float> beta, std::complex<float> *c,
+                  std::int64_t ldc, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
+                  std::int64_t n, std::int64_t k, std::complex<double> alpha,
+                  const std::complex<double> *a, std::int64_t lda, const std::complex<double> *b,
+                  std::int64_t ldb, std::complex<double> beta, std::complex<double> *c,
+                  std::int64_t ldc, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
+                      std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                      const std::int8_t *a, std::int64_t lda, std::int8_t ao, const std::uint8_t *b,
+                      std::int64_t ldb, std::uint8_t bo, float beta, std::int32_t *c,
+                      std::int64_t ldc, const std::int32_t *co,
+                      const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
+                      std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                      const std::int8_t *a, std::int64_t lda, std::int8_t ao, const std::int8_t *b,
+                      std::int64_t ldb, std::int8_t bo, float beta, std::int32_t *c,
+                      std::int64_t ldc, const std::int32_t *co,
+                      const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
+                      std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                      const std::uint8_t *a, std::int64_t lda, std::uint8_t ao,
+                      const std::int8_t *b, std::int64_t ldb, std::int8_t bo, float beta,
+                      std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
+                      const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
+                      std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                      const std::uint8_t *a, std::int64_t lda, std::uint8_t ao,
+                      const std::uint8_t *b, std::int64_t ldb, std::uint8_t bo, float beta,
+                      std::int32_t *c, std::int64_t ldc, const std::int32_t *co,
+                      const std::vector<sycl::event> &dependencies = {});
+
+// batch, buffer
+
+void syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+                float alpha, sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a, float beta,
+                sycl::buffer<float, 1> &c, int64_t ldc, int64_t stride_c, int64_t batch_size);
+void syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+                double alpha, sycl::buffer<double, 1> &a, int64_t lda, int64_t stride_a,
+                double beta, sycl::buffer<double, 1> &c, int64_t ldc, int64_t stride_c,
+                int64_t batch_size);
+void syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+                std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+                int64_t stride_a, std::complex<float> beta, sycl::buffer<std::complex<float>, 1> &c,
+                int64_t ldc, int64_t stride_c, int64_t batch_size);
+void syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n, int64_t k,
+                std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+                int64_t stride_a, std::complex<double> beta,
+                sycl::buffer<std::complex<double>, 1> &c, int64_t ldc, int64_t stride_c,
+                int64_t batch_size);
+
+void copy_batch(sycl::queue &queue, std::int64_t n, sycl::buffer<float, 1> &x, std::int64_t incx,
+                std::int64_t stridex, sycl::buffer<float, 1> &y, std::int64_t incy,
+                std::int64_t stridey, std::int64_t batch_size);
+
+void copy_batch(sycl::queue &queue, std::int64_t n, sycl::buffer<double, 1> &x, std::int64_t incx,
+                std::int64_t stridex, sycl::buffer<double, 1> &y, std::int64_t incy,
+                std::int64_t stridey, std::int64_t batch_size);
+
+void copy_batch(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<float>, 1> &x,
+                std::int64_t incx, std::int64_t stridex, sycl::buffer<std::complex<float>, 1> &y,
+                std::int64_t incy, std::int64_t stridey, std::int64_t batch_size);
+
+void copy_batch(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<double>, 1> &x,
+                std::int64_t incx, std::int64_t stridex, sycl::buffer<std::complex<double>, 1> &y,
+                std::int64_t incy, std::int64_t stridey, std::int64_t batch_size);
+
+void gemv_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, float alpha,
+                sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stridea,
+                sycl::buffer<float, 1> &x, std::int64_t incx, std::int64_t stridex, float beta,
+                sycl::buffer<float, 1> &y, std::int64_t incy, std::int64_t stridey,
+                std::int64_t batch_size);
+
+void gemv_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, double alpha,
+                sycl::buffer<double, 1> &a, std::int64_t lda, std::int64_t stridea,
+                sycl::buffer<double, 1> &x, std::int64_t incx, std::int64_t stridex, double beta,
+                sycl::buffer<double, 1> &y, std::int64_t incy, std::int64_t stridey,
+                std::int64_t batch_size);
+
+void gemv_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a,
+                std::int64_t lda, std::int64_t stridea, sycl::buffer<std::complex<float>, 1> &x,
+                std::int64_t incx, std::int64_t stridex, std::complex<float> beta,
+                sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy, std::int64_t stridey,
+                std::int64_t batch_size);
+
+void gemv_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+                std::int64_t lda, std::int64_t stridea, sycl::buffer<std::complex<double>, 1> &x,
+                std::int64_t incx, std::int64_t stridex, std::complex<double> beta,
+                sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy, std::int64_t stridey,
+                std::int64_t batch_size);
+
+void dgmm_batch(sycl::queue &queue, side left_right, std::int64_t m, std::int64_t n,
+                sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stridea,
+                sycl::buffer<float, 1> &x, std::int64_t incx, std::int64_t stridex,
+                sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stridec,
+                std::int64_t batch_size);
+
+void dgmm_batch(sycl::queue &queue, side left_right, std::int64_t m, std::int64_t n,
+                sycl::buffer<double, 1> &a, std::int64_t lda, std::int64_t stridea,
+                sycl::buffer<double, 1> &x, std::int64_t incx, std::int64_t stridex,
+                sycl::buffer<double, 1> &c, std::int64_t ldc, std::int64_t stridec,
+                std::int64_t batch_size);
+
+void dgmm_batch(sycl::queue &queue, side left_right, std::int64_t m, std::int64_t n,
+                sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda, std::int64_t stridea,
+                sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx, std::int64_t stridex,
+                sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc, std::int64_t stridec,
+                std::int64_t batch_size);
+
+void dgmm_batch(sycl::queue &queue, side left_right, std::int64_t m, std::int64_t n,
+                sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda, std::int64_t stridea,
+                sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx, std::int64_t stridex,
+                sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc, std::int64_t stridec,
+                std::int64_t batch_size);
+
+void trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
+                diag unit_diag, std::int64_t m, std::int64_t n, float alpha,
+                sycl::buffer<float, 1> &a, std::int64_t lda, std::int64_t stride_a,
+                sycl::buffer<float, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+                std::int64_t batch_size);
+
+void trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
+                diag unit_diag, std::int64_t m, std::int64_t n, double alpha,
+                sycl::buffer<double, 1> &a, std::int64_t lda, std::int64_t stride_a,
+                sycl::buffer<double, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+                std::int64_t batch_size);
+
+void trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
+                diag unit_diag, std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda, std::int64_t stride_a,
+                sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+                std::int64_t batch_size);
+
+void trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
+                diag unit_diag, std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda, std::int64_t stride_a,
+                sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+                std::int64_t batch_size);
+
+void axpy_batch(sycl::queue &queue, std::int64_t n, float alpha, sycl::buffer<float, 1> &x,
+                std::int64_t incx, std::int64_t stridex, sycl::buffer<float, 1> &y,
+                std::int64_t incy, std::int64_t stridey, std::int64_t batch_size);
+
+void axpy_batch(sycl::queue &queue, std::int64_t n, double alpha, sycl::buffer<double, 1> &x,
+                std::int64_t incx, std::int64_t stridex, sycl::buffer<double, 1> &y,
+                std::int64_t incy, std::int64_t stridey, std::int64_t batch_size);
+
+void axpy_batch(sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
+                sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx, std::int64_t stridex,
+                sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy, std::int64_t stridey,
+                std::int64_t batch_size);
+
+void axpy_batch(sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
+                sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx, std::int64_t stridex,
+                sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy, std::int64_t stridey,
+                std::int64_t batch_size);
+
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                std::int64_t n, std::int64_t k, float alpha, sycl::buffer<float, 1> &a,
+                std::int64_t lda, std::int64_t stride_a, sycl::buffer<float, 1> &b,
+                std::int64_t ldb, std::int64_t stride_b, float beta, sycl::buffer<float, 1> &c,
+                std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size);
+
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                std::int64_t n, std::int64_t k, double alpha, sycl::buffer<double, 1> &a,
+                std::int64_t lda, std::int64_t stride_a, sycl::buffer<double, 1> &b,
+                std::int64_t ldb, std::int64_t stride_b, double beta, sycl::buffer<double, 1> &c,
+                std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size);
+
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                std::int64_t n, std::int64_t k, std::complex<float> alpha,
+                sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda, std::int64_t stride_a,
+                sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+                std::complex<float> beta, sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc,
+                std::int64_t stride_c, std::int64_t batch_size);
+
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                std::int64_t n, std::int64_t k, std::complex<double> alpha,
+                sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda, std::int64_t stride_a,
+                sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+                std::complex<double> beta, sycl::buffer<std::complex<double>, 1> &c,
+                std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size);
+
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                std::int64_t n, std::int64_t k, sycl::half alpha, sycl::buffer<sycl::half, 1> &a,
+                std::int64_t lda, std::int64_t stride_a, sycl::buffer<sycl::half, 1> &b,
+                std::int64_t ldb, std::int64_t stride_b, sycl::half beta,
+                sycl::buffer<sycl::half, 1> &c, std::int64_t ldc, std::int64_t stride_c,
+                std::int64_t batch_size);
+
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                std::int64_t n, std::int64_t k, float alpha, sycl::buffer<sycl::half, 1> &a,
+                std::int64_t lda, std::int64_t stride_a, sycl::buffer<sycl::half, 1> &b,
+                std::int64_t ldb, std::int64_t stride_b, float beta, sycl::buffer<float, 1> &c,
+                std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size);
+
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                std::int64_t n, std::int64_t k, float alpha, sycl::buffer<bfloat16, 1> &a,
+                std::int64_t lda, std::int64_t stride_a, sycl::buffer<bfloat16, 1> &b,
+                std::int64_t ldb, std::int64_t stride_b, float beta, sycl::buffer<bfloat16, 1> &c,
+                std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size);
+
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                std::int64_t n, std::int64_t k, float alpha, sycl::buffer<bfloat16, 1> &a,
+                std::int64_t lda, std::int64_t stride_a, sycl::buffer<bfloat16, 1> &b,
+                std::int64_t ldb, std::int64_t stride_b, float beta, sycl::buffer<float, 1> &c,
+                std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size);
+
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                std::int64_t n, std::int64_t k, float alpha, sycl::buffer<std::int8_t, 1> &a,
+                std::int64_t lda, std::int64_t stride_a, sycl::buffer<std::int8_t, 1> &b,
+                std::int64_t ldb, std::int64_t stride_b, float beta,
+                sycl::buffer<std::int32_t, 1> &c, std::int64_t ldc, std::int64_t stride_c,
+                std::int64_t batch_size);
+
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                std::int64_t n, std::int64_t k, float alpha, sycl::buffer<std::int8_t, 1> &a,
+                std::int64_t lda, std::int64_t stride_a, sycl::buffer<std::int8_t, 1> &b,
+                std::int64_t ldb, std::int64_t stride_b, float beta, sycl::buffer<float, 1> &c,
+                std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size);
+
+// batch, usm
+
+sycl::event syrk_batch(sycl::queue &queue, const uplo *upper_lower, const transpose *trans,
+                       const std::int64_t *n, const std::int64_t *k, const float *alpha,
+                       const float **a, const std::int64_t *lda, const float *beta, float **c,
+                       const std::int64_t *ldc, std::int64_t group_count,
+                       const std::int64_t *groupsize,
+                       const std::vector<sycl::event> &dependencies = {});
+sycl::event syrk_batch(sycl::queue &queue, const uplo *upper_lower, const transpose *trans,
+                       const std::int64_t *n, const std::int64_t *k, const double *alpha,
+                       const double **a, const std::int64_t *lda, const double *beta, double **c,
+                       const std::int64_t *ldc, std::int64_t group_count,
+                       const std::int64_t *groupsize,
+                       const std::vector<sycl::event> &dependencies = {});
+sycl::event syrk_batch(sycl::queue &queue, const uplo *upper_lower, const transpose *trans,
+                       const std::int64_t *n, const std::int64_t *k,
+                       const std::complex<float> *alpha, const std::complex<float> **a,
+                       const std::int64_t *lda, const std::complex<float> *beta,
+                       std::complex<float> **c, const std::int64_t *ldc, std::int64_t group_count,
+                       const std::int64_t *groupsize,
+                       const std::vector<sycl::event> &dependencies = {});
+sycl::event syrk_batch(sycl::queue &queue, const uplo *upper_lower, const transpose *trans,
+                       const std::int64_t *n, const std::int64_t *k,
+                       const std::complex<double> *alpha, const std::complex<double> **a,
+                       const std::int64_t *lda, const std::complex<double> *beta,
+                       std::complex<double> **c, const std::int64_t *ldc, std::int64_t group_count,
+                       const std::int64_t *groupsize,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
+                       std::int64_t k, float alpha, const float *a, std::int64_t lda,
+                       std::int64_t stride_a, float beta, float *c, std::int64_t ldc,
+                       std::int64_t stride_c, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+sycl::event syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
+                       std::int64_t k, double alpha, const double *a, std::int64_t lda,
+                       std::int64_t stride_a, double beta, double *c, std::int64_t ldc,
+                       std::int64_t stride_c, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+sycl::event syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
+                       std::int64_t k, std::complex<float> alpha, const std::complex<float> *a,
+                       std::int64_t lda, std::int64_t stride_a, std::complex<float> beta,
+                       std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
+                       std::int64_t batch_size, const std::vector<sycl::event> &dependencies = {});
+sycl::event syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, std::int64_t n,
+                       std::int64_t k, std::complex<double> alpha, const std::complex<double> *a,
+                       std::int64_t lda, std::int64_t stride_a, std::complex<double> beta,
+                       std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
+                       std::int64_t batch_size, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event copy_batch(sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx,
+                       std::int64_t stridex, float *y, std::int64_t incy, std::int64_t stridey,
+                       std::int64_t batch_size, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event copy_batch(sycl::queue &queue, std::int64_t n, const double *x, std::int64_t incx,
+                       std::int64_t stridex, double *y, std::int64_t incy, std::int64_t stridey,
+                       std::int64_t batch_size, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event copy_batch(sycl::queue &queue, std::int64_t n, const std::complex<float> *x,
+                       std::int64_t incx, std::int64_t stridex, std::complex<float> *y,
+                       std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event copy_batch(sycl::queue &queue, std::int64_t n, const std::complex<double> *x,
+                       std::int64_t incx, std::int64_t stridex, std::complex<double> *y,
+                       std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event copy_batch(sycl::queue &queue, const std::int64_t *n, const float **x,
+                       const std::int64_t *incx, float **y, const std::int64_t *incy,
+                       std::int64_t group_count, const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event copy_batch(sycl::queue &queue, const std::int64_t *n, const double **x,
+                       const std::int64_t *incx, double **y, const std::int64_t *incy,
+                       std::int64_t group_count, const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event copy_batch(sycl::queue &queue, const std::int64_t *n, const std::complex<float> **x,
+                       const std::int64_t *incx, std::complex<float> **y, const std::int64_t *incy,
+                       std::int64_t group_count, const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event copy_batch(sycl::queue &queue, const std::int64_t *n, const std::complex<double> **x,
+                       const std::int64_t *incx, std::complex<double> **y, const std::int64_t *incy,
+                       std::int64_t group_count, const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event dgmm_batch(sycl::queue &queue, side left_right, std::int64_t m, std::int64_t n,
+                       const float *a, std::int64_t lda, std::int64_t stridea, const float *x,
+                       std::int64_t incx, std::int64_t stridex, float *c, std::int64_t ldc,
+                       std::int64_t stridec, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event dgmm_batch(sycl::queue &queue, side left_right, std::int64_t m, std::int64_t n,
+                       const double *a, std::int64_t lda, std::int64_t stridea, const double *x,
+                       std::int64_t incx, std::int64_t stridex, double *c, std::int64_t ldc,
+                       std::int64_t stridec, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event dgmm_batch(sycl::queue &queue, side left_right, std::int64_t m, std::int64_t n,
+                       const std::complex<float> *a, std::int64_t lda, std::int64_t stridea,
+                       const std::complex<float> *x, std::int64_t incx, std::int64_t stridex,
+                       std::complex<float> *c, std::int64_t ldc, std::int64_t stridec,
+                       std::int64_t batch_size, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event dgmm_batch(sycl::queue &queue, side left_right, std::int64_t m, std::int64_t n,
+                       const std::complex<double> *a, std::int64_t lda, std::int64_t stridea,
+                       const std::complex<double> *x, std::int64_t incx, std::int64_t stridex,
+                       std::complex<double> *c, std::int64_t ldc, std::int64_t stridec,
+                       std::int64_t batch_size, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event dgmm_batch(sycl::queue &queue, const side *left_right, const std::int64_t *m,
+                       const std::int64_t *n, const float **a, const std::int64_t *lda,
+                       const float **x, const std::int64_t *incx, float **c,
+                       const std::int64_t *ldc, std::int64_t group_count,
+                       const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event dgmm_batch(sycl::queue &queue, const side *left_right, const std::int64_t *m,
+                       const std::int64_t *n, const double **a, const std::int64_t *lda,
+                       const double **x, const std::int64_t *incx, double **c,
+                       const std::int64_t *ldc, std::int64_t group_count,
+                       const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event dgmm_batch(sycl::queue &queue, const side *left_right, const std::int64_t *m,
+                       const std::int64_t *n, const std::complex<float> **a,
+                       const std::int64_t *lda, const std::complex<float> **x,
+                       const std::int64_t *incx, std::complex<float> **c, const std::int64_t *ldc,
+                       std::int64_t group_count, const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event dgmm_batch(sycl::queue &queue, const side *left_right, const std::int64_t *m,
+                       const std::int64_t *n, const std::complex<double> **a,
+                       const std::int64_t *lda, const std::complex<double> **x,
+                       const std::int64_t *incx, std::complex<double> **c, const std::int64_t *ldc,
+                       std::int64_t group_count, const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemv_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                       float alpha, const float *a, std::int64_t lda, std::int64_t stridea,
+                       const float *x, std::int64_t incx, std::int64_t stridex, float beta,
+                       float *y, std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemv_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                       double alpha, const double *a, std::int64_t lda, std::int64_t stridea,
+                       const double *x, std::int64_t incx, std::int64_t stridex, double beta,
+                       double *y, std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemv_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                       std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+                       std::int64_t stridea, const std::complex<float> *x, std::int64_t incx,
+                       std::int64_t stridex, std::complex<float> beta, std::complex<float> *y,
+                       std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemv_batch(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                       std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+                       std::int64_t stridea, const std::complex<double> *x, std::int64_t incx,
+                       std::int64_t stridex, std::complex<double> beta, std::complex<double> *y,
+                       std::int64_t incy, std::int64_t stridey, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemv_batch(sycl::queue &queue, const transpose *trans, const std::int64_t *m,
+                       const std::int64_t *n, const float *alpha, const float **a,
+                       const std::int64_t *lda, const float **x, const std::int64_t *incx,
+                       const float *beta, float **y, const std::int64_t *incy,
+                       std::int64_t group_count, const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemv_batch(sycl::queue &queue, const transpose *trans, const std::int64_t *m,
+                       const std::int64_t *n, const double *alpha, const double **a,
+                       const std::int64_t *lda, const double **x, const std::int64_t *incx,
+                       const double *beta, double **y, const std::int64_t *incy,
+                       std::int64_t group_count, const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemv_batch(sycl::queue &queue, const transpose *trans, const std::int64_t *m,
+                       const std::int64_t *n, const std::complex<float> *alpha,
+                       const std::complex<float> **a, const std::int64_t *lda,
+                       const std::complex<float> **x, const std::int64_t *incx,
+                       const std::complex<float> *beta, std::complex<float> **y,
+                       const std::int64_t *incy, std::int64_t group_count,
+                       const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemv_batch(sycl::queue &queue, const transpose *trans, const std::int64_t *m,
+                       const std::int64_t *n, const std::complex<double> *alpha,
+                       const std::complex<double> **a, const std::int64_t *lda,
+                       const std::complex<double> **x, const std::int64_t *incx,
+                       const std::complex<double> *beta, std::complex<double> **y,
+                       const std::int64_t *incy, std::int64_t group_count,
+                       const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event axpy_batch(sycl::queue &queue, const std::int64_t *n, const double *alpha,
+                       const double **x, const std::int64_t *incx, double **y,
+                       const std::int64_t *incy, std::int64_t group_count,
+                       const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event axpy_batch(sycl::queue &queue, const std::int64_t *n, const float *alpha,
+                       const float **x, const std::int64_t *incx, float **y,
+                       const std::int64_t *incy, std::int64_t group_count,
+                       const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event axpy_batch(sycl::queue &queue, const std::int64_t *n, const std::complex<double> *alpha,
+                       const std::complex<double> **x, const std::int64_t *incx,
+                       std::complex<double> **y, const std::int64_t *incy, std::int64_t group_count,
+                       const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event axpy_batch(sycl::queue &queue, const std::int64_t *n, const std::complex<float> *alpha,
+                       const std::complex<float> **x, const std::int64_t *incx,
+                       std::complex<float> **y, const std::int64_t *incy, std::int64_t group_count,
+                       const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event axpy_batch(sycl::queue &queue, std::int64_t n, float alpha, const float *x,
+                       std::int64_t incx, std::int64_t stridex, float *y, std::int64_t incy,
+                       std::int64_t stridey, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event axpy_batch(sycl::queue &queue, std::int64_t n, double alpha, const double *x,
+                       std::int64_t incx, std::int64_t stridex, double *y, std::int64_t incy,
+                       std::int64_t stridey, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event axpy_batch(sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
+                       const std::complex<float> *x, std::int64_t incx, std::int64_t stridex,
+                       std::complex<float> *y, std::int64_t incy, std::int64_t stridey,
+                       std::int64_t batch_size, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event axpy_batch(sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
+                       const std::complex<double> *x, std::int64_t incx, std::int64_t stridex,
+                       std::complex<double> *y, std::int64_t incy, std::int64_t stridey,
+                       std::int64_t batch_size, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, const transpose *transa, const transpose *transb,
+                       const std::int64_t *m, const std::int64_t *n, const std::int64_t *k,
+                       const float *alpha, const float **a, const std::int64_t *lda,
+                       const float **b, const std::int64_t *ldb, const float *beta, float **c,
+                       const std::int64_t *ldc, std::int64_t group_count,
+                       const std::int64_t *groupsize,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, const transpose *transa, const transpose *transb,
+                       const std::int64_t *m, const std::int64_t *n, const std::int64_t *k,
+                       const double *alpha, const double **a, const std::int64_t *lda,
+                       const double **b, const std::int64_t *ldb, const double *beta, double **c,
+                       const std::int64_t *ldc, std::int64_t group_count,
+                       const std::int64_t *groupsize,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, const transpose *transa, const transpose *transb,
+                       const std::int64_t *m, const std::int64_t *n, const std::int64_t *k,
+                       const std::complex<float> *alpha, const std::complex<float> **a,
+                       const std::int64_t *lda, const std::complex<float> **b,
+                       const std::int64_t *ldb, const std::complex<float> *beta,
+                       std::complex<float> **c, const std::int64_t *ldc, std::int64_t group_count,
+                       const std::int64_t *groupsize,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, const transpose *transa, const transpose *transb,
+                       const std::int64_t *m, const std::int64_t *n, const std::int64_t *k,
+                       const std::complex<double> *alpha, const std::complex<double> **a,
+                       const std::int64_t *lda, const std::complex<double> **b,
+                       const std::int64_t *ldb, const std::complex<double> *beta,
+                       std::complex<double> **c, const std::int64_t *ldc, std::int64_t group_count,
+                       const std::int64_t *groupsize,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, const transpose *transa, const transpose *transb,
+                       const std::int64_t *m, const std::int64_t *n, const std::int64_t *k,
+                       const sycl::half *alpha, const sycl::half **a, const std::int64_t *lda,
+                       const sycl::half **b, const std::int64_t *ldb, const sycl::half *beta,
+                       sycl::half **c, const std::int64_t *ldc, std::int64_t group_count,
+                       const std::int64_t *groupsize,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, const transpose *transa, const transpose *transb,
+                       const std::int64_t *m, const std::int64_t *n, const std::int64_t *k,
+                       const float *alpha, const sycl::half **a, const std::int64_t *lda,
+                       const sycl::half **b, const std::int64_t *ldb, const float *beta, float **c,
+                       const std::int64_t *ldc, std::int64_t group_count,
+                       const std::int64_t *groupsize,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, const transpose *transa, const transpose *transb,
+                       const std::int64_t *m, const std::int64_t *n, const std::int64_t *k,
+                       const float *alpha, const bfloat16 **a, const std::int64_t *lda,
+                       const bfloat16 **b, const std::int64_t *ldb, const float *beta, bfloat16 **c,
+                       const std::int64_t *ldc, std::int64_t group_count,
+                       const std::int64_t *groupsize,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, const transpose *transa, const transpose *transb,
+                       const std::int64_t *m, const std::int64_t *n, const std::int64_t *k,
+                       const float *alpha, const bfloat16 **a, const std::int64_t *lda,
+                       const bfloat16 **b, const std::int64_t *ldb, const float *beta, float **c,
+                       const std::int64_t *ldc, std::int64_t group_count,
+                       const std::int64_t *groupsize,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, const transpose *transa, const transpose *transb,
+                       const std::int64_t *m, const std::int64_t *n, const std::int64_t *k,
+                       const float *alpha, const std::int8_t **a, const std::int64_t *lda,
+                       const std::int8_t **b, const std::int64_t *ldb, const float *beta,
+                       std::int32_t **c, const std::int64_t *ldc, std::int64_t group_count,
+                       const std::int64_t *groupsize,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, const transpose *transa, const transpose *transb,
+                       const std::int64_t *m, const std::int64_t *n, const std::int64_t *k,
+                       const float *alpha, const std::int8_t **a, const std::int64_t *lda,
+                       const std::int8_t **b, const std::int64_t *ldb, const float *beta, float **c,
+                       const std::int64_t *ldc, std::int64_t group_count,
+                       const std::int64_t *groupsize,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                       std::int64_t n, std::int64_t k, float alpha, const float *a,
+                       std::int64_t lda, std::int64_t stride_a, const float *b, std::int64_t ldb,
+                       std::int64_t stride_b, float beta, float *c, std::int64_t ldc,
+                       std::int64_t stride_c, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                       std::int64_t n, std::int64_t k, double alpha, const double *a,
+                       std::int64_t lda, std::int64_t stride_a, const double *b, std::int64_t ldb,
+                       std::int64_t stride_b, double beta, double *c, std::int64_t ldc,
+                       std::int64_t stride_c, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                       std::int64_t n, std::int64_t k, std::complex<float> alpha,
+                       const std::complex<float> *a, std::int64_t lda, std::int64_t stride_a,
+                       const std::complex<float> *b, std::int64_t ldb, std::int64_t stride_b,
+                       std::complex<float> beta, std::complex<float> *c, std::int64_t ldc,
+                       std::int64_t stride_c, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                       std::int64_t n, std::int64_t k, std::complex<double> alpha,
+                       const std::complex<double> *a, std::int64_t lda, std::int64_t stride_a,
+                       const std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
+                       std::complex<double> beta, std::complex<double> *c, std::int64_t ldc,
+                       std::int64_t stride_c, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                       std::int64_t n, std::int64_t k, sycl::half alpha, const sycl::half *a,
+                       std::int64_t lda, std::int64_t stride_a, const sycl::half *b,
+                       std::int64_t ldb, std::int64_t stride_b, sycl::half beta, sycl::half *c,
+                       std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                       std::int64_t n, std::int64_t k, float alpha, const sycl::half *a,
+                       std::int64_t lda, std::int64_t stride_a, const sycl::half *b,
+                       std::int64_t ldb, std::int64_t stride_b, float beta, float *c,
+                       std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                       std::int64_t n, std::int64_t k, float alpha, const bfloat16 *a,
+                       std::int64_t lda, std::int64_t stride_a, const bfloat16 *b, std::int64_t ldb,
+                       std::int64_t stride_b, float beta, bfloat16 *c, std::int64_t ldc,
+                       std::int64_t stride_c, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                       std::int64_t n, std::int64_t k, float alpha, const bfloat16 *a,
+                       std::int64_t lda, std::int64_t stride_a, const bfloat16 *b, std::int64_t ldb,
+                       std::int64_t stride_b, float beta, float *c, std::int64_t ldc,
+                       std::int64_t stride_c, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                       std::int64_t n, std::int64_t k, float alpha, const std::int8_t *a,
+                       std::int64_t lda, std::int64_t stride_a, const std::int8_t *b,
+                       std::int64_t ldb, std::int64_t stride_b, float beta, std::int32_t *c,
+                       std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
+                       std::int64_t n, std::int64_t k, float alpha, const std::int8_t *a,
+                       std::int64_t lda, std::int64_t stride_a, const std::int8_t *b,
+                       std::int64_t ldb, std::int64_t stride_b, float beta, float *c,
+                       std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
+                       diag unit_diag, std::int64_t m, std::int64_t n, float alpha, const float *a,
+                       std::int64_t lda, std::int64_t stride_a, float *b, std::int64_t ldb,
+                       std::int64_t stride_b, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
+                       diag unit_diag, std::int64_t m, std::int64_t n, double alpha,
+                       const double *a, std::int64_t lda, std::int64_t stride_a, double *b,
+                       std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
+                       diag unit_diag, std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                       const std::complex<float> *a, std::int64_t lda, std::int64_t stride_a,
+                       std::complex<float> *b, std::int64_t ldb, std::int64_t stride_b,
+                       std::int64_t batch_size, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
+                       diag unit_diag, std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                       const std::complex<double> *a, std::int64_t lda, std::int64_t stride_a,
+                       std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
+                       std::int64_t batch_size, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event trsm_batch(sycl::queue &queue, const side *left_right, const uplo *upper_lower,
+                       const transpose *trans, const diag *unit_diag, const std::int64_t *m,
+                       const std::int64_t *n, const float *alpha, const float **a,
+                       const std::int64_t *lda, float **b, const std::int64_t *ldb,
+                       std::int64_t group_count, const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event trsm_batch(sycl::queue &queue, const side *left_right, const uplo *upper_lower,
+                       const transpose *trans, const diag *unit_diag, const std::int64_t *m,
+                       const std::int64_t *n, const double *alpha, const double **a,
+                       const std::int64_t *lda, double **b, const std::int64_t *ldb,
+                       std::int64_t group_count, const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event trsm_batch(sycl::queue &queue, const side *left_right, const uplo *upper_lower,
+                       const transpose *trans, const diag *unit_diag, const std::int64_t *m,
+                       const std::int64_t *n, const std::complex<float> *alpha,
+                       const std::complex<float> **a, const std::int64_t *lda,
+                       std::complex<float> **b, const std::int64_t *ldb, std::int64_t group_count,
+                       const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event trsm_batch(sycl::queue &queue, const side *left_right, const uplo *upper_lower,
+                       const transpose *trans, const diag *unit_diag, const std::int64_t *m,
+                       const std::int64_t *n, const std::complex<double> *alpha,
+                       const std::complex<double> **a, const std::int64_t *lda,
+                       std::complex<double> **b, const std::int64_t *ldb, std::int64_t group_count,
+                       const std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});

@@ -24,9 +24,6 @@
 #endif
 
 #include "oneapi/mkl/blas/detail/mklgpu/onemkl_blas_mklgpu.hpp"
-#include "oneapi/mkl/types.hpp"
-// #include "mklgpu_common.hpp"
-#include "oneapi/mkl/exceptions.hpp"
 
 #include "../mkl_common/mkl_blas_backend.hpp"
 
