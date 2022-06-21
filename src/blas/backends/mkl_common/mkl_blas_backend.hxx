@@ -17,7 +17,7 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-/// level3,  buffer
+/// level3, buffer
 
 void gemm(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
           std::int64_t k, float alpha, sycl::buffer<float, 1> &a, std::int64_t lda,
@@ -376,3 +376,580 @@ sycl::event trsm(sycl::queue &queue, side left_right, uplo upper_lower, transpos
                  diag unit_diag, std::int64_t m, std::int64_t n, std::complex<double> alpha,
                  const std::complex<double> *a, std::int64_t lda, std::complex<double> *b,
                  std::int64_t ldb, const std::vector<sycl::event> &dependencies = {});
+
+// level 2, buffer
+
+void gemv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, float alpha,
+          sycl::buffer<float, 1> &a, std::int64_t lda, sycl::buffer<float, 1> &x, std::int64_t incx,
+          float beta, sycl::buffer<float, 1> &y, std::int64_t incy);
+
+void gemv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, double alpha,
+          sycl::buffer<double, 1> &a, std::int64_t lda, sycl::buffer<double, 1> &x,
+          std::int64_t incx, double beta, sycl::buffer<double, 1> &y, std::int64_t incy);
+
+void gemv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+          std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+          sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx, std::complex<float> beta,
+          sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy);
+
+void gemv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+          std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+          sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx, std::complex<double> beta,
+          sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy);
+
+void gbmv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
+          std::int64_t ku, float alpha, sycl::buffer<float, 1> &a, std::int64_t lda,
+          sycl::buffer<float, 1> &x, std::int64_t incx, float beta, sycl::buffer<float, 1> &y,
+          std::int64_t incy);
+
+void gbmv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
+          std::int64_t ku, double alpha, sycl::buffer<double, 1> &a, std::int64_t lda,
+          sycl::buffer<double, 1> &x, std::int64_t incx, double beta, sycl::buffer<double, 1> &y,
+          std::int64_t incy);
+
+void gbmv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
+          std::int64_t ku, std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a,
+          std::int64_t lda, sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
+          std::complex<float> beta, sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy);
+
+void gbmv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, std::int64_t kl,
+          std::int64_t ku, std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+          std::int64_t lda, sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
+          std::complex<double> beta, sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy);
+
+void ger(sycl::queue &queue, std::int64_t m, std::int64_t n, float alpha, sycl::buffer<float, 1> &x,
+         std::int64_t incx, sycl::buffer<float, 1> &y, std::int64_t incy, sycl::buffer<float, 1> &a,
+         std::int64_t lda);
+
+void ger(sycl::queue &queue, std::int64_t m, std::int64_t n, double alpha,
+         sycl::buffer<double, 1> &x, std::int64_t incx, sycl::buffer<double, 1> &y,
+         std::int64_t incy, sycl::buffer<double, 1> &a, std::int64_t lda);
+
+void gerc(sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<float> alpha,
+          sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
+          sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
+          sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda);
+
+void gerc(sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<double> alpha,
+          sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
+          sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
+          sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda);
+
+void geru(sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<float> alpha,
+          sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
+          sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
+          sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda);
+
+void geru(sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<double> alpha,
+          sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
+          sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
+          sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda);
+
+void hbmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
+          std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+          sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx, std::complex<float> beta,
+          sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy);
+
+void hbmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
+          std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+          sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx, std::complex<double> beta,
+          sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy);
+
+void hemv(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+          sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+          sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx, std::complex<float> beta,
+          sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy);
+
+void hemv(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+          sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+          sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx, std::complex<double> beta,
+          sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy);
+
+void her(sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
+         sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
+         sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda);
+
+void her(sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+         sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
+         sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda);
+
+void her2(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+          sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
+          sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
+          sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda);
+
+void her2(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+          sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
+          sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
+          sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda);
+
+void hpmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+          sycl::buffer<std::complex<float>, 1> &a, sycl::buffer<std::complex<float>, 1> &x,
+          std::int64_t incx, std::complex<float> beta, sycl::buffer<std::complex<float>, 1> &y,
+          std::int64_t incy);
+
+void hpmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+          sycl::buffer<std::complex<double>, 1> &a, sycl::buffer<std::complex<double>, 1> &x,
+          std::int64_t incx, std::complex<double> beta, sycl::buffer<std::complex<double>, 1> &y,
+          std::int64_t incy);
+
+void hpr(sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
+         sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
+         sycl::buffer<std::complex<float>, 1> &a);
+
+void hpr(sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+         sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
+         sycl::buffer<std::complex<double>, 1> &a);
+
+void hpr2(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+          sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx,
+          sycl::buffer<std::complex<float>, 1> &y, std::int64_t incy,
+          sycl::buffer<std::complex<float>, 1> &a);
+
+void hpr2(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+          sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx,
+          sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy,
+          sycl::buffer<std::complex<double>, 1> &a);
+
+void sbmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k, float alpha,
+          sycl::buffer<float, 1> &a, std::int64_t lda, sycl::buffer<float, 1> &x, std::int64_t incx,
+          float beta, sycl::buffer<float, 1> &y, std::int64_t incy);
+
+void sbmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k, double alpha,
+          sycl::buffer<double, 1> &a, std::int64_t lda, sycl::buffer<double, 1> &x,
+          std::int64_t incx, double beta, sycl::buffer<double, 1> &y, std::int64_t incy);
+
+void symv(sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
+          sycl::buffer<float, 1> &a, std::int64_t lda, sycl::buffer<float, 1> &x, std::int64_t incx,
+          float beta, sycl::buffer<float, 1> &y, std::int64_t incy);
+
+void symv(sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+          sycl::buffer<double, 1> &a, std::int64_t lda, sycl::buffer<double, 1> &x,
+          std::int64_t incx, double beta, sycl::buffer<double, 1> &y, std::int64_t incy);
+
+void syr(sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
+         sycl::buffer<float, 1> &x, std::int64_t incx, sycl::buffer<float, 1> &a, std::int64_t lda);
+
+void syr(sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+         sycl::buffer<double, 1> &x, std::int64_t incx, sycl::buffer<double, 1> &a,
+         std::int64_t lda);
+
+void syr2(sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
+          sycl::buffer<float, 1> &x, std::int64_t incx, sycl::buffer<float, 1> &y,
+          std::int64_t incy, sycl::buffer<float, 1> &a, std::int64_t lda);
+
+void syr2(sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+          sycl::buffer<double, 1> &x, std::int64_t incx, sycl::buffer<double, 1> &y,
+          std::int64_t incy, sycl::buffer<double, 1> &a, std::int64_t lda);
+
+void spmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
+          sycl::buffer<float, 1> &a, sycl::buffer<float, 1> &x, std::int64_t incx, float beta,
+          sycl::buffer<float, 1> &y, std::int64_t incy);
+
+void spmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+          sycl::buffer<double, 1> &a, sycl::buffer<double, 1> &x, std::int64_t incx, double beta,
+          sycl::buffer<double, 1> &y, std::int64_t incy);
+
+void spr(sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
+         sycl::buffer<float, 1> &x, std::int64_t incx, sycl::buffer<float, 1> &a);
+
+void spr(sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+         sycl::buffer<double, 1> &x, std::int64_t incx, sycl::buffer<double, 1> &a);
+
+void spr2(sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
+          sycl::buffer<float, 1> &x, std::int64_t incx, sycl::buffer<float, 1> &y,
+          std::int64_t incy, sycl::buffer<float, 1> &a);
+
+void spr2(sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+          sycl::buffer<double, 1> &x, std::int64_t incx, sycl::buffer<double, 1> &y,
+          std::int64_t incy, sycl::buffer<double, 1> &a);
+
+void tbmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          std::int64_t k, sycl::buffer<float, 1> &a, std::int64_t lda, sycl::buffer<float, 1> &x,
+          std::int64_t incx);
+
+void tbmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          std::int64_t k, sycl::buffer<double, 1> &a, std::int64_t lda, sycl::buffer<double, 1> &x,
+          std::int64_t incx);
+
+void tbmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          std::int64_t k, sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+          sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx);
+
+void tbmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          std::int64_t k, sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+          sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx);
+
+void tbsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          std::int64_t k, sycl::buffer<float, 1> &a, std::int64_t lda, sycl::buffer<float, 1> &x,
+          std::int64_t incx);
+
+void tbsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          std::int64_t k, sycl::buffer<double, 1> &a, std::int64_t lda, sycl::buffer<double, 1> &x,
+          std::int64_t incx);
+
+void tbsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          std::int64_t k, sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+          sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx);
+
+void tbsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          std::int64_t k, sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+          sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx);
+
+void tpmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          sycl::buffer<float, 1> &a, sycl::buffer<float, 1> &x, std::int64_t incx);
+
+void tpmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          sycl::buffer<double, 1> &a, sycl::buffer<double, 1> &x, std::int64_t incx);
+
+void tpmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          sycl::buffer<std::complex<float>, 1> &a, sycl::buffer<std::complex<float>, 1> &x,
+          std::int64_t incx);
+
+void tpmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          sycl::buffer<std::complex<double>, 1> &a, sycl::buffer<std::complex<double>, 1> &x,
+          std::int64_t incx);
+
+void tpsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          sycl::buffer<float, 1> &a, sycl::buffer<float, 1> &x, std::int64_t incx);
+
+void tpsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          sycl::buffer<double, 1> &a, sycl::buffer<double, 1> &x, std::int64_t incx);
+
+void tpsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          sycl::buffer<std::complex<float>, 1> &a, sycl::buffer<std::complex<float>, 1> &x,
+          std::int64_t incx);
+
+void tpsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          sycl::buffer<std::complex<double>, 1> &a, sycl::buffer<std::complex<double>, 1> &x,
+          std::int64_t incx);
+
+void trmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          sycl::buffer<float, 1> &a, std::int64_t lda, sycl::buffer<float, 1> &x,
+          std::int64_t incx);
+
+void trmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          sycl::buffer<double, 1> &a, std::int64_t lda, sycl::buffer<double, 1> &x,
+          std::int64_t incx);
+
+void trmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+          sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx);
+
+void trmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+          sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx);
+
+void trsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          sycl::buffer<float, 1> &a, std::int64_t lda, sycl::buffer<float, 1> &x,
+          std::int64_t incx);
+
+void trsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          sycl::buffer<double, 1> &a, std::int64_t lda, sycl::buffer<double, 1> &x,
+          std::int64_t incx);
+
+void trsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+          sycl::buffer<std::complex<float>, 1> &x, std::int64_t incx);
+
+void trsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag, std::int64_t n,
+          sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+          sycl::buffer<std::complex<double>, 1> &x, std::int64_t incx);
+
+// level 2, USM
+
+sycl::event gemv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, float alpha,
+                 const float *a, std::int64_t lda, const float *x, std::int64_t incx, float beta,
+                 float *y, std::int64_t incy, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, double alpha,
+                 const double *a, std::int64_t lda, const double *x, std::int64_t incx, double beta,
+                 double *y, std::int64_t incy, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                 std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+                 const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
+                 std::complex<float> *y, std::int64_t incy,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                 std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+                 const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
+                 std::complex<double> *y, std::int64_t incy,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gbmv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                 std::int64_t kl, std::int64_t ku, float alpha, const float *a, std::int64_t lda,
+                 const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gbmv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                 std::int64_t kl, std::int64_t ku, double alpha, const double *a, std::int64_t lda,
+                 const double *x, std::int64_t incx, double beta, double *y, std::int64_t incy,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gbmv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                 std::int64_t kl, std::int64_t ku, std::complex<float> alpha,
+                 const std::complex<float> *a, std::int64_t lda, const std::complex<float> *x,
+                 std::int64_t incx, std::complex<float> beta, std::complex<float> *y,
+                 std::int64_t incy, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gbmv(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                 std::int64_t kl, std::int64_t ku, std::complex<double> alpha,
+                 const std::complex<double> *a, std::int64_t lda, const std::complex<double> *x,
+                 std::int64_t incx, std::complex<double> beta, std::complex<double> *y,
+                 std::int64_t incy, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event ger(sycl::queue &queue, std::int64_t m, std::int64_t n, float alpha, const float *x,
+                std::int64_t incx, const float *y, std::int64_t incy, float *a, std::int64_t lda,
+                const std::vector<sycl::event> &dependencies = {});
+
+sycl::event ger(sycl::queue &queue, std::int64_t m, std::int64_t n, double alpha, const double *x,
+                std::int64_t incx, const double *y, std::int64_t incy, double *a, std::int64_t lda,
+                const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gerc(sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                 const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
+                 std::int64_t incy, std::complex<float> *a, std::int64_t lda,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gerc(sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                 const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
+                 std::int64_t incy, std::complex<double> *a, std::int64_t lda,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event geru(sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                 const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
+                 std::int64_t incy, std::complex<float> *a, std::int64_t lda,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event geru(sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                 const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
+                 std::int64_t incy, std::complex<double> *a, std::int64_t lda,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event hbmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
+                 std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
+                 const std::complex<float> *x, std::int64_t incx, std::complex<float> beta,
+                 std::complex<float> *y, std::int64_t incy,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event hbmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k,
+                 std::complex<double> alpha, const std::complex<double> *a, std::int64_t lda,
+                 const std::complex<double> *x, std::int64_t incx, std::complex<double> beta,
+                 std::complex<double> *y, std::int64_t incy,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event hemv(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+                 const std::complex<float> *a, std::int64_t lda, const std::complex<float> *x,
+                 std::int64_t incx, std::complex<float> beta, std::complex<float> *y,
+                 std::int64_t incy, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event hemv(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+                 const std::complex<double> *a, std::int64_t lda, const std::complex<double> *x,
+                 std::int64_t incx, std::complex<double> beta, std::complex<double> *y,
+                 std::int64_t incy, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event her(sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
+                const std::complex<float> *x, std::int64_t incx, std::complex<float> *a,
+                std::int64_t lda, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event her(sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+                const std::complex<double> *x, std::int64_t incx, std::complex<double> *a,
+                std::int64_t lda, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event her2(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+                 const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
+                 std::int64_t incy, std::complex<float> *a, std::int64_t lda,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event her2(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+                 const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
+                 std::int64_t incy, std::complex<double> *a, std::int64_t lda,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event hpmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+                 const std::complex<float> *a, const std::complex<float> *x, std::int64_t incx,
+                 std::complex<float> beta, std::complex<float> *y, std::int64_t incy,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event hpmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+                 const std::complex<double> *a, const std::complex<double> *x, std::int64_t incx,
+                 std::complex<double> beta, std::complex<double> *y, std::int64_t incy,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event hpr(sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha,
+                const std::complex<float> *x, std::int64_t incx, std::complex<float> *a,
+                const std::vector<sycl::event> &dependencies = {});
+
+sycl::event hpr(sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+                const std::complex<double> *x, std::int64_t incx, std::complex<double> *a,
+                const std::vector<sycl::event> &dependencies = {});
+
+sycl::event hpr2(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<float> alpha,
+                 const std::complex<float> *x, std::int64_t incx, const std::complex<float> *y,
+                 std::int64_t incy, std::complex<float> *a,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event hpr2(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::complex<double> alpha,
+                 const std::complex<double> *x, std::int64_t incx, const std::complex<double> *y,
+                 std::int64_t incy, std::complex<double> *a,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event sbmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k, float alpha,
+                 const float *a, std::int64_t lda, const float *x, std::int64_t incx, float beta,
+                 float *y, std::int64_t incy, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event sbmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, std::int64_t k, double alpha,
+                 const double *a, std::int64_t lda, const double *x, std::int64_t incx, double beta,
+                 double *y, std::int64_t incy, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event symv(sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *a,
+                 std::int64_t lda, const float *x, std::int64_t incx, float beta, float *y,
+                 std::int64_t incy, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event symv(sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+                 const double *a, std::int64_t lda, const double *x, std::int64_t incx, double beta,
+                 double *y, std::int64_t incy, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event syr(sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *x,
+                std::int64_t incx, float *a, std::int64_t lda,
+                const std::vector<sycl::event> &dependencies = {});
+
+sycl::event syr(sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *x,
+                std::int64_t incx, double *a, std::int64_t lda,
+                const std::vector<sycl::event> &dependencies = {});
+
+sycl::event syr2(sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *x,
+                 std::int64_t incx, const float *y, std::int64_t incy, float *a, std::int64_t lda,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event syr2(sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+                 const double *x, std::int64_t incx, const double *y, std::int64_t incy, double *a,
+                 std::int64_t lda, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event spmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *a,
+                 const float *x, std::int64_t incx, float beta, float *y, std::int64_t incy,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event spmv(sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+                 const double *a, const double *x, std::int64_t incx, double beta, double *y,
+                 std::int64_t incy, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event spr(sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *x,
+                std::int64_t incx, float *a, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event spr(sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha, const double *x,
+                std::int64_t incx, double *a, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event spr2(sycl::queue &queue, uplo upper_lower, std::int64_t n, float alpha, const float *x,
+                 std::int64_t incx, const float *y, std::int64_t incy, float *a,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event spr2(sycl::queue &queue, uplo upper_lower, std::int64_t n, double alpha,
+                 const double *x, std::int64_t incx, const double *y, std::int64_t incy, double *a,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event tbmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, std::int64_t k, const float *a, std::int64_t lda, float *x,
+                 std::int64_t incx, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event tbmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, std::int64_t k, const double *a, std::int64_t lda, double *x,
+                 std::int64_t incx, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event tbmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, std::int64_t k, const std::complex<float> *a, std::int64_t lda,
+                 std::complex<float> *x, std::int64_t incx,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event tbmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, std::int64_t k, const std::complex<double> *a, std::int64_t lda,
+                 std::complex<double> *x, std::int64_t incx,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event tbsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, std::int64_t k, const float *a, std::int64_t lda, float *x,
+                 std::int64_t incx, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event tbsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, std::int64_t k, const double *a, std::int64_t lda, double *x,
+                 std::int64_t incx, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event tbsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, std::int64_t k, const std::complex<float> *a, std::int64_t lda,
+                 std::complex<float> *x, std::int64_t incx,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event tbsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, std::int64_t k, const std::complex<double> *a, std::int64_t lda,
+                 std::complex<double> *x, std::int64_t incx,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event tpmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, const float *a, float *x, std::int64_t incx,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event tpmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, const double *a, double *x, std::int64_t incx,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event tpmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, const std::complex<float> *a, std::complex<float> *x,
+                 std::int64_t incx, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event tpmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, const std::complex<double> *a, std::complex<double> *x,
+                 std::int64_t incx, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event tpsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, const float *a, float *x, std::int64_t incx,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event tpsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, const double *a, double *x, std::int64_t incx,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event tpsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, const std::complex<float> *a, std::complex<float> *x,
+                 std::int64_t incx, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event tpsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, const std::complex<double> *a, std::complex<double> *x,
+                 std::int64_t incx, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event trmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, const float *a, std::int64_t lda, float *x, std::int64_t incx,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event trmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, const double *a, std::int64_t lda, double *x, std::int64_t incx,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event trmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, const std::complex<float> *a, std::int64_t lda,
+                 std::complex<float> *x, std::int64_t incx,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event trmv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, const std::complex<double> *a, std::int64_t lda,
+                 std::complex<double> *x, std::int64_t incx,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event trsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, const float *a, std::int64_t lda, float *x, std::int64_t incx,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event trsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, const double *a, std::int64_t lda, double *x, std::int64_t incx,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event trsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, const std::complex<float> *a, std::int64_t lda,
+                 std::complex<float> *x, std::int64_t incx,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event trsv(sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
+                 std::int64_t n, const std::complex<double> *a, std::int64_t lda,
+                 std::complex<double> *x, std::int64_t incx,
+                 const std::vector<sycl::event> &dependencies = {});
