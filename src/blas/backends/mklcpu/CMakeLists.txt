@@ -21,7 +21,7 @@ set(LIB_NAME onemkl_blas_mklcpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
 find_package(MKL REQUIRED)
-set(SOURCES mklcpu_common.hpp
+set(SOURCES
   mklcpu_level1.cpp mklcpu_level2.cpp mklcpu_level3.cpp mklcpu_batch.cpp mklcpu_extensions.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mklcpu_wrappers.cpp>)
 add_library(${LIB_NAME})
