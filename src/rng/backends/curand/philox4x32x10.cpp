@@ -343,7 +343,7 @@ public:
         sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](sycl::handler& cgh) {
-                cgh.host_task([=](sycl::interop_handle ih) {
+              onemkl_curand_host_task(cgh, [=](sycl::interop_handle ih) {
                     curandStatus_t status;
                     CURAND_CALL(curandGenerateUniform, status, engine_, r, n);
                 });
@@ -358,7 +358,7 @@ public:
         sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](sycl::handler& cgh) {
-                cgh.host_task([=](sycl::interop_handle ih) {
+                onemkl_curand_host_task(cgh, [=](sycl::interop_handle ih) {
                     curandStatus_t status;
                     CURAND_CALL(curandGenerateUniformDouble, status, engine_, r, n);
                 });
@@ -375,7 +375,7 @@ public:
             n * sizeof(std::uint32_t), queue_.get_device(), queue_.get_context());
         queue_
             .submit([&](sycl::handler& cgh) {
-                cgh.host_task([=](sycl::interop_handle ih) {
+                onemkl_curand_host_task(cgh, [=](sycl::interop_handle ih) {
                     curandStatus_t status;
                     CURAND_CALL(curandGenerate, status, engine_, ib, n);
                 });
@@ -390,7 +390,7 @@ public:
         sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](sycl::handler& cgh) {
-                cgh.host_task([=](sycl::interop_handle ih) {
+                onemkl_curand_host_task(cgh, [=](sycl::interop_handle ih) {
                     curandStatus_t status;
                     CURAND_CALL(curandGenerateUniform, status, engine_, r, n);
                 });
@@ -405,7 +405,7 @@ public:
         sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](sycl::handler& cgh) {
-                cgh.host_task([=](sycl::interop_handle ih) {
+                onemkl_curand_host_task(cgh, [=](sycl::interop_handle ih) {
                     curandStatus_t status;
                     CURAND_CALL(curandGenerateUniformDouble, status, engine_, r, n);
                 });
@@ -420,7 +420,7 @@ public:
         std::int64_t n, float* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
-            cgh.host_task([=](sycl::interop_handle ih) {
+            onemkl_curand_host_task(cgh, [=](sycl::interop_handle ih) {
                 curandStatus_t status;
                 CURAND_CALL(curandGenerateNormal, status, engine_, r, n, distr.mean(),
                             distr.stddev());
@@ -434,7 +434,7 @@ public:
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
-            cgh.host_task([=](sycl::interop_handle ih) {
+            onemkl_curand_host_task(cgh, [=](sycl::interop_handle ih) {
                 curandStatus_t status;
                 CURAND_CALL(curandGenerateNormalDouble, status, engine_, r, n, distr.mean(),
                             distr.stddev());
@@ -466,7 +466,7 @@ public:
         std::int64_t n, float* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
-            cgh.host_task([=](sycl::interop_handle ih) {
+            onemkl_curand_host_task(cgh, [=](sycl::interop_handle ih) {
                 curandStatus_t status;
                 CURAND_CALL(curandGenerateLogNormal, status, engine_, r, n, distr.m(), distr.s());
             });
@@ -479,7 +479,7 @@ public:
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
-            cgh.host_task([=](sycl::interop_handle ih) {
+            onemkl_curand_host_task(cgh, [=](sycl::interop_handle ih) {
                 curandStatus_t status;
                 CURAND_CALL(curandGenerateLogNormalDouble, status, engine_, r, n, distr.m(),
                             distr.s());
@@ -545,7 +545,7 @@ public:
                                  const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         return queue_.submit([&](sycl::handler& cgh) {
-            cgh.host_task([=](sycl::interop_handle ih) {
+            onemkl_curand_host_task(cgh, [=](sycl::interop_handle ih) {
                 curandStatus_t status;
                 CURAND_CALL(curandGenerate, status, engine_, r, n);
             });

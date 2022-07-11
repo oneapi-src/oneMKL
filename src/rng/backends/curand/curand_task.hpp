@@ -13,15 +13,22 @@ namespace rng {
 namespace curand {
 #ifdef __HIPSYCL__
 template <typename H, typename A, typename F>
-static inline void host_task_internal(sycl::handler &cgh, A acc, sycl::queue, F f) {
+static inline void host_task_internal(H &cgh, A acc, F f) {
     cgh.hipSYCL_enqueue_custom_operation([f, acc](sycl::interop_handle ih) {
         auto r_ptr =
             reinterpret_cast<typename A::value_type *>(ih.get_native_mem<sycl::backend::cuda>(acc));
         f(r_ptr);
     });
 }
+
+  template <typename H, typename F>
+static inline void host_task_internal(H &cgh, F f) {
+    cgh.hipSYCL_enqueue_custom_operation([f](sycl::interop_handle ih) {
+        f(ih);
+    });
+}
 #else
-template <typename H, typename A, typename F, typename NumberTyp>
+template <typename H, typename A, typename F>
 static inline void host_task_internal(H &cgh, A acc, F f) {
     cgh.host_task([f, acc](sycl::interop_handle ih) {
         auto r_ptr = reinterpret_cast<typename A::value_type *>(
@@ -29,12 +36,26 @@ static inline void host_task_internal(H &cgh, A acc, F f) {
         f(r_ptr);
     });
 }
+
+  template <typename H, typename F>
+static inline void host_task_internal(H &cgh, A acc, F f) {
+    cgh.host_task([f](sycl::interop_handle ih) {
+        f(ih);
+    });
+}
 #endif
 template <typename H, typename A, typename F>
 static inline void onemkl_curand_host_task(H &cgh, A acc, F f) {
     host_task_internal(cgh, acc, f);
 }
-} // namespace curand
+
+template <typename H, typename F>
+static inline void onemkl_curand_host_task(H &cgh, F f) {
+    host_task_internal(cgh, f);
+}
+  
+}
+// namespace curand
 } // namespace rng
 } // namespace mkl
 } // namespace oneapi
