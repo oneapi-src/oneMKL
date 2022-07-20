@@ -625,8 +625,7 @@ inline sycl::event getrf_batch(const char *func_name, Func func, sycl::queue &qu
                                std::int64_t *group_sizes, T *scratchpad,
                                std::int64_t scratchpad_size,
                                const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("lapack", "getrf_batch_scratchpad_size");
-    /*using cuDataType = typename CudaEquivalentType<T>::Type;
+    using cuDataType = typename CudaEquivalentType<T>::Type;
 
     int64_t batch_size = 0;
     overflow_check(group_count, scratchpad_size);
@@ -670,17 +669,20 @@ inline sycl::event getrf_batch(const char *func_name, Func func, sycl::queue &qu
 
     // Copy from 32-bit USM to 64-bit
     std::vector<sycl::event> casting_dependencies(group_count);
-    for (int64_t group_id = 0; group_id < group_count; ++group_id) {
+    for (int64_t group_id = 0, global_id = 0; group_id < group_count; ++group_id) {
         uint64_t ipiv_size = n[group_id];
-        int64_t *d_ipiv = ipiv[group_id];
-        int *d_ipiv32 = ipiv32[group_id];
-        sycl::event e = queue.submit([&](sycl::handler &cgh) {
-            cgh.depends_on(done);
-            cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
-                d_ipiv[index] = static_cast<std::int64_t>(d_ipiv32[index]);
+        for (int64_t local_id = 0; local_id < group_sizes[group_id]; ++local_id, ++global_id) {
+            int64_t *d_ipiv = ipiv[global_id];
+            int *d_ipiv32 = ipiv32[global_id];
+
+            sycl::event e = queue.submit([&](sycl::handler &cgh) {
+                cgh.depends_on(done);
+                cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
+                    d_ipiv[index] = static_cast<std::int64_t>(d_ipiv32[index]);
+                });
             });
-        });
-        casting_dependencies[group_id] = e;
+            casting_dependencies[group_id] = e;
+        }
     }
 
     // Enqueue free memory
@@ -700,7 +702,7 @@ inline sycl::event getrf_batch(const char *func_name, Func func, sycl::queue &qu
     lapack_info_check(queue, devInfo, __func__, func_name, batch_size);
     sycl::free(devInfo, queue);
 
-    return done_freeing;*/
+    return done_freeing;
 }
 
 #define GETRF_BATCH_LAUNCHER_USM(TYPE, CUSOLVER_ROUTINE)                                         \
@@ -815,9 +817,9 @@ inline sycl::event getrs_batch(const char *func_name, Func func, sycl::queue &qu
                                       nrhs, a_ + stride_a * i, lda, ipiv_ + stride_ipiv * i,
                                       b_ + stride_b * i, ldb, nullptr);
             }
-        });
 
-        sycl::free(ipiv32, queue);
+            sycl::free(ipiv32, queue);
+        });
     });
 
     return done;
@@ -1407,14 +1409,17 @@ inline void getrf_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t m, std::int64_t n, std::int64_t lda,
                                         std::int64_t stride_a, std::int64_t stride_ipiv,
                                         std::int64_t batch_size, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            cusolverStatus_t err;
+    queue
+        .submit([&](sycl::handler &cgh) {
+            onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+                auto handle = sc.get_handle(queue);
+                cusolverStatus_t err;
 
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, nullptr, lda, scratch_size);
-        });
-    }).wait();
+                CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, nullptr, lda,
+                                      scratch_size);
+            });
+        })
+        .wait();
 }
 
 #define GETRF_STRIDED_BATCH_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                       \
@@ -1487,14 +1492,15 @@ inline void geqrf_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t m, std::int64_t n, std::int64_t lda,
                                         std::int64_t stride_a, std::int64_t stride_tau,
                                         std::int64_t batch_size, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
 
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, nullptr, lda, scratch_size);
         });
-    }).wait();
+    });
+    e.wait();
 }
 
 #define GEQRF_STRIDED_BATCH_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                       \
@@ -1554,7 +1560,7 @@ inline void orgqr_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t lda, std::int64_t stride_a,
                                         std::int64_t stride_tau, std::int64_t batch_size,
                                         int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -1562,7 +1568,8 @@ inline void orgqr_batch_scratchpad_size(const char *func_name, Func func, sycl::
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, k, nullptr, lda, nullptr,
                                   scratch_size);
         });
-    }).wait();
+    });
+    e.wait();
 }
 
 #define ORGQR_STRIDED_BATCH_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                           \
@@ -1587,7 +1594,7 @@ inline void ungqr_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t lda, std::int64_t stride_a,
                                         std::int64_t stride_tau, std::int64_t batch_size,
                                         int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -1595,7 +1602,8 @@ inline void ungqr_batch_scratchpad_size(const char *func_name, Func func, sycl::
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, k, nullptr, lda, nullptr,
                                   scratch_size);
         });
-    }).wait();
+    });
+    e.wait();
 }
 
 #define ORGQR_STRIDED_BATCH_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                           \
@@ -1619,8 +1627,7 @@ inline void getrf_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t *m, std::int64_t *n, std::int64_t *lda,
                                         std::int64_t group_count, std::int64_t *group_sizes,
                                         int *scratch_size) {
-    throw unimplemented("lapack", "getrf_batch_scratchpad_size");
-    /*queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int group_scratch_size = 0;
@@ -1635,7 +1642,8 @@ inline void getrf_batch_scratchpad_size(const char *func_name, Func func, sycl::
                     group_scratch_size > *scratch_size ? group_scratch_size : *scratch_size;
             }
         });
-    }).wait();*/
+    });
+    e.wait();
 }
 
 #define GETRF_GROUP_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                               \
@@ -1704,7 +1712,7 @@ inline void geqrf_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t *m, std::int64_t *n, std::int64_t *lda,
                                         std::int64_t group_count, std::int64_t *group_sizes,
                                         int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int group_scratch_size = 0;
@@ -1719,7 +1727,8 @@ inline void geqrf_batch_scratchpad_size(const char *func_name, Func func, sycl::
                     group_scratch_size > *scratch_size ? group_scratch_size : *scratch_size;
             }
         });
-    }).wait();
+    });
+    e.wait();
 }
 
 #define GEQRF_GROUP_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                               \
@@ -1745,7 +1754,7 @@ inline void orgqr_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t *m, std::int64_t *n, std::int64_t *k,
                                         std::int64_t *lda, std::int64_t group_count,
                                         std::int64_t *group_sizes, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int group_scratch_size = 0;
@@ -1761,7 +1770,8 @@ inline void orgqr_batch_scratchpad_size(const char *func_name, Func func, sycl::
                     group_scratch_size > *scratch_size ? group_scratch_size : *scratch_size;
             }
         });
-    }).wait();
+    });
+    e.wait();
 }
 
 #define ORGQR_GROUP_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                  \
@@ -1818,7 +1828,7 @@ inline void ungqr_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t *m, std::int64_t *n, std::int64_t *k,
                                         std::int64_t *lda, std::int64_t group_count,
                                         std::int64_t *group_sizes, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int group_scratch_size = 0;
@@ -1834,7 +1844,8 @@ inline void ungqr_batch_scratchpad_size(const char *func_name, Func func, sycl::
                     group_scratch_size > *scratch_size ? group_scratch_size : *scratch_size;
             }
         });
-    }).wait();
+    });
+    e.wait();
 }
 
 #define UNGQR_GROUP_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                  \
