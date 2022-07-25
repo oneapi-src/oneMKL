@@ -189,7 +189,7 @@ of matrices in ``a``, ``b`` and ``c`` buffers is given by the ``batch_size`` par
    ldc
       The leading dimension of the matrices ``C``. It must be positive and at least
       ``m`` if column major layout is used to store matrices or at
-      least ``n`` if column major layout is used to store matrices.
+      least ``n`` if row major layout is used to store matrices.
 
    stridec
       Stride between different ``C`` matrices. Must be at least
@@ -569,7 +569,7 @@ in ``a``, ``b`` and ``c`` are given by the ``batch_size`` parameter.
    ldc
       The leading dimension of the matrices ``C``. It must be positive and at least
       ``m`` if column major layout is used to store matrices or at
-      least ``n`` if column major layout is used to store matrices.
+      least ``n`` if row major layout is used to store matrices.
 
    stridec
       Stride between different ``C`` matrices.
