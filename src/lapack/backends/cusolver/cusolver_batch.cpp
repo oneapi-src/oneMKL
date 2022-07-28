@@ -1742,10 +1742,10 @@ inline void geqrf_batch_scratchpad_size(const char *func_name, Func func, sycl::
         return scratch_size;                                                               \
     }
 
-GEQRF_GROUP_LAUNCHER_SCRATCH(float, cusolverDnSgetrf_bufferSize)
-GEQRF_GROUP_LAUNCHER_SCRATCH(double, cusolverDnDgetrf_bufferSize)
-GEQRF_GROUP_LAUNCHER_SCRATCH(std::complex<float>, cusolverDnCgetrf_bufferSize)
-GEQRF_GROUP_LAUNCHER_SCRATCH(std::complex<double>, cusolverDnZgetrf_bufferSize)
+GEQRF_GROUP_LAUNCHER_SCRATCH(float, cusolverDnSgeqrf_bufferSize)
+GEQRF_GROUP_LAUNCHER_SCRATCH(double, cusolverDnDgeqrf_bufferSize)
+GEQRF_GROUP_LAUNCHER_SCRATCH(std::complex<float>, cusolverDnCgeqrf_bufferSize)
+GEQRF_GROUP_LAUNCHER_SCRATCH(std::complex<double>, cusolverDnZgeqrf_bufferSize)
 
 #undef GEQRF_GROUP_LAUNCHER_SCRATCH
 
