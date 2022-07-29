@@ -168,6 +168,7 @@ void getrf(const char *func_name, Func func, sycl::queue &queue, std::int64_t m,
                                   devInfo_);
         });
     });
+    queue.wait();
 
     // Copy from 32-bit buffer to 64-bit
     queue.submit([&](sycl::handler &cgh) {
@@ -692,6 +693,7 @@ inline void potrf(const char *func_name, Func func, sycl::queue &queue, oneapi::
                                   lda, scratch_, scratchpad_size, devInfo_);
         });
     });
+    queue.wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
 }
 
@@ -1341,6 +1343,7 @@ inline sycl::event getrf(const char *func_name, Func func, sycl::queue &queue, s
         });
     });
 
+    queue.wait();
     // Copy from 32-bit USM to 64-bit
     auto done_casting = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(done);
@@ -1900,6 +1903,7 @@ inline sycl::event potrf(const char *func_name, Func func, sycl::queue &queue,
                                   lda, scratch_, scratchpad_size, devInfo_);
         });
     });
+    queue.wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
     free(devInfo, queue);
     return done;
