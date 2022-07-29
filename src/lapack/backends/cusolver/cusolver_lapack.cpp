@@ -1326,7 +1326,7 @@ inline sycl::event getrf(const char *func_name, Func func, sycl::queue &queue, s
     int *ipiv32 = (int *)malloc_device(sizeof(int) * ipiv_size, queue);
 
     int *devInfo = (int *)malloc_device(sizeof(int), queue);
-    auto done = queue.submit([&](sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -1346,7 +1346,6 @@ inline sycl::event getrf(const char *func_name, Func func, sycl::queue &queue, s
     queue.wait();
     // Copy from 32-bit USM to 64-bit
     auto done_casting = queue.submit([&](sycl::handler &cgh) {
-        cgh.depends_on(done);
         cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
             ipiv[index] = static_cast<std::int64_t>(ipiv32[index]);
         });
