@@ -30,7 +30,11 @@
 #include "oneapi/mkl/types.hpp"
 #ifndef __HIPSYCL__
 #include "rocblas_scope_handle.hpp"
+#if __has_include(<sycl/detail/pi.hpp>)
+#include <sycl/detail/pi.hpp>
+#else
 #include <CL/sycl/detail/pi.hpp>
+#endif
 #else
 #include "rocblas_scope_handle_hipsycl.hpp"
 

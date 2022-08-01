@@ -61,7 +61,11 @@
 #else
 #include <CL/sycl.hpp>
 #endif
+#if __has_include(<sycl/backend/cuda.hpp>)
+#include <sycl/backend/cuda.hpp>
+#else
 #include <CL/sycl/backend/cuda.hpp>
+#endif
 #include <iostream>
 
 #include "oneapi/mkl/rng/detail/engine_impl.hpp"
