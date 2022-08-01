@@ -1,6 +1,4 @@
-#=================================================================================
-# Copyright (C) 2022 Heidelberg University, Engineering Mathematics and Computing Lab (EMCL) 
-# and Computing Centre (URZ)
+#--===============================================================================
 # cuRAND back-end Copyright (c) 2021, The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory (subject to receipt
 # of any required approvals from the U.S. Dept. of Energy). All rights
@@ -58,46 +56,57 @@
 # so.
 #=================================================================================
 
-set(LIB_NAME onemkl_rng_rocrand)
-set(LIB_OBJ ${LIB_NAME}_obj)
-find_package(rocRAND REQUIRED)
-
-set(SOURCES philox4x32x10.cpp
-  mrg32k3a.cpp
-  $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_rng_rocrand_wrappers.cpp>)
-
-add_library(${LIB_NAME})
-add_library(${LIB_OBJ} OBJECT ${SOURCES})
-
-target_include_directories(${LIB_OBJ}
-  PRIVATE ${PROJECT_SOURCE_DIR}/include
-          ${PROJECT_SOURCE_DIR}/src
-          ${CMAKE_BINARY_DIR}/bin
-          ${MKL_INCLUDE}
-)
-
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ONEMKL::rocBLAS::rocRAND)
-target_compile_features(${LIB_OBJ} PUBLIC cxx_std_11)
-set_target_properties(${LIB_OBJ} PROPERTIES
-  POSITION_INDEPENDENT_CODE ON
-)
-
-target_link_libraries(${LIB_NAME} PUBLIC ${LIB_OBJ})
-if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
-  add_sycl_to_target(TARGET ${LIB_OBJ} SOURCES ${SOURCES})
+if (NOT DEFINED ROCM_PATH)
+if (NOT DEFINED ENV{ROCM_PATH})
+set(ROCM_PATH "/opt/rocm" CACHE PATH "Path to which ROCm has been installed") 
+else() 
+set(ROCM_PATH $ENV{ROCM_PATH} CACHE PATH "Path to which ROCm has been installed") 
+endif() 
 endif()
-# Add major version to the library
-set_target_properties(${LIB_NAME} PROPERTIES
-  SOVERSION ${PROJECT_VERSION_MAJOR}
-)
 
-# Add dependencies rpath to the library
-list(APPEND CMAKE_BUILD_RPATH $<TARGET_FILE_DIR:${LIB_NAME}>)
+if (NOT DEFINED HIP_PATH)
+if (NOT DEFINED ENV{HIP_PATH})
+set(HIP_PATH "/opt/rocm/hip" CACHE PATH "Path to which HIP has been installed") 
+else() 
+set(HIP_PATH $ENV{HIP_PATH} CACHE PATH "Path to which HIP has been installed") 
+endif() 
+endif()
 
-# Add the library to install package
-install(TARGETS ${LIB_OBJ} EXPORT oneMKLTargets)
-install(TARGETS ${LIB_NAME} EXPORT oneMKLTargets
-  RUNTIME DESTINATION bin
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
+set(CMAKE_MODULE_PATH "${HIP_PATH}/cmake" ${CMAKE_MODULE_PATH}) 
+list(APPEND CMAKE_PREFIX_PATH "${HIP_PATH}/lib/cmake" "${HIP_PATH}/../lib/cmake" "${ROCM_PATH}/rocrand/lib/cmake/rocrand")
+
+#find_package(HIP QUIET)
+find_package(hip QUIET)
+find_package(rocrand REQUIRED)
+
+get_filename_component(SYCL_BINARY_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
+# the OpenCL include file from hip is opencl 1.1 and it is not compatible with DPC++
+# the OpenCL include headers 1.2 onward is required. This is used to bypass NVIDIA OpenCL headers
+find_path(OPENCL_INCLUDE_DIR CL/cl.h OpenCL/cl.h 
+HINTS 
+${OPENCL_INCLUDE_DIR}
+${SYCL_BINARY_DIR}/../include/sycl/
 )
+# this is work around to avoid duplication half creation in both hip and SYCL
+add_compile_definitions(HIP_NO_HALF)
+
+find_package(Threads REQUIRED)
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(rocRAND
+    REQUIRED_VARS
+      HIP_INCLUDE_DIRS
+      HIP_LIBRARIES
+      rocrand_INCLUDE_DIR
+      rocrand_LIBRARIES
+      OPENCL_INCLUDE_DIR
+)
+if(NOT TARGET ONEMKL::rocRAND::rocRAND)
+  add_library(ONEMKL::rocRAND::rocRAND SHARED IMPORTED)
+  set_target_properties(ONEMKL::rocRAND::rocRAND PROPERTIES
+      IMPORTED_LOCATION "/opt/rocm/lib/librocrand.so"
+      INTERFACE_INCLUDE_DIRECTORIES "${OPENCL_INCLUDE_DIR};${rocrand_INCLUDE_DIR};${HIP_INCLUDE_DIRS};"
+      INTERFACE_LINK_LIBRARIES "Threads::Threads;${rocrand_LIBRARIES};hip::host;"
+  )
+
+endif()

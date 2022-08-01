@@ -47,7 +47,12 @@ static inline void host_task_internal(H &cgh, rocrand_generator engine, F f, lon
 #else
 template <typename H, typename F>
 static inline void host_task_internal(H& cgh, rocrand_generator& engine, F f, long) {
-    cgh.host_task(f);
+    cgh.host_task([f, engine](sycl::interop_handle ih) {
+        rocrand_status status;
+        auto stream = ih.get_native_queue<sycl::backend::hip>();
+        ROCRAND_CALL(rocrand_set_stream, status, engine, stream);
+        f(ih);
+    });
 }
 
 #endif
