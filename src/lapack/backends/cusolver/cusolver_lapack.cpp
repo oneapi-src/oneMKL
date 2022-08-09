@@ -166,11 +166,15 @@ void getrf(const char *func_name, Func func, sycl::queue &queue, std::int64_t m,
             cusolverStatus_t err;
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, a_, lda, scratch_, ipiv32_,
                                   devInfo_);
+            cudaStream_t currentStreamId;
+            CUSOLVER_ERROR_FUNC(cusolverDnGetStream, err, handle, &currentStreamId);
+            cuStreamSynchronize(currentStreamId);
         });
-    }).wait();
+    });
 
     // Copy from 32-bit buffer to 64-bit
     queue.submit([&](sycl::handler &cgh) {
+        cgh.depends_on(done);
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::read>(cgh);
         auto ipiv_acc = ipiv.template get_access<sycl::access::mode::write>(cgh);
         cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
