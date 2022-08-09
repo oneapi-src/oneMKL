@@ -167,8 +167,7 @@ void getrf(const char *func_name, Func func, sycl::queue &queue, std::int64_t m,
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, a_, lda, scratch_, ipiv32_,
                                   devInfo_);
         });
-    });
-    queue.wait();
+    }).wait();
 
     // Copy from 32-bit buffer to 64-bit
     queue.submit([&](sycl::handler &cgh) {
@@ -239,7 +238,7 @@ inline void getrs(const char *func_name, Func func, sycl::queue &queue,
         cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
             ipiv32_acc[index] = static_cast<std::int32_t>(ipiv_acc[index]);
         });
-    });
+    }).wait();
 
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
@@ -304,7 +303,7 @@ inline void gesvd(const char *func_name, Func func, sycl::queue &queue, oneapi::
                                   get_cusolver_jobsvd(jobvt), m, n, a_, lda, s_, u_, ldu, vt_, ldvt,
                                   scratch_, scratchpad_size, nullptr, devInfo_);
         });
-    });
+    }).wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
 }
 
@@ -350,7 +349,7 @@ inline void heevd(const char *func_name, Func func, sycl::queue &queue, oneapi::
                                   get_cublas_fill_mode(uplo), n, a_, lda, w_, scratch_,
                                   scratchpad_size, devInfo_);
         });
-    });
+    }).wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
 }
 
@@ -395,7 +394,7 @@ inline void hegvd(const char *func_name, Func func, sycl::queue &queue, std::int
                                   get_cusolver_job(jobz), get_cublas_fill_mode(uplo), n, a_, lda,
                                   b_, ldb, w_, scratch_, scratchpad_size, devInfo_);
         });
-    });
+    }).wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
 }
 
@@ -441,7 +440,7 @@ inline void hetrd(const char *func_name, Func func, sycl::queue &queue, oneapi::
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo), n, a_,
                                   lda, d_, e_, tau_, scratch_, scratchpad_size, devInfo_);
         });
-    });
+    }).wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
 }
 
@@ -692,8 +691,7 @@ inline void potrf(const char *func_name, Func func, sycl::queue &queue, oneapi::
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo), n, a_,
                                   lda, scratch_, scratchpad_size, devInfo_);
         });
-    });
-    queue.wait();
+    }).wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
 }
 
@@ -731,7 +729,7 @@ inline void potri(const char *func_name, Func func, sycl::queue &queue, oneapi::
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo), n, a_,
                                   lda, scratch_, scratchpad_size, devInfo_);
         });
-    });
+    }).wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
 }
 
@@ -809,7 +807,7 @@ inline void syevd(const char *func_name, Func func, sycl::queue &queue, oneapi::
                                   get_cublas_fill_mode(uplo), n, a_, lda, w_, scratch_,
                                   scratchpad_size, devInfo_);
         });
-    });
+    }).wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
 }
 
@@ -852,7 +850,7 @@ inline void sygvd(const char *func_name, Func func, sycl::queue &queue, std::int
                                   get_cusolver_job(jobz), get_cublas_fill_mode(uplo), n, a_, lda,
                                   b_, ldb, w_, scratch_, scratchpad_size, devInfo_);
         });
-    });
+    }).wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
 }
 
@@ -941,7 +939,7 @@ inline void sytrf(const char *func_name, Func func, sycl::queue &queue, oneapi::
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo), n, a_,
                                   lda, ipiv32_, scratch_, scratchpad_size, devInfo_);
         });
-    });
+    }).wait();
 
     // Copy from 32-bit buffer to 64-bit
     queue.submit([&](sycl::handler &cgh) {
@@ -1341,9 +1339,8 @@ inline sycl::event getrf(const char *func_name, Func func, sycl::queue &queue, s
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, a_, lda, scratch_, ipiv_,
                                   devInfo_);
         });
-    });
+    }).wait();
 
-    queue.wait();
     // Copy from 32-bit USM to 64-bit
     auto done_casting = queue.submit([&](sycl::handler &cgh) {
         cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
@@ -1488,7 +1485,7 @@ inline sycl::event gesvd(const char *func_name, Func func, sycl::queue &queue,
                                   get_cusolver_jobsvd(jobvt), m, n, a_, lda, s_, u_, ldu, vt_, ldvt,
                                   scratch_, scratchpad_size, nullptr, devInfo_);
         });
-    });
+    }).wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
     free(devInfo, queue);
     return done;
@@ -1536,7 +1533,7 @@ inline sycl::event heevd(const char *func_name, Func func, sycl::queue &queue,
                                   get_cublas_fill_mode(uplo), n, a_, lda, w_, scratch_,
                                   scratchpad_size, devInfo_);
         });
-    });
+    }).wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
     free(devInfo, queue);
     return done;
@@ -1583,7 +1580,7 @@ inline sycl::event hegvd(const char *func_name, Func func, sycl::queue &queue, s
                                   get_cusolver_job(jobz), get_cublas_fill_mode(uplo), n, a_, lda,
                                   b_, ldb, w_, scratch_, scratchpad_size, devInfo);
         });
-    });
+    }).wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
     free(devInfo, queue);
     return done;
@@ -1630,7 +1627,7 @@ inline sycl::event hetrd(const char *func_name, Func func, sycl::queue &queue,
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo), n, a_,
                                   lda, d_, e_, tau_, scratch_, scratchpad_size, devInfo_);
         });
-    });
+    }).wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
     free(devInfo, queue);
     return done;
@@ -1901,8 +1898,7 @@ inline sycl::event potrf(const char *func_name, Func func, sycl::queue &queue,
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo), n, a_,
                                   lda, scratch_, scratchpad_size, devInfo_);
         });
-    });
-    queue.wait();
+    }).wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
     free(devInfo, queue);
     return done;
@@ -1945,7 +1941,7 @@ inline sycl::event potri(const char *func_name, Func func, sycl::queue &queue,
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo), n, a_,
                                   lda, scratch_, scratchpad_size, devInfo_);
         });
-    });
+    }).wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
     free(devInfo, queue);
     return done;
@@ -2032,7 +2028,7 @@ inline sycl::event syevd(const char *func_name, Func func, sycl::queue &queue,
                                   get_cublas_fill_mode(uplo), n, a_, lda, w_, scratch_,
                                   scratchpad_size, devInfo_);
         });
-    });
+    }).wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
     free(devInfo, queue);
     return done;
@@ -2078,7 +2074,7 @@ inline sycl::event sygvd(const char *func_name, Func func, sycl::queue &queue, s
                                   get_cusolver_job(jobz), get_cublas_fill_mode(uplo), n, a_, lda,
                                   b_, ldb, w_, scratch_, scratchpad_size, devInfo);
         });
-    });
+    }).wait();
     lapack_info_check(queue, devInfo, __func__, func_name);
     free(devInfo, queue);
     return done;
@@ -2154,7 +2150,7 @@ inline sycl::event sytrf(const char *func_name, Func func, sycl::queue &queue,
     std::uint64_t ipiv_size = n;
     int *ipiv32 = (int *)malloc_device(sizeof(int) * ipiv_size, queue);
 
-    auto done = queue.submit([&](sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
@@ -2169,11 +2165,10 @@ inline sycl::event sytrf(const char *func_name, Func func, sycl::queue &queue,
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo), n, a_,
                                   lda, ipiv_, scratch_, scratchpad_size, devInfo_);
         });
-    });
+    }).wait();
 
     // Copy from 32-bit USM to 64-bit
     auto done_casting = queue.submit([&](sycl::handler &cgh) {
-        cgh.depends_on(done);
         cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
             ipiv[index] = static_cast<std::int64_t>(ipiv32[index]);
         });
