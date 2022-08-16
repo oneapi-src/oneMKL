@@ -2398,13 +2398,14 @@ template <typename Func>
 inline void gebrd_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
                                   std::int64_t m, std::int64_t n, std::int64_t lda,
                                   int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define GEBRD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2449,13 +2450,14 @@ template <typename Func>
 inline void geqrf_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
                                   std::int64_t m, std::int64_t n, std::int64_t lda,
                                   int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, nullptr, lda, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define GEQRF_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2480,13 +2482,14 @@ inline void gesvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   oneapi::mkl::jobsvd jobu, oneapi::mkl::jobsvd jobvt,
                                   std::int64_t m, std::int64_t n, std::int64_t lda,
                                   std::int64_t ldu, std::int64_t ldvt, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define GESVD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2511,13 +2514,14 @@ template <typename Func>
 inline void getrf_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
                                   std::int64_t m, std::int64_t n, std::int64_t lda,
                                   int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, nullptr, lda, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define GETRF_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2576,7 +2580,7 @@ template <typename Func>
 inline void heevd_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
                                   oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
                                   std::int64_t lda, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2585,6 +2589,7 @@ inline void heevd_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   scratch_size);
         });
     });
+    e.wait();
 }
 
 #define HEEVD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                        \
@@ -2608,7 +2613,7 @@ inline void hegvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   std::int64_t itype, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,
                                   std::int64_t n, std::int64_t lda, std::int64_t ldb,
                                   int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2617,6 +2622,7 @@ inline void hegvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   lda, nullptr, ldb, nullptr, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define HEGVD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                             \
@@ -2639,7 +2645,7 @@ template <typename Func>
 inline void hetrd_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
                                   oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
                                   int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2647,6 +2653,7 @@ inline void hetrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, nullptr, nullptr, nullptr, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define HETRD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -2679,7 +2686,7 @@ template <typename Func>
 inline void orgbr_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
                                   oneapi::mkl::generate vec, std::int64_t m, std::int64_t n,
                                   std::int64_t k, std::int64_t lda, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2687,6 +2694,7 @@ inline void orgbr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, nullptr, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define ORGBR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                       \
@@ -2709,7 +2717,7 @@ template <typename Func>
 inline void orgtr_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
                                   oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
                                   int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2717,6 +2725,7 @@ inline void orgtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, nullptr, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define ORGTR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -2738,7 +2747,7 @@ template <typename Func>
 inline void orgqr_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
                                   std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
                                   int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2746,6 +2755,7 @@ inline void orgqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   scratch_size);
         });
     });
+    e.wait();
 }
 
 #define ORGQR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2815,7 +2825,7 @@ inline void ormtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   oneapi::mkl::side side, oneapi::mkl::uplo uplo,
                                   oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
                                   std::int64_t lda, std::int64_t ldc, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2824,6 +2834,7 @@ inline void ormtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, nullptr, nullptr, ldc, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define ORMTR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                             \
@@ -2847,7 +2858,7 @@ template <typename Func>
 inline void potrf_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
                                   oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
                                   int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2855,6 +2866,7 @@ inline void potrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define POTRF_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -2894,7 +2906,7 @@ template <typename Func>
 inline void potri_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
                                   oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
                                   int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2902,6 +2914,7 @@ inline void potri_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define POTRI_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -2925,13 +2938,14 @@ template <typename Func>
 inline void sytrf_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
                                   oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
                                   int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, n, nullptr, lda, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define SYTRF_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -2955,7 +2969,7 @@ template <typename Func>
 inline void syevd_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
                                   oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
                                   std::int64_t lda, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2964,6 +2978,7 @@ inline void syevd_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   scratch_size);
         });
     });
+    e.wait();
 }
 
 #define SYEVD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                        \
@@ -2987,7 +3002,7 @@ inline void sygvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   std::int64_t itype, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,
                                   std::int64_t n, std::int64_t lda, std::int64_t ldb,
                                   int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -2996,6 +3011,7 @@ inline void sygvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   lda, nullptr, ldb, nullptr, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define SYGVD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                             \
@@ -3018,7 +3034,7 @@ template <typename Func>
 inline void sytrd_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
                                   oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
                                   int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -3026,6 +3042,7 @@ inline void sytrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, nullptr, nullptr, nullptr, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define SYTRD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -3078,7 +3095,7 @@ template <typename Func>
 inline void ungbr_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
                                   oneapi::mkl::generate vec, std::int64_t m, std::int64_t n,
                                   std::int64_t k, std::int64_t lda, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -3086,6 +3103,7 @@ inline void ungbr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, nullptr, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define UNGBR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                       \
@@ -3108,7 +3126,7 @@ template <typename Func>
 inline void ungqr_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
                                   std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
                                   int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -3116,6 +3134,7 @@ inline void ungqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   scratch_size);
         });
     });
+    e.wait();
 }
 
 #define UNGQR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -3137,7 +3156,7 @@ template <typename Func>
 inline void ungtr_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
                                   oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
                                   int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -3145,6 +3164,7 @@ inline void ungtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, nullptr, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define UNGTR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -3184,7 +3204,7 @@ inline void unmqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   oneapi::mkl::side side, oneapi::mkl::transpose trans,
                                   std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
                                   std::int64_t ldc, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -3217,7 +3237,7 @@ inline void unmtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   oneapi::mkl::side side, oneapi::mkl::uplo uplo,
                                   oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
                                   std::int64_t lda, std::int64_t ldc, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
+    auto e = queue.submit([&](sycl::handler &cgh) {
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
@@ -3226,6 +3246,7 @@ inline void unmtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, nullptr, nullptr, ldc, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define UNMTR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                             \
