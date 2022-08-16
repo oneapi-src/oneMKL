@@ -1338,12 +1338,11 @@ inline sycl::event getrf(const char *func_name, Func func, sycl::queue &queue, s
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
             auto scratch_ = reinterpret_cast<cuDataType *>(scratchpad);
-            auto ipiv_ = reinterpret_cast<int *>(ipiv32);
             cusolverStatus_t err;
 
             int *dev_info_d = create_dev_info();
 
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, a_, lda, scratch_, ipiv_,
+            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, a_, lda, scratch_, ipiv32,
                                   dev_info_d);
 
             lapack_info_check_and_free(dev_info_d, __func__, func_name);
@@ -1428,11 +1427,10 @@ inline sycl::event getrs(const char *func_name, Func func, sycl::queue &queue,
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
-            auto ipiv_ = reinterpret_cast<int *>(ipiv32);
             auto b_ = reinterpret_cast<cuDataType *>(b);
             cusolverStatus_t err;
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_operation(trans), n,
-                                  nrhs, a_, lda, ipiv_, b_, ldb, nullptr);
+                                  nrhs, a_, lda, ipiv32, b_, ldb, nullptr);
         });
     });
 
@@ -2124,13 +2122,12 @@ inline sycl::event sytrf(const char *func_name, Func func, sycl::queue &queue,
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
             auto scratch_ = reinterpret_cast<cuDataType *>(scratchpad);
-            auto ipiv_ = reinterpret_cast<int *>(ipiv32);
             cusolverStatus_t err;
 
             int *dev_info_d = create_dev_info();
 
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo), n, a_,
-                                  lda, ipiv_, scratch_, scratchpad_size, dev_info_d);
+                                  lda, ipiv32, scratch_, scratchpad_size, dev_info_d);
 
             lapack_info_check_and_free(dev_info_d, __func__, func_name);
         });
