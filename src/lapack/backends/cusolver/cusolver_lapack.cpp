@@ -1367,9 +1367,8 @@ inline sycl::event getrf(const char *func_name, Func func, sycl::queue &queue, s
         });
     });
 
-    queue.wait();
+    free_async(queue, ipiv32, { done_casting });
 
-    free(ipiv32, queue);
     return done_casting;
 }
 
@@ -1449,9 +1448,7 @@ inline sycl::event getrs(const char *func_name, Func func, sycl::queue &queue,
         });
     });
 
-    queue.wait();
-
-    free(ipiv32, queue);
+    free_async(queue, ipiv32, { done });
 
     return done;
 }
@@ -2207,9 +2204,8 @@ inline sycl::event sytrf(const char *func_name, Func func, sycl::queue &queue,
         });
     });
 
-    queue.wait();
+    free_async(queue, ipiv32, { done_casting });
 
-    free(ipiv32, queue);
     return done_casting;
 }
 

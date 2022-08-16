@@ -284,6 +284,24 @@ inline int *create_dev_info(int num_elements = 1) {
     return reinterpret_cast<int *>(dev_info_d);
 }
 
+// Helper function for waiting on a vector of sycl events
+inline void depends_on_events(sycl::handler &cgh, std::vector<sycl::event> &dependencies = {}) {
+    for (sycl::event &e : dependencies)
+        cgh.depends_on(e);
+}
+
+// Asynchronously frees sycl USM `ptr` after waiting on events `dependencies`
+template <typename T>
+inline sycl::event free_async(sycl::queue &queue, T *ptr,
+                              std::vector<sycl::event> &dependencies = {}) {
+    sycl::event done = queue.submit([&](sycl::handler &cgh) {
+        depends_on_events(cgh, dependencies);
+
+        cgh.host_task([=](sycl::interop_handle ih) { sycl::free(ptr, queue); });
+    });
+    return done;
+}
+
 } // namespace cusolver
 } // namespace lapack
 } // namespace mkl
