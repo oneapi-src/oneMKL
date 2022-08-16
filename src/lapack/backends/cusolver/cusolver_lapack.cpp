@@ -1227,10 +1227,7 @@ inline sycl::event gebrd(const char *func_name, Func func, sycl::queue &queue, s
         throw unimplemented("lapack", "gebrd", "cusolver gebrd does not support m < n");
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType_A *>(a);
@@ -1292,10 +1289,7 @@ inline sycl::event geqrf(const char *func_name, Func func, sycl::queue &queue, s
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -1339,10 +1333,7 @@ inline sycl::event getrf(const char *func_name, Func func, sycl::queue &queue, s
     int *ipiv32 = (int *)malloc_device(sizeof(int) * ipiv_size, queue);
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -1432,10 +1423,7 @@ inline sycl::event getrs(const char *func_name, Func func, sycl::queue &queue,
     });
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         cgh.depends_on(done_casting);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
@@ -1479,10 +1467,7 @@ inline sycl::event gesvd(const char *func_name, Func func, sycl::queue &queue,
     using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
     overflow_check(m, n, lda, ldu, ldvt, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType_A *>(a);
@@ -1531,10 +1516,7 @@ inline sycl::event heevd(const char *func_name, Func func, sycl::queue &queue,
     using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
     overflow_check(n, lda, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType_A *>(a);
@@ -1578,10 +1560,7 @@ inline sycl::event hegvd(const char *func_name, Func func, sycl::queue &queue, s
     using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
     overflow_check(n, lda, ldb, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType_A *>(a);
@@ -1626,10 +1605,7 @@ inline sycl::event hetrd(const char *func_name, Func func, sycl::queue &queue,
     using cuDataType_B = typename CudaEquivalentType<T_B>::Type;
     overflow_check(n, lda, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType_A *>(a);
@@ -1686,10 +1662,7 @@ inline sycl::event orgbr(const char *func_name, Func func, sycl::queue &queue,
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -1725,10 +1698,7 @@ inline sycl::event orgqr(const char *func_name, Func func, sycl::queue &queue, s
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -1763,10 +1733,7 @@ inline sycl::event orgtr(const char *func_name, Func func, sycl::queue &queue,
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -1803,10 +1770,7 @@ inline sycl::event ormtr(const char *func_name, Func func, sycl::queue &queue,
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldc, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -1859,10 +1823,7 @@ inline sycl::event ormqr(const char *func_name, Func func, sycl::queue &queue,
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, ldc, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -1901,10 +1862,7 @@ inline sycl::event potrf(const char *func_name, Func func, sycl::queue &queue,
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -1945,10 +1903,7 @@ inline sycl::event potri(const char *func_name, Func func, sycl::queue &queue,
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -1991,10 +1946,7 @@ inline sycl::event potrs(const char *func_name, Func func, sycl::queue &queue,
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, nrhs, lda, ldb, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -2031,10 +1983,7 @@ inline sycl::event syevd(const char *func_name, Func func, sycl::queue &queue,
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -2077,10 +2026,7 @@ inline sycl::event sygvd(const char *func_name, Func func, sycl::queue &queue, s
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, ldb, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -2123,10 +2069,7 @@ inline sycl::event sytrd(const char *func_name, Func func, sycl::queue &queue,
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -2176,10 +2119,7 @@ inline sycl::event sytrf(const char *func_name, Func func, sycl::queue &queue,
     int *ipiv32 = (int *)malloc_device(sizeof(int) * ipiv_size, queue);
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -2261,10 +2201,7 @@ inline sycl::event ungbr(const char *func_name, Func func, sycl::queue &queue,
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -2300,10 +2237,7 @@ inline sycl::event ungqr(const char *func_name, Func func, sycl::queue &queue, s
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -2338,10 +2272,7 @@ inline sycl::event ungtr(const char *func_name, Func func, sycl::queue &queue,
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -2392,10 +2323,7 @@ inline sycl::event unmqr(const char *func_name, Func func, sycl::queue &queue,
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -2436,10 +2364,7 @@ inline sycl::event unmtr(const char *func_name, Func func, sycl::queue &queue,
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldc, scratchpad_size);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        depends_on_events(cgh, dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -3271,6 +3196,7 @@ inline void unmqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, ldc, scratch_size);
         });
     });
+    e.wait();
 }
 
 #define UNMQR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                             \

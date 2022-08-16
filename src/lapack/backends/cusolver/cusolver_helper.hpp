@@ -285,15 +285,16 @@ inline int *create_dev_info(int num_elements = 1) {
 }
 
 // Helper function for waiting on a vector of sycl events
-inline void depends_on_events(sycl::handler &cgh, std::vector<sycl::event> &dependencies = {}) {
-    for (sycl::event &e : dependencies)
+inline void depends_on_events(sycl::handler &cgh,
+                              const std::vector<sycl::event> &dependencies = {}) {
+    for (auto &e : dependencies)
         cgh.depends_on(e);
 }
 
 // Asynchronously frees sycl USM `ptr` after waiting on events `dependencies`
 template <typename T>
 inline sycl::event free_async(sycl::queue &queue, T *ptr,
-                              std::vector<sycl::event> &dependencies = {}) {
+                              const std::vector<sycl::event> &dependencies = {}) {
     sycl::event done = queue.submit([&](sycl::handler &cgh) {
         depends_on_events(cgh, dependencies);
 
