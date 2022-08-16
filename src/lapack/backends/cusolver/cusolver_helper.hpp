@@ -23,7 +23,7 @@
  */
 #ifndef _CUSOLVER_HELPER_HPP_
 #define _CUSOLVER_HELPER_HPP_
-#include <CL/sycl.hpp>
+#include <sycl.hpp>
 #include <cublas_v2.h>
 #include <cusolverDn.h>
 #include <cuda.h>
