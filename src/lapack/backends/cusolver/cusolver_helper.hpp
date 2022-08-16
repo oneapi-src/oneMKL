@@ -261,26 +261,27 @@ struct CudaEquivalentType<std::complex<double>> {
 
 /* devinfo */
 
-inline int get_cusolver_devinfo(sycl::queue &queue, sycl::buffer<int> &devInfo) {
-    sycl::host_accessor<int, 1, sycl::access::mode::read> dev_info_{ devInfo };
-    return dev_info_[0];
+// Accepts a int*, copies the memory from device to host,
+// checks value does not indicate an error, frees the device memory
+inline void lapack_info_check_and_free(int *dev_info_d, const char *func_name,
+                                       const char *cufunc_name, int num_elements = 1) {
+    int *dev_info_h = (int *)malloc(sizeof(int) * num_elements);
+    cuMemcpyDtoH(dev_info_h, reinterpret_cast<CUdeviceptr>(dev_info_d), sizeof(int) * num_elements);
+    for (uint32_t i = 0; i < num_elements; ++i) {
+        if (dev_info_h[i] > 0)
+            throw oneapi::mkl::lapack::computation_error(
+                func_name,
+                std::string(cufunc_name) + " failed with info = " + std::to_string(dev_info_h[i]),
+                dev_info_h[i]);
+    }
+    cuMemFree(reinterpret_cast<CUdeviceptr>(dev_info_d));
 }
 
-inline int get_cusolver_devinfo(sycl::queue &queue, const int *devInfo) {
-    int dev_info_;
-    queue.wait();
-    queue.memcpy(&dev_info_, devInfo, sizeof(int));
-    return dev_info_;
-}
-
-template <typename DEVINFO_T>
-inline void lapack_info_check(sycl::queue &queue, DEVINFO_T devinfo, const char *func_name,
-                              const char *cufunc_name) {
-    const int devinfo_ = get_cusolver_devinfo(queue, devinfo);
-    if (devinfo_ > 0)
-        throw oneapi::mkl::lapack::computation_error(
-            func_name, std::string(cufunc_name) + " failed with info = " + std::to_string(devinfo_),
-            devinfo_);
+// Allocates and returns a CUDA device pointer for cuSolver dev_info
+inline int *create_dev_info(int num_elements = 1) {
+    CUdeviceptr dev_info_d;
+    cuMemAlloc(&dev_info_d, sizeof(int) * num_elements);
+    return reinterpret_cast<int *>(dev_info_d);
 }
 
 } // namespace cusolver
