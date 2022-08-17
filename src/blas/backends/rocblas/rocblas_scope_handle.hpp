@@ -24,9 +24,8 @@
 #include <thread>
 #include <atomic>
 #include <unordered_map>
-
 #include "rocblas_helper.hpp"
-#include <CL/sycl/detail/backend_traits_hip.hpp>
+
 namespace oneapi {
 namespace mkl {
 namespace blas {

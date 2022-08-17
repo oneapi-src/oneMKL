@@ -1,5 +1,5 @@
 /***************************************************************************
-*  Copyright 2020-2022 Intel Corporation 
+*  Copyright 2020-2022 Intel Corporation
 *  Copyright (C) Codeplay Software Limited
 *  Licensed under the Apache License, Version 2.0 (the "License");
 *  you may not use this file except in compliance with the License.
@@ -29,10 +29,10 @@ namespace blas {
 namespace rocblas {
 
 template <typename T>
-struct _rocblas_handle {
+struct rocblas_handle_ {
     using handle_container_t = std::unordered_map<T, std::atomic<rocblas_handle> *>;
     handle_container_t rocblas_handle_mapper_{};
-    ~_rocblas_handle() noexcept(false) {
+    ~rocblas_handle_() noexcept(false) {
         for (auto &handle_pair : rocblas_handle_mapper_) {
             rocblas_status err;
             if (handle_pair.second != nullptr) {
@@ -60,4 +60,4 @@ struct _rocblas_handle {
 } // namespace mkl
 } // namespace oneapi
 
-#endif // ROCBLAS_HANDLE_HPP
+#endif // _ROCBLAS_HANDLE_HPP

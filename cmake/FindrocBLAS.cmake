@@ -41,7 +41,7 @@ HINTS
 ${OPENCL_INCLUDE_DIR}
 ${SYCL_BINARY_DIR}/../include/sycl/
 )
-# this is work around to avoid duplication half creation in both hip and SYCL
+# this is work around to avoid duplication half creation in both HIP and SYCL
 add_compile_definitions(HIP_NO_HALF)
 
 find_package(Threads REQUIRED)

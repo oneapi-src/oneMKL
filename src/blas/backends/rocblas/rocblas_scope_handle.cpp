@@ -1,5 +1,5 @@
 /***************************************************************************
-*  Copyright 2020-2022 Intel Corporation 
+*  Copyright 2020-2022 Intel Corporation
 *  Copyright (C) Codeplay Software Limited
 *  Licensed under the Apache License, Version 2.0 (the "License");
 *  you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 *
 **************************************************************************/
 #include "rocblas_scope_handle.hpp"
-#include <CL/sycl/detail/common.hpp>
 
 namespace oneapi {
 namespace mkl {

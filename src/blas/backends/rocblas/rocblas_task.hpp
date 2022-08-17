@@ -53,11 +53,17 @@ static inline void host_task_internal(H &cgh, sycl::queue queue, F f) {
     });
 }
 #else
+static inline void stream_wait(sycl::queue queue) {
+    hipStream_t stream = sycl::get_native<sycl::backend::hip>(queue);
+    hipStreamSynchronize(stream);
+}
+
 template <typename H, typename F>
-static inline void host_task_internal(H &cgh, cl::sycl::queue queue, F f) {
+static inline void host_task_internal(H &cgh, sycl::queue queue, F f) {
     cgh.host_task([f, queue](cl::sycl::interop_handle ih) {
         auto sc = RocblasScopedContextHandler(queue, ih);
         f(sc);
+        stream_wait(queue);
     });
 }
 #endif
