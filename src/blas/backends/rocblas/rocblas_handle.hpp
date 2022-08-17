@@ -1,4 +1,5 @@
 /***************************************************************************
+*  Copyright 2020-2022 Intel Corporation 
 *  Copyright (C) Codeplay Software Limited
 *  Licensed under the Apache License, Version 2.0 (the "License");
 *  you may not use this file except in compliance with the License.
@@ -16,8 +17,8 @@
 *  limitations under the License.
 *
 **************************************************************************/
-#ifndef RBLAS_HANDLE_HPP
-#define RBLAS_HANDLE_HPP
+#ifndef _ROCBLAS_HANDLE_HPP_
+#define _ROCBLAS_HANDLE_HPP_
 #include <atomic>
 #include <unordered_map>
 #include "rocblas_helper.hpp"
@@ -28,11 +29,11 @@ namespace blas {
 namespace rocblas {
 
 template <typename T>
-struct rblas_handle {
+struct _rocblas_handle {
     using handle_container_t = std::unordered_map<T, std::atomic<rocblas_handle> *>;
-    handle_container_t rblas_handle_mapper_{};
-    ~rblas_handle() noexcept(false) {
-        for (auto &handle_pair : rblas_handle_mapper_) {
+    handle_container_t rocblas_handle_mapper_{};
+    ~_rocblas_handle() noexcept(false) {
+        for (auto &handle_pair : rocblas_handle_mapper_) {
             rocblas_status err;
             if (handle_pair.second != nullptr) {
                 auto handle = handle_pair.second->exchange(nullptr);
@@ -50,7 +51,7 @@ struct rblas_handle {
                 handle_pair.second = nullptr;
             }
         }
-        rblas_handle_mapper_.clear();
+        rocblas_handle_mapper_.clear();
     }
 };
 
@@ -59,4 +60,4 @@ struct rblas_handle {
 } // namespace mkl
 } // namespace oneapi
 
-#endif // RBLAS_HANDLE_HPP
+#endif // ROCBLAS_HANDLE_HPP

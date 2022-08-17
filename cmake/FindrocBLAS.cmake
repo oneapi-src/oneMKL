@@ -1,4 +1,5 @@
 #==========================================================================
+#  Copyright 2020-2022 Intel Corporation
 #  Copyright (C) Codeplay Software Limited
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -34,8 +35,7 @@ list(APPEND CMAKE_PREFIX_PATH
 find_package(HIP QUIET)
 find_package(rocblas REQUIRED)
 get_filename_component(SYCL_BINARY_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
-# the OpenCL include file from hip is opencl 1.1 and it is not compatible with DPC++
-# the OpenCL include headers 1.2 onward is required. This is used to bypass NVIDIA OpenCL headers
+
 find_path(OPENCL_INCLUDE_DIR CL/cl.h OpenCL/cl.h 
 HINTS 
 ${OPENCL_INCLUDE_DIR}
@@ -64,4 +64,3 @@ if(NOT TARGET ONEMKL::rocBLAS::rocBLAS)
   )
 
 endif()
-

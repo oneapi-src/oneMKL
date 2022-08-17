@@ -38,11 +38,11 @@ if(is_dpcpp)
         -fsycl-targets=nvptx64-nvidia-cuda -fsycl-unnamed-lambda)
       list(APPEND UNIX_INTERFACE_LINK_OPTIONS
         -fsycl-targets=nvptx64-nvidia-cuda)
-    elif(ENABLE_ROCBLAS_BACKEND)
+    elseif(ENABLE_ROCBLAS_BACKEND)
       list(APPEND UNIX_INTERFACE_COMPILE_OPTIONS
-        -fsycl-targets=amdgcn-amd-amdhsa -fsycl-unnamed-lambda)
+        -fsycl-targets=amdgcn-amd-amdhsa -fsycl-unnamed-lambda -Xsycl-target-backend --offload-arch=gfx1011)
       list(APPEND UNIX_INTERFACE_LINK_OPTIONS
-        -fsycl-targets=amdgcn-amd-amdhsa)
+        -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=gfx1011)
     endif()
     if(ENABLE_CURAND_BACKEND OR ENABLE_CUSOLVER_BACKEND OR ENABLE_ROCBLAS_BACKEND)
       set_target_properties(ONEMKL::SYCL::SYCL PROPERTIES
@@ -62,4 +62,3 @@ if(is_dpcpp)
   endif()
 
 endif()
-

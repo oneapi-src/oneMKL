@@ -1,4 +1,5 @@
 /***************************************************************************
+*  Copyright 2020-2022 Intel Corporation 
 *  Copyright (C) Codeplay Software Limited
 *  Licensed under the Apache License, Version 2.0 (the "License");
 *  you may not use this file except in compliance with the License.
@@ -53,13 +54,13 @@ rocblas_handle_container<T>::~rocblas_handle_container() noexcept(false) {
 thread_local rocblas_handle_container<pi_context> RocblasScopedContextHandler::handle_helper =
     rocblas_handle_container<pi_context>{};
 
-RocblasScopedContextHandler::RocblasScopedContextHandler(cl::sycl::queue queue,
-                                                         cl::sycl::interop_handle &ih)
+RocblasScopedContextHandler::RocblasScopedContextHandler(sycl::queue queue,
+                                                         sycl::interop_handle &ih)
         : interop_h(ih),
           needToRecover_(false) {
-    placedContext_ = new cl::sycl::context(queue.get_context());
+    placedContext_ = new sycl::context(queue.get_context());
     auto device = queue.get_device();
-    auto desired = cl::sycl::get_native<cl::sycl::backend::hip>(*placedContext_);
+    auto desired = sycl::get_native<sycl::backend::hip>(*placedContext_);
     hipError_t err;
     HIP_ERROR_FUNC(hipCtxGetCurrent, err, &original_);
     if (original_ != desired) {
@@ -102,9 +103,9 @@ void ContextCallback(void *userData) {
     }
 }
 
-rocblas_handle RocblasScopedContextHandler::get_handle(const cl::sycl::queue &queue) {
+rocblas_handle RocblasScopedContextHandler::get_handle(const sycl::queue &queue) {
     auto piPlacedContext_ =
-        reinterpret_cast<pi_context>(cl::sycl::get_native<cl::sycl::backend::hip>(*placedContext_));
+        reinterpret_cast<pi_context>(sycl::get_native<sycl::backend::hip>(*placedContext_));
     hipStream_t streamId = get_stream(queue);
     rocblas_status err;
     auto it = handle_helper.rocblas_handle_container_mapper_.find(piPlacedContext_);
@@ -141,10 +142,10 @@ rocblas_handle RocblasScopedContextHandler::get_handle(const cl::sycl::queue &qu
     return handle;
 }
 
-hipStream_t RocblasScopedContextHandler::get_stream(const cl::sycl::queue &queue) {
-    return cl::sycl::get_native<cl::sycl::backend::hip>(queue);
+hipStream_t RocblasScopedContextHandler::get_stream(const sycl::queue &queue) {
+    return sycl::get_native<sycl::backend::hip>(queue);
 }
-cl::sycl::context RocblasScopedContextHandler::get_context(const cl::sycl::queue &queue) {
+sycl::context RocblasScopedContextHandler::get_context(const sycl::queue &queue) {
     return queue.get_context();
 }
 

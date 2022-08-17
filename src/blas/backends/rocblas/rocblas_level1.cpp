@@ -954,9 +954,6 @@ sycl::event sdsdot(sycl::queue &queue, int64_t n, float sb, const float *x, int6
         });
     });
     done.wait();
-#if(defined(ENABLE_ROCBLAS_BACKEND) && !defined(__HIPSYCL__))
-    queue.wait();
-#endif
     result[0] = result[0] + sb;
     return done;
 }
@@ -1031,9 +1028,6 @@ inline sycl::event iamax(Func func, sycl::queue &queue, int64_t n, const T *x, c
         });
     });
     done.wait();
-#if(defined(ENABLE_ROCBLAS_BACKEND) && !defined(__HIPSYCL__))
-    queue.wait();
-#endif
     result[0] = std::max((int64_t)(*int_res_p - 1), int64_t{ 0 });
     return done;
 }
@@ -1115,9 +1109,6 @@ inline sycl::event iamin(Func func, sycl::queue &queue, int64_t n, const T *x, c
         });
     });
     done.wait();
-#if(defined(ENABLE_ROCBLAS_BACKEND) && !defined(__HIPSYCL__))
-    queue.wait();
-#endif
     result[0] = std::max((int64_t)(*int_res_p - 1), int64_t{ 0 });
     return done;
 }
