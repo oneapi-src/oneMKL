@@ -234,7 +234,7 @@ gemm (Buffer Version)
    ldc
       The leading dimension of ``C``. It must be positive and at least
       ``m`` if column major layout is used to store matrices or at
-      least ``n`` if column major layout is used to store matrices.
+      least ``n`` if row major layout is used to store matrices.
 
 .. container:: section
 
@@ -424,7 +424,7 @@ gemm (USM Version)
    ldc
       The leading dimension of ``C``. It must be positive and at least
       ``m`` if column major layout is used to store matrices or at
-      least ``n`` if column major layout is used to store matrices.
+      least ``n`` if row major layout is used to store matrices.
 
    dependencies
       List of events to wait for before starting computation, if any.

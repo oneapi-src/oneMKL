@@ -18,7 +18,7 @@ If ``trans`` = ``transpose::nontrans``, the operation is defined as:
 
       C \leftarrow alpha*(A*B^T + B*A^T) + beta*C
 
-where ``A`` is ``n`` x ``k`` and ``B`` is ``k`` x ``n``.
+where ``A`` and ``B`` are ``n`` x ``k`` matrices.
 
 If ``trans`` = ``transpose::trans``, the operation is defined as:
 
@@ -27,7 +27,7 @@ If ``trans`` = ``transpose::trans``, the operation is defined as:
       C \leftarrow alpha*(A^T*B + B^T*A) + beta * C
 
 
-where ``A`` is ``k`` x ``n`` and ``B`` is ``n`` x ``k``.
+where ``A`` and ``B`` are ``k`` x ``n`` matrices.
 
 
 In both cases:
@@ -166,15 +166,15 @@ syr2k (Buffer Version)
            - ``trans`` = ``transpose::nontrans``
            - ``trans`` = ``transpose::trans`` or ``transpose::conjtrans``
          * - Column major
-           - ``B`` is an ``k``-by-``n`` matrix so the array ``b``
-             must have size at least ``ldb``\ \*\ ``n``.
            - ``B`` is an ``n``-by-``k`` matrix so the array ``b``
              must have size at least ``ldb``\ \*\ ``k``
-         * - Row major
            - ``B`` is an ``k``-by-``n`` matrix so the array ``b``
-             must have size at least ``ldb``\ \*\ ``k``.
+             must have size at least ``ldb``\ \*\ ``n``.
+         * - Row major
            - ``B`` is an ``n``-by-``k`` matrix so the array ``b``
              must have size at least ``ldb``\ \*\ ``n``.
+           - ``B`` is an ``k``-by-``n`` matrix so the array ``b``
+             must have size at least ``ldb``\ \*\ ``k``.
 
       See :ref:`matrix-storage`
       for more details.
@@ -189,11 +189,11 @@ syr2k (Buffer Version)
            - ``trans`` = ``transpose::nontrans``
            - ``trans`` = ``transpose::trans`` or ``transpose::conjtrans``
          * - Column major
-           - ``ldb`` must be at least ``k``.
            - ``ldb`` must be at least ``n``.
+           - ``ldb`` must be at least ``k``.
          * - Row major
-           - ``ldb`` must be at least ``n``.
            - ``ldb`` must be at least ``k``.
+           - ``ldb`` must be at least ``n``.
 
    beta
       Scaling factor for matrix ``C``.
@@ -334,15 +334,15 @@ syr2k (USM Version)
            - ``trans`` = ``transpose::nontrans``
            - ``trans`` = ``transpose::trans`` or ``transpose::conjtrans``
          * - Column major
-           - ``B`` is an ``k``-by-``n`` matrix so the array ``b``
-             must have size at least ``ldb``\ \*\ ``n``.
            - ``B`` is an ``n``-by-``k`` matrix so the array ``b``
              must have size at least ``ldb``\ \*\ ``k``
-         * - Row major
            - ``B`` is an ``k``-by-``n`` matrix so the array ``b``
-             must have size at least ``ldb``\ \*\ ``k``.
+             must have size at least ``ldb``\ \*\ ``n``.
+         * - Row major
            - ``B`` is an ``n``-by-``k`` matrix so the array ``b``
              must have size at least ``ldb``\ \*\ ``n``.
+           - ``B`` is an ``k``-by-``n`` matrix so the array ``b``
+             must have size at least ``ldb``\ \*\ ``k``.
    
       See :ref:`matrix-storage` for
       more details.
@@ -357,11 +357,11 @@ syr2k (USM Version)
            - ``trans`` = ``transpose::nontrans``
            - ``trans`` = ``transpose::trans`` or ``transpose::conjtrans``
          * - Column major
-           - ``ldb`` must be at least ``k``.
            - ``ldb`` must be at least ``n``.
+           - ``ldb`` must be at least ``k``.
          * - Row major
-           - ``ldb`` must be at least ``n``.
            - ``ldb`` must be at least ``k``.
+           - ``ldb`` must be at least ``n``.
 
    beta
       Scaling factor for matrix ``C``.

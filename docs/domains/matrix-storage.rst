@@ -258,7 +258,7 @@ Matrix Storage
 
       ::
 
-         for (i = 0; i < n; i++) {
+         for (i = 0; i < m; i++) {
              k = kl – i;
              for (j = max(0, i – kl); j < min(n, i + ku + 1); j++) {
                  a[(k + j) + i * lda] = matrix[j + i * ldm];
