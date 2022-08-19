@@ -152,7 +152,7 @@ void getrf(const char *func_name, Func func, sycl::queue &queue, std::int64_t m,
     sycl::buffer<int, 1> ipiv32(sycl::range<1>{ ipiv_size });
     sycl::buffer<int> devInfo{ 1 };
 
-    auto done = queue.submit([&](sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
@@ -171,7 +171,6 @@ void getrf(const char *func_name, Func func, sycl::queue &queue, std::int64_t m,
 
     // Copy from 32-bit buffer to 64-bit
     queue.submit([&](sycl::handler &cgh) {
-        cgh.depends_on(done);
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::read>(cgh);
         auto ipiv_acc = ipiv.template get_access<sycl::access::mode::write>(cgh);
         cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
@@ -233,7 +232,7 @@ inline void getrs(const char *func_name, Func func, sycl::queue &queue,
     std::uint64_t ipiv_size = ipiv.size();
     sycl::buffer<int, 1> ipiv32(sycl::range<1>{ ipiv_size });
 
-    auto done = queue.submit([&](sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::write>(cgh);
         auto ipiv_acc = ipiv.template get_access<sycl::access::mode::read>(cgh);
         cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
@@ -242,7 +241,6 @@ inline void getrs(const char *func_name, Func func, sycl::queue &queue,
     });
 
     queue.submit([&](sycl::handler &cgh) {
-        cgh.depends_on(done);
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto ipiv_acc = ipiv32.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::write>(cgh);
@@ -941,7 +939,7 @@ inline void sytrf(const char *func_name, Func func, sycl::queue &queue, oneapi::
     std::uint64_t ipiv_size = n;
     sycl::buffer<int, 1> ipiv32(sycl::range<1>{ ipiv_size });
 
-    auto done = queue.submit([&](sycl::handler &cgh) {
+    queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
@@ -961,7 +959,6 @@ inline void sytrf(const char *func_name, Func func, sycl::queue &queue, oneapi::
 
     // Copy from 32-bit buffer to 64-bit
     queue.submit([&](sycl::handler &cgh) {
-        cgh.depends_on(done);
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::read>(cgh);
         auto ipiv_acc = ipiv.template get_access<sycl::access::mode::write>(cgh);
         cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
