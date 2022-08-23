@@ -2447,7 +2447,7 @@ inline void gebrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                                   \
     std::int64_t gebrd_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t m, std::int64_t n, \
                                              std::int64_t lda) {                                  \
-        return 1;                                                                                 \
+        return  0;                                                                                 \
     }
 
 GEBRD_LAUNCHER_SCRATCH(float, rocsolverDnSgebrd_bufferSize)
@@ -2495,7 +2495,7 @@ inline void geqrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                                   \
     std::int64_t geqrf_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t m, std::int64_t n, \
                                              std::int64_t lda) {                                  \
-        return 1;                                                                                 \
+        return  0;                                                                                 \
     }
 
 GEQRF_LAUNCHER_SCRATCH(float, rocsolverDnSgeqrf_bufferSize)
@@ -2525,7 +2525,7 @@ inline void gesvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t gesvd_scratchpad_size<TYPE>(                                                         \
         sycl::queue & queue, oneapi::mkl::jobsvd jobu, oneapi::mkl::jobsvd jobvt, std::int64_t m,     \
         std::int64_t n, std::int64_t lda, std::int64_t ldu, std::int64_t ldvt) {                      \
-        return 1;                                                                                     \
+        return  0;                                                                                     \
     }
 
 GESVD_LAUNCHER_SCRATCH(float, rocsolverDnSgesvd_bufferSize)
@@ -2552,7 +2552,7 @@ inline void getrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                                   \
     std::int64_t getrf_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t m, std::int64_t n, \
                                              std::int64_t lda) {                                  \
-    return 1;                                                                                     \
+    return  0;                                                                                     \
 } // namespace rocsolver
 
 GETRF_LAUNCHER_SCRATCH(float, rocsolverDnSgetrf_bufferSize)
@@ -2617,7 +2617,7 @@ inline void heevd_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t heevd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::job jobz, \
                                              oneapi::mkl::uplo uplo, std::int64_t n,     \
                                              std::int64_t lda) {                         \
-    return 1;                                                                            \
+    return  0;                                                                            \
     } // namespace lapack
 
 HEEVD_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCheevd_bufferSize)
@@ -2646,7 +2646,7 @@ inline void hegvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t hegvd_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t itype,              \
                                              oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,        \
                                              std::int64_t n, std::int64_t lda, std::int64_t ldb) { \
-    return 1;                                                                                            \
+    return  0;                                                                                            \
 } // namespace mkl
 
 HEGVD_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnChegvd_bufferSize)
@@ -2672,7 +2672,7 @@ inline void hetrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                           \
     std::int64_t hetrd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
-    return 1;                                                                            \
+    return  0;                                                                            \
 } // namespace oneapi
 
 HETRD_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnChetrd_bufferSize)
@@ -2710,7 +2710,7 @@ inline void orgbr_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t orgbr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::generate vec, \
                                              std::int64_t m, std::int64_t n, std::int64_t k, \
                                              std::int64_t lda) {                             \
-    return 1;                                                                            \
+    return  0;                                                                            \
 }
 
 ORGBR_LAUNCHER_SCRATCH(float, rocsolverDnSorgbr_bufferSize)
@@ -2736,7 +2736,7 @@ inline void orgtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                           \
     std::int64_t orgtr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
-    return 1;                                                                            \
+    return  0;                                                                            \
 }
 
 ORGTR_LAUNCHER_SCRATCH(float, rocsolverDnSorgtr_bufferSize)
@@ -2762,7 +2762,7 @@ inline void orgqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                                   \
     std::int64_t orgqr_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t m, std::int64_t n, \
                                              std::int64_t k, std::int64_t lda) {                  \
-    return 1;                                                                            \
+    return  0;                                                                            \
 }
 
 ORGQR_LAUNCHER_SCRATCH(float, rocsolverDnSorgqr_bufferSize)
@@ -2806,7 +2806,7 @@ inline void ormqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t ormqr_scratchpad_size<TYPE>(                                                      \
         sycl::queue & queue, oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m, \
         std::int64_t n, std::int64_t k, std::int64_t lda, std::int64_t ldc) {                      \
-        return 1;                                                                            \
+        return  0;                                                                            \
 }
 
 ORMQRF_LAUNCHER_SCRATCH(float, rocsolverDnSormqr_bufferSize)
@@ -2836,7 +2836,7 @@ inline void ormtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                              oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans, \
                                              std::int64_t m, std::int64_t n, std::int64_t lda,     \
                                              std::int64_t ldc) {                                   \
-    return 1;                                                                            \
+    return  0;                                                                            \
 }
 
 ORMTR_LAUNCHER_SCRATCH(float, rocsolverDnSormtr_bufferSize)
@@ -2862,7 +2862,7 @@ inline void potrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                           \
     std::int64_t potrf_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
-    return 1;                                                                            \
+    return  0;                                                                            \
 }
 
 POTRF_LAUNCHER_SCRATCH(float, rocsolverDnSpotrf_bufferSize)
@@ -2906,7 +2906,7 @@ inline void potri_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                           \
     std::int64_t potri_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
-    return 1;                                                                            \
+    return  0;                                                                            \
 }
 
 POTRI_LAUNCHER_SCRATCH(float, rocsolverDnSpotri_bufferSize)
@@ -2933,7 +2933,7 @@ inline void sytrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                           \
     std::int64_t sytrf_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
-    return 1;                                                                            \
+    return  0;                                                                            \
 }
 
 SYTRF_LAUNCHER_SCRATCH(float, rocsolverDnSsytrf_bufferSize)
@@ -2963,7 +2963,7 @@ inline void syevd_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t syevd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::job jobz, \
                                              oneapi::mkl::uplo uplo, std::int64_t n,     \
                                              std::int64_t lda) {                         \
-    return 1;                                                                            \
+    return  0;                                                                            \
 }
 
 SYEVD_LAUNCHER_SCRATCH(float, rocsolverDnSsyevd_bufferSize)
@@ -2992,7 +2992,7 @@ inline void sygvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t sygvd_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t itype,              \
                                              oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,        \
                                              std::int64_t n, std::int64_t lda, std::int64_t ldb) { \
-    return 1;                                                                                      \
+    return  0;                                                                                      \
 }
 
 SYGVD_LAUNCHER_SCRATCH(float, rocsolverDnSsygvd_bufferSize)
@@ -3018,7 +3018,7 @@ inline void sytrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                                \
     std::int64_t sytrd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo,      \
                                              std::int64_t n, std::int64_t lda) {               \
-    return 1;                                                                                      \
+    return  0;                                                                                      \
 }                                       
 
 SYTRD_LAUNCHER_SCRATCH(float, rocsolverDnSsytrd_bufferSize)
@@ -3076,7 +3076,7 @@ inline void ungbr_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t ungbr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::generate vec,      \
                                              std::int64_t m, std::int64_t n, std::int64_t k,      \
                                              std::int64_t lda) {                                  \
-    return 1;                                                                                      \
+    return  0;                                                                                      \
 }
 
 UNGBR_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCungbr_bufferSize)
@@ -3102,7 +3102,7 @@ inline void ungqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                                        \
     std::int64_t ungqr_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t m, std::int64_t n,      \
                                              std::int64_t k, std::int64_t lda) {                       \
-    return 1;                                                                                      \
+    return  0;                                                                                      \
 }
 
 UNGQR_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCungqr_bufferSize)
@@ -3128,7 +3128,7 @@ inline void ungtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                                \
     std::int64_t ungtr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo,      \
                                              std::int64_t n, std::int64_t lda) {               \
-    return 1;                                                                                      \
+    return  0;                                                                                      \
 }
 
 UNGTR_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCungtr_bufferSize)
@@ -3174,7 +3174,7 @@ inline void unmqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t unmqr_scratchpad_size<TYPE>(                                                      \
         sycl::queue & queue, oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m, \
         std::int64_t n, std::int64_t k, std::int64_t lda, std::int64_t ldc) {                      \
-    return 1;                                                                                      \
+    return  0;                                                                                      \
 }
 
 UNMQR_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCunmqr_bufferSize)
@@ -3204,7 +3204,7 @@ inline void unmtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                              oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans, \
                                              std::int64_t m, std::int64_t n, std::int64_t lda,     \
                                              std::int64_t ldc) {                                   \
-    return 1;                                                                            \
+    return  0;                                                                            \
 }
 
 UNMTR_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCunmtr_bufferSize)
