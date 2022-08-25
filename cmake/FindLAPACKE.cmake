@@ -19,13 +19,13 @@
 
 include_guard()
 
-find_library(LAPACKE64_file NAMES lapacke64.dll.lib lapacke64.lib lapacke HINTS ${REF_LAPACK_ROOT} PATH_SUFFIXES lib lib64)
+find_library(LAPACKE64_file NAMES lapacke64.dll.lib lapacke64.lib lapacke64 HINTS ${REF_LAPACK_ROOT} PATH_SUFFIXES lib lib64)
 find_package_handle_standard_args(LAPACKE REQUIRED_VARS LAPACKE64_file)
-find_library(LAPACK64_file NAMES lapack64.dll.lib lapack64.lib lapack HINTS ${REF_LAPACK_ROOT} PATH_SUFFIXES lib lib64)
+find_library(LAPACK64_file NAMES lapack64.dll.lib lapack64.lib lapack64 HINTS ${REF_LAPACK_ROOT} PATH_SUFFIXES lib lib64)
 find_package_handle_standard_args(LAPACKE REQUIRED_VARS LAPACK64_file)
-find_library(CBLAS64_file NAMES cblas64.dll.lib cblas64.lib cblas HINTS ${REF_LAPACK_ROOT} PATH_SUFFIXES lib lib64)
+find_library(CBLAS64_file NAMES cblas64.dll.lib cblas64.lib cblas64 HINTS ${REF_LAPACK_ROOT} PATH_SUFFIXES lib lib64)
 find_package_handle_standard_args(LAPACKE REQUIRED_VARS CBLAS64_file)
-find_library(BLAS64_file NAMES blas64.dll.lib blas64.lib blas HINTS ${REF_LAPACK_ROOT} PATH_SUFFIXES lib lib64)
+find_library(BLAS64_file NAMES blas64.dll.lib blas64.lib blas64 HINTS ${REF_LAPACK_ROOT} PATH_SUFFIXES lib lib64)
 find_package_handle_standard_args(LAPACKE REQUIRED_VARS BLAS64_file)
 
 get_filename_component(LAPACKE64_LIB_DIR ${LAPACKE64_file} DIRECTORY)
@@ -38,6 +38,7 @@ list(APPEND LAPACKE_LINK ${LAPACKE64_file})
 list(APPEND LAPACKE_LINK ${LAPACK64_file})
 list(APPEND LAPACKE_LINK ${CBLAS64_file})
 list(APPEND LAPACKE_LINK ${BLAS64_file})
+list(APPEND LAPACKE_LINK "/usr/lib/gcc/x86_64-linux-gnu/7/libgfortran.so")
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(LAPACKE REQUIRED_VARS LAPACKE_INCLUDE LAPACKE_LINK)
