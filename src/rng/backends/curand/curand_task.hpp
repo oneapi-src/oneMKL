@@ -21,11 +21,9 @@ static inline void host_task_internal(H &cgh, A acc, F f) {
     });
 }
 
-  template <typename H, typename F>
+template <typename H, typename F>
 static inline void host_task_internal(H &cgh, F f) {
-    cgh.hipSYCL_enqueue_custom_operation([f](sycl::interop_handle ih) {
-        f(ih);
-    });
+    cgh.hipSYCL_enqueue_custom_operation([f](sycl::interop_handle ih) { f(ih); });
 }
 #else
 template <typename H, typename A, typename F>
@@ -37,11 +35,9 @@ static inline void host_task_internal(H &cgh, A acc, F f) {
     });
 }
 
-  template <typename H, typename F>
-static inline void host_task_internal(H &cgh, A acc, F f) {
-    cgh.host_task([f](sycl::interop_handle ih) {
-        f(ih);
-    });
+template <typename H, typename F>
+static inline void host_task_internal(H &cgh, F f) {
+    cgh.host_task([f](sycl::interop_handle ih) { f(ih); });
 }
 #endif
 template <typename H, typename A, typename F>
@@ -53,9 +49,8 @@ template <typename H, typename F>
 static inline void onemkl_curand_host_task(H &cgh, F f) {
     host_task_internal(cgh, f);
 }
-  
-}
-// namespace curand
+
+} // namespace curand
 } // namespace rng
 } // namespace mkl
 } // namespace oneapi
