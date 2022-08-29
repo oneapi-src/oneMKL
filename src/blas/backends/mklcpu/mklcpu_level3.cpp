@@ -34,14 +34,12 @@ namespace mklcpu {
 namespace column_major {
 
 namespace blas_major = ::oneapi::mkl::blas::column_major;
-// TODO: some macro that asserts the queue is a cpu queue?
 #include "../mkl_common/mkl_level3.cxx"
 
 } // namespace column_major
 namespace row_major {
 
 namespace blas_major = ::oneapi::mkl::blas::row_major;
-// TODO: some macro that asserts the queue is a cpu queue?
 #include "../mkl_common/mkl_level3.cxx"
 
 } // namespace row_major
