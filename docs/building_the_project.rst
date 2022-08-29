@@ -360,13 +360,27 @@ With the AMD rocBLAS backend:
             -DENABLE_NETLIB_BACKEND=False/True                  # hipSYCL supports NETLIB backend
             -DENABLE_MKLGPU_BACKEND=False                       # disable Intel MKL GPU backend
             -DENABLE_ROCBLAS_BACKEND=True                     \
-            -DTARGET_DOMAINS=blas                               # hipSYCL only supports the BLAS domain
+            -DTARGET_DOMAINS=blas                               # hipSYCL supports BLAS and RNG domains
             -DHIPSYCL_TARGETS=omp\;hip:gfx906                   # Specify the targetted device architectures 
             -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL                # Use the hipSYCL cmake integration
             [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]   # required only for testing
    cmake --build .
    ctest
    cmake --install . --prefix <path_to_install_dir>
+
+To build with the rocRAND backend instead simply replace:
+
+.. code-block:: bash
+
+   -DENABLE_ROCBLAS_BACKEND=True   \
+   -DTARGET_DOMAINS=blas
+
+With:
+
+.. code-block:: bash
+
+   -DENABLE_ROCRAND_BACKEND=True   \
+   -DTARGET_DOMAINS=rng
 
 **AMD GPU device architectures**  
 
