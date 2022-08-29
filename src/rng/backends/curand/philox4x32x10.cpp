@@ -343,7 +343,7 @@ public:
         sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](sycl::handler& cgh) {
-              onemkl_curand_host_task(cgh, [=](sycl::interop_handle ih) {
+                onemkl_curand_host_task(cgh, [=](sycl::interop_handle ih) {
                     curandStatus_t status;
                     CURAND_CALL(curandGenerateUniform, status, engine_, r, n);
                 });
