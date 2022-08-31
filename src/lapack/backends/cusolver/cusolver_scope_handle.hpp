@@ -18,10 +18,20 @@
 **************************************************************************/
 #ifndef _CUSOLVER_SCOPED_HANDLE_HPP_
 #define _CUSOLVER_SCOPED_HANDLE_HPP_
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
+#if __has_include(<sycl/backend/cuda.hpp>)
+#include <sycl/backend/cuda.hpp>
+#include <sycl/context.hpp>
+#include <sycl/detail/pi.hpp>
+#else
 #include <CL/sycl/backend/cuda.hpp>
 #include <CL/sycl/context.hpp>
 #include <CL/sycl/detail/pi.hpp>
+#endif
 #include <atomic>
 #include <memory>
 #include <thread>
