@@ -185,14 +185,20 @@ public:
         throw cusolver_error(std::string(name) + std::string(" : "), err); \
     }
 
-#define CUSOLVER_ERROR_FUNC_T_SYNC(name, func, err, handle, ...)               \
-  err = func(handle, __VA_ARGS__);                                             \
-  if (err != CUSOLVER_STATUS_SUCCESS) {                                        \
-    throw cusolver_error(std::string(name) + std::string(" : "), err);         \
-  }                                                                            \
-  cudaStream_t currentStreamId;                                                \
-  CUSOLVER_ERROR_FUNC(cusolverDnGetStream, err, handle, &currentStreamId);     \
-  cuStreamSynchronize(currentStreamId);
+#define CUSOLVER_SYNC(err, handle)                                           \
+    cudaStream_t currentStreamId;                                            \
+    CUSOLVER_ERROR_FUNC(cusolverDnGetStream, err, handle, &currentStreamId); \
+    {                                                                        \
+        CUresult __cuda_err;                                                 \
+        CUDA_ERROR_FUNC(cuStreamSynchronize, __cuda_err, currentStreamId);   \
+    }
+
+#define CUSOLVER_ERROR_FUNC_T_SYNC(name, func, err, handle, ...)             \
+    err = func(handle, __VA_ARGS__);                                         \
+    if (err != CUSOLVER_STATUS_SUCCESS) {                                    \
+        throw cusolver_error(std::string(name) + std::string(" : "), err);   \
+    }                                                                        \
+    CUSOLVER_SYNC(err, handle)
 
 inline cusolverEigType_t get_cusolver_itype(std::int64_t itype) {
     switch (itype) {
@@ -274,13 +280,15 @@ struct CudaEquivalentType<std::complex<double>> {
 
 /* devinfo */
 
-inline void get_cusolver_devinfo(sycl::queue &queue, sycl::buffer<int> &devInfo, std::vector<int> &dev_info_) {
+inline void get_cusolver_devinfo(sycl::queue &queue, sycl::buffer<int> &devInfo,
+                                 std::vector<int> &dev_info_) {
     sycl::host_accessor<int, 1, sycl::access::mode::read> dev_info_acc{ devInfo };
     for (unsigned int i = 0; i < dev_info_.size(); ++i)
-      dev_info_[i] = dev_info_acc[i];
+        dev_info_[i] = dev_info_acc[i];
 }
 
-inline void get_cusolver_devinfo(sycl::queue &queue, const int *devInfo, std::vector<int> &dev_info_) {
+inline void get_cusolver_devinfo(sycl::queue &queue, const int *devInfo,
+                                 std::vector<int> &dev_info_) {
     queue.wait();
     queue.memcpy(dev_info_.data(), devInfo, sizeof(int));
 }
@@ -290,11 +298,11 @@ inline void lapack_info_check(sycl::queue &queue, DEVINFO_T devinfo, const char 
                               const char *cufunc_name, int dev_info_size = 1) {
     std::vector<int> dev_info_(dev_info_size);
     get_cusolver_devinfo(queue, devinfo, dev_info_);
-    for (const auto& val: dev_info_) {
-      if (val > 0)
-          throw oneapi::mkl::lapack::computation_error(
-              func_name, std::string(cufunc_name) + " failed with info = " + std::to_string(val),
-              val);
+    for (const auto &val : dev_info_) {
+        if (val > 0)
+            throw oneapi::mkl::lapack::computation_error(
+                func_name, std::string(cufunc_name) + " failed with info = " + std::to_string(val),
+                val);
     }
 }
 
