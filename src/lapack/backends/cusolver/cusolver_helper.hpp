@@ -23,7 +23,11 @@
  */
 #ifndef _CUSOLVER_HELPER_HPP_
 #define _CUSOLVER_HELPER_HPP_
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include <cublas_v2.h>
 #include <cusolverDn.h>
 #include <cuda.h>
@@ -180,6 +184,15 @@ public:
     if (err != CUSOLVER_STATUS_SUCCESS) {                                  \
         throw cusolver_error(std::string(name) + std::string(" : "), err); \
     }
+
+#define CUSOLVER_ERROR_FUNC_T_SYNC(name, func, err, handle, ...)               \
+  err = func(handle, __VA_ARGS__);                                             \
+  if (err != CUSOLVER_STATUS_SUCCESS) {                                        \
+    throw cusolver_error(std::string(name) + std::string(" : "), err);         \
+  }                                                                            \
+  cudaStream_t currentStreamId;                                                \
+  CUSOLVER_ERROR_FUNC(cusolverDnGetStream, err, handle, &currentStreamId);     \
+  cuStreamSynchronize(currentStreamId);
 
 inline cusolverEigType_t get_cusolver_itype(std::int64_t itype) {
     switch (itype) {

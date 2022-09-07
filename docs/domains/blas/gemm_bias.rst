@@ -248,7 +248,7 @@ gemm_bias (Buffer Version)
    ldc
       The leading dimension of ``C``. It must be positive and at least
       ``m`` if column major layout is used to store matrices or at
-      least ``n`` if column major layout is used to store matrices.
+      least ``n`` if row major layout is used to store matrices.
       
    co
       Buffer holding the offset values for matrix ``C``.
@@ -467,7 +467,7 @@ gemm_bias (USM Version)
    ldc
       The leading dimension of ``C``. It must be positive and at least
       ``m`` if column major layout is used to store matrices or at
-      least ``n`` if column major layout is used to store matrices.
+      least ``n`` if row major layout is used to store matrices.
 
    co
       Pointer to offset values for matrix ``C``.

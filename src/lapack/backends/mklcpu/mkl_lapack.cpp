@@ -17,7 +17,11 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 
 #include "oneapi/mkl/types.hpp"
 #include "oneapi/mkl/lapack/types.hpp"

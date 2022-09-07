@@ -258,11 +258,16 @@ Supported domains: BLAS, LAPACK, RNG
             <td align="center">DPC++</td>
         </tr>
         <tr>
-            <td align="center">RNG</td>
+            <td rowspan=2 align="center">RNG</td>
             <td align="center">x86 CPU</td>
-            <td align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
             <td align="center">DPC++, LLVM*</td>
+        </tr>
+        <tr>
+            <td align="center">Intel GPU</td>
+            <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++</td>
         </tr>
     </tbody>
 </table>
