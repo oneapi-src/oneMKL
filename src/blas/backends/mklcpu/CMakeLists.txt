@@ -20,8 +20,9 @@
 set(LIB_NAME onemkl_blas_mklcpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
+set(USE_DPCPP_API ON)
 find_package(MKL REQUIRED)
-set(SOURCES mklcpu_common.hpp
+set(SOURCES
   mklcpu_level1.cpp mklcpu_level2.cpp mklcpu_level3.cpp mklcpu_batch.cpp mklcpu_extensions.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mklcpu_wrappers.cpp>)
 add_library(${LIB_NAME})
@@ -40,7 +41,7 @@ target_include_directories(${LIB_OBJ}
 
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT} ${MKL_COPT})
 
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ${MKL_LINK_C})
+target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ${MKL_LINK_C} ${MKL_LINK_SYCL})
 
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON
