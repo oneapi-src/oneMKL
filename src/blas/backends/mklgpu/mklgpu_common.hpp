@@ -1013,6 +1013,40 @@ sycl::event zimatcopy_batch_sycl(sycl::queue *queue, MKL_LAYOUT layout, MKL_TRAN
                                  sycl::buffer<std::complex<double>, 1> *ab, int64_t lda,
                                  int64_t ldb, int64_t stride, int64_t batch_size,
                                  int64_t offset_ab = 0);
+sycl::event somatadd_batch_sycl(sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                                MKL_TRANSPOSE transb, int64_t m, int64_t n, float alpha,
+                                sycl::buffer<float, 1> *a, int64_t lda, int64_t stride_a,
+                                float beta, sycl::buffer<float, 1> *b, int64_t ldb,
+                                int64_t stride_b, sycl::buffer<float, 1> *c, int64_t ldc,
+                                int64_t stride_c, int64_t batch_size, int64_t offset_a = 0,
+                                int64_t offset_b = 0, int64_t offset_c = 0);
+
+sycl::event domatadd_batch_sycl(sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                                MKL_TRANSPOSE transb, int64_t m, int64_t n, double alpha,
+                                sycl::buffer<double, 1> *a, int64_t lda, int64_t stride_a,
+                                double beta, sycl::buffer<double, 1> *b, int64_t ldb,
+                                int64_t stride_b, sycl::buffer<double, 1> *c, int64_t ldc,
+                                int64_t stride_c, int64_t batch_size, int64_t offset_a = 0,
+                                int64_t offset_b = 0, int64_t offset_c = 0);
+
+sycl::event comatadd_batch_sycl(sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                                MKL_TRANSPOSE transb, int64_t m, int64_t n,
+                                std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> *a,
+                                int64_t lda, int64_t stride_a, std::complex<float> beta,
+                                sycl::buffer<std::complex<float>, 1> *b, int64_t ldb,
+                                int64_t stride_b, sycl::buffer<std::complex<float>, 1> *c,
+                                int64_t ldc, int64_t stride_c, int64_t batch_size,
+                                int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
+
+sycl::event zomatadd_batch_sycl(sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                                MKL_TRANSPOSE transb, int64_t m, int64_t n,
+                                std::complex<double> alpha,
+                                sycl::buffer<std::complex<double>, 1> *a, int64_t lda,
+                                int64_t stride_a, std::complex<double> beta,
+                                sycl::buffer<std::complex<double>, 1> *b, int64_t ldb,
+                                int64_t stride_b, sycl::buffer<std::complex<double>, 1> *c,
+                                int64_t ldc, int64_t stride_c, int64_t batch_size,
+                                int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
 // USM APIs
 
@@ -2236,6 +2270,40 @@ sycl::event zimatcopy_batch_sycl(sycl::queue *queue, MKL_LAYOUT layout, MKL_TRAN
                                  std::complex<double> *ab, int64_t lda, int64_t ldb, int64_t stride,
                                  int64_t batch_size, const std::vector<sycl::event> &dependencies,
                                  int64_t offset_ab = 0);
+
+sycl::event somatadd_batch_sycl(sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                                MKL_TRANSPOSE transb, int64_t m, int64_t n, float alpha,
+                                const float *a, int64_t lda, int64_t stride_a, float beta,
+                                const float *b, int64_t ldb, int64_t stride_b, float *c,
+                                int64_t ldc, int64_t stride_c, int64_t batch_size,
+                                const std::vector<sycl::event> &dependencies, int64_t offset_a = 0,
+                                int64_t offset_b = 0, int64_t offset_c = 0);
+
+sycl::event domatadd_batch_sycl(sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                                MKL_TRANSPOSE transb, int64_t m, int64_t n, double alpha,
+                                const double *a, int64_t lda, int64_t stride_a, double beta,
+                                const double *b, int64_t ldb, int64_t stride_b, double *c,
+                                int64_t ldc, int64_t stride_c, int64_t batch_size,
+                                const std::vector<sycl::event> &dependencies, int64_t offset_a = 0,
+                                int64_t offset_b = 0, int64_t offset_c = 0);
+
+sycl::event comatadd_batch_sycl(sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                                MKL_TRANSPOSE transb, int64_t m, int64_t n,
+                                std::complex<float> alpha, const std::complex<float> *a,
+                                int64_t lda, int64_t stride_a, std::complex<float> beta,
+                                const std::complex<float> *b, int64_t ldb, int64_t stride_b,
+                                std::complex<float> *c, int64_t ldc, int64_t stride_c,
+                                int64_t batch_size, const std::vector<sycl::event> &dependencies,
+                                int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
+
+sycl::event zomatadd_batch_sycl(sycl::queue *queue, MKL_LAYOUT layout, MKL_TRANSPOSE transa,
+                                MKL_TRANSPOSE transb, int64_t m, int64_t n,
+                                std::complex<double> alpha, const std::complex<double> *a,
+                                int64_t lda, int64_t stride_a, std::complex<double> beta,
+                                const std::complex<double> *b, int64_t ldb, int64_t stride_b,
+                                std::complex<double> *c, int64_t ldc, int64_t stride_c,
+                                int64_t batch_size, const std::vector<sycl::event> &dependencies,
+                                int64_t offset_a = 0, int64_t offset_b = 0, int64_t offset_c = 0);
 
 } // namespace gpu
 } // namespace mkl

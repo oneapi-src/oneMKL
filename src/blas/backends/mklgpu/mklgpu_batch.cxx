@@ -341,6 +341,47 @@ void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                                              lda, ldb, stride, batch_size);
 }
 
+void omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                   float alpha, sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
+                   float beta, sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b,
+                   sycl::buffer<float, 1> &c, int64_t ldc, int64_t stride_c, int64_t batch_size) {
+    ::oneapi::mkl::gpu::somatadd_batch_sycl(&queue, MAJOR, mkl_convert(transa),
+                                            mkl_convert(transb), m, n, alpha, &a, lda, stride_a,
+                                            beta, &b, ldb, stride_b, &c, ldc, stride_c, batch_size);
+}
+
+void omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                   double alpha, sycl::buffer<double, 1> &a, int64_t lda, int64_t stride_a,
+                   double beta, sycl::buffer<double, 1> &b, int64_t ldb, int64_t stride_b,
+                   sycl::buffer<double, 1> &c, int64_t ldc, int64_t stride_c, int64_t batch_size) {
+    ::oneapi::mkl::gpu::domatadd_batch_sycl(&queue, MAJOR, mkl_convert(transa),
+                                            mkl_convert(transb), m, n, alpha, &a, lda, stride_a,
+                                            beta, &b, ldb, stride_b, &c, ldc, stride_c, batch_size);
+}
+
+void omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                   std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+                   int64_t stride_a, std::complex<float> beta,
+                   sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, int64_t stride_b,
+                   sycl::buffer<std::complex<float>, 1> &c, int64_t ldc, int64_t stride_c,
+                   int64_t batch_size) {
+    ::oneapi::mkl::gpu::comatadd_batch_sycl(&queue, MAJOR, mkl_convert(transa),
+                                            mkl_convert(transb), m, n, alpha, &a, lda, stride_a,
+                                            beta, &b, ldb, stride_b, &c, ldc, stride_c, batch_size);
+}
+
+void omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                   std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+                   int64_t lda, int64_t stride_a, std::complex<double> beta,
+                   sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, int64_t stride_b,
+                   sycl::buffer<std::complex<double>, 1> &c, int64_t ldc, int64_t stride_c,
+                   int64_t batch_size) {
+    ::oneapi::mkl::gpu::zomatadd_batch_sycl(&queue, MAJOR, mkl_convert(transa),
+                                            mkl_convert(transb), m, n, alpha, &a, lda, stride_a,
+                                            beta, &b, ldb, stride_b, &c, ldc, stride_c,
+                                            batch_size);
+}
+
 // USM APIs
 
 sycl::event *coalesce_events(sycl::queue &queue, std::vector<sycl::event *> &prereqs) {
@@ -1183,168 +1224,6 @@ sycl::event syrk_batch(sycl::queue &queue, uplo *upper_lower, transpose *trans, 
     return *coalesce_events(queue, coalesced_events);
 }
 
-/*
-sycl::event imatcopy_batch(sycl::queue &queue, const transpose *trans,
-                           const std::int64_t *m, const std::int64_t *n, const float *alpha, float **ab,
-                           const std::int64_t *lda, const std::int64_t *ldb, std::int64_t group_count,
-                           const std::int64_t *groupsize,
-                           const std::vector<sycl::event> &dependencies) {
-    std::vector<sycl::event *> coalesced_events;
-    coalesced_events.reserve(group_count);
-    int64_t total_groupsize = 0;
-    for (int64_t i = 0; i < group_count; i++) {
-        sycl::event *batch_event =
-            new sycl::event(::oneapi::mkl::gpu::simatcopy_batch_sycl(
-                &queue, MAJOR, mkl_convert(trans[i]), m[i], n[i], alpha[i],
-                ab, lda[i], ldb[i], total_groupsize, groupsize[i],
-                dependencies));
-        coalesced_events.push_back(batch_event);
-        total_groupsize += groupsize[i];
-    }
-    return *coalesce_events(queue, coalesced_events);
-}
-
-sycl::event imatcopy_batch(sycl::queue &queue, const transpose *trans,
-                           const std::int64_t *m, const std::int64_t *n, const double *alpha, double **ab,
-                           const std::int64_t *lda, const std::int64_t *ldb, std::int64_t group_count,
-                           const std::int64_t *groupsize,
-                           const std::vector<sycl::event> &dependencies) {
-    std::vector<sycl::event *> coalesced_events;
-    coalesced_events.reserve(group_count);
-    int64_t total_groupsize = 0;
-    for (int64_t i = 0; i < group_count; i++) {
-        sycl::event *batch_event =
-            new sycl::event(::oneapi::mkl::gpu::dimatcopy_batch_sycl(
-                &queue, MAJOR, mkl_convert(trans[i]), m[i], n[i], alpha[i],
-                ab, lda[i], ldb[i], total_groupsize, groupsize[i],
-                dependencies));
-        coalesced_events.push_back(batch_event);
-        total_groupsize += groupsize[i];
-    }
-    return *coalesce_events(queue, coalesced_events);
-}
-
-sycl::event imatcopy_batch(sycl::queue &queue, const transpose *trans,
-                           const std::int64_t *m, const std::int64_t *n, const std::complex<float> *alpha, std::complex<float> **ab,
-                           const std::int64_t *lda, const std::int64_t *ldb, std::int64_t group_count,
-                           const std::int64_t *groupsize,
-                           const std::vector<sycl::event> &dependencies) {
-    std::vector<sycl::event *> coalesced_events;
-    coalesced_events.reserve(group_count);
-    int64_t total_groupsize = 0;
-    for (int64_t i = 0; i < group_count; i++) {
-        sycl::event *batch_event =
-            new sycl::event(::oneapi::mkl::gpu::cimatcopy_batch_sycl(
-                &queue, MAJOR, mkl_convert(trans[i]), m[i], n[i], alpha[i],
-                ab, lda[i], ldb[i], total_groupsize, groupsize[i],
-                dependencies));
-        coalesced_events.push_back(batch_event);
-        total_groupsize += groupsize[i];
-    }
-    return *coalesce_events(queue, coalesced_events);
-}
-
-sycl::event imatcopy_batch(sycl::queue &queue, const transpose *trans,
-                           const std::int64_t *m, const std::int64_t *n, const std::complex<double> *alpha, std::complex<double> **ab,
-                           const std::int64_t *lda, const std::int64_t *ldb, std::int64_t group_count,
-                           const std::int64_t *groupsize,
-                           const std::vector<sycl::event> &dependencies) {
-    std::vector<sycl::event *> coalesced_events;
-    coalesced_events.reserve(group_count);
-    int64_t total_groupsize = 0;
-    for (int64_t i = 0; i < group_count; i++) {
-        sycl::event *batch_event =
-            new sycl::event(::oneapi::mkl::gpu::zimatcopy_batch_sycl(
-                &queue, MAJOR, mkl_convert(trans[i]), m[i], n[i], alpha[i],
-                ab, lda[i], ldb[i], total_groupsize, groupsize[i],
-                dependencies));
-        coalesced_events.push_back(batch_event);
-        total_groupsize += groupsize[i];
-    }
-    return *coalesce_events(queue, coalesced_events);
-}
-
-sycl::event omatcopy_batch(sycl::queue &queue, const transpose *trans,
-                           const std::int64_t *m, const std::int64_t *n, const float *alpha, const float **a,
-                           const std::int64_t *lda, float **b, const std::int64_t *ldb, std::int64_t group_count,
-                           const std::int64_t *groupsize,
-                           const std::vector<sycl::event> &dependencies) {
-    std::vector<sycl::event *> coalesced_events;
-    coalesced_events.reserve(group_count);
-    int64_t total_groupsize = 0;
-    for (int64_t i = 0; i < group_count; i++) {
-        sycl::event *batch_event =
-            new sycl::event(
-                oneapi::mkl::gpu::somatcopy_batch_sycl(&queue, MAJOR, mkl_convert(trans[i]), m[i], n[i], alpha[i],
-                                                       a, lda[i], b, ldb[i], total_groupsize, groupsize[i],
-                                                       dependencies))
-        coalesced_events.push_back(batch_event);
-        total_groupsize += groupsize[i];
-    }
-    return *coalesce_events(queue, coalesced_events);
-}
-
-sycl::event omatcopy_batch(sycl::queue &queue, const transpose *trans,
-                           const std::int64_t *m, const std::int64_t *n, const double *alpha, const double **a,
-                           const std::int64_t *lda, double **b, const std::int64_t *ldb, std::int64_t group_count,
-                           const std::int64_t *groupsize,
-                           const std::vector<sycl::event> &dependencies) {
-    std::vector<sycl::event *> coalesced_events;
-    coalesced_events.reserve(group_count);
-    int64_t total_groupsize = 0;
-    for (int64_t i = 0; i < group_count; i++) {
-        sycl::event *batch_event =
-            new sycl::event(
-                oneapi::mkl::gpu::domatcopy_batch_sycl(&queue, MAJOR, mkl_convert(trans[i]), m[i], n[i], alpha[i],
-                                                       a, lda[i], b, ldb[i], total_groupsize, groupsize[i],
-                                                       dependencies))
-        coalesced_events.push_back(batch_event);
-        total_groupsize += groupsize[i];
-    }
-    return *coalesce_events(queue, coalesced_events);
-}
-
-sycl::event omatcopy_batch(sycl::queue &queue, const transpose *trans,
-                           const std::int64_t *m, const std::int64_t *n, const std::complex<float> *alpha, const std::complex<float> **a,
-                           const std::int64_t *lda, std::complex<float> **b, const std::int64_t *ldb, std::int64_t group_count,
-                           const std::int64_t *groupsize,
-                           const std::vector<sycl::event> &dependencies) {
-    std::vector<sycl::event *> coalesced_events;
-    coalesced_events.reserve(group_count);
-    int64_t total_groupsize = 0;
-    for (int64_t i = 0; i < group_count; i++) {
-        sycl::event *batch_event =
-            new sycl::event(
-                oneapi::mkl::gpu::comatcopy_batch_sycl(&queue, MAJOR, mkl_convert(trans[i]), m[i], n[i], alpha[i],
-                                                       a, lda[i], b, ldb[i], total_groupsize, groupsize[i],
-                                                       dependencies))
-        coalesced_events.push_back(batch_event);
-        total_groupsize += groupsize[i];
-    }
-    return *coalesce_events(queue, coalesced_events);
-}
-
-sycl::event omatcopy_batch(sycl::queue &queue, const transpose *trans,
-                           const std::int64_t *m, const std::int64_t *n, const std::complex<double> *alpha, const std::complex<double> **a,
-                           const std::int64_t *lda, std::complex<double> **b, const std::int64_t *ldb, std::int64_t group_count,
-                           const std::int64_t *groupsize,
-                           const std::vector<sycl::event> &dependencies) {
-    std::vector<sycl::event *> coalesced_events;
-    coalesced_events.reserve(group_count);
-    int64_t total_groupsize = 0;
-    for (int64_t i = 0; i < group_count; i++) {
-        sycl::event *batch_event =
-            new sycl::event(
-                oneapi::mkl::gpu::zomatcopy_batch_sycl(&queue, MAJOR, mkl_convert(trans[i]), m[i], n[i], alpha[i],
-                                                       a, lda[i], b, ldb[i], total_groupsize, groupsize[i],
-                                                       dependencies))
-        coalesced_events.push_back(batch_event);
-        total_groupsize += groupsize[i];
-    }
-    return *coalesce_events(queue, coalesced_events);
-}
-*/
-
 sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
                            const float *a, int64_t lda, int64_t stride_a, float *b, int64_t ldb,
                            int64_t stride_b, int64_t batch_size,
@@ -1409,4 +1288,50 @@ sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64
                            const std::vector<sycl::event> &dependencies) {
     return ::oneapi::mkl::gpu::zimatcopy_batch_sycl(&queue, MAJOR, mkl_convert(trans), m, n, alpha,
                                                     ab, lda, ldb, stride, batch_size, dependencies);
+}
+
+sycl::event omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                          int64_t n, float alpha, const float *a, int64_t lda, int64_t stride_a,
+                          float beta, const float *b, int64_t ldb, int64_t stride_b, float *c,
+                          int64_t ldc, int64_t stride_c, int64_t batch_size,
+                          const std::vector<sycl::event> &dependencies) {
+    return ::oneapi::mkl::gpu::somatadd_batch_sycl(&queue, MAJOR, mkl_convert(transa),
+                                                   mkl_convert(transb), m, n, alpha, a,
+                                                   lda, stride_a, beta, b, ldb, stride_b, c, ldc,
+                                                   stride_c, batch_size, dependencies);
+}
+
+sycl::event omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                          int64_t n, double alpha, const double *a, int64_t lda, int64_t stride_a,
+                          double beta, const double *b, int64_t ldb, int64_t stride_b, double *c,
+                          int64_t ldc, int64_t stride_c, int64_t batch_size,
+                          const std::vector<sycl::event> &dependencies) {
+    return ::oneapi::mkl::gpu::domatadd_batch_sycl(&queue, MAJOR, mkl_convert(transa),
+                                                   mkl_convert(transb), m, n, alpha, a,
+                                                   lda, stride_a, beta, b, ldb, stride_b, c, ldc,
+                                                   stride_c, batch_size, dependencies);
+}
+
+sycl::event omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                          int64_t n, std::complex<float> alpha, const std::complex<float> *a,
+                          int64_t lda, int64_t stride_a, std::complex<float> beta,
+                          const std::complex<float> *b, int64_t ldb, int64_t stride_b,
+                          std::complex<float> *c, int64_t ldc, int64_t stride_c, int64_t batch_size,
+                          const std::vector<sycl::event> &dependencies) {
+    return ::oneapi::mkl::gpu::comatadd_batch_sycl(&queue, MAJOR, mkl_convert(transa),
+                                                   mkl_convert(transb), m, n, alpha, a,
+                                                   lda, stride_a, beta, b, ldb, stride_b, c, ldc,
+                                                   stride_c, batch_size, dependencies);
+}
+
+sycl::event omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                          int64_t n, std::complex<double> alpha, const std::complex<double> *a,
+                          int64_t lda, int64_t stride_a, std::complex<double> beta,
+                          const std::complex<double> *b, int64_t ldb, int64_t stride_b,
+                          std::complex<double> *c, int64_t ldc, int64_t stride_c,
+                          int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    return ::oneapi::mkl::gpu::zomatadd_batch_sycl(&queue, MAJOR, mkl_convert(transa),
+                                                   mkl_convert(transb), m, n, alpha, a,
+                                                   lda, stride_a, beta, b, ldb, stride_b, c, ldc,
+                                                   stride_c, batch_size, dependencies);
 }
