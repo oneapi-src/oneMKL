@@ -142,17 +142,18 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
 #ifdef CALL_RT_API
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                oneapi::mkl::blas::column_major::omatcopy_batch(
+                done = oneapi::mkl::blas::column_major::omatcopy_batch(
                     main_queue, trans, m, n, alpha, &A[0], lda, stride_a,
                     &B[0], ldb, stride_b, batch_size, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                oneapi::mkl::blas::row_major::omatcopy_batch(
+                done = oneapi::mkl::blas::row_major::omatcopy_batch(
                     main_queue, trans, m, n, alpha, &A[0], lda, stride_a,
                     &B[0], ldb, stride_b, batch_size, dependencies);
                 break;
             default: break;
         }
+        done.wait();
 #else
         switch (layout) {
             case oneapi::mkl::layout::column_major:
@@ -167,6 +168,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
                 break;
             default: break;
         }
+        main_queue.wait();
 #endif
     }
     catch (exception const &e) {
@@ -189,7 +191,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     oneapi::mkl::free_shared(a_array, cxt);
     oneapi::mkl::free_shared(b_array, cxt);
 
-    return 1;
+    bool good = true;
+    return (int)good;
 }
 
 class OmatcopyBatchStrideUsmTests
