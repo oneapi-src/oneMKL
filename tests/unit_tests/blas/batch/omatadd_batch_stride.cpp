@@ -52,6 +52,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     // smoke test to make sure routine runs; there is no netlib reference
     // routine to test against
 
+    std::cout << "A\n";
+
     // Prepare data.
     int64_t m, n;
     int64_t lda, ldb, ldc;
@@ -89,14 +91,14 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
 
     switch (layout) {
         case oneapi::mkl::layout::column_major:
+            stride_a = (transa == oneapi::mkl::transpose::nontrans) ? lda * n : lda * m;
+            stride_b = (transb == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * m;
+            stride_c = ldc * n;
+            break;
+        case oneapi::mkl::layout::row_major:
             stride_a = (transa == oneapi::mkl::transpose::nontrans) ? lda * m : lda * n;
             stride_b = (transb == oneapi::mkl::transpose::nontrans) ? ldb * m : ldb * n;
             stride_c = ldc * m;
-            break;
-        case oneapi::mkl::layout::row_major:
-            stride_a = (transa == oneapi::mkl::transpose::nontrans) ? lda * n : lda * m;
-            stride_b = (transb == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * m;
-            stride_c = lda * n;
             break;
         default: break;
     }
