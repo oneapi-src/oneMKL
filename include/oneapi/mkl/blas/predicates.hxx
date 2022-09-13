@@ -8309,7 +8309,7 @@ inline void omatcopy_batch_precondition(sycl::queue &queue, transpose trans, std
                                         std::int64_t lda, std::int64_t stride_a, float *b,
                                         std::int64_t ldb, std::int64_t stride_b,
                                         std::int64_t batch_size,
-                                        const std::vector<sycl::event> &dependencies = {}) {
+                                        const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add prechecks to queue here for input args.  */
 #endif
@@ -8320,7 +8320,7 @@ inline void omatcopy_batch_postcondition(sycl::queue &queue, transpose trans, st
                                          std::int64_t lda, std::int64_t stride_a, float *b,
                                          std::int64_t ldb, std::int64_t stride_b,
                                          std::int64_t batch_size,
-                                         const std::vector<sycl::event> &dependencies = {}) {
+                                         const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add postchecks to queue here for input args.  */
 #endif
@@ -8331,7 +8331,7 @@ inline void omatcopy_batch_precondition(sycl::queue &queue, transpose trans, std
                                         std::int64_t lda, std::int64_t stride_a, double *b,
                                         std::int64_t ldb, std::int64_t stride_b,
                                         std::int64_t batch_size,
-                                        const std::vector<sycl::event> &dependencies = {}) {
+                                        const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add prechecks to queue here for input args.  */
 #endif
@@ -8342,7 +8342,7 @@ inline void omatcopy_batch_postcondition(sycl::queue &queue, transpose trans, st
                                          std::int64_t lda, std::int64_t stride_a, double *b,
                                          std::int64_t ldb, std::int64_t stride_b,
                                          std::int64_t batch_size,
-                                         const std::vector<sycl::event> &dependencies = {}) {
+                                         const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add postchecks to queue here for input args.  */
 #endif
@@ -8354,7 +8354,7 @@ inline void omatcopy_batch_precondition(sycl::queue &queue, transpose trans, std
                                         std::int64_t stride_a, std::complex<float> *b,
                                         std::int64_t ldb, std::int64_t stride_b,
                                         std::int64_t batch_size,
-                                        const std::vector<sycl::event> &dependencies = {}) {
+                                        const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add prechecks to queue here for input args.  */
 #endif
@@ -8366,7 +8366,7 @@ inline void omatcopy_batch_postcondition(sycl::queue &queue, transpose trans, st
                                          std::int64_t stride_a, std::complex<float> *b,
                                          std::int64_t ldb, std::int64_t stride_b,
                                          std::int64_t batch_size,
-                                         const std::vector<sycl::event> &dependencies = {}) {
+                                         const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add postchecks to queue here for input args.  */
 #endif
@@ -8378,7 +8378,7 @@ inline void omatcopy_batch_precondition(sycl::queue &queue, transpose trans, std
                                         std::int64_t stride_a, std::complex<double> *b,
                                         std::int64_t ldb, std::int64_t stride_b,
                                         std::int64_t batch_size,
-                                        const std::vector<sycl::event> &dependencies = {}) {
+                                        const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add prechecks to queue here for input args.  */
 #endif
@@ -8390,7 +8390,7 @@ inline void omatcopy_batch_postcondition(sycl::queue &queue, transpose trans, st
                                          std::int64_t stride_a, std::complex<double> *b,
                                          std::int64_t ldb, std::int64_t stride_b,
                                          std::int64_t batch_size,
-                                         const std::vector<sycl::event> &dependencies = {}) {
+                                         const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add postchecks to queue here for input args.  */
 #endif
@@ -8400,7 +8400,7 @@ inline void imatcopy_batch_precondition(sycl::queue &queue, transpose trans, std
                                         std::int64_t n, float alpha, float *ab, std::int64_t lda,
                                         std::int64_t ldb, std::int64_t stride,
                                         std::int64_t batch_size,
-                                        const std::vector<sycl::event> &dependencies = {}) {
+                                        const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add prechecks to queue here for input args.  */
 #endif
@@ -8410,7 +8410,7 @@ inline void imatcopy_batch_postcondition(sycl::queue &queue, transpose trans, st
                                          std::int64_t n, float alpha, float *ab, std::int64_t lda,
                                          std::int64_t ldb, std::int64_t stride,
                                          std::int64_t batch_size,
-                                         const std::vector<sycl::event> &dependencies = {}) {
+                                         const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add postchecks to queue here for input args.  */
 #endif
@@ -8420,7 +8420,7 @@ inline void imatcopy_batch_precondition(sycl::queue &queue, transpose trans, std
                                         std::int64_t n, double alpha, double *ab, std::int64_t lda,
                                         std::int64_t ldb, std::int64_t stride,
                                         std::int64_t batch_size,
-                                        const std::vector<sycl::event> &dependencies = {}) {
+                                        const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add prechecks to queue here for input args.  */
 #endif
@@ -8430,7 +8430,7 @@ inline void imatcopy_batch_postcondition(sycl::queue &queue, transpose trans, st
                                          std::int64_t n, double alpha, double *ab, std::int64_t lda,
                                          std::int64_t ldb, std::int64_t stride,
                                          std::int64_t batch_size,
-                                         const std::vector<sycl::event> &dependencies = {}) {
+                                         const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add postchecks to queue here for input args.  */
 #endif
@@ -8440,7 +8440,7 @@ inline void imatcopy_batch_precondition(sycl::queue &queue, transpose trans, std
                                         std::int64_t n, std::complex<float> alpha,
                                         std::complex<float> *ab, std::int64_t lda, std::int64_t ldb,
                                         std::int64_t stride, std::int64_t batch_size,
-                                        const std::vector<sycl::event> &dependencies = {}) {
+                                        const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add prechecks to queue here for input args.  */
 #endif
@@ -8451,7 +8451,7 @@ inline void imatcopy_batch_postcondition(sycl::queue &queue, transpose trans, st
                                          std::complex<float> *ab, std::int64_t lda,
                                          std::int64_t ldb, std::int64_t stride,
                                          std::int64_t batch_size,
-                                         const std::vector<sycl::event> &dependencies = {}) {
+                                         const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add postchecks to queue here for input args.  */
 #endif
@@ -8462,7 +8462,7 @@ inline void imatcopy_batch_precondition(sycl::queue &queue, transpose trans, std
                                         std::complex<double> *ab, std::int64_t lda,
                                         std::int64_t ldb, std::int64_t stride,
                                         std::int64_t batch_size,
-                                        const std::vector<sycl::event> &dependencies = {}) {
+                                        const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add prechecks to queue here for input args.  */
 #endif
@@ -8473,7 +8473,7 @@ inline void imatcopy_batch_postcondition(sycl::queue &queue, transpose trans, st
                                          std::complex<double> *ab, std::int64_t lda,
                                          std::int64_t ldb, std::int64_t stride,
                                          std::int64_t batch_size,
-                                         const std::vector<sycl::event> &dependencies = {}) {
+                                         const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add postchecks to queue here for input args.  */
 #endif
@@ -8485,7 +8485,7 @@ inline void omatadd_batch_precondition(sycl::queue &queue, transpose transa, tra
                                        const float *b, std::int64_t ldb, std::int64_t stride_b,
                                        float *c, std::int64_t ldc, std::int64_t stride_c,
                                        std::int64_t batch_size,
-                                       const std::vector<sycl::event> &dependencies = {}) {
+                                       const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add prechecks to queue here for input args.  */
 #endif
@@ -8497,7 +8497,7 @@ inline void omatadd_batch_postcondition(sycl::queue &queue, transpose transa, tr
                                         const float *b, std::int64_t ldb, std::int64_t stride_b,
                                         float *c, std::int64_t ldc, std::int64_t stride_c,
                                         std::int64_t batch_size,
-                                        const std::vector<sycl::event> &dependencies = {}) {
+                                        const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add postchecks to queue here for input args.  */
 #endif
@@ -8509,7 +8509,7 @@ inline void omatadd_batch_precondition(sycl::queue &queue, transpose transa, tra
                                        double beta, const double *b, std::int64_t ldb,
                                        std::int64_t stride_b, double *c, std::int64_t ldc,
                                        std::int64_t stride_c, std::int64_t batch_size,
-                                       const std::vector<sycl::event> &dependencies = {}) {
+                                       const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add prechecks to queue here for input args.  */
 #endif
@@ -8521,7 +8521,7 @@ inline void omatadd_batch_postcondition(sycl::queue &queue, transpose transa, tr
                                         double beta, const double *b, std::int64_t ldb,
                                         std::int64_t stride_b, double *c, std::int64_t ldc,
                                         std::int64_t stride_c, std::int64_t batch_size,
-                                        const std::vector<sycl::event> &dependencies = {}) {
+                                        const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add postchecks to queue here for input args.  */
 #endif
@@ -8532,7 +8532,7 @@ inline void omatadd_batch_precondition(
     std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
     std::int64_t stride_a, std::complex<float> beta, const std::complex<float> *b, std::int64_t ldb,
     std::int64_t stride_b, std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
-    std::int64_t batch_size, const std::vector<sycl::event> &dependencies = {}) {
+    std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add prechecks to queue here for input args.  */
 #endif
@@ -8543,7 +8543,7 @@ inline void omatadd_batch_postcondition(
     std::complex<float> alpha, const std::complex<float> *a, std::int64_t lda,
     std::int64_t stride_a, std::complex<float> beta, const std::complex<float> *b, std::int64_t ldb,
     std::int64_t stride_b, std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
-    std::int64_t batch_size, const std::vector<sycl::event> &dependencies = {}) {
+    std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add postchecks to queue here for input args.  */
 #endif
@@ -8557,7 +8557,7 @@ inline void omatadd_batch_precondition(sycl::queue &queue, transpose transa, tra
                                        std::int64_t stride_b, std::complex<double> *c,
                                        std::int64_t ldc, std::int64_t stride_c,
                                        std::int64_t batch_size,
-                                       const std::vector<sycl::event> &dependencies = {}) {
+                                       const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add prechecks to queue here for input args.  */
 #endif
@@ -8571,7 +8571,7 @@ inline void omatadd_batch_postcondition(sycl::queue &queue, transpose transa, tr
                                         std::int64_t stride_b, std::complex<double> *c,
                                         std::int64_t ldc, std::int64_t stride_c,
                                         std::int64_t batch_size,
-                                        const std::vector<sycl::event> &dependencies = {}) {
+                                        const std::vector<sycl::event> &dependencies) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     /* add postchecks to queue here for input args.  */
 #endif
