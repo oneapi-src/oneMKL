@@ -376,7 +376,7 @@ void sdsdot(sycl::queue &queue, int64_t n, float sb, sycl::buffer<float, 1> &x, 
             auto y_ = sc.get_mem<float *>(y_acc);
             auto res_ = sc.get_mem<float *>(res_acc);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC(cublasSdot, err, handle, n, x_, incx, y_, incy, res_);
+            CUBLAS_ERROR_FUNC_SYNC(cublasSdot, err, handle, n, x_, incx, y_, incy, res_);
             // Higher level BLAS functions expect CUBLAS_POINTER_MODE_HOST
             // to be set, therfore we need to reset this to the default value
             // in order to avoid CUDA_ERROR_ILLEGAL_ADRESS errors
@@ -943,7 +943,7 @@ sycl::event sdsdot(sycl::queue &queue, int64_t n, float sb, const float *x, int6
             auto y_ = reinterpret_cast<const float *>(y);
             auto res_ = reinterpret_cast<float *>(result);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC(cublasSdot, err, handle, n, x_, incx, y_, incy, res_);
+            CUBLAS_ERROR_FUNC_SYNC(cublasSdot, err, handle, n, x_, incx, y_, incy, res_);
         });
     });
     done.wait();
