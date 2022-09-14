@@ -103,7 +103,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         default: break;
     }
 
-    vector<fp, allocator_helper<fp, 64>> A(stride_a * batch_size), B(stride_b * batch_size), C(stride_c * batch_size);
+    vector<fp, allocator_helper<fp, 64>> A(stride_a * batch_size), B(stride_b * batch_size),
+        C(stride_c * batch_size);
 
     for (i = 0; i < batch_size; i++) {
         rand_matrix(A.data() + stride_a * i, layout, transa, m, n, lda);
@@ -138,15 +139,13 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         switch (layout) {
             case oneapi::mkl::layout::column_major:
                 oneapi::mkl::blas::column_major::omatadd_batch(
-                    main_queue, transa, transb, m, n, alpha, A_buffer, lda, stride_a,
-                    beta, B_buffer, ldb, stride_b,
-                    C_buffer, ldc, stride_c, batch_size);
+                    main_queue, transa, transb, m, n, alpha, A_buffer, lda, stride_a, beta,
+                    B_buffer, ldb, stride_b, C_buffer, ldc, stride_c, batch_size);
                 break;
             case oneapi::mkl::layout::row_major:
                 oneapi::mkl::blas::row_major::omatadd_batch(
-                    main_queue, transa, transb, m, n, alpha, A_buffer, lda, stride_a,
-                    beta, B_buffer, ldb, stride_b,
-                    C_buffer, ldc, stride_c, batch_size);
+                    main_queue, transa, transb, m, n, alpha, A_buffer, lda, stride_a, beta,
+                    B_buffer, ldb, stride_b, C_buffer, ldc, stride_c, batch_size);
                 break;
             default: break;
         }
@@ -154,15 +153,13 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         switch (layout) {
             case oneapi::mkl::layout::column_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatadd_batch,
-                                   transa, transb, m, n, alpha, A_buffer, lda, stride_a,
-                                   beta, B_buffer, ldb, stride_b,
-                                   C_buffer, ldc, stride_c, batch_size);
+                                   transa, transb, m, n, alpha, A_buffer, lda, stride_a, beta,
+                                   B_buffer, ldb, stride_b, C_buffer, ldc, stride_c, batch_size);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatadd_batch,
-                                   transa, transb, m, n, alpha, A_buffer, lda, stride_a,
-                                   beta, B_buffer, ldb, stride_b,
-                                   C_buffer, ldc, stride_c, batch_size);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatadd_batch, transa,
+                                   transb, m, n, alpha, A_buffer, lda, stride_a, beta, B_buffer,
+                                   ldb, stride_b, C_buffer, ldc, stride_c, batch_size);
                 break;
             default: break;
         }

@@ -138,8 +138,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
                                    trans, m, n, alpha, AB_buffer, lda, ldb, stride, batch_size);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::imatcopy_batch,
-                                   trans, m, n, alpha, AB_buffer, lda, ldb, stride, batch_size);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::imatcopy_batch, trans,
+                                   m, n, alpha, AB_buffer, lda, ldb, stride, batch_size);
                 break;
             default: break;
         }

@@ -115,12 +115,12 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     vector<fp, decltype(ua)> AB(ua);
 
     AB.resize(stride * batch_size);
-    fp ** ab_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, *dev, cxt);
+    fp **ab_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, *dev, cxt);
     if (ab_array == NULL) {
         std::cout << "Error cannot allocate arrays of pointers\n";
         oneapi::mkl::free_shared(ab_array, cxt);
         return false;
-    }        
+    }
 
     for (i = 0; i < batch_size; i++) {
         ab_array[i] = &AB[i * stride];
@@ -140,9 +140,9 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
                     dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                done = oneapi::mkl::blas::row_major::imatcopy_batch(
-                    main_queue, trans, m, n, alpha, &AB[0], lda, ldb, stride, batch_size,
-                    dependencies);
+                done = oneapi::mkl::blas::row_major::imatcopy_batch(main_queue, trans, m, n, alpha,
+                                                                    &AB[0], lda, ldb, stride,
+                                                                    batch_size, dependencies);
                 break;
             default: break;
         }
@@ -155,9 +155,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
                                    dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::imatcopy_batch,
-                                   trans, m, n, alpha, &AB[0], lda, ldb, stride, batch_size,
-                                   dependencies);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::imatcopy_batch, trans,
+                                   m, n, alpha, &AB[0], lda, ldb, stride, batch_size, dependencies);
                 break;
             default: break;
         }

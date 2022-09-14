@@ -159,15 +159,13 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         switch (layout) {
             case oneapi::mkl::layout::column_major:
                 done = oneapi::mkl::blas::column_major::omatadd_batch(
-                    main_queue, transa, transb, m, n, alpha, &A[0], lda, stride_a,
-                    beta, &B[0], ldb, stride_b,
-                    &C[0], ldc, stride_c, batch_size, dependencies);
+                    main_queue, transa, transb, m, n, alpha, &A[0], lda, stride_a, beta, &B[0], ldb,
+                    stride_b, &C[0], ldc, stride_c, batch_size, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
                 done = oneapi::mkl::blas::row_major::omatadd_batch(
-                    main_queue, transa, transb, m, n, alpha, &A[0], lda, stride_a,
-                    beta, &B[0], ldb, stride_b,
-                    &C[0], ldc, stride_c, batch_size, dependencies);
+                    main_queue, transa, transb, m, n, alpha, &A[0], lda, stride_a, beta, &B[0], ldb,
+                    stride_b, &C[0], ldc, stride_c, batch_size, dependencies);
                 break;
             default: break;
         }
@@ -176,15 +174,13 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         switch (layout) {
             case oneapi::mkl::layout::column_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatadd_batch,
-                                   transa, transb, m, n, alpha, &A[0], lda, stride_a,
-                                   beta, &B[0], ldb, stride_b,
-                                   &C[0], ldc, stride_c, batch_size, dependencies);
+                                   transa, transb, m, n, alpha, &A[0], lda, stride_a, beta, &B[0],
+                                   ldb, stride_b, &C[0], ldc, stride_c, batch_size, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatadd_batch,
-                                   transa, transb, m, n, alpha, &A[0], lda, stride_a,
-                                   beta, &B[0], ldb, stride_b,
-                                   &C[0], ldc, stride_c, batch_size, dependencies);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatadd_batch, transa,
+                                   transb, m, n, alpha, &A[0], lda, stride_a, beta, &B[0], ldb,
+                                   stride_b, &C[0], ldc, stride_c, batch_size, dependencies);
                 break;
             default: break;
         }

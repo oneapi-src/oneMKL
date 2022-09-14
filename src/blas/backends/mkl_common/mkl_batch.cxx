@@ -278,26 +278,26 @@ void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                                batch_size);
 }
 
-void imatcopy_batch(sycl::queue& queue, transpose trans, int64_t m, int64_t n, float alpha,
-                    sycl::buffer<float, 1>& ab, int64_t lda, int64_t ldb, int64_t stride,
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                    sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
                     int64_t batch_size) {
     blas_major::imatcopy_batch(queue, trans, m, n, alpha, ab, lda, ldb, stride, batch_size);
 }
 
-void imatcopy_batch(sycl::queue& queue, transpose trans, int64_t m, int64_t n, double alpha,
-                    sycl::buffer<double, 1>& ab, int64_t lda, int64_t ldb, int64_t stride,
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                    sycl::buffer<double, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
                     int64_t batch_size) {
     blas_major::imatcopy_batch(queue, trans, m, n, alpha, ab, lda, ldb, stride, batch_size);
 }
 
-void imatcopy_batch(sycl::queue& queue, transpose trans, int64_t m, int64_t n,
-                    std::complex<float> alpha, sycl::buffer<std::complex<float>, 1>& ab,
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                    std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &ab,
                     int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size) {
     blas_major::imatcopy_batch(queue, trans, m, n, alpha, ab, lda, ldb, stride, batch_size);
 }
 
-void imatcopy_batch(sycl::queue& queue, transpose trans, int64_t m, int64_t n,
-                    std::complex<double> alpha, sycl::buffer<std::complex<double>, 1>& ab,
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                    std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &ab,
                     int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size) {
     blas_major::imatcopy_batch(queue, trans, m, n, alpha, ab, lda, ldb, stride, batch_size);
 }

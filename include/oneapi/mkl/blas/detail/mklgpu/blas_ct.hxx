@@ -5147,8 +5147,7 @@ sycl::event omatcopy_batch(backend_selector<backend::mklgpu> selector, transpose
                            std::int64_t m, std::int64_t n, std::complex<float> alpha,
                            const std::complex<float> *a, std::int64_t lda, std::int64_t stride_a,
                            std::complex<float> *b, std::int64_t ldb, std::int64_t stride_b,
-                           std::int64_t batch_size,
-                           const std::vector<sycl::event> &dependencies) {
+                           std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
     omatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb,
                                 stride_b, batch_size, dependencies);
     auto done = oneapi::mkl::blas::mklgpu::MAJOR::omatcopy_batch(
@@ -5163,8 +5162,7 @@ sycl::event omatcopy_batch(backend_selector<backend::mklgpu> selector, transpose
                            std::int64_t m, std::int64_t n, std::complex<double> alpha,
                            const std::complex<double> *a, std::int64_t lda, std::int64_t stride_a,
                            std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
-                           std::int64_t batch_size,
-                           const std::vector<sycl::event> &dependencies) {
+                           std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
     omatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb,
                                 stride_b, batch_size, dependencies);
     auto done = oneapi::mkl::blas::mklgpu::MAJOR::omatcopy_batch(
@@ -5191,8 +5189,7 @@ sycl::event imatcopy_batch(backend_selector<backend::mklgpu> selector, transpose
 sycl::event imatcopy_batch(backend_selector<backend::mklgpu> selector, transpose trans,
                            std::int64_t m, std::int64_t n, double alpha, double *ab,
                            std::int64_t lda, std::int64_t ldb, std::int64_t stride,
-                           std::int64_t batch_size,
-                           const std::vector<sycl::event> &dependencies) {
+                           std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
     imatcopy_batch_precondition(selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride,
                                 batch_size, dependencies);
     auto done = oneapi::mkl::blas::mklgpu::MAJOR::imatcopy_batch(
@@ -5268,8 +5265,7 @@ sycl::event omatadd_batch(backend_selector<backend::mklgpu> selector, transpose 
                           std::int64_t stride_a, std::complex<float> beta,
                           const std::complex<float> *b, std::int64_t ldb, std::int64_t stride_b,
                           std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
-                          std::int64_t batch_size,
-                          const std::vector<sycl::event> &dependencies) {
+                          std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
     omatadd_batch_precondition(selector.get_queue(), transa, transb, m, n, alpha, a, lda, stride_a,
                                beta, b, ldb, stride_b, c, ldc, stride_c, batch_size, dependencies);
     auto done = oneapi::mkl::blas::mklgpu::MAJOR::omatadd_batch(
@@ -5286,8 +5282,7 @@ sycl::event omatadd_batch(backend_selector<backend::mklgpu> selector, transpose 
                           std::int64_t lda, std::int64_t stride_a, std::complex<double> beta,
                           const std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
                           std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
-                          std::int64_t batch_size,
-                          const std::vector<sycl::event> &dependencies) {
+                          std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
     omatadd_batch_precondition(selector.get_queue(), transa, transb, m, n, alpha, a, lda, stride_a,
                                beta, b, ldb, stride_b, c, ldc, stride_c, batch_size, dependencies);
     auto done = oneapi::mkl::blas::mklgpu::MAJOR::omatadd_batch(
