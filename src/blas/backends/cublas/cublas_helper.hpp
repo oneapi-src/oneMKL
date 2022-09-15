@@ -180,11 +180,23 @@ public:
         throw cublas_error(std::string(#name) + std::string(" : "), err); \
     }
 
-#define CUBLAS_ERROR_FUNC_T(name, func, err, ...)                        \
-    err = func(__VA_ARGS__);                                             \
+#define CUBLAS_ERROR_FUNC_SYNC(name, err, handle, ...)                    \
+    err = name(handle, __VA_ARGS__);                                      \
+    if (err != CUBLAS_STATUS_SUCCESS) {                                   \
+        throw cublas_error(std::string(#name) + std::string(" : "), err); \
+    }                                                                     \
+    cudaStream_t currentStreamId;                                         \
+    CUBLAS_ERROR_FUNC(cublasGetStream, err, handle, &currentStreamId);    \
+    cuStreamSynchronize(currentStreamId);
+
+#define CUBLAS_ERROR_FUNC_T_SYNC(name, func, err, handle, ...)           \
+    err = func(handle, __VA_ARGS__);                                     \
     if (err != CUBLAS_STATUS_SUCCESS) {                                  \
         throw cublas_error(std::string(name) + std::string(" : "), err); \
-    }
+    }                                                                    \
+    cudaStream_t currentStreamId;                                        \
+    CUBLAS_ERROR_FUNC(cublasGetStream, err, handle, &currentStreamId);   \
+    cuStreamSynchronize(currentStreamId);
 
 inline cublasOperation_t get_cublas_operation(oneapi::mkl::transpose trn) {
     switch (trn) {
