@@ -52,8 +52,9 @@ inline void geqrf_batch(const char *func_name, Func func, sycl::queue &queue, st
 
             // Uses scratch so sync between each cuSolver call
             for (int64_t i = 0; i < batch_size; ++i) {
-                CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, a_ + stride_a * i, lda,
-                                      tau_ + stride_tau * i, scratch_, scratchpad_size, nullptr);
+                CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, a_ + stride_a * i,
+                                           lda, tau_ + stride_tau * i, scratch_, scratchpad_size,
+                                           nullptr);
             }
         });
     });
@@ -200,8 +201,8 @@ inline void getrf_batch(const char *func_name, Func func, sycl::queue &queue, st
 
             // Uses scratch so sync between each cuSolver call
             for (int64_t i = 0; i < batch_size; ++i) {
-                CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, a_ + stride_a * i, lda,
-                                      scratch_, ipiv_ + stride_ipiv * i, devInfo_ + i);
+                CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, a_ + stride_a * i,
+                                           lda, scratch_, ipiv_ + stride_ipiv * i, devInfo_ + i);
             }
         });
     });
@@ -258,8 +259,9 @@ inline void orgqr_batch(const char *func_name, Func func, sycl::queue &queue, st
 
             // Uses scratch so sync between each cuSolver call
             for (int64_t i = 0; i < batch_size; ++i) {
-                CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, k, a_ + stride_a * i, lda,
-                                      tau_ + stride_tau * i, scratch_, scratchpad_size, nullptr);
+                CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, k, a_ + stride_a * i,
+                                           lda, tau_ + stride_tau * i, scratch_, scratchpad_size,
+                                           nullptr);
             }
         });
     });
@@ -305,9 +307,10 @@ inline void potrf_batch(const char *func_name, Func func, sycl::queue &queue,
 
             auto **a_dev_ = reinterpret_cast<cuDataType **>(a_dev);
 
-            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_fill_mode(uplo), (int)n,
-                                  a_dev_, (int)lda, nullptr, (int)batch_size);
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_fill_mode(uplo),
+                                       (int)n, a_dev_, (int)lda, nullptr, (int)batch_size);
 
+            free(a_batched);
             cuMemFree(a_dev);
         });
     });
@@ -368,10 +371,12 @@ inline void potrs_batch(const char *func_name, Func func, sycl::queue &queue,
             auto **a_dev_ = reinterpret_cast<cuDataType **>(a_dev);
             auto **b_dev_ = reinterpret_cast<cuDataType **>(b_dev);
 
-            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_fill_mode(uplo), (int)n,
-                                  (int)nrhs, a_dev_, (int)lda, b_dev_, ldb, nullptr,
-                                  (int)batch_size);
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_fill_mode(uplo),
+                                       (int)n, (int)nrhs, a_dev_, (int)lda, b_dev_, ldb, nullptr,
+                                       (int)batch_size);
 
+            free(a_batched);
+            free(b_batched);
             cuMemFree(a_dev);
             cuMemFree(b_dev);
         });
@@ -420,8 +425,9 @@ inline void ungqr_batch(const char *func_name, Func func, sycl::queue &queue, st
 
             // Uses scratch so sync between each cuSolver call
             for (int64_t i = 0; i < batch_size; ++i) {
-                CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, k, a_ + stride_a * i, lda,
-                                      tau_ + stride_tau * i, scratch_, scratchpad_size, nullptr);
+                CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, k, a_ + stride_a * i,
+                                           lda, tau_ + stride_tau * i, scratch_, scratchpad_size,
+                                           nullptr);
             }
         });
     });
@@ -467,8 +473,9 @@ inline sycl::event geqrf_batch(const char *func_name, Func func, sycl::queue &qu
 
             // Uses scratch so sync between each cuSolver call
             for (int64_t i = 0; i < batch_size; ++i) {
-                CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, a_ + stride_a * i, lda,
-                                      tau_ + stride_tau * i, scratch_, scratchpad_size, nullptr);
+                CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, a_ + stride_a * i,
+                                           lda, tau_ + stride_tau * i, scratch_, scratchpad_size,
+                                           nullptr);
             }
         });
     });
@@ -523,9 +530,9 @@ inline sycl::event geqrf_batch(const char *func_name, Func func, sycl::queue &qu
             for (int64_t group_id = 0; group_id < group_count; ++group_id) {
                 for (int64_t local_id = 0; local_id < group_sizes[group_id];
                      ++local_id, ++global_id) {
-                    CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m[group_id], n[group_id],
-                                          a_[global_id], lda[group_id], tau_[global_id], scratch_,
-                                          scratchpad_size, nullptr);
+                    CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m[group_id],
+                                               n[group_id], a_[global_id], lda[group_id],
+                                               tau_[global_id], scratch_, scratchpad_size, nullptr);
                 }
             }
         });
@@ -582,8 +589,8 @@ inline sycl::event getrf_batch(const char *func_name, Func func, sycl::queue &qu
 
             // Uses scratch so sync between each cuSolver call
             for (int64_t i = 0; i < batch_size; ++i) {
-                CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, a_ + stride_a * i, lda,
-                                      scratchpad_, ipiv_ + stride_ipiv * i, devInfo_ + i);
+                CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, a_ + stride_a * i,
+                                           lda, scratchpad_, ipiv_ + stride_ipiv * i, devInfo_ + i);
             }
         });
     });
@@ -669,9 +676,9 @@ inline sycl::event getrf_batch(const char *func_name, Func func, sycl::queue &qu
             for (int64_t group_id = 0; group_id < group_count; ++group_id) {
                 for (int64_t local_id = 0; local_id < group_sizes[group_id];
                      ++local_id, ++global_id) {
-                    CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m[group_id], n[group_id],
-                                          a_[global_id], lda[group_id], scratch_, ipiv32[global_id],
-                                          devInfo + global_id);
+                    CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m[group_id],
+                                               n[group_id], a_[global_id], lda[group_id], scratch_,
+                                               ipiv32[global_id], devInfo + global_id);
                 }
             }
         });
@@ -976,8 +983,9 @@ inline sycl::event orgqr_batch(const char *func_name, Func func, sycl::queue &qu
 
             // Uses scratch so sync between each cuSolver call
             for (int64_t i = 0; i < batch_size; ++i) {
-                CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, k, a_ + stride_a * i, lda,
-                                      tau_ + stride_tau * i, scratch_, scratchpad_size, nullptr);
+                CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, k, a_ + stride_a * i,
+                                           lda, tau_ + stride_tau * i, scratch_, scratchpad_size,
+                                           nullptr);
             }
         });
     });
@@ -1031,9 +1039,10 @@ inline sycl::event orgqr_batch(const char *func_name, Func func, sycl::queue &qu
             for (int64_t group_id = 0; group_id < group_count; ++group_id) {
                 for (int64_t local_id = 0; local_id < group_sizes[group_id];
                      ++local_id, ++global_id) {
-                    CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m[group_id], n[group_id],
-                                          k[group_id], a_[global_id], lda[group_id],
-                                          tau_[global_id], scratch_, scratchpad_size, nullptr);
+                    CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m[group_id],
+                                               n[group_id], k[group_id], a_[global_id],
+                                               lda[group_id], tau_[global_id], scratch_,
+                                               scratchpad_size, nullptr);
                 }
             }
         });
@@ -1087,9 +1096,10 @@ inline sycl::event potrf_batch(const char *func_name, Func func, sycl::queue &qu
 
             auto **a_dev_ = reinterpret_cast<cuDataType **>(a_dev);
 
-            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_fill_mode(uplo), (int)n,
-                                  a_dev_, (int)lda, nullptr, (int)batch_size);
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_fill_mode(uplo),
+                                       (int)n, a_dev_, (int)lda, nullptr, (int)batch_size);
 
+            free(a_batched);
             cuMemFree(a_dev);
         });
     });
@@ -1215,10 +1225,12 @@ inline sycl::event potrs_batch(const char *func_name, Func func, sycl::queue &qu
             auto **a_dev_ = reinterpret_cast<cuDataType **>(a_dev);
             auto **b_dev_ = reinterpret_cast<cuDataType **>(b_dev);
 
-            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_fill_mode(uplo), (int)n,
-                                  (int)nrhs, a_dev_, (int)lda, b_dev_, ldb, nullptr,
-                                  (int)batch_size);
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_fill_mode(uplo),
+                                       (int)n, (int)nrhs, a_dev_, (int)lda, b_dev_, ldb, nullptr,
+                                       (int)batch_size);
 
+            free(a_batched);
+            free(b_batched);
             cuMemFree(a_dev);
         });
     });
@@ -1344,8 +1356,9 @@ inline sycl::event ungqr_batch(const char *func_name, Func func, sycl::queue &qu
 
             // Uses scratch so sync between each cuSolver call
             for (int64_t i = 0; i < batch_size; ++i) {
-                CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, k, a_ + stride_a * i, lda,
-                                      tau_ + stride_tau * i, scratch_, scratchpad_size, nullptr);
+                CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, k, a_ + stride_a * i,
+                                           lda, tau_ + stride_tau * i, scratch_, scratchpad_size,
+                                           nullptr);
             }
         });
     });
@@ -1399,9 +1412,10 @@ inline sycl::event ungqr_batch(const char *func_name, Func func, sycl::queue &qu
             for (int64_t group_id = 0; group_id < group_count; ++group_id) {
                 for (int64_t local_id = 0; local_id < group_sizes[group_id];
                      ++local_id, ++global_id) {
-                    CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m[group_id], n[group_id],
-                                          k[group_id], a_[global_id], lda[group_id],
-                                          tau_[global_id], scratch_, scratchpad_size, nullptr);
+                    CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m[group_id],
+                                               n[group_id], k[group_id], a_[global_id],
+                                               lda[group_id], tau_[global_id], scratch_,
+                                               scratchpad_size, nullptr);
                 }
             }
         });
