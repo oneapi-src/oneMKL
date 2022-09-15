@@ -53,7 +53,7 @@ inline void asum(const char *func_name, Func func, sycl::queue &queue, int64_t n
             auto res_ = sc.get_mem<cuDataType2 *>(res_acc);
             cublasStatus_t err;
             // ASUM does not support negative index
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, std::abs(incx), res_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, std::abs(incx), res_);
             // Higher level BLAS functions expect CUBLAS_POINTER_MODE_HOST
             // to be set, therfore we need to reset this to the default value
             // in order to avoid CUDA_ERROR_ILLEGAL_ADRESS errors
@@ -86,8 +86,8 @@ inline void scal(const char *func_name, Func func, sycl::queue &queue, int64_t n
             auto x_ = sc.get_mem<cuDataType2 *>(x_acc);
             cublasStatus_t err;
             // SCAL does not support negative incx
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, (cuDataType1 *)&a, x_,
-                                std::abs(incx));
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, (cuDataType1 *)&a, x_,
+                                     std::abs(incx));
         });
     });
 }
@@ -117,8 +117,8 @@ inline void axpy(const char *func_name, Func func, sycl::queue &queue, int64_t n
             auto x_ = sc.get_mem<cuDataType *>(x_acc);
             auto y_ = sc.get_mem<cuDataType *>(y_acc);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, (cuDataType *)&alpha, x_, incx, y_,
-                                incy);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, (cuDataType *)&alpha, x_,
+                                     incx, y_, incy);
         });
     });
 }
@@ -180,7 +180,7 @@ inline void rotg(const char *func_name, Func func, sycl::queue &queue, sycl::buf
             auto c_ = sc.get_mem<cuDataType2 *>(c_acc);
             auto s_ = sc.get_mem<cuDataType1 *>(s_acc);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, a_, b_, c_, s_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, a_, b_, c_, s_);
             // Higher level BLAS functions expect CUBLAS_POINTER_MODE_HOST
             // to be set, therfore we need to reset this to the default value
             // in order to avoid CUDA_ERROR_ILLEGAL_ADRESS errors
@@ -223,7 +223,7 @@ inline void rotm(const char *func_name, Func func, sycl::queue &queue, int64_t n
             auto y_ = sc.get_mem<cuDataType *>(y_acc);
             auto param_ = sc.get_mem<cuDataType *>(param_acc);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, incx, y_, incy, param_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, y_, incy, param_);
             // Higher level BLAS functions expect CUBLAS_POINTER_MODE_HOST
             // to be set, therfore we need to reset this to the default value
             // in order to avoid CUDA_ERROR_ILLEGAL_ADRESS errors
@@ -255,7 +255,7 @@ inline void copy(const char *func_name, Func func, sycl::queue &queue, int64_t n
             auto x_ = sc.get_mem<cuDataType *>(x_acc);
             auto y_ = sc.get_mem<cuDataType *>(y_acc);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, incx, y_, incy);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, y_, incy);
         });
     });
 }
@@ -294,7 +294,7 @@ inline void dot(const char *func_name, Func func, sycl::queue &queue, int64_t n,
             auto y_ = sc.get_mem<cuDataType *>(y_acc);
             auto res_ = sc.get_mem<cuDataType *>(res_acc);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, incx, y_, incy, res_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, y_, incy, res_);
             // Higher level BLAS functions expect CUBLAS_POINTER_MODE_HOST
             // to be set, therfore we need to reset this to the default value
             // in order to avoid CUDA_ERROR_ILLEGAL_ADRESS errors
@@ -338,8 +338,8 @@ inline void rot(const char *func_name, Func func, sycl::queue &queue, int64_t n,
             auto x_ = sc.get_mem<cuDataType1 *>(x_acc);
             auto y_ = sc.get_mem<cuDataType1 *>(y_acc);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, incx, y_, incy,
-                                (cuDataType2 *)&c, (cuDataType3 *)&s);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, y_, incy,
+                                     (cuDataType2 *)&c, (cuDataType3 *)&s);
         });
     });
 }
@@ -418,7 +418,7 @@ inline void rotmg(const char *func_name, Func func, sycl::queue &queue, sycl::bu
             auto y1_ = sc.get_mem<cuDataType *>(y1_acc);
             auto param_ = sc.get_mem<cuDataType *>(param_acc);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, d1_, d2_, x1_, y1_, param_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, d1_, d2_, x1_, y1_, param_);
             // Higher level BLAS functions expect CUBLAS_POINTER_MODE_HOST
             // to be set, therfore we need to reset this to the default value
             // in order to avoid CUDA_ERROR_ILLEGAL_ADRESS errors
@@ -466,7 +466,7 @@ inline void iamax(const char *func_name, Func func, sycl::queue &queue, int64_t 
             cublasStatus_t err;
             // For negative incx, iamax returns 0. This behaviour is similar to that of
             // reference netlib BLAS.
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, incx, int_res_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, int_res_);
             // Higher level BLAS functions expect CUBLAS_POINTER_MODE_HOST
             // to be set, therfore we need to reset this to the default value
             // in order to avoid CUDA_ERROR_ILLEGAL_ADRESS errors
@@ -503,7 +503,7 @@ inline void swap(const char *func_name, Func func, sycl::queue &queue, int64_t n
             auto x_ = sc.get_mem<cuDataType *>(x_acc);
             auto y_ = sc.get_mem<cuDataType *>(y_acc);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, incx, y_, incy);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, y_, incy);
         });
     });
 }
@@ -549,7 +549,7 @@ inline void iamin(const char *func_name, Func func, sycl::queue &queue, int64_t 
             cublasStatus_t err;
             // For negative incx, iamin returns 0. This behaviour is similar to that of
             // implemented as a reference IAMIN.
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, incx, int_res_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, int_res_);
             // Higher level BLAS functions expect CUBLAS_POINTER_MODE_HOST
             // to be set, therfore we need to reset this to the default value
             // in order to avoid CUDA_ERROR_ILLEGAL_ADRESS errors
@@ -593,7 +593,7 @@ inline void nrm2(const char *func_name, Func func, sycl::queue &queue, int64_t n
             auto res_ = sc.get_mem<cuDataType2 *>(res_acc);
             cublasStatus_t err;
             // NRM2 does not support negative index
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, std::abs(incx), res_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, std::abs(incx), res_);
             // Higher level BLAS functions expect CUBLAS_POINTER_MODE_HOST
             // to be set, therfore we need to reset this to the default value
             // in order to avoid CUDA_ERROR_ILLEGAL_ADRESS errors
@@ -635,7 +635,7 @@ inline sycl::event asum(const char *func_name, Func func, sycl::queue &queue, in
             auto res_ = reinterpret_cast<cuDataType2 *>(result);
             cublasStatus_t err;
             // ASUM does not support negative index
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, std::abs(incx), res_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, std::abs(incx), res_);
         });
     });
     return done;
@@ -668,8 +668,8 @@ inline sycl::event scal(const char *func_name, Func func, sycl::queue &queue, in
             auto x_ = reinterpret_cast<cuDataType2 *>(x);
             cublasStatus_t err;
             // SCAL does not support negative incx
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, (cuDataType1 *)&a, x_,
-                                std::abs(incx));
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, (cuDataType1 *)&a, x_,
+                                     std::abs(incx));
         });
     });
     return done;
@@ -704,8 +704,8 @@ inline sycl::event axpy(const char *func_name, Func func, sycl::queue &queue, in
             auto x_ = reinterpret_cast<const cuDataType *>(x);
             auto y_ = reinterpret_cast<cuDataType *>(y);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, (cuDataType *)&alpha, x_, incx, y_,
-                                incy);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, (cuDataType *)&alpha, x_,
+                                     incx, y_, incy);
         });
     });
     return done;
@@ -764,7 +764,7 @@ inline sycl::event rotg(const char *func_name, Func func, sycl::queue &queue, T1
             auto c_ = reinterpret_cast<cuDataType2 *>(c);
             auto s_ = reinterpret_cast<cuDataType1 *>(s);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, a_, b_, c_, s_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, a_, b_, c_, s_);
         });
     });
     return done;
@@ -799,7 +799,7 @@ inline sycl::event rotm(const char *func_name, Func func, sycl::queue &queue, in
             auto y_ = reinterpret_cast<cuDataType *>(y);
             auto param_ = reinterpret_cast<cuDataType *>(param);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, incx, y_, incy, param_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, y_, incy, param_);
         });
     });
     return done;
@@ -832,7 +832,7 @@ inline sycl::event copy(const char *func_name, Func func, sycl::queue &queue, in
             auto x_ = reinterpret_cast<const cuDataType *>(x);
             auto y_ = reinterpret_cast<cuDataType *>(y);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, incx, y_, incy);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, y_, incy);
         });
     });
     return done;
@@ -867,7 +867,7 @@ inline sycl::event dot(const char *func_name, Func func, sycl::queue &queue, int
             auto y_ = reinterpret_cast<const cuDataType *>(y);
             auto res_ = reinterpret_cast<cuDataType *>(result);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, incx, y_, incy, res_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, y_, incy, res_);
         });
     });
     return done;
@@ -906,8 +906,8 @@ inline sycl::event rot(const char *func_name, Func func, sycl::queue &queue, int
             auto x_ = reinterpret_cast<cuDataType1 *>(x);
             auto y_ = reinterpret_cast<cuDataType1 *>(y);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, incx, y_, incy,
-                                (cuDataType2 *)&c, (cuDataType3 *)&s);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, y_, incy,
+                                     (cuDataType2 *)&c, (cuDataType3 *)&s);
         });
     });
     return done;
@@ -973,7 +973,7 @@ inline sycl::event rotmg(const char *func_name, Func func, sycl::queue &queue, T
             auto y1_ = reinterpret_cast<const cuDataType *>(&y1);
             auto param_ = reinterpret_cast<cuDataType *>(param);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, d1_, d2_, x1_, y1_, param_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, d1_, d2_, x1_, y1_, param_);
         });
     });
     return done;
@@ -1014,7 +1014,7 @@ inline sycl::event iamax(const char *func_name, Func func, sycl::queue &queue, i
             cublasStatus_t err;
             // For negative incx, iamax returns 0. This behaviour is similar to that of
             // reference iamax.
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, incx, int_res_p_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, int_res_p_);
         });
     });
     done.wait();
@@ -1049,7 +1049,7 @@ inline sycl::event swap(const char *func_name, Func func, sycl::queue &queue, in
             auto x_ = reinterpret_cast<cuDataType *>(x);
             auto y_ = reinterpret_cast<cuDataType *>(y);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, incx, y_, incy);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, y_, incy);
         });
     });
     return done;
@@ -1092,7 +1092,7 @@ inline sycl::event iamin(const char *func_name, Func func, sycl::queue &queue, i
             cublasStatus_t err;
             // For negative incx, iamin returns 0. This behaviour is similar to that of
             // implemented iamin.
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, incx, int_res_p_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, int_res_p_);
         });
     });
     done.wait();
@@ -1130,7 +1130,7 @@ inline sycl::event nrm2(const char *func_name, Func func, sycl::queue &queue, in
             auto res_ = reinterpret_cast<cuDataType2 *>(result);
             cublasStatus_t err;
             // NRM2 does not support negative index
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, n, x_, std::abs(incx), res_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, std::abs(incx), res_);
         });
     });
     return done;

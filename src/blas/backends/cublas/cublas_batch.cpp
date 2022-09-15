@@ -162,10 +162,10 @@ inline void gemm_batch(const char *func_name, Func func, sycl::queue &queue, tra
             auto b_ = sc.get_mem<cuDataType *>(b_acc);
             auto c_ = sc.get_mem<cuDataType *>(c_acc);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_operation(transa),
-                                get_cublas_operation(transb), m, n, k, (cuDataType *)&alpha, a_,
-                                lda, stride_a, b_, ldb, stride_b, (cuDataType *)&beta, c_, ldc,
-                                stride_c, batch_size);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_operation(transa),
+                                     get_cublas_operation(transb), m, n, k, (cuDataType *)&alpha,
+                                     a_, lda, stride_a, b_, ldb, stride_b, (cuDataType *)&beta, c_,
+                                     ldc, stride_c, batch_size);
         });
     });
 }
@@ -495,10 +495,10 @@ inline sycl::event gemm_batch(const char *func_name, Func func, sycl::queue &que
             auto b_ = reinterpret_cast<const cuDataType *>(b);
             auto c_ = reinterpret_cast<cuDataType *>(c);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_operation(transa),
-                                get_cublas_operation(transb), m, n, k, (cuDataType *)&alpha, a_,
-                                lda, stride_a, b_, ldb, stride_b, (cuDataType *)&beta, c_, ldc,
-                                stride_c, batch_size);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_operation(transa),
+                                     get_cublas_operation(transb), m, n, k, (cuDataType *)&alpha,
+                                     a_, lda, stride_a, b_, ldb, stride_b, (cuDataType *)&beta, c_,
+                                     ldc, stride_c, batch_size);
         });
     });
     return done;
@@ -550,11 +550,11 @@ inline sycl::event gemm_batch(const char *func_name, Func func, sycl::queue &que
                 auto **a_ = reinterpret_cast<const cuDataType **>(a);
                 auto **b_ = reinterpret_cast<const cuDataType **>(b);
                 auto **c_ = reinterpret_cast<cuDataType **>(c);
-                CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_operation(transa[i]),
-                                    get_cublas_operation(transb[i]), (int)m[i], (int)n[i],
-                                    (int)k[i], (cuDataType *)&alpha[i], a_ + offset, (int)lda[i],
-                                    b_ + offset, (int)ldb[i], (cuDataType *)&beta[i], c_ + offset,
-                                    (int)ldc[i], (int)group_size[i]);
+                CUBLAS_ERROR_FUNC_T_SYNC(
+                    func_name, func, err, handle, get_cublas_operation(transa[i]),
+                    get_cublas_operation(transb[i]), (int)m[i], (int)n[i], (int)k[i],
+                    (cuDataType *)&alpha[i], a_ + offset, (int)lda[i], b_ + offset, (int)ldb[i],
+                    (cuDataType *)&beta[i], c_ + offset, (int)ldc[i], (int)group_size[i]);
                 offset += group_size[i];
             }
         });
@@ -632,7 +632,7 @@ inline sycl::event trsm_batch(const char *func_name, Func func, sycl::queue &que
             for (int64_t i = 0; i < group_count; i++) {
                 auto **a_ = reinterpret_cast<const cuDataType **>(a);
                 auto **b_ = reinterpret_cast<cuDataType **>(b);
-                CUBLAS_ERROR_FUNC_T(
+                CUBLAS_ERROR_FUNC_T_SYNC(
                     func_name, func, err, handle, get_cublas_side_mode(left_right[i]),
                     get_cublas_fill_mode(upper_lower[i]), get_cublas_operation(trans[i]),
                     get_cublas_diag_type(unit_diag[i]), (int)m[i], (int)n[i],
