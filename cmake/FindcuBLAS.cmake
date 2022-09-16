@@ -32,20 +32,36 @@ add_compile_definitions(CUDA_NO_HALF)
 find_package(Threads REQUIRED)
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(cuBLAS
-    REQUIRED_VARS
-	CUDA_TOOLKIT_INCLUDE
-	CUDA_cublas_LIBRARY
-        CUDA_LIBRARIES
-        CUDA_CUDA_LIBRARY
-        OPENCL_INCLUDE_DIR
-)
+
+
 if(NOT TARGET ONEMKL::cuBLAS::cuBLAS)
   add_library(ONEMKL::cuBLAS::cuBLAS SHARED IMPORTED)
-  set_target_properties(ONEMKL::cuBLAS::cuBLAS PROPERTIES
-      IMPORTED_LOCATION ${CUDA_cublas_LIBRARY}
-      INTERFACE_INCLUDE_DIRECTORIES "${OPENCL_INCLUDE_DIR};${CUDA_TOOLKIT_INCLUDE}"
-      INTERFACE_LINK_LIBRARIES "Threads::Threads;${CUDA_CUDA_LIBRARY};${CUDA_LIBRARIES}"
-  )
-
+  if(USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+    find_package_handle_standard_args(cuBLAS
+        REQUIRED_VARS
+          CUDA_TOOLKIT_INCLUDE
+          CUDA_cublas_LIBRARY
+          CUDA_LIBRARIES
+          CUDA_CUDART_LIBRARY
+    )
+    set_target_properties(ONEMKL::cuBLAS::cuBLAS PROPERTIES
+        IMPORTED_LOCATION ${CUDA_cublas_LIBRARY}
+        INTERFACE_INCLUDE_DIRECTORIES "${CUDA_TOOLKIT_INCLUDE}"
+        INTERFACE_LINK_LIBRARIES "Threads::Threads;${CUDA_LIBRARIES};${CUDA_CUDART_LIBRARY}"
+    )
+  else()
+    find_package_handle_standard_args(cuBLAS
+        REQUIRED_VARS
+          CUDA_TOOLKIT_INCLUDE
+          CUDA_cublas_LIBRARY
+          CUDA_LIBRARIES
+          CUDA_CUDA_LIBRARY
+          OPENCL_INCLUDE_DIR
+    )
+    set_target_properties(ONEMKL::cuBLAS::cuBLAS PROPERTIES
+        IMPORTED_LOCATION ${CUDA_cublas_LIBRARY}
+        INTERFACE_INCLUDE_DIRECTORIES "${OPENCL_INCLUDE_DIR};${CUDA_TOOLKIT_INCLUDE}"
+        INTERFACE_LINK_LIBRARIES "Threads::Threads;${CUDA_CUDA_LIBRARY};${CUDA_LIBRARIES}"
+    )
+  endif()
 endif()

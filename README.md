@@ -155,7 +155,7 @@ Supported domains: BLAS, LAPACK, RNG
             <td align="center">NVIDIA GPU</td>
             <td align="center">NVIDIA cuBLAS</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">LLVM*</td>
+            <td align="center">LLVM*,hipSYCL</td>
         </tr>
         <tr>
             <td align="center">x86 CPU</td>
@@ -382,7 +382,7 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
         </tr>
         <td rowspan=2> Linux* only </td>
         <td> NVIDIA GPU </td>
-        <td> Intel project for LLVM* technology </td>
+        <td> Intel project for LLVM* technology <br> or <br> hipSYCL with CUDA backend and dependencies </td>
         <td> No </td>
         <tr>
             <td>AMD GPU</td>
