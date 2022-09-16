@@ -200,7 +200,7 @@ inline void getrf_batch(const char *func_name, Func func, sycl::queue &queue, st
             cusolverStatus_t err;
 
             // Uses scratch so sync between each cuSolver call
-            for (int64_t i = 0; i < batch_size; ++i) {
+            for (std::int64_t i = 0; i < batch_size; ++i) {
                 CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, a_ + stride_a * i,
                                            lda, scratch_, ipiv_ + stride_ipiv * i, devInfo_ + i);
             }
@@ -211,9 +211,8 @@ inline void getrf_batch(const char *func_name, Func func, sycl::queue &queue, st
     queue.submit([&](sycl::handler &cgh) {
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::read>(cgh);
         auto ipiv_acc = ipiv.template get_access<sycl::access::mode::write>(cgh);
-        cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
-            ipiv_acc[index] = static_cast<std::int64_t>(ipiv32_acc[index]);
-        });
+        cgh.parallel_for(sycl::range<1>{ ipiv_size },
+                         [=](sycl::id<1> index) { ipiv_acc[index] = ipiv32_acc[index]; });
     });
 
     lapack_info_check(queue, devInfo, __func__, func_name, batch_size);
@@ -344,7 +343,7 @@ inline void potrs_batch(const char *func_name, Func func, sycl::queue &queue,
 
     overflow_check(n, nrhs, lda, ldb, stride_a, stride_b, batch_size, scratchpad_size);
 
-    // cusolver function only supports nrhs = 1
+    // cuSolver function only supports nrhs = 1
     if (nrhs != 1)
         throw unimplemented("lapack", "potrs_batch", "cusolver potrs_batch only supports nrhs = 1");
 
@@ -598,15 +597,14 @@ inline sycl::event getrf_batch(const char *func_name, Func func, sycl::queue &qu
     // Copy from 32-bit USM to 64-bit
     sycl::event done_casting = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(done);
-        cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
-            ipiv[index] = static_cast<std::int64_t>(ipiv32[index]);
-        });
+        cgh.parallel_for(sycl::range<1>{ ipiv_size },
+                         [=](sycl::id<1> index) { ipiv[index] = ipiv32[index]; });
     });
 
     // Enqueue free memory, don't return event as not-neccessary for user to wait for ipiv32 being released
     queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(done_casting);
-        cgh.host_task([=](sycl::interop_handle ih) { sycl::free(ipiv32, queue); });
+        cgh.host_task([&](sycl::interop_handle ih) { sycl::free(ipiv32, queue); });
     });
 
     // lapack_info_check calls queue.wait()
@@ -694,9 +692,8 @@ inline sycl::event getrf_batch(const char *func_name, Func func, sycl::queue &qu
 
             sycl::event e = queue.submit([&](sycl::handler &cgh) {
                 cgh.depends_on(done);
-                cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
-                    d_ipiv[index] = static_cast<std::int64_t>(d_ipiv32[index]);
-                });
+                cgh.parallel_for(sycl::range<1>{ ipiv_size },
+                                 [=](sycl::id<1> index) { d_ipiv[index] = d_ipiv32[index]; });
             });
             casting_dependencies[group_id] = e;
         }
@@ -708,7 +705,7 @@ inline sycl::event getrf_batch(const char *func_name, Func func, sycl::queue &qu
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(casting_dependencies[i]);
         }
-        cgh.host_task([=](sycl::interop_handle ih) {
+        cgh.host_task([&](sycl::interop_handle ih) {
             for (int64_t global_id = 0; global_id < batch_size; ++global_id)
                 sycl::free(ipiv32[global_id], queue);
             free(ipiv32);
@@ -1197,7 +1194,7 @@ inline sycl::event potrs_batch(const char *func_name, Func func, sycl::queue &qu
 
     overflow_check(n, nrhs, lda, ldb, stride_a, stride_b, batch_size, scratchpad_size);
 
-    // cusolver function only supports nrhs = 1
+    // cuSolver function only supports nrhs = 1
     if (nrhs != 1)
         throw unimplemented("lapack", "potrs_batch", "cusolver potrs_batch only supports nrhs = 1");
 
@@ -1270,7 +1267,7 @@ inline sycl::event potrs_batch(const char *func_name, Func func, sycl::queue &qu
         overflow_check(n[i], lda[i], group_sizes[i]);
         batch_size += group_sizes[i];
 
-        // cusolver function only supports nrhs = 1
+        // cuSolver function only supports nrhs = 1
         if (nrhs[i] != 1)
             throw unimplemented("lapack", "potrs_batch",
                                 "cusolver potrs_batch only supports nrhs = 1");
@@ -1446,17 +1443,15 @@ inline void getrf_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t m, std::int64_t n, std::int64_t lda,
                                         std::int64_t stride_a, std::int64_t stride_ipiv,
                                         std::int64_t batch_size, int *scratch_size) {
-    queue
-        .submit([&](sycl::handler &cgh) {
-            onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
-                auto handle = sc.get_handle(queue);
-                cusolverStatus_t err;
+    auto e = queue.submit([&](sycl::handler &cgh) {
+        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+            auto handle = sc.get_handle(queue);
+            cusolverStatus_t err;
 
-                CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, nullptr, lda,
-                                      scratch_size);
-            });
-        })
-        .wait();
+            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, nullptr, lda, scratch_size);
+        });
+    });
+    e.wait();
 }
 
 #define GETRF_STRIDED_BATCH_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                       \
