@@ -48,10 +48,74 @@ extern std::vector<sycl::device *> devices;
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
-    // smoke test to make sure routine runs; there is no netlib reference
-    // routine to test against
+void omatadd_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
+                 oneapi::mkl::transpose transb, int64_t m, int64_t n,
+                 fp alpha, fp *A, int64_t lda, fp beta, fp *B, int64_t ldb, fp *C, int64_t ldc) {
+    int64_t logical_m, logical_n;
+    if (layout == oneapi::mkl::layout::column_major) {
+        logical_m = m;
+        logical_n = n;
+    }
+    else {
+        logical_m = n;
+        logical_n = m;
+    }
 
+    for (int64_t j = 0; j < logical_n; j++) {
+        for (int64_t i = 0; i < logical_m; i++) {
+            C[j*ldc + i] = 0.0;
+        }
+    }
+
+    if (transa == oneapi::mkl::transpose::nontrans) {
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                C[j*ldc + i] += alpha * A[j*lda + i];
+            }
+        }
+    }
+    else if (transa == oneapi::mkl::transpose::trans) {
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                C[j*ldc + i] += alpha * A[i*lda + j];
+            }
+        }
+    }
+    else {        
+        // conjtrans
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                C[j*ldc + i] += alpha * sametype_conj(A[i*lda + j]);
+            }
+        }
+    }
+
+    if (transb == oneapi::mkl::transpose::nontrans) {
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                C[j*ldc + i] += beta * B[j*ldb + i];
+            }
+        }
+    }
+    else if (transa == oneapi::mkl::transpose::trans) {
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                C[j*ldc + i] += beta * B[i*ldb + j];
+            }
+        }
+    }
+    else {        
+        // conjtrans
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                C[j*ldc + i] += beta * sametype_conj(B[i*ldb + j]);
+            }
+        }
+    }
+}
+
+template <typename fp>
+int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -121,21 +185,24 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     }
 
     auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, *dev);
-    vector<fp, decltype(ua)> A(ua), B(ua), C(ua);
+    vector<fp, decltype(ua)> A(ua), B(ua), C(ua), C_ref(ua);
 
     A.resize(stride_a * batch_size);
     B.resize(stride_b * batch_size);
     C.resize(stride_c * batch_size);
+    C_ref.resize(stride_c * batch_size);
 
     fp **a_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, *dev, cxt);
     fp **b_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, *dev, cxt);
     fp **c_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, *dev, cxt);
+    fp **c_ref_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, *dev, cxt);
 
-    if ((a_array == NULL) || (b_array == NULL) || (c_array == NULL)) {
+    if ((a_array == NULL) || (b_array == NULL) || (c_array == NULL) || (c_ref_array == NULL)) {
         std::cout << "Error cannot allocate arrays of pointers\n";
         oneapi::mkl::free_shared(a_array, cxt);
         oneapi::mkl::free_shared(b_array, cxt);
         oneapi::mkl::free_shared(c_array, cxt);
+        oneapi::mkl::free_shared(c_ref_array, cxt);
         return false;
     }
 
@@ -143,6 +210,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         a_array[i] = &A[i * stride_a];
         b_array[i] = &B[i * stride_b];
         c_array[i] = &C[i * stride_c];
+        c_ref_array[i] = &C_ref[i * stride_c];
     }
 
     rand_matrix(A, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
@@ -151,9 +219,22 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
                 stride_b * batch_size, 1, stride_b * batch_size);
     rand_matrix(C, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
                 stride_c * batch_size, 1, stride_c * batch_size);
+    copy_matrix(C, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+                stride_c * batch_size, 1, stride_c * batch_size, C_ref);
+
+    // Call reference OMATADD_BATCH_STRIDE.
+    int m_ref = (int)m;
+    int n_ref = (int)n;
+    int lda_ref = (int)lda;
+    int ldb_ref = (int)ldb;
+    int ldc_ref = (int)ldc;
+    int batch_size_ref = (int)batch_size;
+    for (i = 0; i < batch_size_ref; i++) {
+        omatadd_ref(layout, transa, transb, m_ref, n_ref, alpha, a_array[i],
+                    lda_ref, beta, b_array[i], ldb_ref, c_ref_array[i], ldc_ref);
+    }
 
     // Call DPC++ OMATADD_BATCH_STRIDE
-
     try {
 #ifdef CALL_RT_API
         switch (layout) {
@@ -197,6 +278,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         oneapi::mkl::free_shared(a_array, cxt);
         oneapi::mkl::free_shared(b_array, cxt);
         oneapi::mkl::free_shared(c_array, cxt);
+        oneapi::mkl::free_shared(c_ref_array, cxt);
         return test_skipped;
     }
 
@@ -205,11 +287,17 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
                   << error.what() << std::endl;
     }
 
+    // Compare the results of reference implementation and DPC++ implementation.
+    bool good =
+        check_equal_matrix(C, C_ref, oneapi::mkl::layout::column_major, stride_c * batch_size, 1,
+                           stride_c * batch_size, 10, std::cout);
+
     oneapi::mkl::free_shared(a_array, cxt);
     oneapi::mkl::free_shared(b_array, cxt);
     oneapi::mkl::free_shared(c_array, cxt);
+    oneapi::mkl::free_shared(c_ref_array, cxt);
 
-    return 1;
+    return (int)good;
 }
 
 class OmataddBatchStrideUsmTests

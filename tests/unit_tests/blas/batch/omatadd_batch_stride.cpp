@@ -48,12 +48,74 @@ extern std::vector<sycl::device *> devices;
 namespace {
 
 template <typename fp>
+void omatadd_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
+                 oneapi::mkl::transpose transb, int64_t m, int64_t n,
+                 fp alpha, fp *A, int64_t lda, fp beta, fp *B, int64_t ldb, fp *C, int64_t ldc) {
+    int64_t logical_m, logical_n;
+    if (layout == oneapi::mkl::layout::column_major) {
+        logical_m = m;
+        logical_n = n;
+    }
+    else {
+        logical_m = n;
+        logical_n = m;
+    }
+
+    for (int64_t j = 0; j < logical_n; j++) {
+        for (int64_t i = 0; i < logical_m; i++) {
+            C[j*ldc + i] = 0.0;
+        }
+    }
+
+    if (transa == oneapi::mkl::transpose::nontrans) {
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                C[j*ldc + i] += alpha * A[j*lda + i];
+            }
+        }
+    }
+    else if (transa == oneapi::mkl::transpose::trans) {
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                C[j*ldc + i] += alpha * A[i*lda + j];
+            }
+        }
+    }
+    else {        
+        // conjtrans
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                C[j*ldc + i] += alpha * sametype_conj(A[i*lda + j]);
+            }
+        }
+    }
+
+    if (transb == oneapi::mkl::transpose::nontrans) {
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                C[j*ldc + i] += beta * B[j*ldb + i];
+            }
+        }
+    }
+    else if (transa == oneapi::mkl::transpose::trans) {
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                C[j*ldc + i] += beta * B[i*ldb + j];
+            }
+        }
+    }
+    else {        
+        // conjtrans
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                C[j*ldc + i] += beta * sametype_conj(B[i*ldb + j]);
+            }
+        }
+    }
+}
+
+template <typename fp>
 int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
-    // smoke test to make sure routine runs; there is no netlib reference
-    // routine to test against
-
-    std::cout << "A\n";
-
     // Prepare data.
     int64_t m, n;
     int64_t lda, ldb, ldc;
@@ -104,12 +166,29 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     }
 
     vector<fp, allocator_helper<fp, 64>> A(stride_a * batch_size), B(stride_b * batch_size),
-        C(stride_c * batch_size);
+        C(stride_c * batch_size), C_ref(stride_c * batch_size);
 
-    for (i = 0; i < batch_size; i++) {
-        rand_matrix(A.data() + stride_a * i, layout, transa, m, n, lda);
-        rand_matrix(B.data() + stride_b * i, layout, transb, m, n, ldb);
-        rand_matrix(C.data() + stride_c * i, layout, oneapi::mkl::transpose::nontrans, m, n, ldc);
+    rand_matrix(A.data(), oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+                stride_a * batch_size, 1, stride_a * batch_size);
+    rand_matrix(B.data(), oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+                stride_b * batch_size, 1, stride_b * batch_size);
+    rand_matrix(C.data(), oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+                stride_c * batch_size, 1, stride_c * batch_size);
+    copy_matrix(C.data(), oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+                stride_c * batch_size, 1, stride_c * batch_size, C_ref.data());
+
+
+    // Call reference OMATADD_BATCH_STRIDE.
+    int m_ref = (int)m;
+    int n_ref = (int)n;
+    int lda_ref = (int)lda;
+    int ldb_ref = (int)ldb;
+    int ldc_ref = (int)ldc;
+    int batch_size_ref = (int)batch_size;
+    for (i = 0; i < batch_size_ref; i++) {
+        omatadd_ref(layout, transa, transb, m_ref, n_ref, alpha, A.data() + stride_a * i,
+                    lda_ref, beta, B.data() + stride_b * i, ldb_ref,
+                    C_ref.data() + stride_c * i, ldc_ref);
     }
 
     // Call DPC++ OMATADD_BATCH_STRIDE
@@ -180,7 +259,14 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
                   << error.what() << std::endl;
     }
 
-    return 1;
+    // Compare the results of reference implementation and DPC++ implementation.
+
+    auto C_accessor = C_buffer.template get_access<access::mode::read>();
+    bool good =
+        check_equal_matrix(C_accessor, C_ref, oneapi::mkl::layout::column_major,
+                           stride_c * batch_size, 1, stride_c * batch_size, 10, std::cout);
+
+    return (int)good;
 }
 
 class OmataddBatchStrideTests
