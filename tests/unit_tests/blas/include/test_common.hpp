@@ -65,6 +65,18 @@ constexpr int num_components() {
     return is_complex<T>() ? 2 : 1;
 }
 
+// std::conj can take a real type as input, but still returns a complex type.
+// This version always returns the same type it has as input
+template <typename fp>
+fp sametype_conj(fp x) {
+    if constexpr (is_complex<fp>()) {
+        return std::conj(x);
+    }
+    else {
+        return x;
+    }
+}
+
 // Matrix helpers.
 template <typename T>
 constexpr T inner_dimension(oneapi::mkl::transpose trans, T m, T n) {

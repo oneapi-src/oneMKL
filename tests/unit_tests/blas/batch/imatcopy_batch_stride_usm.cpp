@@ -48,10 +48,61 @@ extern std::vector<sycl::device *> devices;
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
-    // smoke test to make sure routine runs; there is no netlib reference
-    // routine to test against
+void imatcopy_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int64_t m, int64_t n,
+                  fp alpha, fp *A, int64_t lda, int64_t ldb) {
+    int64_t logical_m, logical_n;
+    if (layout == oneapi::mkl::layout::column_major) {
+        logical_m = m;
+        logical_n = n;
+    }
+    else {
+        logical_m = n;
+        logical_n = m;
+    }
+    std::vector<fp> temp(m * n);
+    int64_t ld_temp = (trans == oneapi::mkl::transpose::nontrans ? logical_m : logical_n);
 
+    if (trans == oneapi::mkl::transpose::nontrans) {
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                temp[j*ld_temp + i] = alpha * A[j*lda + i];
+            }
+        }
+    }
+    else if (trans == oneapi::mkl::transpose::trans) {
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                temp[i*ld_temp + j] = alpha * A[j*lda + i];
+            }
+        }
+    }
+    else {        
+        // conjtrans
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                temp[i*ld_temp + j] = alpha * sametype_conj(A[j*lda + i]);
+            }
+        }
+    }
+
+    if (trans == oneapi::mkl::transpose::nontrans) {
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                A[j*ldb + i] = temp[j*ld_temp + i];
+            }
+        }
+    }
+    else {
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                A[i*ldb + j] = temp[i*ld_temp + j];
+            }
+        }
+    }
+}
+
+template <typename fp>
+int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -112,25 +163,41 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     }
 
     auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, *dev);
-    vector<fp, decltype(ua)> AB(ua);
+    vector<fp, decltype(ua)> AB(ua), AB_ref(ua);
 
     AB.resize(stride * batch_size);
+    AB_ref.resize(stride * batch_size);
     fp **ab_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, *dev, cxt);
-    if (ab_array == NULL) {
+    fp **ab_ref_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, *dev, cxt);
+    if ((ab_array == NULL) || (ab_ref_array == NULL)) {
         std::cout << "Error cannot allocate arrays of pointers\n";
         oneapi::mkl::free_shared(ab_array, cxt);
+        oneapi::mkl::free_shared(ab_ref_array, cxt);
         return false;
     }
 
     for (i = 0; i < batch_size; i++) {
         ab_array[i] = &AB[i * stride];
+        ab_ref_array[i] = &AB_ref[i * stride];
     }
 
     rand_matrix(AB, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
                 stride * batch_size, 1, stride * batch_size);
+    copy_matrix(AB, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+                stride * batch_size, 1, stride * batch_size, AB_ref);
+
+    // Call reference IMATCOPY_BATCH_STRIDE.
+    int m_ref = (int)m;
+    int n_ref = (int)n;
+    int lda_ref = (int)lda;
+    int ldb_ref = (int)ldb;
+    int batch_size_ref = (int)batch_size;
+    for (i = 0; i < batch_size_ref; i++) {
+        imatcopy_ref(layout, trans, m_ref, n_ref, alpha, ab_ref_array[i],
+                     lda_ref, ldb_ref);
+    }
 
     // Call DPC++ IMATCOPY_BATCH_STRIDE
-
     try {
 #ifdef CALL_RT_API
         switch (layout) {
@@ -171,6 +238,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
 
     catch (const oneapi::mkl::unimplemented &e) {
         oneapi::mkl::free_shared(ab_array, cxt);
+        oneapi::mkl::free_shared(ab_ref_array, cxt);
         return test_skipped;
     }
 
@@ -179,9 +247,15 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
                   << error.what() << std::endl;
     }
 
-    oneapi::mkl::free_shared(ab_array, cxt);
+    // Compare the results of reference implementation and DPC++ implementation.
+    bool good =
+        check_equal_matrix(AB, AB_ref, oneapi::mkl::layout::column_major, stride * batch_size, 1,
+                           stride * batch_size, 10, std::cout);
 
-    return 1;
+    oneapi::mkl::free_shared(ab_array, cxt);
+    oneapi::mkl::free_shared(ab_ref_array, cxt);
+
+    return (int)good;
 }
 
 class ImatcopyBatchStrideUsmTests

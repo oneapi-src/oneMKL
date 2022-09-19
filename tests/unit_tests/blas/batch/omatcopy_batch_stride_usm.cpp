@@ -49,17 +49,6 @@ extern std::vector<sycl::device *> devices;
 namespace {
 
 template <typename fp>
-fp simple_conj(fp x) {
-    if constexpr (std::is_same_v<fp, std::complex<float>> ||
-                  std::is_same_v<fp, std::complex<double>>) {
-        return std::conj(x);
-    }
-    else {
-        return x;
-    }
-}
-
-template <typename fp>
 void omatcopy_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int64_t m, int64_t n,
                   fp alpha, fp *A, int64_t lda, fp *B, int64_t ldb) {
     int64_t logical_m, logical_n;
@@ -72,24 +61,24 @@ void omatcopy_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int6
         logical_n = m;
     }
     if (trans == oneapi::mkl::transpose::nontrans) {
-        for (int64_t j = 0; j < logical_m; j++) {
-            for (int64_t i = 0; i < logical_n; i++) {
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
                 B[j*ldb + i] = alpha * A[j*lda + i];
             }
         }
     }
     else if (trans == oneapi::mkl::transpose::trans) {
-        for (int64_t j = 0; j < logical_m; j++) {
-            for (int64_t i = 0; i < logical_n; i++) {
-                B[j*ldb + i] = alpha * A[i*lda + j];
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                B[i*ldb + j] = alpha * A[j*lda + i];
             }
         }
     }
     else {        
         // conjtrans
-        for (int64_t j = 0; j < logical_m; j++) {
-            for (int64_t i = 0; i < logical_n; i++) {
-                B[j*ldb + i] = alpha * simple_conj(A[i*lda + j]);
+        for (int64_t j = 0; j < logical_n; j++) {
+            for (int64_t i = 0; i < logical_m; i++) {
+                B[i*ldb + j] = alpha * sametype_conj(A[j*lda + i]);
             }
         }
     }
@@ -259,7 +248,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     oneapi::mkl::free_shared(b_array, cxt);
     oneapi::mkl::free_shared(b_ref_array, cxt);
 
-     return (int)good;
+    return (int)good;
 }
 
 class OmatcopyBatchStrideUsmTests
