@@ -48,10 +48,54 @@ extern std::vector<sycl::device *> devices;
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
-    // smoke test to make sure routine runs; there is no netlib reference
-    // routine to test against
+fp simple_conj(fp x) {
+    if constexpr (std::is_same_v<fp, std::complex<float>> ||
+                  std::is_same_v<fp, std::complex<double>>) {
+        return std::conj(x);
+    }
+    else {
+        return x;
+    }
+}
 
+template <typename fp>
+void omatcopy_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int64_t m, int64_t n,
+                  fp alpha, fp *A, int64_t lda, fp *B, int64_t ldb) {
+    int64_t logical_m, logical_n;
+    if (layout == oneapi::mkl::layout::column_major) {
+        logical_m = m;
+        logical_n = n;
+    }
+    else {
+        logical_m = n;
+        logical_n = m;
+    }
+    if (trans == oneapi::mkl::transpose::nontrans) {
+        for (int64_t j = 0; j < logical_m; j++) {
+            for (int64_t i = 0; i < logical_n; i++) {
+                B[j*ldb + i] = alpha * A[j*lda + i];
+            }
+        }
+    }
+    else if (trans == oneapi::mkl::transpose::trans) {
+        for (int64_t j = 0; j < logical_m; j++) {
+            for (int64_t i = 0; i < logical_n; i++) {
+                B[j*ldb + i] = alpha * A[i*lda + j];
+            }
+        }
+    }
+    else {        
+        // conjtrans
+        for (int64_t j = 0; j < logical_m; j++) {
+            for (int64_t i = 0; i < logical_n; i++) {
+                B[j*ldb + i] = alpha * simple_conj(A[i*lda + j]);
+            }
+        }
+    }
+}
+
+template <typename fp>
+int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     // Prepare data.
     int64_t m, n;
     int64_t lda, ldb;
@@ -91,11 +135,23 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         default: break;
     }
 
-    vector<fp, allocator_helper<fp, 64>> A(stride_a * batch_size), B(stride_b * batch_size);
+    vector<fp, allocator_helper<fp, 64>> A(stride_a * batch_size), B(stride_b * batch_size),
+        B_ref(stride_b * batch_size);
 
     for (i = 0; i < batch_size; i++) {
         rand_matrix(A.data() + stride_a * i, layout, oneapi::mkl::transpose::nontrans, m, n, lda);
         rand_matrix(B.data() + stride_b * i, layout, trans, m, n, ldb);
+    }
+
+    // Call reference OMATCOPY_BATCH_STRIDE.
+    int m_ref = (int)m;
+    int n_ref = (int)n;
+    int lda_ref = (int)lda;
+    int ldb_ref = (int)ldb;
+    int batch_size_ref = (int)batch_size;
+    for (i = 0; i < batch_size_ref; i++) {
+        omatcopy_ref(layout, trans, m_ref, n_ref, alpha, A.data() + stride_a * i,
+                     lda_ref, B_ref.data() + stride_b * i, ldb_ref);
     }
 
     // Call DPC++ OMATCOPY_BATCH_STRIDE
@@ -165,7 +221,14 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
                   << error.what() << std::endl;
     }
 
-    return 1;
+    // Compare the results of reference implementation and DPC++ implementation.
+
+    auto B_accessor = B_buffer.template get_access<access::mode::read>();
+    bool good =
+        check_equal_matrix(B_accessor, B_ref, oneapi::mkl::layout::column_major,
+                           stride_b * batch_size, 1, stride_b * batch_size, 10, std::cout);
+
+    return (int)good;
 }
 
 class OmatcopyBatchStrideTests

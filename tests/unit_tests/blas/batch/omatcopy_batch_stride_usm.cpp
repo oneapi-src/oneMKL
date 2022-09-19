@@ -187,7 +187,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     copy_matrix(B, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
                 stride_b * batch_size, 1, stride_b * batch_size, B_ref);
 
-    // Call reference GEMM_BATCH_STRIDE.
+    // Call reference OMATCOPY_BATCH_STRIDE.
     int m_ref = (int)m;
     int n_ref = (int)n;
     int lda_ref = (int)lda;
