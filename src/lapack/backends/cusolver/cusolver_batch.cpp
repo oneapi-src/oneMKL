@@ -344,8 +344,10 @@ inline void potrs_batch(const char *func_name, Func func, sycl::queue &queue,
     overflow_check(n, nrhs, lda, ldb, stride_a, stride_b, batch_size, scratchpad_size);
 
     // cuSolver function only supports nrhs = 1
+#ifndef POTRS_BATCHED_MULTIPLE_NRHS_SUPPORTED
     if (nrhs != 1)
         throw unimplemented("lapack", "potrs_batch", "cusolver potrs_batch only supports nrhs = 1");
+#endif
 
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
@@ -604,7 +606,7 @@ inline sycl::event getrf_batch(const char *func_name, Func func, sycl::queue &qu
     // Enqueue free memory, don't return event as not-neccessary for user to wait for ipiv32 being released
     queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(done_casting);
-        cgh.host_task([&](sycl::interop_handle ih) { sycl::free(ipiv32, queue); });
+        cgh.host_task([=](sycl::interop_handle ih) { sycl::free(ipiv32, queue); });
     });
 
     // lapack_info_check calls queue.wait()
@@ -705,7 +707,7 @@ inline sycl::event getrf_batch(const char *func_name, Func func, sycl::queue &qu
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(casting_dependencies[i]);
         }
-        cgh.host_task([&](sycl::interop_handle ih) {
+        cgh.host_task([=](sycl::interop_handle ih) {
             for (int64_t global_id = 0; global_id < batch_size; ++global_id)
                 sycl::free(ipiv32[global_id], queue);
             free(ipiv32);
@@ -1195,8 +1197,10 @@ inline sycl::event potrs_batch(const char *func_name, Func func, sycl::queue &qu
     overflow_check(n, nrhs, lda, ldb, stride_a, stride_b, batch_size, scratchpad_size);
 
     // cuSolver function only supports nrhs = 1
+#ifndef POTRS_BATCHED_MULTIPLE_NRHS_SUPPORTED
     if (nrhs != 1)
         throw unimplemented("lapack", "potrs_batch", "cusolver potrs_batch only supports nrhs = 1");
+#endif
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
