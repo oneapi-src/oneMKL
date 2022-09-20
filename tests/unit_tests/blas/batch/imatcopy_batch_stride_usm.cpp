@@ -48,60 +48,6 @@ extern std::vector<sycl::device *> devices;
 namespace {
 
 template <typename fp>
-void imatcopy_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int64_t m, int64_t n,
-                  fp alpha, fp *A, int64_t lda, int64_t ldb) {
-    int64_t logical_m, logical_n;
-    if (layout == oneapi::mkl::layout::column_major) {
-        logical_m = m;
-        logical_n = n;
-    }
-    else {
-        logical_m = n;
-        logical_n = m;
-    }
-    std::vector<fp> temp(m * n);
-    int64_t ld_temp = (trans == oneapi::mkl::transpose::nontrans ? logical_m : logical_n);
-
-    if (trans == oneapi::mkl::transpose::nontrans) {
-        for (int64_t j = 0; j < logical_n; j++) {
-            for (int64_t i = 0; i < logical_m; i++) {
-                temp[j*ld_temp + i] = alpha * A[j*lda + i];
-            }
-        }
-    }
-    else if (trans == oneapi::mkl::transpose::trans) {
-        for (int64_t j = 0; j < logical_n; j++) {
-            for (int64_t i = 0; i < logical_m; i++) {
-                temp[i*ld_temp + j] = alpha * A[j*lda + i];
-            }
-        }
-    }
-    else {        
-        // conjtrans
-        for (int64_t j = 0; j < logical_n; j++) {
-            for (int64_t i = 0; i < logical_m; i++) {
-                temp[i*ld_temp + j] = alpha * sametype_conj(A[j*lda + i]);
-            }
-        }
-    }
-
-    if (trans == oneapi::mkl::transpose::nontrans) {
-        for (int64_t j = 0; j < logical_n; j++) {
-            for (int64_t i = 0; i < logical_m; i++) {
-                A[j*ldb + i] = temp[j*ld_temp + i];
-            }
-        }
-    }
-    else {
-        for (int64_t j = 0; j < logical_n; j++) {
-            for (int64_t i = 0; i < logical_m; i++) {
-                A[i*ldb + j] = temp[i*ld_temp + j];
-            }
-        }
-    }
-}
-
-template <typename fp>
 int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
