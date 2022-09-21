@@ -60,4 +60,4 @@ struct rocblas_handle_ {
 } // namespace mkl
 } // namespace oneapi
 
-#endif // _ROCBLAS_HANDLE_HPP
+#endif // _ROCBLAS_HANDLE_HPP_

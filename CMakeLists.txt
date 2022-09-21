@@ -55,6 +55,7 @@ option(ENABLE_CURAND_BACKEND "" OFF)
 option(ENABLE_ROCRAND_BACKEND "" OFF)
 option(ENABLE_NETLIB_BACKEND "" OFF)
 set(ONEMKL_SYCL_IMPLEMENTATION "dpc++" CACHE STRING "Name of the SYCL compiler")
+set(HIP_TARGETS "gfx90a" CACHE STRING "Target HIP architectures")
 
 ## Testing
 option(BUILD_FUNCTIONAL_TESTS "" ON)

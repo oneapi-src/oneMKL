@@ -382,6 +382,30 @@ With:
    -DENABLE_ROCRAND_BACKEND=True   \
    -DTARGET_DOMAINS=rng
 
+Building for ROCm (with clang++)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+With the AMD rocBLAS backend:
+
+
+* On Linux*
+
+.. code-block:: bash
+
+   # Inside <path to onemkl>
+   mkdir build && cd build
+   cmake .. [-DCMAKE_CXX_COMPILER=<path_to_clang++_compiler>/bin/clang++]  # required only if clang++ is not found in environment variable PATH
+            [-DCMAKE_C_COMPILER=<path_to_clang_compiler>/bin/clang]        # required only if clang is not found in environment variable PATH
+            -DENABLE_CUBLAS_BACKEND=False                                \
+            -DENABLE_MKLCPU_BACKEND=False                                \ # disable Intel MKL CPU backend
+            -DENABLE_MKLGPU_BACKEND=False                                \ # disable Intel MKL GPU backend
+            -DENABLE_ROCBLAS_BACKEND=True                                \
+            -DHIP_TARGETS=gfx90a                                         \ # Specify the targetted device architectures
+            [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]              # required only for testing
+   cmake --build .
+   ctest
+   cmake --install . --prefix <path_to_install_dir>
+
 **AMD GPU device architectures**  
 
 The device architecture can be retrieved via the ``rocminfo`` tool. The architecture will be displayed in the ``Name:`` row.
@@ -488,6 +512,12 @@ CMake.
 .. note::
   When building with hipSYCL, you must additionally provide
   ``-DHIPSYCL_TARGETS`` according to the targeted hardware. For the options,
+  see the tables in the hipSYCL-specific sections.
+
+
+.. note::
+  When building with clang++ for AMD backends, you must additionally provide
+  ``-DHIP_TARGETS`` according to the targeted hardware. For the options,
   see the tables in the hipSYCL-specific sections.
 
 .. _project_cleanup:
