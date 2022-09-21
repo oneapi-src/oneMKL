@@ -53,7 +53,7 @@ static inline void host_task_internal(H &cgh, sycl::queue queue, F f) {
     });
 }
 #else
-static inline void stream_wait(sycl::queue queue) {
+static inline void stream_wait(const sycl::queue &queue) {
     hipStream_t stream = sycl::get_native<sycl::backend::hip>(queue);
     hipStreamSynchronize(stream);
 }
