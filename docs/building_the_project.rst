@@ -520,7 +520,7 @@ CMake.
   When building with clang++ for AMD backends, you must additionally set
   ``SYCL_DEVICE_FILTER`` to ``HIP`` and provide ``-DHIP_TARGETS`` according to
   the targeted hardware. This backend has only been tested for the ``gfx90a``
-  architecture at the time of writing.
+  architecture (MI210) at the time of writing.
 
 .. _project_cleanup:
 

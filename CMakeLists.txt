@@ -153,7 +153,7 @@ if(WIN32 AND ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++")
   set(CMAKE_CXX_CREATE_SHARED_LIBRARY "<CMAKE_CXX_COMPILER> -fsycl -fsycl-device-code-split=per_kernel /nologo <OBJECTS> ${MKL_SYCL_LIB} /link /out:<TARGET> /implib:<TARGET_IMPLIB> /pdb:<TARGET_PDB> /dll /version:<TARGET_VERSION_MAJOR>.<TARGET_VERSION_MINOR> <LINK_FLAGS> <LINK_LIBRARIES>")
 endif()
 
-# Temporary disable sycl 2020 deprecations warnings for cuBLAS, rocBLAS and cuSOLVER
+# Temporary disable sycl 2020 deprecations warnings for cuBLAS and cuSOLVER
 if(ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++" AND (ENABLE_CUBLAS_BACKEND OR ENABLE_CUSOLVER_BACKEND))
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSYCL2020_DISABLE_DEPRECATION_WARNINGS")
 endif()
