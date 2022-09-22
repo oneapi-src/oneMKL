@@ -162,6 +162,16 @@ public:
         throw rocblas_error(std::string(#name) + std::string(" : "), err); \
     }
 
+#define ROCBLAS_ERROR_FUNC_SYNC(name, err, handle, ...)                    \
+    err = name(handle, __VA_ARGS__);                                       \
+    if (err != rocblas_status_success) {                                   \
+        throw rocblas_error(std::string(#name) + std::string(" : "), err); \
+    }                                                                      \
+    hipStream_t currentStreamId;                                           \
+    ROCBLAS_ERROR_FUNC(rocblas_get_stream, err, handle, &currentStreamId); \
+    hipError_t hip_err;                                                    \
+    HIP_ERROR_FUNC(hipStreamSynchronize, hip_err, currentStreamId);
+
 inline rocblas_operation get_rocblas_operation(oneapi::mkl::transpose trn) {
     switch (trn) {
         case oneapi::mkl::transpose::nontrans: return rocblas_operation_none;

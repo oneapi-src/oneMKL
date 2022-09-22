@@ -162,10 +162,10 @@ inline void gemm_batch(Func func, sycl::queue &queue, transpose transa, transpos
             auto b_ = sc.get_mem<rocDataType *>(b_acc);
             auto c_ = sc.get_mem<rocDataType *>(c_acc);
             rocblas_status err;
-            ROCBLAS_ERROR_FUNC(func, err, handle, get_rocblas_operation(transa),
-                               get_rocblas_operation(transb), m, n, k, (rocDataType *)&alpha, a_,
-                               lda, stride_a, b_, ldb, stride_b, (rocDataType *)&beta, c_, ldc,
-                               stride_c, batch_size);
+            ROCBLAS_ERROR_FUNC_SYNC(func, err, handle, get_rocblas_operation(transa),
+                                    get_rocblas_operation(transb), m, n, k, (rocDataType *)&alpha,
+                                    a_, lda, stride_a, b_, ldb, stride_b, (rocDataType *)&beta, c_,
+                                    ldc, stride_c, batch_size);
         });
     });
 }
@@ -569,10 +569,10 @@ inline sycl::event gemm_batch(Func func, sycl::queue &queue, transpose transa, t
             auto b_ = reinterpret_cast<const rocDataType *>(b);
             auto c_ = reinterpret_cast<rocDataType *>(c);
             rocblas_status err;
-            ROCBLAS_ERROR_FUNC(func, err, handle, get_rocblas_operation(transa),
-                               get_rocblas_operation(transb), m, n, k, (rocDataType *)&alpha, a_,
-                               lda, stride_a, b_, ldb, stride_b, (rocDataType *)&beta, c_, ldc,
-                               stride_c, batch_size);
+            ROCBLAS_ERROR_FUNC_SYNC(func, err, handle, get_rocblas_operation(transa),
+                                    get_rocblas_operation(transb), m, n, k, (rocDataType *)&alpha,
+                                    a_, lda, stride_a, b_, ldb, stride_b, (rocDataType *)&beta, c_,
+                                    ldc, stride_c, batch_size);
         });
     });
     return done;
@@ -621,11 +621,11 @@ inline sycl::event gemm_batch(Func func, sycl::queue &queue, transpose *transa, 
                 auto **a_ = reinterpret_cast<const rocDataType **>(a);
                 auto **b_ = reinterpret_cast<const rocDataType **>(b);
                 auto **c_ = reinterpret_cast<rocDataType **>(c);
-                ROCBLAS_ERROR_FUNC(func, err, handle, get_rocblas_operation(transa[i]),
-                                   get_rocblas_operation(transb[i]), (int)m[i], (int)n[i],
-                                   (int)k[i], (rocDataType *)&alpha[i], a_ + offset, (int)lda[i],
-                                   b_ + offset, (int)ldb[i], (rocDataType *)&beta[i], c_ + offset,
-                                   (int)ldc[i], (int)group_size[i]);
+                ROCBLAS_ERROR_FUNC_SYNC(
+                    func, err, handle, get_rocblas_operation(transa[i]),
+                    get_rocblas_operation(transb[i]), (int)m[i], (int)n[i], (int)k[i],
+                    (rocDataType *)&alpha[i], a_ + offset, (int)lda[i], b_ + offset, (int)ldb[i],
+                    (rocDataType *)&beta[i], c_ + offset, (int)ldc[i], (int)group_size[i]);
                 offset += group_size[i];
             }
         });
@@ -702,12 +702,12 @@ inline sycl::event trsm_batch(Func func, sycl::queue &queue, side *left_right, u
             for (int64_t i = 0; i < group_count; i++) {
                 auto **a_ = reinterpret_cast<const rocDataType **>(a);
                 auto **b_ = reinterpret_cast<rocDataType **>(b);
-                ROCBLAS_ERROR_FUNC(func, err, handle, get_rocblas_side_mode(left_right[i]),
-                                   get_rocblas_fill_mode(upper_lower[i]),
-                                   get_rocblas_operation(trans[i]),
-                                   get_rocblas_diag_type(unit_diag[i]), (int)m[i], (int)n[i],
-                                   (rocDataType *)&alpha[i], a_ + offset, (int)lda[i], b_ + offset,
-                                   (int)ldb[i], (int)group_size[i]);
+                ROCBLAS_ERROR_FUNC_SYNC(func, err, handle, get_rocblas_side_mode(left_right[i]),
+                                        get_rocblas_fill_mode(upper_lower[i]),
+                                        get_rocblas_operation(trans[i]),
+                                        get_rocblas_diag_type(unit_diag[i]), (int)m[i], (int)n[i],
+                                        (rocDataType *)&alpha[i], a_ + offset, (int)lda[i],
+                                        b_ + offset, (int)ldb[i], (int)group_size[i]);
                 offset += group_size[i];
             }
         });

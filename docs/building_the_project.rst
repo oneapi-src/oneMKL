@@ -403,6 +403,7 @@ With the AMD rocBLAS backend:
             -DHIP_TARGETS=gfx90a                                         \ # Specify the targetted device architectures
             [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]              # required only for testing
    cmake --build .
+   export SYCL_DEVICE_FILTER=HIP
    ctest
    cmake --install . --prefix <path_to_install_dir>
 
@@ -516,9 +517,10 @@ CMake.
 
 
 .. note::
-  When building with clang++ for AMD backends, you must additionally provide
-  ``-DHIP_TARGETS`` according to the targeted hardware. For the options,
-  see the tables in the hipSYCL-specific sections.
+  When building with clang++ for AMD backends, you must additionally set
+  ``SYCL_DEVICE_FILTER`` to ``HIP`` and provide ``-DHIP_TARGETS`` according to
+  the targeted hardware. This backend has only been tested for the ``gfx90a``
+  architecture at the time of writing.
 
 .. _project_cleanup:
 
