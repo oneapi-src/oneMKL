@@ -344,10 +344,8 @@ inline void potrs_batch(const char *func_name, Func func, sycl::queue &queue,
     overflow_check(n, nrhs, lda, ldb, stride_a, stride_b, batch_size, scratchpad_size);
 
     // cuSolver function only supports nrhs = 1
-#ifndef POTRS_BATCHED_MULTIPLE_NRHS_SUPPORTED
     if (nrhs != 1)
         throw unimplemented("lapack", "potrs_batch", "cusolver potrs_batch only supports nrhs = 1");
-#endif
 
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
@@ -1197,10 +1195,8 @@ inline sycl::event potrs_batch(const char *func_name, Func func, sycl::queue &qu
     overflow_check(n, nrhs, lda, ldb, stride_a, stride_b, batch_size, scratchpad_size);
 
     // cuSolver function only supports nrhs = 1
-#ifndef POTRS_BATCHED_MULTIPLE_NRHS_SUPPORTED
     if (nrhs != 1)
         throw unimplemented("lapack", "potrs_batch", "cusolver potrs_batch only supports nrhs = 1");
-#endif
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
