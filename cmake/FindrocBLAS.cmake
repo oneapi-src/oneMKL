@@ -34,13 +34,7 @@ list(APPEND CMAKE_PREFIX_PATH
 
 find_package(HIP QUIET)
 find_package(rocblas REQUIRED)
-get_filename_component(SYCL_BINARY_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
 
-find_path(OPENCL_INCLUDE_DIR CL/cl.h OpenCL/cl.h 
-HINTS 
-${OPENCL_INCLUDE_DIR}
-${SYCL_BINARY_DIR}/../include/sycl/
-)
 # this is work around to avoid duplication half creation in both HIP and SYCL
 add_compile_definitions(HIP_NO_HALF)
 
@@ -53,13 +47,13 @@ find_package_handle_standard_args(rocBLAS
       HIP_LIBRARIES
       ROCBLAS_INCLUDE_DIR
       ROCBLAS_LIBRARIES
-      OPENCL_INCLUDE_DIR
 )
+# OPENCL_INCLUDE_DIR
 if(NOT TARGET ONEMKL::rocBLAS::rocBLAS)
   add_library(ONEMKL::rocBLAS::rocBLAS SHARED IMPORTED)
   set_target_properties(ONEMKL::rocBLAS::rocBLAS PROPERTIES
       IMPORTED_LOCATION "${HIP_PATH}/../rocblas/lib/librocblas.so"
-      INTERFACE_INCLUDE_DIRECTORIES "${OPENCL_INCLUDE_DIR};${ROCBLAS_INCLUDE_DIR};${HIP_INCLUDE_DIRS};"
+      INTERFACE_INCLUDE_DIRECTORIES "${ROCBLAS_INCLUDE_DIR};${HIP_INCLUDE_DIRS};"
       INTERFACE_LINK_LIBRARIES "Threads::Threads;${ROCBLAS_LIBRARIES};"
   )
 
