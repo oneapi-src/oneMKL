@@ -114,8 +114,8 @@ public:
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
                 host_task(cgh, engine_, [=](sycl::interop_handle ih) {
-                    auto r_ptr =
-                        reinterpret_cast<float*>(ih.get_native_mem<sycl::backend::hip>(acc));
+                    auto r_ptr = reinterpret_cast<float*>(
+                        ih.get_native_mem<sycl::backend::ext_oneapi_hip>(acc));
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_uniform, status, engine_, r_ptr, n);
                 });
@@ -131,8 +131,8 @@ public:
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
                 host_task(cgh, engine_, [=](sycl::interop_handle ih) {
-                    auto r_ptr =
-                        reinterpret_cast<double*>(ih.get_native_mem<sycl::backend::hip>(acc));
+                    auto r_ptr = reinterpret_cast<double*>(
+                        ih.get_native_mem<sycl::backend::ext_oneapi_hip>(acc));
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_uniform_double, status, engine_, r_ptr, n);
                 });
@@ -150,7 +150,7 @@ public:
                 auto acc = ib.get_access<sycl::access::mode::read_write>(cgh);
                 host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                     auto ib_ptr = reinterpret_cast<std::uint32_t*>(
-                        ih.get_native_mem<sycl::backend::hip>(acc));
+                        ih.get_native_mem<sycl::backend::ext_oneapi_hip>(acc));
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate, status, engine_, ib_ptr, n);
                 });
@@ -166,8 +166,8 @@ public:
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
                 host_task(cgh, engine_, [=](sycl::interop_handle ih) {
-                    auto r_ptr =
-                        reinterpret_cast<float*>(ih.get_native_mem<sycl::backend::hip>(acc));
+                    auto r_ptr = reinterpret_cast<float*>(
+                        ih.get_native_mem<sycl::backend::ext_oneapi_hip>(acc));
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_uniform, status, engine_, r_ptr, n);
                 });
@@ -183,8 +183,8 @@ public:
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
                 host_task(cgh, engine_, [=](sycl::interop_handle ih) {
-                    auto r_ptr =
-                        reinterpret_cast<double*>(ih.get_native_mem<sycl::backend::hip>(acc));
+                    auto r_ptr = reinterpret_cast<double*>(
+                        ih.get_native_mem<sycl::backend::ext_oneapi_hip>(acc));
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_uniform_double, status, engine_, r_ptr, n);
                 });
@@ -200,8 +200,8 @@ public:
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
                 host_task(cgh, engine_, [=](sycl::interop_handle ih) {
-                    auto r_ptr =
-                        reinterpret_cast<float*>(ih.get_native_mem<sycl::backend::hip>(acc));
+                    auto r_ptr = reinterpret_cast<float*>(
+                        ih.get_native_mem<sycl::backend::ext_oneapi_hip>(acc));
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_normal, status, engine_, r_ptr, n, distr.mean(),
                                  distr.stddev());
@@ -217,8 +217,8 @@ public:
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
                 host_task(cgh, engine_, [=](sycl::interop_handle ih) {
-                    auto r_ptr =
-                        reinterpret_cast<double*>(ih.get_native_mem<sycl::backend::hip>(acc));
+                    auto r_ptr = reinterpret_cast<double*>(
+                        ih.get_native_mem<sycl::backend::ext_oneapi_hip>(acc));
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_normal_double, status, engine_, r_ptr, n,
                                  distr.mean(), distr.stddev());
@@ -250,8 +250,8 @@ public:
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
                 host_task(cgh, engine_, [=](sycl::interop_handle ih) {
-                    auto r_ptr =
-                        reinterpret_cast<float*>(ih.get_native_mem<sycl::backend::hip>(acc));
+                    auto r_ptr = reinterpret_cast<float*>(
+                        ih.get_native_mem<sycl::backend::ext_oneapi_hip>(acc));
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_log_normal, status, engine_, r_ptr, n, distr.m(),
                                  distr.s());
@@ -267,8 +267,8 @@ public:
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
                 host_task(cgh, engine_, [=](sycl::interop_handle ih) {
-                    auto r_ptr =
-                        reinterpret_cast<double*>(ih.get_native_mem<sycl::backend::hip>(acc));
+                    auto r_ptr = reinterpret_cast<double*>(
+                        ih.get_native_mem<sycl::backend::ext_oneapi_hip>(acc));
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_log_normal_double, status, engine_, r_ptr, n,
                                  distr.m(), distr.s());
@@ -328,7 +328,7 @@ public:
                 auto acc = r.template get_access<sycl::access::mode::read_write>(cgh);
                 host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                     auto r_ptr = reinterpret_cast<std::uint32_t*>(
-                        ih.get_native_mem<sycl::backend::hip>(acc));
+                        ih.get_native_mem<sycl::backend::ext_oneapi_hip>(acc));
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate, status, engine_, r_ptr, n);
                 });
