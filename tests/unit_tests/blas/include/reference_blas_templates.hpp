@@ -22,6 +22,7 @@
 
 #include <stdlib.h>
 #include <complex>
+#include <exception>
 #include "cblas.h"
 #include "test_helper.hpp"
 
@@ -48,13 +49,10 @@ static void (*zrotg_p)(void *a, void *b, const double *c, void *s);
 
 static LIB_TYPE cblas_library() {
     if (h == NULL) {
-#ifdef _WIN64
-        h = GET_LIB_HANDLE("libblas.dll");
-        if (h == NULL)
-            h = GET_LIB_HANDLE("blas.dll");
-#else
-        h = GET_LIB_HANDLE("libblas.so");
-#endif
+        h = GET_LIB_HANDLE(REF_BLAS_LIBNAME);
+        if(h == NULL){
+            throw std::runtime_error("CBLAS library not found.");
+        }
     }
     return h;
 }
