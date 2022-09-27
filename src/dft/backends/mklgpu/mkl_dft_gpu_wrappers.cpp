@@ -24,29 +24,27 @@
 
 extern "C" dft_function_table_t mkl_dft_table = {
     WRAPPER_VERSION,
-#define ONEAPI_MKL_DFT_BACKEND_SIGNATURES(EXT) \
-    oneapi::mkl::dft::mklgpu::commit_ ## EXT, \
-    oneapi::mkl::dft::mklgpu::compute_forward_buffer_inplace_ ## EXT, \
-    oneapi::mkl::dft::mklgpu::compute_forward_buffer_inplace_split_ ## EXT, \
-    oneapi::mkl::dft::mklgpu::compute_forward_buffer_outofplace_ ## EXT, \
-    oneapi::mkl::dft::mklgpu::compute_forward_buffer_outofplace_split_ ## EXT, \
-    oneapi::mkl::dft::mklgpu::compute_forward_usm_inplace_ ## EXT, \
-    oneapi::mkl::dft::mklgpu::compute_forward_usm_inplace_split_ ## EXT, \
-    oneapi::mkl::dft::mklgpu::compute_forward_usm_outofplace_ ## EXT, \
-    oneapi::mkl::dft::mklgpu::compute_forward_usm_outofplace_split_ ## EXT, \
-    oneapi::mkl::dft::mklgpu::compute_backward_buffer_inplace_ ## EXT, \
-    oneapi::mkl::dft::mklgpu::compute_backward_buffer_inplace_split_ ## EXT, \
-    oneapi::mkl::dft::mklgpu::compute_backward_buffer_outofplace_ ## EXT, \
-    oneapi::mkl::dft::mklgpu::compute_backward_buffer_outofplace_split_ ## EXT, \
-    oneapi::mkl::dft::mklgpu::compute_backward_usm_inplace_ ## EXT, \
-    oneapi::mkl::dft::mklgpu::compute_backward_usm_inplace_split_ ## EXT, \
-    oneapi::mkl::dft::mklgpu::compute_backward_usm_outofplace_ ## EXT, \
-    oneapi::mkl::dft::mklgpu::compute_backward_usm_outofplace_split_ ## EXT
+#define ONEAPI_MKL_DFT_BACKEND_SIGNATURES(EXT)                                    \
+    oneapi::mkl::dft::mklgpu::commit_##EXT,                                       \
+        oneapi::mkl::dft::mklgpu::compute_forward_buffer_inplace_##EXT,           \
+        oneapi::mkl::dft::mklgpu::compute_forward_buffer_inplace_split_##EXT,     \
+        oneapi::mkl::dft::mklgpu::compute_forward_buffer_outofplace_##EXT,        \
+        oneapi::mkl::dft::mklgpu::compute_forward_buffer_outofplace_split_##EXT,  \
+        oneapi::mkl::dft::mklgpu::compute_forward_usm_inplace_##EXT,              \
+        oneapi::mkl::dft::mklgpu::compute_forward_usm_inplace_split_##EXT,        \
+        oneapi::mkl::dft::mklgpu::compute_forward_usm_outofplace_##EXT,           \
+        oneapi::mkl::dft::mklgpu::compute_forward_usm_outofplace_split_##EXT,     \
+        oneapi::mkl::dft::mklgpu::compute_backward_buffer_inplace_##EXT,          \
+        oneapi::mkl::dft::mklgpu::compute_backward_buffer_inplace_split_##EXT,    \
+        oneapi::mkl::dft::mklgpu::compute_backward_buffer_outofplace_##EXT,       \
+        oneapi::mkl::dft::mklgpu::compute_backward_buffer_outofplace_split_##EXT, \
+        oneapi::mkl::dft::mklgpu::compute_backward_usm_inplace_##EXT,             \
+        oneapi::mkl::dft::mklgpu::compute_backward_usm_inplace_split_##EXT,       \
+        oneapi::mkl::dft::mklgpu::compute_backward_usm_outofplace_##EXT,          \
+        oneapi::mkl::dft::mklgpu::compute_backward_usm_outofplace_split_##EXT
 
-    ONEAPI_MKL_DFT_BACKEND_SIGNATURES(f),
-    ONEAPI_MKL_DFT_BACKEND_SIGNATURES(c),
-    ONEAPI_MKL_DFT_BACKEND_SIGNATURES(d),
-    ONEAPI_MKL_DFT_BACKEND_SIGNATURES(z)
+    ONEAPI_MKL_DFT_BACKEND_SIGNATURES(f), ONEAPI_MKL_DFT_BACKEND_SIGNATURES(c),
+    ONEAPI_MKL_DFT_BACKEND_SIGNATURES(d), ONEAPI_MKL_DFT_BACKEND_SIGNATURES(z)
 
 #undef ONEAPI_MKL_DFT_BACKEND_SIGNATURES
 };

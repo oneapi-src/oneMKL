@@ -46,6 +46,6 @@ void commit_z(descriptor<precision::DOUBLE, domain::COMPLEX> &desc, sycl::queue 
 }
 
 } // namespace mklgpu
+} // namespace dft
 } // namespace mkl
-} // namspace dft
 } // namespace oneapi

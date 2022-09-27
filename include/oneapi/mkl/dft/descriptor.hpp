@@ -30,27 +30,29 @@
 
 namespace oneapi::mkl::dft {
 
-   template <oneapi::mkl::dft::precision prec, oneapi::mkl::dft::domain dom>
-   class descriptor {
-    private:
-      sycl::queue queue_;
-    public:
-       // Syntax for 1-dimensional DFT
-       descriptor(std::int64_t length);
-       // Syntax for d-dimensional DFT
-       descriptor(std::vector<std::int64_t> dimensions);
+template <oneapi::mkl::dft::precision prec, oneapi::mkl::dft::domain dom>
+class descriptor {
+private:
+    sycl::queue queue_;
 
-       ~descriptor();
+public:
+    // Syntax for 1-dimensional DFT
+    descriptor(std::int64_t length);
+    // Syntax for d-dimensional DFT
+    descriptor(std::vector<std::int64_t> dimensions);
 
+    ~descriptor();
 
-       void set_value(config_param param, ...);
+    void set_value(config_param param, ...);
 
-       void get_value(config_param param, ...);
+    void get_value(config_param param, ...);
 
-       void commit(sycl::queue &queue);
+    void commit(sycl::queue& queue);
 
-       sycl::queue& get_queue(){return queue_; };
+    sycl::queue& get_queue() {
+        return queue_;
     };
-}
+};
+} // namespace oneapi::mkl::dft
 
 #endif // _ONEMKL_DFT_DESCRIPTOR_HPP_
