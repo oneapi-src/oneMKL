@@ -149,9 +149,11 @@ def strip_line(l):
     """Delete all tabs"""
     return re.sub(' +',' ', l3)
 
-def create_func_db(filename):
-    with open(filename, 'r') as f:
-        data = f.readlines()
+def create_func_db(filenames):
+    data=[]
+    for filename in filenames.split(":"):
+        with open(filename, 'r') as f:
+            data.extend(f.readlines())
     funcs_db = defaultdict(list)
     whole_line = ""
     idx = 0
@@ -170,6 +172,7 @@ def create_func_db(filename):
         else:
             stripped = whole_line.strip()
             whole_line = ""
+        print(stripped)
         parsed = parse_item(stripped)
         func_name, func_data = parsed[0], parsed[1:]
         funcs_db[func_name].append(to_dict(func_data))

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright 2020-2022 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -108,6 +108,76 @@ enum class order : char {
     B = 0,
     E = 1,
 };
+
+//DFT flag types
+namespace dft{
+enum class precision {
+   SINGLE,
+   DOUBLE
+};
+enum class domain {
+   REAL,
+   COMPLEX
+};
+enum class config_param {
+   FORWARD_DOMAIN,
+   DIMENSION,
+   LENGTHS,
+   PRECISION,
+
+   FORWARD_SCALE,
+   BACKWARD_SCALE,
+
+   NUMBER_OF_TRANSFORMS,
+
+   COMPLEX_STORAGE,
+   REAL_STORAGE,
+   CONJUGATE_EVEN_STORAGE,
+
+   PLACEMENT,
+
+   INPUT_STRIDES,
+   OUTPUT_STRIDES,
+
+   FWD_DISTANCE,
+   BWD_DISTANCE,
+
+   WORKSPACE,
+   ORDERING,
+   TRANSPOSE,
+   PACKED_FORMAT,
+   COMMIT_STATUS
+};
+enum class config_value {
+   // for config_param::COMMIT_STATUS
+   COMMITTED,
+   UNCOMMITTED,
+
+   // for config_param::COMPLEX_STORAGE,
+   //     config_param::REAL_STORAGE and
+   //     config_param::CONJUGATE_EVEN_STORAGE
+   COMPLEX_COMPLEX,
+   REAL_COMPLEX,
+   REAL_REAL,
+
+   // for config_param::PLACEMENT
+   INPLACE,
+   NOT_INPLACE,
+
+   // for config_param::ORDERING
+   ORDERED,
+   BACKWARD_SCRAMBLED,
+
+   // Allow/avoid certain usages
+   ALLOW,
+   AVOID,
+   NONE,
+
+   // for config_param::PACKED_FORMAT for storing conjugate-even finite sequence in real containers
+   CCE_FORMAT
+
+};
+}
 
 } //namespace mkl
 } //namespace oneapi

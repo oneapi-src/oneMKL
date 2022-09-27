@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright 2022 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,14 +17,11 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_HPP_
-#define _ONEMKL_HPP_
+#ifndef _ONEMKL_DFT_HPP_
+#define _ONEMKL_DFT_HPP_
 
-#include "oneapi/mkl/types.hpp"
+#include "oneapi/mkl/dft/descriptor.hpp"
+#include "oneapi/mkl/dft/forward.hpp"
+#include "oneapi/mkl/dft/backward.hpp"
 
-#include "oneapi/mkl/blas.hpp"
-#include "oneapi/mkl/dft.hpp"
-#include "oneapi/mkl/lapack.hpp"
-#include "oneapi/mkl/rng.hpp"
-
-#endif //_ONEMKL_HPP_
+#endif // _ONEMKL_DFT_HPP_
