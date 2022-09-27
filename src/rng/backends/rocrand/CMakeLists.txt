@@ -76,7 +76,7 @@ target_include_directories(${LIB_OBJ}
           ${MKL_INCLUDE}
 )
 
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ONEMKL::rocBLAS::rocRAND)
+target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ONEMKL::rocRAND::rocRAND)
 target_compile_features(${LIB_OBJ} PUBLIC cxx_std_11)
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON
