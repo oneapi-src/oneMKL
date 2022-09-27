@@ -117,7 +117,7 @@ inline void getrs_batch(const char *func_name, Func func, sycl::queue &queue,
     // To get around the limitation.
     // Create new buffer and convert 64-bit values.
     std::uint64_t ipiv_size = stride_ipiv * batch_size;
-    sycl::buffer<int, 1> ipiv32(sycl::range<1>{ ipiv_size });
+    sycl::buffer<int> ipiv32(sycl::range<1>{ ipiv_size });
 
     queue.submit([&](sycl::handler &cgh) {
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::write>(cgh);
@@ -183,7 +183,7 @@ inline void getrf_batch(const char *func_name, Func func, sycl::queue &queue, st
     // To get around the limitation.
     // Create new buffer with 32-bit ints then copy over results
     std::uint64_t ipiv_size = stride_ipiv * batch_size;
-    sycl::buffer<int, 1> ipiv32(sycl::range<1>{ ipiv_size });
+    sycl::buffer<int> ipiv32(sycl::range<1>{ ipiv_size });
     sycl::buffer<int> devInfo{ batch_size };
 
     queue.submit([&](sycl::handler &cgh) {
