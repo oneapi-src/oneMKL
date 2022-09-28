@@ -119,85 +119,85 @@ void compute_backward_buffer_outofplace_split_z(
 
 sycl::event compute_backward_usm_inplace_f(descriptor<precision::SINGLE, domain::REAL> &desc,
                                            std::complex<float> *inout,
-                                           const std::vector<cl::sycl::event> &dependencies) {
+                                           const std::vector<sycl::event> &dependencies) {
     throw std::runtime_error("Not implemented for mklgpu");
 }
 sycl::event compute_backward_usm_inplace_c(descriptor<precision::SINGLE, domain::COMPLEX> &desc,
                                            std::complex<float> *inout,
-                                           const std::vector<cl::sycl::event> &dependencies) {
+                                           const std::vector<sycl::event> &dependencies) {
     throw std::runtime_error("Not implemented for mklgpu");
 }
 sycl::event compute_backward_usm_inplace_d(descriptor<precision::DOUBLE, domain::REAL> &desc,
                                            std::complex<double> *inout,
-                                           const std::vector<cl::sycl::event> &dependencies) {
+                                           const std::vector<sycl::event> &dependencies) {
     throw std::runtime_error("Not implemented for mklgpu");
 }
 sycl::event compute_backward_usm_inplace_z(descriptor<precision::DOUBLE, domain::COMPLEX> &desc,
                                            std::complex<double> *inout,
-                                           const std::vector<cl::sycl::event> &dependencies) {
+                                           const std::vector<sycl::event> &dependencies) {
     throw std::runtime_error("Not implemented for mklgpu");
 }
 
 sycl::event compute_backward_usm_inplace_split_f(descriptor<precision::SINGLE, domain::REAL> &desc,
                                                  float *inout_re, float *inout_im,
-                                                 const std::vector<cl::sycl::event> &dependencies) {
+                                                 const std::vector<sycl::event> &dependencies) {
     throw std::runtime_error("Not implemented for mklgpu");
 }
 sycl::event compute_backward_usm_inplace_split_c(
     descriptor<precision::SINGLE, domain::COMPLEX> &desc, float *inout_re, float *inout_im,
-    const std::vector<cl::sycl::event> &dependencies) {
+    const std::vector<sycl::event> &dependencies) {
     throw std::runtime_error("Not implemented for mklgpu");
 }
 sycl::event compute_backward_usm_inplace_split_d(descriptor<precision::DOUBLE, domain::REAL> &desc,
                                                  double *inout_re, double *inout_im,
-                                                 const std::vector<cl::sycl::event> &dependencies) {
+                                                 const std::vector<sycl::event> &dependencies) {
     throw std::runtime_error("Not implemented for mklgpu");
 }
 sycl::event compute_backward_usm_inplace_split_z(
     descriptor<precision::DOUBLE, domain::COMPLEX> &desc, double *inout_re, double *inout_im,
-    const std::vector<cl::sycl::event> &dependencies) {
+    const std::vector<sycl::event> &dependencies) {
     throw std::runtime_error("Not implemented for mklgpu");
 }
 
 sycl::event compute_backward_usm_outofplace_f(descriptor<precision::SINGLE, domain::REAL> &desc,
                                               std::complex<float> *in, float *out,
-                                              const std::vector<cl::sycl::event> &dependencies) {
+                                              const std::vector<sycl::event> &dependencies) {
     throw std::runtime_error("Not implemented for mklgpu");
 }
 sycl::event compute_backward_usm_outofplace_c(descriptor<precision::SINGLE, domain::COMPLEX> &desc,
                                               std::complex<float> *in, std::complex<float> *out,
-                                              const std::vector<cl::sycl::event> &dependencies) {
+                                              const std::vector<sycl::event> &dependencies) {
     throw std::runtime_error("Not implemented for mklgpu");
 }
 sycl::event compute_backward_usm_outofplace_d(descriptor<precision::DOUBLE, domain::REAL> &desc,
                                               std::complex<double> *in, double *out,
-                                              const std::vector<cl::sycl::event> &dependencies) {
+                                              const std::vector<sycl::event> &dependencies) {
     throw std::runtime_error("Not implemented for mklgpu");
 }
 sycl::event compute_backward_usm_outofplace_z(descriptor<precision::DOUBLE, domain::COMPLEX> &desc,
                                               std::complex<double> *in, std::complex<double> *out,
-                                              const std::vector<cl::sycl::event> &dependencies) {
+                                              const std::vector<sycl::event> &dependencies) {
     throw std::runtime_error("Not implemented for mklgpu");
 }
 
 sycl::event compute_backward_usm_outofplace_split_f(
     descriptor<precision::SINGLE, domain::REAL> &desc, float *in_re, float *in_im, float *out_re,
-    float *out_im, const std::vector<cl::sycl::event> &dependencies) {
+    float *out_im, const std::vector<sycl::event> &dependencies) {
     throw std::runtime_error("Not implemented for mklgpu");
 }
 sycl::event compute_backward_usm_outofplace_split_c(
     descriptor<precision::SINGLE, domain::COMPLEX> &desc, float *in_re, float *in_im, float *out_re,
-    float *out_im, const std::vector<cl::sycl::event> &dependencies) {
+    float *out_im, const std::vector<sycl::event> &dependencies) {
     throw std::runtime_error("Not implemented for mklgpu");
 }
 sycl::event compute_backward_usm_outofplace_split_d(
     descriptor<precision::DOUBLE, domain::REAL> &desc, double *in_re, double *in_im, double *out_re,
-    double *out_im, const std::vector<cl::sycl::event> &dependencies) {
+    double *out_im, const std::vector<sycl::event> &dependencies) {
     throw std::runtime_error("Not implemented for mklgpu");
 }
 sycl::event compute_backward_usm_outofplace_split_z(
     descriptor<precision::DOUBLE, domain::COMPLEX> &desc, double *in_re, double *in_im,
-    double *out_re, double *out_im, const std::vector<cl::sycl::event> &dependencies) {
+    double *out_re, double *out_im, const std::vector<sycl::event> &dependencies) {
     throw std::runtime_error("Not implemented for mklgpu");
 }
 

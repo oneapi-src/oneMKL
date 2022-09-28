@@ -162,7 +162,7 @@ static oneapi::mkl::detail::table_initializer<mkl::domain::dft, dft_function_tab
     template <>                                                                                         \
     sycl::event compute_backward<descriptor<PRECISION, DOMAIN>, T_BACKWARD>(                            \
         descriptor<PRECISION, DOMAIN> & desc, T_BACKWARD * inout,                                       \
-        const std::vector<cl::sycl::event> &dependencies) {                                             \
+        const std::vector<sycl::event> &dependencies) {                                                 \
         return detail::function_tables[get_device_id(desc.get_queue())]                                 \
             .compute_backward_usm_inplace_##EXT(desc, inout, dependencies);                             \
     }                                                                                                   \
@@ -171,7 +171,7 @@ static oneapi::mkl::detail::table_initializer<mkl::domain::dft, dft_function_tab
     template <>                                                                                         \
     sycl::event compute_backward<descriptor<PRECISION, DOMAIN>, T_REAL>(                                \
         descriptor<PRECISION, DOMAIN> & desc, T_REAL * inout_re, T_REAL * inout_im,                     \
-        const std::vector<cl::sycl::event> &dependencies) {                                             \
+        const std::vector<sycl::event> &dependencies) {                                                 \
         return detail::function_tables[get_device_id(desc.get_queue())]                                 \
             .compute_backward_usm_inplace_split_##EXT(desc, inout_re, inout_im, dependencies);          \
     }                                                                                                   \
@@ -180,7 +180,7 @@ static oneapi::mkl::detail::table_initializer<mkl::domain::dft, dft_function_tab
     template <>                                                                                         \
     sycl::event compute_backward<descriptor<PRECISION, DOMAIN>, T_BACKWARD, T_FORWARD>(                 \
         descriptor<PRECISION, DOMAIN> & desc, T_BACKWARD * in, T_FORWARD * out,                         \
-        const std::vector<cl::sycl::event> &dependencies) {                                             \
+        const std::vector<sycl::event> &dependencies) {                                                 \
         return detail::function_tables[get_device_id(desc.get_queue())]                                 \
             .compute_backward_usm_outofplace_##EXT(desc, in, out, dependencies);                        \
     }                                                                                                   \
@@ -189,7 +189,7 @@ static oneapi::mkl::detail::table_initializer<mkl::domain::dft, dft_function_tab
     template <>                                                                                         \
     sycl::event compute_backward<descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                        \
         descriptor<PRECISION, DOMAIN> & desc, T_REAL * in_re, T_REAL * in_im, T_REAL * out_re,          \
-        T_REAL * out_im, const std::vector<cl::sycl::event> &dependencies) {                            \
+        T_REAL * out_im, const std::vector<sycl::event> &dependencies) {                                \
         return detail::function_tables[get_device_id(desc.get_queue())]                                 \
             .compute_backward_usm_outofplace_split_##EXT(desc, in_re, in_im, out_re, out_im,            \
                                                          dependencies);                                 \

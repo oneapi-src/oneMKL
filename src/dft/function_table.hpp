@@ -78,16 +78,16 @@ typedef struct {
         sycl::buffer<T_REAL, 1> & out_im);                                                        \
     sycl::event (*compute_backward_usm_inplace_##EXT)(                                            \
         oneapi::mkl::dft::descriptor<PRECISION, DOMAIN> & desc, T_BACKWARD * inout,               \
-        const std::vector<cl::sycl::event> &dependencies);                                        \
+        const std::vector<sycl::event> &dependencies);                                            \
     sycl::event (*compute_backward_usm_inplace_split_##EXT)(                                      \
         oneapi::mkl::dft::descriptor<PRECISION, DOMAIN> & desc, T_REAL * inout_re,                \
-        T_REAL * inout_im, const std::vector<cl::sycl::event> &dependencies);                     \
+        T_REAL * inout_im, const std::vector<sycl::event> &dependencies);                         \
     sycl::event (*compute_backward_usm_outofplace_##EXT)(                                         \
         oneapi::mkl::dft::descriptor<PRECISION, DOMAIN> & desc, T_BACKWARD * in, T_FORWARD * out, \
-        const std::vector<cl::sycl::event> &dependencies);                                        \
+        const std::vector<sycl::event> &dependencies);                                            \
     sycl::event (*compute_backward_usm_outofplace_split_##EXT)(                                   \
         oneapi::mkl::dft::descriptor<PRECISION, DOMAIN> & desc, T_REAL * in_re, T_REAL * in_im,   \
-        T_REAL * out_re, T_REAL * out_im, const std::vector<cl::sycl::event> &dependencies);
+        T_REAL * out_re, T_REAL * out_im, const std::vector<sycl::event> &dependencies);
 
     ONEAPI_MKL_DFT_BACKEND_SIGNATURES(f, oneapi::mkl::dft::precision::SINGLE,
                                       oneapi::mkl::dft::domain::REAL, float, float,

@@ -111,22 +111,22 @@ namespace mklgpu {
     /*In-place transform*/                                                                              \
     sycl::event compute_backward_usm_inplace_##EXT(                                                     \
         descriptor<PRECISION, DOMAIN> &desc, T_BACKWARD *inout,                                         \
-        const std::vector<cl::sycl::event> &dependencies = {});                                         \
+        const std::vector<sycl::event> &dependencies = {});                                             \
                                                                                                         \
     /*In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format*/     \
     sycl::event compute_backward_usm_inplace_split_##EXT(                                               \
         descriptor<PRECISION, DOMAIN> &desc, T_REAL *inout_re, T_REAL *inout_im,                        \
-        const std::vector<cl::sycl::event> &dependencies = {});                                         \
+        const std::vector<sycl::event> &dependencies = {});                                             \
                                                                                                         \
     /*Out-of-place transform*/                                                                          \
     sycl::event compute_backward_usm_outofplace_##EXT(                                                  \
         descriptor<PRECISION, DOMAIN> &desc, T_BACKWARD *in, T_FORWARD *out,                            \
-        const std::vector<cl::sycl::event> &dependencies = {});                                         \
+        const std::vector<sycl::event> &dependencies = {});                                             \
                                                                                                         \
     /*Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format*/ \
     sycl::event compute_backward_usm_outofplace_split_##EXT(                                            \
         descriptor<PRECISION, DOMAIN> &desc, T_REAL *in_re, T_REAL *in_im, T_REAL *out_re,              \
-        T_REAL *out_im, const std::vector<cl::sycl::event> &dependencies = {});
+        T_REAL *out_im, const std::vector<sycl::event> &dependencies = {});
 
 ONEAPI_MKL_DFT_BACKEND_SIGNATURES(f, precision::SINGLE, domain::REAL, float, float,
                                   std::complex<float>)

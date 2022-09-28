@@ -56,23 +56,23 @@ void compute_backward(descriptor_type &desc, sycl::buffer<input_type, 1> &in_re,
 //In-place transform
 template <typename descriptor_type, typename data_type>
 sycl::event compute_backward(descriptor_type &desc, data_type *inout,
-                             const std::vector<cl::sycl::event> &dependencies = {});
+                             const std::vector<sycl::event> &dependencies = {});
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type, typename data_type>
 sycl::event compute_backward(descriptor_type &desc, data_type *inout_re, data_type *inout_im,
-                             const std::vector<cl::sycl::event> &dependencies = {});
+                             const std::vector<sycl::event> &dependencies = {});
 
 //Out-of-place transform
 template <typename descriptor_type, typename input_type, typename output_type>
 sycl::event compute_backward(descriptor_type &desc, input_type *in, output_type *out,
-                             const std::vector<cl::sycl::event> &dependencies = {});
+                             const std::vector<sycl::event> &dependencies = {});
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type, typename input_type, typename output_type>
 sycl::event compute_backward(descriptor_type &desc, input_type *in_re, input_type *in_im,
                              output_type *out_re, output_type *out_im,
-                             const std::vector<cl::sycl::event> &dependencies = {});
+                             const std::vector<sycl::event> &dependencies = {});
 } // namespace oneapi::mkl::dft
 
 #endif // _ONEMKL_DFT_BACKWARD_HPP_
