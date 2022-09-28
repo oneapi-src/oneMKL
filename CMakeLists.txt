@@ -215,9 +215,6 @@ else()
   endif()
 endif()
 
-# Add source directory and output to bin/
-add_subdirectory(src bin)
-
 # Functional Tests
 if(BUILD_FUNCTIONAL_TESTS OR BUILD_EXAMPLES)
   enable_testing()
@@ -247,6 +244,11 @@ write_basic_package_version_file(
   VERSION ${PROJECT_VERSION}
   COMPATIBILITY AnyNewerVersion
 )
+
+set(REF_BLAS_LIBNAME ${BLAS_file})
+
+# Add source directory and output to bin/
+add_subdirectory(src bin)
 
 export(EXPORT oneMKLTargets
   FILE "${CMAKE_CURRENT_BINARY_DIR}/oneMKLTargets.cmake"
