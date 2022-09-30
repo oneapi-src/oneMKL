@@ -31,7 +31,11 @@
 
 #define INTEL_ID  32902
 #define NVIDIA_ID 4318
+#ifndef __HIPSYCL__
+#define AMD_ID    4098
+#else
 #define AMD_ID    1022
+#endif
 
 namespace oneapi {
 namespace mkl {
