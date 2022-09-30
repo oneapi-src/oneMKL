@@ -245,7 +245,12 @@ write_basic_package_version_file(
   COMPATIBILITY AnyNewerVersion
 )
 
-set(REF_BLAS_LIBNAME ${BLAS_file})
+if(WIN32)
+  find_file(BLAS_win NAMES blas.dll HINTS ${REF_BLAS_ROOT} PATH_SUFFIXES lib lib64)
+  set(REF_BLAS_LIBNAME ${BLAS_win})
+else()
+  set(REF_BLAS_LIBNAME ${BLAS_file})
+endif()
 
 # Add source directory and output to bin/
 add_subdirectory(src bin)
