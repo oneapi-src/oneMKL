@@ -215,6 +215,19 @@ else()
   endif()
 endif()
 
+if(DEFINED REF_BLAS_ROOT)
+  if(WIN32)
+    find_file(BLAS_win NAMES blas.dll HINTS ${REF_BLAS_ROOT} PATH_SUFFIXES lib lib64)
+    set(REF_BLAS_LIBNAME ${BLAS_win})
+  else()
+    find_file(BLAS_lnx NAMES blas HINTS ${REF_BLAS_ROOT} PATH_SUFFIXES lib lib64)
+    set(REF_BLAS_LIBNAME ${BLAS_lnx})
+  endif()
+endif()
+
+# Add source directory and output to bin/
+add_subdirectory(src bin)
+
 # Functional Tests
 if(BUILD_FUNCTIONAL_TESTS OR BUILD_EXAMPLES)
   enable_testing()
@@ -244,16 +257,6 @@ write_basic_package_version_file(
   VERSION ${PROJECT_VERSION}
   COMPATIBILITY AnyNewerVersion
 )
-
-if(WIN32)
-  find_file(BLAS_win NAMES blas.dll HINTS ${REF_BLAS_ROOT} PATH_SUFFIXES lib lib64)
-  set(REF_BLAS_LIBNAME ${BLAS_win})
-else()
-  set(REF_BLAS_LIBNAME ${BLAS_file})
-endif()
-
-# Add source directory and output to bin/
-add_subdirectory(src bin)
 
 export(EXPORT oneMKLTargets
   FILE "${CMAKE_CURRENT_BINARY_DIR}/oneMKLTargets.cmake"
