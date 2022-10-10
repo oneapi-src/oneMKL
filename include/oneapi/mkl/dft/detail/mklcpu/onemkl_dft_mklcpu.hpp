@@ -28,13 +28,13 @@
 #include <complex>
 #include <cstdint>
 
-#include "oneapi/mkl/dft/descriptor.hpp"
 #include "oneapi/mkl/types.hpp"
+#include "oneapi/mkl/dft/descriptor.hpp"
 
 namespace oneapi {
 namespace mkl {
 namespace dft {
-namespace mklgpu {
+namespace mklcpu {
 
 #define ONEAPI_MKL_DFT_BACKEND_SIGNATURES(EXT, PRECISION, DOMAIN, T_REAL, T_FORWARD, T_BACKWARD)        \
                                                                                                         \
@@ -139,7 +139,7 @@ ONEAPI_MKL_DFT_BACKEND_SIGNATURES(z, precision::DOUBLE, domain::COMPLEX, double,
 
 #undef ONEAPI_MKL_DFT_BACKEND_SIGNATURES
 
-} // namespace mklgpu
+} // namespace mklcpu
 } // namespace dft
 } // namespace mkl
 } // namespace oneapi

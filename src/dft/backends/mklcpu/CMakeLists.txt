@@ -17,7 +17,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-set(LIB_NAME onemkl_dft_mklgpu)
+set(LIB_NAME onemkl_dft_mklcpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
 find_package(MKL REQUIRED)
@@ -28,7 +28,7 @@ add_library(${LIB_OBJ} OBJECT
   descriptor.cpp
   forward.cpp
   backward.cpp
-  $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_dft_gpu_wrappers.cpp>
+  $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_dft_cpu_wrappers.cpp>
 )
 
 target_include_directories(${LIB_OBJ}
