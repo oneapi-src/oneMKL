@@ -33,8 +33,6 @@
 
 #include "oneapi/mkl/detail/get_device_id.hpp"
 
-#include "oneapi/mkl/blas/predicates.hpp"
-
 #include "oneapi/mkl/blas/detail/blas_loader.hpp"
 #ifdef ENABLE_CUBLAS_BACKEND
 #include "oneapi/mkl/blas/detail/cublas/blas_ct.hpp"
