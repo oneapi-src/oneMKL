@@ -23,7 +23,11 @@
  */
 #ifndef _CUSOLVER_HELPER_HPP_
 #define _CUSOLVER_HELPER_HPP_
-#include <sycl.hpp>
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
+#include <CL/sycl.hpp>
+#endif
 #include <cublas_v2.h>
 #include <cusolverDn.h>
 #include <cuda.h>
@@ -181,6 +185,21 @@ public:
         throw cusolver_error(std::string(name) + std::string(" : "), err); \
     }
 
+#define CUSOLVER_SYNC(err, handle)                                           \
+    cudaStream_t currentStreamId;                                            \
+    CUSOLVER_ERROR_FUNC(cusolverDnGetStream, err, handle, &currentStreamId); \
+    {                                                                        \
+        CUresult __cuda_err;                                                 \
+        CUDA_ERROR_FUNC(cuStreamSynchronize, __cuda_err, currentStreamId);   \
+    }
+
+#define CUSOLVER_ERROR_FUNC_T_SYNC(name, func, err, handle, ...)             \
+    err = func(handle, __VA_ARGS__);                                         \
+    if (err != CUSOLVER_STATUS_SUCCESS) {                                    \
+        throw cusolver_error(std::string(name) + std::string(" : "), err);   \
+    }                                                                        \
+    CUSOLVER_SYNC(err, handle)
+
 inline cusolverEigType_t get_cusolver_itype(std::int64_t itype) {
     switch (itype) {
         case 1: return CUSOLVER_EIG_TYPE_1;
@@ -261,6 +280,7 @@ struct CudaEquivalentType<std::complex<double>> {
 
 /* devinfo */
 
+<<<<<<< HEAD
 // Accepts a int*, copies the memory from device to host,
 // checks value does not indicate an error, frees the device memory
 inline void lapack_info_check_and_free(int *dev_info_d, const char *func_name,
@@ -301,6 +321,45 @@ inline sycl::event free_async(sycl::queue &queue, T *ptr,
         cgh.host_task([=](sycl::interop_handle ih) { sycl::free(ptr, queue); });
     });
     return done;
+=======
+inline void get_cusolver_devinfo(sycl::queue &queue, sycl::buffer<int> &devInfo,
+                                 std::vector<int> &dev_info_) {
+    sycl::host_accessor<int, 1, sycl::access::mode::read> dev_info_acc{ devInfo };
+    for (unsigned int i = 0; i < dev_info_.size(); ++i)
+        dev_info_[i] = dev_info_acc[i];
+}
+
+inline void get_cusolver_devinfo(sycl::queue &queue, const int *devInfo,
+                                 std::vector<int> &dev_info_) {
+    queue.wait();
+    queue.memcpy(dev_info_.data(), devInfo, sizeof(int));
+}
+
+template <typename DEVINFO_T>
+inline void lapack_info_check(sycl::queue &queue, DEVINFO_T devinfo, const char *func_name,
+                              const char *cufunc_name, int dev_info_size = 1) {
+    std::vector<int> dev_info_(dev_info_size);
+    get_cusolver_devinfo(queue, devinfo, dev_info_);
+    for (const auto &val : dev_info_) {
+        if (val > 0)
+            throw oneapi::mkl::lapack::computation_error(
+                func_name, std::string(cufunc_name) + " failed with info = " + std::to_string(val),
+                val);
+    }
+}
+
+/* batched helpers */
+
+// Creates list of matrix/vector pointers from initial ptr and stride
+// Note: user is responsible for deallocating memory
+template <typename T>
+T **create_ptr_list_from_stride(T *ptr, int64_t ptr_stride, int64_t batch_size) {
+    T **ptr_list = (T **)malloc(sizeof(T *) * batch_size);
+    for (int64_t i = 0; i < batch_size; i++)
+        ptr_list[i] = ptr + i * ptr_stride;
+
+    return ptr_list;
+>>>>>>> develop
 }
 
 } // namespace cusolver

@@ -162,10 +162,10 @@ inline void gemm_batch(const char *func_name, Func func, sycl::queue &queue, tra
             auto b_ = sc.get_mem<cuDataType *>(b_acc);
             auto c_ = sc.get_mem<cuDataType *>(c_acc);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_operation(transa),
-                                get_cublas_operation(transb), m, n, k, (cuDataType *)&alpha, a_,
-                                lda, stride_a, b_, ldb, stride_b, (cuDataType *)&beta, c_, ldc,
-                                stride_c, batch_size);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_operation(transa),
+                                     get_cublas_operation(transb), m, n, k, (cuDataType *)&alpha,
+                                     a_, lda, stride_a, b_, ldb, stride_b, (cuDataType *)&beta, c_,
+                                     ldc, stride_c, batch_size);
         });
     });
 }
@@ -244,6 +244,88 @@ void syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n
                 sycl::buffer<std::complex<double>, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
     throw unimplemented("blas", "syrk_batch", "for column_major layout");
+}
+
+void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                    sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
+                    sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b, int64_t batch_size) {
+    throw unimplemented("blas", "omatcopy_batch", "for column_major layout");
+}
+
+void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                    sycl::buffer<double, 1> &a, int64_t lda, int64_t stride_a,
+                    sycl::buffer<double, 1> &b, int64_t ldb, int64_t stride_b, int64_t batch_size) {
+    throw unimplemented("blas", "omatcopy_batch", "for column_major layout");
+}
+
+void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                    std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+                    int64_t stride_a, sycl::buffer<std::complex<float>, 1> &b, int64_t ldb,
+                    int64_t stride_b, int64_t batch_size) {
+    throw unimplemented("blas", "omatcopy_batch", "for column_major layout");
+}
+
+void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                    std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+                    int64_t lda, int64_t stride_a, sycl::buffer<std::complex<double>, 1> &b,
+                    int64_t ldb, int64_t stride_b, int64_t batch_size) {
+    throw unimplemented("blas", "omatcopy_batch", "for column_major layout");
+}
+
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                    sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
+                    int64_t batch_size) {
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
+}
+
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                    sycl::buffer<double, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
+                    int64_t batch_size) {
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
+}
+
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                    std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &ab,
+                    int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size) {
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
+}
+
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                    std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &ab,
+                    int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size) {
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
+}
+
+void omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                   float alpha, sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
+                   float beta, sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b,
+                   sycl::buffer<float, 1> &c, int64_t ldc, int64_t stride_c, int64_t batch_size) {
+    throw unimplemented("blas", "omatadd_batch", "for column_major layout");
+}
+
+void omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                   double alpha, sycl::buffer<double, 1> &a, int64_t lda, int64_t stride_a,
+                   double beta, sycl::buffer<double, 1> &b, int64_t ldb, int64_t stride_b,
+                   sycl::buffer<double, 1> &c, int64_t ldc, int64_t stride_c, int64_t batch_size) {
+    throw unimplemented("blas", "omatadd_batch", "for column_major layout");
+}
+
+void omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                   std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+                   int64_t stride_a, std::complex<float> beta,
+                   sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, int64_t stride_b,
+                   sycl::buffer<std::complex<float>, 1> &c, int64_t ldc, int64_t stride_c,
+                   int64_t batch_size) {
+    throw unimplemented("blas", "omatadd_batch", "for column_major layout");
+}
+
+void omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                   std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+                   int64_t lda, int64_t stride_a, std::complex<double> beta,
+                   sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, int64_t stride_b,
+                   sycl::buffer<std::complex<double>, 1> &c, int64_t ldc, int64_t stride_c,
+                   int64_t batch_size) {
+    throw unimplemented("blas", "omatadd_batch", "for column_major layout");
 }
 
 // USM APIs
@@ -495,10 +577,10 @@ inline sycl::event gemm_batch(const char *func_name, Func func, sycl::queue &que
             auto b_ = reinterpret_cast<const cuDataType *>(b);
             auto c_ = reinterpret_cast<cuDataType *>(c);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_operation(transa),
-                                get_cublas_operation(transb), m, n, k, (cuDataType *)&alpha, a_,
-                                lda, stride_a, b_, ldb, stride_b, (cuDataType *)&beta, c_, ldc,
-                                stride_c, batch_size);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_operation(transa),
+                                     get_cublas_operation(transb), m, n, k, (cuDataType *)&alpha,
+                                     a_, lda, stride_a, b_, ldb, stride_b, (cuDataType *)&beta, c_,
+                                     ldc, stride_c, batch_size);
         });
     });
     return done;
@@ -550,11 +632,11 @@ inline sycl::event gemm_batch(const char *func_name, Func func, sycl::queue &que
                 auto **a_ = reinterpret_cast<const cuDataType **>(a);
                 auto **b_ = reinterpret_cast<const cuDataType **>(b);
                 auto **c_ = reinterpret_cast<cuDataType **>(c);
-                CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_operation(transa[i]),
-                                    get_cublas_operation(transb[i]), (int)m[i], (int)n[i],
-                                    (int)k[i], (cuDataType *)&alpha[i], a_ + offset, (int)lda[i],
-                                    b_ + offset, (int)ldb[i], (cuDataType *)&beta[i], c_ + offset,
-                                    (int)ldc[i], (int)group_size[i]);
+                CUBLAS_ERROR_FUNC_T_SYNC(
+                    func_name, func, err, handle, get_cublas_operation(transa[i]),
+                    get_cublas_operation(transb[i]), (int)m[i], (int)n[i], (int)k[i],
+                    (cuDataType *)&alpha[i], a_ + offset, (int)lda[i], b_ + offset, (int)ldb[i],
+                    (cuDataType *)&beta[i], c_ + offset, (int)ldc[i], (int)group_size[i]);
                 offset += group_size[i];
             }
         });
@@ -632,7 +714,7 @@ inline sycl::event trsm_batch(const char *func_name, Func func, sycl::queue &que
             for (int64_t i = 0; i < group_count; i++) {
                 auto **a_ = reinterpret_cast<const cuDataType **>(a);
                 auto **b_ = reinterpret_cast<cuDataType **>(b);
-                CUBLAS_ERROR_FUNC_T(
+                CUBLAS_ERROR_FUNC_T_SYNC(
                     func_name, func, err, handle, get_cublas_side_mode(left_right[i]),
                     get_cublas_fill_mode(upper_lower[i]), get_cublas_operation(trans[i]),
                     get_cublas_diag_type(unit_diag[i]), (int)m[i], (int)n[i],
@@ -721,6 +803,94 @@ sycl::event syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, in
                        int64_t ldc, int64_t stride_c, int64_t batch_size,
                        const std::vector<sycl::event> &dependencies) {
     throw unimplemented("blas", "syrk_batch", "for column_major layout");
+}
+
+sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                           const float *a, int64_t lda, int64_t stride_a, float *b, int64_t ldb,
+                           int64_t stride_b, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy_batch", "for column_major layout");
+}
+
+sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                           const double *a, int64_t lda, int64_t stride_a, double *b, int64_t ldb,
+                           int64_t stride_b, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy_batch", "for column_major layout");
+}
+
+sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                           std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                           int64_t stride_a, std::complex<float> *b, int64_t ldb, int64_t stride_b,
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy_batch", "for column_major layout");
+}
+
+sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                           std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                           int64_t stride_a, std::complex<double> *b, int64_t ldb, int64_t stride_b,
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy_batch", "for column_major layout");
+}
+
+sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                           float *ab, int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
+}
+
+sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                           double *ab, int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
+}
+
+sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                           std::complex<float> alpha, std::complex<float> *ab, int64_t lda,
+                           int64_t ldb, int64_t stride, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
+}
+
+sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                           std::complex<double> alpha, std::complex<double> *ab, int64_t lda,
+                           int64_t ldb, int64_t stride, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
+}
+
+sycl::event omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                          int64_t n, float alpha, const float *a, int64_t lda, int64_t stride_a,
+                          float beta, const float *b, int64_t ldb, int64_t stride_b, float *c,
+                          int64_t ldc, int64_t stride_c, int64_t batch_size,
+                          const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatadd_batch", "for column_major layout");
+}
+
+sycl::event omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                          int64_t n, double alpha, const double *a, int64_t lda, int64_t stride_a,
+                          double beta, const double *b, int64_t ldb, int64_t stride_b, double *c,
+                          int64_t ldc, int64_t stride_c, int64_t batch_size,
+                          const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatadd_batch", "for column_major layout");
+}
+
+sycl::event omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                          int64_t n, std::complex<float> alpha, const std::complex<float> *a,
+                          int64_t lda, int64_t stride_a, std::complex<float> beta,
+                          const std::complex<float> *b, int64_t ldb, int64_t stride_b,
+                          std::complex<float> *c, int64_t ldc, int64_t stride_c, int64_t batch_size,
+                          const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatadd_batch", "for column_major layout");
+}
+
+sycl::event omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                          int64_t n, std::complex<double> alpha, const std::complex<double> *a,
+                          int64_t lda, int64_t stride_a, std::complex<double> beta,
+                          const std::complex<double> *b, int64_t ldb, int64_t stride_b,
+                          std::complex<double> *c, int64_t ldc, int64_t stride_c,
+                          int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatadd_batch", "for column_major layout");
 }
 
 } // namespace column_major
@@ -922,6 +1092,88 @@ void syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n
                 sycl::buffer<std::complex<double>, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
     throw unimplemented("blas", "syrk_batch", "for row_major layout");
+}
+
+void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                    sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
+                    sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b, int64_t batch_size) {
+    throw unimplemented("blas", "omatcopy_batch", "for row_major layout");
+}
+
+void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                    sycl::buffer<double, 1> &a, int64_t lda, int64_t stride_a,
+                    sycl::buffer<double, 1> &b, int64_t ldb, int64_t stride_b, int64_t batch_size) {
+    throw unimplemented("blas", "omatcopy_batch", "for row_major layout");
+}
+
+void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                    std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+                    int64_t stride_a, sycl::buffer<std::complex<float>, 1> &b, int64_t ldb,
+                    int64_t stride_b, int64_t batch_size) {
+    throw unimplemented("blas", "omatcopy_batch", "for row_major layout");
+}
+
+void omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                    std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+                    int64_t lda, int64_t stride_a, sycl::buffer<std::complex<double>, 1> &b,
+                    int64_t ldb, int64_t stride_b, int64_t batch_size) {
+    throw unimplemented("blas", "omatcopy_batch", "for row_major layout");
+}
+
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                    sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
+                    int64_t batch_size) {
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
+}
+
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                    sycl::buffer<double, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
+                    int64_t batch_size) {
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
+}
+
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                    std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &ab,
+                    int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size) {
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
+}
+
+void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                    std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &ab,
+                    int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size) {
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
+}
+
+void omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                   float alpha, sycl::buffer<float, 1> &a, int64_t lda, int64_t stride_a,
+                   float beta, sycl::buffer<float, 1> &b, int64_t ldb, int64_t stride_b,
+                   sycl::buffer<float, 1> &c, int64_t ldc, int64_t stride_c, int64_t batch_size) {
+    throw unimplemented("blas", "omatadd_batch", "for row_major layout");
+}
+
+void omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                   double alpha, sycl::buffer<double, 1> &a, int64_t lda, int64_t stride_a,
+                   double beta, sycl::buffer<double, 1> &b, int64_t ldb, int64_t stride_b,
+                   sycl::buffer<double, 1> &c, int64_t ldc, int64_t stride_c, int64_t batch_size) {
+    throw unimplemented("blas", "omatadd_batch", "for row_major layout");
+}
+
+void omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                   std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+                   int64_t stride_a, std::complex<float> beta,
+                   sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, int64_t stride_b,
+                   sycl::buffer<std::complex<float>, 1> &c, int64_t ldc, int64_t stride_c,
+                   int64_t batch_size) {
+    throw unimplemented("blas", "omatadd_batch", "for row_major layout");
+}
+
+void omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                   std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+                   int64_t lda, int64_t stride_a, std::complex<double> beta,
+                   sycl::buffer<std::complex<double>, 1> &b, int64_t ldb, int64_t stride_b,
+                   sycl::buffer<std::complex<double>, 1> &c, int64_t ldc, int64_t stride_c,
+                   int64_t batch_size) {
+    throw unimplemented("blas", "omatadd_batch", "for row_major layout");
 }
 
 // USM APIs
@@ -1320,6 +1572,94 @@ sycl::event syrk_batch(sycl::queue &queue, uplo upper_lower, transpose trans, in
                        int64_t ldc, int64_t stride_c, int64_t batch_size,
                        const std::vector<sycl::event> &dependencies) {
     throw unimplemented("blas", "syrk_batch", "for row_major layout");
+}
+
+sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                           const float *a, int64_t lda, int64_t stride_a, float *b, int64_t ldb,
+                           int64_t stride_b, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy_batch", "for row_major layout");
+}
+
+sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                           const double *a, int64_t lda, int64_t stride_a, double *b, int64_t ldb,
+                           int64_t stride_b, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy_batch", "for row_major layout");
+}
+
+sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                           std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                           int64_t stride_a, std::complex<float> *b, int64_t ldb, int64_t stride_b,
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy_batch", "for row_major layout");
+}
+
+sycl::event omatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                           std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                           int64_t stride_a, std::complex<double> *b, int64_t ldb, int64_t stride_b,
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy_batch", "for row_major layout");
+}
+
+sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                           float *ab, int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
+}
+
+sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                           double *ab, int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
+}
+
+sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                           std::complex<float> alpha, std::complex<float> *ab, int64_t lda,
+                           int64_t ldb, int64_t stride, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
+}
+
+sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                           std::complex<double> alpha, std::complex<double> *ab, int64_t lda,
+                           int64_t ldb, int64_t stride, int64_t batch_size,
+                           const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
+}
+
+sycl::event omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                          int64_t n, float alpha, const float *a, int64_t lda, int64_t stride_a,
+                          float beta, const float *b, int64_t ldb, int64_t stride_b, float *c,
+                          int64_t ldc, int64_t stride_c, int64_t batch_size,
+                          const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatadd_batch", "for row_major layout");
+}
+
+sycl::event omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                          int64_t n, double alpha, const double *a, int64_t lda, int64_t stride_a,
+                          double beta, const double *b, int64_t ldb, int64_t stride_b, double *c,
+                          int64_t ldc, int64_t stride_c, int64_t batch_size,
+                          const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatadd_batch", "for row_major layout");
+}
+
+sycl::event omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                          int64_t n, std::complex<float> alpha, const std::complex<float> *a,
+                          int64_t lda, int64_t stride_a, std::complex<float> beta,
+                          const std::complex<float> *b, int64_t ldb, int64_t stride_b,
+                          std::complex<float> *c, int64_t ldc, int64_t stride_c, int64_t batch_size,
+                          const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatadd_batch", "for row_major layout");
+}
+
+sycl::event omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                          int64_t n, std::complex<double> alpha, const std::complex<double> *a,
+                          int64_t lda, int64_t stride_a, std::complex<double> beta,
+                          const std::complex<double> *b, int64_t ldb, int64_t stride_b,
+                          std::complex<double> *c, int64_t ldc, int64_t stride_c,
+                          int64_t batch_size, const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatadd_batch", "for row_major layout");
 }
 
 } // namespace row_major

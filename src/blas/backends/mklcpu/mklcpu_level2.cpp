@@ -23,8 +23,9 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "mklcpu_common.hpp"
 #include "oneapi/mkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
+
+#include "../mkl_common/mkl_blas_backend.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -32,16 +33,14 @@ namespace blas {
 namespace mklcpu {
 namespace column_major {
 
-#define CBLASMAJOR CblasColMajor
-#include "mklcpu_level2.cxx"
-#undef CBLASMAJOR
+namespace blas_major = ::oneapi::mkl::blas::column_major;
+#include "../mkl_common/mkl_level2.cxx"
 
 } // namespace column_major
 namespace row_major {
 
-#define CBLASMAJOR CblasRowMajor
-#include "mklcpu_level2.cxx"
-#undef CBLASMAJOR
+namespace blas_major = ::oneapi::mkl::blas::row_major;
+#include "../mkl_common/mkl_level2.cxx"
 
 } // namespace row_major
 } // namespace mklcpu

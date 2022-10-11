@@ -23,10 +23,18 @@
 #include <cublas_v2.h>
 #include <cusolverDn.h>
 #include <complex>
-#include <sycl.hpp>
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
+#include <CL/sycl.hpp>
+#endif
 #include "oneapi/mkl/types.hpp"
 #include "cusolver_scope_handle.hpp"
+#if __has_include(<sycl/detail/pi.hpp>)
 #include <sycl/detail/pi.hpp>
+#else
+#include <CL/sycl/detail/pi.hpp>
+#endif
 namespace oneapi {
 namespace mkl {
 namespace lapack {

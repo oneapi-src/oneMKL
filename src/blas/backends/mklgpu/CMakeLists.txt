@@ -23,7 +23,6 @@ find_package(MKL REQUIRED)
 
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
-  mklgpu_common.hpp
   mklgpu_level1.cpp mklgpu_level2.cpp mklgpu_level3.cpp mklgpu_batch.cpp mklgpu_extensions.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mklgpu_wrappers.cpp>
 )

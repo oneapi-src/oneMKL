@@ -360,11 +360,50 @@ With the AMD rocBLAS backend:
             -DENABLE_NETLIB_BACKEND=False/True                  # hipSYCL supports NETLIB backend
             -DENABLE_MKLGPU_BACKEND=False                       # disable Intel MKL GPU backend
             -DENABLE_ROCBLAS_BACKEND=True                     \
-            -DTARGET_DOMAINS=blas                               # hipSYCL only supports the BLAS domain
+            -DTARGET_DOMAINS=blas                               # hipSYCL supports BLAS and RNG domains
             -DHIPSYCL_TARGETS=omp\;hip:gfx906                   # Specify the targetted device architectures 
             -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL                # Use the hipSYCL cmake integration
             [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]   # required only for testing
    cmake --build .
+   ctest
+   cmake --install . --prefix <path_to_install_dir>
+
+To build with the rocRAND backend instead simply replace:
+
+.. code-block:: bash
+
+   -DENABLE_ROCBLAS_BACKEND=True   \
+   -DTARGET_DOMAINS=blas
+
+With:
+
+.. code-block:: bash
+
+   -DENABLE_ROCRAND_BACKEND=True   \
+   -DTARGET_DOMAINS=rng
+
+Building for ROCm (with clang++)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+With the AMD rocBLAS backend:
+
+
+* On Linux*
+
+.. code-block:: bash
+
+   # Inside <path to onemkl>
+   mkdir build && cd build
+   cmake .. [-DCMAKE_CXX_COMPILER=<path_to_clang++_compiler>/bin/clang++]  # required only if clang++ is not found in environment variable PATH
+            [-DCMAKE_C_COMPILER=<path_to_clang_compiler>/bin/clang]        # required only if clang is not found in environment variable PATH
+            -DENABLE_CUBLAS_BACKEND=False                                \
+            -DENABLE_MKLCPU_BACKEND=False                                \ # disable Intel MKL CPU backend
+            -DENABLE_MKLGPU_BACKEND=False                                \ # disable Intel MKL GPU backend
+            -DENABLE_ROCBLAS_BACKEND=True                                \
+            -DHIP_TARGETS=gfx90a                                         \ # Specify the targetted device architectures
+            [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]              # required only for testing
+   cmake --build .
+   export SYCL_DEVICE_FILTER=HIP
    ctest
    cmake --install . --prefix <path_to_install_dir>
 
@@ -475,6 +514,13 @@ CMake.
   When building with hipSYCL, you must additionally provide
   ``-DHIPSYCL_TARGETS`` according to the targeted hardware. For the options,
   see the tables in the hipSYCL-specific sections.
+
+
+.. note::
+  When building with clang++ for AMD backends, you must additionally set
+  ``SYCL_DEVICE_FILTER`` to ``HIP`` and provide ``-DHIP_TARGETS`` according to
+  the targeted hardware. This backend has only been tested for the ``gfx90a``
+  architecture (MI210) at the time of writing.
 
 .. _project_cleanup:
 

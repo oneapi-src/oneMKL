@@ -30,7 +30,11 @@
 #include "oneapi/mkl/types.hpp"
 #ifndef __HIPSYCL__
 #include "rocblas_scope_handle.hpp"
+#if __has_include(<sycl/detail/pi.hpp>)
+#include <sycl/detail/pi.hpp>
+#else
 #include <CL/sycl/detail/pi.hpp>
+#endif
 #else
 #include "rocblas_scope_handle_hipsycl.hpp"
 
@@ -51,7 +55,7 @@ static inline void host_task_internal(H &cgh, sycl::queue queue, F f) {
 #else
 template <typename H, typename F>
 static inline void host_task_internal(H &cgh, sycl::queue queue, F f) {
-    cgh.interop_task([f, queue](sycl::interop_handler ih) {
+    cgh.host_task([f, queue](sycl::interop_handle ih) {
         auto sc = RocblasScopedContextHandler(queue, ih);
         f(sc);
     });
