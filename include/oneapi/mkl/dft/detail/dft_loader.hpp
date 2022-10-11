@@ -16,19 +16,12 @@
 namespace oneapi {
 namespace mkl {
 namespace dft {
+namespace detail {
 
-namespace mklcpu {
+template <oneapi::mkl::dft::precision prec, oneapi::mkl::dft::domain dom>
+oneapi::mkl::dft::detail::descriptor_impl* create_descriptor(std::size_t length);
 
-ONEMKL_EXPORT oneapi::mkl::dft::detail::descriptor_impl* create_descriptor(std::size_t length);
-
-} // namespace mklcpu
-
-namespace mklgpu {
-
-ONEMKL_EXPORT oneapi::mkl::dft::detail::descriptor_impl* create_descriptor(std::size_t length);
-
-} // namespace mklgpu
-
+} // namespace detail 
 } // namespace dft
 } // namespace mkl
 } // namespace oneapi

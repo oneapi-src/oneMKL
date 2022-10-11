@@ -34,6 +34,8 @@ public:
 protected:
     sycl::queue queue_;
     std::size_t length_;
+    oneapi::mkl::dft::precision prec_;
+    oneapi::mkl::dft::domain dom_;
 };
 
 } // namespace detail

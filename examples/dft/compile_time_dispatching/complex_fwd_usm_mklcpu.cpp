@@ -67,6 +67,7 @@ void run_getrs_example(const sycl::device& cpu_device) {
         std::exit(2);
     };
 
+    std::cout << "DFTI example" << std::endl;
     //
     // Preparation on cpu
     //
@@ -75,9 +76,13 @@ void run_getrs_example(const sycl::device& cpu_device) {
     sycl::event cpu_getrf_done;
 
     double *x_usm = (double*) malloc_shared(n*2*sizeof(double), cpu_queue.get_device(), cpu_queue.get_context());
-    std::cout << "DFTI example" << std::endl;
+
+    // enabling
     oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::COMPLEX> desc(10);
-    // compute_forward(desc, x_usm);
+    // desc.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (double)(1.0/N));
+    // [compile time] desc.commit(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue });
+    // [run time]     desc.commit(cpu_queue);
+    // oneapi::mkl::dft::compute_forward(desc, x_usm);
 }
 
 //

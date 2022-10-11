@@ -25,7 +25,6 @@ find_package(MKL REQUIRED)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
   commit.cpp
-  descriptor.cpp
   forward.cpp
   backward.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_dft_cpu_wrappers.cpp>

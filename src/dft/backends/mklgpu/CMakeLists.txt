@@ -24,8 +24,8 @@ find_package(MKL REQUIRED)
 
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
+  ../descriptor.cpp
   commit.cpp
-  descriptor.cpp
   forward.cpp
   backward.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_dft_gpu_wrappers.cpp>

@@ -19,6 +19,7 @@
 
 #include "oneapi/mkl/dft/detail/mklcpu/onemkl_dft_mklcpu.hpp"
 #include "dft/function_table.hpp"
+#include "../descriptor.cxx"
 
 #define WRAPPER_VERSION 1
 

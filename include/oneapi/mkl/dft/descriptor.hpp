@@ -41,16 +41,10 @@ class descriptor {
 private:
     sycl::queue queue_;
     std::unique_ptr<detail::descriptor_impl> pimpl_;
-    int x;
 public:
     // Syntax for 1-dimensional DFT
     descriptor(std::int64_t length)
-#ifdef ENABLE_MKLCPU_BACKEND
-        : pimpl_(mklcpu::create_descriptor(length)) {}
-#endif
-#ifdef ENABLE_MKLGPU_BACKEND
-        : pimpl_(mklgpu::create_descriptor(length)) {}
-#endif
+        : pimpl_(detail::create_descriptor<prec, dom>(length)) {}
 
     // Syntax for d-dimensional DFT
     descriptor(std::vector<std::int64_t> dimensions);
