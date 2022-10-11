@@ -280,7 +280,6 @@ struct CudaEquivalentType<std::complex<double>> {
 
 /* devinfo */
 
-<<<<<<< HEAD
 // Accepts a int*, copies the memory from device to host,
 // checks value does not indicate an error, frees the device memory
 inline void lapack_info_check_and_free(int *dev_info_d, const char *func_name,
@@ -321,31 +320,6 @@ inline sycl::event free_async(sycl::queue &queue, T *ptr,
         cgh.host_task([=](sycl::interop_handle ih) { sycl::free(ptr, queue); });
     });
     return done;
-=======
-inline void get_cusolver_devinfo(sycl::queue &queue, sycl::buffer<int> &devInfo,
-                                 std::vector<int> &dev_info_) {
-    sycl::host_accessor<int, 1, sycl::access::mode::read> dev_info_acc{ devInfo };
-    for (unsigned int i = 0; i < dev_info_.size(); ++i)
-        dev_info_[i] = dev_info_acc[i];
-}
-
-inline void get_cusolver_devinfo(sycl::queue &queue, const int *devInfo,
-                                 std::vector<int> &dev_info_) {
-    queue.wait();
-    queue.memcpy(dev_info_.data(), devInfo, sizeof(int));
-}
-
-template <typename DEVINFO_T>
-inline void lapack_info_check(sycl::queue &queue, DEVINFO_T devinfo, const char *func_name,
-                              const char *cufunc_name, int dev_info_size = 1) {
-    std::vector<int> dev_info_(dev_info_size);
-    get_cusolver_devinfo(queue, devinfo, dev_info_);
-    for (const auto &val : dev_info_) {
-        if (val > 0)
-            throw oneapi::mkl::lapack::computation_error(
-                func_name, std::string(cufunc_name) + " failed with info = " + std::to_string(val),
-                val);
-    }
 }
 
 /* batched helpers */
@@ -359,7 +333,6 @@ T **create_ptr_list_from_stride(T *ptr, int64_t ptr_stride, int64_t batch_size) 
         ptr_list[i] = ptr + i * ptr_stride;
 
     return ptr_list;
->>>>>>> develop
 }
 
 } // namespace cusolver
