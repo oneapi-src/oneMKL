@@ -90,10 +90,10 @@ oneapi::mkl::blas::column_major::gemm(gpu_queue, transA, transB, m, ...);
 How to build an application with run-time dispatching:
 
 if OS is Linux, use icpx compiler. If OS is Windows, use icx compiler.
-Windows example:
+Linux example:
 ```cmd
-$> icx -fsycl –I$ONEMKL/include app.cpp
-$> icx -fsycl app.o –L$ONEMKL/lib –lonemkl
+$> icpx -fsycl –I$ONEMKL/include app.cpp
+$> icpx -fsycl app.o –L$ONEMKL/lib –lonemkl
 ```
 
 - **Compile-time dispatching**: The application uses a templated backend selector API where the template parameters specify the required backends and third-party libraries and the application is linked with the required oneMKL backend wrapper libraries (libraries can be static or dynamic).
