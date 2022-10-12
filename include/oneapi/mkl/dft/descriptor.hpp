@@ -27,6 +27,7 @@
 #endif
 
 #include "oneapi/mkl/types.hpp"
+#include "oneapi/mkl/dft/types.hpp"
 #include "oneapi/mkl/detail/backend_selector.hpp"
 
 #include "oneapi/mkl/dft/detail/descriptor_impl.hpp"
@@ -47,11 +48,15 @@ public:
         : pimpl_(detail::create_descriptor<prec, dom>(length)) {}
 
     // Syntax for d-dimensional DFT
-    descriptor(std::vector<std::int64_t> dimensions);
+    descriptor(std::vector<std::int64_t> dimensions)
+        : pimpl_(detail::create_descriptor<prec, dom>(dimensions)) {}
 
     // ~descriptor();
 
-    void set_value(config_param param, ...);
+    template<typename ...Types>
+    void set_value(config_param param, Types... args) {
+        pimpl_->set_value(param, args...);
+    }
 
     void get_value(config_param param, ...);
 

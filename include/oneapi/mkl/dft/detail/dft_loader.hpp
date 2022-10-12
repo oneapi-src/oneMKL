@@ -21,6 +21,9 @@ namespace detail {
 template <oneapi::mkl::dft::precision prec, oneapi::mkl::dft::domain dom>
 oneapi::mkl::dft::detail::descriptor_impl* create_descriptor(std::size_t length);
 
+template <oneapi::mkl::dft::precision prec, oneapi::mkl::dft::domain dom>
+oneapi::mkl::dft::detail::descriptor_impl* create_descriptor(std::vector<std::int64_t> dimensions);
+
 } // namespace detail 
 } // namespace dft
 } // namespace mkl

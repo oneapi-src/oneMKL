@@ -8,6 +8,7 @@
 #include "mkl_version.h"
 
 #include "oneapi/mkl/types.hpp"
+#include "oneapi/mkl/dft/types.hpp"
 
 #include "oneapi/mkl/dft/detail/descriptor_impl.hpp"
 #include "oneapi/mkl/dft/descriptor.hpp"
@@ -21,16 +22,27 @@ namespace mkl {
 namespace dft {
 namespace detail {
 
+template <precision prec, domain dom>
 class descriptor_derived_impl : public oneapi::mkl::dft::detail::descriptor_impl {
 public:
-    descriptor_derived_impl(std::size_t length)
-            : oneapi::mkl::dft::detail::descriptor_impl(length) {
-        std::cout << "special entry points" << std::endl;
+    descriptor_derived_impl(std::size_t length) : oneapi::mkl::dft::detail::descriptor_impl(length) {
+        prec_ = prec;
+        dom_ = dom;
     }
 
-    descriptor_derived_impl(const descriptor_derived_impl* other)
-            : oneapi::mkl::dft::detail::descriptor_impl(*other) {
+    descriptor_derived_impl(std::vector<std::int64_t> dimensions)
+            : oneapi::mkl::dft::detail::descriptor_impl(dimensions) {
+        prec_ = prec;
+        dom_ = dom;
+    }
+
+    descriptor_derived_impl(const descriptor_derived_impl* other) : oneapi::mkl::dft::detail::descriptor_impl(*other) {
         std::cout << "special entry points copy const" << std::endl;
+    }
+
+    template<typename ...Types>
+    void set_value(config_param param, Types... args) {
+        printf("test... derived\n");
     }
 
     virtual oneapi::mkl::dft::detail::descriptor_impl* copy_state() override {
@@ -39,49 +51,67 @@ public:
 
     virtual ~descriptor_derived_impl() override {
         std::cout << "descriptor_derived_impl descriptor" << std::endl;
+        std::cout << values.bwd_scale << std::endl;
     }
-
-    void set_precision(oneapi::mkl::dft::precision prec) {prec_ = prec;}
-    void set_domain(oneapi::mkl::dft::domain dom) {dom_ = dom;}
 
 private:
     DFTI_DESCRIPTOR_HANDLE hand;
 };
 
+// base constructor specialized
 template <>
 oneapi::mkl::dft::detail::descriptor_impl*
 create_descriptor<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::COMPLEX>(std::size_t length) {
-    auto desc_pimpl = new descriptor_derived_impl(length);
-    desc_pimpl->set_precision(oneapi::mkl::dft::precision::DOUBLE);
-    desc_pimpl->set_domain(oneapi::mkl::dft::domain::COMPLEX);
-    return desc_pimpl;
+    return new descriptor_derived_impl<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::COMPLEX>(length);
 }
 
 template <>
 oneapi::mkl::dft::detail::descriptor_impl*
 create_descriptor<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::REAL>(std::size_t length) {
-    auto desc_pimpl = new descriptor_derived_impl(length);
-    desc_pimpl->set_precision(oneapi::mkl::dft::precision::DOUBLE);
-    desc_pimpl->set_domain(oneapi::mkl::dft::domain::REAL);
-    return desc_pimpl;
+    return new descriptor_derived_impl<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::REAL>(length);
 }
 
 template <>
 oneapi::mkl::dft::detail::descriptor_impl*
 create_descriptor<oneapi::mkl::dft::precision::SINGLE, oneapi::mkl::dft::domain::COMPLEX>(std::size_t length) {
-    auto desc_pimpl = new descriptor_derived_impl(length);
-    desc_pimpl->set_precision(oneapi::mkl::dft::precision::SINGLE);
-    desc_pimpl->set_domain(oneapi::mkl::dft::domain::COMPLEX);
-    return desc_pimpl;
+    return new descriptor_derived_impl<oneapi::mkl::dft::precision::SINGLE, oneapi::mkl::dft::domain::COMPLEX>(length);
 }
 
 template <>
 oneapi::mkl::dft::detail::descriptor_impl*
 create_descriptor<oneapi::mkl::dft::precision::SINGLE, oneapi::mkl::dft::domain::REAL>(std::size_t length) {
-    auto desc_pimpl = new descriptor_derived_impl(length);
-    desc_pimpl->set_precision(oneapi::mkl::dft::precision::SINGLE);
-    desc_pimpl->set_domain(oneapi::mkl::dft::domain::REAL);
-    return desc_pimpl;
+    return new descriptor_derived_impl<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::REAL>(length);
+}
+
+// vectorized constructor specialized
+template <>
+oneapi::mkl::dft::detail::descriptor_impl*
+create_descriptor<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::COMPLEX>(
+    std::vector<std::int64_t> dimensions) {
+    return new descriptor_derived_impl<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::COMPLEX>(
+        dimensions);
+}
+
+template <>
+oneapi::mkl::dft::detail::descriptor_impl*
+create_descriptor<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::REAL>(
+    std::vector<std::int64_t> dimensions) {
+    return new descriptor_derived_impl<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::REAL>(dimensions);
+}
+
+template <>
+oneapi::mkl::dft::detail::descriptor_impl*
+create_descriptor<oneapi::mkl::dft::precision::SINGLE, oneapi::mkl::dft::domain::COMPLEX>(
+    std::vector<std::int64_t> dimensions) {
+    return new descriptor_derived_impl<oneapi::mkl::dft::precision::SINGLE, oneapi::mkl::dft::domain::COMPLEX>(
+        dimensions);
+}
+
+template <>
+oneapi::mkl::dft::detail::descriptor_impl*
+create_descriptor<oneapi::mkl::dft::precision::SINGLE, oneapi::mkl::dft::domain::REAL>(
+    std::vector<std::int64_t> dimensions) {
+    return new descriptor_derived_impl<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::REAL>(dimensions);
 }
 
 } // namespace detail

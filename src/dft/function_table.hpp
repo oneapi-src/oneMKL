@@ -30,6 +30,7 @@
 #endif
 
 #include "oneapi/mkl/types.hpp"
+#include "oneapi/mkl/dft/types.hpp"
 #include "oneapi/mkl/dft/descriptor.hpp"
 
 typedef struct {
