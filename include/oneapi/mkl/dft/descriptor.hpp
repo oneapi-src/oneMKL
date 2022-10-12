@@ -62,6 +62,14 @@ public:
 
     void commit(sycl::queue& queue);
 
+#ifdef ENABLE_MKLCPU_BACKEND
+    void commit(backend_selector<backend::mklcpu> selector);
+#endif
+
+#ifdef ENABLE_MKLGPU_BACKEND
+    void commit(backend_selector<backend::mklgpu> selector);
+#endif
+
     sycl::queue& get_queue() {
         return queue_;
     };

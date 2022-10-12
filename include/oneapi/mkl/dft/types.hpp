@@ -104,6 +104,10 @@ struct dft_values {
     config_value placement;
     config_value complex_storage;
     config_value conj_even_storage;
+
+    std::int64_t dimension;
+    config_value domain;
+    config_value precision;
 };
 } // namespace dft
 } // namespace mkl 
