@@ -12,7 +12,7 @@ application.
   ``clang++`` from `Intel project for LLVM* technology <https://github.com/intel/llvm/releases>`_.
 * If your application requires AMD GPU, use ``hipSYCL`` from the `hipSYCL repository <https://github.com/illuhad/hipSYCL>`_
   or use the latest release of ``clang++`` from `Intel project for LLVM* technology <https://github.com/intel/llvm/releases>`_.
-* If no Intel GPU, NVIDIA GPU, or AMD GPU is required, you can use either
+* If no Intel GPU, NVIDIA GPU, or AMD GPU is required, on Linux you can use either
   `Intel(R) oneAPI DPC++ Compiler <https://software.intel.com/en-us/oneapi/dpc-compiler>`_
   ``icpx``, ``clang++``, or ``hipSYCL`` and on Windows you can use either
   `Intel(R) oneAPI DPC++ Compiler <https://software.intel.com/en-us/oneapi/dpc-compiler>`_
