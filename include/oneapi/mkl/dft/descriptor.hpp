@@ -31,7 +31,6 @@
 #include "oneapi/mkl/detail/backend_selector.hpp"
 
 #include "oneapi/mkl/dft/detail/descriptor_impl.hpp"
-#include "oneapi/mkl/dft/detail/dft_loader.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -39,24 +38,16 @@ namespace dft {
 
 template <precision prec, domain dom>
 class descriptor {
-private:
-    sycl::queue queue_;
-    std::unique_ptr<detail::descriptor_impl> pimpl_;
 public:
     // Syntax for 1-dimensional DFT
-    descriptor(std::int64_t length)
-        : pimpl_(detail::create_descriptor<prec, dom>(length)) {}
+    descriptor(std::int64_t length);
 
     // Syntax for d-dimensional DFT
-    descriptor(std::vector<std::int64_t> dimensions)
-        : pimpl_(detail::create_descriptor<prec, dom>(dimensions)) {}
+    descriptor(std::vector<std::int64_t> dimensions);
 
-    // ~descriptor();
+    ~descriptor() {}
 
-    template<typename ...Types>
-    void set_value(config_param param, Types... args) {
-        pimpl_->set_value(param, args...);
-    }
+    void set_value(config_param param, ...);
 
     void get_value(config_param param, ...);
 
@@ -72,7 +63,17 @@ public:
 
     sycl::queue& get_queue() {
         return queue_;
-    };
+    }
+private:
+    sycl::queue queue_;
+    std::unique_ptr<detail::descriptor_impl> pimpl_;
+
+    std::int64_t rank_;
+    std::vector<std::int64_t>  dimension_;
+
+    // descriptor configuration values and structs
+    void* handle_;
+    oneapi::mkl::dft::dft_values values;
 };
 
 } //namespace dft
