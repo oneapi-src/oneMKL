@@ -21,12 +21,13 @@
 
 set(LIB_NAME onemkl_blas_rocblas)
 set(LIB_OBJ ${LIB_NAME}_obj)
-find_package(rocblas REQUIRED)
+find_package(rocBLAS REQUIRED)
 set(SOURCES rocblas_level1.cpp 
                 rocblas_level2.cpp 
                 rocblas_level3.cpp 
                 rocblas_batch.cpp 
                 rocblas_extensions.cpp
+                $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},dpc++>:rocblas_scope_handle.cpp >
                 $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},hipsycl>:rocblas_scope_handle_hipsycl.cpp >
                 $<$<BOOL:${BUILD_SHARED_LIBS}>: rocblas_wrappers.cpp>)
 add_library(${LIB_NAME})
@@ -38,7 +39,7 @@ target_include_directories(${LIB_OBJ}
           ${PROJECT_BINARY_DIR}/bin
 )
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL roc::rocblas)
+target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ONEMKL::rocBLAS::rocBLAS)
 target_compile_features(${LIB_OBJ} PUBLIC cxx_std_17)
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON)
@@ -62,3 +63,4 @@ install(TARGETS ${LIB_NAME} EXPORT oneMKLTargets
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
 )
+
