@@ -45,7 +45,7 @@ public:
     // Syntax for d-dimensional DFT
     descriptor(std::vector<std::int64_t> dimensions);
 
-    ~descriptor() {}
+    ~descriptor();
 
     void set_value(config_param param, ...);
 

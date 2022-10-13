@@ -84,7 +84,7 @@ void run_getrs_example(const sycl::device& cpu_device) {
     oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::COMPLEX> desc_vector({N,N});
     desc.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (double)(1.0/N));
     desc.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, 4);
-    desc.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, rs);
+    desc_vector.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, rs);
     desc.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, N);
     desc.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, N);
     desc.set_value(oneapi::mkl::dft::config_param::PLACEMENT, oneapi::mkl::dft::config_value::NOT_INPLACE);
