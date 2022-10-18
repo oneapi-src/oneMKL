@@ -22,6 +22,7 @@
 
 #include <stdlib.h>
 #include <complex>
+#include "oneapi/mkl/exceptions.hpp"
 #include "cblas.h"
 #include "test_helper.hpp"
 
@@ -48,13 +49,10 @@ static void (*zrotg_p)(void *a, void *b, const double *c, void *s);
 
 static LIB_TYPE cblas_library() {
     if (h == NULL) {
-#ifdef _WIN64
-        h = GET_LIB_HANDLE("libblas.dll");
-        if (h == NULL)
-            h = GET_LIB_HANDLE("blas.dll");
-#else
-        h = GET_LIB_HANDLE("libblas.so");
-#endif
+        h = GET_LIB_HANDLE(REF_BLAS_LIBNAME);
+        if (h == NULL) {
+            throw oneapi::mkl::library_not_found("BLAS", "cblas_library()","CBLAS library not found.");
+        }
     }
     return h;
 }
@@ -2011,22 +2009,22 @@ void omatcopy_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int6
     if (trans == oneapi::mkl::transpose::nontrans) {
         for (int64_t j = 0; j < logical_n; j++) {
             for (int64_t i = 0; i < logical_m; i++) {
-                B[j*ldb + i] = alpha * A[j*lda + i];
+                B[j * ldb + i] = alpha * A[j * lda + i];
             }
         }
     }
     else if (trans == oneapi::mkl::transpose::trans) {
         for (int64_t j = 0; j < logical_n; j++) {
             for (int64_t i = 0; i < logical_m; i++) {
-                B[i*ldb + j] = alpha * A[j*lda + i];
+                B[i * ldb + j] = alpha * A[j * lda + i];
             }
         }
     }
-    else {        
+    else {
         // conjtrans
         for (int64_t j = 0; j < logical_n; j++) {
             for (int64_t i = 0; i < logical_m; i++) {
-                B[i*ldb + j] = alpha * sametype_conj(A[j*lda + i]);
+                B[i * ldb + j] = alpha * sametype_conj(A[j * lda + i]);
             }
         }
     }
@@ -2050,22 +2048,22 @@ void imatcopy_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int6
     if (trans == oneapi::mkl::transpose::nontrans) {
         for (int64_t j = 0; j < logical_n; j++) {
             for (int64_t i = 0; i < logical_m; i++) {
-                temp[j*ld_temp + i] = alpha * A[j*lda + i];
+                temp[j * ld_temp + i] = alpha * A[j * lda + i];
             }
         }
     }
     else if (trans == oneapi::mkl::transpose::trans) {
         for (int64_t j = 0; j < logical_n; j++) {
             for (int64_t i = 0; i < logical_m; i++) {
-                temp[i*ld_temp + j] = alpha * A[j*lda + i];
+                temp[i * ld_temp + j] = alpha * A[j * lda + i];
             }
         }
     }
-    else {        
+    else {
         // conjtrans
         for (int64_t j = 0; j < logical_n; j++) {
             for (int64_t i = 0; i < logical_m; i++) {
-                temp[i*ld_temp + j] = alpha * sametype_conj(A[j*lda + i]);
+                temp[i * ld_temp + j] = alpha * sametype_conj(A[j * lda + i]);
             }
         }
     }
@@ -2073,14 +2071,14 @@ void imatcopy_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int6
     if (trans == oneapi::mkl::transpose::nontrans) {
         for (int64_t j = 0; j < logical_n; j++) {
             for (int64_t i = 0; i < logical_m; i++) {
-                A[j*ldb + i] = temp[j*ld_temp + i];
+                A[j * ldb + i] = temp[j * ld_temp + i];
             }
         }
     }
     else {
         for (int64_t j = 0; j < logical_n; j++) {
             for (int64_t i = 0; i < logical_m; i++) {
-                A[i*ldb + j] = temp[i*ld_temp + j];
+                A[i * ldb + j] = temp[i * ld_temp + j];
             }
         }
     }
@@ -2088,8 +2086,8 @@ void imatcopy_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int6
 
 template <typename fp>
 void omatadd_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
-                 oneapi::mkl::transpose transb, int64_t m, int64_t n,
-                 fp alpha, fp *A, int64_t lda, fp beta, fp *B, int64_t ldb, fp *C, int64_t ldc) {
+                 oneapi::mkl::transpose transb, int64_t m, int64_t n, fp alpha, fp *A, int64_t lda,
+                 fp beta, fp *B, int64_t ldb, fp *C, int64_t ldc) {
     int64_t logical_m, logical_n;
     if (layout == oneapi::mkl::layout::column_major) {
         logical_m = m;
@@ -2102,29 +2100,29 @@ void omatadd_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
 
     for (int64_t j = 0; j < logical_n; j++) {
         for (int64_t i = 0; i < logical_m; i++) {
-            C[j*ldc + i] = 0.0;
+            C[j * ldc + i] = 0.0;
         }
     }
 
     if (transa == oneapi::mkl::transpose::nontrans) {
         for (int64_t j = 0; j < logical_n; j++) {
             for (int64_t i = 0; i < logical_m; i++) {
-                C[j*ldc + i] += alpha * A[j*lda + i];
+                C[j * ldc + i] += alpha * A[j * lda + i];
             }
         }
     }
     else if (transa == oneapi::mkl::transpose::trans) {
         for (int64_t j = 0; j < logical_n; j++) {
             for (int64_t i = 0; i < logical_m; i++) {
-                C[j*ldc + i] += alpha * A[i*lda + j];
+                C[j * ldc + i] += alpha * A[i * lda + j];
             }
         }
     }
-    else {        
+    else {
         // conjtrans
         for (int64_t j = 0; j < logical_n; j++) {
             for (int64_t i = 0; i < logical_m; i++) {
-                C[j*ldc + i] += alpha * sametype_conj(A[i*lda + j]);
+                C[j * ldc + i] += alpha * sametype_conj(A[i * lda + j]);
             }
         }
     }
@@ -2132,22 +2130,22 @@ void omatadd_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
     if (transb == oneapi::mkl::transpose::nontrans) {
         for (int64_t j = 0; j < logical_n; j++) {
             for (int64_t i = 0; i < logical_m; i++) {
-                C[j*ldc + i] += beta * B[j*ldb + i];
+                C[j * ldc + i] += beta * B[j * ldb + i];
             }
         }
     }
     else if (transa == oneapi::mkl::transpose::trans) {
         for (int64_t j = 0; j < logical_n; j++) {
             for (int64_t i = 0; i < logical_m; i++) {
-                C[j*ldc + i] += beta * B[i*ldb + j];
+                C[j * ldc + i] += beta * B[i * ldb + j];
             }
         }
     }
-    else {        
+    else {
         // conjtrans
         for (int64_t j = 0; j < logical_n; j++) {
             for (int64_t i = 0; i < logical_m; i++) {
-                C[j*ldc + i] += beta * sametype_conj(B[i*ldb + j]);
+                C[j * ldc + i] += beta * sametype_conj(B[i * ldb + j]);
             }
         }
     }
