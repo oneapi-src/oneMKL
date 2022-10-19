@@ -205,7 +205,7 @@ Supported domains: BLAS, LAPACK, RNG
             <td align="center">NVIDIA GPU</td>
             <td align="center">NVIDIA cuRAND</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">LLVM*</td>
+            <td align="center">LLVM*, hipSYCL</td>
         </tr>
         <tr>
             <td align="center">AMD GPU</td>

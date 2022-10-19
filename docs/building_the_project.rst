@@ -310,8 +310,44 @@ Building for oneMKL
      ctest
      cmake --install . --prefix <path_to_install_dir>
 
-Building for CUDA
-^^^^^^^^^^^^^^^^^
+Building for CUDA (with hipSYCL)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* On Linux*
+
+With the cuBLAS backend:
+
+.. code-block:: bash
+
+   # Inside <path to onemkl>
+   mkdir build && cd build
+   cmake .. -DENABLE_CUBLAS_BACKEND=True \
+            -DENABLE_MKLGPU_BACKEND=False                                # Disable all backends except for cuBLAS
+            -DENABLE_MKLCPU_BACKEND=False \
+            -DENABLE_NETLIB_BACKEND=False \
+            -DENABLE_ROCBLAS_BACKEND=False \
+            -DHIPSYCL_TARGETS=cuda:sm_75 \                               # Specify the targeted device architectures 
+            -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL \
+            [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]            # required only for testing
+   cmake --build .
+   ctest
+   cmake --install . --prefix <path_to_install_dir>
+
+To build with the cuRAND backend instead simply replace:
+
+.. code-block:: bash
+
+   -DENABLE_CUBLAS_BACKEND=True   \
+
+With:
+
+.. code-block:: bash
+
+   -DENABLE_CURAND_BACKEND=True   \
+
+
+Building for CUDA (with clang++)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * On Linux*
 
@@ -342,6 +378,7 @@ With:
 .. code-block:: bash
 
    -DENABLE_CURAND_BACKEND=True   \
+
 
 Building for ROCm (with hipSYCL)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
