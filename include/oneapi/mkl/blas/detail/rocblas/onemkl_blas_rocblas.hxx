@@ -1972,6 +1972,7 @@ sycl::event omatadd_batch(sycl::queue &queue, transpose transa, transpose transb
                           const std::complex<double> *b, int64_t ldb, int64_t stride_b,
                           std::complex<double> *c, int64_t ldc, int64_t stride_c,
                           int64_t batch_size, const std::vector<sycl::event> &dependencies = {});
+
 sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
                      const float *a, int64_t lda, float *b, int64_t ldb,
                      const std::vector<sycl::event> &dependencies = {});
