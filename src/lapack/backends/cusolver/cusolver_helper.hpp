@@ -193,11 +193,11 @@ public:
         CUDA_ERROR_FUNC(cuStreamSynchronize, __cuda_err, currentStreamId);   \
     }
 
-#define CUSOLVER_ERROR_FUNC_T_SYNC(name, func, err, handle, ...)             \
-    err = func(handle, __VA_ARGS__);                                         \
-    if (err != CUSOLVER_STATUS_SUCCESS) {                                    \
-        throw cusolver_error(std::string(name) + std::string(" : "), err);   \
-    }                                                                        \
+#define CUSOLVER_ERROR_FUNC_T_SYNC(name, func, err, handle, ...)           \
+    err = func(handle, __VA_ARGS__);                                       \
+    if (err != CUSOLVER_STATUS_SUCCESS) {                                  \
+        throw cusolver_error(std::string(name) + std::string(" : "), err); \
+    }                                                                      \
     CUSOLVER_SYNC(err, handle)
 
 inline cusolverEigType_t get_cusolver_itype(std::int64_t itype) {

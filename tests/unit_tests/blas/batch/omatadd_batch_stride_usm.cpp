@@ -163,8 +163,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     int ldc_ref = (int)ldc;
     int batch_size_ref = (int)batch_size;
     for (i = 0; i < batch_size_ref; i++) {
-        omatadd_ref(layout, transa, transb, m_ref, n_ref, alpha, a_array[i],
-                    lda_ref, beta, b_array[i], ldb_ref, c_ref_array[i], ldc_ref);
+        omatadd_ref(layout, transa, transb, m_ref, n_ref, alpha, a_array[i], lda_ref, beta,
+                    b_array[i], ldb_ref, c_ref_array[i], ldc_ref);
     }
 
     // Call DPC++ OMATADD_BATCH_STRIDE
@@ -221,9 +221,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good =
-        check_equal_matrix(C, C_ref, oneapi::mkl::layout::column_major, stride_c * batch_size, 1,
-                           stride_c * batch_size, 10, std::cout);
+    bool good = check_equal_matrix(C, C_ref, oneapi::mkl::layout::column_major,
+                                   stride_c * batch_size, 1, stride_c * batch_size, 10, std::cout);
 
     oneapi::mkl::free_shared(a_array, cxt);
     oneapi::mkl::free_shared(b_array, cxt);
