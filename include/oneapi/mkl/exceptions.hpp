@@ -115,6 +115,15 @@ public:
                                      "batch error" + ((info.length() != 0) ? (": " + info) : "")) {}
 };
 
+class library_not_found : public oneapi::mkl::exception {
+public:
+    library_not_found(const std::string &domain, const std::string &function,
+                      const std::string &info = "")
+            : oneapi::mkl::exception(
+                  domain, function,
+                  "library not found" + ((info.length() != 0) ? (": " + info) : "")) {}
+};
+
 } // namespace mkl
 } // namespace oneapi
 

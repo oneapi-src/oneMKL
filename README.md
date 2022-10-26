@@ -89,9 +89,11 @@ oneapi::mkl::blas::column_major::gemm(gpu_queue, transA, transB, m, ...);
 ```
 How to build an application with run-time dispatching:
 
+if OS is Linux, use icpx compiler. If OS is Windows, use icx compiler.
+Linux example:
 ```cmd
-$> dpcpp -fsycl –I$ONEMKL/include app.cpp
-$> dpcpp -fsycl app.o –L$ONEMKL/lib –lonemkl
+$> icpx -fsycl –I$ONEMKL/include app.cpp
+$> icpx -fsycl app.o –L$ONEMKL/lib –lonemkl
 ```
 
 - **Compile-time dispatching**: The application uses a templated backend selector API where the template parameters specify the required backends and third-party libraries and the application is linked with the required oneMKL backend wrapper libraries (libraries can be static or dynamic).
@@ -120,7 +122,7 @@ $> clang++ -fsycl –I$ONEMKL/include app.cpp
 $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl_blas_mklcpu –lonemkl_blas_cublas
 ```
 
-*Refer to [Selecting a Compiler](https://oneapi-src.github.io/oneMKL/selecting_a_compiler.html) for the choice between `dpcpp` and `clang++` compilers.*
+*Refer to [Selecting a Compiler](https://oneapi-src.github.io/oneMKL/selecting_a_compiler.html) for the choice between `icpx/icx` and `clang++` compilers.*
 
 ### Supported Configurations:
 
@@ -203,7 +205,7 @@ Supported domains: BLAS, LAPACK, RNG
             <td align="center">NVIDIA GPU</td>
             <td align="center">NVIDIA cuRAND</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">LLVM*</td>
+            <td align="center">LLVM*, hipSYCL</td>
         </tr>
         <tr>
             <td align="center">AMD GPU</td>

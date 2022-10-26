@@ -147,8 +147,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     int ldb_ref = (int)ldb;
     int batch_size_ref = (int)batch_size;
     for (i = 0; i < batch_size_ref; i++) {
-        omatcopy_ref(layout, trans, m_ref, n_ref, alpha, a_array[i],
-                     lda_ref, b_ref_array[i], ldb_ref);
+        omatcopy_ref(layout, trans, m_ref, n_ref, alpha, a_array[i], lda_ref, b_ref_array[i],
+                     ldb_ref);
     }
 
     // Call DPC++ OMATCOPY_BATCH_STRIDE
@@ -204,9 +204,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good =
-        check_equal_matrix(B, B_ref, oneapi::mkl::layout::column_major, stride_b * batch_size, 1,
-                           stride_b * batch_size, 10, std::cout);
+    bool good = check_equal_matrix(B, B_ref, oneapi::mkl::layout::column_major,
+                                   stride_b * batch_size, 1, stride_b * batch_size, 10, std::cout);
 
     oneapi::mkl::free_shared(a_array, cxt);
     oneapi::mkl::free_shared(b_array, cxt);
