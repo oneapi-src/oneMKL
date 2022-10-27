@@ -57,7 +57,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
                 std::rethrow_exception(e);
             }
             catch (exception const &e) {
-                std::cout << "Caught asynchronous SYCL exception during OMATCOPY_BATCH_STRIDE:\n"
+                std::cout << "Caught asynchronous SYCL exception during OMATCOPY_BATCH:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
             }
@@ -193,7 +193,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
 #endif
     }
     catch (exception const &e) {
-        std::cout << "Caught synchronous SYCL exception during OMATCOPY_BATCH_STRIDE:\n"
+        std::cout << "Caught synchronous SYCL exception during OMATCOPY_BATCH:\n"
                   << e.what() << std::endl;
         print_error_code(e);
     }
@@ -212,12 +212,13 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     }
 
     catch (const std::runtime_error &error) {
-        std::cout << "Error raised during execution of OMATCOPY_BATCH_STRIDE:\n"
+        std::cout << "Error raised during execution of OMATCOPY_BATCH:\n"
                   << error.what() << std::endl;
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
     bool good = true;
+    idx = 0;
     for (i = 0; i < group_count; i++) {
         switch (layout) {
             case oneapi::mkl::layout::column_major:
