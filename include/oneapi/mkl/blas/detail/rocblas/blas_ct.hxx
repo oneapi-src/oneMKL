@@ -3812,7 +3812,7 @@ sycl::event omatadd_batch(backend_selector<backend::rocblas> selector, transpose
 
 sycl::event omatcopy(backend_selector<backend::rocblas> selector, transpose trans, std::int64_t m,
                      std::int64_t n, float alpha, const float *a, std::int64_t lda, float *b,
-                     std::int64_t ldb, const std::vector<sycl::event> &dependencies = {}) {
+                     std::int64_t ldb, const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::rocblas::MAJOR::omatcopy(selector.get_queue(), trans, m, n,
                                                             alpha, a, lda, b, ldb, dependencies);
     return done;
@@ -3820,7 +3820,7 @@ sycl::event omatcopy(backend_selector<backend::rocblas> selector, transpose tran
 
 sycl::event omatcopy(backend_selector<backend::rocblas> selector, transpose trans, std::int64_t m,
                      std::int64_t n, double alpha, const double *a, std::int64_t lda, double *b,
-                     std::int64_t ldb, const std::vector<sycl::event> &dependencies = {}) {
+                     std::int64_t ldb, const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::rocblas::MAJOR::omatcopy(selector.get_queue(), trans, m, n,
                                                             alpha, a, lda, b, ldb, dependencies);
     return done;
@@ -3829,7 +3829,7 @@ sycl::event omatcopy(backend_selector<backend::rocblas> selector, transpose tran
 sycl::event omatcopy(backend_selector<backend::rocblas> selector, transpose trans, std::int64_t m,
                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
                      std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
-                     const std::vector<sycl::event> &dependencies = {}) {
+                     const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::rocblas::MAJOR::omatcopy(selector.get_queue(), trans, m, n,
                                                             alpha, a, lda, b, ldb, dependencies);
     return done;
@@ -3838,7 +3838,7 @@ sycl::event omatcopy(backend_selector<backend::rocblas> selector, transpose tran
 sycl::event omatcopy(backend_selector<backend::rocblas> selector, transpose trans, std::int64_t m,
                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
                      std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
-                     const std::vector<sycl::event> &dependencies = {}) {
+                     const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::rocblas::MAJOR::omatcopy(selector.get_queue(), trans, m, n,
                                                             alpha, a, lda, b, ldb, dependencies);
     return done;
@@ -3846,7 +3846,7 @@ sycl::event omatcopy(backend_selector<backend::rocblas> selector, transpose tran
 
 sycl::event imatcopy(backend_selector<backend::rocblas> selector, transpose trans, std::int64_t m,
                      std::int64_t n, float alpha, float *ab, std::int64_t lda, std::int64_t ldb,
-                     const std::vector<sycl::event> &dependencies = {}) {
+                     const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::rocblas::MAJOR::imatcopy(selector.get_queue(), trans, m, n,
                                                             alpha, ab, lda, ldb, dependencies);
     return done;
@@ -3854,7 +3854,7 @@ sycl::event imatcopy(backend_selector<backend::rocblas> selector, transpose tran
 
 sycl::event imatcopy(backend_selector<backend::rocblas> selector, transpose trans, std::int64_t m,
                      std::int64_t n, double alpha, double *ab, std::int64_t lda, std::int64_t ldb,
-                     const std::vector<sycl::event> &dependencies = {}) {
+                     const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::rocblas::MAJOR::imatcopy(selector.get_queue(), trans, m, n,
                                                             alpha, ab, lda, ldb, dependencies);
     return done;
@@ -3863,7 +3863,7 @@ sycl::event imatcopy(backend_selector<backend::rocblas> selector, transpose tran
 sycl::event imatcopy(backend_selector<backend::rocblas> selector, transpose trans, std::int64_t m,
                      std::int64_t n, std::complex<float> alpha, std::complex<float> *ab,
                      std::int64_t lda, std::int64_t ldb,
-                     const std::vector<sycl::event> &dependencies = {}) {
+                     const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::rocblas::MAJOR::imatcopy(selector.get_queue(), trans, m, n,
                                                             alpha, ab, lda, ldb, dependencies);
     return done;
@@ -3872,7 +3872,7 @@ sycl::event imatcopy(backend_selector<backend::rocblas> selector, transpose tran
 sycl::event imatcopy(backend_selector<backend::rocblas> selector, transpose trans, std::int64_t m,
                      std::int64_t n, std::complex<double> alpha, std::complex<double> *ab,
                      std::int64_t lda, std::int64_t ldb,
-                     const std::vector<sycl::event> &dependencies = {}) {
+                     const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::rocblas::MAJOR::imatcopy(selector.get_queue(), trans, m, n,
                                                             alpha, ab, lda, ldb, dependencies);
     return done;
@@ -3881,7 +3881,7 @@ sycl::event imatcopy(backend_selector<backend::rocblas> selector, transpose tran
 sycl::event omatadd(backend_selector<backend::rocblas> selector, transpose transa, transpose transb,
                     std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda,
                     float beta, const float *b, std::int64_t ldb, float *c, std::int64_t ldc,
-                    const std::vector<sycl::event> &dependencies = {}) {
+                    const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::rocblas::MAJOR::omatadd(selector.get_queue(), transa, transb, m,
                                                            n, alpha, a, lda, beta, b, ldb, c, ldc,
                                                            dependencies);
@@ -3891,7 +3891,7 @@ sycl::event omatadd(backend_selector<backend::rocblas> selector, transpose trans
 sycl::event omatadd(backend_selector<backend::rocblas> selector, transpose transa, transpose transb,
                     std::int64_t m, std::int64_t n, double alpha, const double *a, std::int64_t lda,
                     double beta, const double *b, std::int64_t ldb, double *c, std::int64_t ldc,
-                    const std::vector<sycl::event> &dependencies = {}) {
+                    const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::rocblas::MAJOR::omatadd(selector.get_queue(), transa, transb, m,
                                                            n, alpha, a, lda, beta, b, ldb, c, ldc,
                                                            dependencies);
@@ -3902,7 +3902,7 @@ sycl::event omatadd(backend_selector<backend::rocblas> selector, transpose trans
                     std::int64_t m, std::int64_t n, std::complex<float> alpha,
                     const std::complex<float> *a, std::int64_t lda, std::complex<float> beta,
                     const std::complex<float> *b, std::int64_t ldb, std::complex<float> *c,
-                    std::int64_t ldc, const std::vector<sycl::event> &dependencies = {}) {
+                    std::int64_t ldc, const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::rocblas::MAJOR::omatadd(selector.get_queue(), transa, transb, m,
                                                            n, alpha, a, lda, beta, b, ldb, c, ldc,
                                                            dependencies);
@@ -3913,9 +3913,99 @@ sycl::event omatadd(backend_selector<backend::rocblas> selector, transpose trans
                     std::int64_t m, std::int64_t n, std::complex<double> alpha,
                     const std::complex<double> *a, std::int64_t lda, std::complex<double> beta,
                     const std::complex<double> *b, std::int64_t ldb, std::complex<double> *c,
-                    std::int64_t ldc, const std::vector<sycl::event> &dependencies = {}) {
+                    std::int64_t ldc, const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::rocblas::MAJOR::omatadd(selector.get_queue(), transa, transb, m,
                                                            n, alpha, a, lda, beta, b, ldb, c, ldc,
                                                            dependencies);
+    return done;
+}
+
+sycl::event omatcopy_batch(backend_selector<backend::rocblas> selector, transpose* trans,
+                           std::int64_t* m, std::int64_t* n, float* alpha, const float** a,
+                           std::int64_t* lda, float** b, std::int64_t* ldb,
+                           std::int64_t group_count, std::int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    auto done = oneapi::mkl::blas::rocblas::MAJOR::omatcopy_batch(
+        selector.get_queue(), trans, m, n, alpha, a, lda, b, ldb, group_count, groupsize,
+        dependencies);
+    return done;
+}
+
+sycl::event omatcopy_batch(backend_selector<backend::rocblas> selector, transpose* trans,
+                           std::int64_t* m, std::int64_t* n, double* alpha, const double** a,
+                           std::int64_t* lda, double** b, std::int64_t* ldb,
+                           std::int64_t group_count, std::int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    auto done = oneapi::mkl::blas::rocblas::MAJOR::omatcopy_batch(
+        selector.get_queue(), trans, m, n, alpha, a, lda, b, ldb, group_count, groupsize,
+        dependencies);
+    return done;
+}
+
+sycl::event omatcopy_batch(backend_selector<backend::rocblas> selector, transpose* trans,
+                           std::int64_t* m, std::int64_t* n, std::complex<float>* alpha,
+                           const std::complex<float>** a, std::int64_t* lda,
+                           std::complex<float>** b, std::int64_t* ldb, std::int64_t group_count,
+                           std::int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    auto done = oneapi::mkl::blas::rocblas::MAJOR::omatcopy_batch(
+        selector.get_queue(), trans, m, n, alpha, a, lda, b, ldb, group_count, groupsize,
+        dependencies);
+    return done;
+}
+
+sycl::event omatcopy_batch(backend_selector<backend::rocblas> selector, transpose* trans,
+                           std::int64_t* m, std::int64_t* n, std::complex<double>* alpha,
+                           const std::complex<double>** a, std::int64_t* lda,
+                           std::complex<double>** b, std::int64_t* ldb, std::int64_t group_count,
+                           std::int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    auto done = oneapi::mkl::blas::rocblas::MAJOR::omatcopy_batch(
+        selector.get_queue(), trans, m, n, alpha, a, lda, b, ldb, group_count, groupsize,
+        dependencies);
+    return done;
+}
+
+sycl::event imatcopy_batch(backend_selector<backend::rocblas> selector, transpose* trans,
+                           std::int64_t* m, std::int64_t* n, float* alpha, float** ab,
+                           std::int64_t* lda, std::int64_t* ldb, std::int64_t group_count,
+                           std::int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    auto done = oneapi::mkl::blas::rocblas::MAJOR::imatcopy_batch(selector.get_queue(), trans, m, n,
+                                                                  alpha, ab, lda, ldb, group_count,
+                                                                  groupsize, dependencies);
+    return done;
+}
+
+sycl::event imatcopy_batch(backend_selector<backend::rocblas> selector, transpose* trans,
+                           std::int64_t* m, std::int64_t* n, double* alpha, double** ab,
+                           std::int64_t* lda, std::int64_t* ldb, std::int64_t group_count,
+                           std::int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    auto done = oneapi::mkl::blas::rocblas::MAJOR::imatcopy_batch(selector.get_queue(), trans, m, n,
+                                                                  alpha, ab, lda, ldb, group_count,
+                                                                  groupsize, dependencies);
+    return done;
+}
+
+sycl::event imatcopy_batch(backend_selector<backend::rocblas> selector, transpose* trans,
+                           std::int64_t* m, std::int64_t* n, std::complex<float>* alpha,
+                           std::complex<float>** ab, std::int64_t* lda, std::int64_t* ldb,
+                           std::int64_t group_count, std::int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    auto done = oneapi::mkl::blas::rocblas::MAJOR::imatcopy_batch(selector.get_queue(), trans, m, n,
+                                                                  alpha, ab, lda, ldb, group_count,
+                                                                  groupsize, dependencies);
+    return done;
+}
+
+sycl::event imatcopy_batch(backend_selector<backend::rocblas> selector, transpose* trans,
+                           std::int64_t* m, std::int64_t* n, std::complex<double>* alpha,
+                           std::complex<double>** ab, std::int64_t* lda, std::int64_t* ldb,
+                           std::int64_t group_count, std::int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    auto done = oneapi::mkl::blas::rocblas::MAJOR::imatcopy_batch(selector.get_queue(), trans, m, n,
+                                                                  alpha, ab, lda, ldb, group_count,
+                                                                  groupsize, dependencies);
     return done;
 }

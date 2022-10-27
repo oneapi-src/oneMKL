@@ -4133,3 +4133,87 @@ static inline sycl::event omatadd(sycl::queue &queue, transpose transa, transpos
                                 beta, b, ldb, c, ldc, dependencies);
     return done;
 }
+
+static inline sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m,
+                                         std::int64_t* n, float* alpha, const float** a,
+                                         std::int64_t* lda, float** b, std::int64_t* ldb,
+                                         std::int64_t group_count, std::int64_t* groupsize,
+                                         const std::vector<sycl::event>& dependencies = {}) {
+    auto done = detail::omatcopy_batch(get_device_id(queue), queue, trans, m, n, alpha, a, lda, b,
+                                       ldb, group_count, groupsize, dependencies);
+    return done;
+}
+
+static inline sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m,
+                                         std::int64_t* n, double* alpha, const double** a,
+                                         std::int64_t* lda, double** b, std::int64_t* ldb,
+                                         std::int64_t group_count, std::int64_t* groupsize,
+                                         const std::vector<sycl::event>& dependencies = {}) {
+    auto done = detail::omatcopy_batch(get_device_id(queue), queue, trans, m, n, alpha, a, lda, b,
+                                       ldb, group_count, groupsize, dependencies);
+    return done;
+}
+
+static inline sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m,
+                                         std::int64_t* n, std::complex<float>* alpha,
+                                         const std::complex<float>** a, std::int64_t* lda,
+                                         std::complex<float>** b, std::int64_t* ldb,
+                                         std::int64_t group_count, std::int64_t* groupsize,
+                                         const std::vector<sycl::event>& dependencies = {}) {
+    auto done = detail::omatcopy_batch(get_device_id(queue), queue, trans, m, n, alpha, a, lda, b,
+                                       ldb, group_count, groupsize, dependencies);
+    return done;
+}
+
+static inline sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m,
+                                         std::int64_t* n, std::complex<double>* alpha,
+                                         const std::complex<double>** a, std::int64_t* lda,
+                                         std::complex<double>** b, std::int64_t* ldb,
+                                         std::int64_t group_count, std::int64_t* groupsize,
+                                         const std::vector<sycl::event>& dependencies = {}) {
+    auto done = detail::omatcopy_batch(get_device_id(queue), queue, trans, m, n, alpha, a, lda, b,
+                                       ldb, group_count, groupsize, dependencies);
+    return done;
+}
+
+static inline sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m,
+                                         std::int64_t* n, float* alpha, float** ab,
+                                         std::int64_t* lda, std::int64_t* ldb,
+                                         std::int64_t group_count, std::int64_t* groupsize,
+                                         const std::vector<sycl::event>& dependencies = {}) {
+    auto done = detail::imatcopy_batch(get_device_id(queue), queue, trans, m, n, alpha, ab, lda,
+                                       ldb, group_count, groupsize, dependencies);
+    return done;
+}
+
+static inline sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m,
+                                         std::int64_t* n, double* alpha, double** ab,
+                                         std::int64_t* lda, std::int64_t* ldb,
+                                         std::int64_t group_count, std::int64_t* groupsize,
+                                         const std::vector<sycl::event>& dependencies = {}) {
+    auto done = detail::imatcopy_batch(get_device_id(queue), queue, trans, m, n, alpha, ab, lda,
+                                       ldb, group_count, groupsize, dependencies);
+    return done;
+}
+
+static inline sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m,
+                                         std::int64_t* n, std::complex<float>* alpha,
+                                         std::complex<float>** ab, std::int64_t* lda,
+                                         std::int64_t* ldb, std::int64_t group_count,
+                                         std::int64_t* groupsize,
+                                         const std::vector<sycl::event>& dependencies = {}) {
+    auto done = detail::imatcopy_batch(get_device_id(queue), queue, trans, m, n, alpha, ab, lda,
+                                       ldb, group_count, groupsize, dependencies);
+    return done;
+}
+
+static inline sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m,
+                                         std::int64_t* n, std::complex<double>* alpha,
+                                         std::complex<double>** ab, std::int64_t* lda,
+                                         std::int64_t* ldb, std::int64_t group_count,
+                                         std::int64_t* groupsize,
+                                         const std::vector<sycl::event>& dependencies = {}) {
+    auto done = detail::imatcopy_batch(get_device_id(queue), queue, trans, m, n, alpha, ab, lda,
+                                       ldb, group_count, groupsize, dependencies);
+    return done;
+}

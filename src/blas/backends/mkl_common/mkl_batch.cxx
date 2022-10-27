@@ -924,3 +924,68 @@ sycl::event omatadd_batch(sycl::queue &queue, transpose transa, transpose transb
     return blas_major::omatadd_batch(queue, transa, transb, m, n, alpha, a, lda, stride_a, beta, b,
                                      ldb, stride_b, c, ldc, stride_c, batch_size, dependencies);
 }
+
+sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
+                           float* alpha, const float** a, int64_t* lda, float** b, int64_t* ldb,
+                           int64_t group_count, int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    return blas_major::omatcopy_batch(queue, trans, m, n, alpha, a, lda, b, ldb, group_count,
+                                      groupsize, dependencies);
+}
+
+sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
+                           double* alpha, const double** a, int64_t* lda, double** b, int64_t* ldb,
+                           int64_t group_count, int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    return blas_major::omatcopy_batch(queue, trans, m, n, alpha, a, lda, b, ldb, group_count,
+                                      groupsize, dependencies);
+}
+
+sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
+                           std::complex<float>* alpha, const std::complex<float>** a, int64_t* lda,
+                           std::complex<float>** b, int64_t* ldb, int64_t group_count,
+                           int64_t* groupsize, const std::vector<sycl::event>& dependencies) {
+    return blas_major::omatcopy_batch(queue, trans, m, n, alpha, a, lda, b, ldb, group_count,
+                                      groupsize, dependencies);
+}
+
+sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
+                           std::complex<double>* alpha, const std::complex<double>** a,
+                           int64_t* lda, std::complex<double>** b, int64_t* ldb,
+                           int64_t group_count, int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    return blas_major::omatcopy_batch(queue, trans, m, n, alpha, a, lda, b, ldb, group_count,
+                                      groupsize, dependencies);
+}
+
+sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
+                           float* alpha, float** ab, int64_t* lda, int64_t* ldb,
+                           int64_t group_count, int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    return blas_major::imatcopy_batch(queue, trans, m, n, alpha, ab, lda, ldb, group_count,
+                                      groupsize, dependencies);
+}
+
+sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
+                           double* alpha, double** ab, int64_t* lda, int64_t* ldb,
+                           int64_t group_count, int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    return blas_major::imatcopy_batch(queue, trans, m, n, alpha, ab, lda, ldb, group_count,
+                                      groupsize, dependencies);
+}
+
+sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
+                           std::complex<float>* alpha, std::complex<float>** ab, int64_t* lda,
+                           int64_t* ldb, int64_t group_count, int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    return blas_major::imatcopy_batch(queue, trans, m, n, alpha, ab, lda, ldb, group_count,
+                                      groupsize, dependencies);
+}
+
+sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
+                           std::complex<double>* alpha, std::complex<double>** ab, int64_t* lda,
+                           int64_t* ldb, int64_t group_count, int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    return blas_major::imatcopy_batch(queue, trans, m, n, alpha, ab, lda, ldb, group_count,
+                                      groupsize, dependencies);
+}
