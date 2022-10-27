@@ -2352,39 +2352,40 @@ typedef struct {
         std::int64_t ldb, std::complex<double> *c, std::int64_t ldc,
         const std::vector<sycl::event> &dependencies);
     sycl::event (*column_major_somatcopy_batch_group_usm_sycl)(
-        sycl::queue & queue, transpose * trans, std::int64_t * m, std::int64_t * n, float *alpha,
-        const float **a, std::int64_t *lda, float **b, std::int64_t *ldb, std::int64_t group_count,
-        std::int64_t *groupsize, const std::vector<sycl::event> &dependencies);
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * m, std::int64_t * n,
+        float *alpha, const float **a, std::int64_t *lda, float **b, std::int64_t *ldb,
+        std::int64_t group_count, std::int64_t *groupsize,
+        const std::vector<sycl::event> &dependencies);
     sycl::event (*column_major_domatcopy_batch_group_usm_sycl)(
-        sycl::queue & queue, transpose * trans, std::int64_t * m, std::int64_t * n, double *alpha,
-        const double **a, std::int64_t *lda, double **b, std::int64_t *ldb,
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * m, std::int64_t * n,
+        double *alpha, const double **a, std::int64_t *lda, double **b, std::int64_t *ldb,
         std::int64_t group_count, std::int64_t *groupsize,
         const std::vector<sycl::event> &dependencies);
     sycl::event (*column_major_comatcopy_batch_group_usm_sycl)(
-        sycl::queue & queue, transpose * trans, std::int64_t * m, std::int64_t * n,
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * m, std::int64_t * n,
         std::complex<float> * alpha, const std::complex<float> **a, std::int64_t *lda,
         std::complex<float> **b, std::int64_t *ldb, std::int64_t group_count,
         std::int64_t *groupsize, const std::vector<sycl::event> &dependencies);
     sycl::event (*column_major_zomatcopy_batch_group_usm_sycl)(
-        sycl::queue & queue, transpose * trans, std::int64_t * m, std::int64_t * n,
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * m, std::int64_t * n,
         std::complex<double> * alpha, const std::complex<double> **a, std::int64_t *lda,
         std::complex<double> **b, std::int64_t *ldb, std::int64_t group_count,
         std::int64_t *groupsize, const std::vector<sycl::event> &dependencies);
     sycl::event (*column_major_simatcopy_batch_group_usm_sycl)(
-        sycl::queue & queue, transpose * trans, std::int64_t * m, std::int64_t * n, float *alpha,
-        float **ab, std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * m, std::int64_t * n,
+        float *alpha, float **ab, std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,
         std::int64_t *groupsize, const std::vector<sycl::event> &dependencies);
     sycl::event (*column_major_dimatcopy_batch_group_usm_sycl)(
-        sycl::queue & queue, transpose * trans, std::int64_t * m, std::int64_t * n, double *alpha,
-        double **ab, std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * m, std::int64_t * n,
+        double *alpha, double **ab, std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,
         std::int64_t *groupsize, const std::vector<sycl::event> &dependencies);
     sycl::event (*column_major_cimatcopy_batch_group_usm_sycl)(
-        sycl::queue & queue, transpose * trans, std::int64_t * m, std::int64_t * n,
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * m, std::int64_t * n,
         std::complex<float> * alpha, std::complex<float> * *ab, std::int64_t * lda,
         std::int64_t * ldb, std::int64_t group_count, std::int64_t * groupsize,
         const std::vector<sycl::event> &dependencies);
     sycl::event (*column_major_zimatcopy_batch_group_usm_sycl)(
-        sycl::queue & queue, transpose * trans, std::int64_t * m, std::int64_t * n,
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * m, std::int64_t * n,
         std::complex<double> * alpha, std::complex<double> * *ab, std::int64_t * lda,
         std::int64_t * ldb, std::int64_t group_count, std::int64_t * groupsize,
         const std::vector<sycl::event> &dependencies);
@@ -4690,39 +4691,40 @@ typedef struct {
         std::int64_t ldb, std::complex<double> *c, std::int64_t ldc,
         const std::vector<sycl::event> &dependencies);
     sycl::event (*row_major_somatcopy_batch_group_usm_sycl)(
-        sycl::queue & queue, transpose * trans, std::int64_t * m, std::int64_t * n, float *alpha,
-        const float **a, std::int64_t *lda, float **b, std::int64_t *ldb, std::int64_t group_count,
-        std::int64_t *groupsize, const std::vector<sycl::event> &dependencies);
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * m, std::int64_t * n,
+        float *alpha, const float **a, std::int64_t *lda, float **b, std::int64_t *ldb,
+        std::int64_t group_count, std::int64_t *groupsize,
+        const std::vector<sycl::event> &dependencies);
     sycl::event (*row_major_domatcopy_batch_group_usm_sycl)(
-        sycl::queue & queue, transpose * trans, std::int64_t * m, std::int64_t * n, double *alpha,
-        const double **a, std::int64_t *lda, double **b, std::int64_t *ldb,
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * m, std::int64_t * n,
+        double *alpha, const double **a, std::int64_t *lda, double **b, std::int64_t *ldb,
         std::int64_t group_count, std::int64_t *groupsize,
         const std::vector<sycl::event> &dependencies);
     sycl::event (*row_major_comatcopy_batch_group_usm_sycl)(
-        sycl::queue & queue, transpose * trans, std::int64_t * m, std::int64_t * n,
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * m, std::int64_t * n,
         std::complex<float> * alpha, const std::complex<float> **a, std::int64_t *lda,
         std::complex<float> **b, std::int64_t *ldb, std::int64_t group_count,
         std::int64_t *groupsize, const std::vector<sycl::event> &dependencies);
     sycl::event (*row_major_zomatcopy_batch_group_usm_sycl)(
-        sycl::queue & queue, transpose * trans, std::int64_t * m, std::int64_t * n,
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * m, std::int64_t * n,
         std::complex<double> * alpha, const std::complex<double> **a, std::int64_t *lda,
         std::complex<double> **b, std::int64_t *ldb, std::int64_t group_count,
         std::int64_t *groupsize, const std::vector<sycl::event> &dependencies);
     sycl::event (*row_major_simatcopy_batch_group_usm_sycl)(
-        sycl::queue & queue, transpose * trans, std::int64_t * m, std::int64_t * n, float *alpha,
-        float **ab, std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * m, std::int64_t * n,
+        float *alpha, float **ab, std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,
         std::int64_t *groupsize, const std::vector<sycl::event> &dependencies);
     sycl::event (*row_major_dimatcopy_batch_group_usm_sycl)(
-        sycl::queue & queue, transpose * trans, std::int64_t * m, std::int64_t * n, double *alpha,
-        double **ab, std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * m, std::int64_t * n,
+        double *alpha, double **ab, std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,
         std::int64_t *groupsize, const std::vector<sycl::event> &dependencies);
     sycl::event (*row_major_cimatcopy_batch_group_usm_sycl)(
-        sycl::queue & queue, transpose * trans, std::int64_t * m, std::int64_t * n,
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * m, std::int64_t * n,
         std::complex<float> * alpha, std::complex<float> * *ab, std::int64_t * lda,
         std::int64_t * ldb, std::int64_t group_count, std::int64_t * groupsize,
         const std::vector<sycl::event> &dependencies);
     sycl::event (*row_major_zimatcopy_batch_group_usm_sycl)(
-        sycl::queue & queue, transpose * trans, std::int64_t * m, std::int64_t * n,
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * m, std::int64_t * n,
         std::complex<double> * alpha, std::complex<double> * *ab, std::int64_t * lda,
         std::int64_t * ldb, std::int64_t group_count, std::int64_t * groupsize,
         const std::vector<sycl::event> &dependencies);

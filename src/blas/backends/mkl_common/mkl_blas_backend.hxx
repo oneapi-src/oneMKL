@@ -2346,45 +2346,54 @@ sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, std:
                     std::int64_t ldb, std::complex<double> *c, std::int64_t ldc,
                     const std::vector<sycl::event> &dependencies = {});
 
-sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m, std::int64_t* n,
-                           float* alpha, const float** a, std::int64_t* lda, float** b,
-                           std::int64_t* ldb, std::int64_t group_count, std::int64_t* groupsize,
+sycl::event omatcopy_batch(sycl::queue& queue, const transpose* trans, const std::int64_t* m,
+                           const std::int64_t* n, const float* alpha, const float** a,
+                           const std::int64_t* lda, float** b, const std::int64_t* ldb,
+                           std::int64_t group_count, const std::int64_t* groupsize,
                            const std::vector<sycl::event>& dependencies = {});
 
-sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m, std::int64_t* n,
-                           double* alpha, const double** a, std::int64_t* lda, double** b,
-                           std::int64_t* ldb, std::int64_t group_count, std::int64_t* groupsize,
+sycl::event omatcopy_batch(sycl::queue& queue, const transpose* trans, const std::int64_t* m,
+                           const std::int64_t* n, const double* alpha, const double** a,
+                           const std::int64_t* lda, double** b, const std::int64_t* ldb,
+                           std::int64_t group_count, const std::int64_t* groupsize,
                            const std::vector<sycl::event>& dependencies = {});
 
-sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m, std::int64_t* n,
-                           std::complex<float>* alpha, const std::complex<float>** a,
-                           std::int64_t* lda, std::complex<float>** b, std::int64_t* ldb,
-                           std::int64_t group_count, std::int64_t* groupsize,
+sycl::event omatcopy_batch(sycl::queue& queue, const transpose* trans, const std::int64_t* m,
+                           const std::int64_t* n, const std::complex<float>* alpha,
+                           const std::complex<float>** a, const std::int64_t* lda,
+                           std::complex<float>** b, const std::int64_t* ldb,
+                           std::int64_t group_count, const std::int64_t* groupsize,
                            const std::vector<sycl::event>& dependencies = {});
 
-sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m, std::int64_t* n,
-                           std::complex<double>* alpha, const std::complex<double>** a,
-                           std::int64_t* lda, std::complex<double>** b, std::int64_t* ldb,
-                           std::int64_t group_count, std::int64_t* groupsize,
+sycl::event omatcopy_batch(sycl::queue& queue, const transpose* trans, const std::int64_t* m,
+                           const std::int64_t* n, const std::complex<double>* alpha,
+                           const std::complex<double>** a, const std::int64_t* lda,
+                           std::complex<double>** b, const std::int64_t* ldb,
+                           std::int64_t group_count, const std::int64_t* groupsize,
                            const std::vector<sycl::event>& dependencies = {});
 
-sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m, std::int64_t* n,
-                           float* alpha, float** ab, std::int64_t* lda, std::int64_t* ldb,
-                           std::int64_t group_count, std::int64_t* groupsize,
+sycl::event imatcopy_batch(sycl::queue& queue, const transpose* trans, const std::int64_t* m,
+                           const std::int64_t* n, const float* alpha, float** ab,
+                           const std::int64_t* lda, const std::int64_t* ldb,
+                           std::int64_t group_count, const std::int64_t* groupsize,
                            const std::vector<sycl::event>& dependencies = {});
 
-sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m, std::int64_t* n,
-                           double* alpha, double** ab, std::int64_t* lda, std::int64_t* ldb,
-                           std::int64_t group_count, std::int64_t* groupsize,
+sycl::event imatcopy_batch(sycl::queue& queue, const transpose* trans, const std::int64_t* m,
+                           const std::int64_t* n, const double* alpha, double** ab,
+                           const std::int64_t* lda, const std::int64_t* ldb,
+                           std::int64_t group_count, const std::int64_t* groupsize,
                            const std::vector<sycl::event>& dependencies = {});
 
-sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m, std::int64_t* n,
-                           std::complex<float>* alpha, std::complex<float>** ab, std::int64_t* lda,
-                           std::int64_t* ldb, std::int64_t group_count, std::int64_t* groupsize,
+sycl::event imatcopy_batch(sycl::queue& queue, const transpose* trans, const std::int64_t* m,
+                           const std::int64_t* n, const std::complex<float>* alpha,
+                           std::complex<float>** ab, const std::int64_t* lda,
+                           const std::int64_t* ldb, std::int64_t group_count,
+                           const std::int64_t* groupsize,
                            const std::vector<sycl::event>& dependencies = {});
 
-sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m, std::int64_t* n,
-                           std::complex<double>* alpha, std::complex<double>** ab,
-                           std::int64_t* lda, std::int64_t* ldb, std::int64_t group_count,
-                           std::int64_t* groupsize,
+sycl::event imatcopy_batch(sycl::queue& queue, const transpose* trans, const std::int64_t* m,
+                           const std::int64_t* n, const std::complex<double>* alpha,
+                           std::complex<double>** ab, const std::int64_t* lda,
+                           const std::int64_t* ldb, std::int64_t group_count,
+                           const std::int64_t* groupsize,
                            const std::vector<sycl::event>& dependencies = {});
