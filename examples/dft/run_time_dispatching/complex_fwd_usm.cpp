@@ -44,12 +44,31 @@ void run_uniform_example(const sycl::device& dev) {
 
     sycl::queue queue(dev, exception_handler);
 
-    double *x_usm = (double*) malloc_shared(N*2*sizeof(double), queue.get_device(), queue.get_context());
+    std::cout << "DFTI example run_time dispatch" << std::endl;
+    //
+    // Preparation on cpu
+    //
+    sycl::queue cpu_queue(dev, exception_handler);
+    sycl::context cpu_context = cpu_queue.get_context();
+    sycl::event cpu_getrf_done;
 
-    oneapi::mkl::dft::descriptor<
-        oneapi::mkl::dft::precision::DOUBLE,
-        oneapi::mkl::dft::domain::COMPLEX
-    > desc(N);
+    double *x_usm = (double*) malloc_shared(N*2*sizeof(double), cpu_queue.get_device(), cpu_queue.get_context());
+
+    // enabling
+    // 1. create descriptors 
+    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::COMPLEX> desc_vector({N,N});
+
+    // 2. variadic set_value
+    desc_vector.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (double)(1.0/N));
+    desc_vector.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, 4);
+    desc_vector.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, N);
+    desc_vector.set_value(oneapi::mkl::dft::config_param::PLACEMENT, oneapi::mkl::dft::config_value::NOT_INPLACE);
+
+    // 4. commit_descriptor (run_time xPU)
+    desc_vector.commit(cpu_queue);
+
+    // 5. compute_forward / compute_backward (CPU)
+    // oneapi::mkl::dft::compute_forward(desc, x_usm);
 }
 
 //

@@ -77,20 +77,23 @@ void run_getrs_example(const sycl::device& cpu_device) {
     sycl::context cpu_context = cpu_queue.get_context();
     sycl::event cpu_getrf_done;
 
-    double *x_usm = (double*) malloc_shared(N*2*sizeof(double), cpu_queue.get_device(), cpu_queue.get_context());
+double *x_usm = (double*) malloc_shared(N*2*sizeof(double), cpu_queue.get_device(), cpu_queue.get_context());
 
-    // enabling
-    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::COMPLEX> desc(N);
-    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::COMPLEX> desc_vector({N,N});
-    desc.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (double)(1.0/N));
-    desc.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, 4);
-    desc_vector.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, rs);
-    desc.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, N);
-    desc.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, N);
-    desc.set_value(oneapi::mkl::dft::config_param::PLACEMENT, oneapi::mkl::dft::config_value::NOT_INPLACE);
-    // [compile time] desc.commit(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue });
-    // [run time]     desc.commit(cpu_queue);
-    // oneapi::mkl::dft::compute_forward(desc, x_usm);
+// enabling
+// 1. create descriptors 
+oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::COMPLEX> desc(N);
+
+// 2. variadic set_value
+desc.set_value(oneapi::mkl::dft::config_param::PLACEMENT, oneapi::mkl::dft::config_value::NOT_INPLACE);
+
+// 3. commit_descriptor (compile_time CPU)
+desc.commit(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue });
+
+// 4. commit_descriptor (run_time xPU) unusable from libonemkl_dft_mklcpu.so
+desc.commit(cpu_queue);
+
+// 5. compute_forward / compute_backward (CPU)
+// oneapi::mkl::dft::compute_forward(desc, x_usm);
 }
 
 //

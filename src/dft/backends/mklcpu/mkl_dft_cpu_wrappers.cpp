@@ -19,33 +19,10 @@
 
 #include "oneapi/mkl/dft/detail/mklcpu/onemkl_dft_mklcpu.hpp"
 #include "dft/function_table.hpp"
-#include "../descriptor.cxx"
 
 #define WRAPPER_VERSION 1
 
 extern "C" dft_function_table_t mkl_dft_table = {
     WRAPPER_VERSION,
-#define ONEAPI_MKL_DFT_BACKEND_SIGNATURES(EXT)                                    \
-    oneapi::mkl::dft::mklcpu::commit_##EXT,                                       \
-        oneapi::mkl::dft::mklcpu::compute_forward_buffer_inplace_##EXT,           \
-        oneapi::mkl::dft::mklcpu::compute_forward_buffer_inplace_split_##EXT,     \
-        oneapi::mkl::dft::mklcpu::compute_forward_buffer_outofplace_##EXT,        \
-        oneapi::mkl::dft::mklcpu::compute_forward_buffer_outofplace_split_##EXT,  \
-        oneapi::mkl::dft::mklcpu::compute_forward_usm_inplace_##EXT,              \
-        oneapi::mkl::dft::mklcpu::compute_forward_usm_inplace_split_##EXT,        \
-        oneapi::mkl::dft::mklcpu::compute_forward_usm_outofplace_##EXT,           \
-        oneapi::mkl::dft::mklcpu::compute_forward_usm_outofplace_split_##EXT,     \
-        oneapi::mkl::dft::mklcpu::compute_backward_buffer_inplace_##EXT,          \
-        oneapi::mkl::dft::mklcpu::compute_backward_buffer_inplace_split_##EXT,    \
-        oneapi::mkl::dft::mklcpu::compute_backward_buffer_outofplace_##EXT,       \
-        oneapi::mkl::dft::mklcpu::compute_backward_buffer_outofplace_split_##EXT, \
-        oneapi::mkl::dft::mklcpu::compute_backward_usm_inplace_##EXT,             \
-        oneapi::mkl::dft::mklcpu::compute_backward_usm_inplace_split_##EXT,       \
-        oneapi::mkl::dft::mklcpu::compute_backward_usm_outofplace_##EXT,          \
-        oneapi::mkl::dft::mklcpu::compute_backward_usm_outofplace_split_##EXT
-
-    ONEAPI_MKL_DFT_BACKEND_SIGNATURES(f), ONEAPI_MKL_DFT_BACKEND_SIGNATURES(c),
-    ONEAPI_MKL_DFT_BACKEND_SIGNATURES(d), ONEAPI_MKL_DFT_BACKEND_SIGNATURES(z)
-
-#undef ONEAPI_MKL_DFT_BACKEND_SIGNATURES
+    oneapi::mkl::dft::mklcpu::create_commit
 };

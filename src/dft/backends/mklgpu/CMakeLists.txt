@@ -24,7 +24,6 @@ find_package(MKL REQUIRED)
 
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
-  ../descriptor.cpp
   commit.cpp
   forward.cpp
   backward.cpp
