@@ -46,7 +46,6 @@ void print_2x2_matrix_values(T M, int ldM, std::string M_name) {
     std::cout << std::endl;
 }
 
-
 template <typename fp>
 fp rand_scalar() {
     return fp(std::rand()) / fp(RAND_MAX) - fp(0.5);

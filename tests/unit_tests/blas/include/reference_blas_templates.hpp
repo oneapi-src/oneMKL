@@ -51,7 +51,8 @@ static LIB_TYPE cblas_library() {
     if (h == NULL) {
         h = GET_LIB_HANDLE(REF_BLAS_LIBNAME);
         if (h == NULL) {
-            throw oneapi::mkl::library_not_found("BLAS", "cblas_library()","CBLAS library not found.");
+            throw oneapi::mkl::library_not_found("BLAS", "cblas_library()",
+                                                 "CBLAS library not found.");
         }
     }
     return h;
