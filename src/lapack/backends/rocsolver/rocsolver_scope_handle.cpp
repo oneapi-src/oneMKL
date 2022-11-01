@@ -18,8 +18,11 @@
 *
 **************************************************************************/
 #include "rocsolver_scope_handle.hpp"
+#if __has_include(<sycl/detail/common.hpp>)
+#include <sycl/detail/common.hpp>
+#else
 #include <CL/sycl/detail/common.hpp>
-#include <CL/sycl/detail/backend_traits_hip.hpp>
+#endif
 
 namespace oneapi {
 namespace mkl {
@@ -37,12 +40,12 @@ thread_local rocsolver_handle<pi_context> RocsolverScopedContextHandler::handle_
     rocsolver_handle<pi_context>{};
 
 RocsolverScopedContextHandler::RocsolverScopedContextHandler(sycl::queue queue,
-                                                           sycl::interop_handle &ih)
+                                                             sycl::interop_handle &ih)
         : ih(ih),
           needToRecover_(false) {
-    placedContext_ = queue.get_context();
+    placedContext_ = new sycl::context(queue.get_context());
     auto device = queue.get_device();
-    auto desired = sycl::get_native<sycl::backend::hip>(placedContext_);
+    auto desired = sycl::get_native<sycl::backend::ext_oneapi_hip>(*placedContext_);
     hipError_t err;
     HIP_ERROR_FUNC(hipCtxGetCurrent, err, &original_);
     if (original_ != desired) {
@@ -51,8 +54,8 @@ RocsolverScopedContextHandler::RocsolverScopedContextHandler(sycl::queue queue,
         // No context is installed and the suggested context is primary
         // This is the most common case. We can activate the context in the
         // thread and leave it there until all the PI context referring to the
-        // same underlying HIP primary context are destroyed. This emulates
-        // the behaviour of the HIP runtime api, and avoids costly context
+        // same underlying rocblas primary context are destroyed. This emulates
+        // the behaviour of the rocblas runtime api, and avoids costly context
         // switches. No action is required on this side of the if.
         needToRecover_ = !(original_ == nullptr);
     }
@@ -63,6 +66,7 @@ RocsolverScopedContextHandler::~RocsolverScopedContextHandler() noexcept(false) 
         hipError_t err;
         HIP_ERROR_FUNC(hipCtxSetCurrent, err, original_);
     }
+    delete placedContext_;
 }
 
 void ContextCallback(void *userData) {
@@ -85,12 +89,12 @@ void ContextCallback(void *userData) {
 }
 
 rocblas_handle RocsolverScopedContextHandler::get_handle(const sycl::queue &queue) {
-    auto piPlacedContext_ =
-        reinterpret_cast<pi_context>(sycl::get_native<sycl::backend::hip>(placedContext_));
+    auto piPlacedContext_ = reinterpret_cast<pi_context>(
+        sycl::get_native<sycl::backend::ext_oneapi_hip>(*placedContext_));
     hipStream_t streamId = get_stream(queue);
     rocblas_status err;
     auto it = handle_helper.rocsolver_handle_mapper_.find(piPlacedContext_);
-    if (it!= handle_helper.rocsolver_handle_mapper_.end()) {
+    if (it != handle_helper.rocsolver_handle_mapper_.end()) {
         if (it->second == nullptr) {
             handle_helper.rocsolver_handle_mapper_.erase(it);
         }
@@ -118,14 +122,14 @@ rocblas_handle RocsolverScopedContextHandler::get_handle(const sycl::queue &queu
     auto insert_iter = handle_helper.rocsolver_handle_mapper_.insert(
         std::make_pair(piPlacedContext_, new std::atomic<rocblas_handle>(handle)));
 
-    sycl::detail::pi::contextSetExtendedDeleter(placedContext_, ContextCallback,
+    sycl::detail::pi::contextSetExtendedDeleter(*placedContext_, ContextCallback,
                                                 insert_iter.first->second);
 
     return handle;
 }
 
 hipStream_t RocsolverScopedContextHandler::get_stream(const sycl::queue &queue) {
-    return sycl::get_native<sycl::backend::hip>(queue);
+    return sycl::get_native<sycl::backend::ext_oneapi_hip>(queue);
 }
 sycl::context RocsolverScopedContextHandler::get_context(const sycl::queue &queue) {
     return queue.get_context();

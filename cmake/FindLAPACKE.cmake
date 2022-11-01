@@ -38,7 +38,6 @@ list(APPEND LAPACKE_LINK ${LAPACKE64_file})
 list(APPEND LAPACKE_LINK ${LAPACK64_file})
 list(APPEND LAPACKE_LINK ${CBLAS64_file})
 list(APPEND LAPACKE_LINK ${BLAS64_file})
-list(APPEND LAPACKE_LINK "/usr/lib/gcc/x86_64-linux-gnu/7/libgfortran.so")
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(LAPACKE REQUIRED_VARS LAPACKE_INCLUDE LAPACKE_LINK)

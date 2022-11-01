@@ -24,10 +24,19 @@
 #include <rocblas.h>
 #include <rocsolver.h>
 #include <complex>
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include "oneapi/mkl/types.hpp"
 #include "rocsolver_scope_handle.hpp"
+#if __has_include(<sycl/detail/pi.hpp>)
+#include <sycl/detail/pi.hpp>
+#else
 #include <CL/sycl/detail/pi.hpp>
+#endif
+
 namespace oneapi {
 namespace mkl {
 namespace lapack {

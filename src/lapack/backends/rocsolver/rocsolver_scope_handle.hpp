@@ -19,10 +19,20 @@
 **************************************************************************/
 #ifndef _ROCSOLVER_SCOPED_HANDLE_HPP_
 #define _ROCSOLVER_SCOPED_HANDLE_HPP_
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
-// #include <CL/sycl/backend/hip.hpp>
+#endif
+#if __has_include(<sycl/backend/cuda.hpp>)
+#include <sycl/backend/cuda.hpp>
+#include <sycl/context.hpp>
+#include <sycl/detail/pi.hpp>
+#else
+#include <CL/sycl/backend/cuda.hpp>
 #include <CL/sycl/context.hpp>
 #include <CL/sycl/detail/pi.hpp>
+#endif
 #include <atomic>
 #include <memory>
 #include <thread>
@@ -37,7 +47,7 @@ namespace rocsolver {
 
 class RocsolverScopedContextHandler {
     hipCtx_t original_;
-    sycl::context placedContext_;
+    sycl::context *placedContext_;
     bool needToRecover_;
     sycl::interop_handle &ih;
     static thread_local rocsolver_handle<pi_context> handle_helper;

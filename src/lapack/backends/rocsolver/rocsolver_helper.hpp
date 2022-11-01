@@ -82,7 +82,7 @@ class rocsolver_error : virtual public std::runtime_error {
 protected:
     inline const char *rocsolver_error_map(rocblas_status error) {
         switch (error) {
-            case  rocblas_status_success: return "ROCBLAS_STATUS_SUCCESS";
+            case rocblas_status_success: return "ROCBLAS_STATUS_SUCCESS";
 
             case rocblas_status_invalid_value: return "ROCBLAS_STATUS_INVALID_VALUE";
 
@@ -155,22 +155,38 @@ public:
 };
 
 #define HIP_ERROR_FUNC(name, err, ...)                                 \
-    err = name(__VA_ARGS__);                                            \
+    err = name(__VA_ARGS__);                                           \
     if (err != HIP_SUCCESS) {                                          \
         throw hip_error(std::string(#name) + std::string(" : "), err); \
     }
 
 #define ROCSOLVER_ERROR_FUNC(name, err, ...)                                 \
-    err = name(__VA_ARGS__);                                                \
-    if (err != rocblas_status_success) {                                   \
+    err = name(__VA_ARGS__);                                                 \
+    if (err != rocblas_status_success) {                                     \
         throw rocsolver_error(std::string(#name) + std::string(" : "), err); \
     }
 
 #define ROCSOLVER_ERROR_FUNC_T(name, func, err, ...)                        \
-    err = func(__VA_ARGS__);                                               \
-    if (err != rocblas_status_success) {                                  \
+    err = func(__VA_ARGS__);                                                \
+    if (err != rocblas_status_success) {                                    \
         throw rocsolver_error(std::string(name) + std::string(" : "), err); \
     }
+
+#define ROCSOLVER_ERROR_FUNC_T(name, func, err, ...)                        \
+    err = func(__VA_ARGS__);                                                \
+    if (err != rocblas_status_success) {                                    \
+        throw rocsolver_error(std::string(name) + std::string(" : "), err); \
+    }
+
+#define ROCSOLVER_ERROR_FUNC_T_SYNC(name, func, err, handle, ...)            \
+    err = func(handle, __VA_ARGS__);                                         \
+    if (err != rocblas_status_success) {                                     \
+        throw rocsolver_error(std::string(name) + std::string(" : "), err);  \
+    }                                                                        \
+    hipStream_t currentStreamId;                                             \
+    ROCSOLVER_ERROR_FUNC(rocblas_get_stream, err, handle, &currentStreamId); \
+    hipError_t hip_err;                                                      \
+    HIP_ERROR_FUNC(hipStreamSynchronize, hip_err, currentStreamId);
 
 inline rocblas_eform get_rocsolver_itype(std::int64_t itype) {
     switch (itype) {
@@ -183,26 +199,26 @@ inline rocblas_eform get_rocsolver_itype(std::int64_t itype) {
 
 inline rocblas_evect get_rocsolver_job(oneapi::mkl::job jobz) {
     switch (jobz) {
-        case oneapi::mkl::job::N: return rocblas_evect_original;
-        case oneapi::mkl::job::V: return rocblas_evect_none;
+        case oneapi::mkl::job::V: return rocblas_evect_original;
+        case oneapi::mkl::job::N: return rocblas_evect_none;
         default: throw "Wrong jobz.";
     }
 }
 
 inline rocblas_svect get_rocsolver_jobsvd(oneapi::mkl::jobsvd job) {
     switch (job) {
-        case oneapi::mkl::jobsvd::N: return rocblas_svect_none;    
-        case oneapi::mkl::jobsvd::A: return rocblas_svect_all;   
+        case oneapi::mkl::jobsvd::N: return rocblas_svect_none;
+        case oneapi::mkl::jobsvd::A: return rocblas_svect_all;
         case oneapi::mkl::jobsvd::O: return rocblas_svect_overwrite;
-        case oneapi::mkl::jobsvd::S: return rocblas_svect_singular;   
-         }
+        case oneapi::mkl::jobsvd::S: return rocblas_svect_singular;
+    }
 }
 
 inline rocblas_operation get_rocblas_operation(oneapi::mkl::transpose trn) {
     switch (trn) {
         case oneapi::mkl::transpose::nontrans: return rocblas_operation_none;
         case oneapi::mkl::transpose::trans: return rocblas_operation_transpose;
-        case oneapi::mkl::transpose::conjtrans: return  rocblas_operation_conjugate_transpose;
+        case oneapi::mkl::transpose::conjtrans: return rocblas_operation_conjugate_transpose;
         default: throw "Wrong transpose Operation.";
     }
 }
