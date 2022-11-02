@@ -64,10 +64,9 @@
  */
 #ifndef _MKL_RNG_ROCRAND_HELPER_HPP_
 #define _MKL_RNG_ROCRAND_HELPER_HPP_
+
 #include <rocrand.h>
-
 #include <complex>
-
 #include "oneapi/mkl/types.hpp"
 
 namespace oneapi {
