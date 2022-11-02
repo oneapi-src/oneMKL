@@ -43,11 +43,12 @@ if(NOT TARGET ONEMKL::cuBLAS::cuBLAS)
           CUDA_cublas_LIBRARY
           CUDA_LIBRARIES
           CUDA_CUDART_LIBRARY
+	  CUDA_CUDA_LIBRARY
     )
     set_target_properties(ONEMKL::cuBLAS::cuBLAS PROPERTIES
         IMPORTED_LOCATION ${CUDA_cublas_LIBRARY}
         INTERFACE_INCLUDE_DIRECTORIES "${CUDA_TOOLKIT_INCLUDE}"
-        INTERFACE_LINK_LIBRARIES "Threads::Threads;${CUDA_LIBRARIES};${CUDA_CUDART_LIBRARY}"
+        INTERFACE_LINK_LIBRARIES "Threads::Threads;${CUDA_LIBRARIES};${CUDA_CUDART_LIBRARY};${CUDA_CUDA_LIBRARY}"
     )
   else()
     find_package_handle_standard_args(cuBLAS
