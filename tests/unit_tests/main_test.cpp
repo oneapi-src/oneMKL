@@ -141,7 +141,7 @@ int main(int argc, char** argv) {
     }
 
 #if defined(ENABLE_MKLCPU_BACKEND) || defined(ENABLE_NETLIB_BACKEND)
-    local_devices.push_back(sycl::device(sycl::host_selector()));
+    local_devices.push_back(sycl::device(sycl::cpu_selector()));
 #endif
 #define GET_NAME(d) (d).template get_info<sycl::info::device::name>()
     for (auto& local_dev : local_devices) {
