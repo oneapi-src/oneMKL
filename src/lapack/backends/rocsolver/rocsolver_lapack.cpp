@@ -48,7 +48,6 @@ inline void gebrd(const char *func_name, Func func, sycl::queue &queue, std::int
         auto e_acc = e.template get_access<sycl::access::mode::write>(cgh);
         auto tauq_acc = tauq.template get_access<sycl::access::mode::write>(cgh);
         auto taup_acc = taup.template get_access<sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType_A *>(a_acc);
@@ -110,12 +109,10 @@ inline void geqrf(const char *func_name, Func func, sycl::queue &queue, std::int
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
-            auto scratch_ = sc.get_mem<rocmDataType *>(scratch_acc);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, a_, lda, tau_);
         });
@@ -155,7 +152,6 @@ void getrf(const char *func_name, Func func, sycl::queue &queue, std::int64_t m,
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
@@ -295,7 +291,6 @@ inline void gesvd(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
             auto scratch_ = sc.get_mem<rocmDataType_B *>(scratch_acc);
             rocblas_status err;
-            // rwork is set to nullptr. If set it is filled with information from the superdiagonal.
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocsolver_jobsvd(jobu),
                                    get_rocsolver_jobsvd(jobvt), m, n, a_, lda, s_, u_, ldu, vt_,
                                    ldvt, scratch_, rocblas_workmode::rocblas_outofplace, devInfo_);
@@ -423,7 +418,6 @@ inline void hetrd(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto e_acc = e.template get_access<sycl::access::mode::write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType_A *>(a_acc);
@@ -431,7 +425,6 @@ inline void hetrd(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto e_ = sc.get_mem<rocmDataType_B *>(e_acc);
             auto tau_ = sc.get_mem<rocmDataType_A *>(tau_acc);
             auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
-            auto scratch_ = sc.get_mem<rocmDataType_A *>(scratch_acc);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
                                    lda, d_, e_, tau_);
@@ -509,12 +502,10 @@ inline void orgqr(const char *func_name, Func func, sycl::queue &queue, std::int
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::read>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
-            auto scratch_ = sc.get_mem<rocmDataType *>(scratch_acc);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, k, a_, lda, tau_);
         });
@@ -543,12 +534,10 @@ inline void orgtr(const char *func_name, Func func, sycl::queue &queue, oneapi::
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::read>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
-            auto scratch_ = sc.get_mem<rocmDataType *>(scratch_acc);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
                                    lda, tau_);
@@ -581,13 +570,11 @@ inline void ormtr(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::read_write>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
             auto c_ = sc.get_mem<rocmDataType *>(c_acc);
-            auto scratch_ = sc.get_mem<rocmDataType *>(scratch_acc);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
                                    get_rocblas_fill_mode(uplo), get_rocblas_operation(trans), m, n,
@@ -635,13 +622,11 @@ inline void ormqr(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
             auto c_ = sc.get_mem<rocmDataType *>(c_acc);
-            auto scratch_ = sc.get_mem<rocmDataType *>(scratch_acc);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
                                    get_rocblas_operation(trans), m, n, k, a_, lda, tau_, c_, ldc);
@@ -673,12 +658,10 @@ inline void potrf(const char *func_name, Func func, sycl::queue &queue, oneapi::
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
-            auto scratch_ = sc.get_mem<rocmDataType *>(scratch_acc);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
                                    lda, devInfo_);
@@ -711,12 +694,10 @@ inline void potri(const char *func_name, Func func, sycl::queue &queue, oneapi::
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
-            auto scratch_ = sc.get_mem<rocmDataType *>(scratch_acc);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
                                    lda, devInfo_);
@@ -871,14 +852,12 @@ inline void sytrd(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto d_acc = d.template get_access<sycl::access::mode::write>(cgh);
         auto e_acc = e.template get_access<sycl::access::mode::write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto d_ = sc.get_mem<rocmDataType *>(d_acc);
             auto e_ = sc.get_mem<rocmDataType *>(e_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
-            auto scratch_ = sc.get_mem<rocmDataType *>(scratch_acc);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
                                    lda, d_, e_, tau_);
@@ -919,13 +898,11 @@ inline void sytrf(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto ipiv32_ = sc.get_mem<int *>(ipiv32_acc);
             auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
-            auto scratch_ = sc.get_mem<rocmDataType *>(scratch_acc);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
                                    lda, ipiv32_, devInfo_);
@@ -995,12 +972,10 @@ inline void ungbr(const char *func_name, Func func, sycl::queue &queue, oneapi::
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
-            auto scratch_ = sc.get_mem<rocmDataType *>(scratch_acc);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_generate(vec), m, n, k,
                                    a_, lda, tau_);
@@ -1030,12 +1005,10 @@ inline void ungqr(const char *func_name, Func func, sycl::queue &queue, std::int
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
-            auto scratch_ = sc.get_mem<rocmDataType *>(scratch_acc);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, k, a_, lda, tau_);
         });
@@ -1064,12 +1037,10 @@ inline void ungtr(const char *func_name, Func func, sycl::queue &queue, oneapi::
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
-            auto scratch_ = sc.get_mem<rocmDataType *>(scratch_acc);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
                                    lda, tau_);
@@ -1116,13 +1087,11 @@ inline void unmqr(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
             auto c_ = sc.get_mem<rocmDataType *>(c_acc);
-            auto scratch_ = sc.get_mem<rocmDataType *>(scratch_acc);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
                                    get_rocblas_operation(trans), m, n, k, a_, lda, tau_, c_, ldc);
@@ -1156,13 +1125,11 @@ inline void unmtr(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
             auto c_ = sc.get_mem<rocmDataType *>(c_acc);
-            auto scratch_ = sc.get_mem<rocmDataType *>(scratch_acc);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
                                    get_rocblas_fill_mode(uplo), get_rocblas_operation(trans), m, n,
@@ -1212,7 +1179,6 @@ inline sycl::event gebrd(const char *func_name, Func func, sycl::queue &queue, s
             auto e_ = reinterpret_cast<rocmDataType_B *>(e);
             auto tauq_ = reinterpret_cast<rocmDataType_A *>(tauq);
             auto taup_ = reinterpret_cast<rocmDataType_A *>(taup);
-            auto scratch_ = reinterpret_cast<rocmDataType_A *>(scratchpad);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, a_, lda, d_, e_, tauq_,
                                    taup_);
@@ -1274,7 +1240,6 @@ inline sycl::event geqrf(const char *func_name, Func func, sycl::queue &queue, s
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
-            auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, a_, lda, tau_);
         });
@@ -1321,7 +1286,6 @@ inline sycl::event getrf(const char *func_name, Func func, sycl::queue &queue, s
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
-            auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             auto ipiv_ = reinterpret_cast<int *>(ipiv32);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, a_, lda, ipiv_, devInfo_);
@@ -1468,7 +1432,6 @@ inline sycl::event gesvd(const char *func_name, Func func, sycl::queue &queue,
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
             auto scratch_ = reinterpret_cast<rocmDataType_B *>(scratchpad);
             rocblas_status err;
-            // rwork is set to nullptr. If set it is filled with information from the superdiagonal.
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocsolver_jobsvd(jobu),
                                    get_rocsolver_jobsvd(jobvt), m, n, a_, lda, s_, u_, ldu, vt_,
                                    ldvt, scratch_, rocblas_workmode::rocblas_outofplace, devInfo_);
@@ -1609,7 +1572,6 @@ inline sycl::event hetrd(const char *func_name, Func func, sycl::queue &queue,
             auto e_ = reinterpret_cast<rocmDataType_B *>(e);
             auto tau_ = reinterpret_cast<rocmDataType_A *>(tau);
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
-            auto scratch_ = reinterpret_cast<rocmDataType_A *>(scratchpad);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
                                    lda, d_, e_, tau_);
@@ -1664,7 +1626,6 @@ inline sycl::event orgbr(const char *func_name, Func func, sycl::queue &queue,
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
-            auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_generate(vec), m, n, k,
                                    a_, lda, tau_);
@@ -1703,7 +1664,6 @@ inline sycl::event orgqr(const char *func_name, Func func, sycl::queue &queue, s
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
-            auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, k, a_, lda, tau_);
         });
@@ -1740,7 +1700,6 @@ inline sycl::event orgtr(const char *func_name, Func func, sycl::queue &queue,
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
-            auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
                                    lda, tau_);
@@ -1781,7 +1740,6 @@ inline sycl::event ormtr(const char *func_name, Func func, sycl::queue &queue,
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
             auto c_ = reinterpret_cast<rocmDataType *>(c);
-            auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
                                    get_rocblas_fill_mode(uplo), get_rocblas_operation(trans), m, n,
@@ -1837,7 +1795,6 @@ inline sycl::event ormqr(const char *func_name, Func func, sycl::queue &queue,
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
             auto c_ = reinterpret_cast<rocmDataType *>(c);
-            auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
                                    get_rocblas_operation(trans), m, n, k, a_, lda, tau_, c_, ldc);
@@ -1878,7 +1835,6 @@ inline sycl::event potrf(const char *func_name, Func func, sycl::queue &queue,
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
-            auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
                                    lda, devInfo_);
@@ -2096,7 +2052,6 @@ inline sycl::event sytrd(const char *func_name, Func func, sycl::queue &queue,
             auto d_ = reinterpret_cast<rocmDataType *>(d);
             auto e_ = reinterpret_cast<rocmDataType *>(e);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
-            auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
                                    lda, d_, e_, tau_);
@@ -2142,7 +2097,6 @@ inline sycl::event sytrf(const char *func_name, Func func, sycl::queue &queue,
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
-            auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             auto ipiv_ = reinterpret_cast<int *>(ipiv32);
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
             rocblas_status err;
@@ -2228,7 +2182,6 @@ inline sycl::event ungbr(const char *func_name, Func func, sycl::queue &queue,
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
-            auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_generate(vec), m, n, k,
                                    a_, lda, tau_);
@@ -2267,7 +2220,6 @@ inline sycl::event ungqr(const char *func_name, Func func, sycl::queue &queue, s
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
-            auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, k, a_, lda, tau_);
         });
@@ -2304,7 +2256,6 @@ inline sycl::event ungtr(const char *func_name, Func func, sycl::queue &queue,
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
-            auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
                                    lda, tau_);
@@ -2359,7 +2310,6 @@ inline sycl::event unmqr(const char *func_name, Func func, sycl::queue &queue,
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
             auto c_ = reinterpret_cast<rocmDataType *>(c);
-            auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
                                    get_rocblas_operation(trans), m, n, k, a_, lda, tau_, c_, ldc);
@@ -2402,7 +2352,6 @@ inline sycl::event unmtr(const char *func_name, Func func, sycl::queue &queue,
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
             auto c_ = reinterpret_cast<rocmDataType *>(c);
-            auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             rocblas_status err;
             ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
                                    get_rocblas_fill_mode(uplo), get_rocblas_operation(trans), m, n,
@@ -2447,7 +2396,7 @@ inline void gebrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                                   \
     std::int64_t gebrd_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t m, std::int64_t n, \
                                              std::int64_t lda) {                                  \
-        return 1;                                                                                 \
+        return 0;                                                                                 \
     }
 
 GEBRD_LAUNCHER_SCRATCH(float, rocsolverDnSgebrd_bufferSize)
@@ -2495,7 +2444,7 @@ inline void geqrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                                   \
     std::int64_t geqrf_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t m, std::int64_t n, \
                                              std::int64_t lda) {                                  \
-        return 1;                                                                                 \
+        return 0;                                                                                 \
     }
 
 GEQRF_LAUNCHER_SCRATCH(float, rocsolverDnSgeqrf_bufferSize)
@@ -2524,7 +2473,7 @@ inline void gesvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t gesvd_scratchpad_size<TYPE>(                                                     \
         sycl::queue & queue, oneapi::mkl::jobsvd jobu, oneapi::mkl::jobsvd jobvt, std::int64_t m, \
         std::int64_t n, std::int64_t lda, std::int64_t ldu, std::int64_t ldvt) {                  \
-        return 1;                                                                                 \
+        return 0;                                                                                 \
     }
 
 GESVD_LAUNCHER_SCRATCH(float, rocsolverDnSgesvd_bufferSize)
@@ -2551,7 +2500,7 @@ inline void getrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                                   \
     std::int64_t getrf_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t m, std::int64_t n, \
                                              std::int64_t lda) {                                  \
-        return 1;                                                                                 \
+        return 0;                                                                                 \
     } // namespace rocsolver
 
 GETRF_LAUNCHER_SCRATCH(float, rocsolverDnSgetrf_bufferSize)
@@ -2586,7 +2535,7 @@ std::int64_t getri_scratchpad_size<std::complex<double>>(sycl::queue &queue, std
     std::int64_t getrs_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::transpose trans,   \
                                              std::int64_t n, std::int64_t nrhs, std::int64_t lda, \
                                              std::int64_t ldb) {                                  \
-        return 1;                                                                                 \
+        return 0;                                                                                 \
     }
 
 GETRS_LAUNCHER_SCRATCH(float)
@@ -2616,7 +2565,7 @@ inline void heevd_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t heevd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::job jobz, \
                                              oneapi::mkl::uplo uplo, std::int64_t n,     \
                                              std::int64_t lda) {                         \
-        return 1;                                                                        \
+        return 0;                                                                        \
     } // namespace lapack
 
 HEEVD_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCheevd_bufferSize)
@@ -2645,7 +2594,7 @@ inline void hegvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t hegvd_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t itype,              \
                                              oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,        \
                                              std::int64_t n, std::int64_t lda, std::int64_t ldb) { \
-        return 1;                                                                                  \
+        return 0;                                                                                  \
     } // namespace mkl
 
 HEGVD_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnChegvd_bufferSize)
@@ -2671,7 +2620,7 @@ inline void hetrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                           \
     std::int64_t hetrd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
-        return 1;                                                                         \
+        return 0;                                                                         \
     } // namespace oneapi
 
 HETRD_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnChetrd_bufferSize)
@@ -2709,7 +2658,7 @@ inline void orgbr_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t orgbr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::generate vec, \
                                              std::int64_t m, std::int64_t n, std::int64_t k, \
                                              std::int64_t lda) {                             \
-        return 1;                                                                            \
+        return 0;                                                                            \
     }
 
 ORGBR_LAUNCHER_SCRATCH(float, rocsolverDnSorgbr_bufferSize)
@@ -2735,7 +2684,7 @@ inline void orgtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                           \
     std::int64_t orgtr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
-        return 1;                                                                         \
+        return 0;                                                                         \
     }
 
 ORGTR_LAUNCHER_SCRATCH(float, rocsolverDnSorgtr_bufferSize)
@@ -2761,7 +2710,7 @@ inline void orgqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                                   \
     std::int64_t orgqr_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t m, std::int64_t n, \
                                              std::int64_t k, std::int64_t lda) {                  \
-        return 1;                                                                                 \
+        return 0;                                                                                 \
     }
 
 ORGQR_LAUNCHER_SCRATCH(float, rocsolverDnSorgqr_bufferSize)
@@ -2805,7 +2754,7 @@ inline void ormqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t ormqr_scratchpad_size<TYPE>(                                                      \
         sycl::queue & queue, oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m, \
         std::int64_t n, std::int64_t k, std::int64_t lda, std::int64_t ldc) {                      \
-        return 1;                                                                                  \
+        return 0;                                                                                  \
     }
 
 ORMQRF_LAUNCHER_SCRATCH(float, rocsolverDnSormqr_bufferSize)
@@ -2835,7 +2784,7 @@ inline void ormtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                              oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans, \
                                              std::int64_t m, std::int64_t n, std::int64_t lda,     \
                                              std::int64_t ldc) {                                   \
-        return 1;                                                                                  \
+        return 0;                                                                                  \
     }
 
 ORMTR_LAUNCHER_SCRATCH(float, rocsolverDnSormtr_bufferSize)
@@ -2861,7 +2810,7 @@ inline void potrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                           \
     std::int64_t potrf_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
-        return 1;                                                                         \
+        return 0;                                                                         \
     }
 
 POTRF_LAUNCHER_SCRATCH(float, rocsolverDnSpotrf_bufferSize)
@@ -2877,7 +2826,7 @@ POTRF_LAUNCHER_SCRATCH(std::complex<double>, rocsolverDnZpotrf_bufferSize)
     std::int64_t potrs_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo,         \
                                              std::int64_t n, std::int64_t nrhs, std::int64_t lda, \
                                              std::int64_t ldb) {                                  \
-        return 1;                                                                                 \
+        return 0;                                                                                 \
     }
 
 POTRS_LAUNCHER_SCRATCH(float)
@@ -2905,7 +2854,7 @@ inline void potri_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                           \
     std::int64_t potri_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
-        return 1;                                                                         \
+        return 0;                                                                         \
     }
 
 POTRI_LAUNCHER_SCRATCH(float, rocsolverDnSpotri_bufferSize)
@@ -2932,7 +2881,7 @@ inline void sytrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                           \
     std::int64_t sytrf_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
-        return 1;                                                                         \
+        return 0;                                                                         \
     }
 
 SYTRF_LAUNCHER_SCRATCH(float, rocsolverDnSsytrf_bufferSize)
@@ -2962,7 +2911,7 @@ inline void syevd_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t syevd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::job jobz, \
                                              oneapi::mkl::uplo uplo, std::int64_t n,     \
                                              std::int64_t lda) {                         \
-        return 1;                                                                        \
+        return 0;                                                                        \
     }
 
 SYEVD_LAUNCHER_SCRATCH(float, rocsolverDnSsyevd_bufferSize)
@@ -2991,7 +2940,7 @@ inline void sygvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t sygvd_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t itype,              \
                                              oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,        \
                                              std::int64_t n, std::int64_t lda, std::int64_t ldb) { \
-        return 1;                                                                                  \
+        return 0;                                                                                  \
     }
 
 SYGVD_LAUNCHER_SCRATCH(float, rocsolverDnSsygvd_bufferSize)
@@ -3017,7 +2966,7 @@ inline void sytrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                           \
     std::int64_t sytrd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
-        return 1;                                                                         \
+        return 0;                                                                         \
     }
 
 SYTRD_LAUNCHER_SCRATCH(float, rocsolverDnSsytrd_bufferSize)
@@ -3075,7 +3024,7 @@ inline void ungbr_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t ungbr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::generate vec, \
                                              std::int64_t m, std::int64_t n, std::int64_t k, \
                                              std::int64_t lda) {                             \
-        return 1;                                                                            \
+        return 0;                                                                            \
     }
 
 UNGBR_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCungbr_bufferSize)
@@ -3101,7 +3050,7 @@ inline void ungqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                                   \
     std::int64_t ungqr_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t m, std::int64_t n, \
                                              std::int64_t k, std::int64_t lda) {                  \
-        return 1;                                                                                 \
+        return 0;                                                                                 \
     }
 
 UNGQR_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCungqr_bufferSize)
@@ -3127,7 +3076,7 @@ inline void ungtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
     template <>                                                                           \
     std::int64_t ungtr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
-        return 1;                                                                         \
+        return 0;                                                                         \
     }
 
 UNGTR_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCungtr_bufferSize)
@@ -3173,7 +3122,7 @@ inline void unmqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
     std::int64_t unmqr_scratchpad_size<TYPE>(                                                      \
         sycl::queue & queue, oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m, \
         std::int64_t n, std::int64_t k, std::int64_t lda, std::int64_t ldc) {                      \
-        return 1;                                                                                  \
+        return 0;                                                                                  \
     }
 
 UNMQR_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCunmqr_bufferSize)
@@ -3203,7 +3152,7 @@ inline void unmtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                              oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans, \
                                              std::int64_t m, std::int64_t n, std::int64_t lda,     \
                                              std::int64_t ldc) {                                   \
-        return 1;                                                                                  \
+        return 0;                                                                                  \
     }
 
 UNMTR_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCunmtr_bufferSize)
