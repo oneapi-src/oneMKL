@@ -20,6 +20,7 @@
 set(LIB_NAME onemkl_lapack_cusolver)
 set(LIB_OBJ ${LIB_NAME}_obj)
 find_package(cuSOLVER REQUIRED)
+find_package(cuBLAS REQUIRED)
 set(SOURCES     cusolver_lapack.cpp
                 cusolver_batch.cpp
                 $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},dpc++>:cusolver_scope_handle.cpp >
@@ -31,10 +32,14 @@ target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
           ${PROJECT_SOURCE_DIR}/src/include
           ${PROJECT_SOURCE_DIR}/src
+          ${PROJECT_SOURCE_DIR}/src/blas/backends/cublas
           ${CMAKE_BINARY_DIR}/bin
 )
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ONEMKL::cuSOLVER::cuSOLVER)
+target_link_libraries(${LIB_OBJ} 
+  PUBLIC ONEMKL::SYCL::SYCL 
+         ONEMKL::cuSOLVER::cuSOLVER
+         ONEMKL::cuBLAS::cuBLAS)
 target_compile_features(${LIB_OBJ} PUBLIC cxx_std_11)
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON)
