@@ -39,9 +39,6 @@ inline void gebrd(const char *func_name, Func func, sycl::queue &queue, std::int
     using rocmDataType_B = typename RocmEquivalentType<T_B>::Type;
     overflow_check(m, n, lda, scratchpad_size);
 
-    if (m < n)
-        throw unimplemented("lapack", "gebrd", "rocsolver gebrd does not support m < n");
-
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto d_acc = d.template get_access<sycl::access::mode::write>(cgh);
@@ -2378,31 +2375,17 @@ UNMTR_LAUNCHER_USM(std::complex<double>, rocsolver_zunmtr)
 
 // SCRATCHPAD APIs
 
-template <typename Func>
-inline void gebrd_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  std::int64_t m, std::int64_t n, std::int64_t lda,
-                                  int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, scratch_size);
-        });
-    });
-}
-
-// TBD: rocSolver doesn't need/support scratchpad_size
-#define GEBRD_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                           \
+#define GEBRD_LAUNCHER_SCRATCH(TYPE)                                                              \
     template <>                                                                                   \
     std::int64_t gebrd_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t m, std::int64_t n, \
                                              std::int64_t lda) {                                  \
         return 0;                                                                                 \
     }
 
-GEBRD_LAUNCHER_SCRATCH(float, rocsolverDnSgebrd_bufferSize)
-GEBRD_LAUNCHER_SCRATCH(double, rocsolverDnDgebrd_bufferSize)
-GEBRD_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCgebrd_bufferSize)
-GEBRD_LAUNCHER_SCRATCH(std::complex<double>, rocsolverDnZgebrd_bufferSize)
+GEBRD_LAUNCHER_SCRATCH(float)
+GEBRD_LAUNCHER_SCRATCH(double)
+GEBRD_LAUNCHER_SCRATCH(std::complex<float>)
+GEBRD_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef GEBRD_LAUNCHER_SCRATCH
 
@@ -2427,86 +2410,46 @@ std::int64_t gerqf_scratchpad_size<std::complex<double>>(sycl::queue &queue, std
     throw unimplemented("lapack", "gerqf_scratchpad_size");
 }
 
-template <typename Func>
-inline void geqrf_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  std::int64_t m, std::int64_t n, std::int64_t lda,
-                                  int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, nullptr, lda, scratch_size);
-        });
-    });
-}
-
-#define GEQRF_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                           \
+#define GEQRF_LAUNCHER_SCRATCH(TYPE)                                                              \
     template <>                                                                                   \
     std::int64_t geqrf_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t m, std::int64_t n, \
                                              std::int64_t lda) {                                  \
         return 0;                                                                                 \
     }
 
-GEQRF_LAUNCHER_SCRATCH(float, rocsolverDnSgeqrf_bufferSize)
-GEQRF_LAUNCHER_SCRATCH(double, rocsolverDnDgeqrf_bufferSize)
-GEQRF_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCgeqrf_bufferSize)
-GEQRF_LAUNCHER_SCRATCH(std::complex<double>, rocsolverDnZgeqrf_bufferSize)
+GEQRF_LAUNCHER_SCRATCH(float)
+GEQRF_LAUNCHER_SCRATCH(double)
+GEQRF_LAUNCHER_SCRATCH(std::complex<float>)
+GEQRF_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef GEQRF_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void gesvd_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  oneapi::mkl::jobsvd jobu, oneapi::mkl::jobsvd jobvt,
-                                  std::int64_t m, std::int64_t n, std::int64_t lda,
-                                  std::int64_t ldu, std::int64_t ldvt, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, scratch_size);
-        });
-    });
-}
-
-#define GESVD_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                           \
+#define GESVD_LAUNCHER_SCRATCH(TYPE)                                                              \
     template <>                                                                                   \
     std::int64_t gesvd_scratchpad_size<TYPE>(                                                     \
         sycl::queue & queue, oneapi::mkl::jobsvd jobu, oneapi::mkl::jobsvd jobvt, std::int64_t m, \
         std::int64_t n, std::int64_t lda, std::int64_t ldu, std::int64_t ldvt) {                  \
-        return 0;                                                                                 \
+        return std::min(m, n) - 1;                                                                \
     }
 
-GESVD_LAUNCHER_SCRATCH(float, rocsolverDnSgesvd_bufferSize)
-GESVD_LAUNCHER_SCRATCH(double, rocsolverDnDgesvd_bufferSize)
-GESVD_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCgesvd_bufferSize)
-GESVD_LAUNCHER_SCRATCH(std::complex<double>, rocsolverDnZgesvd_bufferSize)
+GESVD_LAUNCHER_SCRATCH(float)
+GESVD_LAUNCHER_SCRATCH(double)
+GESVD_LAUNCHER_SCRATCH(std::complex<float>)
+GESVD_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef GESVD_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void getrf_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  std::int64_t m, std::int64_t n, std::int64_t lda,
-                                  int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, nullptr, lda, scratch_size);
-        });
-    });
-}
-
-#define GETRF_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                           \
+#define GETRF_LAUNCHER_SCRATCH(TYPE)                                                              \
     template <>                                                                                   \
     std::int64_t getrf_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t m, std::int64_t n, \
                                              std::int64_t lda) {                                  \
         return 0;                                                                                 \
-    } // namespace rocsolver
+    }
 
-GETRF_LAUNCHER_SCRATCH(float, rocsolverDnSgetrf_bufferSize)
-GETRF_LAUNCHER_SCRATCH(double, rocsolverDnDgetrf_bufferSize)
-GETRF_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCgetrf_bufferSize)
-GETRF_LAUNCHER_SCRATCH(std::complex<double>, rocsolverDnZgetrf_bufferSize)
+GETRF_LAUNCHER_SCRATCH(float)
+GETRF_LAUNCHER_SCRATCH(double)
+GETRF_LAUNCHER_SCRATCH(std::complex<float>)
+GETRF_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef GETRF_LAUNCHER_SCRATCH
 
@@ -2529,7 +2472,6 @@ std::int64_t getri_scratchpad_size<std::complex<double>>(sycl::queue &queue, std
     throw unimplemented("lapack", "getri_scratchpad_size");
 }
 
-// rocsolverDnXgetrs does not use scratchpad memory
 #define GETRS_LAUNCHER_SCRATCH(TYPE)                                                              \
     template <>                                                                                   \
     std::int64_t getrs_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::transpose trans,   \
@@ -2545,86 +2487,41 @@ GETRS_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef GETRS_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void heevd_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
-                                  std::int64_t lda, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocsolver_job(jobz),
-                                   get_rocblas_fill_mode(uplo), n, nullptr, lda, nullptr,
-                                   scratch_size);
-        });
-    });
-}
-
-#define HEEVD_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                  \
+#define HEEVD_LAUNCHER_SCRATCH(TYPE)                                                     \
     template <>                                                                          \
     std::int64_t heevd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::job jobz, \
                                              oneapi::mkl::uplo uplo, std::int64_t n,     \
                                              std::int64_t lda) {                         \
-        return 0;                                                                        \
-    } // namespace lapack
+        return n;                                                                        \
+    }
 
-HEEVD_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCheevd_bufferSize)
-HEEVD_LAUNCHER_SCRATCH(std::complex<double>, rocsolverDnZheevd_bufferSize)
+HEEVD_LAUNCHER_SCRATCH(std::complex<float>)
+HEEVD_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef HEEVD_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void hegvd_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  std::int64_t itype, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,
-                                  std::int64_t n, std::int64_t lda, std::int64_t ldb,
-                                  int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocsolver_itype(itype),
-                                   get_rocsolver_job(jobz), get_rocblas_fill_mode(uplo), n, nullptr,
-                                   lda, nullptr, ldb, nullptr, scratch_size);
-        });
-    });
-}
-
-#define HEGVD_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                            \
+#define HEGVD_LAUNCHER_SCRATCH(TYPE)                                                               \
     template <>                                                                                    \
     std::int64_t hegvd_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t itype,              \
                                              oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,        \
                                              std::int64_t n, std::int64_t lda, std::int64_t ldb) { \
-        return 0;                                                                                  \
-    } // namespace mkl
+        return n;                                                                                  \
+    }
 
-HEGVD_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnChegvd_bufferSize)
-HEGVD_LAUNCHER_SCRATCH(std::complex<double>, rocsolverDnZhegvd_bufferSize)
+HEGVD_LAUNCHER_SCRATCH(std::complex<float>)
+HEGVD_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef HEGVD_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void hetrd_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
-                                  int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n,
-                                   nullptr, lda, nullptr, nullptr, nullptr, scratch_size);
-        });
-    });
-}
-
-#define HETRD_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                   \
+#define HETRD_LAUNCHER_SCRATCH(TYPE)                                                      \
     template <>                                                                           \
     std::int64_t hetrd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
         return 0;                                                                         \
-    } // namespace oneapi
+    }
 
-HETRD_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnChetrd_bufferSize)
-HETRD_LAUNCHER_SCRATCH(std::complex<double>, rocsolverDnZhetrd_bufferSize)
+HETRD_LAUNCHER_SCRATCH(std::complex<float>)
+HETRD_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef HETRD_LAUNCHER_SCRATCH
 
@@ -2639,21 +2536,7 @@ std::int64_t hetrf_scratchpad_size<std::complex<double>>(sycl::queue &queue, one
     throw unimplemented("lapack", "hetrf_scratchpad_size");
 }
 
-template <typename Func>
-inline void orgbr_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  oneapi::mkl::generate vec, std::int64_t m, std::int64_t n,
-                                  std::int64_t k, std::int64_t lda, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_generate(vec), m, n, k,
-                                   nullptr, lda, nullptr, scratch_size);
-        });
-    });
-}
-
-#define ORGBR_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                      \
+#define ORGBR_LAUNCHER_SCRATCH(TYPE)                                                         \
     template <>                                                                              \
     std::int64_t orgbr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::generate vec, \
                                              std::int64_t m, std::int64_t n, std::int64_t k, \
@@ -2661,60 +2544,32 @@ inline void orgbr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         return 0;                                                                            \
     }
 
-ORGBR_LAUNCHER_SCRATCH(float, rocsolverDnSorgbr_bufferSize)
-ORGBR_LAUNCHER_SCRATCH(double, rocsolverDnDorgbr_bufferSize)
+ORGBR_LAUNCHER_SCRATCH(float)
+ORGBR_LAUNCHER_SCRATCH(double)
 
 #undef ORGBR_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void orgtr_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
-                                  int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n,
-                                   nullptr, lda, nullptr, scratch_size);
-        });
-    });
-}
-
-#define ORGTR_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                   \
+#define ORGTR_LAUNCHER_SCRATCH(TYPE)                                                      \
     template <>                                                                           \
     std::int64_t orgtr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
         return 0;                                                                         \
     }
 
-ORGTR_LAUNCHER_SCRATCH(float, rocsolverDnSorgtr_bufferSize)
-ORGTR_LAUNCHER_SCRATCH(double, rocsolverDnDorgtr_bufferSize)
+ORGTR_LAUNCHER_SCRATCH(float)
+ORGTR_LAUNCHER_SCRATCH(double)
 
 #undef ORGTR_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void orgqr_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
-                                  int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, k, nullptr, lda, nullptr,
-                                   scratch_size);
-        });
-    });
-}
-
-#define ORGQR_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                           \
+#define ORGQR_LAUNCHER_SCRATCH(TYPE)                                                              \
     template <>                                                                                   \
     std::int64_t orgqr_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t m, std::int64_t n, \
                                              std::int64_t k, std::int64_t lda) {                  \
         return 0;                                                                                 \
     }
 
-ORGQR_LAUNCHER_SCRATCH(float, rocsolverDnSorgqr_bufferSize)
-ORGQR_LAUNCHER_SCRATCH(double, rocsolverDnDorgqr_bufferSize)
+ORGQR_LAUNCHER_SCRATCH(float)
+ORGQR_LAUNCHER_SCRATCH(double)
 
 #undef ORGQR_LAUNCHER_SCRATCH
 
@@ -2733,23 +2588,7 @@ std::int64_t ormrq_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::side
     throw unimplemented("lapack", "ormrq_scratchpad_size");
 }
 
-template <typename Func>
-inline void ormqr_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  oneapi::mkl::side side, oneapi::mkl::transpose trans,
-                                  std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
-                                  std::int64_t ldc, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
-                                   get_rocblas_operation(trans), m, n, k, nullptr, lda, nullptr,
-                                   nullptr, ldc, scratch_size);
-        });
-    });
-}
-
-#define ORMQRF_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                           \
+#define ORMQRF_LAUNCHER_SCRATCH(TYPE)                                                              \
     template <>                                                                                    \
     std::int64_t ormqr_scratchpad_size<TYPE>(                                                      \
         sycl::queue & queue, oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m, \
@@ -2757,28 +2596,12 @@ inline void ormqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         return 0;                                                                                  \
     }
 
-ORMQRF_LAUNCHER_SCRATCH(float, rocsolverDnSormqr_bufferSize)
-ORMQRF_LAUNCHER_SCRATCH(double, rocsolverDnDormqr_bufferSize)
+ORMQRF_LAUNCHER_SCRATCH(float)
+ORMQRF_LAUNCHER_SCRATCH(double)
 
 #undef ORMQRF_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void ormtr_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  oneapi::mkl::side side, oneapi::mkl::uplo uplo,
-                                  oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
-                                  std::int64_t lda, std::int64_t ldc, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
-                                   get_rocblas_fill_mode(uplo), get_rocblas_operation(trans), m, n,
-                                   nullptr, lda, nullptr, nullptr, ldc, scratch_size);
-        });
-    });
-}
-
-#define ORMTR_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                            \
+#define ORMTR_LAUNCHER_SCRATCH(TYPE)                                                               \
     template <>                                                                                    \
     std::int64_t ormtr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::side side,          \
                                              oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans, \
@@ -2787,40 +2610,25 @@ inline void ormtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         return 0;                                                                                  \
     }
 
-ORMTR_LAUNCHER_SCRATCH(float, rocsolverDnSormtr_bufferSize)
-ORMTR_LAUNCHER_SCRATCH(double, rocsolverDnDormtr_bufferSize)
+ORMTR_LAUNCHER_SCRATCH(float)
+ORMTR_LAUNCHER_SCRATCH(double)
 
 #undef ORMTR_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void potrf_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
-                                  int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n,
-                                   nullptr, lda, scratch_size);
-        });
-    });
-}
-
-#define POTRF_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                   \
+#define POTRF_LAUNCHER_SCRATCH(TYPE)                                                      \
     template <>                                                                           \
     std::int64_t potrf_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
         return 0;                                                                         \
     }
 
-POTRF_LAUNCHER_SCRATCH(float, rocsolverDnSpotrf_bufferSize)
-POTRF_LAUNCHER_SCRATCH(double, rocsolverDnDpotrf_bufferSize)
-POTRF_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCpotrf_bufferSize)
-POTRF_LAUNCHER_SCRATCH(std::complex<double>, rocsolverDnZpotrf_bufferSize)
+POTRF_LAUNCHER_SCRATCH(float)
+POTRF_LAUNCHER_SCRATCH(double)
+POTRF_LAUNCHER_SCRATCH(std::complex<float>)
+POTRF_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef POTRF_LAUNCHER_SCRATCH
 
-// rocsolverDnXpotrs does not use scratchpad memory
 #define POTRS_LAUNCHER_SCRATCH(TYPE)                                                              \
     template <>                                                                                   \
     std::int64_t potrs_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo,         \
@@ -2836,190 +2644,89 @@ POTRS_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef POTRS_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void potri_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
-                                  int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n,
-                                   nullptr, lda, scratch_size);
-        });
-    });
-}
-
-#define POTRI_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                   \
+#define POTRI_LAUNCHER_SCRATCH(TYPE)                                                      \
     template <>                                                                           \
     std::int64_t potri_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
         return 0;                                                                         \
     }
 
-POTRI_LAUNCHER_SCRATCH(float, rocsolverDnSpotri_bufferSize)
-POTRI_LAUNCHER_SCRATCH(double, rocsolverDnDpotri_bufferSize)
-POTRI_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCpotri_bufferSize)
-POTRI_LAUNCHER_SCRATCH(std::complex<double>, rocsolverDnZpotri_bufferSize)
+POTRI_LAUNCHER_SCRATCH(float)
+POTRI_LAUNCHER_SCRATCH(double)
+POTRI_LAUNCHER_SCRATCH(std::complex<float>)
+POTRI_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef POTRI_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void sytrf_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
-                                  int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, n, nullptr, lda, scratch_size);
-        });
-    });
-}
-
-#define SYTRF_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                   \
+#define SYTRF_LAUNCHER_SCRATCH(TYPE)                                                      \
     template <>                                                                           \
     std::int64_t sytrf_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
         return 0;                                                                         \
     }
 
-SYTRF_LAUNCHER_SCRATCH(float, rocsolverDnSsytrf_bufferSize)
-SYTRF_LAUNCHER_SCRATCH(double, rocsolverDnDsytrf_bufferSize)
-SYTRF_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCsytrf_bufferSize)
-SYTRF_LAUNCHER_SCRATCH(std::complex<double>, rocsolverDnZsytrf_bufferSize)
+SYTRF_LAUNCHER_SCRATCH(float)
+SYTRF_LAUNCHER_SCRATCH(double)
+SYTRF_LAUNCHER_SCRATCH(std::complex<float>)
+SYTRF_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef SYTRF_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void syevd_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
-                                  std::int64_t lda, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocsolver_job(jobz),
-                                   get_rocblas_fill_mode(uplo), n, nullptr, lda, nullptr,
-                                   scratch_size);
-        });
-    });
-}
-
-#define SYEVD_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                  \
+#define SYEVD_LAUNCHER_SCRATCH(TYPE)                                                     \
     template <>                                                                          \
     std::int64_t syevd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::job jobz, \
                                              oneapi::mkl::uplo uplo, std::int64_t n,     \
                                              std::int64_t lda) {                         \
-        return 0;                                                                        \
+        return n;                                                                        \
     }
 
-SYEVD_LAUNCHER_SCRATCH(float, rocsolverDnSsyevd_bufferSize)
-SYEVD_LAUNCHER_SCRATCH(double, rocsolverDnDsyevd_bufferSize)
+SYEVD_LAUNCHER_SCRATCH(float)
+SYEVD_LAUNCHER_SCRATCH(double)
 
 #undef SYEVD_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void sygvd_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  std::int64_t itype, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,
-                                  std::int64_t n, std::int64_t lda, std::int64_t ldb,
-                                  int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocsolver_itype(itype),
-                                   get_rocsolver_job(jobz), get_rocblas_fill_mode(uplo), n, nullptr,
-                                   lda, nullptr, ldb, nullptr, scratch_size);
-        });
-    });
-}
-
-#define SYGVD_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                            \
+#define SYGVD_LAUNCHER_SCRATCH(TYPE)                                                               \
     template <>                                                                                    \
     std::int64_t sygvd_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t itype,              \
                                              oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,        \
                                              std::int64_t n, std::int64_t lda, std::int64_t ldb) { \
-        return 0;                                                                                  \
+        return n;                                                                                  \
     }
 
-SYGVD_LAUNCHER_SCRATCH(float, rocsolverDnSsygvd_bufferSize)
-SYGVD_LAUNCHER_SCRATCH(double, rocsolverDnDsygvd_bufferSize)
+SYGVD_LAUNCHER_SCRATCH(float)
+SYGVD_LAUNCHER_SCRATCH(double)
 
 #undef SYGVD_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void sytrd_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
-                                  int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n,
-                                   nullptr, lda, nullptr, nullptr, nullptr, scratch_size);
-        });
-    });
-}
-
-#define SYTRD_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                   \
+#define SYTRD_LAUNCHER_SCRATCH(TYPE)                                                      \
     template <>                                                                           \
     std::int64_t sytrd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
         return 0;                                                                         \
     }
 
-SYTRD_LAUNCHER_SCRATCH(float, rocsolverDnSsytrd_bufferSize)
-SYTRD_LAUNCHER_SCRATCH(double, rocsolverDnDsytrd_bufferSize)
+SYTRD_LAUNCHER_SCRATCH(float)
+SYTRD_LAUNCHER_SCRATCH(double)
 
 #undef SYTRD_LAUNCHER_SCRATCH
 
-template <>
-std::int64_t trtrs_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::uplo uplo,
-                                          oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
-                                          std::int64_t n, std::int64_t nrhs, std::int64_t lda,
-                                          std::int64_t ldb) {
-    throw unimplemented("lapack", "trtrs_scratchpad_size");
-}
-template <>
-std::int64_t trtrs_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::uplo uplo,
-                                           oneapi::mkl::transpose trans, oneapi::mkl::diag diag,
-                                           std::int64_t n, std::int64_t nrhs, std::int64_t lda,
-                                           std::int64_t ldb) {
-    throw unimplemented("lapack", "trtrs_scratchpad_size");
-}
-template <>
-std::int64_t trtrs_scratchpad_size<std::complex<float>>(sycl::queue &queue, oneapi::mkl::uplo uplo,
-                                                        oneapi::mkl::transpose trans,
-                                                        oneapi::mkl::diag diag, std::int64_t n,
-                                                        std::int64_t nrhs, std::int64_t lda,
-                                                        std::int64_t ldb) {
-    throw unimplemented("lapack", "trtrs_scratchpad_size");
-}
-template <>
-std::int64_t trtrs_scratchpad_size<std::complex<double>>(sycl::queue &queue, oneapi::mkl::uplo uplo,
-                                                         oneapi::mkl::transpose trans,
-                                                         oneapi::mkl::diag diag, std::int64_t n,
-                                                         std::int64_t nrhs, std::int64_t lda,
-                                                         std::int64_t ldb) {
-    throw unimplemented("lapack", "trtrs_scratchpad_size");
-}
+#define TRTRS_LAUNCHER_SCRATCH(TYPE)                                                               \
+    template <>                                                                                    \
+    std::int64_t trtrs_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo,          \
+                                             oneapi::mkl::transpose trans, oneapi::mkl::diag diag, \
+                                             std::int64_t n, std::int64_t nrhs, std::int64_t lda,  \
+                                             std::int64_t ldb) {                                   \
+        return 0;                                                                                  \
+    }
 
-template <typename Func>
-inline void ungbr_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  oneapi::mkl::generate vec, std::int64_t m, std::int64_t n,
-                                  std::int64_t k, std::int64_t lda, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_generate(vec), m, n, k,
-                                   nullptr, lda, nullptr, scratch_size);
-        });
-    });
-}
+TRTRS_LAUNCHER_SCRATCH(float)
+TRTRS_LAUNCHER_SCRATCH(double)
+TRTRS_LAUNCHER_SCRATCH(std::complex<float>)
+TRTRS_LAUNCHER_SCRATCH(std::complex<double>)
 
-#define UNGBR_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                      \
+#undef TRTRS_LAUNCHER_SCRATCH
+
+#define UNGBR_LAUNCHER_SCRATCH(TYPE)                                                         \
     template <>                                                                              \
     std::int64_t ungbr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::generate vec, \
                                              std::int64_t m, std::int64_t n, std::int64_t k, \
@@ -3027,60 +2734,32 @@ inline void ungbr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         return 0;                                                                            \
     }
 
-UNGBR_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCungbr_bufferSize)
-UNGBR_LAUNCHER_SCRATCH(std::complex<double>, rocsolverDnZungbr_bufferSize)
+UNGBR_LAUNCHER_SCRATCH(std::complex<float>)
+UNGBR_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef UNGBR_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void ungqr_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
-                                  int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, k, nullptr, lda, nullptr,
-                                   scratch_size);
-        });
-    });
-}
-
-#define UNGQR_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                           \
+#define UNGQR_LAUNCHER_SCRATCH(TYPE)                                                              \
     template <>                                                                                   \
     std::int64_t ungqr_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t m, std::int64_t n, \
                                              std::int64_t k, std::int64_t lda) {                  \
         return 0;                                                                                 \
     }
 
-UNGQR_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCungqr_bufferSize)
-UNGQR_LAUNCHER_SCRATCH(std::complex<double>, rocsolverDnZungqr_bufferSize)
+UNGQR_LAUNCHER_SCRATCH(std::complex<float>)
+UNGQR_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef UNGQR_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void ungtr_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda,
-                                  int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n,
-                                   nullptr, lda, nullptr, scratch_size);
-        });
-    });
-}
-
-#define UNGTR_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                   \
+#define UNGTR_LAUNCHER_SCRATCH(TYPE)                                                      \
     template <>                                                                           \
     std::int64_t ungtr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
         return 0;                                                                         \
     }
 
-UNGTR_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCungtr_bufferSize)
-UNGTR_LAUNCHER_SCRATCH(std::complex<double>, rocsolverDnZungtr_bufferSize)
+UNGTR_LAUNCHER_SCRATCH(std::complex<float>)
+UNGTR_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef UNGTR_LAUNCHER_SCRATCH
 
@@ -3101,23 +2780,7 @@ std::int64_t unmrq_scratchpad_size<std::complex<double>>(sycl::queue &queue, one
     throw unimplemented("lapack", "unmrq_scratchpad_size");
 }
 
-template <typename Func>
-inline void unmqr_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  oneapi::mkl::side side, oneapi::mkl::transpose trans,
-                                  std::int64_t m, std::int64_t n, std::int64_t k, std::int64_t lda,
-                                  std::int64_t ldc, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
-                                   get_rocblas_operation(trans), m, n, k, nullptr, lda, nullptr,
-                                   nullptr, ldc, scratch_size);
-        });
-    });
-}
-
-#define UNMQR_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                            \
+#define UNMQR_LAUNCHER_SCRATCH(TYPE)                                                               \
     template <>                                                                                    \
     std::int64_t unmqr_scratchpad_size<TYPE>(                                                      \
         sycl::queue & queue, oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m, \
@@ -3125,28 +2788,12 @@ inline void unmqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         return 0;                                                                                  \
     }
 
-UNMQR_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCunmqr_bufferSize)
-UNMQR_LAUNCHER_SCRATCH(std::complex<double>, rocsolverDnZunmqr_bufferSize)
+UNMQR_LAUNCHER_SCRATCH(std::complex<float>)
+UNMQR_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef UNMQR_LAUNCHER_SCRATCH
 
-template <typename Func>
-inline void unmtr_scratchpad_size(const char *func_name, Func func, sycl::queue &queue,
-                                  oneapi::mkl::side side, oneapi::mkl::uplo uplo,
-                                  oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
-                                  std::int64_t lda, std::int64_t ldc, int *scratch_size) {
-    queue.submit([&](sycl::handler &cgh) {
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
-                                   get_rocblas_fill_mode(uplo), get_rocblas_operation(trans), m, n,
-                                   nullptr, lda, nullptr, nullptr, ldc, scratch_size);
-        });
-    });
-}
-
-#define UNMTR_LAUNCHER_SCRATCH(TYPE, ROCSOLVER_ROUTINE)                                            \
+#define UNMTR_LAUNCHER_SCRATCH(TYPE)                                                               \
     template <>                                                                                    \
     std::int64_t unmtr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::side side,          \
                                              oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans, \
@@ -3155,8 +2802,8 @@ inline void unmtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         return 0;                                                                                  \
     }
 
-UNMTR_LAUNCHER_SCRATCH(std::complex<float>, rocsolverDnCunmtr_bufferSize)
-UNMTR_LAUNCHER_SCRATCH(std::complex<double>, rocsolverDnZunmtr_bufferSize)
+UNMTR_LAUNCHER_SCRATCH(std::complex<float>)
+UNMTR_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef UNMTR_LAUNCHER_SCRATCH
 
