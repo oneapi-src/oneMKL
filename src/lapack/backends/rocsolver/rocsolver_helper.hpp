@@ -1,6 +1,7 @@
 /***************************************************************************
-*  Copyright 2020-2022 Intel Corporation
 *  Copyright (C) Codeplay Software Limited
+*  Copyright 2022 Intel Corporation
+*
 *  Licensed under the Apache License, Version 2.0 (the "License");
 *  you may not use this file except in compliance with the License.
 *  You may obtain a copy of the License at
@@ -65,7 +66,7 @@ struct Overflow<Index, T...> {
         if (std::abs(index) >= (1LL << 31)) {
             throw std::runtime_error(
                 "rocsolver index overflow. rocsolver legacy API does not support 64 bit "
-                "integer as data size. Thus, the data size should not be greater that "
+                "integer as data size. Thus, the data size should not be greater than "
                 "maximum supported size by 32 bit integer.");
         }
         Overflow<T...>::check(next...);
@@ -172,12 +173,6 @@ public:
         throw rocsolver_error(std::string(name) + std::string(" : "), err); \
     }
 
-#define ROCSOLVER_ERROR_FUNC_T(name, func, err, ...)                        \
-    err = func(__VA_ARGS__);                                                \
-    if (err != rocblas_status_success) {                                    \
-        throw rocsolver_error(std::string(name) + std::string(" : "), err); \
-    }
-
 #define ROCSOLVER_ERROR_FUNC_T_SYNC(name, func, err, handle, ...)            \
     err = func(handle, __VA_ARGS__);                                         \
     if (err != rocblas_status_success) {                                     \
@@ -211,6 +206,7 @@ inline rocblas_svect get_rocsolver_jobsvd(oneapi::mkl::jobsvd job) {
         case oneapi::mkl::jobsvd::A: return rocblas_svect_all;
         case oneapi::mkl::jobsvd::O: return rocblas_svect_overwrite;
         case oneapi::mkl::jobsvd::S: return rocblas_svect_singular;
+	default: throw "Wrong jobsvd.";
     }
 }
 

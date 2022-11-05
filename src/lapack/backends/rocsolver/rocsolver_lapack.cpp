@@ -1,6 +1,7 @@
 /***************************************************************************
-*  Copyright 2020-2022 Intel Corporation
 *  Copyright (C) Codeplay Software Limited
+*  Copyright 2022 Intel Corporation
+*
 *  Licensed under the Apache License, Version 2.0 (the "License");
 *  you may not use this file except in compliance with the License.
 *  You may obtain a copy of the License at
@@ -139,8 +140,8 @@ void getrf(const char *func_name, Func func, sycl::queue &queue, std::int64_t m,
     overflow_check(m, n, lda, scratchpad_size);
 
     // rocsolver legacy api does not accept 64-bit ints.
-    // To get around the limitation.
-    // Create new buffer with 32-bit ints then copy over results
+    // To get around the limitation,
+    // create new buffer with 32-bit ints then copy over results
     std::uint64_t ipiv_size = std::min(n, m);
     sycl::buffer<int, 1> ipiv32(sycl::range<1>{ ipiv_size });
     sycl::buffer<int> devInfo{ 1 };
@@ -206,7 +207,6 @@ void getri(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<double>
     throw unimplemented("lapack", "getri");
 }
 
-// rocsolverDnXgetrs does not use scratchpad memory
 template <typename Func, typename T>
 inline void getrs(const char *func_name, Func func, sycl::queue &queue,
                   oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs,
@@ -717,7 +717,6 @@ POTRI_LAUNCHER(std::complex<double>, rocsolver_zpotri)
 
 #undef POTRI_LAUNCHER
 
-// rocsolverDnXpotrs does not use scratchpad memory
 template <typename Func, typename T>
 inline void potrs(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::uplo uplo,
                   std::int64_t n, std::int64_t nrhs, sycl::buffer<T> &a, std::int64_t lda,
@@ -1161,9 +1160,6 @@ inline sycl::event gebrd(const char *func_name, Func func, sycl::queue &queue, s
     using rocmDataType_B = typename RocmEquivalentType<T_B>::Type;
     overflow_check(m, n, lda, scratchpad_size);
 
-    if (m < n)
-        throw unimplemented("lapack", "gebrd", "rocsolver gebrd does not support m < n");
-
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1343,7 +1339,6 @@ sycl::event getri(sycl::queue &queue, std::int64_t n, std::complex<double> *a, s
     throw unimplemented("lapack", "getri");
 }
 
-// rocsolverDnXgetrs does not use scratchpad memory
 template <typename Func, typename T>
 inline sycl::event getrs(const char *func_name, Func func, sycl::queue &queue,
                          oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs, T *a,
@@ -1900,7 +1895,6 @@ POTRI_LAUNCHER_USM(std::complex<double>, rocsolver_zpotri)
 
 #undef POTRI_LAUNCHER_USM
 
-// rocsolverDnXpotrs does not use scratchpad memory
 template <typename Func, typename T>
 inline sycl::event potrs(const char *func_name, Func func, sycl::queue &queue,
                          oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs, T *a,

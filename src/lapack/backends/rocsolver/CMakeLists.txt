@@ -1,6 +1,7 @@
 #==========================================================================
-#  Copyright 2020-2022 Intel Corporation
 #  Copyright (C) Codeplay Software Limited
+#  Copyright 2022 Intel Corporation
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
@@ -36,7 +37,7 @@ target_include_directories(${LIB_OBJ}
 )
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
 target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ONEMKL::rocSOLVER::rocSOLVER)
-target_compile_features(${LIB_OBJ} PUBLIC cxx_std_11)
+target_compile_features(${LIB_OBJ} PUBLIC cxx_std_17)
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON)
 

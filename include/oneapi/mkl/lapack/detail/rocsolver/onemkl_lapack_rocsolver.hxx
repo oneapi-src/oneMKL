@@ -1,6 +1,7 @@
 /***************************************************************************
-*  Copyright 2020-2022 Intel Corporation
 *  Copyright (C) Codeplay Software Limited
+*  Copyright 2022 Intel Corporation
+*
 *  Licensed under the Apache License, Version 2.0 (the "License");
 *  you may not use this file except in compliance with the License.
 *  You may obtain a copy of the License at
@@ -1795,9 +1796,12 @@ ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size(sycl::queue &queue, std::
                                                        std::int64_t *group_sizes);
 
 template <typename T>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size(
-    sycl::queue &queue, oneapi::mkl::transpose *trans, std::int64_t *n, std::int64_t *nrhs,
-    std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count, std::int64_t *group_sizes);
+ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size(sycl::queue &queue,
+		                                       oneapi::mkl::transpose *trans,
+						       std::int64_t *n, std::int64_t *nrhs,
+						       std::int64_t *lda, std::int64_t *ldb,
+						       std::int64_t group_count,
+						       std::int64_t *group_sizes);
 
 template <typename T>
 ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size(sycl::queue &queue, std::int64_t *m,

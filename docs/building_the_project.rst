@@ -459,12 +459,14 @@ With:
 
 To build with the rocSOLVER backend instead simply replace:
 
-.. code-block:: bash
+.. code-block:: bash\
+
    -DENABLE_ROCBLAS_BACKEND=True   \
    -DTARGET_DOMAINS=blas
 With:
 
 .. code-block:: bash
+
    -DENABLE_ROCSOLVER_BACKEND=True   \
    -DTARGET_DOMAINS=lapack
 

@@ -1,6 +1,7 @@
 /***************************************************************************
-*  Copyright 2020-2022 Intel Corporation
 *  Copyright (C) Codeplay Software Limited
+*  Copyright 2022 Intel Corporation
+*
 *  Licensed under the Apache License, Version 2.0 (the "License");
 *  you may not use this file except in compliance with the License.
 *  You may obtain a copy of the License at
@@ -19,19 +20,11 @@
 **************************************************************************/
 #ifndef _ROCSOLVER_SCOPED_HANDLE_HPP_
 #define _ROCSOLVER_SCOPED_HANDLE_HPP_
+
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
 #else
 #include <CL/sycl.hpp>
-#endif
-#if __has_include(<sycl/backend/cuda.hpp>)
-#include <sycl/backend/cuda.hpp>
-#include <sycl/context.hpp>
-#include <sycl/detail/pi.hpp>
-#else
-#include <CL/sycl/backend/cuda.hpp>
-#include <CL/sycl/context.hpp>
-#include <CL/sycl/detail/pi.hpp>
 #endif
 #include <atomic>
 #include <memory>

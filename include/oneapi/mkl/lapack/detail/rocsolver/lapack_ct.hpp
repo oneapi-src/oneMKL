@@ -1,6 +1,7 @@
 /***************************************************************************
-*  Copyright 2020-2022 Intel Corporation
 *  Copyright (C) Codeplay Software Limited
+*  Copyright 2022 Intel Corporation
+*
 *  Licensed under the Apache License, Version 2.0 (the "License");
 *  you may not use this file except in compliance with the License.
 *  You may obtain a copy of the License at
@@ -21,7 +22,11 @@
 #ifndef _DETAIL_ROCSOLVER_LAPACK_CT_HPP_
 #define _DETAIL_ROCSOLVER_LAPACK_CT_HPP_
 
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
 #include <CL/sycl.hpp>
+#endif
 #include <complex>
 #include <cstdint>
 
@@ -29,7 +34,6 @@
 #include "oneapi/mkl/lapack/types.hpp"
 #include "oneapi/mkl/detail/backend_selector.hpp"
 #include "oneapi/mkl/lapack/detail/rocsolver/onemkl_lapack_rocsolver.hpp"
-#include "oneapi/mkl/lapack/detail/rocsolver/lapack_ct.hpp"
 
 namespace oneapi {
 namespace mkl {
