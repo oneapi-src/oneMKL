@@ -30,5 +30,6 @@
 #cmakedefine ENABLE_NETLIB_BACKEND
 #cmakedefine BUILD_SHARED_LIBS
 #cmakedefine REF_BLAS_LIBNAME "@REF_BLAS_LIBNAME@"
+#cmakedefine REF_CBLAS_LIBNAME "@REF_CBLAS_LIBNAME@"
 
 #endif

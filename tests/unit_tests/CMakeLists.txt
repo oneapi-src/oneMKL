@@ -44,7 +44,7 @@ set(blas_TEST_LIST
         blas_batch
         blas_extensions)
 
-set(blas_TEST_LINK ${CBLAS_LINK})
+set(blas_TEST_LINK "")
 
 # LAPACK config
 set(lapack_TEST_LIST
@@ -152,7 +152,7 @@ foreach(domain ${TARGET_DOMAINS})
   # Find individual tests within executable
     gtest_discover_tests(test_main_${domain}_rt
       PROPERTIES BUILD_RPATH ${CMAKE_BINARY_DIR}/lib
-      PROPERTIES ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH}
+      PROPERTIES ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:${CBLAS_LIB_DIR}:$ENV{LD_LIBRARY_PATH}
       PROPERTIES TEST_PREFIX ${DOMAIN_PREFIX}/RT/
       DISCOVERY_TIMEOUT 30
     )
@@ -160,7 +160,7 @@ foreach(domain ${TARGET_DOMAINS})
 
   gtest_discover_tests(test_main_${domain}_ct
     PROPERTIES BUILD_RPATH ${CMAKE_BINARY_DIR}/lib
-    PROPERTIES ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH}
+    PROPERTIES ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:${CBLAS_LIB_DIR}:$ENV{LD_LIBRARY_PATH}
     PROPERTIES TEST_PREFIX ${DOMAIN_PREFIX}/CT/
     DISCOVERY_TIMEOUT 30
   )
