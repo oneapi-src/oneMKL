@@ -90,7 +90,7 @@ desc.set_value(oneapi::mkl::dft::config_param::PLACEMENT, oneapi::mkl::dft::conf
 desc.commit(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue });
 
 // 4. commit_descriptor (run_time xPU) unusable from libonemkl_dft_mklcpu.so
-desc.commit(cpu_queue);
+// desc.commit(cpu_queue);
 
 // 5. compute_forward / compute_backward (CPU)
 // oneapi::mkl::dft::compute_forward(desc, x_usm);

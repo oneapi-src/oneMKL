@@ -41,28 +41,29 @@ class commit_derived_impl : public oneapi::mkl::dft::detail::commit_impl {
 public:
     commit_derived_impl(sycl::queue queue, dft_values config_values)
             : oneapi::mkl::dft::detail::commit_impl(queue),
-              status(0) {
-        logf("CPU impl, handle->%p", &handle);
+              status(false) {
 
         DFTI_DESCRIPTOR_HANDLE local_handle = nullptr;
 
-        std::cout << config_values << std::endl;
         if (config_values.rank == 1) {
-            status = DftiCreateDescriptor(&local_handle, precision_map[config_values.precision],
-                                          domain_map[config_values.domain], config_values.rank,
-                                          config_values.dimension[0]);
+            status = DftiCreateDescriptor(&local_handle, get_precision(config_values.precision),
+                                          get_domain(config_values.domain), config_values.rank,
+                                          config_values.dimensions[0]);
+        } else {
+            status = DftiCreateDescriptor(&local_handle, get_precision(config_values.precision),
+                                          get_domain(config_values.domain), config_values.rank,
+                                          config_values.dimensions.data());
         }
-        else {
-            status = DftiCreateDescriptor(&local_handle, precision_map[config_values.precision],
-                                          domain_map[config_values.domain], config_values.rank,
-                                          &config_values.dimension[0]);
+        if(status != DFTI_NO_ERROR) {
+            throw oneapi::mkl::exception("dft", "commit", "DftiCreateDescriptor failed");
         }
-        if(status != DFTI_NO_ERROR) throw oneapi::mkl::exception("dft", "commit", "DftiCreateDescriptor failed");
 
         set_value(local_handle, config_values);
 
         status = DftiCommitDescriptor(local_handle);
-        if(status != DFTI_NO_ERROR) throw oneapi::mkl::exception("dft", "commit", "DftiCommitDescriptor failed");
+        if(status != DFTI_NO_ERROR) {
+            throw oneapi::mkl::exception("dft", "commit", "DftiCommitDescriptor failed");
+        }
 
         // commit_impl (pimpl_->handle) should return this handle
         handle = local_handle;
@@ -71,49 +72,45 @@ public:
     commit_derived_impl(const commit_derived_impl* other)
             : oneapi::mkl::dft::detail::commit_impl(*other) { }
 
-    virtual oneapi::mkl::dft::detail::commit_impl* copy_state() override {
-        return new commit_derived_impl(this);
+    virtual ~commit_derived_impl() override { 
+        DftiFreeDescriptor((DFTI_DESCRIPTOR_HANDLE *) &handle);
     }
-
-    virtual ~commit_derived_impl() override { }
 
 private:
     bool status;
-    std::unordered_map<oneapi::mkl::dft::precision, DFTI_CONFIG_VALUE> precision_map{
-        { oneapi::mkl::dft::precision::SINGLE, DFTI_SINGLE },
-        { oneapi::mkl::dft::precision::DOUBLE, DFTI_DOUBLE }
-    };
-    std::unordered_map<oneapi::mkl::dft::domain, DFTI_CONFIG_VALUE> domain_map{
-        { oneapi::mkl::dft::domain::REAL, DFTI_REAL },
-        { oneapi::mkl::dft::domain::COMPLEX, DFTI_COMPLEX }
-    };
+    constexpr DFTI_CONFIG_VALUE get_domain(oneapi::mkl::dft::domain dom) {
+        if (dom == oneapi::mkl::dft::domain::COMPLEX) {
+            return DFTI_COMPLEX;
+        } else {
+            return DFTI_REAL;
+        }
+    }
+
+    constexpr DFTI_CONFIG_VALUE get_precision(oneapi::mkl::dft::precision prec) {
+        if (prec == oneapi::mkl::dft::precision::SINGLE) {
+            return DFTI_SINGLE;
+        } else {
+            return DFTI_DOUBLE;
+        }
+    }
 
     void set_value(DFTI_DESCRIPTOR_HANDLE& descHandle, dft_values config) {
-        logf("address of cpu handle->%p", &descHandle);
-        logf("handle is_null? %s", (descHandle == nullptr) ? "yes" : "no");
-
         // TODO : add complex storage and workspace
-        if (config.set_input_strides)
-            status |= DftiSetValue(descHandle, DFTI_INPUT_STRIDES, &config.input_strides[0]);
-        if (config.set_output_strides)
-            status |= DftiSetValue(descHandle, DFTI_OUTPUT_STRIDES, &config.output_strides[0]);
-        if (config.set_bwd_scale)
+            status |= DftiSetValue(descHandle, DFTI_INPUT_STRIDES, config.input_strides.data());
+            status |= DftiSetValue(descHandle, DFTI_OUTPUT_STRIDES, config.output_strides.data());
             status |= DftiSetValue(descHandle, DFTI_BACKWARD_SCALE, config.bwd_scale);
-        if (config.set_fwd_scale)
-            status |= DftiSetValue(descHandle, DFTI_BACKWARD_SCALE, config.fwd_scale);
-        if (config.set_number_of_transforms)
+            status |= DftiSetValue(descHandle, DFTI_FORWARD_SCALE, config.fwd_scale);
             status |= DftiSetValue(descHandle, DFTI_NUMBER_OF_TRANSFORMS, config.number_of_transforms);
-        if (config.set_fwd_dist)
-            status |= DftiSetValue(descHandle, DFTI_FWD_DISTANCE, config.fwd_dist);
-        if (config.set_bwd_dist)
-            status |= DftiSetValue(descHandle, DFTI_BWD_DISTANCE, config.bwd_dist);
-        if (config.set_placement)
+            status |= DftiSetValue(descHandle, DFTI_INPUT_DISTANCE, config.fwd_dist);
+            status |= DftiSetValue(descHandle, DFTI_OUTPUT_DISTANCE, config.bwd_dist);
             status |= DftiSetValue(descHandle, DFTI_PLACEMENT,
                          (config.placement == oneapi::mkl::dft::config_value::INPLACE)
                              ? DFTI_INPLACE
                              : DFTI_NOT_INPLACE);
 
-        if(status != DFTI_NO_ERROR) throw oneapi::mkl::exception("dft", "commit", "DftiSetValue failed");
+        if(status != DFTI_NO_ERROR) {
+            throw oneapi::mkl::exception("dft", "commit", "DftiSetValue failed");
+        }
     }
 };
 

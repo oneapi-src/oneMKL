@@ -59,12 +59,12 @@ public:
     void get_value(config_param param, ...);
 
     void commit(sycl::queue& queue) {
-        pimpl_.reset(detail::create_commit(get_device_id(queue), queue, values));
+        pimpl_.reset(detail::create_commit(get_device_id(queue), queue, values_));
     }
 
 #ifdef ENABLE_MKLCPU_BACKEND
     void commit(backend_selector<backend::mklcpu> selector) {
-        pimpl_.reset(mklcpu::create_commit(selector.get_queue(), values));
+        pimpl_.reset(mklcpu::create_commit(selector.get_queue(), values_));
     }
 #endif
 
@@ -73,33 +73,43 @@ public:
         // pimpl_.reset(mklgpu::create_commit<prec, dom>(selector.get_queue()));
     }
 #endif
-
-    sycl::queue& get_queue() {
-        return queue_;
-    }
 private:
-    sycl::queue queue_;
     std::unique_ptr<detail::commit_impl> pimpl_; // commit only
 
     std::int64_t rank_;
-    std::vector<std::int64_t>  dimension_;
+    std::vector<std::int64_t>  dimensions_;
 
-    // descriptor configuration values and structs
+    // descriptor configuration values_ and structs
     void* handle_;
-    oneapi::mkl::dft::dft_values values;
+    oneapi::mkl::dft::dft_values values_;
 };
 
 template <precision prec, domain dom>
-descriptor<prec, dom>::descriptor(std::vector<std::int64_t> dimension) :
-    dimension_(dimension),
+descriptor<prec, dom>::descriptor(std::vector<std::int64_t> dimensions) :
+    dimensions_(dimensions),
     handle_(nullptr),
-    rank_(dimension.size())
+    rank_(dimensions.size())
     {
-        // TODO: initialize the device_handle, handle_buffer
-        values.domain = dom;
-        values.precision = prec;
-        values.dimension = dimension_;
-        values.rank = rank_;
+        // Compute default strides.
+        std::vector<std::int64_t> defaultStrides(rank_, 1);
+        for(int i = rank_ - 1; i < 0; --i){
+            defaultStrides[i] = defaultStrides[i - 1] * dimensions_[i];
+        }
+        defaultStrides[0] = 0;
+        values_.input_strides = defaultStrides;
+        values_.output_strides = defaultStrides;
+        values_.bwd_scale = 1.0;
+        values_.fwd_scale = 1.0;
+        values_.number_of_transforms = 1;
+        values_.fwd_dist = 1;
+        values_.bwd_dist = 1;
+        values_.placement = config_value::INPLACE;
+        values_.complex_storage = config_value::COMPLEX_COMPLEX;
+        values_.conj_even_storage = config_value::COMPLEX_COMPLEX; 
+        values_.dimensions = dimensions_;
+        values_.rank = rank_;
+        values_.domain = dom;
+        values_.precision = prec;
     }
 
 template <precision prec, domain dom>
@@ -120,48 +130,37 @@ void descriptor<prec, dom>::set_value(config_param param, ...) {
         printf("oneapi interface set_value\n");
         switch (param) {
             case config_param::INPUT_STRIDES:
-                values.set_input_strides = true;
             case config_param::OUTPUT_STRIDES: {
                 int64_t *strides = va_arg(vl, int64_t *);
                 if (strides == nullptr) break;
 
                 if (param == config_param::INPUT_STRIDES)
-                    std::copy(strides, strides+rank_+1, std::back_inserter(values.input_strides));
+                    std::copy(strides, strides+rank_+1, std::back_inserter(values_.input_strides));
                 if (param == config_param::OUTPUT_STRIDES)
-                    std::copy(strides, strides+rank_+1, std::back_inserter(values.output_strides));
-                values.set_output_strides = true;
+                    std::copy(strides, strides+rank_+1, std::back_inserter(values_.output_strides));
             } break;
             case config_param::FORWARD_SCALE:
-                values.fwd_scale = va_arg(vl, double);
-                values.set_fwd_scale = true;
+                values_.fwd_scale = va_arg(vl, double);
                 break;
             case config_param::BACKWARD_SCALE:
-                values.bwd_scale = va_arg(vl, double);
-                values.set_bwd_scale = true;
+                values_.bwd_scale = va_arg(vl, double);
                 break;
             case config_param::NUMBER_OF_TRANSFORMS:
-                values.number_of_transforms = va_arg(vl, int64_t);
-                values.set_number_of_transforms = true;
+                values_.number_of_transforms = va_arg(vl, int64_t);
                 break;
             case config_param::FWD_DISTANCE:
-                values.fwd_dist = va_arg(vl, int64_t);
-                values.set_fwd_dist = true;
+                values_.fwd_dist = va_arg(vl, int64_t);
                 break;
             case config_param::BWD_DISTANCE:
-                values.bwd_dist = va_arg(vl, int64_t);
-                values.set_bwd_dist = true;
+                values_.bwd_dist = va_arg(vl, int64_t);
                 break;
             case config_param::PLACEMENT:
-                values.placement = va_arg(vl, config_value);
-                values.set_placement = true;
+                values_.placement = va_arg(vl, config_value);
                 break;
             case config_param::COMPLEX_STORAGE:
-                values.complex_storage = va_arg(vl, config_value);
-                values.set_complex_storage = true;
-                break;
+                values_.complex_storage = va_arg(vl, config_value);
             case config_param::CONJUGATE_EVEN_STORAGE:
-                values.conj_even_storage = va_arg(vl, config_value);
-                values.set_conj_even_storage = true;
+                values_.conj_even_storage = va_arg(vl, config_value);
                 break;
 
             default: err = 1;

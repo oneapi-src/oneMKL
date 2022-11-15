@@ -27,25 +27,6 @@
 #include <CL/sycl.hpp>
 #endif
 
-#ifdef NDEBUG
-#define logf(...)
-#else
-#define logf(...)                                   \
-    printf("%s - (%s) : ", __FILE__, __FUNCTION__); \
-    printf(__VA_ARGS__);                            \
-    printf("\n");
-#endif
-
-template <typename S>
-std::ostream& operator<<(std::ostream& os, const std::vector<S>& vector) {
-    if (vector.empty()) return os;
-    os.put('[');
-    for (auto element : vector) {
-        os << element << ", ";
-    }
-    return os << "\b\b]";
-}
-
 namespace oneapi {
 namespace mkl {
 namespace dft {
@@ -129,39 +110,10 @@ struct dft_values {
     config_value complex_storage;
     config_value conj_even_storage;
 
-    bool set_input_strides = false;
-    bool set_output_strides = false;
-    bool set_bwd_scale = false;
-    bool set_fwd_scale = false;
-    bool set_number_of_transforms = false;
-    bool set_fwd_dist = false;
-    bool set_bwd_dist = false;
-    bool set_placement = false;
-    bool set_complex_storage = false;
-    bool set_conj_even_storage = false;
-
-    std::vector<std::int64_t> dimension;
+    std::vector<std::int64_t> dimensions;
     std::int64_t rank;
     domain domain;
     precision precision;
-    friend auto operator<<(std::ostream& os, dft_values const& val) -> std::ostream& {
-        os << "------------- oneAPI Descriptor ------------\n";
-        os << "input_strides        : " << val.input_strides << "\n";
-        os << "output_strides       : " << val.output_strides << "\n";
-        os << "bwd_scale            : " << val.bwd_scale << "\n";
-        os << "fwd_scale            : " << val.fwd_scale << "\n";
-        os << "number_of_transforms : " << val.number_of_transforms << "\n";
-        os << "fwd_dist             : " << val.fwd_dist << "\n";
-        os << "bwd_dist             : " << val.bwd_dist << "\n";
-        os << "placement            : " << (int) val.placement << "\n";
-        os << "complex_storage      : " << (int) val.complex_storage << "\n";
-        os << "conj_even_storage    : " << (int) val.conj_even_storage << "\n";
-        os << "dimension            : " << val.dimension << "\n";
-        os << "rank                 : " << val.rank << "\n";
-        os << "domain               : " << dom_map[val.domain] << "\n";
-        os << "precision            : " << prec_map[val.precision];
-        return os;
-    }
 };
 } // namespace dft
 } // namespace mkl
