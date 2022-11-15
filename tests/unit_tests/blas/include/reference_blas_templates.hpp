@@ -2135,7 +2135,7 @@ void omatadd_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
             }
         }
     }
-    else if (transa == oneapi::mkl::transpose::trans) {
+    else if (transb == oneapi::mkl::transpose::trans) {
         for (int64_t j = 0; j < logical_n; j++) {
             for (int64_t i = 0; i < logical_m; i++) {
                 C[j * ldc + i] += beta * B[i * ldb + j];
