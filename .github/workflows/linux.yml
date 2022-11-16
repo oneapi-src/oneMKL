@@ -43,6 +43,11 @@ jobs:
         ./bootstrap.sh --prefix=/usr
         ./b2
         sudo ./b2 install -j4
+    - name: install CUDA
+      run: |
+	cd
+	wget https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda_11.8.0_520.61.05_linux.run
+	sudo sh cuda_11.8.0_520.61.05_linux.run --override --silent --toolkit
     - name: build hipSYCL
       run: |
         cd
@@ -52,8 +57,8 @@ jobs:
         cmake -DCMAKE_CXX_COMPILER=/usr/bin/clang++-${{matrix.clang_version}} \
               -DCLANG_EXECUTABLE_PATH=/usr/bin/clang++-${{matrix.clang_version}} \
               -DLLVM_DIR=/usr/lib/llvm-${{matrix.clang_version}}/cmake \
-              -DWITH_CUDA_BACKEND=OFF \
-              -DWITH_ROCM_BACKEND=ON \
+              -DWITH_CUDA_BACKEND=ON \
+              -DWITH_ROCM_BACKEND=OFF \
               -DWITH_LEVEL_ZERO_BACKEND=OFF \
               -DCMAKE_INSTALL_PREFIX=/opt/hipSYCL \
               -DROCM_PATH=/opt/rocm-${{matrix.rocm_version}} ..
@@ -66,7 +71,7 @@ jobs:
         mkdir build && cd build
         cmake -DCMAKE_INSTALL_LIBDIR=/opt/lapack -DBUILD_SHARED_LIBS=ON -DCBLAS=ON ..
         sudo cmake --build . -j --target install
-    - name: clone and build oneMKL
+- name: clone and build oneMKL
       env:
         rocblas_DIR: /opt/rocm-${{matrix.rocm_version}}/lib/cmake/rocblas/
         hip_DIR: /opt/rocm-${{matrix.rocm_version}}/lib/cmake/hip/
@@ -79,11 +84,14 @@ jobs:
         cd oneMKL
         mkdir build
         cd build
-        cmake -DENABLE_CUBLAS_BACKEND=False \
+        cmake -DCUDA_CUDA_LIBRARY=/usr/local/cuda-11.6/lib64/stubs/libcuda.so \
+	      -DENABLE_CUBLAS_BACKEND=True \
+	      -DENABLE_CURAND_BACKEND=False \
+	      -DENABLE_CUSOLVER_BACKEND=False \
               -DENABLE_MKLGPU_BACKEND=False \
               -DENABLE_MKLCPU_BACKEND=False \
               -DENABLE_NETLIB_BACKEND=False \
-              -DENABLE_ROCBLAS_BACKEND=True \
+              -DENABLE_ROCBLAS_BACKEND=False \
               -DTARGET_DOMAINS=blas \
               -DHIPSYCL_TARGETS=omp\;hip:gfx906 \
               -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL \
