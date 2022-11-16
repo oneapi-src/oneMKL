@@ -70,8 +70,8 @@ jobs:
         cd lapack
         mkdir build && cd build
         cmake -DCMAKE_INSTALL_LIBDIR=/opt/lapack -DBUILD_SHARED_LIBS=ON -DCBLAS=ON ..
-        sudo make -j4 install
-- name: clone and build oneMKL
+        make -j4 install
+    - name: clone and build oneMKL
       env:
         rocblas_DIR: /opt/rocm-${{matrix.rocm_version}}/lib/cmake/rocblas/
         hip_DIR: /opt/rocm-${{matrix.rocm_version}}/lib/cmake/hip/
