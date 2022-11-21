@@ -41,16 +41,14 @@ class commit_derived_impl : public oneapi::mkl::dft::detail::commit_impl {
 public:
     commit_derived_impl(sycl::queue queue, dft_values config_values)
             : oneapi::mkl::dft::detail::commit_impl(queue),
-              status(false) {
-
-        DFTI_DESCRIPTOR_HANDLE local_handle = nullptr;
+              status(-1) {
 
         if (config_values.rank == 1) {
-            status = DftiCreateDescriptor(&local_handle, get_precision(config_values.precision),
+            status = DftiCreateDescriptor(&handle, get_precision(config_values.precision),
                                           get_domain(config_values.domain), config_values.rank,
                                           config_values.dimensions[0]);
         } else {
-            status = DftiCreateDescriptor(&local_handle, get_precision(config_values.precision),
+            status = DftiCreateDescriptor(&handle, get_precision(config_values.precision),
                                           get_domain(config_values.domain), config_values.rank,
                                           config_values.dimensions.data());
         }
@@ -58,15 +56,12 @@ public:
             throw oneapi::mkl::exception("dft", "commit", "DftiCreateDescriptor failed");
         }
 
-        set_value(local_handle, config_values);
+        set_value(handle, config_values);
 
-        status = DftiCommitDescriptor(local_handle);
+        status = DftiCommitDescriptor(handle);
         if(status != DFTI_NO_ERROR) {
             throw oneapi::mkl::exception("dft", "commit", "DftiCommitDescriptor failed");
         }
-
-        // commit_impl (pimpl_->handle) should return this handle
-        handle = local_handle;
     }
 
     commit_derived_impl(const commit_derived_impl* other)
@@ -77,7 +72,8 @@ public:
     }
 
 private:
-    bool status;
+    DFT_ERROR status;
+    DFTI_DESCRIPTOR_HANDLE handle = nullptr;
     constexpr DFTI_CONFIG_VALUE get_domain(oneapi::mkl::dft::domain dom) {
         if (dom == oneapi::mkl::dft::domain::COMPLEX) {
             return DFTI_COMPLEX;
@@ -95,7 +91,7 @@ private:
     }
 
     void set_value(DFTI_DESCRIPTOR_HANDLE& descHandle, dft_values config) {
-        // TODO : add complex storage and workspace
+            // TODO : add complex storage and workspace, fix error handling
             status |= DftiSetValue(descHandle, DFTI_INPUT_STRIDES, config.input_strides.data());
             status |= DftiSetValue(descHandle, DFTI_OUTPUT_STRIDES, config.output_strides.data());
             status |= DftiSetValue(descHandle, DFTI_BACKWARD_SCALE, config.bwd_scale);

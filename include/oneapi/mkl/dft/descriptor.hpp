@@ -130,6 +130,7 @@ void descriptor<prec, dom>::set_value(config_param param, ...) {
         printf("oneapi interface set_value\n");
         switch (param) {
             case config_param::INPUT_STRIDES:
+                [[fallthrough]];
             case config_param::OUTPUT_STRIDES: {
                 int64_t *strides = va_arg(vl, int64_t *);
                 if (strides == nullptr) break;

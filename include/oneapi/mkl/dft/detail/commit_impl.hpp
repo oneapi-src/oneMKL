@@ -40,9 +40,9 @@ namespace detail {
 
 class commit_impl {
 public:
-    commit_impl(sycl::queue queue) : queue_(queue), status(false), handle(nullptr) {}
+    commit_impl(sycl::queue queue) : queue_(queue), status(false) {}
 
-    commit_impl(const commit_impl& other) : queue_(other.queue_), status(other.status), handle(other.handle) {}
+    commit_impl(const commit_impl& other) : queue_(other.queue_), status(other.status) {}
 
     virtual ~commit_impl() {}
 
@@ -53,7 +53,6 @@ public:
 protected:
     bool status;
     sycl::queue queue_;
-    void* handle;
 };
 
 

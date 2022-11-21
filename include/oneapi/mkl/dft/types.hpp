@@ -31,6 +31,25 @@ namespace oneapi {
 namespace mkl {
 namespace dft {
 
+typedef int DFT_ERROR;
+// this could be gereralized to device specific impl 
+// (this works for gpu and cpu both)
+enum class error_status {
+    DFT_NO_ERROR = 0,
+    DFT_MEMORY_ERROR = 1,
+    DFT_INVALID_CONFIGURATION = 2,
+    DFT_INCONSISTENT_CONFIGURATION = 3,
+    DFT_MULTITHREADED_ERROR = 4,
+    DFT_BAD_DESCRIPTOR = 5,
+    DFT_UNIMPLEMENTED = 6,
+    DFT_MKL_INTERNAL_ERROR = 7,
+    DFT_NUMBER_OF_THREADS_ERROR = 8,
+    DFT_1D_LENGTH_EXCEEDS_INT32 = 9,
+    DFT_1D_MEMORY_EXCEEDS_INT32 = 9,
+    DFT_NO_WORKSPACE = 11,
+};
+
+
 enum class precision { SINGLE, DOUBLE };
 enum class domain { REAL, COMPLEX };
 enum class config_param {
