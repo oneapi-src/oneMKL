@@ -171,8 +171,8 @@ Supported domains: BLAS, LAPACK, RNG
         </tr>
 	    <tr >
             <td align="center">AMD GPU</td>
-	    <td align="center">AMD rocBLAS</td>
-	    <td align="center">Dynamic, Static</td>
+            <td align="center">AMD rocBLAS</td>
+            <td align="center">Dynamic, Static</td>
             <td align="center">LLVM*, hipSYCL</td>
         </tr>
         <tr>

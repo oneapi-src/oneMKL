@@ -130,8 +130,8 @@ inline void backend_selector_precondition<backend::rocsolver>(sycl::queue& queue
     unsigned int vendor_id =
         static_cast<unsigned int>(queue.get_device().get_info<sycl::info::device::vendor_id>());
     if (!(queue.get_device().is_gpu() && vendor_id == AMD_ID)) {
-        throw unsupported_device("",
-			         "backend_selector<backend::" + backend_map[backend::rocsolver] + ">",
+        throw unsupported_device(
+            "", "backend_selector<backend::" + backend_map[backend::rocsolver] + ">",
             queue.get_device());
     }
 #endif

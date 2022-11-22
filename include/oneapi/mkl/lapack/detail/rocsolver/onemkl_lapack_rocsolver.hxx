@@ -1745,10 +1745,13 @@ ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size(sycl::queue &queue, std::
                                                        std::int64_t batch_size);
 
 template <typename T>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size(
-    sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs,
-    std::int64_t lda, std::int64_t stride_a, std::int64_t stride_ipiv, std::int64_t ldb,
-    std::int64_t stride_b, std::int64_t batch_size);
+ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size(sycl::queue &queue,
+	      	                                       oneapi::mkl::transpose trans,
+                                                       std::int64_t n, std::int64_t nrhs,
+                                                       std::int64_t lda, std::int64_t stride_a,
+                                                       std::int64_t stride_ipiv, std::int64_t ldb,
+                                                       std::int64_t stride_b,
+                                                       std::int64_t batch_size);
 
 template <typename T>
 ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size(sycl::queue &queue, std::int64_t m,
@@ -1796,12 +1799,9 @@ ONEMKL_EXPORT std::int64_t getri_batch_scratchpad_size(sycl::queue &queue, std::
                                                        std::int64_t *group_sizes);
 
 template <typename T>
-ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size(sycl::queue &queue,
-		                                       oneapi::mkl::transpose *trans,
-						       std::int64_t *n, std::int64_t *nrhs,
-						       std::int64_t *lda, std::int64_t *ldb,
-						       std::int64_t group_count,
-						       std::int64_t *group_sizes);
+ONEMKL_EXPORT std::int64_t getrs_batch_scratchpad_size(
+    sycl::queue &queue, oneapi::mkl::transpose *trans, std::int64_t *n, std::int64_t *nrhs,
+    std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count, std::int64_t *group_sizes);
 
 template <typename T>
 ONEMKL_EXPORT std::int64_t geqrf_batch_scratchpad_size(sycl::queue &queue, std::int64_t *m,
