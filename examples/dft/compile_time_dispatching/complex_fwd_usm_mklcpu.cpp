@@ -77,23 +77,20 @@ void run_getrs_example(const sycl::device& cpu_device) {
     sycl::context cpu_context = cpu_queue.get_context();
     sycl::event cpu_getrf_done;
 
-double *x_usm = (double*) malloc_shared(N*2*sizeof(double), cpu_queue.get_device(), cpu_queue.get_context());
+    double *x_usm = (double*) malloc_shared(N*2*sizeof(double), cpu_queue.get_device(), cpu_queue.get_context());
 
-// enabling
-// 1. create descriptors 
-oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::COMPLEX> desc(N);
+    // enabling
+    // 1. create descriptors 
+    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::COMPLEX> desc(N);
 
-// 2. variadic set_value
-desc.set_value(oneapi::mkl::dft::config_param::PLACEMENT, oneapi::mkl::dft::config_value::NOT_INPLACE);
+    // 2. variadic set_value
+    desc.set_value(oneapi::mkl::dft::config_param::PLACEMENT, oneapi::mkl::dft::config_value::NOT_INPLACE);
 
-// 3. commit_descriptor (compile_time CPU)
-desc.commit(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue });
+    // 3. commit_descriptor (compile_time CPU)
+    desc.commit(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue });
 
-// 4. commit_descriptor (run_time xPU) unusable from libonemkl_dft_mklcpu.so
-// desc.commit(cpu_queue);
-
-// 5. compute_forward / compute_backward (CPU)
-// oneapi::mkl::dft::compute_forward(desc, x_usm);
+    // 5. compute_forward / compute_backward (CPU)
+    // oneapi::mkl::dft::compute_forward(desc, x_usm);
 }
 
 //

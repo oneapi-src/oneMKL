@@ -38,11 +38,11 @@ namespace mkl {
 namespace dft {
 namespace mklcpu {
 
-template <oneapi::mkl::dft::precision prec, oneapi::mkl::dft::domain dom>
-class commit_derived_impl : public oneapi::mkl::dft::detail::commit_impl {
+template <precision prec, domain dom>
+class commit_derived_impl : public detail::commit_impl {
 public:
     commit_derived_impl(sycl::queue queue, dft_values config_values)
-            : oneapi::mkl::dft::detail::commit_impl(queue),
+            : detail::commit_impl(queue),
               status(-1) {
         if (config_values.rank == 1) {
             status = DftiCreateDescriptor(&handle, get_precision(prec), get_domain(dom),
@@ -64,8 +64,7 @@ public:
         }
     }
 
-    commit_derived_impl(const commit_derived_impl* other)
-            : oneapi::mkl::dft::detail::commit_impl(*other) {}
+    commit_derived_impl(const commit_derived_impl* other) : detail::commit_impl(*other) {}
 
     virtual ~commit_derived_impl() override {
         DftiFreeDescriptor((DFTI_DESCRIPTOR_HANDLE*)&handle);
@@ -75,8 +74,8 @@ private:
     DFT_ERROR status;
     DFTI_DESCRIPTOR_HANDLE handle = nullptr;
 
-    constexpr DFTI_CONFIG_VALUE get_domain(oneapi::mkl::dft::domain d) {
-        if (d == oneapi::mkl::dft::domain::COMPLEX) {
+    constexpr DFTI_CONFIG_VALUE get_domain(domain d) {
+        if (d == domain::COMPLEX) {
             return DFTI_COMPLEX;
         }
         else {
@@ -84,8 +83,8 @@ private:
         }
     }
 
-    constexpr DFTI_CONFIG_VALUE get_precision(oneapi::mkl::dft::precision p) {
-        if (p == oneapi::mkl::dft::precision::SINGLE) {
+    constexpr DFTI_CONFIG_VALUE get_precision(precision p) {
+        if (p == precision::SINGLE) {
             return DFTI_SINGLE;
         }
         else {
@@ -102,10 +101,9 @@ private:
         status |= DftiSetValue(descHandle, DFTI_NUMBER_OF_TRANSFORMS, config.number_of_transforms);
         status |= DftiSetValue(descHandle, DFTI_INPUT_DISTANCE, config.fwd_dist);
         status |= DftiSetValue(descHandle, DFTI_OUTPUT_DISTANCE, config.bwd_dist);
-        status |= DftiSetValue(descHandle, DFTI_PLACEMENT,
-                               (config.placement == oneapi::mkl::dft::config_value::INPLACE)
-                                   ? DFTI_INPLACE
-                                   : DFTI_NOT_INPLACE);
+        status |= DftiSetValue(
+            descHandle, DFTI_PLACEMENT,
+            (config.placement == config_value::INPLACE) ? DFTI_INPLACE : DFTI_NOT_INPLACE);
 
         if (status != DFTI_NO_ERROR) {
             throw oneapi::mkl::exception("dft", "commit", "DftiSetValue failed");
@@ -113,33 +111,21 @@ private:
     }
 };
 
-oneapi::mkl::dft::detail::commit_impl* create_commit(
-    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE,
-                                 oneapi::mkl::dft::domain::COMPLEX>& desc) {
-    return new commit_derived_impl<oneapi::mkl::dft::precision::SINGLE,
-                                   oneapi::mkl::dft::domain::COMPLEX>(desc.get_queue(),
-                                                                      desc.get_values());
+detail::commit_impl* create_commit(descriptor<precision::SINGLE, domain::COMPLEX>& desc) {
+    return new commit_derived_impl<precision::SINGLE, domain::COMPLEX>(desc.get_queue(),
+                                                                       desc.get_values());
 }
-oneapi::mkl::dft::detail::commit_impl* create_commit(
-    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE,
-                                 oneapi::mkl::dft::domain::COMPLEX>& desc) {
-    return new commit_derived_impl<oneapi::mkl::dft::precision::DOUBLE,
-                                   oneapi::mkl::dft::domain::REAL>(desc.get_queue(),
-                                                                   desc.get_values());
+detail::commit_impl* create_commit(descriptor<precision::DOUBLE, domain::COMPLEX>& desc) {
+    return new commit_derived_impl<precision::DOUBLE, domain::REAL>(desc.get_queue(),
+                                                                    desc.get_values());
 }
-oneapi::mkl::dft::detail::commit_impl* create_commit(
-    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE,
-                                 oneapi::mkl::dft::domain::REAL>& desc) {
-    return new commit_derived_impl<oneapi::mkl::dft::precision::SINGLE,
-                                   oneapi::mkl::dft::domain::COMPLEX>(desc.get_queue(),
-                                                                      desc.get_values());
+detail::commit_impl* create_commit(descriptor<precision::SINGLE, domain::REAL>& desc) {
+    return new commit_derived_impl<precision::SINGLE, domain::COMPLEX>(desc.get_queue(),
+                                                                       desc.get_values());
 }
-oneapi::mkl::dft::detail::commit_impl* create_commit(
-    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE,
-                                 oneapi::mkl::dft::domain::REAL>& desc) {
-    return new commit_derived_impl<oneapi::mkl::dft::precision::DOUBLE,
-                                   oneapi::mkl::dft::domain::REAL>(desc.get_queue(),
-                                                                   desc.get_values());
+detail::commit_impl* create_commit(descriptor<precision::DOUBLE, domain::REAL>& desc) {
+    return new commit_derived_impl<precision::DOUBLE, domain::REAL>(desc.get_queue(),
+                                                                    desc.get_values());
 }
 
 } // namespace mklcpu
