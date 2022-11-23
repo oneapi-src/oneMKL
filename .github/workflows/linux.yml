@@ -99,7 +99,7 @@ jobs:
               -DENABLE_NETLIB_BACKEND=False \
               -DENABLE_ROCBLAS_BACKEND=False \
               -DTARGET_DOMAINS=blas \
-              -DHIPSYCL_TARGETS=omp\;hip:gfx906 \
+              -DHIPSYCL_TARGETS=omp\;cuda:sm_61\
               -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL \
               -DREF_BLAS_ROOT=/opt/lapack/ ..
         make -j8
