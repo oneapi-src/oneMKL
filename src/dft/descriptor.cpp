@@ -31,12 +31,15 @@ namespace oneapi {
 namespace mkl {
 namespace dft {
 
+#ifdef BUILD_RUN
 template <precision prec, domain dom>
 void descriptor<prec, dom>::commit(sycl::queue &queue) {
     queue_ = queue;
     pimpl_.reset(detail::create_commit(*this));
 }
+#endif
 
+#ifdef BUILD_COMP
 #ifdef ENABLE_MKLCPU_BACKEND
 template <precision prec, domain dom>
 void descriptor<prec, dom>::commit(backend_selector<backend::mklcpu> selector) {
@@ -52,6 +55,7 @@ void descriptor<prec, dom>::commit(backend_selector<backend::mklgpu> selector) {
     // pimpl_.reset(mklgpu::create_commit(*this));
 }
 #endif
+#endif
 
 // impliment error class
 template <precision prec, domain dom>
@@ -59,7 +63,6 @@ void descriptor<prec, dom>::set_value(config_param param, ...) {
     int err = 0;
     va_list vl;
     va_start(vl, param);
-    printf("oneapi interface set_value\n");
     switch (param) {
         case config_param::INPUT_STRIDES: [[fallthrough]];
         case config_param::OUTPUT_STRIDES: {

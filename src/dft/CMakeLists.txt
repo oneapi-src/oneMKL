@@ -32,7 +32,7 @@ target_include_directories(onemkl_dft
           $<TARGET_FILE_DIR:onemkl>
 )
 
-target_compile_options(onemkl_dft PRIVATE ${ONEMKL_BUILD_COPT})
+target_compile_options(onemkl_dft PRIVATE ${ONEMKL_BUILD_COPT} -DBUILD_RUN)
 
 set_target_properties(onemkl_dft PROPERTIES
   POSITION_INDEPENDENT_CODE ON

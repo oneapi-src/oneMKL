@@ -74,7 +74,13 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
           } } } },
 
     { domain::dft,
-      { { device::intelgpu,
+      { { device::x86cpu,
+          {
+#ifdef ENABLE_MKLCPU_BACKEND
+              LIB_NAME("dft_mklcpu")
+#endif
+        } },
+      { device::intelgpu,
           {
 #ifdef ENABLE_MKLGPU_BACKEND
               LIB_NAME("dft_mklgpu")
@@ -130,6 +136,7 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
 
 static std::map<domain, const char*> table_names = { { domain::blas, "mkl_blas_table" },
                                                      { domain::lapack, "mkl_lapack_table" },
+                                                     { domain::dft, "mkl_dft_table" },
                                                      { domain::rng, "mkl_rng_table" } };
 
 } //namespace mkl
