@@ -132,7 +132,7 @@ int main(int argc, char** argv) {
     print_example_banner();
 
     try {
-        sycl::device cpu_dev((sycl::cpu_selector()));
+        sycl::device cpu_dev((sycl::cpu_selector_v));
         std::cout << "Running DFT Complex forward inplace USM example" << std::endl;
         std::cout << "Running with single precision real data type on:" << std::endl;
         std::cout << "\tcpu device :" << cpu_dev.get_info<sycl::info::device::name>() << std::endl;

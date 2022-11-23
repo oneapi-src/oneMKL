@@ -35,7 +35,18 @@
 
 typedef struct {
     int version;
-    oneapi::mkl::dft::detail::commit_impl* (*create_commit_sycl)(sycl::queue queue, oneapi::mkl::dft::dft_values values);
+    oneapi::mkl::dft::detail::commit_impl* (*create_commit_sycl_fz)(
+        oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE,
+                                     oneapi::mkl::dft::domain::COMPLEX>& desc);
+    oneapi::mkl::dft::detail::commit_impl* (*create_commit_sycl_dz)(
+        oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE,
+                                     oneapi::mkl::dft::domain::COMPLEX>& desc);
+    oneapi::mkl::dft::detail::commit_impl* (*create_commit_sycl_fr)(
+        oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE,
+                                     oneapi::mkl::dft::domain::REAL>& desc);
+    oneapi::mkl::dft::detail::commit_impl* (*create_commit_sycl_dr)(
+        oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE,
+                                     oneapi::mkl::dft::domain::REAL>& desc);
 } dft_function_table_t;
 
 #endif //_DFT_FUNCTION_TABLE_HPP_

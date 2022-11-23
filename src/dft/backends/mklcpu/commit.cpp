@@ -25,6 +25,7 @@
 
 #include "oneapi/mkl/types.hpp"
 #include "oneapi/mkl/dft/types.hpp"
+#include "oneapi/mkl/dft/descriptor.hpp"
 
 #include "oneapi/mkl/dft/detail/mklcpu/onemkl_dft_mklcpu.hpp"
 
@@ -110,8 +111,25 @@ private:
     }
 };
 
-oneapi::mkl::dft::detail::commit_impl* create_commit(sycl::queue queue, dft_values values) {
-    return new commit_derived_impl(queue, values);
+oneapi::mkl::dft::detail::commit_impl* create_commit(
+    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE, oneapi::mkl::dft::domain::COMPLEX> &desc
+) {
+    return new commit_derived_impl(desc.get_queue(), desc.get_values());
+}
+oneapi::mkl::dft::detail::commit_impl* create_commit(
+    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::COMPLEX> &desc
+) {
+    return new commit_derived_impl(desc.get_queue(), desc.get_values());
+}
+oneapi::mkl::dft::detail::commit_impl* create_commit(
+    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE, oneapi::mkl::dft::domain::REAL> &desc
+) {
+    return new commit_derived_impl(desc.get_queue(), desc.get_values());
+}
+oneapi::mkl::dft::detail::commit_impl* create_commit(
+    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::REAL> &desc
+) {
+    return new commit_derived_impl(desc.get_queue(), desc.get_values());
 }
 
 } // namespace mklcpu

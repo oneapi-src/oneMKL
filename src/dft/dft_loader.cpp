@@ -21,16 +21,38 @@
 
 #include "function_table_initializer.hpp"
 #include "dft/function_table.hpp"
-                      
+#include "oneapi/mkl/detail/get_device_id.hpp"
+
 namespace oneapi {
 namespace mkl {
 namespace dft {
 namespace detail {
 
-static oneapi::mkl::detail::table_initializer<mkl::domain::dft, dft_function_table_t> function_tables;
+static oneapi::mkl::detail::table_initializer<mkl::domain::dft, dft_function_table_t>
+    function_tables;
 
-commit_impl* create_commit(oneapi::mkl::device libkey, sycl::queue queue, dft_values values) {
-    return function_tables[libkey].create_commit_sycl(queue, values);
+commit_impl* create_commit(oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE,
+                                                        oneapi::mkl::dft::domain::COMPLEX>& desc) {
+    auto libkey = get_device_id(desc.get_queue());
+    return function_tables[libkey].create_commit_sycl_fz(desc);
+}
+
+commit_impl* create_commit(oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE,
+                                                        oneapi::mkl::dft::domain::COMPLEX>& desc) {
+    auto libkey = get_device_id(desc.get_queue());
+    return function_tables[libkey].create_commit_sycl_dz(desc);
+}
+
+commit_impl* create_commit(oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE,
+                                                        oneapi::mkl::dft::domain::REAL>& desc) {
+    auto libkey = get_device_id(desc.get_queue());
+    return function_tables[libkey].create_commit_sycl_fr(desc);
+}
+
+commit_impl* create_commit(oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE,
+                                                        oneapi::mkl::dft::domain::REAL>& desc) {
+    auto libkey = get_device_id(desc.get_queue());
+    return function_tables[libkey].create_commit_sycl_dr(desc);
 }
 
 } // namespace detail

@@ -17,28 +17,48 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#pragma once
+#ifndef _ONEMKL_DFT_MKLGPU_HPP_
+#define _ONEMKL_DFT_MKLGPU_HPP_
 
+#include <cstdint>
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
 #else
 #include <CL/sycl.hpp>
 #endif
 
-#include <complex>
-#include <cstdint>
+#include "oneapi/mkl/detail/export.hpp"
+#include "oneapi/mkl/detail/get_device_id.hpp"
 
-#include "oneapi/mkl/dft/descriptor.hpp"
 #include "oneapi/mkl/types.hpp"
+#include "oneapi/mkl/dft/types.hpp"
+#include "oneapi/mkl/dft/detail/commit_impl.hpp"
+#include "oneapi/mkl/dft/descriptor.hpp"
 
 namespace oneapi {
 namespace mkl {
 namespace dft {
 namespace mklgpu {
 
-ONEMKL_EXPORT oneapi::mkl::dft::detail::commit_impl* create_commit(sycl::queue queue, dft_values values);
+ONEMKL_EXPORT oneapi::mkl::dft::detail::commit_impl* create_commit(
+    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE,
+                                 oneapi::mkl::dft::domain::COMPLEX>& desc);
+
+ONEMKL_EXPORT oneapi::mkl::dft::detail::commit_impl* create_commit(
+    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE,
+                                 oneapi::mkl::dft::domain::COMPLEX>& desc);
+
+ONEMKL_EXPORT oneapi::mkl::dft::detail::commit_impl* create_commit(
+    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE,
+                                 oneapi::mkl::dft::domain::REAL>& desc);
+
+ONEMKL_EXPORT oneapi::mkl::dft::detail::commit_impl* create_commit(
+    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE,
+                                 oneapi::mkl::dft::domain::REAL>& desc);
 
 } // namespace mklgpu
 } // namespace dft
 } // namespace mkl
 } // namespace oneapi
+
+#endif // _ONEMKL_DFT_MKLGPU_HPP_

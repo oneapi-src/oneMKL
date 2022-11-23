@@ -30,15 +30,27 @@
 #include "oneapi/mkl/detail/export.hpp"
 #include "oneapi/mkl/detail/get_device_id.hpp"
 
+#include "oneapi/mkl/types.hpp"
 #include "oneapi/mkl/dft/types.hpp"
 #include "oneapi/mkl/dft/detail/commit_impl.hpp"
+#include "oneapi/mkl/dft/descriptor.hpp"
 
 namespace oneapi {
 namespace mkl {
 namespace dft {
 namespace detail {
 
-ONEMKL_EXPORT commit_impl* create_commit(oneapi::mkl::device libkey, sycl::queue queue, dft_values values);
+ONEMKL_EXPORT commit_impl* create_commit(oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE,
+                                                        oneapi::mkl::dft::domain::COMPLEX>& desc);
+
+ONEMKL_EXPORT commit_impl* create_commit(oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE,
+                                                        oneapi::mkl::dft::domain::COMPLEX>& desc);
+
+ONEMKL_EXPORT commit_impl* create_commit(oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE,
+                                                        oneapi::mkl::dft::domain::REAL>& desc);
+
+ONEMKL_EXPORT commit_impl* create_commit(oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE,
+                                                        oneapi::mkl::dft::domain::REAL>& desc);
 
 } // namespace detail
 } // namespace dft
