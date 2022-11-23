@@ -98,7 +98,6 @@ void run_uniform_example(const sycl::device& cpu_dev, const sycl::device& gpu_de
     // preparation on CPU device and GPU device
     sycl::queue cpu_queue(cpu_dev, cpu_exception_handler);
     sycl::queue gpu_queue(gpu_dev, gpu_exception_handler);
-    oneapi::mkl::rng::default_engine test_engine(cpu_queue, seed);
     oneapi::mkl::rng::default_engine cpu_engine(
         oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue }, seed);
     oneapi::mkl::rng::default_engine gpu_engine(
