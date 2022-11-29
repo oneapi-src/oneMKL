@@ -68,7 +68,7 @@ jobs:
               -DWITH_LEVEL_ZERO_BACKEND=OFF \
               -DCMAKE_INSTALL_PREFIX=/opt/hipSYCL \
               -DROCM_PATH=/opt/rocm-${{matrix.rocm_version}} ..
-        make -j4 install
+        make -j2 install
     - name: install LAPACK (for CBLAS)
       run: |
         cd
@@ -90,7 +90,10 @@ jobs:
         cd oneMKL
         mkdir build
         cd build
-        cmake -DCUDA_CUDA_LIBRARY=/usr/local/cuda-11.6/lib64/stubs/libcuda.so \
+        cmake \
+              -DCMAKE_CXX_COMPILER=/usr/bin/clang++-${{matrix.clang_version}} \
+              -DCMAKE_C_COMPILER=/usr/bin/clang-${{matrix.clang_version}} \
+              -DCUDA_CUDA_LIBRARY=/usr/local/cuda-11.6/lib64/stubs/libcuda.so \
               -DENABLE_CUBLAS_BACKEND=True \
               -DENABLE_CURAND_BACKEND=False \
               -DENABLE_CUSOLVER_BACKEND=False \
@@ -102,4 +105,6 @@ jobs:
               -DHIPSYCL_TARGETS=omp\;cuda:sm_61\
               -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL \
               -DREF_BLAS_ROOT=/opt/lapack/ ..
-        make -j8
+        cmake --build . -j2
+        ctest
+        cmake --install . --prefix /usr
