@@ -48,10 +48,6 @@ oneMKL is part of [oneAPI](https://oneapi.io).
             <td align="center">AMD GPU</td>
         </tr>
         <tr>
-            <td align="center"><a href="https://github.com/ROCmSoftwarePlatform/rocSOLVER"> AMD rocSOLVER</a> for AMD GPU </td>
-            <td align="center">AMD GPU</td>
-        </tr>
-        <tr>
             <td align="center"><a href="https://github.com/ROCmSoftwarePlatform/rocRAND"> AMD rocRAND</a> for AMD GPU </td>
             <td align="center">AMD GPU</td>
         </tr>
@@ -171,12 +167,12 @@ Supported domains: BLAS, LAPACK, RNG
         </tr>
 	    <tr >
             <td align="center">AMD GPU</td>
-            <td align="center">AMD rocBLAS</td>
+            <td align="center">AMD rocBLAS </td>
             <td align="center">Dynamic, Static</td>
             <td align="center">LLVM*, hipSYCL</td>
         </tr>
         <tr>
-            <td rowspan=4 align="center">LAPACK</td>
+            <td rowspan=3 align="center">LAPACK</td>
             <td align="center">x86 CPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
@@ -190,12 +186,6 @@ Supported domains: BLAS, LAPACK, RNG
         <tr>
             <td align="center">NVIDIA GPU</td>
             <td align="center">NVIDIA cuSOLVER</td>
-            <td align="center">Dynamic, Static</td>
-            <td align="center">LLVM*</td>
-        </tr>
-        <tr>
-            <td align="center">AMD GPU</td>
-            <td align="center">AMD rocSOLVER</td>
             <td align="center">Dynamic, Static</td>
             <td align="center">LLVM*</td>
         </tr>
@@ -431,7 +421,6 @@ Python | 3.6 or higher | No | *N/A* | *Pre-installed or Installed by user* | [PS
 [NVIDIA CUDA SDK](https://developer.nvidia.com/cublas) | 10.2 | No | *N/A* | *Installed by user* |[End User License Agreement](https://docs.nvidia.com/cuda/eula/index.html)
 [AMD rocBLAS](https://rocblas.readthedocs.io/en/rocm-4.5.2/) | 4.5 | No | *N/A* | *Installed by user* |[AMD License](https://github.com/ROCmSoftwarePlatform/rocBLAS/blob/develop/LICENSE.md)
 [AMD rocRAND](https://github.com/ROCmSoftwarePlatform/rocRAND) | 5.1.0 | No | *N/A* | *Installed by user* |[AMD License](https://github.com/ROCmSoftwarePlatform/rocRAND/blob/develop/LICENSE.txt)
-[AMD rocSOLVER](https://github.com/ROCmSoftwarePlatform/rocSOLVER) | 5.0.0 | No | *N/A* | *Installed by user* |[AMD License](https://github.com/ROCmSoftwarePlatform/rocRAND/blob/develop/LICENSE.txt)
 [NETLIB LAPACK](https://www.netlib.org/) | 3.7.1 | Yes | conan-community | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [BSD like license](http://www.netlib.org/lapack/LICENSE.txt)
 [Sphinx](https://www.sphinx-doc.org/en/master/) | 2.4.4 | Yes | pip | ~/.local/bin (or similar user local directory) | [BSD License](https://github.com/sphinx-doc/sphinx/blob/3.x/LICENSE)
 

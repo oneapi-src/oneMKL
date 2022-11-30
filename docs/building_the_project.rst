@@ -457,19 +457,6 @@ With:
    -DENABLE_ROCRAND_BACKEND=True   \
    -DTARGET_DOMAINS=rng
 
-To build with the rocSOLVER backend instead simply replace:
-
-.. code-block:: bash\
-
-   -DENABLE_ROCBLAS_BACKEND=True   \
-   -DTARGET_DOMAINS=blas
-With:
-
-.. code-block:: bash
-
-   -DENABLE_ROCSOLVER_BACKEND=True   \
-   -DTARGET_DOMAINS=lapack
-
 **AMD GPU device architectures**  
 
 The device architecture can be retrieved via the ``rocminfo`` tool. The architecture will be displayed in the ``Name:`` row.
