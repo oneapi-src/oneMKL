@@ -28,11 +28,9 @@
 #endif
 
 #include "oneapi/mkl/detail/export.hpp"
-#include "oneapi/mkl/detail/get_device_id.hpp"
 
 #include "oneapi/mkl/types.hpp"
 #include "oneapi/mkl/dft/types.hpp"
-#include "oneapi/mkl/dft/detail/commit_impl.hpp"
 #include "oneapi/mkl/dft/descriptor.hpp"
 
 namespace oneapi {

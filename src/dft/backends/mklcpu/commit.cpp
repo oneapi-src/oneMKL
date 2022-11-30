@@ -43,7 +43,7 @@ class commit_derived_impl : public detail::commit_impl {
 public:
     commit_derived_impl(sycl::queue queue, dft_values config_values)
             : detail::commit_impl(queue),
-              status(-1) {
+              status(DFT_NOTSET) {
         if (config_values.rank == 1) {
             status = DftiCreateDescriptor(&handle, get_precision(prec), get_domain(dom),
                                           config_values.rank, config_values.dimensions[0]);
@@ -63,8 +63,6 @@ public:
             throw oneapi::mkl::exception("dft", "commit", "DftiCommitDescriptor failed");
         }
     }
-
-    commit_derived_impl(const commit_derived_impl* other) : detail::commit_impl(*other) {}
 
     virtual ~commit_derived_impl() override {
         DftiFreeDescriptor((DFTI_DESCRIPTOR_HANDLE*)&handle);
@@ -92,21 +90,31 @@ private:
         }
     }
 
+    template<typename... Args>
+    DFT_ERROR set_value_item(DFTI_DESCRIPTOR_HANDLE hand, enum DFTI_CONFIG_PARAM name, Args... args) {
+        DFT_ERROR value_err = DFT_NOTSET;
+        value_err = DftiSetValue(hand, name, args...);
+        if (value_err != DFTI_NO_ERROR) {
+            throw oneapi::mkl::exception("dft", "set_value_item", std::to_string(name));
+        }
+
+        return value_err;
+    }
+
     void set_value(DFTI_DESCRIPTOR_HANDLE& descHandle, dft_values config) {
-        // TODO : add complex storage and workspace, fix error handling
-        status |= DftiSetValue(descHandle, DFTI_INPUT_STRIDES, config.input_strides.data());
-        status |= DftiSetValue(descHandle, DFTI_OUTPUT_STRIDES, config.output_strides.data());
-        status |= DftiSetValue(descHandle, DFTI_BACKWARD_SCALE, config.bwd_scale);
-        status |= DftiSetValue(descHandle, DFTI_FORWARD_SCALE, config.fwd_scale);
-        status |= DftiSetValue(descHandle, DFTI_NUMBER_OF_TRANSFORMS, config.number_of_transforms);
-        status |= DftiSetValue(descHandle, DFTI_INPUT_DISTANCE, config.fwd_dist);
-        status |= DftiSetValue(descHandle, DFTI_OUTPUT_DISTANCE, config.bwd_dist);
-        status |= DftiSetValue(
+        status |= set_value_item(descHandle, DFTI_INPUT_STRIDES, config.input_strides.data());
+        status |= set_value_item(descHandle, DFTI_OUTPUT_STRIDES, config.output_strides.data());
+        status |= set_value_item(descHandle, DFTI_BACKWARD_SCALE, config.bwd_scale);
+        status |= set_value_item(descHandle, DFTI_FORWARD_SCALE, config.fwd_scale);
+        status |= set_value_item(descHandle, DFTI_NUMBER_OF_TRANSFORMS, config.number_of_transforms);
+        status |= set_value_item(descHandle, DFTI_INPUT_DISTANCE, config.fwd_dist);
+        status |= set_value_item(descHandle, DFTI_OUTPUT_DISTANCE, config.bwd_dist);
+        status |= set_value_item(
             descHandle, DFTI_PLACEMENT,
             (config.placement == config_value::INPLACE) ? DFTI_INPLACE : DFTI_NOT_INPLACE);
 
         if (status != DFTI_NO_ERROR) {
-            throw oneapi::mkl::exception("dft", "commit", "DftiSetValue failed");
+            throw oneapi::mkl::exception("dft", "set_value", "failed");
         }
     }
 };

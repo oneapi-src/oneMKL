@@ -68,10 +68,8 @@ private:
     sycl::queue queue_;
 
     std::int64_t rank_;
-    std::vector<std::int64_t>  dimensions_;
 
     // descriptor configuration values_ and structs
-    void* handle_;
     oneapi::mkl::dft::dft_values values_;
 };
 

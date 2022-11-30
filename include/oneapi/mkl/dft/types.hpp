@@ -33,6 +33,8 @@ namespace dft {
 
 typedef int DFT_ERROR;
 
+#define DFT_NOTSET -1
+
 enum class precision { SINGLE, DOUBLE };
 enum class domain { REAL, COMPLEX };
 enum class config_param {
@@ -87,18 +89,13 @@ enum class config_value {
     // Allow/avoid certain usages
     ALLOW,
     AVOID,
-    NONE,
-
+    NONE, 
+    WORKSPACE_INTERNAL,
+    WORKSPACE_EXTERNAL,
     // for config_param::PACKED_FORMAT for storing conjugate-even finite sequence in real containers
     CCE_FORMAT
 
 };
-
-static std::unordered_map<precision, std::string> prec_map{ { precision::SINGLE, "SINGLE" },
-                                                            { precision::DOUBLE, "DOUBLE" } };
-
-static std::unordered_map<domain, std::string> dom_map{ { domain::REAL, "REAL" },
-                                                        { domain::COMPLEX, "COMPLEX" } };
 
 struct dft_values {
     std::vector<std::int64_t> input_strides;
@@ -111,12 +108,14 @@ struct dft_values {
     config_value placement;
     config_value complex_storage;
     config_value conj_even_storage;
+    config_value workspace;
 
     std::vector<std::int64_t> dimensions;
     std::int64_t rank;
     domain domain;
     precision precision;
 };
+
 } // namespace dft
 } // namespace mkl
 } // namespace oneapi

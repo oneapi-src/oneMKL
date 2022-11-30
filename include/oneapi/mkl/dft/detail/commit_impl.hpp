@@ -27,12 +27,6 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl/detail/export.hpp"
-#include "oneapi/mkl/detail/get_device_id.hpp"
-#include "oneapi/mkl/dft/types.hpp"
-
-#include "oneapi/mkl/types.hpp"
-
 namespace oneapi {
 namespace mkl {
 namespace dft {

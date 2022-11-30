@@ -57,7 +57,6 @@ void descriptor<prec, dom>::commit(backend_selector<backend::mklgpu> selector) {
 #endif
 #endif
 
-// impliment error class
 template <precision prec, domain dom>
 void descriptor<prec, dom>::set_value(config_param param, ...) {
     int err = 0;
@@ -94,13 +93,11 @@ void descriptor<prec, dom>::set_value(config_param param, ...) {
 }
 template <precision prec, domain dom>
 descriptor<prec, dom>::descriptor(std::vector<std::int64_t> dimensions)
-        : dimensions_(dimensions),
-          handle_(nullptr),
-          rank_(dimensions.size()) {
+          : rank_(dimensions.size()) {
     // Compute default strides.
     std::vector<std::int64_t> defaultStrides(rank_, 1);
     for (int i = rank_ - 1; i < 0; --i) {
-        defaultStrides[i] = defaultStrides[i - 1] * dimensions_[i];
+        defaultStrides[i] = defaultStrides[i - 1] * dimensions[i];
     }
     defaultStrides[0] = 0;
     values_.input_strides = defaultStrides;
@@ -113,7 +110,7 @@ descriptor<prec, dom>::descriptor(std::vector<std::int64_t> dimensions)
     values_.placement = config_value::INPLACE;
     values_.complex_storage = config_value::COMPLEX_COMPLEX;
     values_.conj_even_storage = config_value::COMPLEX_COMPLEX;
-    values_.dimensions = dimensions_;
+    values_.dimensions = dimensions;
     values_.rank = rank_;
     values_.domain = dom;
     values_.precision = prec;
@@ -124,9 +121,7 @@ descriptor<prec, dom>::descriptor(std::int64_t length)
         : descriptor<prec, dom>(std::vector<std::int64_t>{ length }) {}
 
 template <precision prec, domain dom>
-descriptor<prec, dom>::~descriptor() {
-    // call DftiFreeDescriptor
-}
+descriptor<prec, dom>::~descriptor() { }
 
 template <precision prec, domain dom>
 void descriptor<prec, dom>::get_value(config_param param, ...) {
