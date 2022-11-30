@@ -1,5 +1,5 @@
 #===============================================================================
-# Copyright 2020-2021 Intel Corporation
+# Copyright 2020-2022 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -123,7 +123,11 @@ foreach(domain ${TARGET_DOMAINS})
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_cusolver)
   endif()
 
-
+  if(domain STREQUAL "lapack" AND ENABLE_ROCSOLVER_BACKEND)
+    add_dependencies(test_main_${domain}_ct onemkl_${domain}_rocsolver)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_rocsolver)
+  endif()
+  
   if(domain STREQUAL "rng" AND ENABLE_CURAND_BACKEND)
     add_dependencies(test_main_${domain}_ct onemkl_${domain}_curand)
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_curand)
