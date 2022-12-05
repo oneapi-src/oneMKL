@@ -102,20 +102,16 @@ private:
     }
 
     void set_value(DFTI_DESCRIPTOR_HANDLE& descHandle, dft_values config) {
-        status |= set_value_item(descHandle, DFTI_INPUT_STRIDES, config.input_strides.data());
-        status |= set_value_item(descHandle, DFTI_OUTPUT_STRIDES, config.output_strides.data());
-        status |= set_value_item(descHandle, DFTI_BACKWARD_SCALE, config.bwd_scale);
-        status |= set_value_item(descHandle, DFTI_FORWARD_SCALE, config.fwd_scale);
-        status |= set_value_item(descHandle, DFTI_NUMBER_OF_TRANSFORMS, config.number_of_transforms);
-        status |= set_value_item(descHandle, DFTI_INPUT_DISTANCE, config.fwd_dist);
-        status |= set_value_item(descHandle, DFTI_OUTPUT_DISTANCE, config.bwd_dist);
-        status |= set_value_item(
+        set_value_item(descHandle, DFTI_INPUT_STRIDES, config.input_strides.data());
+        set_value_item(descHandle, DFTI_OUTPUT_STRIDES, config.output_strides.data());
+        set_value_item(descHandle, DFTI_BACKWARD_SCALE, config.bwd_scale);
+        set_value_item(descHandle, DFTI_FORWARD_SCALE, config.fwd_scale);
+        set_value_item(descHandle, DFTI_NUMBER_OF_TRANSFORMS, config.number_of_transforms);
+        set_value_item(descHandle, DFTI_INPUT_DISTANCE, config.fwd_dist);
+        set_value_item(descHandle, DFTI_OUTPUT_DISTANCE, config.bwd_dist);
+        set_value_item(
             descHandle, DFTI_PLACEMENT,
             (config.placement == config_value::INPLACE) ? DFTI_INPLACE : DFTI_NOT_INPLACE);
-
-        if (status != DFTI_NO_ERROR) {
-            throw oneapi::mkl::exception("dft", "set_value", "failed");
-        }
     }
 };
 

@@ -19,43 +19,9 @@
 
 #include "oneapi/mkl/dft/descriptor.hpp"
 
-#ifdef ENABLE_MKLCPU_BACKEND
-#include "oneapi/mkl/dft/detail/mklcpu/onemkl_dft_mklcpu.hpp"
-#endif
-#ifdef ENABLE_MKLGPU_BACKEND
-#include "oneapi/mkl/dft/detail/mklgpu/onemkl_dft_mklgpu.hpp"
-#endif
-#include "oneapi/mkl/dft/detail/dft_loader.hpp"
-
 namespace oneapi {
 namespace mkl {
 namespace dft {
-
-#ifdef BUILD_RUN
-template <precision prec, domain dom>
-void descriptor<prec, dom>::commit(sycl::queue &queue) {
-    queue_ = queue;
-    pimpl_.reset(detail::create_commit(*this));
-}
-#endif
-
-#ifdef BUILD_COMP
-#ifdef ENABLE_MKLCPU_BACKEND
-template <precision prec, domain dom>
-void descriptor<prec, dom>::commit(backend_selector<backend::mklcpu> selector) {
-    queue_ = selector.get_queue();
-    pimpl_.reset(mklcpu::create_commit(*this));
-}
-#endif
-
-#ifdef ENABLE_MKLGPU_BACKEND
-template <precision prec, domain dom>
-void descriptor<prec, dom>::commit(backend_selector<backend::mklgpu> selector) {
-    queue_ = selector.get_queue();
-    // pimpl_.reset(mklgpu::create_commit(*this));
-}
-#endif
-#endif
 
 template <precision prec, domain dom>
 void descriptor<prec, dom>::set_value(config_param param, ...) {
@@ -72,7 +38,8 @@ void descriptor<prec, dom>::set_value(config_param param, ...) {
                 std::copy(strides, strides + rank_ + 1, std::back_inserter(values_.input_strides));
             if (param == config_param::OUTPUT_STRIDES)
                 std::copy(strides, strides + rank_ + 1, std::back_inserter(values_.output_strides));
-        } break;
+            break;
+        } 
         case config_param::FORWARD_SCALE: values_.fwd_scale = va_arg(vl, double); break;
         case config_param::BACKWARD_SCALE: values_.bwd_scale = va_arg(vl, double); break;
         case config_param::NUMBER_OF_TRANSFORMS:
@@ -92,8 +59,7 @@ void descriptor<prec, dom>::set_value(config_param param, ...) {
     va_end(vl);
 }
 template <precision prec, domain dom>
-descriptor<prec, dom>::descriptor(std::vector<std::int64_t> dimensions)
-          : rank_(dimensions.size()) {
+descriptor<prec, dom>::descriptor(std::vector<std::int64_t> dimensions) : rank_(dimensions.size()) {
     // Compute default strides.
     std::vector<std::int64_t> defaultStrides(rank_, 1);
     for (int i = rank_ - 1; i < 0; --i) {
@@ -121,7 +87,7 @@ descriptor<prec, dom>::descriptor(std::int64_t length)
         : descriptor<prec, dom>(std::vector<std::int64_t>{ length }) {}
 
 template <precision prec, domain dom>
-descriptor<prec, dom>::~descriptor() { }
+descriptor<prec, dom>::~descriptor() {}
 
 template <precision prec, domain dom>
 void descriptor<prec, dom>::get_value(config_param param, ...) {
