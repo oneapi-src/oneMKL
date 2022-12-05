@@ -9,6 +9,7 @@ jobs:
       matrix:
         clang_version: [13]
         rocm_version: ['5.1.1']
+        cuda_version: ['11.6']
         os: [ubuntu-20.04, ubuntu-18.04]
     runs-on: ${{matrix.os}}
     steps:
@@ -67,7 +68,8 @@ jobs:
               -DWITH_ROCM_BACKEND=OFF \
               -DWITH_LEVEL_ZERO_BACKEND=OFF \
               -DCMAKE_INSTALL_PREFIX=/opt/hipSYCL \
-              -DROCM_PATH=/opt/rocm-${{matrix.rocm_version}} ..
+              -DROCM_PATH=/opt/rocm-${{matrix.rocm_version}} \
+              -DCUDA_PATH=/usr/local/cuda-${{matrix.cuda_version}} ..
         make -j2 install
     - name: install LAPACK (for CBLAS)
       run: |
@@ -94,6 +96,7 @@ jobs:
               -DCMAKE_CXX_COMPILER=/usr/bin/clang++-${{matrix.clang_version}} \
               -DCMAKE_C_COMPILER=/usr/bin/clang-${{matrix.clang_version}} \
               -DCUDA_CUDA_LIBRARY=/usr/local/cuda-11.6/lib64/stubs/libcuda.so \
+              -DCUDA_PATH=/usr/local/cuda-${{matrix.cuda_version}} \
               -DENABLE_CUBLAS_BACKEND=True \
               -DENABLE_CURAND_BACKEND=False \
               -DENABLE_CUSOLVER_BACKEND=False \
