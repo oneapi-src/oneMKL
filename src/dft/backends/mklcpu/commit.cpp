@@ -90,8 +90,9 @@ private:
         }
     }
 
-    template<typename... Args>
-    DFT_ERROR set_value_item(DFTI_DESCRIPTOR_HANDLE hand, enum DFTI_CONFIG_PARAM name, Args... args) {
+    template <typename... Args>
+    DFT_ERROR set_value_item(DFTI_DESCRIPTOR_HANDLE hand, enum DFTI_CONFIG_PARAM name,
+                             Args... args) {
         DFT_ERROR value_err = DFT_NOTSET;
         value_err = DftiSetValue(hand, name, args...);
         if (value_err != DFTI_NO_ERROR) {
@@ -115,22 +116,15 @@ private:
     }
 };
 
-detail::commit_impl* create_commit(descriptor<precision::SINGLE, domain::COMPLEX>& desc) {
-    return new commit_derived_impl<precision::SINGLE, domain::COMPLEX>(desc.get_queue(),
-                                                                       desc.get_values());
+template <precision prec, domain dom>
+detail::commit_impl* create_commit(descriptor<prec, dom>& desc) {
+    return new commit_derived_impl<prec, dom>(desc.get_queue(), desc.get_values());
 }
-detail::commit_impl* create_commit(descriptor<precision::DOUBLE, domain::COMPLEX>& desc) {
-    return new commit_derived_impl<precision::DOUBLE, domain::REAL>(desc.get_queue(),
-                                                                    desc.get_values());
-}
-detail::commit_impl* create_commit(descriptor<precision::SINGLE, domain::REAL>& desc) {
-    return new commit_derived_impl<precision::SINGLE, domain::COMPLEX>(desc.get_queue(),
-                                                                       desc.get_values());
-}
-detail::commit_impl* create_commit(descriptor<precision::DOUBLE, domain::REAL>& desc) {
-    return new commit_derived_impl<precision::DOUBLE, domain::REAL>(desc.get_queue(),
-                                                                    desc.get_values());
-}
+
+template detail::commit_impl* create_commit(descriptor<precision::SINGLE, domain::REAL>&);
+template detail::commit_impl* create_commit(descriptor<precision::SINGLE, domain::COMPLEX>&);
+template detail::commit_impl* create_commit(descriptor<precision::DOUBLE, domain::REAL>&);
+template detail::commit_impl* create_commit(descriptor<precision::DOUBLE, domain::COMPLEX>&);
 
 } // namespace mklcpu
 } // namespace dft

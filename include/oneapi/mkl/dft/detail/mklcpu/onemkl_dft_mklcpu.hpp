@@ -38,21 +38,9 @@ namespace mkl {
 namespace dft {
 namespace mklcpu {
 
+template<oneapi::mkl::dft::precision prec, oneapi::mkl::dft::domain dom>
 ONEMKL_EXPORT oneapi::mkl::dft::detail::commit_impl* create_commit(
-    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE,
-                                 oneapi::mkl::dft::domain::COMPLEX>& desc);
-
-ONEMKL_EXPORT oneapi::mkl::dft::detail::commit_impl* create_commit(
-    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE,
-                                 oneapi::mkl::dft::domain::COMPLEX>& desc);
-
-ONEMKL_EXPORT oneapi::mkl::dft::detail::commit_impl* create_commit(
-    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE,
-                                 oneapi::mkl::dft::domain::REAL>& desc);
-
-ONEMKL_EXPORT oneapi::mkl::dft::detail::commit_impl* create_commit(
-    oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE,
-                                 oneapi::mkl::dft::domain::REAL>& desc);
+    oneapi::mkl::dft::descriptor<prec, dom>& desc);
 
 } // namespace mklcpu
 } // namespace dft
