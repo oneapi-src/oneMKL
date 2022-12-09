@@ -19,7 +19,6 @@
 *
 **************************************************************************/
 
-
 #ifndef _ONEMKL_LAPACK_ROCSOLVER_HPP_
 #define _ONEMKL_LAPACK_ROCSOLVER_HPP_
 
@@ -37,7 +36,7 @@
 
 namespace oneapi {
 namespace mkl {
-namespace lapack{
+namespace lapack {
 namespace rocsolver {
 
 #include "onemkl_lapack_rocsolver.hxx"

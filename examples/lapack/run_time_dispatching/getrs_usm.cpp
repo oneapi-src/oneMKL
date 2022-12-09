@@ -134,7 +134,7 @@ void run_getrs_example(const sycl::device& device) {
     // Skip checking getrs scratchpad memory allocation on cusolver/rocsolver because with
     // cusolver/rocsolver backend getrs does not use scrachpad memory
     if (device.is_cpu() || (device.get_info<sycl::info::device::vendor_id>() != NVIDIA_ID &&
-        device.get_info<sycl::info::device::vendor_id>() != AMD_ID)) {
+                            device.get_info<sycl::info::device::vendor_id>() != AMD_ID)) {
         if (!getrs_scratchpad) {
             throw std::runtime_error("Failed to allocate USM memory.");
         }
