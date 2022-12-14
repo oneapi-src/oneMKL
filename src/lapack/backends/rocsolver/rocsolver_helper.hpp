@@ -206,7 +206,7 @@ inline rocblas_svect get_rocsolver_jobsvd(oneapi::mkl::jobsvd job) {
         case oneapi::mkl::jobsvd::A: return rocblas_svect_all;
         case oneapi::mkl::jobsvd::O: return rocblas_svect_overwrite;
         case oneapi::mkl::jobsvd::S: return rocblas_svect_singular;
-	default: throw "Wrong jobsvd.";
+        default: throw "Wrong jobsvd.";
     }
 }
 
