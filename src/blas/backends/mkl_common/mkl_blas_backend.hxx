@@ -1308,6 +1308,7 @@ sycl::event rotg(sycl::queue &queue, std::complex<float> *a, std::complex<float>
 sycl::event rotg(sycl::queue &queue, std::complex<double> *a, std::complex<double> *b, double *c,
                  std::complex<double> *s, const std::vector<sycl::event> &dependencies = {});
 
+#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION < 20230000)
 sycl::event rotm(sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
                  std::int64_t incy, float *param,
                  const std::vector<sycl::event> &dependencies = {});
@@ -1315,6 +1316,15 @@ sycl::event rotm(sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx
 sycl::event rotm(sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
                  std::int64_t incy, double *param,
                  const std::vector<sycl::event> &dependencies = {});
+#else
+sycl::event rotm(sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
+                 std::int64_t incy, const float *param,
+                 const std::vector<sycl::event> &dependencies = {});
+
+sycl::event rotm(sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
+                 std::int64_t incy, const double *param,
+                 const std::vector<sycl::event> &dependencies = {});
+#endif
 
 sycl::event rotmg(sycl::queue &queue, float *d1, float *d2, float *x1, float y1, float *param,
                   const std::vector<sycl::event> &dependencies = {});
