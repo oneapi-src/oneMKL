@@ -18,7 +18,7 @@
 #===============================================================================
 
 # Build object from all test sources
-set(BATCH_SOURCES "copy_batch_stride.cpp" "axpy_batch_stride.cpp" "dgmm_batch_stride.cpp" "gemm_batch_stride.cpp" "gemv_batch_stride.cpp" "trsm_batch_stride.cpp" "syrk_batch_stride.cpp" "copy_batch_usm.cpp" "copy_batch_stride_usm.cpp" "axpy_batch_usm.cpp" "axpy_batch_stride_usm.cpp" "dgmm_batch_usm.cpp" "dgmm_batch_stride_usm.cpp" "gemm_batch_usm.cpp" "gemm_batch_stride_usm.cpp" "gemv_batch_usm.cpp" "gemv_batch_stride_usm.cpp" "trsm_batch_usm.cpp" "trsm_batch_stride_usm.cpp" "syrk_batch_usm.cpp" "syrk_batch_stride_usm.cpp" "omatcopy_batch_stride.cpp" "omatcopy_batch_stride_usm.cpp" "imatcopy_batch_stride.cpp" "imatcopy_batch_stride_usm.cpp" "omatadd_batch_stride.cpp" "omatadd_batch_stride_usm.cpp")
+set(BATCH_SOURCES "copy_batch_stride.cpp" "axpy_batch_stride.cpp" "dgmm_batch_stride.cpp" "gemm_batch_stride.cpp" "gemv_batch_stride.cpp" "trsm_batch_stride.cpp" "syrk_batch_stride.cpp" "copy_batch_usm.cpp" "copy_batch_stride_usm.cpp" "axpy_batch_usm.cpp" "axpy_batch_stride_usm.cpp" "dgmm_batch_usm.cpp" "dgmm_batch_stride_usm.cpp" "gemm_batch_usm.cpp" "gemm_batch_stride_usm.cpp" "gemv_batch_usm.cpp" "gemv_batch_stride_usm.cpp" "trsm_batch_usm.cpp" "trsm_batch_stride_usm.cpp" "syrk_batch_usm.cpp" "syrk_batch_stride_usm.cpp" "omatcopy_batch_stride.cpp" "omatcopy_batch_stride_usm.cpp" "imatcopy_batch_stride.cpp" "imatcopy_batch_stride_usm.cpp" "omatadd_batch_stride.cpp" "omatadd_batch_stride_usm.cpp" "omatcopy_batch_usm.cpp" "imatcopy_batch_usm.cpp")
 
 if(BUILD_SHARED_LIBS)
   add_library(blas_batch_rt OBJECT ${BATCH_SOURCES})

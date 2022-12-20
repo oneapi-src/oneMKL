@@ -1600,6 +1600,96 @@ void omatadd_batch(backend_selector<backend::netlib> selector, transpose transa,
                                                     c, ldc, stride_c, batch_size);
 }
 
+void omatcopy(backend_selector<backend::netlib> selector, transpose trans, std::int64_t m,
+              std::int64_t n, float alpha, sycl::buffer<float, 1> &a, std::int64_t lda,
+              sycl::buffer<float, 1> &b, std::int64_t ldb) {
+    oneapi::mkl::blas::netlib::MAJOR::omatcopy(selector.get_queue(), trans, m, n, alpha, a, lda, b,
+                                               ldb);
+}
+
+void omatcopy(backend_selector<backend::netlib> selector, transpose trans, std::int64_t m,
+              std::int64_t n, double alpha, sycl::buffer<double, 1> &a, std::int64_t lda,
+              sycl::buffer<double, 1> &b, std::int64_t ldb) {
+    oneapi::mkl::blas::netlib::MAJOR::omatcopy(selector.get_queue(), trans, m, n, alpha, a, lda, b,
+                                               ldb);
+}
+
+void omatcopy(backend_selector<backend::netlib> selector, transpose trans, std::int64_t m,
+              std::int64_t n, std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a,
+              std::int64_t lda, sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb) {
+    oneapi::mkl::blas::netlib::MAJOR::omatcopy(selector.get_queue(), trans, m, n, alpha, a, lda, b,
+                                               ldb);
+}
+
+void omatcopy(backend_selector<backend::netlib> selector, transpose trans, std::int64_t m,
+              std::int64_t n, std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+              std::int64_t lda, sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb) {
+    oneapi::mkl::blas::netlib::MAJOR::omatcopy(selector.get_queue(), trans, m, n, alpha, a, lda, b,
+                                               ldb);
+}
+
+void imatcopy(backend_selector<backend::netlib> selector, transpose trans, std::int64_t m,
+              std::int64_t n, float alpha, sycl::buffer<float, 1> &ab, std::int64_t lda,
+              std::int64_t ldb) {
+    oneapi::mkl::blas::netlib::MAJOR::imatcopy(selector.get_queue(), trans, m, n, alpha, ab, lda,
+                                               ldb);
+}
+
+void imatcopy(backend_selector<backend::netlib> selector, transpose trans, std::int64_t m,
+              std::int64_t n, double alpha, sycl::buffer<double, 1> &ab, std::int64_t lda,
+              std::int64_t ldb) {
+    oneapi::mkl::blas::netlib::MAJOR::imatcopy(selector.get_queue(), trans, m, n, alpha, ab, lda,
+                                               ldb);
+}
+
+void imatcopy(backend_selector<backend::netlib> selector, transpose trans, std::int64_t m,
+              std::int64_t n, std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &ab,
+              std::int64_t lda, std::int64_t ldb) {
+    oneapi::mkl::blas::netlib::MAJOR::imatcopy(selector.get_queue(), trans, m, n, alpha, ab, lda,
+                                               ldb);
+}
+
+void imatcopy(backend_selector<backend::netlib> selector, transpose trans, std::int64_t m,
+              std::int64_t n, std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &ab,
+              std::int64_t lda, std::int64_t ldb) {
+    oneapi::mkl::blas::netlib::MAJOR::imatcopy(selector.get_queue(), trans, m, n, alpha, ab, lda,
+                                               ldb);
+}
+
+void omatadd(backend_selector<backend::netlib> selector, transpose transa, transpose transb,
+             std::int64_t m, std::int64_t n, float alpha, sycl::buffer<float, 1> &a,
+             std::int64_t lda, float beta, sycl::buffer<float, 1> &b, std::int64_t ldb,
+             sycl::buffer<float, 1> &c, std::int64_t ldc) {
+    oneapi::mkl::blas::netlib::MAJOR::omatadd(selector.get_queue(), transa, transb, m, n, alpha, a,
+                                              lda, beta, b, ldb, c, ldc);
+}
+
+void omatadd(backend_selector<backend::netlib> selector, transpose transa, transpose transb,
+             std::int64_t m, std::int64_t n, double alpha, sycl::buffer<double, 1> &a,
+             std::int64_t lda, double beta, sycl::buffer<double, 1> &b, std::int64_t ldb,
+             sycl::buffer<double, 1> &c, std::int64_t ldc) {
+    oneapi::mkl::blas::netlib::MAJOR::omatadd(selector.get_queue(), transa, transb, m, n, alpha, a,
+                                              lda, beta, b, ldb, c, ldc);
+}
+
+void omatadd(backend_selector<backend::netlib> selector, transpose transa, transpose transb,
+             std::int64_t m, std::int64_t n, std::complex<float> alpha,
+             sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda, std::complex<float> beta,
+             sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
+             sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc) {
+    oneapi::mkl::blas::netlib::MAJOR::omatadd(selector.get_queue(), transa, transb, m, n, alpha, a,
+                                              lda, beta, b, ldb, c, ldc);
+}
+
+void omatadd(backend_selector<backend::netlib> selector, transpose transa, transpose transb,
+             std::int64_t m, std::int64_t n, std::complex<double> alpha,
+             sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda, std::complex<double> beta,
+             sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
+             sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc) {
+    oneapi::mkl::blas::netlib::MAJOR::omatadd(selector.get_queue(), transa, transb, m, n, alpha, a,
+                                              lda, beta, b, ldb, c, ldc);
+}
+
 // USM APIs
 
 sycl::event syr2(backend_selector<backend::netlib> selector, uplo upper_lower, std::int64_t n,
@@ -3789,7 +3879,7 @@ sycl::event omatcopy_batch(backend_selector<backend::netlib> selector, transpose
                            std::int64_t m, std::int64_t n, float alpha, const float *a,
                            std::int64_t lda, std::int64_t stride_a, float *b, std::int64_t ldb,
                            std::int64_t stride_b, std::int64_t batch_size,
-                           const std::vector<sycl::event> &dependencies = {}) {
+                           const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::netlib::MAJOR::omatcopy_batch(
         selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb, stride_b, batch_size,
         dependencies);
@@ -3800,7 +3890,7 @@ sycl::event omatcopy_batch(backend_selector<backend::netlib> selector, transpose
                            std::int64_t m, std::int64_t n, double alpha, const double *a,
                            std::int64_t lda, std::int64_t stride_a, double *b, std::int64_t ldb,
                            std::int64_t stride_b, std::int64_t batch_size,
-                           const std::vector<sycl::event> &dependencies = {}) {
+                           const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::netlib::MAJOR::omatcopy_batch(
         selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb, stride_b, batch_size,
         dependencies);
@@ -3812,7 +3902,7 @@ sycl::event omatcopy_batch(backend_selector<backend::netlib> selector, transpose
                            const std::complex<float> *a, std::int64_t lda, std::int64_t stride_a,
                            std::complex<float> *b, std::int64_t ldb, std::int64_t stride_b,
                            std::int64_t batch_size,
-                           const std::vector<sycl::event> &dependencies = {}) {
+                           const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::netlib::MAJOR::omatcopy_batch(
         selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb, stride_b, batch_size,
         dependencies);
@@ -3824,7 +3914,7 @@ sycl::event omatcopy_batch(backend_selector<backend::netlib> selector, transpose
                            const std::complex<double> *a, std::int64_t lda, std::int64_t stride_a,
                            std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
                            std::int64_t batch_size,
-                           const std::vector<sycl::event> &dependencies = {}) {
+                           const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::netlib::MAJOR::omatcopy_batch(
         selector.get_queue(), trans, m, n, alpha, a, lda, stride_a, b, ldb, stride_b, batch_size,
         dependencies);
@@ -3834,7 +3924,7 @@ sycl::event omatcopy_batch(backend_selector<backend::netlib> selector, transpose
 sycl::event imatcopy_batch(backend_selector<backend::netlib> selector, transpose trans,
                            std::int64_t m, std::int64_t n, float alpha, float *ab, std::int64_t lda,
                            std::int64_t ldb, std::int64_t stride, std::int64_t batch_size,
-                           const std::vector<sycl::event> &dependencies = {}) {
+                           const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::netlib::MAJOR::imatcopy_batch(
         selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride, batch_size, dependencies);
     return done;
@@ -3844,7 +3934,7 @@ sycl::event imatcopy_batch(backend_selector<backend::netlib> selector, transpose
                            std::int64_t m, std::int64_t n, double alpha, double *ab,
                            std::int64_t lda, std::int64_t ldb, std::int64_t stride,
                            std::int64_t batch_size,
-                           const std::vector<sycl::event> &dependencies = {}) {
+                           const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::netlib::MAJOR::imatcopy_batch(
         selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride, batch_size, dependencies);
     return done;
@@ -3854,7 +3944,7 @@ sycl::event imatcopy_batch(backend_selector<backend::netlib> selector, transpose
                            std::int64_t m, std::int64_t n, std::complex<float> alpha,
                            std::complex<float> *ab, std::int64_t lda, std::int64_t ldb,
                            std::int64_t stride, std::int64_t batch_size,
-                           const std::vector<sycl::event> &dependencies = {}) {
+                           const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::netlib::MAJOR::imatcopy_batch(
         selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride, batch_size, dependencies);
     return done;
@@ -3864,7 +3954,7 @@ sycl::event imatcopy_batch(backend_selector<backend::netlib> selector, transpose
                            std::int64_t m, std::int64_t n, std::complex<double> alpha,
                            std::complex<double> *ab, std::int64_t lda, std::int64_t ldb,
                            std::int64_t stride, std::int64_t batch_size,
-                           const std::vector<sycl::event> &dependencies = {}) {
+                           const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::netlib::MAJOR::imatcopy_batch(
         selector.get_queue(), trans, m, n, alpha, ab, lda, ldb, stride, batch_size, dependencies);
     return done;
@@ -3875,7 +3965,7 @@ sycl::event omatadd_batch(backend_selector<backend::netlib> selector, transpose 
                           const float *a, std::int64_t lda, std::int64_t stride_a, float beta,
                           const float *b, std::int64_t ldb, std::int64_t stride_b, float *c,
                           std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
-                          const std::vector<sycl::event> &dependencies = {}) {
+                          const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::netlib::MAJOR::omatadd_batch(
         selector.get_queue(), transa, transb, m, n, alpha, a, lda, stride_a, beta, b, ldb, stride_b,
         c, ldc, stride_c, batch_size, dependencies);
@@ -3887,7 +3977,7 @@ sycl::event omatadd_batch(backend_selector<backend::netlib> selector, transpose 
                           const double *a, std::int64_t lda, std::int64_t stride_a, double beta,
                           const double *b, std::int64_t ldb, std::int64_t stride_b, double *c,
                           std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
-                          const std::vector<sycl::event> &dependencies = {}) {
+                          const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::netlib::MAJOR::omatadd_batch(
         selector.get_queue(), transa, transb, m, n, alpha, a, lda, stride_a, beta, b, ldb, stride_b,
         c, ldc, stride_c, batch_size, dependencies);
@@ -3901,7 +3991,7 @@ sycl::event omatadd_batch(backend_selector<backend::netlib> selector, transpose 
                           const std::complex<float> *b, std::int64_t ldb, std::int64_t stride_b,
                           std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
                           std::int64_t batch_size,
-                          const std::vector<sycl::event> &dependencies = {}) {
+                          const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::netlib::MAJOR::omatadd_batch(
         selector.get_queue(), transa, transb, m, n, alpha, a, lda, stride_a, beta, b, ldb, stride_b,
         c, ldc, stride_c, batch_size, dependencies);
@@ -3915,9 +4005,209 @@ sycl::event omatadd_batch(backend_selector<backend::netlib> selector, transpose 
                           const std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b,
                           std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
                           std::int64_t batch_size,
-                          const std::vector<sycl::event> &dependencies = {}) {
+                          const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::netlib::MAJOR::omatadd_batch(
         selector.get_queue(), transa, transb, m, n, alpha, a, lda, stride_a, beta, b, ldb, stride_b,
         c, ldc, stride_c, batch_size, dependencies);
+    return done;
+}
+
+sycl::event omatcopy(backend_selector<backend::netlib> selector, transpose trans, std::int64_t m,
+                     std::int64_t n, float alpha, const float *a, std::int64_t lda, float *b,
+                     std::int64_t ldb, const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::netlib::MAJOR::omatcopy(selector.get_queue(), trans, m, n, alpha,
+                                                           a, lda, b, ldb, dependencies);
+    return done;
+}
+
+sycl::event omatcopy(backend_selector<backend::netlib> selector, transpose trans, std::int64_t m,
+                     std::int64_t n, double alpha, const double *a, std::int64_t lda, double *b,
+                     std::int64_t ldb, const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::netlib::MAJOR::omatcopy(selector.get_queue(), trans, m, n, alpha,
+                                                           a, lda, b, ldb, dependencies);
+    return done;
+}
+
+sycl::event omatcopy(backend_selector<backend::netlib> selector, transpose trans, std::int64_t m,
+                     std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
+                     std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::netlib::MAJOR::omatcopy(selector.get_queue(), trans, m, n, alpha,
+                                                           a, lda, b, ldb, dependencies);
+    return done;
+}
+
+sycl::event omatcopy(backend_selector<backend::netlib> selector, transpose trans, std::int64_t m,
+                     std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
+                     std::int64_t lda, std::complex<double> *b, std::int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::netlib::MAJOR::omatcopy(selector.get_queue(), trans, m, n, alpha,
+                                                           a, lda, b, ldb, dependencies);
+    return done;
+}
+
+sycl::event imatcopy(backend_selector<backend::netlib> selector, transpose trans, std::int64_t m,
+                     std::int64_t n, float alpha, float *ab, std::int64_t lda, std::int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::netlib::MAJOR::imatcopy(selector.get_queue(), trans, m, n, alpha,
+                                                           ab, lda, ldb, dependencies);
+    return done;
+}
+
+sycl::event imatcopy(backend_selector<backend::netlib> selector, transpose trans, std::int64_t m,
+                     std::int64_t n, double alpha, double *ab, std::int64_t lda, std::int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::netlib::MAJOR::imatcopy(selector.get_queue(), trans, m, n, alpha,
+                                                           ab, lda, ldb, dependencies);
+    return done;
+}
+
+sycl::event imatcopy(backend_selector<backend::netlib> selector, transpose trans, std::int64_t m,
+                     std::int64_t n, std::complex<float> alpha, std::complex<float> *ab,
+                     std::int64_t lda, std::int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::netlib::MAJOR::imatcopy(selector.get_queue(), trans, m, n, alpha,
+                                                           ab, lda, ldb, dependencies);
+    return done;
+}
+
+sycl::event imatcopy(backend_selector<backend::netlib> selector, transpose trans, std::int64_t m,
+                     std::int64_t n, std::complex<double> alpha, std::complex<double> *ab,
+                     std::int64_t lda, std::int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::netlib::MAJOR::imatcopy(selector.get_queue(), trans, m, n, alpha,
+                                                           ab, lda, ldb, dependencies);
+    return done;
+}
+
+sycl::event omatadd(backend_selector<backend::netlib> selector, transpose transa, transpose transb,
+                    std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda,
+                    float beta, const float *b, std::int64_t ldb, float *c, std::int64_t ldc,
+                    const std::vector<sycl::event> &dependencies) {
+    auto done =
+        oneapi::mkl::blas::netlib::MAJOR::omatadd(selector.get_queue(), transa, transb, m, n, alpha,
+                                                  a, lda, beta, b, ldb, c, ldc, dependencies);
+    return done;
+}
+
+sycl::event omatadd(backend_selector<backend::netlib> selector, transpose transa, transpose transb,
+                    std::int64_t m, std::int64_t n, double alpha, const double *a, std::int64_t lda,
+                    double beta, const double *b, std::int64_t ldb, double *c, std::int64_t ldc,
+                    const std::vector<sycl::event> &dependencies) {
+    auto done =
+        oneapi::mkl::blas::netlib::MAJOR::omatadd(selector.get_queue(), transa, transb, m, n, alpha,
+                                                  a, lda, beta, b, ldb, c, ldc, dependencies);
+    return done;
+}
+
+sycl::event omatadd(backend_selector<backend::netlib> selector, transpose transa, transpose transb,
+                    std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                    const std::complex<float> *a, std::int64_t lda, std::complex<float> beta,
+                    const std::complex<float> *b, std::int64_t ldb, std::complex<float> *c,
+                    std::int64_t ldc, const std::vector<sycl::event> &dependencies) {
+    auto done =
+        oneapi::mkl::blas::netlib::MAJOR::omatadd(selector.get_queue(), transa, transb, m, n, alpha,
+                                                  a, lda, beta, b, ldb, c, ldc, dependencies);
+    return done;
+}
+
+sycl::event omatadd(backend_selector<backend::netlib> selector, transpose transa, transpose transb,
+                    std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                    const std::complex<double> *a, std::int64_t lda, std::complex<double> beta,
+                    const std::complex<double> *b, std::int64_t ldb, std::complex<double> *c,
+                    std::int64_t ldc, const std::vector<sycl::event> &dependencies) {
+    auto done =
+        oneapi::mkl::blas::netlib::MAJOR::omatadd(selector.get_queue(), transa, transb, m, n, alpha,
+                                                  a, lda, beta, b, ldb, c, ldc, dependencies);
+    return done;
+}
+
+sycl::event omatcopy_batch(backend_selector<backend::netlib> selector, transpose* trans,
+                           std::int64_t* m, std::int64_t* n, float* alpha, const float** a,
+                           std::int64_t* lda, float** b, std::int64_t* ldb,
+                           std::int64_t group_count, std::int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    auto done = oneapi::mkl::blas::netlib::MAJOR::omatcopy_batch(selector.get_queue(), trans, m, n,
+                                                                 alpha, a, lda, b, ldb, group_count,
+                                                                 groupsize, dependencies);
+    return done;
+}
+
+sycl::event omatcopy_batch(backend_selector<backend::netlib> selector, transpose* trans,
+                           std::int64_t* m, std::int64_t* n, double* alpha, const double** a,
+                           std::int64_t* lda, double** b, std::int64_t* ldb,
+                           std::int64_t group_count, std::int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    auto done = oneapi::mkl::blas::netlib::MAJOR::omatcopy_batch(selector.get_queue(), trans, m, n,
+                                                                 alpha, a, lda, b, ldb, group_count,
+                                                                 groupsize, dependencies);
+    return done;
+}
+
+sycl::event omatcopy_batch(backend_selector<backend::netlib> selector, transpose* trans,
+                           std::int64_t* m, std::int64_t* n, std::complex<float>* alpha,
+                           const std::complex<float>** a, std::int64_t* lda,
+                           std::complex<float>** b, std::int64_t* ldb, std::int64_t group_count,
+                           std::int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    auto done = oneapi::mkl::blas::netlib::MAJOR::omatcopy_batch(selector.get_queue(), trans, m, n,
+                                                                 alpha, a, lda, b, ldb, group_count,
+                                                                 groupsize, dependencies);
+    return done;
+}
+
+sycl::event omatcopy_batch(backend_selector<backend::netlib> selector, transpose* trans,
+                           std::int64_t* m, std::int64_t* n, std::complex<double>* alpha,
+                           const std::complex<double>** a, std::int64_t* lda,
+                           std::complex<double>** b, std::int64_t* ldb, std::int64_t group_count,
+                           std::int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    auto done = oneapi::mkl::blas::netlib::MAJOR::omatcopy_batch(selector.get_queue(), trans, m, n,
+                                                                 alpha, a, lda, b, ldb, group_count,
+                                                                 groupsize, dependencies);
+    return done;
+}
+
+sycl::event imatcopy_batch(backend_selector<backend::netlib> selector, transpose* trans,
+                           std::int64_t* m, std::int64_t* n, float* alpha, float** ab,
+                           std::int64_t* lda, std::int64_t* ldb, std::int64_t group_count,
+                           std::int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    auto done = oneapi::mkl::blas::netlib::MAJOR::imatcopy_batch(selector.get_queue(), trans, m, n,
+                                                                 alpha, ab, lda, ldb, group_count,
+                                                                 groupsize, dependencies);
+    return done;
+}
+
+sycl::event imatcopy_batch(backend_selector<backend::netlib> selector, transpose* trans,
+                           std::int64_t* m, std::int64_t* n, double* alpha, double** ab,
+                           std::int64_t* lda, std::int64_t* ldb, std::int64_t group_count,
+                           std::int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    auto done = oneapi::mkl::blas::netlib::MAJOR::imatcopy_batch(selector.get_queue(), trans, m, n,
+                                                                 alpha, ab, lda, ldb, group_count,
+                                                                 groupsize, dependencies);
+    return done;
+}
+
+sycl::event imatcopy_batch(backend_selector<backend::netlib> selector, transpose* trans,
+                           std::int64_t* m, std::int64_t* n, std::complex<float>* alpha,
+                           std::complex<float>** ab, std::int64_t* lda, std::int64_t* ldb,
+                           std::int64_t group_count, std::int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    auto done = oneapi::mkl::blas::netlib::MAJOR::imatcopy_batch(selector.get_queue(), trans, m, n,
+                                                                 alpha, ab, lda, ldb, group_count,
+                                                                 groupsize, dependencies);
+    return done;
+}
+
+sycl::event imatcopy_batch(backend_selector<backend::netlib> selector, transpose* trans,
+                           std::int64_t* m, std::int64_t* n, std::complex<double>* alpha,
+                           std::complex<double>** ab, std::int64_t* lda, std::int64_t* ldb,
+                           std::int64_t group_count, std::int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies) {
+    auto done = oneapi::mkl::blas::netlib::MAJOR::imatcopy_batch(selector.get_queue(), trans, m, n,
+                                                                 alpha, ab, lda, ldb, group_count,
+                                                                 groupsize, dependencies);
     return done;
 }
