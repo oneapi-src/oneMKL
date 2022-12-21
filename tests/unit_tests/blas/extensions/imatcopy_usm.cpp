@@ -151,6 +151,10 @@ int test(device *dev, oneapi::mkl::layout layout) {
         print_error_code(e);
     }
 
+    catch (const oneapi::mkl::unimplemented &e) {
+        return test_skipped;
+    }
+
     catch (const std::runtime_error &error) {
         std::cout << "Error raised during execution of IMATCOPY:\n"
                   << error.what() << std::endl;

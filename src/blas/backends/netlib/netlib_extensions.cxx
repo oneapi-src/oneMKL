@@ -247,52 +247,6 @@ void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, 
 #endif
 }
 
-void omatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n, float* alpha,
-                    const float** a, int64_t* lda, float** b, int64_t* ldb, int64_t group_count,
-                    int64_t* groupsize) {
-#ifdef COLUMN_MAJOR
-    throw unimplemented("blas", "omatcopy_batch", "for column_major layout");
-#endif
-#ifdef ROW_MAJOR
-    throw unimplemented("blas", "omatcopy_batch", "for row_major layout");
-#endif
-}
-
-void omatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n, double* alpha,
-                    const double** a, int64_t* lda, double** b, int64_t* ldb, int64_t group_count,
-                    int64_t* groupsize) {
-#ifdef COLUMN_MAJOR
-    throw unimplemented("blas", "omatcopy_batch", "for column_major layout");
-#endif
-#ifdef ROW_MAJOR
-    throw unimplemented("blas", "omatcopy_batch", "for row_major layout");
-#endif
-}
-
-void omatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
-                    std::complex<float>* alpha, const std::complex<float>** a, int64_t* lda,
-                    std::complex<float>** b, int64_t* ldb, int64_t group_count,
-                    int64_t* groupsize) {
-#ifdef COLUMN_MAJOR
-    throw unimplemented("blas", "omatcopy_batch", "for column_major layout");
-#endif
-#ifdef ROW_MAJOR
-    throw unimplemented("blas", "omatcopy_batch", "for row_major layout");
-#endif
-}
-
-void omatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
-                    std::complex<double>* alpha, const std::complex<double>** a, int64_t* lda,
-                    std::complex<double>** b, int64_t* ldb, int64_t group_count,
-                    int64_t* groupsize) {
-#ifdef COLUMN_MAJOR
-    throw unimplemented("blas", "omatcopy_batch", "for column_major layout");
-#endif
-#ifdef ROW_MAJOR
-    throw unimplemented("blas", "omatcopy_batch", "for row_major layout");
-#endif
-}
-
 // USM APIs
 
 sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb,
@@ -537,51 +491,4 @@ sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int6
 #endif
 }
 
-sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
-                           float* alpha, const float** a, int64_t* lda, float** b, int64_t* ldb,
-                           int64_t group_count, int64_t* groupsize,
-                           const std::vector<sycl::event>& dependencies) {
-#ifdef COLUMN_MAJOR
-    throw unimplemented("blas", "omatcopy_batch", "for column_major layout");
-#endif
-#ifdef ROW_MAJOR
-    throw unimplemented("blas", "omatcopy_batch", "for row_major layout");
-#endif
-}
 
-sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
-                           double* alpha, const double** a, int64_t* lda, double** b, int64_t* ldb,
-                           int64_t group_count, int64_t* groupsize,
-                           const std::vector<sycl::event>& dependencies) {
-#ifdef COLUMN_MAJOR
-    throw unimplemented("blas", "omatcopy_batch", "for column_major layout");
-#endif
-#ifdef ROW_MAJOR
-    throw unimplemented("blas", "omatcopy_batch", "for row_major layout");
-#endif
-}
-
-sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
-                           std::complex<float>* alpha, const std::complex<float>** a, int64_t* lda,
-                           std::complex<float>** b, int64_t* ldb, int64_t group_count,
-                           int64_t* groupsize, const std::vector<sycl::event>& dependencies) {
-#ifdef COLUMN_MAJOR
-    throw unimplemented("blas", "omatcopy_batch", "for column_major layout");
-#endif
-#ifdef ROW_MAJOR
-    throw unimplemented("blas", "omatcopy_batch", "for row_major layout");
-#endif
-}
-
-sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
-                           std::complex<double>* alpha, const std::complex<double>** a,
-                           int64_t* lda, std::complex<double>** b, int64_t* ldb,
-                           int64_t group_count, int64_t* groupsize,
-                           const std::vector<sycl::event>& dependencies) {
-#ifdef COLUMN_MAJOR
-    throw unimplemented("blas", "omatcopy_batch", "for column_major layout");
-#endif
-#ifdef ROW_MAJOR
-    throw unimplemented("blas", "omatcopy_batch", "for row_major layout");
-#endif
-}
