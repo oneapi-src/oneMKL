@@ -158,7 +158,7 @@ int main(int argc, char** argv) {
     print_example_banner();
 
     try {
-        sycl::device my_dev((sycl::default_selector()));
+        sycl::device my_dev = sycl::device();
 
         if (my_dev.is_gpu()) {
             std::cout << "Running RNG uniform usm example on GPU device" << std::endl;
