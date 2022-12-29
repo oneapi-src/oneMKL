@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright 2022 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,14 +17,13 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_HPP_
-#define _ONEMKL_HPP_
+#include "oneapi/mkl/dft/detail/mklgpu/onemkl_dft_mklgpu.hpp"
+#include "dft/function_table.hpp"
 
-#include "oneapi/mkl/types.hpp"
+#define WRAPPER_VERSION 1
+#define BACKEND         mklgpu
 
-#include "oneapi/mkl/blas.hpp"
-#include "oneapi/mkl/dft.hpp"
-#include "oneapi/mkl/lapack.hpp"
-#include "oneapi/mkl/rng.hpp"
-
-#endif //_ONEMKL_HPP_
+extern "C" dft_function_table_t mkl_dft_table = {
+    WRAPPER_VERSION,
+#include "dft/backends/backend_wrappers.cxx"
+};

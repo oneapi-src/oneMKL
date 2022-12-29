@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright 2020-2022 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,14 +17,26 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_HPP_
-#define _ONEMKL_HPP_
+#ifndef _ONEMKL_DFT_TYPES_HPP_
+#define _ONEMKL_DFT_TYPES_HPP_
 
-#include "oneapi/mkl/types.hpp"
+#include "detail/types_impl.hpp"
 
-#include "oneapi/mkl/blas.hpp"
-#include "oneapi/mkl/dft.hpp"
-#include "oneapi/mkl/lapack.hpp"
-#include "oneapi/mkl/rng.hpp"
+namespace oneapi {
+namespace mkl {
+namespace dft {
 
-#endif //_ONEMKL_HPP_
+/** The detail namespace is required since the MKLGPU backend uses identical 
+names and function signatures in many places. **/
+
+using precision = detail::precision;
+using domain = detail::domain;
+using config_param = detail::config_param;
+using config_value = detail::config_value;
+using DFT_ERROR = detail::DFT_ERROR;
+
+} // namespace dft
+} // namespace mkl
+} // namespace oneapi
+
+#endif //_ONEMKL_TYPES_HPP_

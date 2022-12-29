@@ -59,6 +59,12 @@ set(rng_TEST_LIST
 
 set(rng_TEST_LINK "")
 
+# DFT config
+set(dft_TEST_LIST
+      dft_source)
+
+set(dft_TEST_LINK "")
+
 foreach(domain ${TARGET_DOMAINS})
   # Generate RT and CT test lists
   set(${domain}_TEST_LIST_RT ${${domain}_TEST_LIST})
@@ -93,7 +99,7 @@ foreach(domain ${TARGET_DOMAINS})
     endif()
   endif()
 
-  if(ENABLE_MKLCPU_BACKEND)
+  if((NOT domain STREQUAL "dft") AND ENABLE_MKLCPU_BACKEND)
     add_dependencies(test_main_${domain}_ct onemkl_${domain}_mklcpu)
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu)
   endif()
