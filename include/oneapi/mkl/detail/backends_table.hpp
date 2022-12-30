@@ -57,7 +57,10 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
         { device::intelgpu,
           {
 #ifdef ENABLE_MKLGPU_BACKEND
-              LIB_NAME("blas_mklgpu")
+              LIB_NAME("blas_mklgpu"),
+#endif
+#ifdef ENABLE_SYCLBLAS_BACKEND
+              LIB_NAME("blas_syclblas")
 #endif
           } },
         { device::amdgpu,

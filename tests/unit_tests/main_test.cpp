@@ -112,7 +112,7 @@ int main(int argc, char** argv) {
                         if (dev.is_cpu())
                             continue;
 #endif
-#ifndef ENABLE_MKLGPU_BACKEND
+#if !defined(ENABLE_MKLGPU_BACKEND) && !defined(ENABLE_SYCLBLAS_BACKEND)
                         if (dev.is_gpu() && vendor_id == INTEL_ID)
                             continue;
 #endif

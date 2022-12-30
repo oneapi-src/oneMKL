@@ -51,6 +51,9 @@ namespace column_major {
 #define BACKEND netlib
 #include "blas_ct_backends.hxx"
 #undef BACKEND
+#define BACKEND syclblas
+#include "blas_ct_backends.hxx"
+#undef BACKEND
 
 } //namespace column_major
 namespace row_major {
@@ -68,6 +71,9 @@ namespace row_major {
 #include "blas_ct_backends.hxx"
 #undef BACKEND
 #define BACKEND netlib
+#include "blas_ct_backends.hxx"
+#undef BACKEND
+#define BACKEND syclblas
 #include "blas_ct_backends.hxx"
 #undef BACKEND
 

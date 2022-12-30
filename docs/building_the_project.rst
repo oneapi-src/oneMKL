@@ -490,6 +490,38 @@ A few often-used architectures are listed below:
      - | Radeon Instinct(TM) MI 25 Accelerator
        | Radeon(TM) RX Vega 64/56 Graphics
 
+Building for SYCL-BLAS
+^^^^^^^^^^^^^^^^^^^^^^
+
+Note the SYCL-BLAS backend is experimental and only supports a subset of the
+operations and features for now.
+SYCL-BLAS is used as a header only library.
+The install folder must be generated via cmake with the following commands:
+
+.. code-block:: bash
+
+   # Inside <path to SYCL-BLAS>
+   mkdir build && cd build
+   cmake -DCMAKE_INSTALL_PREFIX=<path to SYCL-BLAS install directory> -DINSTALL_HEADER_ONLY=ON ..
+   cmake --build . --target install
+
+
+.. code-block:: bash
+
+   # Inside <path to onemkl>
+   mkdir build && cd build
+   cmake .. -DENABLE_SYCLBLAS_BACKEND=True                    \
+            [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \ # required only for testing
+            -Dsycl_blas_DIR=<path to SYCL-BLAS install directory>
+   cmake --build .
+   ctest
+   cmake --install . --prefix <path_to_install_dir>
+
+In header only mode SYCL-BLAS can be tuned for specific targets by adding compiler definitions.
+For instance instead of building the library with ``-DTARGET=AMD_GPU`` one can compile oneMKL with ``-DCMAKE_CXX_FLAGS=-DAMD_GPU``.
+The list of SYCL-BLAS targets can be found `here <https://github.com/codeplaysoftware/sycl-blas#cmake-options>`.
+SYCL-BLAS is currently automatically tuned for INTEL_GPU in ``src/blas/backends/syclblas/CMakeLists.txt``.
+
 Build Options
 ^^^^^^^^^^^^^
 
@@ -551,6 +583,10 @@ CMake.
      - ENABLE_MKLCPU_THREAD_TBB
      - True, False
      - True      
+   * - *Not Supported*
+     - ENABLE_SYCLBLAS_BACKEND
+     - True, False
+     - False      
    * - build_functional_tests
      - BUILD_FUNCTIONAL_TESTS
      - True, False

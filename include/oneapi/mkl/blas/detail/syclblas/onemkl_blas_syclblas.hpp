@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright Codeplay Software
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,57 +17,43 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_BLAS_HPP_
-#define _ONEMKL_BLAS_HPP_
+#ifndef _ONEMKL_BLAS_SYCLBLAS_HPP_
+#define _ONEMKL_BLAS_SYCLBLAS_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
 #else
 #include <CL/sycl.hpp>
 #endif
-#include <complex>
-#include <cstdint>
 
-#include "oneapi/mkl/detail/config.hpp"
 #include "oneapi/mkl/types.hpp"
 
-#include "oneapi/mkl/detail/get_device_id.hpp"
-
-#include "oneapi/mkl/blas/detail/blas_loader.hpp"
-#ifdef ENABLE_CUBLAS_BACKEND
-#include "oneapi/mkl/blas/detail/cublas/blas_ct.hpp"
-#endif
-#ifdef ENABLE_ROCBLAS_BACKEND
-#include "oneapi/mkl/blas/detail/rocblas/blas_ct.hpp"
-#endif
-#ifdef ENABLE_MKLCPU_BACKEND
-#include "oneapi/mkl/blas/detail/mklcpu/blas_ct.hpp"
-#endif
-#ifdef ENABLE_MKLGPU_BACKEND
-#include "oneapi/mkl/blas/detail/mklgpu/blas_ct.hpp"
-#endif
-#ifdef ENABLE_NETLIB_BACKEND
-#include "oneapi/mkl/blas/detail/netlib/blas_ct.hpp"
-#endif
-#ifdef ENABLE_SYCLBLAS_BACKEND
-#include "oneapi/mkl/blas/detail/syclblas/blas_ct.hpp"
-#endif
+#include "oneapi/mkl/detail/export.hpp"
 
 namespace oneapi {
 namespace mkl {
+
+using oneapi::mkl::transpose;
+using oneapi::mkl::uplo;
+using oneapi::mkl::side;
+using oneapi::mkl::diag;
+using oneapi::mkl::offset;
+
 namespace blas {
+namespace syclblas {
 namespace column_major {
 
-#include "blas.hxx"
+#include "oneapi/mkl/blas/detail/onemkl_blas_backends.hxx"
 
 } //namespace column_major
 namespace row_major {
 
-#include "blas.hxx"
+#include "oneapi/mkl/blas/detail/onemkl_blas_backends.hxx"
 
 } //namespace row_major
-} //namespace blas
-} //namespace mkl
-} //namespace oneapi
+} // namespace syclblas
+} // namespace blas
+} // namespace mkl
+} // namespace oneapi
 
-#endif //_ONEMKL_BLAS_LOADER_HPP_
+#endif // _ONEMKL_BLAS_SYCLBLAS_HPP_
