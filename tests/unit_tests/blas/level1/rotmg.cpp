@@ -184,7 +184,7 @@ int test(device* dev, oneapi::mkl::layout layout) {
     bool good =
         good_d1 && good_d2 && good_x1 && flag_good && h11_good && h12_good && h21_good && h22_good;
 
-    return good;
+    return (int)good;
 }
 
 class RotmgTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::mkl::layout>> {
