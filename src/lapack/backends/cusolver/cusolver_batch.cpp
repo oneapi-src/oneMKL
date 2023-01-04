@@ -94,14 +94,16 @@ inline void getri_batch(const char *func_name, Func func, sycl::queue &queue, st
     queue.submit([&](sycl::handler &cgh) {
         auto ipiv_acc = sycl::accessor{ ipiv, cgh, sycl::read_only };
         auto ipiv32_acc = sycl::accessor{ ipiv32, cgh, sycl::write_only };
-        cgh.parallel_for(sycl::range<1>{ static_cast<size_t>(ipiv32_size) },
+        cgh.parallel_for(sycl::range<1>{ ipiv32_size },
                          [=](sycl::id<1> index) {
                              ipiv32_acc[index] =
                                  static_cast<int>(ipiv_acc[(index / n) * stride_ipiv + index % n]);
                          });
     });
 
-    // getri_batched is contained within cublas, not cusolver.
+    // getri_batched is contained within cublas, not cusolver. For this reason
+    // we need to use cublas types instead of cusolver types (as is needed for
+    // other lapack routines)
     queue.submit([&](sycl::handler &cgh) {
         using blas::cublas::cublas_error;
 
@@ -541,10 +543,7 @@ inline sycl::event geqrf_batch(const char *func_name, Func func, sycl::queue &qu
     overflow_check(m, n, lda, stride_a, stride_tau, batch_size, scratchpad_size);
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -595,10 +594,7 @@ inline sycl::event geqrf_batch(const char *func_name, Func func, sycl::queue &qu
         overflow_check(m[i], n[i], lda[i], group_sizes[i]);
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType **>(a);
@@ -656,10 +652,7 @@ inline sycl::event getrf_batch(const char *func_name, Func func, sycl::queue &qu
     int *devInfo = (int *)malloc_device(sizeof(int) * batch_size, queue);
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -741,10 +734,7 @@ inline sycl::event getrf_batch(const char *func_name, Func func, sycl::queue &qu
     int *devInfo = (int *)malloc_device(sizeof(int) * batch_size, queue);
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType **>(a);
@@ -783,10 +773,7 @@ inline sycl::event getrf_batch(const char *func_name, Func func, sycl::queue &qu
 
     // Enqueue free memory
     sycl::event done_freeing = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = casting_dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(casting_dependencies[i]);
-        }
+        cgh.depends_on(casting_dependencies);
         cgh.host_task([=](sycl::interop_handle ih) {
             for (int64_t global_id = 0; global_id < batch_size; ++global_id)
                 sycl::free(ipiv32[global_id], queue);
@@ -839,14 +826,14 @@ sycl::event getri_batch(const char *func_name, Func func, sycl::queue &queue, st
             });
     });
 
-    // getri_batched is contained within cublas, not cusolver.
+    // getri_batched is contained within cublas, not cusolver. For this reason
+    // we need to use cublas types instead of cusolver types (as is needed for
+    // other lapack routines)
     auto done = queue.submit([&](sycl::handler &cgh) {
         using blas::cublas::cublas_error;
 
         cgh.depends_on(done_casting);
-        for (auto &dep_event : dependencies) {
-            cgh.depends_on(dep_event);
-        }
+        cgh.depends_on(dependencies);
 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             cublasStatus_t err;
@@ -885,9 +872,9 @@ sycl::event getri_batch(const char *func_name, Func func, sycl::queue &queue, st
     // The inverted matrices stored in scratch_ need to be stored in a_
     auto copy1 = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(done);
-        cgh.parallel_for(sycl::range<1>{ static_cast<size_t>(
-                             sycl::max(stride_a * batch_size, lda * n * batch_size)) },
-                         [=](sycl::id<1> index) { a[index] = scratchpad[index]; });
+        cgh.parallel_for(
+            sycl::range<1>{ static_cast<size_t>(stride_a * (batch_size - 1) + lda * n) },
+            [=](sycl::id<1> index) { a[index] = scratchpad[index]; });
     });
 
     auto copy2 = queue.submit([&](sycl::handler &cgh) {
@@ -972,10 +959,7 @@ inline sycl::event getrs_batch(const char *func_name, Func func, sycl::queue &qu
     });
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         cgh.depends_on(done_casting);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
@@ -1060,13 +1044,8 @@ inline sycl::event getrs_batch(const char *func_name, Func func, sycl::queue &qu
     }
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
-        for (int64_t i = 0; i < batch_size; i++) {
-            cgh.depends_on(casting_dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
+        cgh.depends_on(casting_dependencies);
 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
@@ -1125,10 +1104,7 @@ inline sycl::event orgqr_batch(const char *func_name, Func func, sycl::queue &qu
     overflow_check(m, n, k, lda, stride_a, stride_tau, batch_size, scratchpad_size);
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -1178,10 +1154,7 @@ inline sycl::event orgqr_batch(const char *func_name, Func func, sycl::queue &qu
         overflow_check(m[i], n[i], k[i], lda[i], group_sizes[i]);
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType **>(a);
@@ -1232,10 +1205,7 @@ inline sycl::event potrf_batch(const char *func_name, Func func, sycl::queue &qu
     overflow_check(n, lda, stride_a, batch_size, scratchpad_size);
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             CUdeviceptr a_dev;
@@ -1293,10 +1263,7 @@ inline sycl::event potrf_batch(const char *func_name, Func func, sycl::queue &qu
     }
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int64_t offset = 0;
@@ -1357,10 +1324,7 @@ inline sycl::event potrs_batch(const char *func_name, Func func, sycl::queue &qu
         throw unimplemented("lapack", "potrs_batch", "cusolver potrs_batch only supports nrhs = 1");
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             CUresult cuda_result;
@@ -1441,10 +1405,7 @@ inline sycl::event potrs_batch(const char *func_name, Func func, sycl::queue &qu
         queue.submit([&](sycl::handler &h) { h.memcpy(b_dev, b, batch_size * sizeof(T *)); });
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         cgh.depends_on(done_cpy_a);
         cgh.depends_on(done_cpy_b);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
@@ -1498,10 +1459,7 @@ inline sycl::event ungqr_batch(const char *func_name, Func func, sycl::queue &qu
     overflow_check(m, n, k, lda, stride_a, stride_tau, batch_size, scratchpad_size);
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
@@ -1551,10 +1509,7 @@ inline sycl::event ungqr_batch(const char *func_name, Func func, sycl::queue &qu
         overflow_check(m[i], n[i], k[i], lda[i], group_sizes[i]);
 
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType **>(a);
@@ -1636,8 +1591,8 @@ GETRF_STRIDED_BATCH_LAUNCHER_SCRATCH(std::complex<double>, cusolverDnZgetrf_buff
     std::int64_t getri_batch_scratchpad_size<TYPE>(                                   \
         sycl::queue & queue, std::int64_t n, std::int64_t lda, std::int64_t stride_a, \
         std::int64_t stride_ipiv, std::int64_t batch_size) {                          \
-        return (stride_a >= lda * n) ? stride_a * batch_size                          \
-                                     : stride_a * (batch_size - 1) + lda * n;         \
+        assert(stride_a >= lda * n && "A matrices must not overlap");                 \
+        return stride_a * (batch_size - 1) + lda * n;                                 \
     }
 
 GETRI_STRIDED_BATCH_LAUNCHER_SCRATCH(float)
