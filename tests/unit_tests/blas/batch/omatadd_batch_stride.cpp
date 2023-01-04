@@ -64,23 +64,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     ldc = std::max(m, n);
     alpha = rand_scalar<fp>();
     beta = rand_scalar<fp>();
-
-    if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
-        transa = (oneapi::mkl::transpose)(std::rand() % 2);
-        transb = (oneapi::mkl::transpose)(std::rand() % 2);
-    }
-    else {
-        tmp = std::rand() % 3;
-        if (tmp == 2)
-            transa = oneapi::mkl::transpose::conjtrans;
-        else
-            transa = (oneapi::mkl::transpose)tmp;
-        tmp = std::rand() % 3;
-        if (tmp == 2)
-            transb = oneapi::mkl::transpose::conjtrans;
-        else
-            transb = (oneapi::mkl::transpose)tmp;
-    }
+    transa = rand_trans<fp>();
+    transb = rand_trans<fp>();
 
     int64_t stride_a, stride_b, stride_c;
 
@@ -110,7 +95,6 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     copy_matrix(C.data(), oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
                 stride_c * batch_size, 1, stride_c * batch_size, C_ref.data());
 
-
     // Call reference OMATADD_BATCH_STRIDE.
     int m_ref = (int)m;
     int n_ref = (int)n;
@@ -119,9 +103,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     int ldc_ref = (int)ldc;
     int batch_size_ref = (int)batch_size;
     for (i = 0; i < batch_size_ref; i++) {
-        omatadd_ref(layout, transa, transb, m_ref, n_ref, alpha, A.data() + stride_a * i,
-                    lda_ref, beta, B.data() + stride_b * i, ldb_ref,
-                    C_ref.data() + stride_c * i, ldc_ref);
+        omatadd_ref(layout, transa, transb, m_ref, n_ref, alpha, A.data() + stride_a * i, lda_ref,
+                    beta, B.data() + stride_b * i, ldb_ref, C_ref.data() + stride_c * i, ldc_ref);
     }
 
     // Call DPC++ OMATADD_BATCH_STRIDE
@@ -195,9 +178,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     // Compare the results of reference implementation and DPC++ implementation.
 
     auto C_accessor = C_buffer.template get_access<access::mode::read>();
-    bool good =
-        check_equal_matrix(C_accessor, C_ref, oneapi::mkl::layout::column_major,
-                           stride_c * batch_size, 1, stride_c * batch_size, 10, std::cout);
+    bool good = check_equal_matrix(C_accessor, C_ref, oneapi::mkl::layout::column_major,
+                                   stride_c * batch_size, 1, stride_c * batch_size, 10, std::cout);
 
     return (int)good;
 }

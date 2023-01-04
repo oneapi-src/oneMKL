@@ -121,11 +121,20 @@ void run_getrs_example(const sycl::device& device) {
         sycl::malloc_shared<float>(getrf_scratchpad_size * sizeof(float), device, context);
     float* getrs_scratchpad =
         sycl::malloc_shared<float>(getrs_scratchpad_size * sizeof(float), device, context);
-    if (!dev_A || !dev_B || !dev_ipiv || !getrf_scratchpad) {
+    if (!dev_A || !dev_B || !dev_ipiv) {
         throw std::runtime_error("Failed to allocate USM memory.");
     }
-    // Skip checking getrs scratchpad memory allocation on cusolver because with cusolver backend getrs does not use scrachpad memory
-    if (device.is_cpu() || device.get_info<sycl::info::device::vendor_id>() != NVIDIA_ID) {
+    // Skip checking getrf scratchpad memory allocation on rocsolver because with rocsolver
+    // backend getrf does not use scrachpad memory
+    if (device.is_cpu() || device.get_info<sycl::info::device::vendor_id>() != AMD_ID) {
+        if (!getrf_scratchpad) {
+            throw std::runtime_error("Failed to allocate USM memory.");
+        }
+    }
+    // Skip checking getrs scratchpad memory allocation on cusolver/rocsolver because with
+    // cusolver/rocsolver backend getrs does not use scrachpad memory
+    if (device.is_cpu() || (device.get_info<sycl::info::device::vendor_id>() != NVIDIA_ID &&
+                            device.get_info<sycl::info::device::vendor_id>() != AMD_ID)) {
         if (!getrs_scratchpad) {
             throw std::runtime_error("Failed to allocate USM memory.");
         }
@@ -210,7 +219,7 @@ int main(int argc, char** argv) {
     print_example_banner();
 
     try {
-        sycl::device dev((sycl::default_selector()));
+        sycl::device dev = sycl::device();
         if (dev.is_gpu()) {
             std::cout << "Running LAPACK getrs example on GPU device." << std::endl;
             std::cout << "Device name is: " << dev.get_info<sycl::info::device::name>()

@@ -32,9 +32,9 @@
 #define INTEL_ID  32902
 #define NVIDIA_ID 4318
 #ifndef __HIPSYCL__
-#define AMD_ID    4098
+#define AMD_ID 4098
 #else
-#define AMD_ID    1022
+#define AMD_ID 1022
 #endif
 
 namespace oneapi {
@@ -42,10 +42,12 @@ namespace mkl {
 
 inline oneapi::mkl::device get_device_id(sycl::queue &queue) {
     oneapi::mkl::device device_id;
-    if (queue.is_host())
+    if (queue.get_device().is_cpu())
         device_id = device::x86cpu;
-    else if (queue.get_device().is_cpu())
+#ifdef __HIPSYCL__
+    else if (queue.is_host())
         device_id = device::x86cpu;
+#endif
     else if (queue.get_device().is_gpu()) {
         unsigned int vendor_id =
             static_cast<unsigned int>(queue.get_device().get_info<sycl::info::device::vendor_id>());

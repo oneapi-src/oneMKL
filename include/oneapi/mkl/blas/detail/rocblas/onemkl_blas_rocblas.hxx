@@ -864,6 +864,50 @@ void omatadd_batch(sycl::queue &queue, transpose transa, transpose transb, int64
                    sycl::buffer<std::complex<double>, 1> &c, int64_t ldc, int64_t stride_c,
                    int64_t batch_size);
 
+void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+              sycl::buffer<float, 1> &a, int64_t lda, sycl::buffer<float, 1> &b, int64_t ldb);
+
+void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+              sycl::buffer<double, 1> &a, int64_t lda, sycl::buffer<double, 1> &b, int64_t ldb);
+
+void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<float> alpha,
+              sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+              sycl::buffer<std::complex<float>, 1> &b, int64_t ldb);
+
+void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<double> alpha,
+              sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+              sycl::buffer<std::complex<double>, 1> &b, int64_t ldb);
+
+void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+              sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb);
+
+void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+              sycl::buffer<double, 1> &ab, int64_t lda, int64_t ldb);
+
+void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<float> alpha,
+              sycl::buffer<std::complex<float>, 1> &ab, int64_t lda, int64_t ldb);
+
+void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<double> alpha,
+              sycl::buffer<std::complex<double>, 1> &ab, int64_t lda, int64_t ldb);
+
+void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+             float alpha, sycl::buffer<float, 1> &a, int64_t lda, float beta,
+             sycl::buffer<float, 1> &b, int64_t ldb, sycl::buffer<float, 1> &c, int64_t ldc);
+
+void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+             double alpha, sycl::buffer<double, 1> &a, int64_t lda, double beta,
+             sycl::buffer<double, 1> &b, int64_t ldb, sycl::buffer<double, 1> &c, int64_t ldc);
+
+void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+             std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+             std::complex<float> beta, sycl::buffer<std::complex<float>, 1> &b, int64_t ldb,
+             sycl::buffer<std::complex<float>, 1> &c, int64_t ldc);
+
+void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+             std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+             std::complex<double> beta, sycl::buffer<std::complex<double>, 1> &b, int64_t ldb,
+             sycl::buffer<std::complex<double>, 1> &c, int64_t ldc);
+
 // USM APIs
 
 sycl::event asum(sycl::queue &queue, int64_t n, const std::complex<float> *x, int64_t incx,
@@ -1928,3 +1972,100 @@ sycl::event omatadd_batch(sycl::queue &queue, transpose transa, transpose transb
                           const std::complex<double> *b, int64_t ldb, int64_t stride_b,
                           std::complex<double> *c, int64_t ldc, int64_t stride_c,
                           int64_t batch_size, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                     const float *a, int64_t lda, float *b, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies = {});
+
+sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                     const double *a, int64_t lda, double *b, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies = {});
+
+sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                     std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                     std::complex<float> *b, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies = {});
+
+sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                     std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                     std::complex<double> *b, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies = {});
+
+sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                     float *ab, int64_t lda, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies = {});
+
+sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                     double *ab, int64_t lda, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies = {});
+
+sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                     std::complex<float> alpha, std::complex<float> *ab, int64_t lda, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies = {});
+
+sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                     std::complex<double> alpha, std::complex<double> *ab, int64_t lda, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies = {});
+
+sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                    float alpha, const float *a, int64_t lda, float beta, const float *b,
+                    int64_t ldb, float *c, int64_t ldc,
+                    const std::vector<sycl::event> &dependencies = {});
+
+sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                    double alpha, const double *a, int64_t lda, double beta, const double *b,
+                    int64_t ldb, double *c, int64_t ldc,
+                    const std::vector<sycl::event> &dependencies = {});
+
+sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                    std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                    std::complex<float> beta, const std::complex<float> *b, int64_t ldb,
+                    std::complex<float> *c, int64_t ldc,
+                    const std::vector<sycl::event> &dependencies = {});
+
+sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                    std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                    std::complex<double> beta, const std::complex<double> *b, int64_t ldb,
+                    std::complex<double> *c, int64_t ldc,
+                    const std::vector<sycl::event> &dependencies = {});
+
+sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
+                           float* alpha, const float** a, int64_t* lda, float** b, int64_t* ldb,
+                           int64_t group_count, int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies = {});
+
+sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
+                           double* alpha, const double** a, int64_t* lda, double** b, int64_t* ldb,
+                           int64_t group_count, int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies = {});
+
+sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
+                           std::complex<float>* alpha, const std::complex<float>** a, int64_t* lda,
+                           std::complex<float>** b, int64_t* ldb, int64_t group_count,
+                           int64_t* groupsize, const std::vector<sycl::event>& dependencies = {});
+
+sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
+                           std::complex<double>* alpha, const std::complex<double>** a,
+                           int64_t* lda, std::complex<double>** b, int64_t* ldb,
+                           int64_t group_count, int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies = {});
+
+sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
+                           float* alpha, float** ab, int64_t* lda, int64_t* ldb,
+                           int64_t group_count, int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies = {});
+
+sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
+                           double* alpha, double** ab, int64_t* lda, int64_t* ldb,
+                           int64_t group_count, int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies = {});
+
+sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
+                           std::complex<float>* alpha, std::complex<float>** ab, int64_t* lda,
+                           int64_t* ldb, int64_t group_count, int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies = {});
+
+sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, int64_t* m, int64_t* n,
+                           std::complex<double>* alpha, std::complex<double>** ab, int64_t* lda,
+                           int64_t* ldb, int64_t group_count, int64_t* groupsize,
+                           const std::vector<sycl::event>& dependencies = {});

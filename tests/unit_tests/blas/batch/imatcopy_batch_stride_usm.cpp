@@ -73,7 +73,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     int64_t lda, ldb;
     oneapi::mkl::transpose trans;
     fp alpha;
-    int64_t i, tmp;
+    int64_t i;
 
     batch_size = 1 + std::rand() % 20;
     m = 1 + std::rand() % 50;
@@ -81,17 +81,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     lda = std::max(m, n);
     ldb = std::max(m, n);
     alpha = rand_scalar<fp>();
-
-    if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
-        trans = (oneapi::mkl::transpose)(std::rand() % 2);
-    }
-    else {
-        tmp = std::rand() % 3;
-        if (tmp == 2)
-            trans = oneapi::mkl::transpose::conjtrans;
-        else
-            trans = (oneapi::mkl::transpose)tmp;
-    }
+    trans = rand_trans<fp>();
 
     int64_t stride_a, stride_b, stride;
     switch (layout) {
@@ -139,8 +129,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     int ldb_ref = (int)ldb;
     int batch_size_ref = (int)batch_size;
     for (i = 0; i < batch_size_ref; i++) {
-        imatcopy_ref(layout, trans, m_ref, n_ref, alpha, ab_ref_array[i],
-                     lda_ref, ldb_ref);
+        imatcopy_ref(layout, trans, m_ref, n_ref, alpha, ab_ref_array[i], lda_ref, ldb_ref);
     }
 
     // Call DPC++ IMATCOPY_BATCH_STRIDE
@@ -194,9 +183,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good =
-        check_equal_matrix(AB, AB_ref, oneapi::mkl::layout::column_major, stride * batch_size, 1,
-                           stride * batch_size, 10, std::cout);
+    bool good = check_equal_matrix(AB, AB_ref, oneapi::mkl::layout::column_major,
+                                   stride * batch_size, 1, stride * batch_size, 10, std::cout);
 
     oneapi::mkl::free_shared(ab_array, cxt);
     oneapi::mkl::free_shared(ab_ref_array, cxt);

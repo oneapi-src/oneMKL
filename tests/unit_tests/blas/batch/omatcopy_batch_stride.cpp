@@ -62,17 +62,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     lda = std::max(m, n);
     ldb = std::max(m, n);
     alpha = rand_scalar<fp>();
-
-    if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
-        trans = (oneapi::mkl::transpose)(std::rand() % 2);
-    }
-    else {
-        tmp = std::rand() % 3;
-        if (tmp == 2)
-            trans = oneapi::mkl::transpose::conjtrans;
-        else
-            trans = (oneapi::mkl::transpose)tmp;
-    }
+    trans = rand_trans<fp>();
 
     int64_t stride_a, stride_b;
 
@@ -103,8 +93,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     int ldb_ref = (int)ldb;
     int batch_size_ref = (int)batch_size;
     for (i = 0; i < batch_size_ref; i++) {
-        omatcopy_ref(layout, trans, m_ref, n_ref, alpha, A.data() + stride_a * i,
-                     lda_ref, B_ref.data() + stride_b * i, ldb_ref);
+        omatcopy_ref(layout, trans, m_ref, n_ref, alpha, A.data() + stride_a * i, lda_ref,
+                     B_ref.data() + stride_b * i, ldb_ref);
     }
 
     // Call DPC++ OMATCOPY_BATCH_STRIDE
@@ -177,9 +167,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     // Compare the results of reference implementation and DPC++ implementation.
 
     auto B_accessor = B_buffer.template get_access<access::mode::read>();
-    bool good =
-        check_equal_matrix(B_accessor, B_ref, oneapi::mkl::layout::column_major,
-                           stride_b * batch_size, 1, stride_b * batch_size, 10, std::cout);
+    bool good = check_equal_matrix(B_accessor, B_ref, oneapi::mkl::layout::column_major,
+                                   stride_b * batch_size, 1, stride_b * batch_size, 10, std::cout);
 
     return (int)good;
 }

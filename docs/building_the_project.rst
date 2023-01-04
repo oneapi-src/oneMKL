@@ -385,7 +385,6 @@ Building for ROCm (with hipSYCL)
 
 With the AMD rocBLAS backend:
 
-
 * On Linux*
 
 .. code-block:: bash
@@ -443,6 +442,33 @@ With the AMD rocBLAS backend:
    export SYCL_DEVICE_FILTER=HIP
    ctest
    cmake --install . --prefix <path_to_install_dir>
+
+To build with the rocRAND backend instead simply replace:
+
+.. code-block:: bash
+
+   -DENABLE_ROCBLAS_BACKEND=True   \
+   -DTARGET_DOMAINS=blas
+
+With:
+
+.. code-block:: bash
+
+   -DENABLE_ROCRAND_BACKEND=True   \
+   -DTARGET_DOMAINS=rng
+
+To build with the rocSOLVER backend instead simply replace:
+
+.. code-block:: bash\
+
+   -DENABLE_ROCBLAS_BACKEND=True   \
+   -DTARGET_DOMAINS=blas
+With:
+
+.. code-block:: bash
+
+   -DENABLE_ROCSOLVER_BACKEND=True   \
+   -DTARGET_DOMAINS=lapack
 
 **AMD GPU device architectures**  
 

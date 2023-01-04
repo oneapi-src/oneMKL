@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright 2020-2022 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -24,11 +24,13 @@
 #cmakedefine ENABLE_CUSOLVER_BACKEND
 #cmakedefine ENABLE_ROCBLAS_BACKEND
 #cmakedefine ENABLE_ROCRAND_BACKEND
+#cmakedefine ENABLE_ROCSOLVER_BACKEND
 #cmakedefine ENABLE_CURAND_BACKEND
 #cmakedefine ENABLE_MKLCPU_BACKEND
 #cmakedefine ENABLE_MKLGPU_BACKEND
 #cmakedefine ENABLE_NETLIB_BACKEND
 #cmakedefine BUILD_SHARED_LIBS
 #cmakedefine REF_BLAS_LIBNAME "@REF_BLAS_LIBNAME@"
+#cmakedefine REF_CBLAS_LIBNAME "@REF_CBLAS_LIBNAME@"
 
 #endif

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright 2020-2022 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -40,7 +40,11 @@ inline void backend_selector_precondition(sycl::queue& queue){};
 template <>
 inline void backend_selector_precondition<backend::netlib>(sycl::queue& queue) {
 #ifndef ONEMKL_DISABLE_PREDICATES
+#ifdef __HIPSYCL__
     if (!(queue.is_host() || queue.get_device().is_cpu())) {
+#else
+    if (!queue.get_device().is_cpu()) {
+#endif
         throw unsupported_device("",
                                  "backend_selector<backend::" + backend_map[backend::netlib] + ">",
                                  queue.get_device());
@@ -51,7 +55,11 @@ inline void backend_selector_precondition<backend::netlib>(sycl::queue& queue) {
 template <>
 inline void backend_selector_precondition<backend::mklcpu>(sycl::queue& queue) {
 #ifndef ONEMKL_DISABLE_PREDICATES
+#ifdef __HIPSYCL__
     if (!(queue.is_host() || queue.get_device().is_cpu())) {
+#else
+    if (!queue.get_device().is_cpu()) {
+#endif
         throw unsupported_device("",
                                  "backend_selector<backend::" + backend_map[backend::mklcpu] + ">",
                                  queue.get_device());
@@ -124,6 +132,18 @@ inline void backend_selector_precondition<backend::rocrand>(sycl::queue& queue) 
 #endif
 }
 
+template <>
+inline void backend_selector_precondition<backend::rocsolver>(sycl::queue& queue) {
+#ifndef ONEMKL_DISABLE_PREDICATES
+    unsigned int vendor_id =
+        static_cast<unsigned int>(queue.get_device().get_info<sycl::info::device::vendor_id>());
+    if (!(queue.get_device().is_gpu() && vendor_id == AMD_ID)) {
+        throw unsupported_device(
+            "", "backend_selector<backend::" + backend_map[backend::rocsolver] + ">",
+            queue.get_device());
+    }
+#endif
+}
 } // namespace mkl
 } // namespace oneapi
 
