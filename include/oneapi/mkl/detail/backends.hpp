@@ -43,12 +43,12 @@ enum class backend {
 typedef std::map<backend, std::string> backendmap;
 
 static backendmap backend_map = {
-    { backend::mklcpu, "mklcpu" },       { backend::mklgpu, "mklgpu" },
-    { backend::cublas, "cublas" },       { backend::cusolver, "cusolver" },
-    { backend::curand, "curand" },       { backend::netlib, "netlib" },
-    { backend::rocblas, "rocblas" },     { backend::rocrand, "rocrand" },
-    { backend::rocsolver, "rocsolver" }, { backend::unsupported, "unsupported" },
-    { backend::syclblas, "syclblas" },   { backend::unsupported, "unsupported" }
+    { backend::mklcpu, "mklcpu" },          { backend::mklgpu, "mklgpu" },
+    { backend::cublas, "cublas" },          { backend::cusolver, "cusolver" },
+    { backend::curand, "curand" },          { backend::netlib, "netlib" },
+    { backend::rocblas, "rocblas" },        { backend::rocrand, "rocrand" },
+    { backend::rocsolver, "rocsolver" },    { backend::syclblas, "syclblas" },
+    { backend::unsupported, "unsupported" }
 };
 
 } //namespace mkl
