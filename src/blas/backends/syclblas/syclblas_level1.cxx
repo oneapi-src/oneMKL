@@ -150,7 +150,7 @@ void rotm(sycl::queue &queue, std::int64_t n, sycl::buffer<real_t, 1> &x, std::i
 
 void rotmg(sycl::queue &queue, sycl::buffer<real_t, 1> &d1, sycl::buffer<real_t, 1> &d2,
            sycl::buffer<real_t, 1> &x1, real_t y1, sycl::buffer<real_t, 1> &param) {
-    throw unimplemented("blas", "rotmg", "");
+    CALL_SYCLBLAS_FN(::blas::_rotmg, queue, d1, d2, x1, y1_buffer, param);
 }
 
 void scal(sycl::queue &queue, std::int64_t n, real_t alpha, sycl::buffer<real_t, 1> &x,
