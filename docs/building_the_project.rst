@@ -493,9 +493,12 @@ A few often-used architectures are listed below:
 Building for SYCL-BLAS
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Note the SYCL-BLAS backend is experimental and only supports a subset of the
-operations and features for now.
-SYCL-BLAS is used as a header only library.
+Note the SYCL-BLAS backend is experimental and currently only supports a subset of the
+operations and features.
+The SYCL-BLAS backend uses the `SYCL-BLAS <https://github.com/codeplaysoftware/sycl-blas>` project as a header-only library.
+
+* On Linux*
+
 The install folder must be generated via cmake with the following commands:
 
 .. code-block:: bash
