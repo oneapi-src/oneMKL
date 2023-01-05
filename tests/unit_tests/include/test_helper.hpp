@@ -65,9 +65,14 @@
 #define TEST_RUN_INTELCPU_SELECT(q, func, ...)
 #endif
 
+#if defined(ENABLE_MKLGPU_BACKEND) || defined(ENABLE_SYCLBLAS_BACKEND)
 #ifdef ENABLE_MKLGPU_BACKEND
 #define TEST_RUN_INTELGPU_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklgpu>{ q }, __VA_ARGS__)
+#else
+#define TEST_RUN_INTELGPU_SELECT(q, func, ...) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::syclblas>{ q }, __VA_ARGS__)
+#endif
 #else
 #define TEST_RUN_INTELGPU_SELECT(q, func, ...)
 #endif
@@ -127,10 +132,8 @@
         else if (q.get_device().is_gpu()) {                                \
             unsigned int vendor_id = static_cast<unsigned int>(            \
                 q.get_device().get_info<sycl::info::device::vendor_id>()); \
-            if (vendor_id == INTEL_ID) {                                   \
+            if (vendor_id == INTEL_ID)                                     \
                 TEST_RUN_INTELGPU_SELECT(q, func, __VA_ARGS__);            \
-                TEST_RUN_INTELGPU_SYCLBLAS_SELECT(q, func, __VA_ARGS__);   \
-            }                                                              \
             else if (vendor_id == NVIDIA_ID) {                             \
                 TEST_RUN_NVIDIAGPU_CUBLAS_SELECT(q, func, __VA_ARGS__);    \
                 TEST_RUN_NVIDIAGPU_CUSOLVER_SELECT(q, func, __VA_ARGS__);  \
