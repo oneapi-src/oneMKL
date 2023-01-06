@@ -70,9 +70,8 @@ void run_example(const sycl::device& gpu_device) {
     {
         sycl::buffer<std::complex<float>> input_buffer(input_data.data(), sycl::range<1>(N));
         sycl::buffer<std::complex<float>> output_buffer(output_data.data(), sycl::range<1>(N));
-        oneapi::mkl::dft::mklgpu::compute_forward<decltype(desc), std::complex<float>,
-                                                  std::complex<float>>(desc, input_buffer,
-                                                                       output_buffer);
+        oneapi::mkl::dft::compute_forward<decltype(desc), std::complex<float>, std::complex<float>>(
+            desc, input_buffer, output_buffer);
     }
 }
 
@@ -110,7 +109,7 @@ int main(int argc, char** argv) {
     print_example_banner();
 
     try {
-        sycl::device gpu_device((sycl::gpu_selector_v));
+        sycl::device gpu_device((sycl::gpu_selector()));
         std::cout << "Running DFT Complex forward out-of-place buffer example" << std::endl;
         std::cout << "Using compile-time dispatch API with MKLGPU." << std::endl;
         std::cout << "Running with single precision real data type on:" << std::endl;

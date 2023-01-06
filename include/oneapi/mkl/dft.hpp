@@ -36,11 +36,4 @@
 #include "oneapi/mkl/dft/forward.hpp"
 #include "oneapi/mkl/dft/backward.hpp"
 
-#ifdef ENABLE_MKLCPU_BACKEND
-#include "oneapi/mkl/dft/detail/mklcpu/onemkl_dft_mklcpu.hpp"
-#endif
-#ifdef ENABLE_MKLGPU_BACKEND
-#include "oneapi/mkl/dft/detail/mklgpu/onemkl_dft_mklgpu.hpp"
-#endif
-
 #endif // _ONEMKL_DFT_HPP_
