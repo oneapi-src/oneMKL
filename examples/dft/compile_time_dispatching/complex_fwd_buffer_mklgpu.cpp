@@ -79,27 +79,22 @@ void run_example(const sycl::device& gpu_device) {
 // Description of example setup, apis used and supported floating point type precisions
 //
 void print_example_banner() {
-    std::cout << "" << std::endl;
-    std::cout << "########################################################################"
+    std::cout << "\n"
+                 "########################################################################\n"
+                 "# Complex out-of-place forward transform for Buffer API's example: \n"
+                 "# \n"
+                 "# Using APIs:\n"
+                 "#   Compile-time dispatch API\n"
+                 "#   Buffer forward complex out-of-place\n"
+                 "# \n"
+                 "# Using single precision (float) data type\n"
+                 "# \n"
+                 "# For Intel GPU with Intel MKLGPU backend.\n"
+                 "# \n"
+                 "# The environment variable SYCL_DEVICE_FILTER can be used to specify\n"
+                 "# SYCL device\n"
+                 "########################################################################\n"
               << std::endl;
-    std::cout << "# Complex out-of-place forward transform for Buffer API's example: " << std::endl;
-    std::cout << "# " << std::endl;
-    std::cout << "# Using APIs:" << std::endl;
-    std::cout << "#   Compile-time dispatch API" << std::endl;
-    std::cout << "#   Buffer forward complex out-of-place" << std::endl;
-    std::cout << "# " << std::endl;
-    std::cout << "# Using single precision (float) data type" << std::endl;
-    std::cout << "# " << std::endl;
-    std::cout << "# Using single precision (float) data type" << std::endl;
-    std::cout << "# " << std::endl;
-    std::cout << "# For Intel GPU with Intel MKLGPU backend." << std::endl;
-    std::cout << "# " << std::endl;
-    std::cout << "# The environment variable SYCL_DEVICE_FILTER can be used to specify"
-              << std::endl;
-    std::cout << "# SYCL device" << std::endl;
-    std::cout << "########################################################################"
-              << std::endl;
-    std::cout << std::endl;
 }
 
 //
