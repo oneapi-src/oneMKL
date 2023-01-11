@@ -24,7 +24,7 @@ if(ENABLE_MKLGPU_BACKEND)
 endif()
 
 if(domain STREQUAL "dft" AND ENABLE_MKLGPU_BACKEND)
-  find_library(OPENCL_LIBRARY NAMES OpenCL)
+  find_library(OPENCL_LIBRARY NAMES OpenCL REQUIRED)
   message(STATUS "Found OpenCL: ${OPENCL_LIBRARY}")
 endif()
 
