@@ -81,25 +81,22 @@ void run_example(const sycl::device& dev) {
 // Description of example setup, APIs used and supported floating point type precisions
 //
 void print_example_banner() {
-    std::cout << "" << std::endl;
-    std::cout << "########################################################################"
+    std::cout << "\n"
+                 "########################################################################\n"
+                 "# DFTI complex in-place forward transform with USM API example: \n"
+                 "# \n"
+                 "# Using APIs:\n"
+                 "#   USM forward complex in-place\n"
+                 "#   Run-time dispatch\n"
+                 "# \n"
+                 "# Using single precision (float) data type\n"
+                 "# \n"
+                 "# Device will be selected during runtime.\n"
+                 "# The environment variable SYCL_DEVICE_FILTER can be used to specify\n"
+                 "# SYCL device\n"
+                 "# \n"
+                 "########################################################################\n"
               << std::endl;
-    std::cout << "# DFTI complex in-place forward transform with USM API example: " << std::endl;
-    std::cout << "# " << std::endl;
-    std::cout << "# Using APIs:" << std::endl;
-    std::cout << "#   USM forward complex in-place" << std::endl;
-    std::cout << "#   Run-time dispatch" << std::endl;
-    std::cout << "# " << std::endl;
-    std::cout << "# Using single precision (float) data type" << std::endl;
-    std::cout << "# " << std::endl;
-    std::cout << "# Device will be selected during runtime." << std::endl;
-    std::cout << "# The environment variable SYCL_DEVICE_FILTER can be used to specify"
-              << std::endl;
-    std::cout << "# SYCL device" << std::endl;
-    std::cout << "# " << std::endl;
-    std::cout << "########################################################################"
-              << std::endl;
-    std::cout << std::endl;
 }
 
 //
