@@ -84,18 +84,17 @@ PARAM_TYPE_HELPER(config_param::PACKED_FORMAT, config_value)
 PARAM_TYPE_HELPER(config_param::COMMIT_STATUS, config_value)
 #undef PARAM_TYPE_HELPER
 
-/** Helper struct to set value in dft_values, throwing on invalid args.
+/** Set a value in dft_values, throwing on invalid args.
  * @tparam Param The config param to set.
  * @tparam prec The precision of the DFT.
  * @tparam dom The domain of the DFT.
+ * @param vals The struct to update the value in.
+ * @param set_val The value to set Param to.
 **/
 template <config_param Param, precision prec, domain dom>
-struct set_value_helper;
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::LENGTHS, prec, dom> {
-    static void set_val(dft_values<prec, dom>& vals,
-                        param_type_helper_t<real_helper_t<prec>, config_param::LENGTHS>& set_val) {
+void set_value(dft_values<prec, dom>& vals,
+               param_type_helper_t<real_helper_t<prec>, Param>&& set_val) {
+    if constexpr (Param == config_param::LENGTHS) {
         int rank = vals.rank;
         if (set_val == nullptr) {
             throw mkl::invalid_argument("DFT", "set_value", "Given nullptr.");
@@ -108,53 +107,23 @@ struct set_value_helper<config_param::LENGTHS, prec, dom> {
         }
         std::copy(set_val, set_val + rank, vals.dimensions.begin());
     }
-};
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::PRECISION, prec, dom> {
-    static void set_val(
-        dft_values<prec, dom>& vals,
-        param_type_helper_t<real_helper_t<prec>, config_param::PRECISION>& set_val) {
+    else if constexpr (Param == config_param::PRECISION) {
         throw mkl::invalid_argument("DFT", "set_value", "Read-only parameter.");
     }
-};
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::FORWARD_SCALE, prec, dom> {
-    static void set_val(
-        dft_values<prec, dom>& vals,
-        param_type_helper_t<real_helper_t<prec>, config_param::FORWARD_SCALE>& set_val) {
+    else if constexpr (Param == config_param::FORWARD_SCALE) {
         vals.fwd_scale = set_val;
     }
-};
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::BACKWARD_SCALE, prec, dom> {
-    static void set_val(
-        dft_values<prec, dom>& vals,
-        param_type_helper_t<real_helper_t<prec>, config_param::BACKWARD_SCALE>& set_val) {
+    else if constexpr (Param == config_param::BACKWARD_SCALE) {
         vals.bwd_scale = set_val;
     }
-};
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::NUMBER_OF_TRANSFORMS, prec, dom> {
-    static void set_val(
-        dft_values<prec, dom>& vals,
-        param_type_helper_t<real_helper_t<prec>, config_param::NUMBER_OF_TRANSFORMS>& set_val) {
+    else if constexpr (Param == config_param::NUMBER_OF_TRANSFORMS) {
         if (set_val <= 0) {
             throw mkl::invalid_argument("DFT", "set_value",
                                         "Number of transforms must be positive.");
         }
         vals.number_of_transforms = set_val;
     }
-};
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::COMPLEX_STORAGE, prec, dom> {
-    static void set_val(
-        dft_values<prec, dom>& vals,
-        param_type_helper_t<real_helper_t<prec>, config_param::COMPLEX_STORAGE>& set_val) {
+    else if constexpr (Param == config_param::COMPLEX_STORAGE) {
         if (set_val == config_value::COMPLEX_COMPLEX || set_val == config_value::REAL_REAL) {
             vals.complex_storage = set_val;
         }
@@ -163,13 +132,7 @@ struct set_value_helper<config_param::COMPLEX_STORAGE, prec, dom> {
                                         "Complex storage must be complex_complex or real_real.");
         }
     }
-};
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::REAL_STORAGE, prec, dom> {
-    static void set_val(
-        dft_values<prec, dom>& vals,
-        param_type_helper_t<real_helper_t<prec>, config_param::REAL_STORAGE>& set_val) {
+    else if constexpr (Param == config_param::REAL_STORAGE) {
         if (set_val == config_value::REAL_REAL) {
             vals.real_storage = set_val;
         }
@@ -177,13 +140,7 @@ struct set_value_helper<config_param::REAL_STORAGE, prec, dom> {
             throw mkl::invalid_argument("DFT", "set_value", "Real storage must be real_real.");
         }
     }
-};
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::CONJUGATE_EVEN_STORAGE, prec, dom> {
-    static void set_val(
-        dft_values<prec, dom>& vals,
-        param_type_helper_t<real_helper_t<prec>, config_param::CONJUGATE_EVEN_STORAGE>& set_val) {
+    else if constexpr (Param == config_param::CONJUGATE_EVEN_STORAGE) {
         if (set_val == config_value::COMPLEX_COMPLEX) {
             vals.conj_even_storage = set_val;
         }
@@ -192,13 +149,7 @@ struct set_value_helper<config_param::CONJUGATE_EVEN_STORAGE, prec, dom> {
                                         "Conjugate even storage must be complex_complex.");
         }
     }
-};
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::PLACEMENT, prec, dom> {
-    static void set_val(
-        dft_values<prec, dom>& vals,
-        param_type_helper_t<real_helper_t<prec>, config_param::PLACEMENT>& set_val) {
+    else if constexpr (Param == config_param::PLACEMENT) {
         if (set_val == config_value::INPLACE || set_val == config_value::NOT_INPLACE) {
             vals.placement = set_val;
         }
@@ -207,57 +158,27 @@ struct set_value_helper<config_param::PLACEMENT, prec, dom> {
                                         "Placement must be inplace or not inplace.");
         }
     }
-};
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::INPUT_STRIDES, prec, dom> {
-    static void set_val(
-        dft_values<prec, dom>& vals,
-        param_type_helper_t<real_helper_t<prec>, config_param::INPUT_STRIDES>& set_val) {
+    else if constexpr (Param == config_param::INPUT_STRIDES) {
         int rank = vals.rank;
         if (set_val == nullptr) {
             throw mkl::invalid_argument("DFT", "set_value", "Given nullptr.");
         }
         std::copy(set_val, set_val + vals.rank + 1, vals.input_strides.begin());
     }
-};
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::OUTPUT_STRIDES, prec, dom> {
-    static void set_val(
-        dft_values<prec, dom>& vals,
-        param_type_helper_t<real_helper_t<prec>, config_param::OUTPUT_STRIDES>& set_val) {
+    else if constexpr (Param == config_param::OUTPUT_STRIDES) {
         int rank = vals.rank;
         if (set_val == nullptr) {
             throw mkl::invalid_argument("DFT", "set_value", "Given nullptr.");
         }
         std::copy(set_val, set_val + vals.rank + 1, vals.output_strides.begin());
     }
-};
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::FWD_DISTANCE, prec, dom> {
-    static void set_val(
-        dft_values<prec, dom>& vals,
-        param_type_helper_t<real_helper_t<prec>, config_param::FWD_DISTANCE>& set_val) {
+    else if constexpr (Param == config_param::FWD_DISTANCE) {
         vals.fwd_dist = set_val;
     }
-};
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::BWD_DISTANCE, prec, dom> {
-    static void set_val(
-        dft_values<prec, dom>& vals,
-        param_type_helper_t<real_helper_t<prec>, config_param::BWD_DISTANCE>& set_val) {
+    else if constexpr (Param == config_param::BWD_DISTANCE) {
         vals.bwd_dist = set_val;
     }
-};
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::WORKSPACE, prec, dom> {
-    static void set_val(
-        dft_values<prec, dom>& vals,
-        param_type_helper_t<real_helper_t<prec>, config_param::WORKSPACE>& set_val) {
+    else if constexpr (Param == config_param::WORKSPACE) {
         if (set_val == config_value::ALLOW || set_val == config_value::AVOID) {
             vals.workspace = set_val;
         }
@@ -265,12 +186,7 @@ struct set_value_helper<config_param::WORKSPACE, prec, dom> {
             throw mkl::invalid_argument("DFT", "set_value", "Workspace must be allow or avoid.");
         }
     }
-};
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::ORDERING, prec, dom> {
-    static void set_val(dft_values<prec, dom>& vals,
-                        param_type_helper_t<real_helper_t<prec>, config_param::ORDERING>& set_val) {
+    else if constexpr (Param == config_param::ORDERING) {
         if (set_val == config_value::ORDERED || set_val == config_value::BACKWARD_SCRAMBLED) {
             vals.ordering = set_val;
         }
@@ -279,22 +195,10 @@ struct set_value_helper<config_param::ORDERING, prec, dom> {
                                         "Ordering must be ordered or backwards scrambled.");
         }
     }
-};
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::TRANSPOSE, prec, dom> {
-    static void set_val(
-        dft_values<prec, dom>& vals,
-        param_type_helper_t<real_helper_t<prec>, config_param::TRANSPOSE>& set_val) {
+    else if constexpr (Param == config_param::TRANSPOSE) {
         vals.transpose = set_val;
     }
-};
-
-template <precision prec, domain dom>
-struct set_value_helper<config_param::PACKED_FORMAT, prec, dom> {
-    static void set_val(
-        dft_values<prec, dom>& vals,
-        param_type_helper_t<real_helper_t<prec>, config_param::PACKED_FORMAT>& set_val) {
+    else if constexpr (Param == config_param::PACKED_FORMAT) {
         if (set_val == config_value::CCE_FORMAT) {
             vals.packed_format = set_val;
         }
@@ -302,13 +206,6 @@ struct set_value_helper<config_param::PACKED_FORMAT, prec, dom> {
             throw mkl::invalid_argument("DFT", "set_value", "Packed format must be CCE.");
         }
     }
-};
-
-template <config_param Param, precision prec, domain dom>
-void set_value(dft_values<prec, dom>& vals,
-               param_type_helper_t<real_helper_t<prec>, Param> set_val) {
-    // Note, set_val argument cannot be a ref for use with va_arg.
-    set_value_helper<Param, prec, dom>::set_val(vals, set_val);
 }
 
 } // namespace detail
