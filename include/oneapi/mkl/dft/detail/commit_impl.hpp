@@ -41,10 +41,7 @@ public:
               backend_(backend),
               status(false) {}
 
-    commit_impl(const commit_impl& other)
-            : queue_(other.queue_),
-              backend_(other.backend_),
-              status(other.status) {}
+    commit_impl(const commit_impl& other) = default;
 
     virtual ~commit_impl() = default;
 
@@ -64,11 +61,9 @@ protected:
     sycl::queue queue_;
 };
 
-
 } // namespace detail
 } // namespace dft
 } // namespace mkl
 } // namespace oneapi
 
 #endif //_ONEMKL_DFT_COMMIT_IMPL_HPP_
-
