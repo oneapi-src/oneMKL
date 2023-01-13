@@ -57,7 +57,16 @@ template <typename fp>
 typename std::enable_if<!std::is_integral<fp>::value, bool>::type check_equal(fp x, fp x_ref,
                                                                               int error_mag) {
     using fp_real = typename complex_info<fp>::real_type;
-    fp_real bound = (error_mag * num_components<fp>() * std::numeric_limits<fp_real>::epsilon());
+    const fp_real bound = [error_mag]() {
+        if constexpr (sizeof(double) == sizeof(long double) && std::is_same_v<fp_real, double>) {
+            // The reference DFT uses long double to maintain accuracy
+            // when this isn't possible, lower the accuracy requirements
+            return 1e-12;
+        }
+        else {
+            return (error_mag * num_components<fp>() * std::numeric_limits<fp_real>::epsilon());
+        }
+    }();
 
     bool ok;
 

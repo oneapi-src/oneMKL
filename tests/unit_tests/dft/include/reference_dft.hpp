@@ -20,29 +20,27 @@
 #ifndef ONEMKL_REFERENCE_DFT_HPP
 #define ONEMKL_REFERENCE_DFT_HPP
 
+#include <cmath>
+#include <complex>
+#include <vector>
+
+#include "test_common.hpp"
+
 template <typename TypeIn, typename TypeOut>
-void reference_forward_dft(std::vector<TypeIn> &in, std::vector<TypeOut> &out) {
-    static_assert(is_complex<TypeOut>());
+void reference_forward_dft(const std::vector<TypeIn> &in, std::vector<TypeOut> &out) noexcept {
+    using ref_t = long double; /* Do the calculations using long double */
+    static_assert(is_complex<TypeOut>(), "Output type of DFT must be complex");
 
-    double TWOPI = 2.0 * std::atan(1.0) * 4.0;
+    const ref_t TWOPI = ref_t{ 2.0 } * std::atan(ref_t{ 1.0 }) * ref_t{ 4.0 };
 
-    std::complex<double> out_temp; /* Do the calculations using double */
-    size_t N = out.size();
-    for (int k = 0; k < N; k++) {
-        out[k] = 0;
-        out_temp = 0;
-        for (int n = 0; n < N; n++) {
-            if constexpr (is_complex<TypeIn>()) {
-                out_temp += static_cast<std::complex<double>>(in[n]) *
-                            std::complex<double>{ std::cos(n * k * TWOPI / N),
-                                                  -std::sin(n * k * TWOPI / N) };
-            }
-            else {
-                out_temp +=
-                    std::complex<double>{ static_cast<double>(in[n]) * std::cos(n * k * TWOPI / N),
-                                          static_cast<double>(-in[n]) *
-                                              std::sin(n * k * TWOPI / N) };
-            }
+    const size_t N = out.size();
+    for (std::size_t k = 0; k < N; ++k) {
+        std::complex<ref_t> out_temp = 0;
+        const auto partial_expo = (static_cast<ref_t>(k) * TWOPI) / static_cast<ref_t>(N);
+        for (std::size_t n = 0; n < N; ++n) {
+            const auto expo = static_cast<ref_t>(n) * partial_expo;
+            out_temp += static_cast<std::complex<ref_t>>(in[n]) *
+                        std::complex<ref_t>{ std::cos(expo), -std::sin(expo) };
         }
         out[k] = static_cast<TypeOut>(out_temp);
     }
