@@ -16,6 +16,7 @@
 *
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
+#include <cstdarg>
 
 #include "oneapi/mkl/detail/exceptions.hpp"
 #include "oneapi/mkl/dft/descriptor.hpp"
