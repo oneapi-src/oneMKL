@@ -71,7 +71,7 @@ struct DFT_Test {
         input_im = std::vector<PrecisionType>(size);
 
         out_host_ref = std::vector<OutputType>(size);
-        rand_vector(input, size, 1);
+        rand_vector(input, size);
 
         if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
             for (int i = 0; i < input.size(); ++i) {

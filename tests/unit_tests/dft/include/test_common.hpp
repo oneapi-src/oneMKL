@@ -54,28 +54,29 @@ constexpr int num_components() {
 }
 
 template <typename fp>
-typename std::enable_if<!std::is_integral<fp>::value, bool>::type check_equal(fp x, fp x_ref,
-                                                                              int error_mag) {
+bool check_equal(fp x, fp x_ref, int error_mag) {
     using fp_real = typename complex_info<fp>::real_type;
-    const fp_real bound = [error_mag]() {
-        if constexpr (sizeof(double) == sizeof(long double) && std::is_same_v<fp_real, double>) {
-            // The reference DFT uses long double to maintain accuracy
-            // when this isn't possible, lower the accuracy requirements
-            return 1e-12;
-        }
-        else {
-            return (error_mag * num_components<fp>() * std::numeric_limits<fp_real>::epsilon());
-        }
-    }();
+    static_assert(std::is_floating_point_v<fp_real>,
+                  "Expected floating-point real or complex type.");
 
-    bool ok;
+        const fp_real bound = [error_mag]() {
+            if constexpr (sizeof(double) == sizeof(long double) &&
+                          std::is_same_v<fp_real, double>) {
+                // The reference DFT uses long double to maintain accuracy
+                // when this isn't possible, lower the accuracy requirements
+                return 1e-12;
+            }
+            else {
+                return (error_mag * num_components<fp>() * std::numeric_limits<fp_real>::epsilon());
+            }
+        }();
 
     fp_real aerr = std::abs(x - x_ref);
     fp_real rerr = aerr / std::abs(x_ref);
-    ok = (rerr <= bound) || (aerr <= bound);
+    bool ok = (rerr <= bound) || (aerr <= bound);
     if (!ok) {
         std::cout << "relative error = " << rerr << " absolute error = " << aerr
-                  << " limit = " << bound << std::endl;
+                  << " limit = " << bound <<  "\n";
     }
     return ok;
 }
@@ -85,35 +86,13 @@ bool check_equal(fp x, fp x_ref, int error_mag, std::ostream &out) {
     bool good = check_equal(x, x_ref, error_mag);
 
     if (!good) {
-        out << "Difference in result: DPC++ " << x << " vs. Reference " << x_ref << std::endl;
+        out << "Difference in result: DPC++ " << x << " vs. Reference " << x_ref <<  "\n";
     }
-    return good;
-}
-
-template <typename fp>
-bool check_equal_vector(fp *v, fp *v_ref, int n, int inc, int error_mag, std::ostream &out) {
-    constexpr size_t max_print = 20;
-    int abs_inc = std::abs(inc), count = 0;
-    bool good = true;
-
-    for (int i = 0; i < n; i++) {
-        if (!check_equal(v[i * abs_inc], v_ref[i * abs_inc], error_mag)) {
-            int i_actual = (inc > 0) ? i : n - i;
-            std::cout << "Difference in entry " << i_actual << ": DPC++ " << v[i * abs_inc]
-                      << " vs. Reference " << v_ref[i * abs_inc] << std::endl;
-            good = false;
-            count++;
-            if (count > max_print) {
-                return good;
-            }
-        }
-    }
-
     return good;
 }
 
 template <typename vec1, typename vec2>
-bool check_equal_vector(vec1 &v, vec2 &v_ref, int n, int inc, int error_mag, std::ostream &out) {
+bool check_equal_vector(vec1&& v, vec2&& v_ref, int n, int inc, int error_mag, std::ostream &out) {
     constexpr size_t max_print = 20;
     int abs_inc = std::abs(inc), count = 0;
     bool good = true;
@@ -122,7 +101,7 @@ bool check_equal_vector(vec1 &v, vec2 &v_ref, int n, int inc, int error_mag, std
         if (!check_equal(v[i * abs_inc], v_ref[i * abs_inc], error_mag)) {
             int i_actual = (inc > 0) ? i : n - i;
             std::cout << "Difference in entry " << i_actual << ": DPC++ " << v[i * abs_inc]
-                      << " vs. Reference " << v_ref[i * abs_inc] << std::endl;
+                      << " vs. Reference " << v_ref[i * abs_inc] << "\n";
             good = false;
             count++;
             if (count > max_print) {
@@ -135,45 +114,27 @@ bool check_equal_vector(vec1 &v, vec2 &v_ref, int n, int inc, int error_mag, std
 }
 
 // Random initialization.
-template <typename fp>
-static fp rand_scalar() {
-    return fp(std::rand()) / fp(RAND_MAX) - fp(0.5);
-}
-template <typename fp>
-static std::complex<fp> rand_complex_scalar() {
-    return std::complex<fp>(rand_scalar<fp>(), rand_scalar<fp>());
-}
-template <>
-std::complex<float> rand_scalar() {
-    return rand_complex_scalar<float>();
-}
-template <>
-std::complex<double> rand_scalar() {
-    return rand_complex_scalar<double>();
-}
-
-template <>
-int32_t rand_scalar() {
-    return std::rand() % 256 - 128;
-}
-
-template <typename fp>
-void rand_vector(fp *v, int n, int inc) {
-    int abs_inc = std::abs(inc);
-    for (int i = 0; i < n; i++) {
-        v[i * abs_inc] = rand_scalar<fp>();
+template <typename t>
+inline t rand_scalar() {
+    if constexpr (std::is_same_v<t, int32_t>) {
+        return std::rand() % 256 - 128;
+    }
+    else if constexpr (std::is_floating_point_v<t>) {
+        return t(std::rand()) / t(RAND_MAX) - t(0.5);
+    }
+    else {
+        static_assert(complex_info<t>::is_complex, "unexpect type in rand_scalar");
+        using fp = typename complex_info<t>::real_type;
+        return t(rand_scalar<fp>(), rand_scalar<fp>());
     }
 }
 
 template <typename vec>
-void rand_vector(vec &v, int n, int inc) {
+void rand_vector(vec &v, int n) {
     using fp = typename vec::value_type;
-    int abs_inc = std::abs(inc);
-
-    v.resize(n * abs_inc);
-
+    v.resize(n);
     for (int i = 0; i < n; i++) {
-        v[i * abs_inc] = rand_scalar<fp>();
+        v[i] = rand_scalar<fp>();
     }
 }
 
@@ -184,7 +145,7 @@ auto exception_handler = [](sycl::exception_list exceptions) {
             std::rethrow_exception(e);
         }
         catch (sycl::exception e) {
-            std::cout << "Caught asynchronous SYCL exception:\n" << e.what() << std::endl;
+            std::cout << "Caught asynchronous SYCL exception:\n" << e.what() <<  "\n";
             print_error_code(e);
         }
     }
@@ -205,8 +166,7 @@ void copy_to_host(sycl::queue sycl_queue, sycl::buffer<T, D> &buffer_in, std::ve
     sycl_queue.submit([&](sycl::handler &cgh) {
         sycl::accessor accessor = buffer_in.get_access(cgh);
         cgh.copy(accessor, host_out.data());
-    });
-    sycl_queue.wait();
+    }).wait();
 }
 
 template <typename T, int D>
@@ -215,8 +175,7 @@ void copy_to_device(sycl::queue sycl_queue, std::vector<T> &host_in,
     sycl_queue.submit([&](sycl::handler &cgh) {
         sycl::accessor accessor = buffer_out.get_access(cgh);
         cgh.copy(host_in.data(), accessor);
-    });
-    sycl_queue.wait();
+    }).wait();
 }
 
 class DimensionsDeviceNamePrint {
@@ -229,7 +188,7 @@ public:
             if (!isalnum(dev_name[i]))
                 dev_name[i] = '_';
         }
-        std::string info_name = (size.append("_")).append(dev_name);
+        std::string info_name = std::move(size) + "_" + std::move(dev_name);
         return info_name;
     }
 };
