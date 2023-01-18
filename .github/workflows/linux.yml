@@ -56,6 +56,7 @@ jobs:
          cat /usr/local/cuda/version.json
          cat /usr/local/cuda/include/cublas.h | grep CUBLAS
          echo $(ls /usr/local/cuda-11.6/targets/x86_64-linux/lib/stubs/libcuda*)
+         echo $LD_LIBRARY_PATH
     - name: build hipSYCL
       run: |
         cd
