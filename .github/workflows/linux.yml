@@ -57,6 +57,7 @@ jobs:
          cat /usr/local/cuda/include/cublas.h | grep CUBLAS
          echo $(ls /usr/local/cuda-11.6/targets/x86_64-linux/lib/stubs/libcuda*)
          echo $LD_LIBRARY_PATH
+         ln -s /usr/local/cuda-11.6/targets/x86_64-linux/lib/stubs/libcuda.so.1 /usr/local/cuda-11.6/targets/x86_64-linux/lib/stubs/libcuda.so
     - name: build hipSYCL
       run: |
         cd
