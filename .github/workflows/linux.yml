@@ -55,6 +55,7 @@ jobs:
          /usr/local/cuda/bin/nvcc --version
          cat /usr/local/cuda/version.json
          cat /usr/local/cuda/include/cublas.h | grep CUBLAS
+         echo $(ls /usr/local/cuda-11.6/targets/x86_64-linux/lib/stubs/libcuda*)
     - name: build hipSYCL
       run: |
         cd
