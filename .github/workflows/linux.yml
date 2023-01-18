@@ -88,7 +88,7 @@ jobs:
         hsa-runtime64_DIR: /opt/rocm-${{matrix.rocm_version}}/lib/cmake/hsa-runtime64/
       run: |
         cd
-        echo pwd
+        echo $`pwd`
         git clone https://github.com/oneapi-src/oneMKL.git
         cd oneMKL
         mkdir build
