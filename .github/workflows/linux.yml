@@ -115,6 +115,7 @@ jobs:
         cmake --build . -j2
     - name: test oneMKL
       run: |
+        cd
         cd oneMKL/build
         ctest
         cmake --install . --prefix /usr
