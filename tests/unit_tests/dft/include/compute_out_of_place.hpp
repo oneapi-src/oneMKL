@@ -29,25 +29,32 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
         return test_skipped;
     }
 
-    const size_t bwd_size = domain == oneapi::mkl::dft::domain::REAL ? (size / 2) + 1 : size;
+    const std::int64_t backward_elements =
+        domain == oneapi::mkl::dft::domain::REAL ? (forward_elements / 2) + 1 : forward_elements;
 
-    descriptor_t descriptor{ size };
+    descriptor_t descriptor{ sizes };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::NOT_INPLACE);
+    descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
+    descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
+    descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_elements);
     commit_descriptor(descriptor, sycl_queue);
 
-    descriptor_t descriptor_back{ size };
+    descriptor_t descriptor_back{ sizes };
     descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                               oneapi::mkl::dft::config_value::NOT_INPLACE);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / size));
+    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
+                              (1.0 / forward_elements));
+    descriptor_back.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
+    descriptor_back.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
+    descriptor_back.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_elements);
     commit_descriptor(descriptor_back, sycl_queue);
 
     std::vector<FwdInputType> fwd_data(input);
-    std::vector<FwdOutputType> bwd_data(bwd_size, 0);
 
     {
         sycl::buffer<FwdInputType, 1> fwd_buf{ fwd_data };
-        sycl::buffer<FwdOutputType, 1> bwd_buf{ bwd_data };
+        sycl::buffer<FwdOutputType, 1> bwd_buf{ sycl::range<1>(backward_elements * batches) };
 
         try {
             oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
@@ -60,9 +67,14 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
 
         {
             auto acc_bwd = bwd_buf.template get_host_access();
-            EXPECT_TRUE(check_equal_vector(acc_bwd.get_pointer(), out_host_ref.data(),
-                                           bwd_data.size(), abs_error_margin, rel_error_margin,
-                                           std::cout));
+            auto bwd_ptr = acc_bwd.get_pointer();
+            auto ref_iter = out_host_ref.begin();
+            while (ref_iter < out_host_ref.end()) {
+                EXPECT_TRUE(check_equal_vector(bwd_ptr, ref_iter, backward_elements,
+                                               abs_error_margin, rel_error_margin, std::cout));
+                bwd_ptr += backward_elements;
+                ref_iter += forward_elements;
+            }
         }
 
         try {
@@ -88,24 +100,32 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     }
     const std::vector<sycl::event> no_dependencies;
 
-    const size_t bwd_size = domain == oneapi::mkl::dft::domain::REAL ? (size / 2) + 1 : size;
+    const std::int64_t backward_elements =
+        domain == oneapi::mkl::dft::domain::REAL ? (forward_elements / 2) + 1 : forward_elements;
 
-    descriptor_t descriptor{ size };
+    descriptor_t descriptor{ sizes };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::NOT_INPLACE);
+    descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
+    descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
+    descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_elements);
     commit_descriptor(descriptor, sycl_queue);
 
-    descriptor_t descriptor_back{ size };
+    descriptor_t descriptor_back{ sizes };
     descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                               oneapi::mkl::dft::config_value::NOT_INPLACE);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / size));
+    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
+                              (1.0 / forward_elements));
+    descriptor_back.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
+    descriptor_back.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
+    descriptor_back.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_elements);
     commit_descriptor(descriptor_back, sycl_queue);
 
     auto ua_input = usm_allocator_t<FwdInputType>(cxt, *dev);
     auto ua_output = usm_allocator_t<FwdOutputType>(cxt, *dev);
 
     std::vector<FwdInputType, decltype(ua_input)> fwd(input.begin(), input.end(), ua_input);
-    std::vector<FwdOutputType, decltype(ua_output)> bwd(bwd_size, ua_output);
+    std::vector<FwdOutputType, decltype(ua_output)> bwd(backward_elements * batches, ua_output);
 
     try {
         oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
@@ -117,8 +137,16 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
         return test_skipped;
     }
 
-    EXPECT_TRUE(check_equal_vector(bwd.data(), out_host_ref.data(), bwd.size(), abs_error_margin,
-                                   rel_error_margin, std::cout));
+    {
+        auto bwd_iter = bwd.begin();
+        auto ref_iter = out_host_ref.begin();
+        while (ref_iter < out_host_ref.end()) {
+            EXPECT_TRUE(check_equal_vector(bwd_iter, ref_iter, backward_elements, abs_error_margin,
+                                           rel_error_margin, std::cout));
+            bwd_iter += backward_elements;
+            ref_iter += forward_elements;
+        }
+    }
 
     try {
         oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
