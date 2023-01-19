@@ -53,7 +53,7 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
 
     copy_to_host(sycl_queue, out_dev, out_host);
 
-    EXPECT_TRUE(check_equal_vector(out_host.data(), out_host_ref.data(), out_host.size(), 1,
+    EXPECT_TRUE(check_equal_vector(out_host.data(), out_host_ref.data(), out_host.size(),
                                    error_margin, std::cout));
 
     descriptor_t descriptor_back{ size };
@@ -74,8 +74,8 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
 
     copy_to_host(sycl_queue, out_back_dev, out_host_back);
 
-    EXPECT_TRUE(check_equal_vector(out_host_back.data(), input.data(), input.size(), 1,
-                                   error_margin, std::cout));
+    EXPECT_TRUE(check_equal_vector(out_host_back.data(), input.data(), input.size(), error_margin,
+                                   std::cout));
 
     return !::testing::Test::HasFailure();
 }
@@ -113,8 +113,8 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
         return test_skipped;
     }
 
-    EXPECT_TRUE(check_equal_vector(out.data(), out_host_ref.data(), out.size(), 1, error_margin,
-                                   std::cout));
+    EXPECT_TRUE(
+        check_equal_vector(out.data(), out_host_ref.data(), out.size(), error_margin, std::cout));
 
     descriptor_t descriptor_back{ size };
     descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
@@ -137,8 +137,8 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
         return test_skipped;
     }
 
-    EXPECT_TRUE(check_equal_vector(out_back.data(), input.data(), input.size(), 1, error_margin,
-                                   std::cout));
+    EXPECT_TRUE(
+        check_equal_vector(out_back.data(), input.data(), input.size(), error_margin, std::cout));
 
     return !::testing::Test::HasFailure();
 }

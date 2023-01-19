@@ -59,10 +59,10 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
             out_host_ref_conjugate[i + 1] = out_host_ref[i / 2].imag();
         }
         EXPECT_TRUE(check_equal_vector(out_host.data(), out_host_ref_conjugate.data(),
-                                       out_host.size(), 1, error_margin, std::cout));
+                                       out_host.size(), error_margin, std::cout));
     }
     else {
-        EXPECT_TRUE(check_equal_vector(out_host.data(), out_host_ref.data(), out_host.size(), 1,
+        EXPECT_TRUE(check_equal_vector(out_host.data(), out_host_ref.data(), out_host.size(),
                                        error_margin, std::cout));
     }
 
@@ -83,8 +83,8 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
 
     copy_to_host(sycl_queue, inout_dev, out_host);
 
-    EXPECT_TRUE(check_equal_vector(out_host.data(), input.data(), input.size(), 1, error_margin,
-                                   std::cout));
+    EXPECT_TRUE(
+        check_equal_vector(out_host.data(), input.data(), input.size(), error_margin, std::cout));
 
     return !::testing::Test::HasFailure();
 }
@@ -125,11 +125,11 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
             out_host_ref_conjugate[i] = out_host_ref[i / 2].real();
             out_host_ref_conjugate[i + 1] = out_host_ref[i / 2].imag();
         }
-        EXPECT_TRUE(check_equal_vector(inout.data(), out_host_ref_conjugate.data(), inout.size(), 1,
+        EXPECT_TRUE(check_equal_vector(inout.data(), out_host_ref_conjugate.data(), inout.size(),
                                        error_margin, std::cout));
     }
     else {
-        EXPECT_TRUE(check_equal_vector(inout.data(), out_host_ref.data(), inout.size(), 1,
+        EXPECT_TRUE(check_equal_vector(inout.data(), out_host_ref.data(), inout.size(),
                                        error_margin, std::cout));
     }
 
@@ -152,7 +152,7 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
     }
 
     EXPECT_TRUE(
-        check_equal_vector(inout.data(), input.data(), input.size(), 1, error_margin, std::cout));
+        check_equal_vector(inout.data(), input.data(), input.size(), error_margin, std::cout));
 
     return !::testing::Test::HasFailure();
 }

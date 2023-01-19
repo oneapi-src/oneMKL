@@ -59,24 +59,23 @@ bool check_equal(fp x, fp x_ref, int error_mag) {
     static_assert(std::is_floating_point_v<fp_real>,
                   "Expected floating-point real or complex type.");
 
-        const fp_real bound = [error_mag]() {
-            if constexpr (sizeof(double) == sizeof(long double) &&
-                          std::is_same_v<fp_real, double>) {
-                // The reference DFT uses long double to maintain accuracy
-                // when this isn't possible, lower the accuracy requirements
-                return 1e-12;
-            }
-            else {
-                return (error_mag * num_components<fp>() * std::numeric_limits<fp_real>::epsilon());
-            }
-        }();
+    const fp_real bound = [error_mag]() {
+        if constexpr (sizeof(double) == sizeof(long double) && std::is_same_v<fp_real, double>) {
+            // The reference DFT uses long double to maintain accuracy
+            // when this isn't possible, lower the accuracy requirements
+            return 1e-12;
+        }
+        else {
+            return (error_mag * num_components<fp>() * std::numeric_limits<fp_real>::epsilon());
+        }
+    }();
 
-    fp_real aerr = std::abs(x - x_ref);
-    fp_real rerr = aerr / std::abs(x_ref);
-    bool ok = (rerr <= bound) || (aerr <= bound);
+    const auto aerr = std::abs(x - x_ref);
+    const auto rerr = aerr / std::abs(x_ref);
+    const bool ok = (rerr <= bound) || (aerr <= bound);
     if (!ok) {
         std::cout << "relative error = " << rerr << " absolute error = " << aerr
-                  << " limit = " << bound <<  "\n";
+                  << " limit = " << bound << "\n";
     }
     return ok;
 }
@@ -86,24 +85,23 @@ bool check_equal(fp x, fp x_ref, int error_mag, std::ostream &out) {
     bool good = check_equal(x, x_ref, error_mag);
 
     if (!good) {
-        out << "Difference in result: DPC++ " << x << " vs. Reference " << x_ref <<  "\n";
+        out << "Difference in result: DPC++ " << x << " vs. Reference " << x_ref << "\n";
     }
     return good;
 }
 
 template <typename vec1, typename vec2>
-bool check_equal_vector(vec1&& v, vec2&& v_ref, int n, int inc, int error_mag, std::ostream &out) {
-    constexpr size_t max_print = 20;
-    int abs_inc = std::abs(inc), count = 0;
+bool check_equal_vector(vec1 &&v, vec2 &&v_ref, int n, int error_mag, std::ostream &out) {
+    constexpr int max_print = 20;
+    int count = 0;
     bool good = true;
 
-    for (int i = 0; i < n; i++) {
-        if (!check_equal(v[i * abs_inc], v_ref[i * abs_inc], error_mag)) {
-            int i_actual = (inc > 0) ? i : n - i;
-            std::cout << "Difference in entry " << i_actual << ": DPC++ " << v[i * abs_inc]
-                      << " vs. Reference " << v_ref[i * abs_inc] << "\n";
+    for (std::size_t i = 0; i < n; ++i) {
+        if (!check_equal(v[i], v_ref[i], error_mag)) {
+            std::cout << "Difference in entry " << i << ": DPC++ " << v[i] << " vs. Reference "
+                      << v_ref[i] << "\n";
             good = false;
-            count++;
+            ++count;
             if (count > max_print) {
                 return good;
             }
@@ -145,7 +143,7 @@ auto exception_handler = [](sycl::exception_list exceptions) {
             std::rethrow_exception(e);
         }
         catch (sycl::exception e) {
-            std::cout << "Caught asynchronous SYCL exception:\n" << e.what() <<  "\n";
+            std::cout << "Caught asynchronous SYCL exception:\n" << e.what() << "\n";
             print_error_code(e);
         }
     }
@@ -163,19 +161,23 @@ void commit_descriptor(oneapi::mkl::dft::descriptor<precision, domain> &descript
 
 template <typename T, int D>
 void copy_to_host(sycl::queue sycl_queue, sycl::buffer<T, D> &buffer_in, std::vector<T> &host_out) {
-    sycl_queue.submit([&](sycl::handler &cgh) {
-        sycl::accessor accessor = buffer_in.get_access(cgh);
-        cgh.copy(accessor, host_out.data());
-    }).wait();
+    sycl_queue
+        .submit([&](sycl::handler &cgh) {
+            sycl::accessor accessor = buffer_in.get_access(cgh);
+            cgh.copy(accessor, host_out.data());
+        })
+        .wait();
 }
 
 template <typename T, int D>
 void copy_to_device(sycl::queue sycl_queue, std::vector<T> &host_in,
                     sycl::buffer<T, D> &buffer_out) {
-    sycl_queue.submit([&](sycl::handler &cgh) {
-        sycl::accessor accessor = buffer_out.get_access(cgh);
-        cgh.copy(host_in.data(), accessor);
-    }).wait();
+    sycl_queue
+        .submit([&](sycl::handler &cgh) {
+            sycl::accessor accessor = buffer_out.get_access(cgh);
+            cgh.copy(host_in.data(), accessor);
+        })
+        .wait();
 }
 
 class DimensionsDeviceNamePrint {
@@ -188,8 +190,7 @@ public:
             if (!isalnum(dev_name[i]))
                 dev_name[i] = '_';
         }
-        std::string info_name = std::move(size) + "_" + std::move(dev_name);
-        return info_name;
+        return size.append("_").append(dev_name);
     }
 };
 
