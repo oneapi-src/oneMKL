@@ -29,6 +29,7 @@ add_library(${LIB_OBJ} OBJECT
   descriptor.cpp
   forward.cpp
   backward.cpp
+  compute_signature.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_dft_cpu_wrappers.cpp>
 )
 

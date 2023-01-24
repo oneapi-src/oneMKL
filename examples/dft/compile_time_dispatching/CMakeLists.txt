@@ -41,7 +41,6 @@ foreach(dfti_ct_sources ${DFTI_CT_SOURCES})
     target_link_libraries(example_${domain}_${dfti_ct_sources} PUBLIC ${OPENCL_LIBRARY})
   endif()
   target_link_libraries(example_${domain}_${dfti_ct_sources} PUBLIC
-      onemkl
       ${ONEMKL_LIBRARIES_${domain}}
       ONEMKL::SYCL::SYCL
   )
