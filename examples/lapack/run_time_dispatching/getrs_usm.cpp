@@ -219,7 +219,7 @@ int main(int argc, char** argv) {
     print_example_banner();
 
     try {
-        sycl::device dev((sycl::default_selector()));
+        sycl::device dev = sycl::device();
         if (dev.is_gpu()) {
             std::cout << "Running LAPACK getrs example on GPU device." << std::endl;
             std::cout << "Device name is: " << dev.get_info<sycl::info::device::name>()

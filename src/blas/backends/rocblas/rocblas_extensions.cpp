@@ -88,6 +88,74 @@ void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose tra
     throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
+void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+              sycl::buffer<float, 1> &a, int64_t lda, sycl::buffer<float, 1> &b, int64_t ldb) {
+    throw unimplemented("blas", "omatcopy", "for column_major layout");
+}
+
+void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+              sycl::buffer<double, 1> &a, int64_t lda, sycl::buffer<double, 1> &b, int64_t ldb) {
+    throw unimplemented("blas", "omatcopy", "for column_major layout");
+}
+
+void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<float> alpha,
+              sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+              sycl::buffer<std::complex<float>, 1> &b, int64_t ldb) {
+    throw unimplemented("blas", "omatcopy", "for column_major layout");
+}
+
+void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<double> alpha,
+              sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+              sycl::buffer<std::complex<double>, 1> &b, int64_t ldb) {
+    throw unimplemented("blas", "omatcopy", "for column_major layout");
+}
+
+void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+              sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb) {
+    throw unimplemented("blas", "imatcopy", "for column_major layout");
+}
+
+void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+              sycl::buffer<double, 1> &ab, int64_t lda, int64_t ldb) {
+    throw unimplemented("blas", "imatcopy", "for column_major layout");
+}
+
+void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<float> alpha,
+              sycl::buffer<std::complex<float>, 1> &ab, int64_t lda, int64_t ldb) {
+    throw unimplemented("blas", "imatcopy", "for column_major layout");
+}
+
+void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<double> alpha,
+              sycl::buffer<std::complex<double>, 1> &ab, int64_t lda, int64_t ldb) {
+    throw unimplemented("blas", "imatcopy", "for column_major layout");
+}
+
+void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+             float alpha, sycl::buffer<float, 1> &a, int64_t lda, float beta,
+             sycl::buffer<float, 1> &b, int64_t ldb, sycl::buffer<float, 1> &c, int64_t ldc) {
+    throw unimplemented("blas", "omatadd", "for column_major layout");
+}
+
+void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+             double alpha, sycl::buffer<double, 1> &a, int64_t lda, double beta,
+             sycl::buffer<double, 1> &b, int64_t ldb, sycl::buffer<double, 1> &c, int64_t ldc) {
+    throw unimplemented("blas", "omatadd", "for column_major layout");
+}
+
+void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+             std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+             std::complex<float> beta, sycl::buffer<std::complex<float>, 1> &b, int64_t ldb,
+             sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
+    throw unimplemented("blas", "omatadd", "for column_major layout");
+}
+
+void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+             std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+             std::complex<double> beta, sycl::buffer<std::complex<double>, 1> &b, int64_t ldb,
+             sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
+    throw unimplemented("blas", "omatadd", "for column_major layout");
+}
+
 // USM APIs
 
 sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
@@ -150,6 +218,86 @@ sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transp
                   std::complex<double> beta, std::complex<double> *c, int64_t ldc,
                   const std::vector<sycl::event> &dependencies) {
     throw unimplemented("blas", "gemmt", "for column_major layout");
+}
+
+sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                     const float *a, int64_t lda, float *b, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy", "for column_major layout");
+}
+
+sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                     const double *a, int64_t lda, double *b, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy", "for column_major layout");
+}
+
+sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                     std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                     std::complex<float> *b, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy", "for column_major layout");
+}
+
+sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                     std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                     std::complex<double> *b, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy", "for column_major layout");
+}
+
+sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                     float *ab, int64_t lda, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "imatcopy", "for column_major layout");
+}
+
+sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                     double *ab, int64_t lda, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "imatcopy", "for column_major layout");
+}
+
+sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                     std::complex<float> alpha, std::complex<float> *ab, int64_t lda, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "imatcopy", "for column_major layout");
+}
+
+sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                     std::complex<double> alpha, std::complex<double> *ab, int64_t lda, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "imatcopy", "for column_major layout");
+}
+
+sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                    float alpha, const float *a, int64_t lda, float beta, const float *b,
+                    int64_t ldb, float *c, int64_t ldc,
+                    const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatadd", "for column_major layout");
+}
+
+sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                    double alpha, const double *a, int64_t lda, double beta, const double *b,
+                    int64_t ldb, double *c, int64_t ldc,
+                    const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatadd", "for column_major layout");
+}
+
+sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                    std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                    std::complex<float> beta, const std::complex<float> *b, int64_t ldb,
+                    std::complex<float> *c, int64_t ldc,
+                    const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatadd", "for column_major layout");
+}
+
+sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                    std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                    std::complex<double> beta, const std::complex<double> *b, int64_t ldb,
+                    std::complex<double> *c, int64_t ldc,
+                    const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatadd", "for column_major layout");
 }
 
 } // namespace column_major
@@ -213,6 +361,74 @@ void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose tra
     throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
+void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+              sycl::buffer<float, 1> &a, int64_t lda, sycl::buffer<float, 1> &b, int64_t ldb) {
+    throw unimplemented("blas", "omatcopy", "for row_major layout");
+}
+
+void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+              sycl::buffer<double, 1> &a, int64_t lda, sycl::buffer<double, 1> &b, int64_t ldb) {
+    throw unimplemented("blas", "omatcopy", "for row_major layout");
+}
+
+void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<float> alpha,
+              sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+              sycl::buffer<std::complex<float>, 1> &b, int64_t ldb) {
+    throw unimplemented("blas", "omatcopy", "for row_major layout");
+}
+
+void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<double> alpha,
+              sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+              sycl::buffer<std::complex<double>, 1> &b, int64_t ldb) {
+    throw unimplemented("blas", "omatcopy", "for row_major layout");
+}
+
+void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+              sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb) {
+    throw unimplemented("blas", "imatcopy", "for row_major layout");
+}
+
+void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+              sycl::buffer<double, 1> &ab, int64_t lda, int64_t ldb) {
+    throw unimplemented("blas", "imatcopy", "for row_major layout");
+}
+
+void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<float> alpha,
+              sycl::buffer<std::complex<float>, 1> &ab, int64_t lda, int64_t ldb) {
+    throw unimplemented("blas", "imatcopy", "for row_major layout");
+}
+
+void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<double> alpha,
+              sycl::buffer<std::complex<double>, 1> &ab, int64_t lda, int64_t ldb) {
+    throw unimplemented("blas", "imatcopy", "for row_major layout");
+}
+
+void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+             float alpha, sycl::buffer<float, 1> &a, int64_t lda, float beta,
+             sycl::buffer<float, 1> &b, int64_t ldb, sycl::buffer<float, 1> &c, int64_t ldc) {
+    throw unimplemented("blas", "omatadd", "for row_major layout");
+}
+
+void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+             double alpha, sycl::buffer<double, 1> &a, int64_t lda, double beta,
+             sycl::buffer<double, 1> &b, int64_t ldb, sycl::buffer<double, 1> &c, int64_t ldc) {
+    throw unimplemented("blas", "omatadd", "for row_major layout");
+}
+
+void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+             std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
+             std::complex<float> beta, sycl::buffer<std::complex<float>, 1> &b, int64_t ldb,
+             sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
+    throw unimplemented("blas", "omatadd", "for row_major layout");
+}
+
+void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+             std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+             std::complex<double> beta, sycl::buffer<std::complex<double>, 1> &b, int64_t ldb,
+             sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
+    throw unimplemented("blas", "omatadd", "for row_major layout");
+}
+
 // USM APIs
 
 sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
@@ -275,6 +491,86 @@ sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transp
                   std::complex<double> beta, std::complex<double> *c, int64_t ldc,
                   const std::vector<sycl::event> &dependencies) {
     throw unimplemented("blas", "gemmt", "for row_major layout");
+}
+
+sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                     const float *a, int64_t lda, float *b, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy", "for row_major layout");
+}
+
+sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                     const double *a, int64_t lda, double *b, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy", "for row_major layout");
+}
+
+sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                     std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                     std::complex<float> *b, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy", "for row_major layout");
+}
+
+sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                     std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                     std::complex<double> *b, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy", "for row_major layout");
+}
+
+sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                     float *ab, int64_t lda, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "imatcopy", "for row_major layout");
+}
+
+sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                     double *ab, int64_t lda, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "imatcopy", "for row_major layout");
+}
+
+sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                     std::complex<float> alpha, std::complex<float> *ab, int64_t lda, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "imatcopy", "for row_major layout");
+}
+
+sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                     std::complex<double> alpha, std::complex<double> *ab, int64_t lda, int64_t ldb,
+                     const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "imatcopy", "for row_major layout");
+}
+
+sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                    float alpha, const float *a, int64_t lda, float beta, const float *b,
+                    int64_t ldb, float *c, int64_t ldc,
+                    const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatadd", "for row_major layout");
+}
+
+sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                    double alpha, const double *a, int64_t lda, double beta, const double *b,
+                    int64_t ldb, double *c, int64_t ldc,
+                    const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatadd", "for row_major layout");
+}
+
+sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                    std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                    std::complex<float> beta, const std::complex<float> *b, int64_t ldb,
+                    std::complex<float> *c, int64_t ldc,
+                    const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatadd", "for row_major layout");
+}
+
+sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                    std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                    std::complex<double> beta, const std::complex<double> *b, int64_t ldb,
+                    std::complex<double> *c, int64_t ldc,
+                    const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatadd", "for row_major layout");
 }
 
 } // namespace row_major

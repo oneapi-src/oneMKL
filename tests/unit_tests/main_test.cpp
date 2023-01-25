@@ -95,7 +95,9 @@ int main(int argc, char** argv) {
 
     auto platforms = sycl::platform::get_platforms();
     for (auto plat : platforms) {
+#ifdef __HIPSYCL__
         if (!plat.is_host()) {
+#endif
             auto plat_devs = plat.get_devices();
             for (auto dev : plat_devs) {
                 try {
@@ -138,11 +140,17 @@ int main(int argc, char** argv) {
                     std::cout << "Exception while accessing device: " << e.what() << "\n";
                 }
             }
+#ifdef __HIPSYCL__
         }
+#endif
     }
 
 #if defined(ENABLE_MKLCPU_BACKEND) || defined(ENABLE_NETLIB_BACKEND)
-    local_devices.push_back(sycl::device(sycl::host_selector()));
+#ifdef __HIPSYCL__
+    local_devices.push_back(sycl::device(sycl::cpu_selector()));
+#else
+    local_devices.push_back(sycl::device(sycl::cpu_selector_v));
+#endif
 #endif
 #define GET_NAME(d) (d).template get_info<sycl::info::device::name>()
     for (auto& local_dev : local_devices) {

@@ -51,7 +51,9 @@ foreach(lib ${MKL_LIBRARIES})
   find_library(${lib}_file NAMES ${lib}
           HINTS $ENV{MKLROOT} ${MKL_ROOT}
           PATH_SUFFIXES lib/intel64)
-  find_package_handle_standard_args(MKL REQUIRED_VARS ${lib}_file)
+  find_package_handle_standard_args(MKL
+          REQUIRED_VARS ${lib}_file
+          VERSION_VAR MKL_VERSION)
 endforeach()
 
 get_filename_component(MKL_LIB_DIR ${mkl_core_file} DIRECTORY)
@@ -60,22 +62,25 @@ find_path(MKL_INCLUDE mkl.h
           HINTS $ENV{MKLROOT} ${MKL_ROOT}
           PATH_SUFFIXES include)
 
+file(READ "${MKL_INCLUDE}/mkl_version.h" mkl_version_h)
+string(REGEX MATCH "INTEL_MKL_VERSION      ([0-9]*)" _ ${mkl_version_h})
+set(MKL_VERSION ${CMAKE_MATCH_1})
+
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8 OR USE_DPCPP_API)
   set(MKL_COPT "-DMKL_ILP64")
 else()
   set(MKL_COPT "")
 endif()
+list(APPEND MKL_COPT "-DINTEL_MKL_VERSION=${MKL_VERSION}")
 
 if(UNIX)
   list(APPEND MKL_LINK_PREFIX "-Wl,-rpath,${MKL_LIB_DIR}")
   list(APPEND MKL_LINK_PREFIX "-L${MKL_LIB_DIR}")
   set(LIB_PREFIX "-l")
   set(LIB_SUFFIX "")
-  set(OPENCL_LIBNAME "-lOpenCL")
 else()
   set(LIB_PREFIX "${MKL_LIB_DIR}/")
   set(LIB_SUFFIX ".lib")
-  set(OPENCL_LIBNAME "OpenCL.lib")
 endif()
 
 if (ENABLE_MKLCPU_BACKEND OR ENABLE_MKLGPU_BACKEND)
@@ -87,12 +92,24 @@ if (ENABLE_MKLCPU_BACKEND OR ENABLE_MKLGPU_BACKEND)
     list(APPEND MKL_LINK_C ${TBB_LINK})
   endif()
   if(USE_DPCPP_API)
+    find_package(OpenCL QUIET)
+    # Try to find OpenCL library in the environment
+    if(${OpenCL_LIBRARY} STREQUAL "OpenCL_LIBRARY-NOTFOUND")
+      find_library(OPENCL_LIBNAME NAMES libOpenCL.so OpenCL.lib OpenCL HINTS ENV LIBRARY_PATH ENV LD_LIBRARY_PATH ENV LIB ENV PATH)
+    else()
+      set(OPENCL_LIBNAME ${OpenCL_LIBRARY})
+    endif()
+    find_package_handle_standard_args(MKL REQUIRED_VARS OPENCL_LIBNAME)
     set(MKL_LINK_SYCL ${MKL_LINK_PREFIX} ${LIB_PREFIX}${MKL_SYCL}${LIB_SUFFIX} ${MKL_LINK_C} ${OPENCL_LIBNAME} )
   endif()
 endif()
 
 if (USE_DPCPP_API)
-  find_package_handle_standard_args(MKL REQUIRED_VARS MKL_INCLUDE MKL_COPT MKL_LINK_SYCL)
+  find_package_handle_standard_args(MKL
+    REQUIRED_VARS MKL_INCLUDE MKL_COPT MKL_LINK_SYCL
+    VERSION_VAR MKL_VERSION)
 else(ENABLE_MKLCPU_BACKEND)
-  find_package_handle_standard_args(MKL REQUIRED_VARS MKL_INCLUDE MKL_COPT MKL_LINK_C)
+  find_package_handle_standard_args(MKL
+    REQUIRED_VARS MKL_INCLUDE MKL_COPT MKL_LINK_C
+    VERSION_VAR MKL_VERSION)
 endif()

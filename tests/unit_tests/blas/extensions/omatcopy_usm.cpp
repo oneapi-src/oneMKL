@@ -49,7 +49,7 @@ extern std::vector<sycl::device *> devices;
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
+int test(device *dev, oneapi::mkl::layout layout) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const &e : exceptions) {
@@ -57,7 +57,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
                 std::rethrow_exception(e);
             }
             catch (exception const &e) {
-                std::cout << "Caught asynchronous SYCL exception during OMATCOPY_BATCH_STRIDE:\n"
+                std::cout << "Caught asynchronous SYCL exception during OMATCOPY:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
             }
@@ -76,7 +76,6 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     fp alpha;
     int64_t i, tmp;
 
-    batch_size = 1 + std::rand() % 20;
     m = 1 + std::rand() % 50;
     n = 1 + std::rand() % 50;
     lda = std::max(m, n);
@@ -84,16 +83,15 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     alpha = rand_scalar<fp>();
     trans = rand_trans<fp>();
 
-    int64_t stride_a, stride_b;
-
+    int64_t size_a, size_b;
     switch (layout) {
         case oneapi::mkl::layout::column_major:
-            stride_a = lda * n;
-            stride_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * m;
+            size_a = lda * n;
+            size_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * m;
             break;
         case oneapi::mkl::layout::row_major:
-            stride_a = lda * m;
-            stride_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * m : ldb * n;
+            size_a = lda * m;
+            size_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * m : ldb * n;
             break;
         default: break;
     }
@@ -101,59 +99,36 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, *dev);
     vector<fp, decltype(ua)> A(ua), B(ua), B_ref(ua);
 
-    A.resize(stride_a * batch_size);
-    B.resize(stride_b * batch_size);
-    B_ref.resize(stride_b * batch_size);
-
-    fp **a_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, *dev, cxt);
-    fp **b_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, *dev, cxt);
-    fp **b_ref_array = (fp **)oneapi::mkl::malloc_shared(64, sizeof(fp *) * batch_size, *dev, cxt);
-
-    if ((a_array == NULL) || (b_array == NULL) || (b_ref_array == NULL)) {
-        std::cout << "Error cannot allocate arrays of pointers\n";
-        oneapi::mkl::free_shared(a_array, cxt);
-        oneapi::mkl::free_shared(b_array, cxt);
-        oneapi::mkl::free_shared(b_ref_array, cxt);
-        return false;
-    }
-
-    for (i = 0; i < batch_size; i++) {
-        a_array[i] = &A[i * stride_a];
-        b_array[i] = &B[i * stride_b];
-        b_ref_array[i] = &B_ref[i * stride_b];
-    }
+    A.resize(size_a);
+    B.resize(size_b);
+    B_ref.resize(size_b);
 
     rand_matrix(A, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                stride_a * batch_size, 1, stride_a * batch_size);
+                size_a, 1, size_a);
     rand_matrix(B, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                stride_b * batch_size, 1, stride_b * batch_size);
+                size_b, 1, size_b);
     copy_matrix(B, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                stride_b * batch_size, 1, stride_b * batch_size, B_ref);
+                size_b, 1, size_b, B_ref);
 
-    // Call reference OMATCOPY_BATCH_STRIDE.
+    // Call reference OMATCOPY.
     int m_ref = (int)m;
     int n_ref = (int)n;
     int lda_ref = (int)lda;
     int ldb_ref = (int)ldb;
-    int batch_size_ref = (int)batch_size;
-    for (i = 0; i < batch_size_ref; i++) {
-        omatcopy_ref(layout, trans, m_ref, n_ref, alpha, a_array[i], lda_ref, b_ref_array[i],
-                     ldb_ref);
-    }
+    omatcopy_ref(layout, trans, m_ref, n_ref, alpha, A.data(),
+                 lda_ref, B_ref.data(), ldb_ref);
 
-    // Call DPC++ OMATCOPY_BATCH_STRIDE
+    // Call DPC++ OMATCOPY
     try {
 #ifdef CALL_RT_API
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                done = oneapi::mkl::blas::column_major::omatcopy_batch(
-                    main_queue, trans, m, n, alpha, &A[0], lda, stride_a, &B[0], ldb, stride_b,
-                    batch_size, dependencies);
+                done = oneapi::mkl::blas::column_major::omatcopy(
+                    main_queue, trans, m, n, alpha, &A[0], lda, &B[0], ldb, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                done = oneapi::mkl::blas::row_major::omatcopy_batch(
-                    main_queue, trans, m, n, alpha, &A[0], lda, stride_a, &B[0], ldb, stride_b,
-                    batch_size, dependencies);
+                done = oneapi::mkl::blas::row_major::omatcopy(
+                    main_queue, trans, m, n, alpha, &A[0], lda, &B[0], ldb, dependencies);
                 break;
             default: break;
         }
@@ -161,14 +136,12 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
 #else
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatcopy_batch,
-                                   trans, m, n, alpha, &A[0], lda, stride_a, &B[0], ldb, stride_b,
-                                   batch_size, dependencies);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatcopy,
+                                   trans, m, n, alpha, &A[0], lda, &B[0], ldb, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatcopy_batch, trans,
-                                   m, n, alpha, &A[0], lda, stride_a, &B[0], ldb, stride_b,
-                                   batch_size, dependencies);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatcopy,
+                                   trans, m, n, alpha, &A[0], lda, &B[0], ldb, dependencies);
                 break;
             default: break;
         }
@@ -176,56 +149,50 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
 #endif
     }
     catch (exception const &e) {
-        std::cout << "Caught synchronous SYCL exception during OMATCOPY_BATCH_STRIDE:\n"
+        std::cout << "Caught synchronous SYCL exception during OMATCOPY:\n"
                   << e.what() << std::endl;
         print_error_code(e);
     }
 
     catch (const oneapi::mkl::unimplemented &e) {
-        oneapi::mkl::free_shared(a_array, cxt);
-        oneapi::mkl::free_shared(b_array, cxt);
-        oneapi::mkl::free_shared(b_ref_array, cxt);
         return test_skipped;
     }
 
     catch (const std::runtime_error &error) {
-        std::cout << "Error raised during execution of OMATCOPY_BATCH_STRIDE:\n"
+        std::cout << "Error raised during execution of OMATCOPY:\n"
                   << error.what() << std::endl;
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good = check_equal_matrix(B, B_ref, oneapi::mkl::layout::column_major,
-                                   stride_b * batch_size, 1, stride_b * batch_size, 10, std::cout);
-
-    oneapi::mkl::free_shared(a_array, cxt);
-    oneapi::mkl::free_shared(b_array, cxt);
-    oneapi::mkl::free_shared(b_ref_array, cxt);
+    bool good =
+        check_equal_matrix(B, B_ref, oneapi::mkl::layout::column_major, size_b, 1,
+                           size_b, 10, std::cout);
 
     return (int)good;
 }
 
-class OmatcopyBatchStrideUsmTests
+class OmatcopyUsmTests
         : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {};
 
-TEST_P(OmatcopyBatchStrideUsmTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
+TEST_P(OmatcopyUsmTests, RealSinglePrecision) {
+    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
-TEST_P(OmatcopyBatchStrideUsmTests, RealDoublePrecision) {
-    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
+TEST_P(OmatcopyUsmTests, RealDoublePrecision) {
+    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
-TEST_P(OmatcopyBatchStrideUsmTests, ComplexSinglePrecision) {
+TEST_P(OmatcopyUsmTests, ComplexSinglePrecision) {
     EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
+        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
-TEST_P(OmatcopyBatchStrideUsmTests, ComplexDoublePrecision) {
+TEST_P(OmatcopyUsmTests, ComplexDoublePrecision) {
     EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
+        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
-INSTANTIATE_TEST_SUITE_P(OmatcopyBatchStrideUsmTestSuite, OmatcopyBatchStrideUsmTests,
+INSTANTIATE_TEST_SUITE_P(OmatcopyUsmTestSuite, OmatcopyUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
                                             testing::Values(oneapi::mkl::layout::column_major,
                                                             oneapi::mkl::layout::row_major)),
