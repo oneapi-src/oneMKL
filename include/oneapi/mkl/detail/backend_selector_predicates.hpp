@@ -40,7 +40,7 @@ inline void backend_selector_precondition(sycl::queue& queue){};
 template <>
 inline void backend_selector_precondition<backend::netlib>(sycl::queue& queue) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-    if (!(queue.is_host() || queue.get_device().is_cpu())) {
+    if (!queue.get_device().is_cpu()) {
         throw unsupported_device("",
                                  "backend_selector<backend::" + backend_map[backend::netlib] + ">",
                                  queue.get_device());
@@ -51,7 +51,7 @@ inline void backend_selector_precondition<backend::netlib>(sycl::queue& queue) {
 template <>
 inline void backend_selector_precondition<backend::mklcpu>(sycl::queue& queue) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-    if (!(queue.is_host() || queue.get_device().is_cpu())) {
+    if (!queue.get_device().is_cpu()) {
         throw unsupported_device("",
                                  "backend_selector<backend::" + backend_map[backend::mklcpu] + ">",
                                  queue.get_device());

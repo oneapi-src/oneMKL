@@ -19,11 +19,11 @@
 
 #Build object from all sources
 set(DFTI_CT_SOURCES "")
-if(ENABLE_MKLGPU_BACKEND)
-  list(APPEND DFTI_CT_SOURCES "complex_fwd_buffer_mklgpu")
+if(ENABLE_MKLCPU_BACKEND)
+  list(APPEND DFTI_CT_SOURCES "complex_fwd_buffer_mklcpu")
 endif()
 
-if(domain STREQUAL "dft" AND ENABLE_MKLGPU_BACKEND)
+if(domain STREQUAL "dft" AND ENABLE_MKLCPU_BACKEND)
   find_library(OPENCL_LIBRARY NAMES OpenCL)
   message(STATUS "Found OpenCL: ${OPENCL_LIBRARY}")
 endif()
@@ -35,9 +35,9 @@ foreach(dfti_ct_sources ${DFTI_CT_SOURCES})
       PUBLIC ${PROJECT_SOURCE_DIR}/include
       PUBLIC ${CMAKE_BINARY_DIR}/bin
   )
-  if(domain STREQUAL "dft" AND ENABLE_MKLGPU_BACKEND)
-    add_dependencies(example_${domain}_${dfti_ct_sources} onemkl_${domain}_mklgpu)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklgpu)
+  if(domain STREQUAL "dft" AND ENABLE_MKLCPU_BACKEND)
+    add_dependencies(example_${domain}_${dfti_ct_sources} onemkl_${domain}_mklcpu)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu)
     target_link_libraries(example_${domain}_${dfti_ct_sources} PUBLIC ${OPENCL_LIBRARY})
   endif()
   target_link_libraries(example_${domain}_${dfti_ct_sources} PUBLIC
