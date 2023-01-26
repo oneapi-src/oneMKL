@@ -493,37 +493,39 @@ A few often-used architectures are listed below:
 Building for SYCL-BLAS
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Note the SYCL-BLAS backend is experimental and currently only supports a subset of the
-operations and features.
-The SYCL-BLAS backend uses the `SYCL-BLAS <https://github.com/codeplaysoftware/sycl-blas>` project as a header-only library.
+Note the SYCL-BLAS backend is experimental and currently only supports a
+subset of the operations and features. The SYCL-BLAS backend cannot be enabled
+with other backends and can only be used with the compile time dispatch.
+The SYCL-BLAS backend uses the `SYCL-BLAS <https://github.com/codeplaysoftware/sycl-blas>`_
+project as a header-only library.
 
 * On Linux*
-
-The install folder must be generated via cmake with the following commands:
-
-.. code-block:: bash
-
-   # Inside <path to SYCL-BLAS>
-   mkdir build && cd build
-   cmake -DCMAKE_INSTALL_PREFIX=<path to SYCL-BLAS install directory> -DINSTALL_HEADER_ONLY=ON ..
-   cmake --build . --target install
-
 
 .. code-block:: bash
 
    # Inside <path to onemkl>
    mkdir build && cd build
-   cmake .. -DENABLE_SYCLBLAS_BACKEND=True                    \
+   cmake .. -DENABLE_SYCLBLAS_BACKEND=ON \
+            -DENABLE_MKLCPU_BACKEND=OFF  \
+            -DENABLE_MKLGPU_BACKEND=OFF  \
+            -DTARGET_DOMAINS=blas \
             [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \ # required only for testing
             -Dsycl_blas_DIR=<path to SYCL-BLAS install directory>
    cmake --build .
-   ctest
+   ./bin/test_main_blas_ct
    cmake --install . --prefix <path_to_install_dir>
 
-In header only mode SYCL-BLAS can be tuned for specific targets by adding compiler definitions.
-For instance instead of building the library with ``-DTARGET=AMD_GPU`` one can compile oneMKL with ``-DCMAKE_CXX_FLAGS=-DAMD_GPU``.
-The list of SYCL-BLAS targets can be found `here <https://github.com/codeplaysoftware/sycl-blas#cmake-options>`.
-SYCL-BLAS is currently automatically tuned for INTEL_GPU in ``src/blas/backends/syclblas/CMakeLists.txt``.
+
+SYCL-BLAS will be downloaded automatically if not found.
+In header only mode SYCL-BLAS can be tuned for specific targets by adding
+compiler definitions.
+The configure step will try to detect automatically which device is used if
+AOT compilation is used via ``-fsycl-targets``.
+One can also manually specify a tuning target with
+``-DSYCLBLAS_TUNING_TARGET=<target>``.
+The list of SYCL-BLAS targets can be found
+`here <https://github.com/codeplaysoftware/sycl-blas#cmake-options>`_.
+
 
 Build Options
 ^^^^^^^^^^^^^

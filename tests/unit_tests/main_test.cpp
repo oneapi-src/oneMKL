@@ -99,30 +99,32 @@ int main(int argc, char** argv) {
             auto plat_devs = plat.get_devices();
             for (auto dev : plat_devs) {
                 try {
+#ifndef ENABLE_SYCLBLAS_BACKEND
                     /* Do not test for OpenCL backend on GPU */
                     if (dev.is_gpu() && plat.get_info<sycl::info::platform::name>().find(
                                             "OpenCL") != std::string::npos)
                         continue;
+#endif
                     if (unique_devices.find(dev.get_info<sycl::info::device::name>()) ==
                         unique_devices.end()) {
                         unique_devices.insert(dev.get_info<sycl::info::device::name>());
                         unsigned int vendor_id = static_cast<unsigned int>(
                             dev.get_info<sycl::info::device::vendor_id>());
-#ifndef ENABLE_MKLCPU_BACKEND
+#if !defined(ENABLE_MKLCPU_BACKEND) && !defined(ENABLE_SYCLBLAS_BACKEND_INTEL_CPU)
                         if (dev.is_cpu())
                             continue;
 #endif
-#if !defined(ENABLE_MKLGPU_BACKEND) && !defined(ENABLE_SYCLBLAS_BACKEND)
+#if !defined(ENABLE_MKLGPU_BACKEND) && !defined(ENABLE_SYCLBLAS_BACKEND_INTEL_GPU)
                         if (dev.is_gpu() && vendor_id == INTEL_ID)
                             continue;
 #endif
 #if !defined(ENABLE_CUBLAS_BACKEND) && !defined(ENABLE_CURAND_BACKEND) && \
-    !defined(ENABLE_CUSOLVER_BACKEND)
+    !defined(ENABLE_CUSOLVER_BACKEND) && !defined(ENABLE_SYCLBLAS_BACKEND_NVIDIA_GPU)
                         if (dev.is_gpu() && vendor_id == NVIDIA_ID)
                             continue;
 #endif
 #if !defined(ENABLE_ROCBLAS_BACKEND) && !defined(ENABLE_ROCRAND_BACKEND) && \
-    !defined(ENABLE_ROCSOLVER_BACKEND)
+    !defined(ENABLE_ROCSOLVER_BACKEND) && !defined(ENABLE_SYCLBLAS_BACKEND_AMD_GPU)
                         if (dev.is_gpu() && vendor_id == AMD_ID)
                             continue;
 #endif
@@ -141,7 +143,8 @@ int main(int argc, char** argv) {
         }
     }
 
-#if defined(ENABLE_MKLCPU_BACKEND) || defined(ENABLE_NETLIB_BACKEND)
+#if defined(ENABLE_MKLCPU_BACKEND) || defined(ENABLE_NETLIB_BACKEND) || \
+    defined(ENABLE_SYCLBLAS_BACKEND_INTEL_CPU)
     local_devices.push_back(sycl::device(sycl::cpu_selector()));
 #endif
 #define GET_NAME(d) (d).template get_info<sycl::info::device::name>()

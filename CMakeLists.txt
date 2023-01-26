@@ -91,6 +91,15 @@ if(ENABLE_MKLCPU_BACKEND
   list(APPEND DOMAINS_LIST "rng")
 endif()
 
+if(ENABLE_SYCLBLAS_BACKEND AND
+    (ENABLE_MKLCPU_BACKEND OR
+     ENABLE_MKLGPU_BACKEND OR
+     ENABLE_CUBLAS_BACKEND OR
+     ENABLE_ROCBLAS_BACKEND OR
+     ENABLE_NETLIB_BACKEND))
+  message(FATAL_ERROR "SYCL-BLAS backend cannot be enabled with other backends")
+endif()
+
 # Define required CXX compilers before project
 if(CMAKE_CXX_COMPILER OR NOT ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++")
   if(WIN32)

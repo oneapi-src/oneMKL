@@ -23,6 +23,13 @@ if(WIN32 AND BUILD_SHARED_LIBS)
   list(APPEND ONEMKL_BUILD_COPT "-Donemkl_EXPORTS")
 endif()
 
+# SYCL-BLAS backend variables must be accessible here to correctly
+# generate the config file.
+set(ENABLE_SYCLBLAS_BACKEND_INTEL_CPU OFF CACHE INTERNAL "")
+set(ENABLE_SYCLBLAS_BACKEND_INTEL_GPU OFF CACHE INTERNAL "")
+set(ENABLE_SYCLBLAS_BACKEND_AMD_GPU OFF CACHE INTERNAL "")
+set(ENABLE_SYCLBLAS_BACKEND_NVIDIA_GPU OFF CACHE INTERNAL "")
+
 # Build loader and backends for each domain
 foreach(domain ${TARGET_DOMAINS})
   add_subdirectory(${domain})

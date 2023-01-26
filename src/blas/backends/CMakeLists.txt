@@ -37,6 +37,6 @@ if(ENABLE_ROCBLAS_BACKEND AND UNIX)
   add_subdirectory(rocblas)
 endif()
 
-if(ENABLE_SYCLBLAS_BACKEND)
+if(ENABLE_SYCLBLAS_BACKEND AND UNIX)
   add_subdirectory(syclblas)
 endif()

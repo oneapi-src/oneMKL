@@ -65,14 +65,9 @@
 #define TEST_RUN_INTELCPU_SELECT(q, func, ...)
 #endif
 
-#if defined(ENABLE_MKLGPU_BACKEND) || defined(ENABLE_SYCLBLAS_BACKEND)
 #ifdef ENABLE_MKLGPU_BACKEND
 #define TEST_RUN_INTELGPU_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklgpu>{ q }, __VA_ARGS__)
-#else
-#define TEST_RUN_INTELGPU_SELECT(q, func, ...) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::syclblas>{ q }, __VA_ARGS__)
-#endif
 #else
 #define TEST_RUN_INTELGPU_SELECT(q, func, ...)
 #endif
@@ -119,16 +114,17 @@
 #endif
 
 #ifdef ENABLE_SYCLBLAS_BACKEND
-#define TEST_RUN_INTELGPU_SYCLBLAS_SELECT(q, func, ...) \
+#define TEST_RUN_SYCLBLAS_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::syclblas>{ q }, __VA_ARGS__)
 #else
-#define TEST_RUN_INTELGPU_SYCLBLAS_SELECT(q, func, ...)
+#define TEST_RUN_SYCLBLAS_SELECT(q, func, ...)
 #endif
 
 #define TEST_RUN_CT_SELECT(q, func, ...)                                   \
     do {                                                                   \
-        if (q.is_host() || q.get_device().is_cpu())                        \
+        if (q.is_host() || q.get_device().is_cpu()) {                      \
             TEST_RUN_INTELCPU_SELECT(q, func, __VA_ARGS__);                \
+        }                                                                  \
         else if (q.get_device().is_gpu()) {                                \
             unsigned int vendor_id = static_cast<unsigned int>(            \
                 q.get_device().get_info<sycl::info::device::vendor_id>()); \
@@ -145,6 +141,7 @@
                 TEST_RUN_AMDGPU_ROCSOLVER_SELECT(q, func, __VA_ARGS__);    \
             }                                                              \
         }                                                                  \
+        TEST_RUN_SYCLBLAS_SELECT(q, func, __VA_ARGS__);                    \
     } while (0);
 
 void print_error_code(sycl::exception const &e);
