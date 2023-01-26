@@ -19,7 +19,7 @@
 
 #Build object from all sources
 set(DFTI_CT_SOURCES "")
-if(ENABLE_MKLGPU_BACKEND)
+if(ENABLE_MKLCPU_BACKEND)
   list(APPEND DFTI_CT_SOURCES "complex_fwd_buffer_mklgpu")
 endif()
 

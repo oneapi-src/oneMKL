@@ -18,7 +18,7 @@
 #===============================================================================
 
 # Define common build flags for oneMKL libraries
-set(ONEMKL_BUILD_COPT "")
+set(ONEMKL_BUILD_COPT "-Wdeprecated-declarations")
 if(WIN32 AND BUILD_SHARED_LIBS)
   list(APPEND ONEMKL_BUILD_COPT "-Donemkl_EXPORTS")
 endif()

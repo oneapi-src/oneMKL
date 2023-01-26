@@ -30,10 +30,69 @@
 #include "oneapi/mkl/dft/descriptor.hpp"
 #include "oneapi/mkl/dft/detail/mklcpu/onemkl_dft_mklcpu.hpp"
 
+#include "dft/backends/mklcpu/mklcpu_helpers.hpp"
+
+// MKLCPU header
+#include "mkl_dfti.h"
+
 namespace oneapi {
 namespace mkl {
 namespace dft {
 namespace mklcpu {
+namespace detail {
+
+// Forward a MKLCPU DFT call to the backend, checking that the commit impl is valid.
+// assumes the parameter pack has same types
+template <dft::detail::precision prec, dft::detail::domain dom, typename... ArgTs>
+inline auto compute_forward(dft::detail::descriptor<prec, dom> &desc, ArgTs &&... args) {
+    using mklcpu_desc_t = DFTI_DESCRIPTOR_HANDLE;
+    using commit_t = dft::detail::commit_impl;
+
+    auto commit_handle = dft::detail::get_commit(desc);
+    if (commit_handle == nullptr || commit_handle->get_backend() != backend::mklcpu) {
+        throw mkl::invalid_argument("DFT", "computer_forward",
+                                    "DFT descriptor has not been commited for MKLCPU");
+    }
+
+    sycl::queue &cpu_queue{ commit_handle->get_queue() };
+    auto mklcpu_desc = reinterpret_cast<mklcpu_desc_t>(commit_handle->get_handle());
+
+    MKL_LONG commit_status{ DFTI_UNCOMMITTED };
+    DftiGetValue(mklcpu_desc, DFTI_COMMIT_STATUS, &commit_status);
+    if (commit_status != DFTI_COMMITTED) {
+        throw mkl::invalid_argument("DFT", "compute_forward",
+                                    "MKLCPU DFT descriptor was not successfully committed.");
+    }
+    if (sizeof...(args) == 1) {
+        std::cout << "inplace transform" << std::endl;
+    }
+    else if (sizeof...(args) == 2) {
+        std::cout << "out of place transform" << std::endl;
+        auto in = std::get<0>(std::forward_as_tuple(args...));
+        auto out = std::get<1>(std::forward_as_tuple(args...));
+
+        class vector_addition;
+        // if the input is a sycl buffer; could be complex or real
+        if constexpr (is_buffer_v<decltype(in)> && is_buffer_v<decltype(out)>) {
+            std::cout << "out of place transform" << std::endl;
+        }
+    }
+    else {
+        throw mkl::invalid_argument("DFT", "compute_forward", "invalid number of args.");
+    }
+}
+
+// Throw an mkl::invalid_argument if the runtime param in the descriptor does not match
+// the expected value.
+template <dft::detail::config_param Param, dft::detail::config_value Expected, typename DescT>
+inline auto expect_config(DescT &desc, const char *message) {
+    dft::detail::config_value actual{ 0 };
+    desc.get_value(Param, &actual);
+    if (actual != Expected) {
+        throw mkl::invalid_argument("DFT", "compute_forward", message);
+    }
+}
+} // namespace detail
 
 //In-place transform
 template <typename descriptor_type, typename data_type>
@@ -52,7 +111,18 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type
 template <typename descriptor_type, typename input_type, typename output_type>
 ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_type, 1> &in,
                                    sycl::buffer<output_type, 1> &out) {
-    throw mkl::unimplemented("DFT", "compute_forward", "Not implemented for MKLCPU");
+    if constexpr (!std::is_same_v<input_type, output_type>) {
+        throw mkl::unimplemented(
+            "DFT", "compute_forward",
+            "MKLCPU does not support out-of-place FFT with different input and output types.");
+    }
+    else {
+        detail::expect_config<dft::detail::config_param::PLACEMENT,
+                              dft::detail::config_value::NOT_INPLACE>(
+            desc, "Unexpected value for placement");
+
+        detail::compute_forward(desc, in, out);
+    }
 }
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
