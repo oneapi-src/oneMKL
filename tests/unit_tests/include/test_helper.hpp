@@ -120,11 +120,16 @@
 #define TEST_RUN_SYCLBLAS_SELECT(q, func, ...)
 #endif
 
+#ifndef __HIPSYCL__
+#define CHECK_HOST_OR_CPU(q) q.get_device().is_cpu()
+#else
+#define CHECK_HOST_OR_CPU(q) q.is_host() || q.get_device().is_cpu()
+#endif
+
 #define TEST_RUN_CT_SELECT(q, func, ...)                                   \
     do {                                                                   \
-        if (q.is_host() || q.get_device().is_cpu()) {                      \
+        if (CHECK_HOST_OR_CPU(q))                                          \
             TEST_RUN_INTELCPU_SELECT(q, func, __VA_ARGS__);                \
-        }                                                                  \
         else if (q.get_device().is_gpu()) {                                \
             unsigned int vendor_id = static_cast<unsigned int>(            \
                 q.get_device().get_info<sycl::info::device::vendor_id>()); \
