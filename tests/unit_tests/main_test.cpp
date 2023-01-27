@@ -101,12 +101,10 @@ int main(int argc, char** argv) {
             auto plat_devs = plat.get_devices();
             for (auto dev : plat_devs) {
                 try {
-#ifndef ENABLE_SYCLBLAS_BACKEND
                     /* Do not test for OpenCL backend on GPU */
                     if (dev.is_gpu() && plat.get_info<sycl::info::platform::name>().find(
                                             "OpenCL") != std::string::npos)
                         continue;
-#endif
                     if (unique_devices.find(dev.get_info<sycl::info::device::name>()) ==
                         unique_devices.end()) {
                         unique_devices.insert(dev.get_info<sycl::info::device::name>());
