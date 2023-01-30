@@ -18,8 +18,8 @@ oneMKL is part of [oneAPI](https://oneapi.io).
     </thead>
     <tbody>
         <tr>
-            <td rowspan=9 align="center">oneMKL interface</td>
-            <td rowspan=9 align="center">oneMKL selector</td>
+            <td rowspan=10 align="center">oneMKL interface</td>
+            <td rowspan=10 align="center">oneMKL selector</td>
             <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for x86 CPU</td>
             <td align="center">x86 CPU</td>
         </tr>
@@ -56,8 +56,8 @@ oneMKL is part of [oneAPI](https://oneapi.io).
             <td align="center">AMD GPU</td>
         </tr>
         <tr>
-            <td align="center"><a href="https://github.com/codeplaysoftware/sycl-blas"> SYCL-BLAS </a> for Intel GPU </td>
-            <td align="center">Intel GPU</td>
+            <td align="center"><a href="https://github.com/codeplaysoftware/sycl-blas"> SYCL-BLAS </a></td>
+            <td align="center">x86 CPU, Intel GPU, NVIDIA GPU, AMD GPU</td>
         </tr>
     </tbody>
 </table>
@@ -180,10 +180,10 @@ Supported domains: BLAS, LAPACK, RNG
             <td align="center">LLVM*, hipSYCL</td>
         </tr>
 	    <tr >
-            <td align="center">Intel GPU</td>
-            <td align="center">SYCL-BLAS </td>
+            <td align="center">x86 CPU, Intel GPU, NVIDIA GPU, AMD GPU</td>
+            <td align="center">SYCL-BLAS</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">DPC++</td>
+            <td align="center">DPC++, LLVM*</td>
         </tr>
         <tr>
             <td rowspan=4 align="center">LAPACK</td>
@@ -250,7 +250,7 @@ Supported domains: BLAS, LAPACK, RNG
     </thead>
     <tbody>
         <tr>
-            <td rowspan=4 align="center">BLAS</td>
+            <td rowspan=3 align="center">BLAS</td>
             <td align="center">x86 CPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
@@ -266,12 +266,6 @@ Supported domains: BLAS, LAPACK, RNG
             <td align="center">NETLIB LAPACK</td>
             <td align="center">Dynamic, Static</td>
             <td align="center">DPC++, LLVM*</td>
-        </tr>
-	    <tr >
-            <td align="center">Intel GPU</td>
-            <td align="center">SYCL-BLAS </td>
-            <td align="center">Dynamic, Static</td>
-            <td align="center">DPC++</td>
         </tr>
         <tr>
             <td rowspan=2 align="center">LAPACK</td>

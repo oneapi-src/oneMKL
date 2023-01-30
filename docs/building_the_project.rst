@@ -517,10 +517,11 @@ project as a header-only library.
 
 
 SYCL-BLAS will be downloaded automatically if not found.
-In header only mode SYCL-BLAS can be tuned for specific targets by adding
-compiler definitions.
+SYCL-BLAS can be tuned for specific hardware targets by adding compiler
+definitions.
 The configure step will try to detect automatically which device is used if
-AOT compilation is used via ``-fsycl-targets``.
+Ahead-of-time compilation is used via ``-fsycl-targets``. One can manually
+specify ``-fsycl-targets`` via ``CMAKE_CXX_FLAGS``.
 One can also manually specify a tuning target with
 ``-DSYCLBLAS_TUNING_TARGET=<target>``.
 The list of SYCL-BLAS targets can be found
