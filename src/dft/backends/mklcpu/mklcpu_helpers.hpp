@@ -57,22 +57,22 @@ template <typename Desc>
 class kernel_name {};
 
 /// Convert domain to equivalent backend native value.
-inline constexpr dft::domain to_mklcpu(dft::detail::domain dom) {
+inline constexpr DFTI_CONFIG_VALUE to_mklcpu(dft::detail::domain dom) {
     if (dom == dft::detail::domain::REAL) {
-        return dft::domain::REAL;
+        return DFTI_REAL;
     }
     else {
-        return dft::domain::COMPLEX;
+        return DFTI_COMPLEX;
     }
 }
 
 /// Convert precision to equivalent backend native value.
-inline constexpr dft::precision to_mklcpu(dft::detail::precision dom) {
+inline constexpr DFTI_CONFIG_VALUE to_mklcpu(dft::detail::precision dom) {
     if (dom == dft::detail::precision::SINGLE) {
-        return dft::precision::SINGLE;
+        return DFTI_SINGLE;
     }
     else {
-        return dft::precision::DOUBLE;
+        return DFTI_DOUBLE;
     }
 }
 
