@@ -111,6 +111,7 @@ jobs:
               -DBUILD_SHARED_LIBS=ON \
               -DTARGET_DOMAINS=blas \
               -DREF_BLAS_ROOT=/opt/lapack/ \
+              -DhipSYCL_DIR=/opt/hipSYCL/lib/cmake/hipSYCL \
               -DHIPSYCL_VISIBILITY_MASK="omp;cuda:sm_60" \
               -DHIPSYCL_TARGETS="omp;cuda:sm_60" \
               -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL ..
