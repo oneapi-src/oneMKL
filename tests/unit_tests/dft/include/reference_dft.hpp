@@ -26,6 +26,21 @@
 
 #include "test_common.hpp"
 
+/** Naive DFT implementation for reference.
+ *  
+ * Directly compute a single 1D forward DFT of the form:
+ * for k in range(0, N):
+ *   out[k] = sum( exp(2 pi k n im / N) * in[n] for n in range(0, N) )
+ * where N is the size of the input / output arrays. The input may be
+ * real or complex, but the output must be complex. Unit strides are used
+ * with no offset.
+ * 
+ * @tparam TypeIn The forward data type.
+ * @tparam TypeOut The transformed (backward) data type. Written to. Must be 
+ * complex.
+ * @param in The input forward data.
+ * @param out Where to write the output data.
+**/
 template <typename TypeIn, typename TypeOut>
 void reference_forward_dft(const std::vector<TypeIn> &in, std::vector<TypeOut> &out) noexcept {
     using ref_t = long double; /* Do the calculations using long double */
