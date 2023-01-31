@@ -36,11 +36,9 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
 
     std::vector<FwdOutputType> out_host(size);
     std::vector<FwdInputType> out_host_back(size);
-    sycl::buffer<FwdInputType, 1> in_dev{ sycl::range<1>(size) };
-    sycl::buffer<FwdOutputType, 1> out_dev{ sycl::range<1>(size) };
-    sycl::buffer<FwdInputType, 1> out_back_dev{ sycl::range<1>(size) };
-
-    copy_to_device(sycl_queue, input, in_dev);
+    sycl::buffer<FwdInputType, 1> in_dev{ input.data(), sycl::range<1>(size) };
+    sycl::buffer<FwdOutputType, 1> out_dev{ out_host.data(), sycl::range<1>(size) };
+    sycl::buffer<FwdInputType, 1> out_back_dev{ out_host_back.data(), sycl::range<1>(size) };
 
     try {
         oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
@@ -51,10 +49,11 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
         return test_skipped;
     }
 
-    copy_to_host(sycl_queue, out_dev, out_host);
-
-    EXPECT_TRUE(check_equal_vector(out_host.data(), out_host_ref.data(), out_host.size(),
-                                   error_margin, std::cout));
+    {
+        auto acc_out_host = out_dev.template get_host_access();
+        EXPECT_TRUE(check_equal_vector(acc_out_host.get_pointer(), out_host_ref.data(),
+                                       out_host.size(), error_margin, std::cout));
+    }
 
     descriptor_t descriptor_back{ size };
     descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
@@ -72,11 +71,11 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
         return test_skipped;
     }
 
-    copy_to_host(sycl_queue, out_back_dev, out_host_back);
-
-    EXPECT_TRUE(check_equal_vector(out_host_back.data(), input.data(), input.size(), error_margin,
-                                   std::cout));
-
+    {
+        auto acc_out_host_back = out_back_dev.template get_host_access();
+        EXPECT_TRUE(check_equal_vector(acc_out_host_back.get_pointer(), input.data(), input.size(),
+                                       error_margin, std::cout));
+    }
     return !::testing::Test::HasFailure();
 }
 

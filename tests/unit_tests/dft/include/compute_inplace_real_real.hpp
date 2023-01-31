@@ -94,14 +94,11 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
                              oneapi::mkl::dft::config_value::REAL_REAL);
         commit_descriptor(descriptor, sycl_queue);
 
-        sycl::buffer<PrecisionType, 1> inout_re_dev{ sycl::range<1>(size) };
-        sycl::buffer<PrecisionType, 1> inout_im_dev{ sycl::range<1>(size) };
+        sycl::buffer<PrecisionType, 1> inout_re_buf{ input_re.data(), sycl::range<1>(size) };
+        sycl::buffer<PrecisionType, 1> inout_im_buf{ input_im.data(), sycl::range<1>(size) };
 
-        copy_to_device(sycl_queue, input_re, inout_re_dev);
-        copy_to_device(sycl_queue, input_im, inout_im_dev);
-
-        oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType>(descriptor, inout_re_dev,
-                                                                       inout_im_dev);
+        oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType>(descriptor, inout_re_buf,
+                                                                       inout_im_buf);
 
         descriptor_t descriptor_back{ size };
 
@@ -113,8 +110,8 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
         commit_descriptor(descriptor_back, sycl_queue);
 
         oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
-                                           PrecisionType>(descriptor_back, inout_re_dev,
-                                                          inout_im_dev);
+                                           PrecisionType>(descriptor_back, inout_re_buf,
+                                                          inout_im_buf);
     }
     catch (oneapi::mkl::unimplemented &e) {
         std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;

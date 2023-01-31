@@ -102,15 +102,12 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
                              oneapi::mkl::dft::config_value::REAL_REAL);
         commit_descriptor(descriptor, sycl_queue);
 
-        sycl::buffer<PrecisionType, 1> in_dev_re{ sycl::range<1>(size) };
-        sycl::buffer<PrecisionType, 1> in_dev_im{ sycl::range<1>(size) };
+        sycl::buffer<PrecisionType, 1> in_dev_re{ input_re.data(), sycl::range<1>(size) };
+        sycl::buffer<PrecisionType, 1> in_dev_im{ input_im.data(), sycl::range<1>(size) };
         sycl::buffer<PrecisionType, 1> out_dev_re{ sycl::range<1>(size) };
         sycl::buffer<PrecisionType, 1> out_dev_im{ sycl::range<1>(size) };
         sycl::buffer<PrecisionType, 1> out_back_dev_re{ sycl::range<1>(size) };
         sycl::buffer<PrecisionType, 1> out_back_dev_im{ sycl::range<1>(size) };
-
-        copy_to_device(sycl_queue, input_re, in_dev_re);
-        copy_to_device(sycl_queue, input_im, in_dev_im);
 
         oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType, PrecisionType>(
             descriptor, in_dev_re, in_dev_im, out_dev_re, out_dev_im);

@@ -35,22 +35,18 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     const size_t container_size =
         domain == oneapi::mkl::dft::domain::REAL ? conjugate_even_size : size;
 
-    sycl::buffer<FwdInputType, 1> inout_dev{ sycl::range<1>(container_size) };
-    std::vector<FwdInputType> out_host(container_size);
-
-    copy_to_device(sycl_queue, input, inout_dev);
+    std::vector<FwdInputType> inout_host(input);
+    sycl::buffer<FwdInputType, 1> inout_buf{ inout_host.data(), sycl::range<1>(container_size) };
 
     commit_descriptor(descriptor, sycl_queue);
 
     try {
-        oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(descriptor, inout_dev);
+        oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(descriptor, inout_buf);
     }
     catch (oneapi::mkl::unimplemented &e) {
         std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
         return test_skipped;
     }
-
-    copy_to_host(sycl_queue, inout_dev, out_host);
 
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         std::vector<FwdInputType> out_host_ref_conjugate =
@@ -59,12 +55,14 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
             out_host_ref_conjugate[i] = out_host_ref[i / 2].real();
             out_host_ref_conjugate[i + 1] = out_host_ref[i / 2].imag();
         }
-        EXPECT_TRUE(check_equal_vector(out_host.data(), out_host_ref_conjugate.data(),
-                                       out_host.size(), error_margin, std::cout));
+        auto acc_host = inout_buf.template get_host_access();
+        EXPECT_TRUE(check_equal_vector(acc_host.get_pointer(), out_host_ref_conjugate.data(),
+                                       inout_host.size(), error_margin, std::cout));
     }
     else {
-        EXPECT_TRUE(check_equal_vector(out_host.data(), out_host_ref.data(), out_host.size(),
-                                       error_margin, std::cout));
+        auto acc_host = inout_buf.template get_host_access();
+        EXPECT_TRUE(check_equal_vector(acc_host.get_pointer(), out_host_ref.data(),
+                                       inout_host.size(), error_margin, std::cout));
     }
 
     descriptor_t descriptor_back{ size };
@@ -75,18 +73,18 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
 
     try {
         oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
-                                           FwdInputType>(descriptor_back, inout_dev);
+                                           FwdInputType>(descriptor_back, inout_buf);
     }
     catch (oneapi::mkl::unimplemented &e) {
         std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
         return test_skipped;
     }
 
-    copy_to_host(sycl_queue, inout_dev, out_host);
-
-    EXPECT_TRUE(
-        check_equal_vector(out_host.data(), input.data(), input.size(), error_margin, std::cout));
-
+    {
+        auto acc_host = inout_buf.template get_host_access();
+        EXPECT_TRUE(check_equal_vector(acc_host.get_pointer(), input.data(), input.size(),
+                                       error_margin, std::cout));
+    }
     return !::testing::Test::HasFailure();
 }
 
