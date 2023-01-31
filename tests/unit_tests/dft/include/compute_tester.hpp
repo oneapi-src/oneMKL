@@ -49,7 +49,7 @@ struct DFT_Test {
 
     const std::int64_t size;
     const std::int64_t conjugate_even_size;
-    static constexpr int error_margin = 10;
+    int error_margin;
 
     sycl::device *dev;
     sycl::queue sycl_queue;
@@ -85,6 +85,9 @@ struct DFT_Test {
                 input_im[i] = { input[i].imag() };
             }
         }
+
+        // Heuristic for the average-case error margin
+        error_margin = 5.0 * std::log2((double)size);
     }
 
     bool skip_test(MemoryAccessModel type) {
