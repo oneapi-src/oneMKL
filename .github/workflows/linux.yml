@@ -108,10 +108,12 @@ jobs:
               -DENABLE_MKLCPU_BACKEND=False \
               -DENABLE_NETLIB_BACKEND=False \
               -DENABLE_ROCBLAS_BACKEND=False \
+              -DBUILD_SHARED_LIBS=ON \
               -DTARGET_DOMAINS=blas \
-              -DHIPSYCL_TARGETS=omp\;cuda:sm_61\
-              -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL \
-              -DREF_BLAS_ROOT=/opt/lapack/ ..
+              -DREF_BLAS_ROOT=/opt/lapack/ \
+              -DHIPSYCL_VISIBILITY_MASK="omp;cuda:sm_60" \
+              -DHIPSYCL_TARGETS="omp;cuda:sm_60" \
+              -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL ..
         cmake --build . -j2
     - name: test oneMKL
       run: |
