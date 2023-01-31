@@ -25,7 +25,7 @@
 /* Note: There is no implementation for Domain Real */
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 int DFT_Test<precision, domain>::test_out_of_place_buffer() {
-    if (!init(TestType::buffer)) {
+    if (!init(MemoryAccessModel::buffer)) {
         return test_skipped;
     }
 
@@ -34,17 +34,17 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
                          oneapi::mkl::dft::config_value::NOT_INPLACE);
     commit_descriptor(descriptor, sycl_queue);
 
-    std::vector<OutputType> out_host(size);
-    std::vector<InputType> out_host_back(size);
-    sycl::buffer<InputType, 1> in_dev{ sycl::range<1>(size) };
-    sycl::buffer<OutputType, 1> out_dev{ sycl::range<1>(size) };
-    sycl::buffer<InputType, 1> out_back_dev{ sycl::range<1>(size) };
+    std::vector<FwdOutputType> out_host(size);
+    std::vector<FwdInputType> out_host_back(size);
+    sycl::buffer<FwdInputType, 1> in_dev{ sycl::range<1>(size) };
+    sycl::buffer<FwdOutputType, 1> out_dev{ sycl::range<1>(size) };
+    sycl::buffer<FwdInputType, 1> out_back_dev{ sycl::range<1>(size) };
 
     copy_to_device(sycl_queue, input, in_dev);
 
     try {
-        oneapi::mkl::dft::compute_forward<descriptor_t, InputType, OutputType>(descriptor, in_dev,
-                                                                               out_dev);
+        oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
+            descriptor, in_dev, out_dev);
     }
     catch (oneapi::mkl::unimplemented &e) {
         std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
@@ -64,8 +64,8 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
 
     try {
         oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
-                                           OutputType, InputType>(descriptor_back, out_dev,
-                                                                  out_back_dev);
+                                           FwdOutputType, FwdInputType>(descriptor_back, out_dev,
+                                                                        out_back_dev);
     }
     catch (oneapi::mkl::unimplemented &e) {
         std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
@@ -82,7 +82,7 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 int DFT_Test<precision, domain>::test_out_of_place_USM() {
-    if (!init(TestType::usm)) {
+    if (!init(MemoryAccessModel::usm)) {
         return test_skipped;
     }
 
@@ -91,21 +91,22 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
                          oneapi::mkl::dft::config_value::NOT_INPLACE);
     commit_descriptor(descriptor, sycl_queue);
 
-    std::vector<OutputType> out_host(size);
-    std::vector<InputType> out_host_back(size);
+    std::vector<FwdOutputType> out_host(size);
+    std::vector<FwdInputType> out_host_back(size);
 
-    auto ua_input = usm_allocator_t<InputType>(cxt, *dev);
-    auto ua_output = usm_allocator_t<OutputType>(cxt, *dev);
+    auto ua_input = usm_allocator_t<FwdInputType>(cxt, *dev);
+    auto ua_output = usm_allocator_t<FwdOutputType>(cxt, *dev);
 
-    std::vector<InputType, decltype(ua_input)> in(size, ua_input);
-    std::vector<OutputType, decltype(ua_output)> out(size, ua_output);
+    std::vector<FwdInputType, decltype(ua_input)> in(size, ua_input);
+    std::vector<FwdOutputType, decltype(ua_output)> out(size, ua_output);
 
     std::copy(input.begin(), input.end(), in.begin());
 
     try {
         std::vector<sycl::event> dependencies;
-        sycl::event done = oneapi::mkl::dft::compute_forward<descriptor_t, InputType, OutputType>(
-            descriptor, in.data(), out.data(), dependencies);
+        sycl::event done =
+            oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
+                descriptor, in.data(), out.data(), dependencies);
         done.wait();
     }
     catch (oneapi::mkl::unimplemented &e) {
@@ -122,14 +123,14 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / size));
     commit_descriptor(descriptor_back, sycl_queue);
 
-    std::vector<InputType, decltype(ua_input)> out_back(size, ua_input);
+    std::vector<FwdInputType, decltype(ua_input)> out_back(size, ua_input);
 
     try {
         std::vector<sycl::event> dependencies;
         sycl::event done =
             oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
-                                               OutputType, InputType>(descriptor_back, out.data(),
-                                                                      out_back.data());
+                                               FwdOutputType, FwdInputType>(
+                descriptor_back, out.data(), out_back.data());
         done.wait();
     }
     catch (oneapi::mkl::unimplemented &e) {

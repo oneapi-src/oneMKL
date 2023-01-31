@@ -26,7 +26,7 @@
  * These are stubs to make sure that dft::oneapi::mkl::unimplemented exception is thrown */
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
-    if (!init(TestType::usm)) {
+    if (!init(MemoryAccessModel::usm)) {
         return test_skipped;
     }
 
@@ -81,7 +81,7 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
  * These are stubs to make sure that dft::oneapi::mkl::unimplemented exception is thrown */
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
-    if (!init(TestType::buffer)) {
+    if (!init(MemoryAccessModel::buffer)) {
         return test_skipped;
     }
 

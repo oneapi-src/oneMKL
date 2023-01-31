@@ -41,11 +41,11 @@ struct DFT_Test {
         typename std::conditional_t<precision == oneapi::mkl::dft::precision::SINGLE, float,
                                     double>;
 
-    using InputType = typename std::conditional_t<domain == oneapi::mkl::dft::domain::REAL,
-                                                  PrecisionType, std::complex<PrecisionType>>;
-    using OutputType = std::complex<PrecisionType>;
+    using FwdInputType = typename std::conditional_t<domain == oneapi::mkl::dft::domain::REAL,
+                                                     PrecisionType, std::complex<PrecisionType>>;
+    using FwdOutputType = std::complex<PrecisionType>;
 
-    enum class TestType { buffer, usm };
+    enum class MemoryAccessModel { buffer, usm };
 
     const std::int64_t size;
     const std::int64_t conjugate_even_size;
@@ -55,10 +55,10 @@ struct DFT_Test {
     sycl::queue sycl_queue;
     sycl::context cxt;
 
-    std::vector<InputType> input;
+    std::vector<FwdInputType> input;
     std::vector<PrecisionType> input_re;
     std::vector<PrecisionType> input_im;
-    std::vector<OutputType> out_host_ref;
+    std::vector<FwdOutputType> out_host_ref;
 
     DFT_Test(sycl::device *dev, std::int64_t size)
             : dev{ dev },
@@ -66,11 +66,11 @@ struct DFT_Test {
               conjugate_even_size{ 2 * (size / 2 + 1) },
               sycl_queue{ *dev, exception_handler },
               cxt{ sycl_queue.get_context() } {
-        input = std::vector<InputType>(size);
+        input = std::vector<FwdInputType>(size);
         input_re = std::vector<PrecisionType>(size);
         input_im = std::vector<PrecisionType>(size);
 
-        out_host_ref = std::vector<OutputType>(size);
+        out_host_ref = std::vector<FwdOutputType>(size);
         rand_vector(input, size);
 
         if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
@@ -87,14 +87,14 @@ struct DFT_Test {
         }
     }
 
-    bool skip_test(TestType type) {
+    bool skip_test(MemoryAccessModel type) {
         if constexpr (precision == oneapi::mkl::dft::precision::DOUBLE) {
             if (!sycl_queue.get_device().has(sycl::aspect::fp64)) {
                 std::cout << "Device does not support double precision." << std::endl;
                 return true;
             }
         }
-        if (type == TestType::usm &&
+        if (type == MemoryAccessModel::usm &&
             !sycl_queue.get_device().has(sycl::aspect::usm_shared_allocations)) {
             std::cout << "Device does not support usm shared allocations." << std::endl;
             return true;
@@ -102,8 +102,8 @@ struct DFT_Test {
         return false;
     }
 
-    bool init(TestType type) {
-        reference_forward_dft<InputType, OutputType>(input, out_host_ref);
+    bool init(MemoryAccessModel type) {
+        reference_forward_dft<FwdInputType, FwdOutputType>(input, out_host_ref);
         return !skip_test(type);
     }
 

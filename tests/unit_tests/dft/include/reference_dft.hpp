@@ -31,7 +31,7 @@ void reference_forward_dft(const std::vector<TypeIn> &in, std::vector<TypeOut> &
     using ref_t = long double; /* Do the calculations using long double */
     static_assert(is_complex<TypeOut>(), "Output type of DFT must be complex");
 
-    const ref_t TWOPI = ref_t{ 2.0 } * std::atan(ref_t{ 1.0 }) * ref_t{ 4.0 };
+    const ref_t TWOPI = 2.0L * 3.141592653589793238462643383279502884197L;
 
     const size_t N = out.size();
     for (std::size_t k = 0; k < N; ++k) {
