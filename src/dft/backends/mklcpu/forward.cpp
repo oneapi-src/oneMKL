@@ -120,26 +120,19 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
     detail::expect_config<dft::detail::config_param::PLACEMENT, dft::detail::config_value::NOT_INPLACE>( desc, "Unexpected value for placement");
 
     auto commit_handle = dft::detail::get_commit(desc);
-    auto &cpu_queue = commit_handle->get_queue();
+    auto cpu_queue = commit_handle->get_queue();
     mklcpu_desc_t mklcpu_desc = reinterpret_cast<mklcpu_desc_t>(commit_handle->get_handle());
+    sycl::buffer<mklcpu_desc_t, 1> temp {&mklcpu_desc, sycl::range<1>{1}};
 
     cpu_queue.submit([&](sycl::handler& cgh){
+        auto desc_acc = temp.template get_access<sycl::access::mode::read_write>(cgh);
         auto in_acc = in.template get_access<sycl::access::mode::read_write>(cgh);
         auto out_acc = out.template get_access<sycl::access::mode::read_write>(cgh);
 
         detail::host_task<detail::kernel_name<mklcpu_desc_t>>(cgh, [=](){
-            std::cout << "in ker" << std::endl;
-            std::cout << "value : " << (*in_acc.get_pointer()) << std::endl;
-            MKL_LONG status = 0;
-
-            // DFTI_DESCRIPTOR_HANDLE handle = nullptr;
-            // status = DftiCreateDescriptor(&handle, DFTI_DOUBLE, DFTI_COMPLEX, 1, (MKL_LONG)10);
-            status = DftiCommitDescriptor(mklcpu_desc);
-            status = DftiComputeForward(mklcpu_desc, in_acc.get_pointer());
+            DftiComputeForward(*desc_acc.get_pointer(), in_acc.get_pointer(), out_acc.get_pointer());
         });
     }).wait();
-
-   std::cout << "kernel module end" << std::endl; 
 }
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
