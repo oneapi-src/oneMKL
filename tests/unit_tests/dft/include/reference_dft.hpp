@@ -42,7 +42,10 @@
  * @param out Where to write the output data.
 **/
 template <typename TypeIn, typename TypeOut>
-void reference_forward_dft(const std::vector<TypeIn> &in, std::vector<TypeOut> &out) noexcept {
+void reference_forward_dft(const std::vector<TypeIn> &in, std::vector<TypeOut> &out) {
+    if (in.size() != out.size()) {
+        throw std::invalid_argument("Input and output vectors must be of equal size.");
+    }
     using ref_t = long double; /* Do the calculations using long double */
     static_assert(is_complex<TypeOut>(), "Output type of DFT must be complex");
 
