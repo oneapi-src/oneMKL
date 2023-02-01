@@ -87,8 +87,8 @@ jobs:
         make -j 2 VERBOS=ON
     - name: Test hipSYCL
       run: |
-        cd hipSYCL/build/tests-omp-cuda
-        LD_LIBRARY_PATH=/home/runner/hipSYCL/build/install/lib ./sycl_tests
+        cd $HOME/hipSYCL/build/tests-omp-cuda
+        LD_LIBRARY_PATH=$HOME/hipSYCL/build/install/lib ./sycl_tests
     - name: install LAPACK (for CBLAS)
       run: |
         cd
