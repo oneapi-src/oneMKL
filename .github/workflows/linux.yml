@@ -67,13 +67,28 @@ jobs:
         cmake -DCMAKE_CXX_COMPILER=/usr/bin/clang++-${{matrix.clang_version}} \
               -DCLANG_EXECUTABLE_PATH=/usr/bin/clang++-${{matrix.clang_version}} \
               -DLLVM_DIR=/usr/lib/llvm-${{matrix.clang_version}}/cmake \
+              -DCUDA_CUDA_LIBRARY=/usr/local/cuda-${{matrix.cuda_version}}/lib64/stubs/libcuda.so \
               -DWITH_CUDA_BACKEND=ON \
               -DWITH_ROCM_BACKEND=OFF \
               -DWITH_LEVEL_ZERO_BACKEND=OFF \
+              -DHIPSYCL_VISIBILITY_MASK="omp;cuda:sm_60" \
               -DCMAKE_INSTALL_PREFIX=/opt/hipSYCL \
               -DROCM_PATH=/opt/rocm-${{matrix.rocm_version}} \
               -DCUDA_PATH=/usr/local/cuda-${{matrix.cuda_version}} ..
         make -j2 install
+    - name: Build hipSYCL Tests
+      run: |
+        cd hipSYCL/build
+        mkdir tests-omp-cuda && cd tests-omp-cuda
+        cmake \
+              -DHIPSYCL_VISIBILITY_MASK="omp;cuda:sm_60" \
+              -DHIPSYCL_TARGETS="omp;cuda:sm_60" \
+              -DhipSYCL_DIR=/opt/hipSYCL/lib/cmake/hipSYCL ../../tests
+        make -j 2 VERBOS=ON
+    - name: Test hipSYCL
+      run: |
+        cd hipSYCL/build/tests-omp-cuda
+        LD_LIBRARY_PATH=/home/runner/hipSYCL/build/install/lib ./sycl_tests
     - name: install LAPACK (for CBLAS)
       run: |
         cd
