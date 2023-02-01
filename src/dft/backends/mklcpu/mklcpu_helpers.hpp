@@ -38,8 +38,18 @@ template<> struct is_buffer<sycl::buffer<std::complex<float>>> : std::true_type 
 template<> struct is_buffer<sycl::buffer<double>> : std::true_type {};
 template<> struct is_buffer<sycl::buffer<std::complex<double>>> : std::true_type {};
 
+template<typename T> struct is_usm : std::false_type {};
+template<> struct is_usm<float> : std::true_type {};
+template<> struct is_usm<std::complex<float>> : std::true_type {};
+template<> struct is_usm<double> : std::true_type {};
+template<> struct is_usm<std::complex<double>> : std::true_type {};
+
+using mklcpu_desc_t = DFTI_DESCRIPTOR_HANDLE;
+using commit_t = dft::detail::commit_impl;
 template< class T>
 inline constexpr bool is_buffer_v = is_buffer<T>::value;
+template< class T>
+inline constexpr bool is_usm_v = is_usm<T>::value;
 
 // host_task automatically uses run_on_host_intel if it is supported by the
 //  compiler. Otherwise, it falls back to single_task.

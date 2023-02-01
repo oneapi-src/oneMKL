@@ -68,6 +68,7 @@ public:
     void commit(backend_selector<backend::mklgpu> selector);
 #endif
 
+    // get config_values struct
     dft_values<prec, dom> get_values() {
         return values_;
     };
