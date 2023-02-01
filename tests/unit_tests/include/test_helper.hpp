@@ -60,8 +60,6 @@
 #define TEST_RUN_INTELCPU_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ q }, __VA_ARGS__)
 #else
-#define TEST_RUN_INTELCPU_SELECT_NO_ARGS(q, func) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::netlib>{ q })
 #define TEST_RUN_INTELCPU_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::netlib>{ q }, __VA_ARGS__)
 #endif
@@ -81,61 +79,43 @@
 #endif
 
 #ifdef ENABLE_CUBLAS_BACKEND
-#define TEST_RUN_NVIDIAGPU_CUBLAS_SELECT_NO_ARGS(q, func) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas>{ q })
 #define TEST_RUN_NVIDIAGPU_CUBLAS_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas>{ q }, __VA_ARGS__)
 #else
-#define TEST_RUN_NVIDIAGPU_CUBLAS_SELECT_NO_ARGS(q, func)
 #define TEST_RUN_NVIDIAGPU_CUBLAS_SELECT(q, func, ...)
 #endif
 #ifdef ENABLE_CUSOLVER_BACKEND
-#define TEST_RUN_NVIDIAGPU_CUSOLVER_SELECT_NO_ARGS(q, func) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver>{ q })
 #define TEST_RUN_NVIDIAGPU_CUSOLVER_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver>{ q }, __VA_ARGS__)
 #else
-#define TEST_RUN_NVIDIAGPU_CUSOLVER_SELECT_NO_ARGS(q, func)
 #define TEST_RUN_NVIDIAGPU_CUSOLVER_SELECT(q, func, ...)
 #endif
 
 #ifdef ENABLE_ROCBLAS_BACKEND
-#define TEST_RUN_AMDGPU_ROCBLAS_SELECT_NO_ARGS(q, func) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::rocblas>{ q })
 #define TEST_RUN_AMDGPU_ROCBLAS_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::rocblas>{ q }, __VA_ARGS__)
 #else
-#define TEST_RUN_AMDGPU_ROCBLAS_SELECT_NO_ARGS(q, func)
 #define TEST_RUN_AMDGPU_ROCBLAS_SELECT(q, func, ...)
 #endif
 
 #ifdef ENABLE_CURAND_BACKEND
-#define TEST_RUN_NVIDIAGPU_CURAND_SELECT_NO_ARGS(q, func) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::curand>{ q })
 #define TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::curand>{ q }, __VA_ARGS__)
 #else
-#define TEST_RUN_NVIDIAGPU_CURAND_SELECT_NO_ARGS(q, func)
 #define TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, ...)
 #endif
 
 #ifdef ENABLE_ROCRAND_BACKEND
-#define TEST_RUN_AMDGPU_ROCRAND_SELECT_NO_ARGS(q, func) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::rocrand>{ q })
 #define TEST_RUN_AMDGPU_ROCRAND_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::rocrand>{ q }, __VA_ARGS__)
 #else
-#define TEST_RUN_AMDGPU_ROCRAND_SELECT_NO_ARGS(q, func)
 #define TEST_RUN_AMDGPU_ROCRAND_SELECT(q, func, ...)
 #endif
 
 #ifdef ENABLE_ROCSOLVER_BACKEND
-#define TEST_RUN_AMDGPU_ROCSOLVER_SELECT_NO_ARGS(q, func) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::rocsolver>{ q })
 #define TEST_RUN_AMDGPU_ROCSOLVER_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::rocsolver>{ q }, __VA_ARGS__)
 #else
-#define TEST_RUN_AMDGPU_ROCSOLVER_SELECT_NO_ARGS(q, func)
 #define TEST_RUN_AMDGPU_ROCSOLVER_SELECT(q, func, ...)
 #endif
 
@@ -155,16 +135,6 @@
                 q.get_device().get_info<sycl::info::device::vendor_id>()); \
             if (vendor_id == INTEL_ID) {                                   \
                 TEST_RUN_INTELGPU_SELECT_NO_ARGS(q, func);                 \
-            }                                                              \
-            else if (vendor_id == NVIDIA_ID) {                             \
-                TEST_RUN_NVIDIAGPU_CUBLAS_SELECT_NO_ARGS(q, func);         \
-                TEST_RUN_NVIDIAGPU_CUSOLVER_SELECT_NO_ARGS(q, func);       \
-                TEST_RUN_NVIDIAGPU_CURAND_SELECT_NO_ARGS(q, func);         \
-            }                                                              \
-            else if (vendor_id == AMD_ID) {                                \
-                TEST_RUN_AMDGPU_ROCBLAS_SELECT_NO_ARGS(q, func);           \
-                TEST_RUN_AMDGPU_ROCRAND_SELECT_NO_ARGS(q, func);           \
-                TEST_RUN_AMDGPU_ROCSOLVER_SELECT_NO_ARGS(q, func);         \
             }                                                              \
         }                                                                  \
     } while (0);
