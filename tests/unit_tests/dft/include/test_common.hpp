@@ -48,10 +48,6 @@ template <typename T>
 constexpr bool is_complex() {
     return complex_info<T>::is_complex;
 }
-template <typename T>
-constexpr int num_components() {
-    return is_complex<T>() ? 2 : 1;
-}
 
 template <typename fp>
 bool check_equal(fp x, fp x_ref, int error_mag) {
@@ -66,7 +62,7 @@ bool check_equal(fp x, fp x_ref, int error_mag) {
             return 1e-12;
         }
         else {
-            return (error_mag * num_components<fp>() * std::numeric_limits<fp_real>::epsilon());
+            return (error_mag * std::numeric_limits<fp_real>::epsilon());
         }
     }();
 
