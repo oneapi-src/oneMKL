@@ -20,6 +20,8 @@
 #ifndef ONEMKL_COMPUTE_TESTER_HPP
 #define ONEMKL_COMPUTE_TESTER_HPP
 
+#include <algorithm>
+
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
 #else
@@ -49,7 +51,8 @@ struct DFT_Test {
 
     const std::int64_t size;
     const std::int64_t conjugate_even_size;
-    int error_margin;
+    double abs_error_margin;
+    double rel_error_margin;
 
     sycl::device *dev;
     sycl::queue sycl_queue;
@@ -61,9 +64,11 @@ struct DFT_Test {
     std::vector<FwdOutputType> out_host_ref;
 
     DFT_Test(sycl::device *dev, std::int64_t size)
-            : dev{ dev },
-              size{ static_cast<std::int64_t>(size) },
+            : size{ static_cast<std::int64_t>(size) },
               conjugate_even_size{ 2 * (size / 2 + 1) },
+              abs_error_margin{0},
+              rel_error_margin{0},
+              dev{ dev },
               sycl_queue{ *dev, exception_handler },
               cxt{ sycl_queue.get_context() } {
         input = std::vector<FwdInputType>(size);
@@ -89,9 +94,6 @@ struct DFT_Test {
                 input_im[i] = { input[i].imag() };
             }
         }
-
-        // Heuristic for the average-case error margin
-        error_margin = 5.0 * std::log2((double)size);
     }
 
     bool skip_test(MemoryAccessModel type) {
@@ -111,6 +113,11 @@ struct DFT_Test {
 
     bool init(MemoryAccessModel type) {
         reference_forward_dft<FwdInputType, FwdOutputType>(input, out_host_ref);
+        auto max_norm_ref = *std::max_element(std::begin(out_host_ref), std::end(out_host_ref),
+          [](const FwdOutputType& a, const FwdOutputType& b) { return std::abs(a) < std::abs(b); });
+        // Heuristic for the average-case error margins
+        abs_error_margin = std::abs(max_norm_ref) * std::log2((double)size);
+        rel_error_margin = 5.0 * std::log2((double)size);
         return !skip_test(type);
     }
 

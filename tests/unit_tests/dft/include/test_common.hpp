@@ -50,52 +50,47 @@ constexpr bool is_complex() {
 }
 
 template <typename fp>
-bool check_equal(fp x, fp x_ref, int error_mag) {
+bool check_equal(fp x, fp x_ref, double abs_error_mag, double rel_error_mag, std::ostream &out) {
     using fp_real = typename complex_info<fp>::real_type;
     static_assert(std::is_floating_point_v<fp_real>,
                   "Expected floating-point real or complex type.");
 
-    const fp_real bound = [error_mag]() {
+    const fp_real epsilon = []() {
         if constexpr (sizeof(double) == sizeof(long double) && std::is_same_v<fp_real, double>) {
             // The reference DFT uses long double to maintain accuracy
             // when this isn't possible, lower the accuracy requirements
             return 1e-12;
         }
         else {
-            return (error_mag * std::numeric_limits<fp_real>::epsilon());
+            return std::numeric_limits<fp_real>::epsilon();
         }
     }();
+    const fp_real abs_bound = abs_error_mag * epsilon;
+    const fp_real rel_bound = rel_error_mag * epsilon;
 
     const auto aerr = std::abs(x - x_ref);
     const auto rerr = aerr / std::abs(x_ref);
-    const bool ok = (rerr <= bound) || (aerr <= bound);
+    const bool ok = (rerr <= rel_bound) || (aerr <= abs_bound);
     if (!ok) {
-        std::cout << "relative error = " << rerr << " absolute error = " << aerr
-                  << " limit = " << bound << "\n";
+        out << "Mismatching results: actual = " << x << " vs. reference = " << x_ref << "\n";
+        out << " relative error = " << rerr
+            << " absolute error = " << aerr
+            << " relative bound = " << rel_bound
+            << " absolute bound = " << abs_bound
+            << "\n";
     }
     return ok;
 }
 
-template <typename fp>
-bool check_equal(fp x, fp x_ref, int error_mag, std::ostream &out) {
-    bool good = check_equal(x, x_ref, error_mag);
-
-    if (!good) {
-        out << "Difference in result: DPC++ " << x << " vs. Reference " << x_ref << "\n";
-    }
-    return good;
-}
-
 template <typename vec1, typename vec2>
-bool check_equal_vector(vec1 &&v, vec2 &&v_ref, int n, int error_mag, std::ostream &out) {
+bool check_equal_vector(vec1 &&v, vec2 &&v_ref, int n, double abs_error_mag, double rel_error_mag, std::ostream &out) {
     constexpr int max_print = 20;
     int count = 0;
     bool good = true;
 
     for (std::size_t i = 0; i < n; ++i) {
-        if (!check_equal(v[i], v_ref[i], error_mag)) {
-            std::cout << "Difference in entry " << i << ": DPC++ " << v[i] << " vs. Reference "
-                      << v_ref[i] << "\n";
+        if (!check_equal(v[i], v_ref[i], abs_error_mag, rel_error_mag, out)) {
+            out << " at index i =" << i << "\n";
             good = false;
             ++count;
             if (count > max_print) {

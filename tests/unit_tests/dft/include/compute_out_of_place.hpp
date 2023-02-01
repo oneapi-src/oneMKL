@@ -52,7 +52,7 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     {
         auto acc_bwd = bwd_buf.template get_host_access();
         EXPECT_TRUE(check_equal_vector(acc_bwd.get_pointer(), out_host_ref.data(), bwd_data.size(),
-                                       error_margin, std::cout));
+                                       abs_error_margin, rel_error_margin, std::cout));
     }
 
     descriptor_t descriptor_back{ size };
@@ -74,7 +74,7 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     {
         auto acc_roundtrip = rountrip_buf.template get_host_access();
         EXPECT_TRUE(check_equal_vector(acc_roundtrip.get_pointer(), input.data(), input.size(),
-                                       error_margin, std::cout));
+                                       abs_error_margin, rel_error_margin, std::cout));
     }
     return !::testing::Test::HasFailure();
 }
@@ -114,7 +114,7 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     }
 
     EXPECT_TRUE(
-        check_equal_vector(out.data(), out_host_ref.data(), out.size(), error_margin, std::cout));
+        check_equal_vector(out.data(), out_host_ref.data(), out.size(), abs_error_margin, rel_error_margin, std::cout));
 
     descriptor_t descriptor_back{ size };
     descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
@@ -138,7 +138,7 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     }
 
     EXPECT_TRUE(
-        check_equal_vector(out_back.data(), input.data(), input.size(), error_margin, std::cout));
+        check_equal_vector(out_back.data(), input.data(), input.size(), abs_error_margin, rel_error_margin, std::cout));
 
     return !::testing::Test::HasFailure();
 }
