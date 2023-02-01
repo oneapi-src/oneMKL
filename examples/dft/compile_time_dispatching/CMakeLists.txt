@@ -23,11 +23,6 @@ if(ENABLE_MKLGPU_BACKEND)
   list(APPEND DFTI_CT_SOURCES "complex_fwd_buffer_mklgpu")
 endif()
 
-if(domain STREQUAL "dft" AND ENABLE_MKLGPU_BACKEND)
-  find_library(OPENCL_LIBRARY NAMES OpenCL REQUIRED)
-  message(STATUS "Found OpenCL: ${OPENCL_LIBRARY}")
-endif()
-
 foreach(dfti_ct_sources ${DFTI_CT_SOURCES})
   add_executable(example_${domain}_${dfti_ct_sources} ${dfti_ct_sources}.cpp)
   target_include_directories(example_${domain}_${dfti_ct_sources}
@@ -38,7 +33,6 @@ foreach(dfti_ct_sources ${DFTI_CT_SOURCES})
   if(domain STREQUAL "dft" AND ENABLE_MKLGPU_BACKEND)
     add_dependencies(example_${domain}_${dfti_ct_sources} onemkl_${domain}_mklgpu)
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklgpu)
-    target_link_libraries(example_${domain}_${dfti_ct_sources} PUBLIC ${OPENCL_LIBRARY})
   endif()
   target_link_libraries(example_${domain}_${dfti_ct_sources} PUBLIC
       ${ONEMKL_LIBRARIES_${domain}}

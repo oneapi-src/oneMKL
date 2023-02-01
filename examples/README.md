@@ -3,18 +3,20 @@ oneAPI Math Kernel Library (oneMKL) Interfaces offers examples with the followin
 - blas: level3/gemm_usm  
 - rng: uniform_usm  
 - lapack: getrs_usm
+- dft: complex_fwd_buffer, real_fwd_usm
 
 Each routine has one run-time dispatching example and one compile-time dispatching example (which uses both mklcpu and cuda backends), located in `example/<$domain>/run_time_dispatching` and `example/<$domain>/compile_time_dispatching` subfolders, respectively.
 
 To build examples, use cmake build option `-DBUILD_EXAMPLES=true`.  
 Compile_time_dispatching will be built if `-DBUILD_EXAMPLES=true` and cuda backend is enabled, because the compile-time dispatching example runs on both mklcpu and cuda backends.
-Run_time_dispatching will be built if `-DBUILD_EXAMPLES=true` and `-DBUILD_SHARED_LIBS=true`
+Run_time_dispatching will be built if `-DBUILD_EXAMPLES=true` and `-DBUILD_SHARED_LIBS=true`.
+All DFT examples require the mklgpu backend to be enabled.
 
 The example executable naming convention follows `example_<$domain>_<$routine>_<$backend>` for compile-time dispatching examples 
   or `example_<$domain>_<$routine>` for run-time dispatching examples. 
   E.g. `example_blas_gemm_usm_mklcpu_cublas `  `example_blas_gemm_usm`
 
-## Example outputs (blas, rng, lapack)
+## Example outputs (blas, rng, lapack, dft)
   
 ## blas
 
@@ -349,3 +351,58 @@ Random number generator example with uniform distribution ran OK on MKLCPU and C
 
 ```
 
+## dft
+
+Compile-time dispatching example with mklgpu backend
+
+```none
+$ SYCL_DEVICE_FILTER=gpu ./bin/example_dft_complex_fwd_buffer_mklgpu
+
+########################################################################
+# Complex out-of-place forward transform for Buffer API's example:
+#
+# Using APIs:
+#   Compile-time dispatch API
+#   Buffer forward complex out-of-place
+#
+# Using single precision (float) data type
+#
+# For Intel GPU with Intel MKLGPU backend.
+#
+# The environment variable SYCL_DEVICE_FILTER can be used to specify
+# SYCL device
+########################################################################
+
+Running DFT Complex forward out-of-place buffer example
+Using compile-time dispatch API with MKLGPU.
+Running with single precision real data type on:
+	GPU device :Intel(R) UHD Graphics 750 [0x4c8a]
+DFT Complex USM example ran OK on MKLGPU
+```
+
+Runtime dispatching example with both mklgpu backend
+
+```none
+SYCL_DEVICE_FILTER=gpu ./bin/example_dft_complex_fwd_buffer_mklgpu
+
+########################################################################
+# Complex out-of-place forward transform for Buffer API's example:
+#
+# Using APIs:
+#   Compile-time dispatch API
+#   Buffer forward complex out-of-place
+#
+# Using single precision (float) data type
+#
+# For Intel GPU with Intel MKLGPU backend.
+#
+# The environment variable SYCL_DEVICE_FILTER can be used to specify
+# SYCL device
+########################################################################
+
+Running DFT Complex forward out-of-place buffer example
+Using compile-time dispatch API with MKLGPU.
+Running with single precision real data type on:
+	GPU device :Intel(R) UHD Graphics 750 [0x4c8a]
+DFT Complex USM example ran OK on MKLGPU
+```
