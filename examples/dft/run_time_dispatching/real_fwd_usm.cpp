@@ -83,18 +83,18 @@ void run_example(const sycl::device& dev) {
 void print_example_banner() {
     std::cout << "\n"
                  "########################################################################\n"
-                 "# DFTI complex in-place forward transform with USM API example: \n"
-                 "# \n"
+                 "# DFTI complex in-place forward transform with USM API example:\n"
+                 "#\n"
                  "# Using APIs:\n"
                  "#   USM forward complex in-place\n"
                  "#   Run-time dispatch\n"
-                 "# \n"
+                 "#\n"
                  "# Using single precision (float) data type\n"
-                 "# \n"
+                 "#\n"
                  "# Device will be selected during runtime.\n"
                  "# The environment variable SYCL_DEVICE_FILTER can be used to specify\n"
                  "# SYCL device\n"
-                 "# \n"
+                 "#\n"
                  "########################################################################\n"
               << std::endl;
 }
