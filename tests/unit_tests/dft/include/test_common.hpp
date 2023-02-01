@@ -155,27 +155,6 @@ void commit_descriptor(oneapi::mkl::dft::descriptor<precision, domain> &descript
 #endif
 }
 
-template <typename T, int D>
-void copy_to_host(sycl::queue sycl_queue, sycl::buffer<T, D> &buffer_in, std::vector<T> &host_out) {
-    sycl_queue
-        .submit([&](sycl::handler &cgh) {
-            sycl::accessor accessor = buffer_in.get_access(cgh);
-            cgh.copy(accessor, host_out.data());
-        })
-        .wait();
-}
-
-template <typename T, int D>
-void copy_to_device(sycl::queue sycl_queue, std::vector<T> &host_in,
-                    sycl::buffer<T, D> &buffer_out) {
-    sycl_queue
-        .submit([&](sycl::handler &cgh) {
-            sycl::accessor accessor = buffer_out.get_access(cgh);
-            cgh.copy(host_in.data(), accessor);
-        })
-        .wait();
-}
-
 class DimensionsDeviceNamePrint {
 public:
     std::string operator()(
