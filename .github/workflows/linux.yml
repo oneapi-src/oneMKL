@@ -78,7 +78,7 @@ jobs:
         make -j2 install
     - name: Build hipSYCL Tests
       run: |
-        cd hipSYCL/build
+        cd $HOME/hipSYCL/build
         mkdir tests-omp-cuda && cd tests-omp-cuda
         cmake \
               -DHIPSYCL_VISIBILITY_MASK="omp;cuda:sm_60" \
