@@ -70,6 +70,10 @@ struct DFT_Test {
         input_re = std::vector<PrecisionType>(size);
         input_im = std::vector<PrecisionType>(size);
 
+        // out_host_ref contains redundant information for domain::REAL
+        // tests. This simplifies the test implementation, but increases
+        // storage and computational requirements. There is scope for
+        // improvement here if test performance becomes an issue.
         out_host_ref = std::vector<FwdOutputType>(size);
         rand_vector(input, size);
 
