@@ -35,7 +35,8 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     const size_t container_size =
         domain == oneapi::mkl::dft::domain::REAL ? conjugate_even_size : size;
 
-    std::vector<FwdInputType> inout_host(input);
+    std::vector<FwdInputType> inout_host(container_size, static_cast<FwdInputType>(0));
+    std::copy(input.cbegin(), input.cend(), inout_host.begin());
     sycl::buffer<FwdInputType, 1> inout_buf{ inout_host.data(), sycl::range<1>(container_size) };
 
     commit_descriptor(descriptor, sycl_queue);
