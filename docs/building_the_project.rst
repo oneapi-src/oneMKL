@@ -510,22 +510,29 @@ project as a header-only library.
             -DENABLE_MKLGPU_BACKEND=OFF  \
             -DTARGET_DOMAINS=blas \
             [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \ # required only for testing
-            -Dsycl_blas_DIR=<path to SYCL-BLAS install directory>
+            [-Dsycl_blas_DIR=<path to SYCL-BLAS install directory>]
    cmake --build .
    ./bin/test_main_blas_ct
    cmake --install . --prefix <path_to_install_dir>
 
 
 SYCL-BLAS will be downloaded automatically if not found.
-SYCL-BLAS can be tuned for specific hardware targets by adding compiler
-definitions.
-The configure step will try to detect automatically which device is used if
-Ahead-of-time compilation is used via ``-fsycl-targets``. One can manually
-specify ``-fsycl-targets`` via ``CMAKE_CXX_FLAGS``.
-One can also manually specify a tuning target with
-``-DSYCLBLAS_TUNING_TARGET=<target>``.
-The list of SYCL-BLAS targets can be found
-`here <https://github.com/codeplaysoftware/sycl-blas#cmake-options>`_.
+By default, the SYCL-BLAS backend is not tuned for any specific device which
+will impact performance.
+SYCL-BLAS can be tuned for a specific hardware target by adding compiler
+definitions in 2 ways:
+
+#.
+  Manually specify a tuning target with ``-DSYCLBLAS_TUNING_TARGET=<target>``.
+  The list of SYCL-BLAS targets can be found
+  `here <https://github.com/codeplaysoftware/sycl-blas#cmake-options>`_.
+  This will automatically set ``-fsycl-targets`` if needed.
+#.
+  If one target is set via ``-fsycl-targets`` the configuration step will
+  try to automatically detect the SYCL-BLAS tuning target. One can manually
+  specify ``-fsycl-targets`` via ``CMAKE_CXX_FLAGS``. See
+  `DPC++ User Manual <https://intel.github.io/llvm-docs/UsersManual.html>`_
+  for more information on ``-fsycl-targets``.
 
 
 Build Options
