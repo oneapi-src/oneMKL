@@ -79,10 +79,10 @@ int test(device *dev, oneapi::mkl::layout layout) {
 
     vector<fp, allocator_helper<fp, 64>> AB(size), AB_ref(size);
 
-    rand_matrix(AB, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                size, 1, size);
-    copy_matrix(AB, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                size, 1, size, AB_ref);
+    rand_matrix(AB, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size, 1,
+                size);
+    copy_matrix(AB, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size, 1,
+                size, AB_ref);
 
     // Call reference IMATCOPY.
     int m_ref = (int)m;
@@ -115,24 +115,24 @@ int test(device *dev, oneapi::mkl::layout layout) {
 #ifdef CALL_RT_API
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                oneapi::mkl::blas::column_major::imatcopy(main_queue, trans, m, n, alpha,
-                                                          AB_buffer, lda, ldb);
+                oneapi::mkl::blas::column_major::imatcopy(main_queue, trans, m, n, alpha, AB_buffer,
+                                                          lda, ldb);
                 break;
             case oneapi::mkl::layout::row_major:
-                oneapi::mkl::blas::row_major::imatcopy(main_queue, trans, m, n, alpha,
-                                                       AB_buffer, lda, ldb);
+                oneapi::mkl::blas::row_major::imatcopy(main_queue, trans, m, n, alpha, AB_buffer,
+                                                       lda, ldb);
                 break;
             default: break;
         }
 #else
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::imatcopy,
-                                   trans, m, n, alpha, AB_buffer, lda, ldb);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::imatcopy, trans, m,
+                                   n, alpha, AB_buffer, lda, ldb);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::imatcopy, trans,
-                                   m, n, alpha, AB_buffer, lda, ldb);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::imatcopy, trans, m, n,
+                                   alpha, AB_buffer, lda, ldb);
                 break;
             default: break;
         }
@@ -149,16 +149,14 @@ int test(device *dev, oneapi::mkl::layout layout) {
     }
 
     catch (const std::runtime_error &error) {
-        std::cout << "Error raised during execution of IMATCOPY:\n"
-                  << error.what() << std::endl;
+        std::cout << "Error raised during execution of IMATCOPY:\n" << error.what() << std::endl;
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
 
     auto AB_accessor = AB_buffer.template get_access<access::mode::read>();
-    bool good =
-        check_equal_matrix(AB_accessor, AB_ref, oneapi::mkl::layout::column_major,
-                           size, 1, size, 10, std::cout);
+    bool good = check_equal_matrix(AB_accessor, AB_ref, oneapi::mkl::layout::column_major, size, 1,
+                                   size, 10, std::cout);
 
     return (int)good;
 }
@@ -175,13 +173,11 @@ TEST_P(ImatcopyTests, RealDoublePrecision) {
 }
 
 TEST_P(ImatcopyTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 TEST_P(ImatcopyTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 INSTANTIATE_TEST_SUITE_P(ImatcopyTestSuite, ImatcopyTests,

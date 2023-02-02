@@ -109,14 +109,14 @@ int test(device *dev, oneapi::mkl::layout layout) {
     C.resize(size_c);
     C_ref.resize(size_c);
 
-    rand_matrix(A, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                size_a, 1, size_a);
-    rand_matrix(B, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                size_b, 1, size_b);
-    rand_matrix(C, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                size_c, 1, size_c);
-    copy_matrix(C, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                size_c, 1, size_c, C_ref);
+    rand_matrix(A, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size_a, 1,
+                size_a);
+    rand_matrix(B, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size_b, 1,
+                size_b);
+    rand_matrix(C, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size_c, 1,
+                size_c);
+    copy_matrix(C, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size_c, 1,
+                size_c, C_ref);
 
     // Call reference OMATADD.
     int m_ref = (int)m;
@@ -124,22 +124,22 @@ int test(device *dev, oneapi::mkl::layout layout) {
     int lda_ref = (int)lda;
     int ldb_ref = (int)ldb;
     int ldc_ref = (int)ldc;
-    omatadd_ref(layout, transa, transb, m_ref, n_ref, alpha, A.data(),
-                lda_ref, beta, B.data(), ldb_ref, C_ref.data(), ldc_ref);
+    omatadd_ref(layout, transa, transb, m_ref, n_ref, alpha, A.data(), lda_ref, beta, B.data(),
+                ldb_ref, C_ref.data(), ldc_ref);
 
     // Call DPC++ OMATADD
     try {
 #ifdef CALL_RT_API
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                done = oneapi::mkl::blas::column_major::omatadd(
-                    main_queue, transa, transb, m, n, alpha, &A[0], lda, beta, &B[0], ldb,
-                    &C[0], ldc, dependencies);
+                done = oneapi::mkl::blas::column_major::omatadd(main_queue, transa, transb, m, n,
+                                                                alpha, &A[0], lda, beta, &B[0], ldb,
+                                                                &C[0], ldc, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                done = oneapi::mkl::blas::row_major::omatadd(
-                    main_queue, transa, transb, m, n, alpha, &A[0], lda, beta, &B[0], ldb,
-                    &C[0], ldc, dependencies);
+                done = oneapi::mkl::blas::row_major::omatadd(main_queue, transa, transb, m, n,
+                                                             alpha, &A[0], lda, beta, &B[0], ldb,
+                                                             &C[0], ldc, dependencies);
                 break;
             default: break;
         }
@@ -147,14 +147,14 @@ int test(device *dev, oneapi::mkl::layout layout) {
 #else
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatadd,
-                                   transa, transb, m, n, alpha, &A[0], lda, beta, &B[0],
-                                   ldb, &C[0], ldc, dependencies);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatadd, transa,
+                                   transb, m, n, alpha, &A[0], lda, beta, &B[0], ldb, &C[0], ldc,
+                                   dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatadd, transa,
-                                   transb, m, n, alpha, &A[0], lda, beta, &B[0], ldb,
-                                   &C[0], ldc, dependencies);
+                                   transb, m, n, alpha, &A[0], lda, beta, &B[0], ldb, &C[0], ldc,
+                                   dependencies);
                 break;
             default: break;
         }
@@ -162,8 +162,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
 #endif
     }
     catch (exception const &e) {
-        std::cout << "Caught synchronous SYCL exception during OMATADD:\n"
-                  << e.what() << std::endl;
+        std::cout << "Caught synchronous SYCL exception during OMATADD:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
@@ -172,14 +171,12 @@ int test(device *dev, oneapi::mkl::layout layout) {
     }
 
     catch (const std::runtime_error &error) {
-        std::cout << "Error raised during execution of OMATADD:\n"
-                  << error.what() << std::endl;
+        std::cout << "Error raised during execution of OMATADD:\n" << error.what() << std::endl;
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good =
-        check_equal_matrix(C, C_ref, oneapi::mkl::layout::column_major, size_c, 1,
-                           size_c, 10, std::cout);
+    bool good = check_equal_matrix(C, C_ref, oneapi::mkl::layout::column_major, size_c, 1, size_c,
+                                   10, std::cout);
 
     return (int)good;
 }
@@ -196,13 +193,11 @@ TEST_P(OmataddUsmTests, RealDoublePrecision) {
 }
 
 TEST_P(OmataddUsmTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 TEST_P(OmataddUsmTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 INSTANTIATE_TEST_SUITE_P(OmataddUsmTestSuite, OmataddUsmTests,

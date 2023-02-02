@@ -97,8 +97,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
     int n_ref = (int)n;
     int lda_ref = (int)lda;
     int ldb_ref = (int)ldb;
-    omatcopy_ref(layout, trans, m_ref, n_ref, alpha, A.data(), lda_ref, B_ref.data(),
-                 ldb_ref);
+    omatcopy_ref(layout, trans, m_ref, n_ref, alpha, A.data(), lda_ref, B_ref.data(), ldb_ref);
 
     // Call DPC++ OMATCOPY
 
@@ -125,24 +124,24 @@ int test(device *dev, oneapi::mkl::layout layout) {
 #ifdef CALL_RT_API
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                oneapi::mkl::blas::column_major::omatcopy(main_queue, trans, m, n, alpha,
-                                                          A_buffer, lda, B_buffer, ldb);
+                oneapi::mkl::blas::column_major::omatcopy(main_queue, trans, m, n, alpha, A_buffer,
+                                                          lda, B_buffer, ldb);
                 break;
             case oneapi::mkl::layout::row_major:
-                oneapi::mkl::blas::row_major::omatcopy(main_queue, trans, m, n, alpha,
-                                                       A_buffer, lda, B_buffer, ldb);
+                oneapi::mkl::blas::row_major::omatcopy(main_queue, trans, m, n, alpha, A_buffer,
+                                                       lda, B_buffer, ldb);
                 break;
             default: break;
         }
 #else
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatcopy,
-                                   trans, m, n, alpha, A_buffer, lda, B_buffer, ldb);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatcopy, trans, m,
+                                   n, alpha, A_buffer, lda, B_buffer, ldb);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatcopy, trans,
-                                   m, n, alpha, A_buffer, lda, B_buffer, ldb);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatcopy, trans, m, n,
+                                   alpha, A_buffer, lda, B_buffer, ldb);
                 break;
             default: break;
         }
@@ -159,16 +158,14 @@ int test(device *dev, oneapi::mkl::layout layout) {
     }
 
     catch (const std::runtime_error &error) {
-        std::cout << "Error raised during execution of OMATCOPY:\n"
-                  << error.what() << std::endl;
+        std::cout << "Error raised during execution of OMATCOPY:\n" << error.what() << std::endl;
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
 
     auto B_accessor = B_buffer.template get_access<access::mode::read>();
-    bool good =
-        check_equal_matrix(B_accessor, B_ref, oneapi::mkl::layout::column_major,
-                           size_b, 1, size_b, 10, std::cout);
+    bool good = check_equal_matrix(B_accessor, B_ref, oneapi::mkl::layout::column_major, size_b, 1,
+                                   size_b, 10, std::cout);
 
     return (int)good;
 }
@@ -185,13 +182,11 @@ TEST_P(OmatcopyTests, RealDoublePrecision) {
 }
 
 TEST_P(OmatcopyTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 TEST_P(OmatcopyTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 INSTANTIATE_TEST_SUITE_P(OmatcopyTestSuite, OmatcopyTests,

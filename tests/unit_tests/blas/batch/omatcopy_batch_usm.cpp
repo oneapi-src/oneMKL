@@ -115,11 +115,13 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
         switch (layout) {
             case oneapi::mkl::layout::column_major:
                 size_a = lda[i] * n[i];
-                size_b = (trans[i] == oneapi::mkl::transpose::nontrans) ? ldb[i] * n[i] : ldb[i] * m[i];
+                size_b =
+                    (trans[i] == oneapi::mkl::transpose::nontrans) ? ldb[i] * n[i] : ldb[i] * m[i];
                 break;
             case oneapi::mkl::layout::row_major:
                 size_a = lda[i] * m[i];
-                size_b = (trans[i] == oneapi::mkl::transpose::nontrans) ? ldb[i] * m[i] : ldb[i] * n[i];
+                size_b =
+                    (trans[i] == oneapi::mkl::transpose::nontrans) ? ldb[i] * m[i] : ldb[i] * n[i];
                 break;
             default: break;
         }
@@ -140,14 +142,14 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     // Call reference OMATCOPY
     idx = 0;
     for (i = 0; i < group_count; i++) {
-        int m_ref = (int) m[i];
-        int n_ref = (int) n[i];
-        int lda_ref = (int) lda[i];
-        int ldb_ref = (int) ldb[i];
-        int group_size_ref = (int) group_size[i];
+        int m_ref = (int)m[i];
+        int n_ref = (int)n[i];
+        int lda_ref = (int)lda[i];
+        int ldb_ref = (int)ldb[i];
+        int group_size_ref = (int)group_size[i];
         for (j = 0; j < group_size_ref; j++) {
-            omatcopy_ref(layout, trans[i], m_ref, n_ref, alpha[i], a_array[idx],
-                         lda_ref, b_ref_array[idx], ldb_ref);
+            omatcopy_ref(layout, trans[i], m_ref, n_ref, alpha[i], a_array[idx], lda_ref,
+                         b_ref_array[idx], ldb_ref);
             idx++;
         }
     }
@@ -159,16 +161,14 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
             case oneapi::mkl::layout::column_major:
                 done = oneapi::mkl::blas::column_major::omatcopy_batch(
                     main_queue, trans.data(), m.data(), n.data(), alpha.data(),
-                    (const fp**) a_array.data(),
-                    lda.data(), b_array.data(), ldb.data(), group_count, group_size.data(),
-                    dependencies);
+                    (const fp **)a_array.data(), lda.data(), b_array.data(), ldb.data(),
+                    group_count, group_size.data(), dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
                 done = oneapi::mkl::blas::row_major::omatcopy_batch(
                     main_queue, trans.data(), m.data(), n.data(), alpha.data(),
-                    (const fp**) a_array.data(),
-                    lda.data(), b_array.data(), ldb.data(), group_count, group_size.data(),
-                    dependencies);
+                    (const fp **)a_array.data(), lda.data(), b_array.data(), ldb.data(),
+                    group_count, group_size.data(), dependencies);
                 break;
             default: break;
         }
@@ -178,13 +178,13 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
             case oneapi::mkl::layout::column_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatcopy_batch,
                                    trans.data(), m.data(), n.data(), alpha.data(),
-                                   (const fp**) a_array.data(), lda.data(), b_array.data(),
+                                   (const fp **)a_array.data(), lda.data(), b_array.data(),
                                    ldb.data(), group_count, group_size.data(), dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatcopy_batch,
                                    trans.data(), m.data(), n.data(), alpha.data(),
-                                   (const fp**) a_array.data(), lda.data(), b_array.data(),
+                                   (const fp **)a_array.data(), lda.data(), b_array.data(),
                                    ldb.data(), group_count, group_size.data(), dependencies);
                 break;
             default: break;
@@ -223,18 +223,20 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
         switch (layout) {
             case oneapi::mkl::layout::column_major:
                 size_a = lda[i] * n[i];
-                size_b = (trans[i] == oneapi::mkl::transpose::nontrans) ? ldb[i] * n[i] : ldb[i] * m[i];
+                size_b =
+                    (trans[i] == oneapi::mkl::transpose::nontrans) ? ldb[i] * n[i] : ldb[i] * m[i];
                 break;
             case oneapi::mkl::layout::row_major:
                 size_a = lda[i] * m[i];
-                size_b = (trans[i] == oneapi::mkl::transpose::nontrans) ? ldb[i] * m[i] : ldb[i] * n[i];
+                size_b =
+                    (trans[i] == oneapi::mkl::transpose::nontrans) ? ldb[i] * m[i] : ldb[i] * n[i];
                 break;
             default: break;
         }
         for (j = 0; j < group_size[i]; j++) {
-            good = good &&
-                check_equal_matrix(b_array[idx], b_ref_array[idx], oneapi::mkl::layout::column_major,
-                                   size_b, 1, size_b, 10, std::cout);
+            good = good && check_equal_matrix(b_array[idx], b_ref_array[idx],
+                                              oneapi::mkl::layout::column_major, size_b, 1, size_b,
+                                              10, std::cout);
             idx++;
         }
     }
