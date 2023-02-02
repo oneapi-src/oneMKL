@@ -54,8 +54,17 @@ if(SYCLBLAS_TUNING_TARGET)
     set(ENABLE_SYCLBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
   elseif(SYCLBLAS_TUNING_TARGET STREQUAL "AMD_GPU")
     set(ENABLE_SYCLBLAS_BACKEND_AMD_GPU "ON" CACHE INTERNAL "")
+    target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
+      -fsycl-targets=amdgcn-amd-amdhsa -fsycl-unnamed-lambda
+	  -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
+    target_link_options(ONEMKL::SYCL::SYCL INTERFACE
+      -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend)
   elseif(SYCLBLAS_TUNING_TARGET STREQUAL "NVIDIA_GPU")
     set(ENABLE_SYCLBLAS_BACKEND_NVIDIA_GPU "ON" CACHE INTERNAL "")
+    target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
+      -fsycl-targets=nvptx64-nvidia-cuda -fsycl-unnamed-lambda)
+    target_link_options(ONEMKL::SYCL::SYCL INTERFACE
+      -fsycl-targets=nvptx64-nvidia-cuda)
   else()
     message(FATAL_ERROR "Unsupported SYCLBLAS_TUNING_TARGET: '${SYCLBLAS_TUNING_TARGET}'")
   endif()
