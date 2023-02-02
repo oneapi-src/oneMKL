@@ -29,31 +29,12 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
         return test_skipped;
     }
 
+    const size_t bwd_size = domain == oneapi::mkl::dft::domain::REAL ? (size / 2) + 1 : size;
+
     descriptor_t descriptor{ size };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::NOT_INPLACE);
     commit_descriptor(descriptor, sycl_queue);
-
-    std::vector<FwdOutputType> bwd_data(size);
-    std::vector<FwdInputType> roundtrip_data(size);
-    sycl::buffer<FwdInputType, 1> fwd_buf{ input.data(), sycl::range<1>(size) };
-    sycl::buffer<FwdOutputType, 1> bwd_buf{ bwd_data.data(), sycl::range<1>(size) };
-    sycl::buffer<FwdInputType, 1> rountrip_buf{ roundtrip_data.data(), sycl::range<1>(size) };
-
-    try {
-        oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
-            descriptor, fwd_buf, bwd_buf);
-    }
-    catch (oneapi::mkl::unimplemented &e) {
-        std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-        return test_skipped;
-    }
-
-    {
-        auto acc_bwd = bwd_buf.template get_host_access();
-        EXPECT_TRUE(check_equal_vector(acc_bwd.get_pointer(), out_host_ref.data(), bwd_data.size(),
-                                       abs_error_margin, rel_error_margin, std::cout));
-    }
 
     descriptor_t descriptor_back{ size };
     descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
@@ -61,21 +42,42 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / size));
     commit_descriptor(descriptor_back, sycl_queue);
 
-    try {
-        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
-                                           FwdOutputType, FwdInputType>(descriptor_back, bwd_buf,
-                                                                        rountrip_buf);
-    }
-    catch (oneapi::mkl::unimplemented &e) {
-        std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-        return test_skipped;
-    }
+    std::vector<FwdInputType> fwd_data(input);
+    std::vector<FwdOutputType> bwd_data(bwd_size, 0);
 
     {
-        auto acc_roundtrip = rountrip_buf.template get_host_access();
-        EXPECT_TRUE(check_equal_vector(acc_roundtrip.get_pointer(), input.data(), input.size(),
-                                       abs_error_margin, rel_error_margin, std::cout));
+        sycl::buffer<FwdInputType, 1> fwd_buf{ fwd_data };
+        sycl::buffer<FwdOutputType, 1> bwd_buf{ bwd_data };
+
+        try {
+            oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
+                descriptor, fwd_buf, bwd_buf);
+        }
+        catch (oneapi::mkl::unimplemented &e) {
+            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
+            return test_skipped;
+        }
+
+        {
+            auto acc_bwd = bwd_buf.template get_host_access();
+            EXPECT_TRUE(check_equal_vector(acc_bwd.get_pointer(), out_host_ref.data(),
+                                           bwd_data.size(), abs_error_margin, rel_error_margin,
+                                           std::cout));
+        }
+
+        try {
+            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
+                                               FwdOutputType, FwdInputType>(descriptor_back,
+                                                                            bwd_buf, fwd_buf);
+        }
+        catch (oneapi::mkl::unimplemented &e) {
+            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
+            return test_skipped;
+        }
     }
+
+    EXPECT_TRUE(check_equal_vector(fwd_data.data(), input.data(), input.size(), abs_error_margin,
+                                   rel_error_margin, std::cout));
     return !::testing::Test::HasFailure();
 }
 
@@ -84,37 +86,14 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     if (!init(MemoryAccessModel::usm)) {
         return test_skipped;
     }
+    const std::vector<sycl::event> no_dependencies;
+
+    const size_t bwd_size = domain == oneapi::mkl::dft::domain::REAL ? (size / 2) + 1 : size;
 
     descriptor_t descriptor{ size };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::NOT_INPLACE);
     commit_descriptor(descriptor, sycl_queue);
-
-    std::vector<FwdOutputType> bwd_data(size);
-    std::vector<FwdInputType> roundtrip_data(size);
-
-    auto ua_input = usm_allocator_t<FwdInputType>(cxt, *dev);
-    auto ua_output = usm_allocator_t<FwdOutputType>(cxt, *dev);
-
-    std::vector<FwdInputType, decltype(ua_input)> in(size, ua_input);
-    std::vector<FwdOutputType, decltype(ua_output)> out(size, ua_output);
-
-    std::copy(input.begin(), input.end(), in.begin());
-
-    try {
-        std::vector<sycl::event> dependencies;
-        sycl::event done =
-            oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
-                descriptor, in.data(), out.data(), dependencies);
-        done.wait();
-    }
-    catch (oneapi::mkl::unimplemented &e) {
-        std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-        return test_skipped;
-    }
-
-    EXPECT_TRUE(
-        check_equal_vector(out.data(), out_host_ref.data(), out.size(), abs_error_margin, rel_error_margin, std::cout));
 
     descriptor_t descriptor_back{ size };
     descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
@@ -122,23 +101,38 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / size));
     commit_descriptor(descriptor_back, sycl_queue);
 
-    std::vector<FwdInputType, decltype(ua_input)> out_back(size, ua_input);
+    auto ua_input = usm_allocator_t<FwdInputType>(cxt, *dev);
+    auto ua_output = usm_allocator_t<FwdOutputType>(cxt, *dev);
+
+    std::vector<FwdInputType, decltype(ua_input)> fwd(input.begin(), input.end(), ua_input);
+    std::vector<FwdOutputType, decltype(ua_output)> bwd(bwd_size, ua_output);
 
     try {
-        std::vector<sycl::event> dependencies;
-        sycl::event done =
-            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
-                                               FwdOutputType, FwdInputType>(
-                descriptor_back, out.data(), out_back.data());
-        done.wait();
+        oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
+            descriptor, fwd.data(), bwd.data(), no_dependencies)
+            .wait();
     }
     catch (oneapi::mkl::unimplemented &e) {
         std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
         return test_skipped;
     }
 
-    EXPECT_TRUE(
-        check_equal_vector(out_back.data(), input.data(), input.size(), abs_error_margin, rel_error_margin, std::cout));
+    EXPECT_TRUE(check_equal_vector(bwd.data(), out_host_ref.data(), bwd.size(), abs_error_margin,
+                                   rel_error_margin, std::cout));
+
+    try {
+        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
+                                           FwdOutputType, FwdInputType>(descriptor_back, bwd.data(),
+                                                                        fwd.data(), no_dependencies)
+            .wait();
+    }
+    catch (oneapi::mkl::unimplemented &e) {
+        std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
+        return test_skipped;
+    }
+
+    EXPECT_TRUE(check_equal_vector(fwd.data(), input.data(), input.size(), abs_error_margin,
+                                   rel_error_margin, std::cout));
 
     return !::testing::Test::HasFailure();
 }
