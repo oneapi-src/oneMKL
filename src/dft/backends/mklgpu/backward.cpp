@@ -45,7 +45,6 @@ namespace detail {
 template <dft::detail::precision prec, dft::detail::domain dom, typename... ArgTs>
 inline auto compute_backward(dft::detail::descriptor<prec, dom> &desc, ArgTs &&... args) {
     using mklgpu_desc_t = dft::descriptor<to_mklgpu(prec), to_mklgpu(dom)>;
-    using commit_t = dft::detail::commit_impl;
     auto commit_handle = dft::detail::get_commit(desc);
     if (commit_handle == nullptr || commit_handle->get_backend() != backend::mklgpu) {
         throw mkl::invalid_argument("DFT", "compute_backward",
@@ -98,17 +97,10 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
 template <typename descriptor_type, typename input_type, typename output_type>
 ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_type, 1> &in,
                                     sycl::buffer<output_type, 1> &out) {
-    if constexpr (!std::is_same_v<input_type, output_type>) {
-        throw mkl::unimplemented(
-            "DFT", "compute_backward",
-            "MKLGPU does not support out-of-place FFT with different input and output types.");
-    }
-    else {
-        detail::expect_config<dft::detail::config_param::PLACEMENT,
-                              dft::detail::config_value::NOT_INPLACE>(
-            desc, "Unexpected value for placement");
-        return detail::compute_backward(desc, in, out);
-    }
+    detail::expect_config<dft::detail::config_param::PLACEMENT,
+                          dft::detail::config_value::NOT_INPLACE>(desc,
+                                                                  "Unexpected value for placement");
+    return detail::compute_backward(desc, in, out);
 }
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
@@ -149,17 +141,10 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *ino
 template <typename descriptor_type, typename input_type, typename output_type>
 ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in, output_type *out,
                                            const std::vector<sycl::event> &dependencies) {
-    if constexpr (!std::is_same_v<input_type, output_type>) {
-        throw mkl::unimplemented(
-            "DFT", "compute_backward",
-            "MKLGPU does not support out-of-place FFT with different input and output types.");
-    }
-    else {
-        detail::expect_config<dft::detail::config_param::PLACEMENT,
-                              dft::detail::config_value::NOT_INPLACE>(
-            desc, "Unexpected value for placement");
-        return detail::compute_backward(desc, in, out, dependencies);
-    }
+    detail::expect_config<dft::detail::config_param::PLACEMENT,
+                          dft::detail::config_value::NOT_INPLACE>(desc,
+                                                                  "Unexpected value for placement");
+    return detail::compute_backward(desc, in, out, dependencies);
 }
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
