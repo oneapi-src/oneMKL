@@ -83,7 +83,7 @@ jobs:
         make -j 2 VERBOS=ON
     - name: hipSYCL tests for CPU
       run: |
-        cd $HOME/hipSYCL/build/tests-omp-cuda
+        cd $HOME/hipSYCL/build/tests-omp
         LD_LIBRARY_PATH=$HOME/hipSYCL/build/install/lib ./sycl_tests
     - name: install LAPACK (for CBLAS)
       run: |
@@ -124,4 +124,4 @@ jobs:
               -DHIPSYCL_TARGETS="omp;cuda:sm_60" \
               -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL ..
         cmake --build . -j2
-        cmake --install . --prefix /usr
+        cmake --install . --prefix /opt/oneMKL
