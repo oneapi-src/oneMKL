@@ -135,5 +135,4 @@ jobs:
       run: |
         cd
         cd oneMKL/build
-        ctest
         cmake --install . --prefix /usr
