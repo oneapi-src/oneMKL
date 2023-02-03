@@ -50,11 +50,9 @@ jobs:
         wget https://developer.download.nvidia.com/compute/cuda/11.6.0/local_installers/cuda_11.6.0_510.39.01_linux.run
         sudo sh cuda_11.6.0_510.39.01_linux.run --override --silent --toolkit
         cd
-    - name: test CUDA and cuBLAS version
+    - name: test CUDA and cuBLAS version and fix path by symlink
       run: |
          /usr/local/cuda/bin/nvcc --version
-         cat /usr/local/cuda/version.json
-         cat /usr/local/cuda/include/cublas.h | grep CUBLAS
          echo $(ls /usr/local/cuda-11.6/targets/x86_64-linux/lib/stubs/libcuda*)
          echo $LD_LIBRARY_PATH
          sudo ln -s /usr/local/cuda-11.6/targets/x86_64-linux/lib/stubs/libcuda.so /usr/local/cuda-11.6/targets/x86_64-linux/lib/stubs/libcuda.so.1
@@ -71,21 +69,19 @@ jobs:
               -DWITH_CUDA_BACKEND=ON \
               -DWITH_ROCM_BACKEND=OFF \
               -DWITH_LEVEL_ZERO_BACKEND=OFF \
-              -DHIPSYCL_VISIBILITY_MASK="omp;cuda:sm_60" \
               -DCMAKE_INSTALL_PREFIX=/opt/hipSYCL \
               -DROCM_PATH=/opt/rocm-${{matrix.rocm_version}} \
               -DCUDA_PATH=/usr/local/cuda-${{matrix.cuda_version}} ..
         make -j2 install
-    - name: Build hipSYCL Tests
+    - name: Build hipSYCL CPU Tests
       run: |
         cd $HOME/hipSYCL/build
-        mkdir tests-omp-cuda && cd tests-omp-cuda
+        mkdir tests-omp && cd tests-omp
         cmake \
-              -DHIPSYCL_VISIBILITY_MASK="omp;cuda:sm_60" \
-              -DHIPSYCL_TARGETS="omp;cuda:sm_60" \
+              -DHIPSYCL_TARGETS="omp" \
               -DhipSYCL_DIR=/opt/hipSYCL/lib/cmake/hipSYCL ../../tests
         make -j 2 VERBOS=ON
-    - name: Test hipSYCL
+    - name: hipSYCL tests for CPU
       run: |
         cd $HOME/hipSYCL/build/tests-omp-cuda
         LD_LIBRARY_PATH=$HOME/hipSYCL/build/install/lib ./sycl_tests
@@ -106,7 +102,6 @@ jobs:
         hsa-runtime64_DIR: /opt/rocm-${{matrix.rocm_version}}/lib/cmake/hsa-runtime64/
       run: |
         cd
-        echo $`pwd`
         git clone https://github.com/oneapi-src/oneMKL.git
         cd oneMKL
         mkdir build
@@ -115,7 +110,6 @@ jobs:
               -DCMAKE_CXX_COMPILER=/usr/bin/clang++-${{matrix.clang_version}} \
               -DCMAKE_C_COMPILER=/usr/bin/clang-${{matrix.clang_version}} \
               -DCUDA_CUDA_LIBRARY=/usr/local/cuda-${{matrix.cuda_version}}/lib64/stubs/libcuda.so \
-              -DCUDA_PATH=/usr/local/cuda-${{matrix.cuda_version}} \
               -DENABLE_CUBLAS_BACKEND=True \
               -DENABLE_CURAND_BACKEND=False \
               -DENABLE_CUSOLVER_BACKEND=False \
@@ -127,12 +121,7 @@ jobs:
               -DTARGET_DOMAINS=blas \
               -DREF_BLAS_ROOT=/opt/lapack/ \
               -DhipSYCL_DIR=/opt/hipSYCL/lib/cmake/hipSYCL \
-              -DHIPSYCL_VISIBILITY_MASK="omp;cuda:sm_60" \
               -DHIPSYCL_TARGETS="omp;cuda:sm_60" \
               -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL ..
         cmake --build . -j2
-    - name: test oneMKL
-      run: |
-        cd
-        cd oneMKL/build
         cmake --install . --prefix /usr
