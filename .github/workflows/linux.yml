@@ -10,7 +10,7 @@ jobs:
         clang_version: [13]
         rocm_version: ['5.1.1']
         cuda_version: ['11.6']
-        os: [ubuntu-20.04]
+        os: [ubuntu-20.04, ubuntu-18.04]
     runs-on: ${{matrix.os}}
     steps:
     - uses: actions/checkout@v2
