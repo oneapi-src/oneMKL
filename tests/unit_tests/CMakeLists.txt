@@ -99,7 +99,7 @@ foreach(domain ${TARGET_DOMAINS})
     endif()
   endif()
 
-  if(ENABLE_MKLCPU_BACKEND)
+  if((NOT domain STREQUAL "dft") AND ENABLE_MKLCPU_BACKEND)
     add_dependencies(test_main_${domain}_ct onemkl_${domain}_mklcpu)
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu)
   endif()
