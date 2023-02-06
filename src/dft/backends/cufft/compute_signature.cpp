@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2022 Intel Corporation
+* Copyright Codeplay Software Ltd
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,21 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef ONEMKL_CONFIG_H
-#define ONEMKL_CONFIG_H
+#include "oneapi/mkl/dft/detail/cufft/onemkl_dft_cufft.hpp"
 
-#cmakedefine ENABLE_CUBLAS_BACKEND
-#cmakedefine ENABLE_CUSOLVER_BACKEND
-#cmakedefine ENABLE_CUFFT_BACKEND
-#cmakedefine ENABLE_ROCBLAS_BACKEND
-#cmakedefine ENABLE_ROCRAND_BACKEND
-#cmakedefine ENABLE_ROCSOLVER_BACKEND
-#cmakedefine ENABLE_CURAND_BACKEND
-#cmakedefine ENABLE_MKLCPU_BACKEND
-#cmakedefine ENABLE_MKLGPU_BACKEND
-#cmakedefine ENABLE_NETLIB_BACKEND
-#cmakedefine BUILD_SHARED_LIBS
-#cmakedefine REF_BLAS_LIBNAME "@REF_BLAS_LIBNAME@"
-#cmakedefine REF_CBLAS_LIBNAME "@REF_CBLAS_LIBNAME@"
+#define BACKEND cufft
 
-#endif
+#include "dft/backends/backend_compute_signature.cxx"

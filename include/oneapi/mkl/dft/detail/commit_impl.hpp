@@ -60,8 +60,9 @@ public:
     virtual void commit(const dft_values<prec, dom>&) = 0;
 
 private:
-    mkl::backend backend_;
     sycl::queue queue_;
+    mkl::backend backend_;
+    bool status;
 };
 
 } // namespace oneapi::mkl::dft::detail

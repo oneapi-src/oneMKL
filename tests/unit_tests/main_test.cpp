@@ -119,7 +119,7 @@ int main(int argc, char** argv) {
                             continue;
 #endif
 #if !defined(ENABLE_CUBLAS_BACKEND) && !defined(ENABLE_CURAND_BACKEND) && \
-    !defined(ENABLE_CUSOLVER_BACKEND)
+    !defined(ENABLE_CUSOLVER_BACKEND) && !defined(ENABLE_CUFFT_BACKEND)
                         if (dev.is_gpu() && vendor_id == NVIDIA_ID)
                             continue;
 #endif

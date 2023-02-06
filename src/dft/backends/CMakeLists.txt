@@ -24,3 +24,7 @@ endif()
 if(ENABLE_MKLCPU_BACKEND)
   add_subdirectory(mklcpu)
 endif()
+
+if(ENABLE_CUFFT_BACKEND)
+  add_subdirectory(cufft)
+endif()
