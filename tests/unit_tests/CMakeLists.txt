@@ -144,6 +144,11 @@ foreach(domain ${TARGET_DOMAINS})
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_rocrand)
   endif()
 
+  if(domain STREQUAL "dft" AND ENABLE_CUFFT_BACKEND)
+    add_dependencies(test_main_${domain}_ct onemkl_${domain}_cufft)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_cufft)
+  endif()
+
   target_link_libraries(test_main_${domain}_ct PUBLIC
       gtest
       gtest_main

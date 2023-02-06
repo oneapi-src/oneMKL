@@ -69,7 +69,6 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     descriptor_t descriptor_back{ size };
     descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                               oneapi::mkl::dft::config_value::INPLACE);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / size));
     commit_descriptor(descriptor_back, sycl_queue);
 
     try {
@@ -80,6 +79,8 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
         std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
         return test_skipped;
     }
+
+    std::for_each(input.begin(), input.end(), [this](auto& x) { x *= forward_elements; });
 
     {
         auto acc_host = inout_buf.template get_host_access();

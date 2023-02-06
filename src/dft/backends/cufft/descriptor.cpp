@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2022 Intel Corporation
+* Copyright 2023 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,40 +17,27 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_BACKENDS_HPP_
-#define _ONEMKL_BACKENDS_HPP_
+#include "oneapi/mkl/dft/descriptor.hpp"
+#include "../../descriptor.cxx"
 
-#include <map>
-#include <string>
+#include "oneapi/mkl/dft/detail/cufft/onemkl_dft_cufft.hpp"
 
 namespace oneapi {
 namespace mkl {
+namespace dft {
 
-enum class backend {
-    mklcpu,
-    mklgpu,
-    cublas,
-    rocsolver,
-    cusolver,
-    curand,
-    netlib,
-    rocblas,
-    rocrand,
-    cufft,
-    unsupported
-};
+template <precision prec, domain dom>
+void descriptor<prec, dom>::commit(backend_selector<backend::cufft> selector) {
+    pimpl_.reset(cufft::create_commit(*this, selector.get_queue()));
+}
 
-typedef std::map<backend, std::string> backendmap;
+template void descriptor<precision::SINGLE, domain::COMPLEX>::commit(
+    backend_selector<backend::cufft>);
+template void descriptor<precision::SINGLE, domain::REAL>::commit(backend_selector<backend::cufft>);
+template void descriptor<precision::DOUBLE, domain::COMPLEX>::commit(
+    backend_selector<backend::cufft>);
+template void descriptor<precision::DOUBLE, domain::REAL>::commit(backend_selector<backend::cufft>);
 
-static backendmap backend_map = {
-    { backend::mklcpu, "mklcpu" },       { backend::mklgpu, "mklgpu" },
-    { backend::cublas, "cublas" },       { backend::cusolver, "cusolver" },
-    { backend::curand, "curand" },       { backend::netlib, "netlib" },
-    { backend::rocblas, "rocblas" },     { backend::rocrand, "rocrand" },
-    { backend::rocsolver, "rocsolver" }, { backend::unsupported, "unsupported" }
-};
-
+} //namespace dft
 } //namespace mkl
 } //namespace oneapi
-
-#endif //_ONEMKL_BACKENDS_HPP_

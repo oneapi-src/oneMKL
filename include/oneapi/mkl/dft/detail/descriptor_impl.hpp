@@ -46,6 +46,8 @@ inline commit_impl* get_commit(descriptor<prec, dom>& desc);
 template <precision prec, domain dom>
 class descriptor {
 public:
+    constexpr static auto precision = prec;
+    constexpr static auto domain = dom;
     // Syntax for 1-dimensional DFT
     descriptor(std::int64_t length);
 
@@ -66,6 +68,10 @@ public:
 
 #ifdef ENABLE_MKLGPU_BACKEND
     void commit(backend_selector<backend::mklgpu> selector);
+#endif
+
+#ifdef ENABLE_CUFFT_BACKEND
+    void commit(backend_selector<backend::cufft> selector);
 #endif
 
     const dft_values<prec, dom>& get_values() const noexcept {

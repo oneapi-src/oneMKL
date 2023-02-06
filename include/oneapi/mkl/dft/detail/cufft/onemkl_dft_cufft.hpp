@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_DFT_COMMIT_IMPL_HPP_
-#define _ONEMKL_DFT_COMMIT_IMPL_HPP_
+#ifndef _ONEMKL_DFT_CUFFT_HPP_
+#define _ONEMKL_DFT_CUFFT_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -26,37 +26,23 @@
 #include <CL/sycl.hpp>
 #endif
 
-namespace oneapi::mkl {
-enum class backend;
-}
+#include "oneapi/mkl/detail/export.hpp"
+#include "oneapi/mkl/dft/detail/types_impl.hpp"
 
-namespace oneapi::mkl::dft::detail {
+namespace oneapi::mkl::dft {
 
-class commit_impl {
-public:
-    commit_impl(sycl::queue queue, mkl::backend backend) : queue_(queue), backend_(backend) {}
+namespace detail {
+// Forward declarations
+class commit_impl;
 
-    // rule of three
-    commit_impl(const commit_impl& other) = delete;
-    commit_impl& operator=(const commit_impl& other) = delete;
-    virtual ~commit_impl() = default;
+template <precision prec, domain dom>
+class descriptor;
+} // namespace detail
 
-    sycl::queue& get_queue() noexcept {
-        return queue_;
-    }
+namespace cufft {
+#include "oneapi/mkl/dft/detail/dft_ct.hxx"
+} // namespace cufft
 
-    mkl::backend get_backend() const noexcept {
-        return backend_;
-    }
+} // namespace oneapi::mkl::dft
 
-    virtual void* get_handle() noexcept = 0;
-
-private:
-    sycl::queue queue_;
-    mkl::backend backend_;
-    bool status;
-};
-
-} // namespace oneapi::mkl::dft::detail
-
-#endif //_ONEMKL_DFT_COMMIT_IMPL_HPP_
+#endif // _ONEMKL_DFT_CUFFT_HPP_
