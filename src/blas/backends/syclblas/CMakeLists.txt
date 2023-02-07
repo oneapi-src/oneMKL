@@ -35,7 +35,7 @@ endfunction(get_sycl_targets)
 # for one at a time currently. Work out which device to tune for based on the
 # DPC++ target triple specified via -fsycl-targets
 if(TARGET ONEMKL::SYCL::SYCL)
-  get_target_property(ONEMKL_COMPILE_OPTIONS ONEMKL::SYCL::SYCL COMPILE_OPTIONS)
+  get_target_property(ONEMKL_COMPILE_OPTIONS ONEMKL::SYCL::SYCL INTERFACE_COMPILE_OPTIONS)
 endif()
 get_sycl_targets("${ONEMKL_COMPILE_OPTIONS}")
 list(LENGTH SYCL_TARGETS NUM_TARGETS)
