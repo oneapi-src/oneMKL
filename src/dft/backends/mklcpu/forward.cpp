@@ -95,22 +95,24 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type
     detail::expect_config<dft::detail::config_param::COMPLEX_STORAGE, dft::detail::config_value::REAL_REAL>(
         desc, "Unexpected value for complex storage");
 
-    auto commit_handle = dft::detail::get_commit(desc);
-    detail::check_commit(desc);
-    auto mklcpu_desc = reinterpret_cast<detail::mklcpu_desc_t>(commit_handle->get_handle());
+    throw mkl::unimplemented("DFT", "compute_forward", "Not implemented for MKLCPU");
+    // TODO : debug split failures
+    // auto commit_handle = dft::detail::get_commit(desc);
+    // detail::check_commit(desc);
+    // auto mklcpu_desc = reinterpret_cast<detail::mklcpu_desc_t>(commit_handle->get_handle());
 
-    sycl::queue &cpu_queue{ commit_handle->get_queue() };
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer {&mklcpu_desc, sycl::range<1>{1}};
+    // sycl::queue &cpu_queue{ commit_handle->get_queue() };
+    // sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer {&mklcpu_desc, sycl::range<1>{1}};
 
-    return cpu_queue.submit([&](sycl::handler& cgh){
-        auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read_write>(cgh);
-        auto re_acc = inout_re.template get_access<sycl::access::mode::read_write>(cgh);
-        auto im_acc = inout_im.template get_access<sycl::access::mode::read_write>(cgh);
+    // return cpu_queue.submit([&](sycl::handler& cgh){
+    //     auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read_write>(cgh);
+    //     auto re_acc = inout_re.template get_access<sycl::access::mode::read_write>(cgh);
+    //     auto im_acc = inout_im.template get_access<sycl::access::mode::read_write>(cgh);
 
-        detail::host_task<detail::kernel_name<detail::mklcpu_desc_t>>(cgh, [=](){
-            DftiComputeForward(*desc_acc.get_pointer(), re_acc.get_pointer(), im_acc.get_pointer());
-        });
-    }).wait();
+    //     detail::host_task<detail::kernel_name<detail::mklcpu_desc_t>>(cgh, [=](){
+    //         DftiComputeForward(*desc_acc.get_pointer(), re_acc.get_pointer(), im_acc.get_pointer());
+    //     });
+    // }).wait();
 }
 
 //Out-of-place transform
@@ -146,24 +148,26 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
                           dft::detail::config_value::REAL_REAL>(
         desc, "Unexpected value for complex storage");
 
-    auto commit_handle = dft::detail::get_commit(desc);
-    detail::check_commit(desc);
-    auto mklcpu_desc = reinterpret_cast<detail::mklcpu_desc_t>(commit_handle->get_handle());
+    throw mkl::unimplemented("DFT", "compute_forward", "Not implemented for MKLCPU");
+    // TODO : debug split failures
+    // auto commit_handle = dft::detail::get_commit(desc);
+    // detail::check_commit(desc);
+    // auto mklcpu_desc = reinterpret_cast<detail::mklcpu_desc_t>(commit_handle->get_handle());
 
-    sycl::queue &cpu_queue{ commit_handle->get_queue() };
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer {&mklcpu_desc, sycl::range<1>{1}};
-    return cpu_queue.submit([&](sycl::handler& cgh){
-        auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read_write>(cgh);
-        auto inre_acc = in_re.template get_access<sycl::access::mode::read_write>(cgh);
-        auto inim_acc = in_im.template get_access<sycl::access::mode::read_write>(cgh);
-        auto outre_acc = out_re.template get_access<sycl::access::mode::read_write>(cgh);
-        auto outim_acc = out_im.template get_access<sycl::access::mode::read_write>(cgh);
+    // sycl::queue &cpu_queue{ commit_handle->get_queue() };
+    // sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer {&mklcpu_desc, sycl::range<1>{1}};
+    // return cpu_queue.submit([&](sycl::handler& cgh){
+    //     auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read_write>(cgh);
+    //     auto inre_acc = in_re.template get_access<sycl::access::mode::read_write>(cgh);
+    //     auto inim_acc = in_im.template get_access<sycl::access::mode::read_write>(cgh);
+    //     auto outre_acc = out_re.template get_access<sycl::access::mode::read_write>(cgh);
+    //     auto outim_acc = out_im.template get_access<sycl::access::mode::read_write>(cgh);
 
-        detail::host_task<detail::kernel_name<detail::mklcpu_desc_t>>(cgh, [=](){
-            DftiComputeForward(*desc_acc.get_pointer(), inre_acc.get_pointer(), inim_acc.get_pointer(),
-                                                        outre_acc.get_pointer(), outim_acc.get_pointer());
-        });
-    }).wait();
+    //     detail::host_task<detail::kernel_name<detail::mklcpu_desc_t>>(cgh, [=](){
+    //         DftiComputeForward(*desc_acc.get_pointer(), inre_acc.get_pointer(), inim_acc.get_pointer(),
+    //                                                     outre_acc.get_pointer(), outim_acc.get_pointer());
+    //     });
+    // }).wait();
 }
 
 //USM version
@@ -197,19 +201,24 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inou
                                           const std::vector<sycl::event> &dependencies) {
     detail::expect_config<dft::detail::config_param::COMPLEX_STORAGE, dft::detail::config_value::REAL_REAL>(
             desc, "Unexpected value for complex storage");
-    auto commit_handle = dft::detail::get_commit(desc);
-    detail::check_commit(desc);
-    auto mklcpu_desc = reinterpret_cast<detail::mklcpu_desc_t>(commit_handle->get_handle());
 
-    sycl::queue &cpu_queue{ commit_handle->get_queue() };
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer {&mklcpu_desc, sycl::range<1>{1}};
+    throw mkl::unimplemented("DFT", "compute_forward", "Not implemented for MKLCPU");
+    return sycl::event{};
 
-    return cpu_queue.submit([&](sycl::handler& cgh){
-        auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read_write>(cgh);
-        detail::host_task<detail::kernel_name<detail::mklcpu_desc_t>>(cgh, [=](){
-            DftiComputeForward(*desc_acc.get_pointer(), inout_re, inout_im);
-        });
-    });
+    // TODO : debug split failures
+    // auto commit_handle = dft::detail::get_commit(desc);
+    // detail::check_commit(desc);
+    // auto mklcpu_desc = reinterpret_cast<detail::mklcpu_desc_t>(commit_handle->get_handle());
+
+    // sycl::queue &cpu_queue{ commit_handle->get_queue() };
+    // sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer {&mklcpu_desc, sycl::range<1>{1}};
+
+    // return cpu_queue.submit([&](sycl::handler& cgh){
+    //     auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read_write>(cgh);
+    //     detail::host_task<detail::kernel_name<detail::mklcpu_desc_t>>(cgh, [=](){
+    //         DftiComputeForward(*desc_acc.get_pointer(), inout_re, inout_im);
+    //     });
+    // });
 }
 
 //Out-of-place transform
@@ -243,19 +252,23 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in_
                                           const std::vector<sycl::event> &dependencies) {
     detail::expect_config<dft::detail::config_param::COMPLEX_STORAGE, dft::detail::config_value::REAL_REAL>(
         desc, "Unexpected value for complex storage");
-    auto commit_handle = dft::detail::get_commit(desc);
-    detail::check_commit(desc);
-    auto mklcpu_desc = reinterpret_cast<detail::mklcpu_desc_t>(commit_handle->get_handle());
+    throw mkl::unimplemented("DFT", "compute_forward", "Not implemented for MKLCPU");
+    return sycl::event{};
 
-    sycl::queue &cpu_queue{ commit_handle->get_queue() };
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer {&mklcpu_desc, sycl::range<1>{1}};
-    return cpu_queue.submit([&](sycl::handler& cgh){
-        auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read_write>(cgh);
+    // TODO : debug split failures
+    // auto commit_handle = dft::detail::get_commit(desc);
+    // detail::check_commit(desc);
+    // auto mklcpu_desc = reinterpret_cast<detail::mklcpu_desc_t>(commit_handle->get_handle());
 
-        detail::host_task<detail::kernel_name<detail::mklcpu_desc_t>>(cgh, [=](){
-            DftiComputeForward(*desc_acc.get_pointer(), in_re, in_im, out_re, out_im);
-        });
-    });
+    // sycl::queue &cpu_queue{ commit_handle->get_queue() };
+    // sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer {&mklcpu_desc, sycl::range<1>{1}};
+    // return cpu_queue.submit([&](sycl::handler& cgh){
+    //     auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read_write>(cgh);
+
+    //     detail::host_task<detail::kernel_name<detail::mklcpu_desc_t>>(cgh, [=](){
+    //         DftiComputeForward(*desc_acc.get_pointer(), in_re, in_im, out_re, out_im);
+    //     });
+    // });
 }
 
 // Template function instantiations

@@ -49,32 +49,42 @@ private:
     static constexpr DFTI_CONFIG_VALUE mklcpu_prec = to_mklcpu(prec);
     static constexpr DFTI_CONFIG_VALUE mklcpu_dom = to_mklcpu(dom);
     using mklcpu_desc_t = DFTI_DESCRIPTOR_HANDLE;
+
 public:
     commit_derived_impl(sycl::queue queue, dft::detail::dft_values<prec, dom> config_values)
-            : dft::detail::commit_impl(queue, backend::mklcpu), status(DFTI_NOTSET) {
-        sycl::buffer<DFT_ERROR, 1> status_buffer{&status, sycl::range<1>{1}};
+            : dft::detail::commit_impl(queue, backend::mklcpu),
+              status(DFTI_NOTSET) {
+        sycl::buffer<DFT_ERROR, 1> status_buffer{ &status, sycl::range<1>{ 1 } };
 
-        queue.submit([&](sycl::handler &cgh) {
-            auto handle_obj = handle_buffer.template get_access<sycl::access::mode::read_write>(cgh);
-            auto status_obj = status_buffer.template get_access<sycl::access::mode::read_write>(cgh);
+        queue.submit([&](sycl::handler& cgh) {
+                auto handle_obj =
+                    handle_buffer.template get_access<sycl::access::mode::read_write>(cgh);
+                auto status_obj =
+                    status_buffer.template get_access<sycl::access::mode::read_write>(cgh);
 
-            host_task<detail::kernel_name<mklcpu_desc_t>>(cgh, [=](){
-                std::int64_t local_err = DFTI_MEMORY_ERROR;
-                std::cout << "in commit kernel" << std::endl;
-                if (config_values.rank == 1)
-                    local_err = DftiCreateDescriptor(handle_obj.get_pointer(), mklcpu_prec, mklcpu_dom, config_values.rank, config_values.dimensions[0]);
-                else 
-                    local_err = DftiCreateDescriptor(handle_obj.get_pointer(), mklcpu_prec, mklcpu_dom, config_values.rank, config_values.dimensions.data());
+                host_task<detail::kernel_name<mklcpu_desc_t>>(cgh, [=]() {
+                    std::int64_t local_err = DFTI_MEMORY_ERROR;
+                    if (config_values.rank == 1)
+                        local_err =
+                            DftiCreateDescriptor(handle_obj.get_pointer(), mklcpu_prec, mklcpu_dom,
+                                                 config_values.rank, config_values.dimensions[0]);
+                    else
+                        local_err = DftiCreateDescriptor(handle_obj.get_pointer(), mklcpu_prec,
+                                                         mklcpu_dom, config_values.rank,
+                                                         config_values.dimensions.data());
 
-                set_value(*handle_obj.get_pointer(), config_values);
-                if (status != DFTI_NO_ERROR) {
-                    throw oneapi::mkl::exception("dft", "commit", "DftiCreateDescriptor failed");
-                }
+                    std::cout << local_err << std::endl;
+                    set_value(*handle_obj.get_pointer(), config_values);
+                    if (local_err != DFTI_NO_ERROR) {
+                        throw oneapi::mkl::exception("dft", "commit",
+                                                     "DftiCreateDescriptor failed");
+                    }
 
-                local_err = DftiCommitDescriptor(*handle_obj.get_pointer());
-                (*status_obj.get_pointer()) = local_err;
-            });
-        }).wait();
+                    local_err = DftiCommitDescriptor(*handle_obj.get_pointer());
+                    std::cout << local_err << std::endl;
+                    (*status_obj.get_pointer()) = local_err;
+                });
+            }).wait();
 
         status = status_buffer.template get_access<sycl::access::mode::read>()[0];
         if (status != DFTI_NO_ERROR) {
@@ -85,21 +95,20 @@ public:
     }
 
     virtual void* get_handle() override {
-        return reinterpret_cast<void *>(device_handle);
+        return reinterpret_cast<void*>(device_handle);
     }
 
     virtual ~commit_derived_impl() override {
-        DftiFreeDescriptor((mklcpu_desc_t*) &device_handle);
+        DftiFreeDescriptor((mklcpu_desc_t*)&device_handle);
     }
 
 private:
     DFT_ERROR status;
     mklcpu_desc_t device_handle = nullptr;
-    sycl::buffer<mklcpu_desc_t, 1> handle_buffer {&device_handle, sycl::range<1>{1}};
+    sycl::buffer<mklcpu_desc_t, 1> handle_buffer{ &device_handle, sycl::range<1>{ 1 } };
 
     template <typename... Args>
-    DFT_ERROR set_value_item(mklcpu_desc_t hand, enum DFTI_CONFIG_PARAM name,
-                             Args... args) {
+    DFT_ERROR set_value_item(mklcpu_desc_t hand, enum DFTI_CONFIG_PARAM name, Args... args) {
         DFT_ERROR value_err = DFTI_NOTSET;
         value_err = DftiSetValue(hand, name, args...);
         if (value_err != DFTI_NO_ERROR) {
@@ -117,9 +126,12 @@ private:
         set_value_item(descHandle, DFTI_NUMBER_OF_TRANSFORMS, config.number_of_transforms);
         set_value_item(descHandle, DFTI_INPUT_DISTANCE, config.fwd_dist);
         set_value_item(descHandle, DFTI_OUTPUT_DISTANCE, config.bwd_dist);
-        set_value_item(
-            descHandle, DFTI_PLACEMENT,
-            (config.placement == config_value::INPLACE) ? DFTI_INPLACE : DFTI_NOT_INPLACE);
+        set_value_item(descHandle, DFTI_CONJUGATE_EVEN_STORAGE,
+                       to_mklcpu<config_param::CONJUGATE_EVEN_STORAGE>(config.conj_even_storage));
+            set_value_item(descHandle, DFTI_PLACEMENT,
+                           to_mklcpu<config_param::PLACEMENT>(config.placement));
+        set_value_item(descHandle, DFTI_PACKED_FORMAT,
+                       to_mklcpu<config_param::PACKED_FORMAT>(config.packed_format));
     }
 };
 } // namespace detail
