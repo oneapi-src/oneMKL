@@ -73,7 +73,6 @@ public:
                                                          mklcpu_dom, config_values.rank,
                                                          config_values.dimensions.data());
 
-                    std::cout << local_err << std::endl;
                     set_value(*handle_obj.get_pointer(), config_values);
                     if (local_err != DFTI_NO_ERROR) {
                         throw oneapi::mkl::exception("dft", "commit",
@@ -81,7 +80,6 @@ public:
                     }
 
                     local_err = DftiCommitDescriptor(*handle_obj.get_pointer());
-                    std::cout << local_err << std::endl;
                     (*status_obj.get_pointer()) = local_err;
                 });
             }).wait();
