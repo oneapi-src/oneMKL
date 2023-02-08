@@ -93,7 +93,7 @@ jobs:
         mkdir build && cd build
         cmake -DCMAKE_INSTALL_LIBDIR=/opt/lapack -DBUILD_SHARED_LIBS=ON -DCBLAS=ON ..
         sudo cmake --build . -j --target install
-    - name: clone and build oneMKL
+    - name: clone and build oneMKL with cuBLAS backend
       env:
         rocblas_DIR: /opt/rocm-${{matrix.rocm_version}}/lib/cmake/rocblas/
         hip_DIR: /opt/rocm-${{matrix.rocm_version}}/lib/cmake/hip/
@@ -125,3 +125,35 @@ jobs:
               -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL ..
         cmake --build . -j2
         cmake --install . --prefix /opt/oneMKL
+    - name: clone and build oneMKL with rocBLAS backend
+      env:
+        rocblas_DIR: /opt/rocm-${{matrix.rocm_version}}/lib/cmake/rocblas/
+        hip_DIR: /opt/rocm-${{matrix.rocm_version}}/lib/cmake/hip/
+        AMDDeviceLibs_DIR: /opt/rocm-${{matrix.rocm_version}}/lib/cmake/AMDDeviceLibs/
+        amd_comgr_DIR: /opt/rocm-${{matrix.rocm_version}}/lib/cmake/amd_comgr/
+        hsa-runtime64_DIR: /opt/rocm-${{matrix.rocm_version}}/lib/cmake/hsa-runtime64/
+      run: |
+        cd
+        git clone https://github.com/oneapi-src/oneMKL.git oneMKL-rocBLAS
+        cd oneMKL-rocBLAS
+        mkdir build
+        cd build
+        cmake \
+              -DCMAKE_CXX_COMPILER=/usr/bin/clang++-${{matrix.clang_version}} \
+              -DCMAKE_C_COMPILER=/usr/bin/clang-${{matrix.clang_version}} \
+              -DROCBLAS_LIBRARIES=/opt/rocm-${{matrix.rocm_version}}/lib/cmake/rocblas/ \
+              -DENABLE_CUBLAS_BACKEND=False \
+              -DENABLE_CURAND_BACKEND=False \
+              -DENABLE_CUSOLVER_BACKEND=False \
+              -DENABLE_MKLGPU_BACKEND=False \
+              -DENABLE_MKLCPU_BACKEND=False \
+              -DENABLE_NETLIB_BACKEND=False \
+              -DENABLE_ROCBLAS_BACKEND=True \
+              -DBUILD_SHARED_LIBS=ON \
+              -DTARGET_DOMAINS=blas \
+              -DREF_BLAS_ROOT=/opt/lapack/ \
+              -DhipSYCL_DIR=/opt/hipSYCL/lib/cmake/hipSYCL \
+              -DHIPSYCL_TARGETS="omp;hip:gfx906" \
+              -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL ..
+        cmake --build . -j2
+        cmake --install . --prefix /opt/oneMKL-rocBLAS
