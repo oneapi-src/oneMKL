@@ -343,7 +343,6 @@ inline void set_and_get_values(sycl::queue& sycl_queue) {
         descriptor.get_value(oneapi::mkl::dft::config_param::PACKED_FORMAT, &value);
         EXPECT_EQ(oneapi::mkl::dft::config_value::CCE_FORMAT, value);
     }
-    commit_descriptor(descriptor, sycl_queue);
 }
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
