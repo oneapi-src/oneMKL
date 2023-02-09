@@ -217,7 +217,9 @@ inline void set_and_get_values(sycl::queue& sycl_queue) {
     }
 
     {
-        std::int64_t bwd_distance_set_value{ 12 };
+        std::int64_t bwd_distance_set_value{ domain == oneapi::mkl::dft::domain::REAL
+                                                 ? (fwd_distance_set_value / 2)
+                                                 : fwd_distance_set_value };
         std::int64_t bwd_distance_before_set;
         std::int64_t bwd_distance_after_set;
 
