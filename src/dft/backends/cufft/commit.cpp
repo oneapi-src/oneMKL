@@ -59,12 +59,13 @@ public:
 
         const cufftType type = CUFFT_C2C;
 
-        auto n_copy = std::make_unique<int[]>(config_values.dimensions.size());
-        std::copy(config_values.dimensions.begin(), config_values.dimensions.end(), n_copy.get());
+        constexpr std::size_t max_supported_dims = 3;
+        std::array<int, max_supported_dims> n_copy;
+        std::copy(config_values.dimensions.begin(), config_values.dimensions.end(), n_copy.data());
 
         cufftPlanMany(&plan, // plan
                       static_cast<int>(config_values.dimensions.size()), // rank
-                      /*TODO*/ n_copy.get(), // n
+                      n_copy.data(), // n
                       /*TODO*/ nullptr, // inembed
                       /*TODO*/ 1, // istride
                       /*TODO*/ 1, // idist

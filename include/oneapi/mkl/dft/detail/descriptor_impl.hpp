@@ -46,8 +46,6 @@ inline commit_impl<prec, dom>* get_commit(descriptor<prec, dom>& desc);
 template <precision prec, domain dom>
 class descriptor {
 public:
-    constexpr static auto precision = prec;
-    constexpr static auto domain = dom;
     // Syntax for 1-dimensional DFT
     descriptor(std::int64_t length);
 

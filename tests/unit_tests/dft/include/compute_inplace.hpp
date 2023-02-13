@@ -154,6 +154,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
                                            FwdInputType>(descriptor, inout_buf);
     }
 
+    // account for scaling that occurs during DFT
     std::for_each(input.begin(), input.end(), [this](auto& x) { x *= forward_elements; });
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         for (std::size_t j = 0; j < real_first_dims; j++) {
