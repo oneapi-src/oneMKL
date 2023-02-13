@@ -23,24 +23,22 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl/types.hpp"
-#include "oneapi/mkl/exceptions.hpp"
-#include "oneapi/mkl/detail/backends.hpp"
+#include <array>
+#include <algorithm>
+
+#include <cufft.h>
 
 #include "oneapi/mkl/dft/detail/commit_impl.hpp"
-#include "oneapi/mkl/dft/detail/types_impl.hpp"
 #include "oneapi/mkl/dft/detail/descriptor_impl.hpp"
-#include "oneapi/mkl/dft/detail/cufft/onemkl_dft_cufft.hpp"
-
-// cuFFT headers
-#include <cuda_runtime.h>
-#include <cufft.h>
+#include "oneapi/mkl/dft/detail/types_impl.hpp"
+#include "oneapi/mkl/dft/types.hpp"
+#include "oneapi/mkl/exceptions.hpp"
 
 namespace oneapi::mkl::dft::cufft {
 namespace detail {
 
 /// Commit impl class specialization for cuFFT.
-template <dft::detail::precision prec, dft::detail::domain dom>
+template <dft::precision prec, dft::domain dom>
 class cufft_commit final : public dft::detail::commit_impl {
 private:
     cufftHandle plan;
@@ -55,7 +53,7 @@ public:
         }
         cufftCreate(&plan);
 
-        // The cudaStream for the plan is set a execution time so the interop handler can pick the stream.
+        // The cudaStream for the plan is set at execution time so the interop handler can pick the stream.
 
         const cufftType type = CUFFT_C2C;
 
@@ -87,7 +85,7 @@ public:
 };
 } // namespace detail
 
-template <dft::detail::precision prec, dft::detail::domain dom>
+template <dft::precision prec, dft::domain dom>
 dft::detail::commit_impl* create_commit(dft::detail::descriptor<prec, dom>& desc,
                                         sycl::queue& sycl_queue) {
     return new detail::cufft_commit<prec, dom>(sycl_queue, desc.get_values());
