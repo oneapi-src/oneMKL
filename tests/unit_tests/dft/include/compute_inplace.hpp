@@ -80,6 +80,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
         return test_skipped;
     }
 
+    // account for scaling that occurs during DFT
     std::for_each(input.begin(), input.end(), [this](auto& x) { x *= forward_elements; });
 
     {
@@ -111,9 +112,8 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
 
     try {
         std::vector<sycl::event> dependencies;
-        sycl::event done = oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(
-            descriptor, inout.data(), dependencies);
-        done.wait();
+        oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(
+            descriptor, inout.data(), dependencies).wait_and_throw();
     }
     catch (oneapi::mkl::unimplemented &e) {
         std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
@@ -143,10 +143,9 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
 
     try {
         std::vector<sycl::event> dependencies;
-        sycl::event done =
-            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
-                                               FwdInputType>(descriptor_back, inout.data());
-        done.wait();
+        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
+                                           FwdInputType>(descriptor_back, inout.data())
+            .wait_and_throw();
     }
     catch (oneapi::mkl::unimplemented &e) {
         std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;

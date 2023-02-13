@@ -42,7 +42,7 @@ template <dft::detail::precision prec, dft::detail::domain dom>
 inline dft::detail::commit_impl *get_commit(dft::detail::descriptor<prec, dom> &desc) {
     auto commit_handle = dft::detail::get_commit(desc);
     if (commit_handle == nullptr || commit_handle->get_backend() != backend::cufft) {
-        throw mkl::invalid_argument("DFT", "compute_backward",
+        throw mkl::invalid_argument("DFT", "compute_forward",
                                     "DFT descriptor has not been commited for cuFFT");
     }
     return commit_handle;
@@ -65,17 +65,13 @@ inline auto expect_config(DescT &desc, const char *message) {
 //In-place transform
 template <typename descriptor_type, typename data_type>
 ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout) {
-    if constexpr (descriptor_type::precision == dft::detail::precision::SINGLE &&
-                  !std::is_floating_point_v<data_type>) {
+    if constexpr (std::is_same_v<data_type, std::complex<float>>) {
         detail::expect_config<dft::detail::config_param::PLACEMENT,
                               dft::detail::config_value::INPLACE>(desc,
                                                                   "Unexpected value for placement");
         auto commit = get_commit(desc);
         auto queue = commit->get_queue();
         auto plan = *static_cast<cufftHandle *>(commit->get_handle());
-
-        cufftResult result = CUFFT_NOT_SUPPORTED;
-        cufftResult *result_ptr = &result;
 
         queue.submit([&](sycl::handler &cgh) {
             auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
@@ -84,17 +80,20 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type
                 auto inout_native = reinterpret_cast<cufftComplex *>(
                     ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(inout_acc));
                 auto stream = ih.get_native_queue<sycl::backend::ext_oneapi_cuda>();
-                *result_ptr = cufftSetStream(plan, stream);
-                if (*result_ptr == CUFFT_SUCCESS) {
-                    *result_ptr = cufftExecC2C(plan, inout_native, inout_native, CUFFT_FORWARD);
+                if (const auto result = cufftSetStream(plan, stream); result != CUFFT_SUCCESS) {
+                    throw oneapi::mkl::exception(
+                        "DFT", "compute_forward(desc, inout)",
+                        "cufftSetStream returned " + std::to_string(result));
+                }
+
+                if (const auto result =
+                        cufftExecC2C(plan, inout_native, inout_native, CUFFT_FORWARD);
+                    result != CUFFT_SUCCESS) {
+                    throw oneapi::mkl::exception("DFT", "compute_forward(desc, inout)",
+                                                 "cufftExecC2C returned " + std::to_string(result));
                 }
             });
-        }).wait();
-
-        if (result != CUFFT_SUCCESS) {
-            throw oneapi::mkl::exception("DFT", "compute_forward(desc, inout)",
-                                         "cuFFTResult value of " + std::to_string(result));
-        }
+        });
     }
     else {
         throw oneapi::mkl::unimplemented("DFT", "compute_forward<double>(desc, inout)",
