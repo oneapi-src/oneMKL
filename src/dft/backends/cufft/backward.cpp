@@ -23,21 +23,20 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl/types.hpp"
-#include "oneapi/mkl/exceptions.hpp"
+#include <type_traits>
 
-#include "oneapi/mkl/dft/detail/cufft/onemkl_dft_cufft.hpp"
-#include "oneapi/mkl/dft/detail/types_impl.hpp"
-#include "oneapi/mkl/dft/detail/descriptor_impl.hpp"
-
-// cuFFT headers
-#include <cuda_runtime.h>
 #include <cufft.h>
+
+#include "oneapi/mkl/dft/detail/commit_impl.hpp"
+#include "oneapi/mkl/dft/detail/descriptor_impl.hpp"
+#include "oneapi/mkl/dft/forward.hpp"
+#include "oneapi/mkl/dft/types.hpp"
+#include "oneapi/mkl/exceptions.hpp"
 
 namespace oneapi::mkl::dft::cufft {
 namespace detail {
 
-template <dft::detail::precision prec, dft::detail::domain dom>
+template <dft::precision prec, dft::domain dom>
 inline dft::detail::commit_impl *get_commit(dft::detail::descriptor<prec, dom> &desc) {
     auto commit_handle = dft::detail::get_commit(desc);
     if (commit_handle == nullptr || commit_handle->get_backend() != backend::cufft) {
@@ -49,9 +48,9 @@ inline dft::detail::commit_impl *get_commit(dft::detail::descriptor<prec, dom> &
 
 /// Throw an mkl::invalid_argument if the runtime param in the descriptor does not match
 /// the expected value.
-template <dft::detail::config_param Param, dft::detail::config_value Expected, typename DescT>
+template <dft::config_param Param, dft::config_value Expected, typename DescT>
 inline auto expect_config(DescT &desc, const char *message) {
-    dft::detail::config_value actual{ 0 };
+    dft::config_value actual{ 0 };
     desc.get_value(Param, &actual);
     if (actual != Expected) {
         throw mkl::invalid_argument("DFT", "compute_backward", message);
@@ -65,8 +64,8 @@ inline auto expect_config(DescT &desc, const char *message) {
 template <typename descriptor_type, typename data_type>
 ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout) {
     if constexpr (std::is_same_v<data_type, std::complex<float>>) {
-        detail::expect_config<dft::detail::config_param::PLACEMENT,
-                              dft::detail::config_value::INPLACE>(desc,
+        detail::expect_config<dft::config_param::PLACEMENT,
+                              dft::config_value::INPLACE>(desc,
                                                                   "Unexpected value for placement");
         auto commit = get_commit(desc);
         auto queue = commit->get_queue();
@@ -110,8 +109,8 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
 template <typename descriptor_type, typename input_type, typename output_type>
 ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_type, 1> &in,
                                     sycl::buffer<output_type, 1> &out) {
-    detail::expect_config<dft::detail::config_param::PLACEMENT,
-                          dft::detail::config_value::NOT_INPLACE>(desc,
+    detail::expect_config<dft::config_param::PLACEMENT,
+                          dft::config_value::NOT_INPLACE>(desc,
                                                                   "Unexpected value for placement");
     throw oneapi::mkl::unimplemented("DFT", "compute_backward(desc, in, out)",
                                      "not yet implemented");
@@ -133,7 +132,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
 template <typename descriptor_type, typename data_type>
 ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *inout,
                                            const std::vector<sycl::event> &dependencies) {
-    detail::expect_config<dft::detail::config_param::PLACEMENT, dft::detail::config_value::INPLACE>(
+    detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
     throw oneapi::mkl::unimplemented("DFT", "compute_backward(desc, inout, dependencies)",
                                      "not yet implemented");
@@ -153,8 +152,8 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *ino
 template <typename descriptor_type, typename input_type, typename output_type>
 ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in, output_type *out,
                                            const std::vector<sycl::event> &dependencies) {
-    detail::expect_config<dft::detail::config_param::PLACEMENT,
-                          dft::detail::config_value::NOT_INPLACE>(desc,
+    detail::expect_config<dft::config_param::PLACEMENT,
+                          dft::config_value::NOT_INPLACE>(desc,
                                                                   "Unexpected value for placement");
     throw oneapi::mkl::unimplemented("DFT", "compute_backward(desc, in, out, dependencies)",
                                      "not yet implemented");
