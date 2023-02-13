@@ -585,6 +585,10 @@ CMake.
   the targeted hardware. This backend has only been tested for the ``gfx90a``
   architecture (MI210) at the time of writing.
 
+.. note::
+  When building with ``BUILD_FUNCTIONAL_TESTS=yes`` (default option) only single CUDA backend can be built
+  (`#270 <https://github.com/oneapi-src/oneMKL/issues/270>`_).
+
 .. _project_cleanup:
 
 Project Cleanup
