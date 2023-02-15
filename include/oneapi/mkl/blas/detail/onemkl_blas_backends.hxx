@@ -1140,6 +1140,68 @@ ONEMKL_EXPORT void omatadd_batch(sycl::queue &queue, oneapi::mkl::transpose tran
                                  std::int64_t stride_b, sycl::buffer<std::complex<double>, 1> &c,
                                  std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size);
 
+ONEMKL_EXPORT void omatcopy(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                            std::int64_t n, float alpha, sycl::buffer<float, 1> &a,
+                            std::int64_t lda, sycl::buffer<float, 1> &b, std::int64_t ldb);
+
+ONEMKL_EXPORT void omatcopy(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                            std::int64_t n, double alpha, sycl::buffer<double, 1> &a,
+                            std::int64_t lda, sycl::buffer<double, 1> &b, std::int64_t ldb);
+
+ONEMKL_EXPORT void omatcopy(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                            std::int64_t n, std::complex<float> alpha,
+                            sycl::buffer<std::complex<float>, 1> &a, std::int64_t lda,
+                            sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb);
+
+ONEMKL_EXPORT void omatcopy(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                            std::int64_t n, std::complex<double> alpha,
+                            sycl::buffer<std::complex<double>, 1> &a, std::int64_t lda,
+                            sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb);
+
+ONEMKL_EXPORT void imatcopy(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                            std::int64_t n, float alpha, sycl::buffer<float, 1> &ab,
+                            std::int64_t lda, std::int64_t ldb);
+
+ONEMKL_EXPORT void imatcopy(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                            std::int64_t n, double alpha, sycl::buffer<double, 1> &ab,
+                            std::int64_t lda, std::int64_t ldb);
+
+ONEMKL_EXPORT void imatcopy(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                            std::int64_t n, std::complex<float> alpha,
+                            sycl::buffer<std::complex<float>, 1> &ab, std::int64_t lda,
+                            std::int64_t ldb);
+
+ONEMKL_EXPORT void imatcopy(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                            std::int64_t n, std::complex<double> alpha,
+                            sycl::buffer<std::complex<double>, 1> &ab, std::int64_t lda,
+                            std::int64_t ldb);
+
+ONEMKL_EXPORT void omatadd(sycl::queue &queue, oneapi::mkl::transpose transa,
+                           oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n,
+                           float alpha, sycl::buffer<float, 1> &a, std::int64_t lda, float beta,
+                           sycl::buffer<float, 1> &b, std::int64_t ldb, sycl::buffer<float, 1> &c,
+                           std::int64_t ldc);
+
+ONEMKL_EXPORT void omatadd(sycl::queue &queue, oneapi::mkl::transpose transa,
+                           oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n,
+                           double alpha, sycl::buffer<double, 1> &a, std::int64_t lda, double beta,
+                           sycl::buffer<double, 1> &b, std::int64_t ldb, sycl::buffer<double, 1> &c,
+                           std::int64_t ldc);
+
+ONEMKL_EXPORT void omatadd(sycl::queue &queue, oneapi::mkl::transpose transa,
+                           oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n,
+                           std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a,
+                           std::int64_t lda, std::complex<float> beta,
+                           sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
+                           sycl::buffer<std::complex<float>, 1> &c, std::int64_t ldc);
+
+ONEMKL_EXPORT void omatadd(sycl::queue &queue, oneapi::mkl::transpose transa,
+                           oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n,
+                           std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+                           std::int64_t lda, std::complex<double> beta,
+                           sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
+                           sycl::buffer<std::complex<double>, 1> &c, std::int64_t ldc);
+
 // USM APIs
 
 ONEMKL_EXPORT sycl::event gemm(sycl::queue &queue, oneapi::mkl::transpose transa,
@@ -2636,3 +2698,122 @@ ONEMKL_EXPORT sycl::event omatadd_batch(
     const std::complex<double> *b, std::int64_t ldb, std::int64_t stride_b, std::complex<double> *c,
     std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
     const std::vector<sycl::event> &dependencies = {});
+ONEMKL_EXPORT sycl::event omatcopy(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                                   std::int64_t n, float alpha, const float *a, std::int64_t lda,
+                                   float *b, std::int64_t ldb,
+                                   const std::vector<sycl::event> &dependencies = {});
+
+ONEMKL_EXPORT sycl::event omatcopy(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                                   std::int64_t n, double alpha, const double *a, std::int64_t lda,
+                                   double *b, std::int64_t ldb,
+                                   const std::vector<sycl::event> &dependencies = {});
+
+ONEMKL_EXPORT sycl::event omatcopy(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                                   std::int64_t n, std::complex<float> alpha,
+                                   const std::complex<float> *a, std::int64_t lda,
+                                   std::complex<float> *b, std::int64_t ldb,
+                                   const std::vector<sycl::event> &dependencies = {});
+
+ONEMKL_EXPORT sycl::event omatcopy(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                                   std::int64_t n, std::complex<double> alpha,
+                                   const std::complex<double> *a, std::int64_t lda,
+                                   std::complex<double> *b, std::int64_t ldb,
+                                   const std::vector<sycl::event> &dependencies = {});
+ONEMKL_EXPORT sycl::event imatcopy(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                                   std::int64_t n, float alpha, float *ab, std::int64_t lda,
+                                   std::int64_t ldb,
+                                   const std::vector<sycl::event> &dependencies = {});
+
+ONEMKL_EXPORT sycl::event imatcopy(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                                   std::int64_t n, double alpha, double *ab, std::int64_t lda,
+                                   std::int64_t ldb,
+                                   const std::vector<sycl::event> &dependencies = {});
+
+ONEMKL_EXPORT sycl::event imatcopy(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                                   std::int64_t n, std::complex<float> alpha,
+                                   std::complex<float> *ab, std::int64_t lda, std::int64_t ldb,
+                                   const std::vector<sycl::event> &dependencies = {});
+
+ONEMKL_EXPORT sycl::event imatcopy(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
+                                   std::int64_t n, std::complex<double> alpha,
+                                   std::complex<double> *ab, std::int64_t lda, std::int64_t ldb,
+                                   const std::vector<sycl::event> &dependencies = {});
+ONEMKL_EXPORT sycl::event omatadd(sycl::queue &queue, oneapi::mkl::transpose transa,
+                                  oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n,
+                                  float alpha, const float *a, std::int64_t lda, float beta,
+                                  const float *b, std::int64_t ldb, float *c, std::int64_t ldc,
+                                  const std::vector<sycl::event> &dependencies = {});
+
+ONEMKL_EXPORT sycl::event omatadd(sycl::queue &queue, oneapi::mkl::transpose transa,
+                                  oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n,
+                                  double alpha, const double *a, std::int64_t lda, double beta,
+                                  const double *b, std::int64_t ldb, double *c, std::int64_t ldc,
+                                  const std::vector<sycl::event> &dependencies = {});
+
+ONEMKL_EXPORT sycl::event omatadd(sycl::queue &queue, oneapi::mkl::transpose transa,
+                                  oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n,
+                                  std::complex<float> alpha, const std::complex<float> *a,
+                                  std::int64_t lda, std::complex<float> beta,
+                                  const std::complex<float> *b, std::int64_t ldb,
+                                  std::complex<float> *c, std::int64_t ldc,
+                                  const std::vector<sycl::event> &dependencies = {});
+
+ONEMKL_EXPORT sycl::event omatadd(sycl::queue &queue, oneapi::mkl::transpose transa,
+                                  oneapi::mkl::transpose transb, std::int64_t m, std::int64_t n,
+                                  std::complex<double> alpha, const std::complex<double> *a,
+                                  std::int64_t lda, std::complex<double> beta,
+                                  const std::complex<double> *b, std::int64_t ldb,
+                                  std::complex<double> *c, std::int64_t ldc,
+                                  const std::vector<sycl::event> &dependencies = {});
+
+ONEMKL_EXPORT sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m,
+                                         std::int64_t* n, float* alpha, const float** a,
+                                         std::int64_t* lda, float** b, std::int64_t* ldb,
+                                         std::int64_t group_count, std::int64_t* groupsize,
+                                         const std::vector<sycl::event>& dependencies = {});
+
+ONEMKL_EXPORT sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m,
+                                         std::int64_t* n, double* alpha, const double** a,
+                                         std::int64_t* lda, double** b, std::int64_t* ldb,
+                                         std::int64_t group_count, std::int64_t* groupsize,
+                                         const std::vector<sycl::event>& dependencies = {});
+
+ONEMKL_EXPORT sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m,
+                                         std::int64_t* n, std::complex<float>* alpha,
+                                         const std::complex<float>** a, std::int64_t* lda,
+                                         std::complex<float>** b, std::int64_t* ldb,
+                                         std::int64_t group_count, std::int64_t* groupsize,
+                                         const std::vector<sycl::event>& dependencies = {});
+
+ONEMKL_EXPORT sycl::event omatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m,
+                                         std::int64_t* n, std::complex<double>* alpha,
+                                         const std::complex<double>** a, std::int64_t* lda,
+                                         std::complex<double>** b, std::int64_t* ldb,
+                                         std::int64_t group_count, std::int64_t* groupsize,
+                                         const std::vector<sycl::event>& dependencies = {});
+
+ONEMKL_EXPORT sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m,
+                                         std::int64_t* n, float* alpha, float** ab,
+                                         std::int64_t* lda, std::int64_t* ldb,
+                                         std::int64_t group_count, std::int64_t* groupsize,
+                                         const std::vector<sycl::event>& dependencies = {});
+
+ONEMKL_EXPORT sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m,
+                                         std::int64_t* n, double* alpha, double** ab,
+                                         std::int64_t* lda, std::int64_t* ldb,
+                                         std::int64_t group_count, std::int64_t* groupsize,
+                                         const std::vector<sycl::event>& dependencies = {});
+
+ONEMKL_EXPORT sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m,
+                                         std::int64_t* n, std::complex<float>* alpha,
+                                         std::complex<float>** ab, std::int64_t* lda,
+                                         std::int64_t* ldb, std::int64_t group_count,
+                                         std::int64_t* groupsize,
+                                         const std::vector<sycl::event>& dependencies = {});
+
+ONEMKL_EXPORT sycl::event imatcopy_batch(sycl::queue& queue, transpose* trans, std::int64_t* m,
+                                         std::int64_t* n, std::complex<double>* alpha,
+                                         std::complex<double>** ab, std::int64_t* lda,
+                                         std::int64_t* ldb, std::int64_t group_count,
+                                         std::int64_t* groupsize,
+                                         const std::vector<sycl::event>& dependencies = {});

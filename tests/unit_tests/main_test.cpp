@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright 2020-2022 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -95,7 +95,9 @@ int main(int argc, char** argv) {
 
     auto platforms = sycl::platform::get_platforms();
     for (auto plat : platforms) {
+#ifdef __HIPSYCL__
         if (!plat.is_host()) {
+#endif
             auto plat_devs = plat.get_devices();
             for (auto dev : plat_devs) {
                 try {
@@ -121,7 +123,8 @@ int main(int argc, char** argv) {
                         if (dev.is_gpu() && vendor_id == NVIDIA_ID)
                             continue;
 #endif
-#if !defined(ENABLE_ROCBLAS_BACKEND) && !defined(ENABLE_ROCRAND_BACKEND)
+#if !defined(ENABLE_ROCBLAS_BACKEND) && !defined(ENABLE_ROCRAND_BACKEND) && \
+    !defined(ENABLE_ROCSOLVER_BACKEND)
                         if (dev.is_gpu() && vendor_id == AMD_ID)
                             continue;
 #endif
@@ -137,11 +140,17 @@ int main(int argc, char** argv) {
                     std::cout << "Exception while accessing device: " << e.what() << "\n";
                 }
             }
+#ifdef __HIPSYCL__
         }
+#endif
     }
 
 #if defined(ENABLE_MKLCPU_BACKEND) || defined(ENABLE_NETLIB_BACKEND)
-    local_devices.push_back(sycl::device(sycl::host_selector()));
+#ifdef __HIPSYCL__
+    local_devices.push_back(sycl::device(sycl::cpu_selector()));
+#else
+    local_devices.push_back(sycl::device(sycl::cpu_selector_v));
+#endif
 #endif
 #define GET_NAME(d) (d).template get_info<sycl::info::device::name>()
     for (auto& local_dev : local_devices) {

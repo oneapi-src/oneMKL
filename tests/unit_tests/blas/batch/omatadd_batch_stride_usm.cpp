@@ -83,23 +83,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     ldc = std::max(m, n);
     alpha = rand_scalar<fp>();
     beta = rand_scalar<fp>();
-
-    if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
-        transa = (oneapi::mkl::transpose)(std::rand() % 2);
-        transb = (oneapi::mkl::transpose)(std::rand() % 2);
-    }
-    else {
-        tmp = std::rand() % 3;
-        if (tmp == 2)
-            transa = oneapi::mkl::transpose::conjtrans;
-        else
-            transa = (oneapi::mkl::transpose)tmp;
-        tmp = std::rand() % 3;
-        if (tmp == 2)
-            transb = oneapi::mkl::transpose::conjtrans;
-        else
-            transb = (oneapi::mkl::transpose)tmp;
-    }
+    transa = rand_trans<fp>();
+    transb = rand_trans<fp>();
 
     int64_t stride_a, stride_b, stride_c;
 

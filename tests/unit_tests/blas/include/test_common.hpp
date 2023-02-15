@@ -191,6 +191,23 @@ void rand_vector(vec &v, int n, int inc) {
         v[i * abs_inc] = rand_scalar<fp>();
 }
 
+template <typename fp>
+oneapi::mkl::transpose rand_trans() {
+    std::int64_t tmp;
+    oneapi::mkl::transpose trans;
+    if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
+        trans = (oneapi::mkl::transpose)(std::rand() % 2);
+    }
+    else {
+        tmp = std::rand() % 3;
+        if (tmp == 2)
+            trans = oneapi::mkl::transpose::conjtrans;
+        else
+            trans = (oneapi::mkl::transpose)tmp;
+    }
+    return trans;
+}
+
 template <typename vec>
 void print_matrix(vec &M, oneapi::mkl::transpose trans, int m, int n, int ld, char *name) {
     std::cout << "Matrix " << name << ":\n";
