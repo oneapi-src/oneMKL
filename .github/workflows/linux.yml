@@ -79,7 +79,7 @@ jobs:
         mkdir tests-omp && cd tests-omp
         cmake \
               -DHIPSYCL_TARGETS="omp" \
-              -DhipSYCL_DIR=/opt/OpenSYCL/lib/cmake/OpenSYCL ../../tests
+              -DhipSYCL_DIR=/opt/OpenSYCL/lib/cmake/hipSYCL ../../tests
         make -j 2 VERBOSE=ON
     - name: Open SYCL tests for CPU
       run: |
@@ -120,7 +120,7 @@ jobs:
               -DBUILD_SHARED_LIBS=ON \
               -DTARGET_DOMAINS=blas \
               -DREF_BLAS_ROOT=/opt/lapack/ \
-              -DhipSYCL_DIR=/opt/OpenSYCL/lib/cmake/OpenSYCL \
+              -DhipSYCL_DIR=/opt/OpenSYCL/lib/cmake/hipSYCL \
               -DHIPSYCL_TARGETS="omp;cuda:sm_60" \
               -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL ..
         cmake --build . -j2
@@ -152,7 +152,7 @@ jobs:
               -DBUILD_SHARED_LIBS=ON \
               -DTARGET_DOMAINS=blas \
               -DREF_BLAS_ROOT=/opt/lapack/ \
-              -DhipSYCL_DIR=/opt/OpenSYCL/lib/cmake/OpenSYCL \
+              -DhipSYCL_DIR=/opt/OpenSYCL/lib/cmake/hipSYCL \
               -DHIPSYCL_TARGETS="omp;hip:gfx906" \
               -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL ..
         cmake --build . -j2
