@@ -1,10 +1,10 @@
-name: Build tests with hipSYCL
+name: Build tests with Open SYCL
 
 on: [push, pull_request]
 
 jobs:
   test-with-hipsycl:
-    name: Run tests with hipSYCL
+    name: Run tests with Open SYCL
     strategy:
       matrix:
         clang_version: [13]
@@ -56,11 +56,11 @@ jobs:
          echo $(ls /usr/local/cuda-11.6/targets/x86_64-linux/lib/stubs/libcuda*)
          echo $LD_LIBRARY_PATH
          sudo ln -s /usr/local/cuda-11.6/targets/x86_64-linux/lib/stubs/libcuda.so /usr/local/cuda-11.6/targets/x86_64-linux/lib/stubs/libcuda.so.1
-    - name: build hipSYCL
+    - name: build Open SYCL
       run: |
         cd
-        git clone https://github.com/illuhad/hipSYCL.git
-        cd hipSYCL
+        git clone https://github.com/OpenSYCL/OpenSYCL.git
+        cd OpenSYCL
         mkdir build && cd build
         cmake -DCMAKE_CXX_COMPILER=/usr/bin/clang++-${{matrix.clang_version}} \
               -DCLANG_EXECUTABLE_PATH=/usr/bin/clang++-${{matrix.clang_version}} \
@@ -69,22 +69,22 @@ jobs:
               -DWITH_CUDA_BACKEND=ON \
               -DWITH_ROCM_BACKEND=OFF \
               -DWITH_LEVEL_ZERO_BACKEND=OFF \
-              -DCMAKE_INSTALL_PREFIX=/opt/hipSYCL \
+              -DCMAKE_INSTALL_PREFIX=/opt/OpenSYCL \
               -DROCM_PATH=/opt/rocm-${{matrix.rocm_version}} \
               -DCUDA_PATH=/usr/local/cuda-${{matrix.cuda_version}} ..
         make -j2 install
-    - name: Build hipSYCL CPU Tests
+    - name: Build Open SYCL CPU Tests
       run: |
-        cd $HOME/hipSYCL/build
+        cd $HOME/OpenSYCL/build
         mkdir tests-omp && cd tests-omp
         cmake \
               -DHIPSYCL_TARGETS="omp" \
-              -DhipSYCL_DIR=/opt/hipSYCL/lib/cmake/hipSYCL ../../tests
-        make -j 2 VERBOS=ON
-    - name: hipSYCL tests for CPU
+              -DhipSYCL_DIR=/opt/OpenSYCL/lib/cmake/OpenSYCL ../../tests
+        make -j 2 VERBOSE=ON
+    - name: Open SYCL tests for CPU
       run: |
-        cd $HOME/hipSYCL/build/tests-omp
-        LD_LIBRARY_PATH=$HOME/hipSYCL/build/install/lib ./sycl_tests
+        cd $HOME/OpenSYCL/build/tests-omp
+        LD_LIBRARY_PATH=$HOME/OpenSYCL/build/install/lib ./sycl_tests
     - name: install LAPACK (for CBLAS)
       run: |
         cd
@@ -120,7 +120,7 @@ jobs:
               -DBUILD_SHARED_LIBS=ON \
               -DTARGET_DOMAINS=blas \
               -DREF_BLAS_ROOT=/opt/lapack/ \
-              -DhipSYCL_DIR=/opt/hipSYCL/lib/cmake/hipSYCL \
+              -DhipSYCL_DIR=/opt/OpenSYCL/lib/cmake/OpenSYCL \
               -DHIPSYCL_TARGETS="omp;cuda:sm_60" \
               -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL ..
         cmake --build . -j2
@@ -152,7 +152,7 @@ jobs:
               -DBUILD_SHARED_LIBS=ON \
               -DTARGET_DOMAINS=blas \
               -DREF_BLAS_ROOT=/opt/lapack/ \
-              -DhipSYCL_DIR=/opt/hipSYCL/lib/cmake/hipSYCL \
+              -DhipSYCL_DIR=/opt/OpenSYCL/lib/cmake/OpenSYCL \
               -DHIPSYCL_TARGETS="omp;hip:gfx906" \
               -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL ..
         cmake --build . -j2
