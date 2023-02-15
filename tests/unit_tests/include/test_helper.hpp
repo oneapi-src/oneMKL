@@ -55,6 +55,8 @@
 
 #if defined(ENABLE_MKLCPU_BACKEND) || defined(ENABLE_NETLIB_BACKEND)
 #ifdef ENABLE_MKLCPU_BACKEND
+#define TEST_RUN_INTELCPU_SELECT_NO_ARGS(q, func) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ q })
 #define TEST_RUN_INTELCPU_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ q }, __VA_ARGS__)
 #else
@@ -62,13 +64,17 @@
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::netlib>{ q }, __VA_ARGS__)
 #endif
 #else
+#define TEST_RUN_INTELCPU_SELECT_NO_ARGS(q, func)
 #define TEST_RUN_INTELCPU_SELECT(q, func, ...)
 #endif
 
 #ifdef ENABLE_MKLGPU_BACKEND
+#define TEST_RUN_INTELGPU_SELECT_NO_ARGS(q, func) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklgpu>{ q })
 #define TEST_RUN_INTELGPU_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklgpu>{ q }, __VA_ARGS__)
 #else
+#define TEST_RUN_INTELGPU_SELECT_NO_ARGS(q, func)
 #define TEST_RUN_INTELGPU_SELECT(q, func, ...)
 #endif
 
@@ -118,6 +124,20 @@
 #else
 #define CHECK_HOST_OR_CPU(q) q.is_host() || q.get_device().is_cpu()
 #endif
+
+#define TEST_RUN_CT_SELECT_NO_ARGS(q, func)                                \
+    do {                                                                   \
+        if (CHECK_HOST_OR_CPU(q))   {                                      \
+            TEST_RUN_INTELCPU_SELECT_NO_ARGS(q, func);                     \
+        }                                                                  \
+        else if (q.get_device().is_gpu()) {                                \
+            unsigned int vendor_id = static_cast<unsigned int>(            \
+                q.get_device().get_info<sycl::info::device::vendor_id>()); \
+            if (vendor_id == INTEL_ID) {                                   \
+                TEST_RUN_INTELGPU_SELECT_NO_ARGS(q, func);                 \
+            }                                                              \
+        }                                                                  \
+    } while (0);
 
 #define TEST_RUN_CT_SELECT(q, func, ...)                                   \
     do {                                                                   \
