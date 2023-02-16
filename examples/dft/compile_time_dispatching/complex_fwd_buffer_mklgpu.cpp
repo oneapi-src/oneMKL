@@ -104,7 +104,7 @@ int main(int argc, char** argv) {
     print_example_banner();
 
     try {
-        sycl::device gpu_device((sycl::gpu_selector()));
+        sycl::device gpu_device((sycl::gpu_selector_v));
         std::cout << "Running DFT Complex forward out-of-place buffer example" << std::endl;
         std::cout << "Using compile-time dispatch API with MKLGPU." << std::endl;
         std::cout << "Running with single precision real data type on:" << std::endl;
