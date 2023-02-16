@@ -20,7 +20,10 @@
 # NOTE: user needs to set env var SYCL_DEVICE_FILTER to use runtime example (no need to specify backend when building with CMake)
 
 # Build object from all example sources
-set(DFT_RT_SOURCES "real_fwd_usm")
+set(DFT_RT_SOURCES "")
+if(ENABLE_MKLGPU_BACKEND)
+  list(APPEND DFT_RT_SOURCES "real_fwd_usm")
+endif()
 
 # Set up for the right backend for run-time dispatching examples
 # If users build more than one backend (i.e. mklcpu and mklgpu, or mklcpu and CUDA), they may need to
