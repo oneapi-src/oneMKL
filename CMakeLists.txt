@@ -60,6 +60,7 @@ set(HIP_TARGETS "" CACHE STRING "Target HIP architectures")
 
 ## Testing
 option(BUILD_FUNCTIONAL_TESTS "" ON)
+option(ENABLE_OPENCL_TESTS "" OFF)
 
 ## Examples
 option(BUILD_EXAMPLES "" ON)

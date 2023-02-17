@@ -75,6 +75,10 @@ foreach(domain ${TARGET_DOMAINS})
     target_compile_options(test_main_${domain}_ct PRIVATE -fsycl)
   endif()
 
+  if (ENABLE_OPENCL_TESTS)
+    target_compile_definitions(test_main_${domain}_ct PRIVATE ENABLE_OPENCL_TESTS)
+  endif()
+
   if(BUILD_SHARED_LIBS)
     add_executable(test_main_${domain}_rt main_test.cpp)
     target_include_directories(test_main_${domain}_rt PUBLIC ${GTEST_INCLUDE_DIR})
@@ -90,6 +94,10 @@ foreach(domain ${TARGET_DOMAINS})
     )
     if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
       add_sycl_to_target(TARGET test_main_${domain}_rt SOURCES main_test.cpp)
+    endif()
+
+    if (ENABLE_OPENCL_TESTS)
+      target_compile_definitions(test_main_${domain}_rt PRIVATE ENABLE_OPENCL_TESTS)
     endif()
   endif()
 
