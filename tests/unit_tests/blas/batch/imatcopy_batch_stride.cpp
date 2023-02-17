@@ -67,13 +67,13 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     int64_t stride_a, stride_b, stride;
     switch (layout) {
         case oneapi::mkl::layout::column_major:
-            stride_a = lda * m;
-            stride_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * m : ldb * n;
+            stride_a = lda * n;
+            stride_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * m;
             stride = std::max(stride_a, stride_b);
             break;
         case oneapi::mkl::layout::row_major:
-            stride_a = lda * n;
-            stride_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * m;
+            stride_a = lda * m;
+            stride_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * m : ldb * n;
             stride = std::max(stride_a, stride_b);
             break;
         default: break;
