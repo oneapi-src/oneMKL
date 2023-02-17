@@ -51,7 +51,7 @@ namespace detail {
 
 /// Commit impl class specialization for MKLGPU.
 template <dft::detail::precision prec, dft::detail::domain dom>
-class commit_derived_impl final : public dft::detail::commit_impl {
+class commit_derived_impl final : public dft::detail::commit_impl<prec, dom> {
 private:
     // Equivalent MKLGPU precision and domain from OneMKL's precision / domain.
     static constexpr dft::precision mklgpu_prec = to_mklgpu(prec);
@@ -60,9 +60,8 @@ private:
 
 public:
     commit_derived_impl(sycl::queue queue, const dft::detail::dft_values<prec, dom>& config_values)
-            : oneapi::mkl::dft::detail::commit_impl(queue, backend::mklgpu),
+            : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::mklgpu),
               handle(config_values.dimensions) {
-        set_value(handle, config_values);
         // MKLGPU does not throw an informative exception for the following:
         if constexpr (prec == dft::detail::precision::DOUBLE) {
             if (!queue.get_device().has(sycl::aspect::fp64)) {
@@ -70,7 +69,11 @@ public:
                                      "Device does not support double precision.");
             }
         }
+    }
 
+    virtual void commit(sycl::queue& queue,
+                        const dft::detail::dft_values<prec, dom>& config_values) override {
+        set_value(handle, config_values);
         try {
             handle.commit(queue);
         }
@@ -125,28 +128,30 @@ private:
             throw mkl::invalid_argument("dft/backends/mklgpu", "commit",
                                         "MKLGPU only supports non-transposed.");
         }
-        desc.set_value(backend_param::PACKED_FORMAT,
-                       to_mklgpu<onemkl_param::PACKED_FORMAT>(config.packed_format));
     }
 };
 } // namespace detail
 
 template <dft::detail::precision prec, dft::detail::domain dom>
-dft::detail::commit_impl* create_commit(const dft::detail::descriptor<prec, dom>& desc,
-                                        sycl::queue& sycl_queue) {
+dft::detail::commit_impl<prec, dom>* create_commit(const dft::detail::descriptor<prec, dom>& desc,
+                                                   sycl::queue& sycl_queue) {
     return new detail::commit_derived_impl<prec, dom>(sycl_queue, desc.get_values());
 }
 
-template dft::detail::commit_impl* create_commit(
+template dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::REAL>*
+create_commit(
     const dft::detail::descriptor<dft::detail::precision::SINGLE, dft::detail::domain::REAL>&,
     sycl::queue&);
-template dft::detail::commit_impl* create_commit(
+template dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>*
+create_commit(
     const dft::detail::descriptor<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>&,
     sycl::queue&);
-template dft::detail::commit_impl* create_commit(
+template dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>*
+create_commit(
     const dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>&,
     sycl::queue&);
-template dft::detail::commit_impl* create_commit(
+template dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>*
+create_commit(
     const dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>&,
     sycl::queue&);
 

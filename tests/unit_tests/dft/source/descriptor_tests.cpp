@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <vector>
+#include <variant>
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -361,6 +362,7 @@ inline void get_readonly_values(sycl::queue& sycl_queue) {
     EXPECT_EQ(dimension_value, 1);
 
     oneapi::mkl::dft::descriptor<precision, domain> descriptor3D{ default_3d_lengths };
+
     descriptor3D.get_value(oneapi::mkl::dft::config_param::DIMENSION, &dimension_value);
     EXPECT_EQ(dimension_value, 3);
 
@@ -406,6 +408,57 @@ inline void set_readonly_values(sycl::queue& sycl_queue) {
 }
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
+inline void recommit_values(sycl::queue& sycl_queue) {
+    using oneapi::mkl::dft::config_param;
+    using oneapi::mkl::dft::config_value;
+    using PrecisionType =
+        typename std::conditional_t<precision == oneapi::mkl::dft::precision::SINGLE, float,
+                                    double>;
+    using value = std::variant<config_value, std::int64_t, std::int64_t*, bool, PrecisionType>;
+
+    // this will hold a param to change and the value to change it to
+    using test_params = std::pair<config_param, value>;
+
+    oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
+    EXPECT_NO_THROW(commit_descriptor(descriptor, sycl_queue));
+
+    std::array<std::int64_t, 2> strides{ 0, 1 };
+
+    std::vector<test_params> arguments{
+        // not changeable
+        // FORWARD_DOMAIN, PRECISION, DIMENSION, COMMIT_STATUS
+        std::make_pair(config_param::LENGTHS, std::int64_t{ 10 }),
+        std::make_pair(config_param::FORWARD_SCALE, PrecisionType{ 1.2 }),
+        std::make_pair(config_param::BACKWARD_SCALE, PrecisionType{ 3.4 }),
+        std::make_pair(config_param::NUMBER_OF_TRANSFORMS, std::int64_t{ 5 }),
+        std::make_pair(config_param::COMPLEX_STORAGE, config_value::COMPLEX_COMPLEX),
+        std::make_pair(config_param::REAL_STORAGE, config_value::REAL_REAL),
+        std::make_pair(config_param::CONJUGATE_EVEN_STORAGE, config_value::COMPLEX_COMPLEX),
+        std::make_pair(config_param::PLACEMENT, config_value::INPLACE),
+        std::make_pair(config_param::INPUT_STRIDES, strides.data()),
+        std::make_pair(config_param::OUTPUT_STRIDES, strides.data()),
+        std::make_pair(config_param::FWD_DISTANCE, std::int64_t{ 6 }),
+        std::make_pair(config_param::BWD_DISTANCE, std::int64_t{ 7 }),
+        std::make_pair(config_param::WORKSPACE, config_value::ALLOW),
+        std::make_pair(config_param::ORDERING, config_value::ORDERED),
+        std::make_pair(config_param::TRANSPOSE, bool{ false }),
+        std::make_pair(config_param::PACKED_FORMAT, config_value::CCE_FORMAT)
+    };
+
+    for (int i = 0; i < arguments.size(); i += 1) {
+        std::visit(
+            [&arguments, &descriptor, i](auto&& a) { descriptor.set_value(arguments[i].first, a); },
+            arguments[i].second);
+        try {
+            commit_descriptor(descriptor, sycl_queue);
+        }
+        catch (oneapi::mkl::exception& e) {
+            FAIL() << "exception at index " << i << " with error : " << e.what();
+        }
+    }
+}
+
+template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 int test(sycl::device* dev) {
     sycl::queue sycl_queue(*dev, exception_handler);
 
@@ -421,6 +474,7 @@ int test(sycl::device* dev) {
     set_and_get_values<precision, domain>(sycl_queue);
     get_readonly_values<precision, domain>(sycl_queue);
     set_readonly_values<precision, domain>(sycl_queue);
+    recommit_values<precision, domain>(sycl_queue);
 
     return !::testing::Test::HasFailure();
 }

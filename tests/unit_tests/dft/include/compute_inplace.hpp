@@ -80,10 +80,6 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
         return test_skipped;
     }
 
-    descriptor_t descriptor{ sizes };
-    descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
-                         oneapi::mkl::dft::config_value::INPLACE);
-
     const std::int64_t container_size_total =
         domain == oneapi::mkl::dft::domain::REAL
             ? (size_total / sizes.back()) *
@@ -94,46 +90,32 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
                                                ? container_size_per_transform / 2
                                                : container_size_per_transform;
 
-    std::vector<FwdInputType> inout_host(container_size_total, 0);
+    descriptor_t descriptor{ sizes };
+    descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
+                         oneapi::mkl::dft::config_value::INPLACE);
+    descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / forward_elements));
+    descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
+    descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE,
+                         container_size_per_transform);
+    descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_elements);
+    descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / forward_elements));
 
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        copy_strided(sizes, input, inout_host);
         const auto real_strides = get_conjugate_even_real_component_strides(sizes);
         const auto complex_strides = get_conjugate_even_complex_strides(sizes);
         descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, real_strides.data());
         descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                              complex_strides.data());
     }
-    else {
-        std::copy(input.begin(), input.end(), inout_host.begin());
-    }
-
-    descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
-    descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE,
-                         container_size_per_transform);
-    descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_elements);
 
     commit_descriptor(descriptor, sycl_queue);
 
-    descriptor_t descriptor_back{ sizes };
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
-                              oneapi::mkl::dft::config_value::INPLACE);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
-                              (1.0 / forward_elements));
+    std::vector<FwdInputType> inout_host(container_size_total, 0);
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        const auto real_strides = get_conjugate_even_real_component_strides(sizes);
-        const auto complex_strides = get_conjugate_even_complex_strides(sizes);
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
-                                  complex_strides.data());
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
-                                  real_strides.data());
-    }
-
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE,
-                              container_size_per_transform);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_elements);
-    commit_descriptor(descriptor_back, sycl_queue);
+        copy_strided(sizes, input, inout_host);
+        else {
+            std::copy(input.begin(), input.end(), inout_host.begin());
+        }
 
     {
         sycl::buffer<FwdInputType, 1> inout_buf{ inout_host };
@@ -162,9 +144,19 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
             }
         }
 
+        if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+            const auto real_strides = get_conjugate_even_real_component_strides(sizes);
+            const auto complex_strides = get_conjugate_even_complex_strides(sizes);
+            descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
+                                 complex_strides.data());
+            descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
+                                 real_strides.data());
+            commit_descriptor(descriptor, sycl_queue);
+        }
+
         try {
             oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
-                                               FwdInputType>(descriptor_back, inout_buf);
+                                               FwdInputType>(descriptor, inout_buf);
         }
         catch (oneapi::mkl::unimplemented& e) {
             std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
@@ -203,99 +195,92 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
                                                ? container_size_per_transform / 2
                                                : container_size_per_transform;
 
-    auto ua_input = usm_allocator_t<FwdInputType>(cxt, *dev);
-    std::vector<FwdInputType, decltype(ua_input)> inout(container_size_total, ua_input);
-
     descriptor_t descriptor = { sizes };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::INPLACE);
+    descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
+    descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE,
+                         container_size_per_transform);
+    descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_elements);
+    descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / forward_elements));
 
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        copy_strided(sizes, input, inout);
         const auto real_strides = get_conjugate_even_real_component_strides(sizes);
         const auto complex_strides = get_conjugate_even_complex_strides(sizes);
         descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, real_strides.data());
         descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                              complex_strides.data());
     }
-    else {
-        std::copy(input.begin(), input.end(), inout.begin());
-    }
-
-    descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
-    descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE,
-                         container_size_per_transform);
-    descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_elements);
 
     commit_descriptor(descriptor, sycl_queue);
 
-    try {
-        std::vector<sycl::event> dependencies;
-        oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(descriptor, inout.data(),
-                                                                      dependencies)
-            .wait();
-    }
-    catch (oneapi::mkl::unimplemented& e) {
-        std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-        return test_skipped;
-    }
+    auto ua_input = usm_allocator_t<FwdInputType>(cxt, *dev);
+    std::vector<FwdInputType, decltype(ua_input)> inout(container_size_total, ua_input);
 
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        std::vector<FwdInputType> conjugate_even_ref =
-            get_conjugate_even_ref(sizes, batches, out_host_ref);
-        EXPECT_TRUE(check_equal_vector(inout.data(), conjugate_even_ref.data(), inout.size(),
-                                       abs_error_margin, rel_error_margin, std::cout));
-    }
-    else {
-        EXPECT_TRUE(check_equal_vector(inout.data(), out_host_ref.data(), inout.size(),
-                                       abs_error_margin, rel_error_margin, std::cout));
-    }
-
-    descriptor_t descriptor_back{ sizes };
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
-                              oneapi::mkl::dft::config_value::INPLACE);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
-                              (1.0 / forward_elements));
-    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        const auto real_strides = get_conjugate_even_real_component_strides(sizes);
-        const auto complex_strides = get_conjugate_even_complex_strides(sizes);
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
-                                  complex_strides.data());
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
-                                  real_strides.data());
-    }
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE,
-                              container_size_per_transform);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_elements);
-    commit_descriptor(descriptor_back, sycl_queue);
-
-    try {
-        std::vector<sycl::event> dependencies;
-        sycl::event done =
-            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
-                                               FwdInputType>(descriptor_back, inout.data());
-        done.wait();
-    }
-    catch (oneapi::mkl::unimplemented& e) {
-        std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-        return test_skipped;
-    }
-
-    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        for (int j = 0; j < size_total / sizes.back(); j++) {
-            EXPECT_TRUE(check_equal_vector(
-                inout.data() + j * row_elements_to_conjugate_even_components(sizes.back()),
-                input.data() + j * sizes.back(), sizes.back(), abs_error_margin, rel_error_margin,
-                std::cout));
+        copy_strided(sizes, input, inout);
+        else {
+            std::copy(input.begin(), input.end(), inout.begin());
         }
-    }
-    else {
-        EXPECT_TRUE(check_equal_vector(inout.data(), input.data(), input.size(), abs_error_margin,
-                                       rel_error_margin, std::cout));
-    }
 
-    return !::testing::Test::HasFailure();
-}
+        try {
+            std::vector<sycl::event> dependencies;
+            oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(descriptor, inout.data(),
+                                                                          dependencies)
+                .wait();
+        }
+        catch (oneapi::mkl::unimplemented& e) {
+            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
+            return test_skipped;
+        }
+
+        if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+            std::vector<FwdInputType> conjugate_even_ref =
+                get_conjugate_even_ref(sizes, batches, out_host_ref);
+            EXPECT_TRUE(check_equal_vector(inout.data(), conjugate_even_ref.data(), inout.size(),
+                                           abs_error_margin, rel_error_margin, std::cout));
+        }
+        else {
+            EXPECT_TRUE(check_equal_vector(inout.data(), out_host_ref.data(), inout.size(),
+                                           abs_error_margin, rel_error_margin, std::cout));
+        }
+
+        if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+            const auto real_strides = get_conjugate_even_real_component_strides(sizes);
+            const auto complex_strides = get_conjugate_even_complex_strides(sizes);
+            descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
+                                 complex_strides.data());
+            descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
+                                 real_strides.data());
+            commit_descriptor(descriptor, sycl_queue);
+        }
+
+        try {
+            std::vector<sycl::event> dependencies;
+            sycl::event done =
+                oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
+                                                   FwdInputType>(descriptor, inout.data());
+            done.wait();
+        }
+        catch (oneapi::mkl::unimplemented& e) {
+            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
+            return test_skipped;
+        }
+
+        if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+            for (int j = 0; j < size_total / sizes.back(); j++) {
+                EXPECT_TRUE(check_equal_vector(
+                    inout.data() + j * row_elements_to_conjugate_even_components(sizes.back()),
+                    input.data() + j * sizes.back(), sizes.back(), abs_error_margin,
+                    rel_error_margin, std::cout));
+            }
+        }
+        else {
+            EXPECT_TRUE(check_equal_vector(inout.data(), input.data(), input.size(),
+                                           abs_error_margin, rel_error_margin, std::cout));
+        }
+
+        return !::testing::Test::HasFailure();
+    }
 
 #endif //ONEMKL_COMPUTE_INPLACE_HPP
