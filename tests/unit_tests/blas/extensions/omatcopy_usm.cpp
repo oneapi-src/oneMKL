@@ -103,20 +103,19 @@ int test(device *dev, oneapi::mkl::layout layout) {
     B.resize(size_b);
     B_ref.resize(size_b);
 
-    rand_matrix(A, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                size_a, 1, size_a);
-    rand_matrix(B, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                size_b, 1, size_b);
-    copy_matrix(B, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                size_b, 1, size_b, B_ref);
+    rand_matrix(A, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size_a, 1,
+                size_a);
+    rand_matrix(B, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size_b, 1,
+                size_b);
+    copy_matrix(B, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size_b, 1,
+                size_b, B_ref);
 
     // Call reference OMATCOPY.
     int m_ref = (int)m;
     int n_ref = (int)n;
     int lda_ref = (int)lda;
     int ldb_ref = (int)ldb;
-    omatcopy_ref(layout, trans, m_ref, n_ref, alpha, A.data(),
-                 lda_ref, B_ref.data(), ldb_ref);
+    omatcopy_ref(layout, trans, m_ref, n_ref, alpha, A.data(), lda_ref, B_ref.data(), ldb_ref);
 
     // Call DPC++ OMATCOPY
     try {
@@ -127,8 +126,8 @@ int test(device *dev, oneapi::mkl::layout layout) {
                     main_queue, trans, m, n, alpha, &A[0], lda, &B[0], ldb, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                done = oneapi::mkl::blas::row_major::omatcopy(
-                    main_queue, trans, m, n, alpha, &A[0], lda, &B[0], ldb, dependencies);
+                done = oneapi::mkl::blas::row_major::omatcopy(main_queue, trans, m, n, alpha, &A[0],
+                                                              lda, &B[0], ldb, dependencies);
                 break;
             default: break;
         }
@@ -136,12 +135,12 @@ int test(device *dev, oneapi::mkl::layout layout) {
 #else
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatcopy,
-                                   trans, m, n, alpha, &A[0], lda, &B[0], ldb, dependencies);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatcopy, trans, m,
+                                   n, alpha, &A[0], lda, &B[0], ldb, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatcopy,
-                                   trans, m, n, alpha, &A[0], lda, &B[0], ldb, dependencies);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatcopy, trans, m, n,
+                                   alpha, &A[0], lda, &B[0], ldb, dependencies);
                 break;
             default: break;
         }
@@ -159,14 +158,12 @@ int test(device *dev, oneapi::mkl::layout layout) {
     }
 
     catch (const std::runtime_error &error) {
-        std::cout << "Error raised during execution of OMATCOPY:\n"
-                  << error.what() << std::endl;
+        std::cout << "Error raised during execution of OMATCOPY:\n" << error.what() << std::endl;
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good =
-        check_equal_matrix(B, B_ref, oneapi::mkl::layout::column_major, size_b, 1,
-                           size_b, 10, std::cout);
+    bool good = check_equal_matrix(B, B_ref, oneapi::mkl::layout::column_major, size_b, 1, size_b,
+                                   10, std::cout);
 
     return (int)good;
 }
@@ -183,13 +180,11 @@ TEST_P(OmatcopyUsmTests, RealDoublePrecision) {
 }
 
 TEST_P(OmatcopyUsmTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 TEST_P(OmatcopyUsmTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 INSTANTIATE_TEST_SUITE_P(OmatcopyUsmTestSuite, OmatcopyUsmTests,
