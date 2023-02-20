@@ -79,11 +79,11 @@ public:
         }
     }
 
-    virtual void* get_handle() noexcept override {
+    void* get_handle() noexcept override {
         return &handle;
     }
 
-    virtual ~commit_derived_impl() override {}
+    ~commit_derived_impl() override = default;
 
 private:
     // The native MKLGPU class.
