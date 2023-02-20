@@ -40,7 +40,7 @@ template <precision prec, domain dom>
 class descriptor;
 
 template <precision prec, domain dom>
-ONEMKL_EXPORT commit_impl* create_commit(descriptor<prec, dom>& desc, sycl::queue& queue);
+ONEMKL_EXPORT commit_impl* create_commit(const descriptor<prec, dom>& desc, sycl::queue& queue);
 
 } // namespace detail
 } // namespace dft

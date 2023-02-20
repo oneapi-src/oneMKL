@@ -35,28 +35,28 @@ static oneapi::mkl::detail::table_initializer<mkl::domain::dft, dft_function_tab
 
 template <>
 commit_impl* create_commit<precision::SINGLE, domain::COMPLEX>(
-    descriptor<precision::SINGLE, domain::COMPLEX>& desc, sycl::queue& sycl_queue) {
+    const descriptor<precision::SINGLE, domain::COMPLEX>& desc, sycl::queue& sycl_queue) {
     auto libkey = get_device_id(sycl_queue);
     return function_tables[libkey].create_commit_sycl_fz(desc, sycl_queue);
 }
 
 template <>
 commit_impl* create_commit<precision::DOUBLE, domain::COMPLEX>(
-    descriptor<precision::DOUBLE, domain::COMPLEX>& desc, sycl::queue& sycl_queue) {
+    const descriptor<precision::DOUBLE, domain::COMPLEX>& desc, sycl::queue& sycl_queue) {
     auto libkey = get_device_id(sycl_queue);
     return function_tables[libkey].create_commit_sycl_dz(desc, sycl_queue);
 }
 
 template <>
 commit_impl* create_commit<precision::SINGLE, domain::REAL>(
-    descriptor<precision::SINGLE, domain::REAL>& desc, sycl::queue& sycl_queue) {
+    const descriptor<precision::SINGLE, domain::REAL>& desc, sycl::queue& sycl_queue) {
     auto libkey = get_device_id(sycl_queue);
     return function_tables[libkey].create_commit_sycl_fr(desc, sycl_queue);
 }
 
 template <>
 commit_impl* create_commit<precision::DOUBLE, domain::REAL>(
-    descriptor<precision::DOUBLE, domain::REAL>& desc, sycl::queue& sycl_queue) {
+    const descriptor<precision::DOUBLE, domain::REAL>& desc, sycl::queue& sycl_queue) {
     auto libkey = get_device_id(sycl_queue);
     return function_tables[libkey].create_commit_sycl_dr(desc, sycl_queue);
 }

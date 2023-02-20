@@ -56,7 +56,7 @@ public:
 
     void set_value(config_param param, ...);
 
-    void get_value(config_param param, ...);
+    void get_value(config_param param, ...) const;
 
     void commit(sycl::queue& queue);
 
@@ -68,7 +68,7 @@ public:
     void commit(backend_selector<backend::mklgpu> selector);
 #endif
 
-    dft_values<prec, dom> get_values() {
+    const dft_values<prec, dom>& get_values() const noexcept {
         return values_;
     };
 

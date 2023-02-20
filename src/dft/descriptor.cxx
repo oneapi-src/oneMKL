@@ -58,7 +58,7 @@ void descriptor<prec, dom>::set_value(config_param param, ...) {
             throw mkl::invalid_argument("DFT", "set_value", "Read-only parameter.");
             break;
         case config_param::LENGTHS: {
-            if (values_.rank == 1) {
+            if (values_.dimensions.size() == 1) {
                 std::int64_t length = va_arg(vl, std::int64_t);
                 detail::set_value<config_param::LENGTHS>(values_, &length);
             }
@@ -113,6 +113,9 @@ void descriptor<prec, dom>::set_value(config_param param, ...) {
         case config_param::TRANSPOSE:
             detail::set_value<config_param::TRANSPOSE>(values_, va_arg(vl, int));
             break;
+        case config_param::WORKSPACE:
+            detail::set_value<config_param::WORKSPACE>(values_, va_arg(vl, config_value));
+            break;
         case config_param::PACKED_FORMAT:
             detail::set_value<config_param::PACKED_FORMAT>(values_, va_arg(vl, config_value));
             break;
@@ -151,7 +154,6 @@ descriptor<prec, dom>::descriptor(std::vector<std::int64_t> dimensions) {
     values_.transpose = false;
     values_.packed_format = config_value::CCE_FORMAT;
     values_.dimensions = std::move(dimensions);
-    values_.rank = values_.dimensions.size();
 }
 
 template <precision prec, domain dom>
@@ -162,7 +164,7 @@ template <precision prec, domain dom>
 descriptor<prec, dom>::~descriptor() {}
 
 template <precision prec, domain dom>
-void descriptor<prec, dom>::get_value(config_param param, ...) {
+void descriptor<prec, dom>::get_value(config_param param, ...) const {
     int err = 0;
     using real_t = std::conditional_t<prec == precision::SINGLE, float, double>;
     va_list vl;
@@ -174,7 +176,7 @@ void descriptor<prec, dom>::get_value(config_param param, ...) {
     va_start(vl, param);
     switch (param) {
         case config_param::FORWARD_DOMAIN: *va_arg(vl, dft::domain*) = dom; break;
-        case config_param::DIMENSION: *va_arg(vl, std::int64_t*) = values_.rank; break;
+        case config_param::DIMENSION: *va_arg(vl, std::int64_t*) = values_.dimensions.size(); break;
         case config_param::LENGTHS:
             std::copy(values_.dimensions.begin(), values_.dimensions.end(),
                       va_arg(vl, std::int64_t*));

@@ -20,7 +20,7 @@
 // Commit
 
 template <dft::detail::precision prec, dft::detail::domain dom>
-ONEMKL_EXPORT dft::detail::commit_impl *create_commit(dft::detail::descriptor<prec, dom> &desc,
+ONEMKL_EXPORT dft::detail::commit_impl *create_commit(const dft::detail::descriptor<prec, dom> &desc,
                                                       sycl::queue &sycl_queue);
 
 // BUFFER version

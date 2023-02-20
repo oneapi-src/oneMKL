@@ -95,17 +95,16 @@ template <config_param Param, precision prec, domain dom>
 void set_value(dft_values<prec, dom>& vals,
                param_type_helper_t<real_helper_t<prec>, Param>&& set_val) {
     if constexpr (Param == config_param::LENGTHS) {
-        int rank = vals.rank;
         if (set_val == nullptr) {
             throw mkl::invalid_argument("DFT", "set_value", "Given nullptr.");
         }
-        for (int i{ 0 }; i < rank; ++i) {
+        for (int i{ 0 }; i < vals.dimensions.size(); ++i) {
             if (set_val[i] <= 0) {
                 throw mkl::invalid_argument("DFT", "set_value",
                                             "Invalid length value (negative or 0).");
             }
         }
-        std::copy(set_val, set_val + rank, vals.dimensions.begin());
+        std::copy(set_val, set_val + vals.dimensions.size(), vals.dimensions.begin());
     }
     else if constexpr (Param == config_param::PRECISION) {
         throw mkl::invalid_argument("DFT", "set_value", "Read-only parameter.");
@@ -159,18 +158,16 @@ void set_value(dft_values<prec, dom>& vals,
         }
     }
     else if constexpr (Param == config_param::INPUT_STRIDES) {
-        int rank = vals.rank;
         if (set_val == nullptr) {
             throw mkl::invalid_argument("DFT", "set_value", "Given nullptr.");
         }
-        std::copy(set_val, set_val + vals.rank + 1, vals.input_strides.begin());
+        std::copy(set_val, set_val + vals.dimensions.size() + 1, vals.input_strides.begin());
     }
     else if constexpr (Param == config_param::OUTPUT_STRIDES) {
-        int rank = vals.rank;
         if (set_val == nullptr) {
             throw mkl::invalid_argument("DFT", "set_value", "Given nullptr.");
         }
-        std::copy(set_val, set_val + vals.rank + 1, vals.output_strides.begin());
+        std::copy(set_val, set_val + vals.dimensions.size() + 1, vals.output_strides.begin());
     }
     else if constexpr (Param == config_param::FWD_DISTANCE) {
         vals.fwd_dist = set_val;

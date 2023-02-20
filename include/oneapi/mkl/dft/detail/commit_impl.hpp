@@ -38,25 +38,24 @@ class commit_impl {
 public:
     commit_impl(sycl::queue queue, mkl::backend backend)
             : queue_(queue),
-              backend_(backend),
-              status(false) {}
+              backend_(backend) {}
 
-    commit_impl(const commit_impl& other) = default;
-
+    // rule of three
+    commit_impl(const commit_impl& other) = delete;
+    commit_impl& operator=(const commit_impl& other) = delete;
     virtual ~commit_impl() = default;
 
-    sycl::queue& get_queue() {
+    sycl::queue& get_queue() noexcept {
         return queue_;
     }
 
-    mkl::backend& get_backend() {
+    mkl::backend get_backend() const noexcept {
         return backend_;
     }
 
-    virtual void* get_handle() = 0;
+    virtual void* get_handle() noexcept = 0;
 
-protected:
-    bool status;
+private:
     mkl::backend backend_;
     sycl::queue queue_;
 };

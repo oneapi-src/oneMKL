@@ -40,12 +40,12 @@ namespace dft {
 namespace mklcpu {
 
 template <precision prec, domain dom>
-class commit_derived_impl : public detail::commit_impl {
+class commit_derived_impl final : public detail::commit_impl {
 public:
-    commit_derived_impl(sycl::queue queue, detail::dft_values<prec, dom> config_values)
-            : detail::commit_impl(queue, backend::mklcpu),
-              status(DFT_NOTSET) {
-        if (config_values.rank == 1) {
+    commit_derived_impl(sycl::queue queue, const detail::dft_values<prec, dom>& config_values)
+            : detail::commit_impl(queue, backend::mklcpu) {
+        DFT_ERROR status = DFT_NOTSET;
+        if (config_values.dimensions.size() == 1) {
             status = DftiCreateDescriptor(&handle, get_precision(prec), get_domain(dom),
                                           config_values.rank, config_values.dimensions[0]);
         }
@@ -54,18 +54,18 @@ public:
                                           config_values.rank, config_values.dimensions.data());
         }
         if (status != DFTI_NO_ERROR) {
-            throw oneapi::mkl::exception("dft", "commit", "DftiCreateDescriptor failed");
+            throw oneapi::mkl::exception("dft/backends/mklcpu", "commit", "DftiCreateDescriptor failed");
         }
 
         set_value(handle, config_values);
 
         status = DftiCommitDescriptor(handle);
         if (status != DFTI_NO_ERROR) {
-            throw oneapi::mkl::exception("dft", "commit", "DftiCommitDescriptor failed");
+            throw oneapi::mkl::exception("dft/backends/mklcpu", "commit", "DftiCommitDescriptor failed");
         }
     }
 
-    virtual void* get_handle() override {
+    virtual void* get_handle() noexcept override {
         return handle;
     }
 
@@ -74,7 +74,6 @@ public:
     }
 
 private:
-    DFT_ERROR status;
     DFTI_DESCRIPTOR_HANDLE handle = nullptr;
 
     constexpr DFTI_CONFIG_VALUE get_domain(domain d) {
@@ -96,18 +95,16 @@ private:
     }
 
     template <typename... Args>
-    DFT_ERROR set_value_item(DFTI_DESCRIPTOR_HANDLE hand, enum DFTI_CONFIG_PARAM name,
+    void set_value_item(DFTI_DESCRIPTOR_HANDLE hand, enum DFTI_CONFIG_PARAM name,
                              Args... args) {
-        DFT_ERROR value_err = DFT_NOTSET;
-        value_err = DftiSetValue(hand, name, args...);
-        if (value_err != DFTI_NO_ERROR) {
-            throw oneapi::mkl::exception("dft", "set_value_item", std::to_string(name));
+        if (auto ret = DftiSetValue(hand, name, args...); ret != DFTI_NO_ERROR) {
+            throw oneapi::mkl::exception(
+                "dft/backends/mklcpu", "set_value_item",
+                "name: " + std::to_string(name) + " error: " + std::to_string(ret));
         }
-
-        return value_err;
     }
 
-    void set_value(DFTI_DESCRIPTOR_HANDLE& descHandle, detail::dft_values<prec, dom> config) {
+    void set_value(DFTI_DESCRIPTOR_HANDLE& descHandle, const detail::dft_values<prec, dom>& config) {
         set_value_item(descHandle, DFTI_INPUT_STRIDES, config.input_strides.data());
         set_value_item(descHandle, DFTI_OUTPUT_STRIDES, config.output_strides.data());
         set_value_item(descHandle, DFTI_BACKWARD_SCALE, config.bwd_scale);
@@ -122,17 +119,17 @@ private:
 };
 
 template <precision prec, domain dom>
-detail::commit_impl* create_commit(descriptor<prec, dom>& desc, sycl::queue& sycl_queue) {
+detail::commit_impl* create_commit(const descriptor<prec, dom>& desc, sycl::queue& sycl_queue) {
     return new commit_derived_impl<prec, dom>(sycl_queue, desc.get_values());
 }
 
-template detail::commit_impl* create_commit(descriptor<precision::SINGLE, domain::REAL>&,
+template detail::commit_impl* create_commit(const descriptor<precision::SINGLE, domain::REAL>&,
                                             sycl::queue&);
-template detail::commit_impl* create_commit(descriptor<precision::SINGLE, domain::COMPLEX>&,
+template detail::commit_impl* create_commit(const descriptor<precision::SINGLE, domain::COMPLEX>&,
                                             sycl::queue&);
-template detail::commit_impl* create_commit(descriptor<precision::DOUBLE, domain::REAL>&,
+template detail::commit_impl* create_commit(const descriptor<precision::DOUBLE, domain::REAL>&,
                                             sycl::queue&);
-template detail::commit_impl* create_commit(descriptor<precision::DOUBLE, domain::COMPLEX>&,
+template detail::commit_impl* create_commit(const descriptor<precision::DOUBLE, domain::COMPLEX>&,
                                             sycl::queue&);
 
 } // namespace mklcpu
