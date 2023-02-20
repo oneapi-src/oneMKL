@@ -79,8 +79,8 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
 #ifdef ENABLE_MKLCPU_BACKEND
               LIB_NAME("dft_mklcpu")
 #endif
-        } },
-      { device::intelgpu,
+          } },
+        { device::intelgpu,
           {
 #ifdef ENABLE_MKLGPU_BACKEND
               LIB_NAME("dft_mklgpu")

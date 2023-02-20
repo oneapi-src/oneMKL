@@ -37,19 +37,19 @@ typedef struct {
     int version;
     oneapi::mkl::dft::detail::commit_impl* (*create_commit_sycl_fz)(
         const oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE,
-                                     oneapi::mkl::dft::domain::COMPLEX>& desc,
+                                           oneapi::mkl::dft::domain::COMPLEX>& desc,
         sycl::queue& sycl_queue);
     oneapi::mkl::dft::detail::commit_impl* (*create_commit_sycl_dz)(
         const oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE,
-                                     oneapi::mkl::dft::domain::COMPLEX>& desc,
+                                           oneapi::mkl::dft::domain::COMPLEX>& desc,
         sycl::queue& sycl_queue);
     oneapi::mkl::dft::detail::commit_impl* (*create_commit_sycl_fr)(
         const oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE,
-                                     oneapi::mkl::dft::domain::REAL>& desc,
+                                           oneapi::mkl::dft::domain::REAL>& desc,
         sycl::queue& sycl_queue);
     oneapi::mkl::dft::detail::commit_impl* (*create_commit_sycl_dr)(
         const oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::DOUBLE,
-                                     oneapi::mkl::dft::domain::REAL>& desc,
+                                           oneapi::mkl::dft::domain::REAL>& desc,
         sycl::queue& sycl_queue);
 
 #define ONEAPI_MKL_DFT_BACKEND_SIGNATURES(EXT, PRECISION, DOMAIN, T_REAL, T_FORWARD, T_BACKWARD)   \

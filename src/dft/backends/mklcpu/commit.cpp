@@ -54,14 +54,16 @@ public:
                                           config_values.rank, config_values.dimensions.data());
         }
         if (status != DFTI_NO_ERROR) {
-            throw oneapi::mkl::exception("dft/backends/mklcpu", "commit", "DftiCreateDescriptor failed");
+            throw oneapi::mkl::exception("dft/backends/mklcpu", "commit",
+                                         "DftiCreateDescriptor failed");
         }
 
         set_value(handle, config_values);
 
         status = DftiCommitDescriptor(handle);
         if (status != DFTI_NO_ERROR) {
-            throw oneapi::mkl::exception("dft/backends/mklcpu", "commit", "DftiCommitDescriptor failed");
+            throw oneapi::mkl::exception("dft/backends/mklcpu", "commit",
+                                         "DftiCommitDescriptor failed");
         }
     }
 
@@ -95,8 +97,7 @@ private:
     }
 
     template <typename... Args>
-    void set_value_item(DFTI_DESCRIPTOR_HANDLE hand, enum DFTI_CONFIG_PARAM name,
-                             Args... args) {
+    void set_value_item(DFTI_DESCRIPTOR_HANDLE hand, enum DFTI_CONFIG_PARAM name, Args... args) {
         if (auto ret = DftiSetValue(hand, name, args...); ret != DFTI_NO_ERROR) {
             throw oneapi::mkl::exception(
                 "dft/backends/mklcpu", "set_value_item",
@@ -104,7 +105,8 @@ private:
         }
     }
 
-    void set_value(DFTI_DESCRIPTOR_HANDLE& descHandle, const detail::dft_values<prec, dom>& config) {
+    void set_value(DFTI_DESCRIPTOR_HANDLE& descHandle,
+                   const detail::dft_values<prec, dom>& config) {
         set_value_item(descHandle, DFTI_INPUT_STRIDES, config.input_strides.data());
         set_value_item(descHandle, DFTI_OUTPUT_STRIDES, config.output_strides.data());
         set_value_item(descHandle, DFTI_BACKWARD_SCALE, config.bwd_scale);

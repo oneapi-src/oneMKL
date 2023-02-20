@@ -66,7 +66,8 @@ public:
         // MKLGPU does not throw an informative exception for the following:
         if constexpr (prec == dft::detail::precision::DOUBLE) {
             if (!queue.get_device().has(sycl::aspect::fp64)) {
-                throw mkl::exception("dft/backends/mklgpu", "commit", "Device does not support double precision.");
+                throw mkl::exception("dft/backends/mklgpu", "commit",
+                                     "Device does not support double precision.");
             }
         }
 
@@ -116,11 +117,13 @@ private:
         // Setting the workspace causes an FFT_INVALID_DESCRIPTOR.
         // Setting the ordering causes an FFT_INVALID_DESCRIPTOR. Check that default is used:
         if (config.ordering != dft::detail::config_value::ORDERED) {
-            throw mkl::invalid_argument("dft/backends/mklgpu", "commit", "MKLGPU only supports ordered ordering.");
+            throw mkl::invalid_argument("dft/backends/mklgpu", "commit",
+                                        "MKLGPU only supports ordered ordering.");
         }
         // Setting the transpose causes an FFT_INVALID_DESCRIPTOR. Check that default is used:
         if (config.transpose != false) {
-            throw mkl::invalid_argument("dft/backends/mklgpu", "commit", "MKLGPU only supports non-transposed.");
+            throw mkl::invalid_argument("dft/backends/mklgpu", "commit",
+                                        "MKLGPU only supports non-transposed.");
         }
         desc.set_value(backend_param::PACKED_FORMAT,
                        to_mklgpu<onemkl_param::PACKED_FORMAT>(config.packed_format));
