@@ -176,7 +176,7 @@ void descriptor<prec, dom>::get_value(config_param param, ...) const {
     va_start(vl, param);
     switch (param) {
         case config_param::FORWARD_DOMAIN: *va_arg(vl, dft::domain*) = dom; break;
-        case config_param::DIMENSION: *va_arg(vl, std::int64_t*) = values_.dimensions.size(); break;
+        case config_param::DIMENSION: *va_arg(vl, std::int64_t*) = static_cast<std::int64_t>(values_.dimensions.size()); break;
         case config_param::LENGTHS:
             std::copy(values_.dimensions.begin(), values_.dimensions.end(),
                       va_arg(vl, std::int64_t*));

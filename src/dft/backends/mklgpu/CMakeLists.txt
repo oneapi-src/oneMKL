@@ -39,7 +39,7 @@ target_include_directories(${LIB_OBJ}
           ${MKL_INCLUDE}
 )
 
-target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT} ${MKL_COPT})
+target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT} ${MKL_COPT} -Wconversion)
 
 target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ${MKL_LINK_SYCL})
 
