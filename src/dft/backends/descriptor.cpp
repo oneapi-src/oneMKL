@@ -28,7 +28,7 @@ namespace dft {
 
 template <precision prec, domain dom>
 void descriptor<prec, dom>::commit(sycl::queue &queue) {
-    if (!pimpl_) {
+    if (!pimpl_ || pimpl_->get_queue() != queue) {
         pimpl_.reset(detail::create_commit(*this, queue));
     }
     pimpl_->commit(values_);
