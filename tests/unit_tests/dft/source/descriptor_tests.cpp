@@ -362,7 +362,6 @@ inline void get_readonly_values(sycl::queue& sycl_queue) {
     EXPECT_EQ(dimension_value, 1);
 
     oneapi::mkl::dft::descriptor<precision, domain> descriptor3D{ default_3d_lengths };
-
     descriptor3D.get_value(oneapi::mkl::dft::config_param::DIMENSION, &dimension_value);
     EXPECT_EQ(dimension_value, 3);
 
@@ -446,9 +445,8 @@ inline void recommit_values(sycl::queue& sycl_queue) {
     };
 
     for (int i = 0; i < arguments.size(); i += 1) {
-        std::visit(
-            [&arguments, &descriptor, i](auto&& a) { descriptor.set_value(arguments[i].first, a); },
-            arguments[i].second);
+        std::visit([&descriptor, p = arguments[i].first](auto&& a) { descriptor.set_value(p, a); },
+                   arguments[i].second);
         try {
             commit_descriptor(descriptor, sycl_queue);
         }
