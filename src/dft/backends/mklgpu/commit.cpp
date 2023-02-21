@@ -71,11 +71,10 @@ public:
         }
     }
 
-    virtual void commit(sycl::queue& queue,
-                        const dft::detail::dft_values<prec, dom>& config_values) override {
+    virtual void commit(const dft::detail::dft_values<prec, dom>& config_values) override {
         set_value(handle, config_values);
         try {
-            handle.commit(queue);
+            handle.commit(this->get_queue());
         }
         catch (const std::exception& mkl_exception) {
             // Catching the real MKL exception causes headaches with naming.

@@ -31,7 +31,7 @@ void descriptor<prec, dom>::commit(sycl::queue &queue) {
     if (!pimpl_) {
         pimpl_.reset(detail::create_commit(*this, queue));
     }
-    pimpl_->commit(queue, values_);
+    pimpl_->commit(values_);
 }
 template void descriptor<precision::SINGLE, domain::COMPLEX>::commit(sycl::queue &);
 template void descriptor<precision::SINGLE, domain::REAL>::commit(sycl::queue &);

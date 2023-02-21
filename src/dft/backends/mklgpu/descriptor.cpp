@@ -31,7 +31,7 @@ void descriptor<prec, dom>::commit(backend_selector<backend::mklgpu> selector) {
     if (!pimpl_) {
         pimpl_.reset(mklgpu::create_commit(*this, selector.get_queue()));
     }
-    pimpl_->commit(selector.get_queue(), values_);
+    pimpl_->commit(values_);
 }
 
 template void descriptor<precision::SINGLE, domain::COMPLEX>::commit(

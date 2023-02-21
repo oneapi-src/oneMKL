@@ -57,7 +57,7 @@ public:
 
     virtual void* get_handle() noexcept = 0;
 
-    virtual void commit(sycl::queue& queue, const dft_values<prec, dom>&) = 0;
+    virtual void commit(const dft_values<prec, dom>&) = 0;
 
 private:
     mkl::backend backend_;
