@@ -81,7 +81,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     }
 
     // account for scaling that occurs during DFT
-    std::for_each(input.begin(), input.end(), [this](auto& x) { x *= forward_elements; });
+    std::for_each(input.begin(), input.end(), [this](auto &x) { x *= size; });
 
     {
         auto acc_host = inout_buf.template get_host_access();

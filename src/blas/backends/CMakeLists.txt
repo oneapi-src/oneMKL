@@ -36,5 +36,3 @@ endif()
 if(ENABLE_ROCBLAS_BACKEND AND UNIX)
   add_subdirectory(rocblas)
 endif()
-
-# TODO
