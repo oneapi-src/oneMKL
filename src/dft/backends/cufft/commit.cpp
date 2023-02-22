@@ -51,7 +51,6 @@ public:
                 throw mkl::exception("DFT", "commit", "Device does not support double precision.");
             }
         }
-        cufftCreate(&plan);
 
         // The cudaStream for the plan is set at execution time so the interop handler can pick the stream.
 
@@ -79,29 +78,29 @@ public:
         cufftDestroy(plan);
     }
 
-    virtual void* get_handle() override {
+    void* get_handle() noexcept override {
         return &plan;
     }
 };
 } // namespace detail
 
 template <dft::precision prec, dft::domain dom>
-dft::detail::commit_impl* create_commit(dft::detail::descriptor<prec, dom>& desc,
+dft::detail::commit_impl* create_commit(const dft::detail::descriptor<prec, dom>& desc,
                                         sycl::queue& sycl_queue) {
     return new detail::cufft_commit<prec, dom>(sycl_queue, desc.get_values());
 }
 
 template dft::detail::commit_impl* create_commit(
-    dft::detail::descriptor<dft::detail::precision::SINGLE, dft::detail::domain::REAL>&,
+    const dft::detail::descriptor<dft::detail::precision::SINGLE, dft::detail::domain::REAL>&,
     sycl::queue&);
 template dft::detail::commit_impl* create_commit(
-    dft::detail::descriptor<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>&,
+    const dft::detail::descriptor<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>&,
     sycl::queue&);
 template dft::detail::commit_impl* create_commit(
-    dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>&,
+    const dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>&,
     sycl::queue&);
 template dft::detail::commit_impl* create_commit(
-    dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>&,
+    const dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>&,
     sycl::queue&);
 
 } // namespace oneapi::mkl::dft::cufft

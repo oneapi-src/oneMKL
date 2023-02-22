@@ -62,7 +62,6 @@ public:
 private:
     sycl::queue queue_;
     mkl::backend backend_;
-    bool status;
 };
 
 } // namespace oneapi::mkl::dft::detail
