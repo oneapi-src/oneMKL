@@ -24,85 +24,46 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include <type_traits>
-
 #include <cufft.h>
 
-#include "oneapi/mkl/dft/backward.hpp"
+#include "execute_helper.hpp"
 #include "oneapi/mkl/dft/detail/commit_impl.hpp"
-#include "oneapi/mkl/dft/detail/descriptor_impl.hpp"
+#include "oneapi/mkl/dft/forward.hpp"
 #include "oneapi/mkl/dft/types.hpp"
 #include "oneapi/mkl/exceptions.hpp"
 
 namespace oneapi::mkl::dft::cufft {
-namespace detail {
-
-template <dft::precision prec, dft::domain dom>
-inline dft::detail::commit_impl *get_commit(dft::detail::descriptor<prec, dom> &desc) {
-    auto commit_handle = dft::detail::get_commit(desc);
-    if (commit_handle == nullptr || commit_handle->get_backend() != backend::cufft) {
-        throw mkl::invalid_argument("DFT", "compute_forward",
-                                    "DFT descriptor has not been commited for cuFFT");
-    }
-    return commit_handle;
-}
-
-/// Throw an mkl::invalid_argument if the runtime param in the descriptor does not match
-/// the expected value.
-template <dft::config_param Param, dft::config_value Expected, typename DescT>
-inline auto expect_config(DescT &desc, const char *message) {
-    dft::config_value actual{ 0 };
-    desc.get_value(Param, &actual);
-    if (actual != Expected) {
-        throw mkl::invalid_argument("DFT", "compute_forward", message);
-    }
-}
-} // namespace detail
 
 // BUFFER version
 
 //In-place transform
 template <typename descriptor_type, typename data_type>
 ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout) {
-    if constexpr (std::is_same_v<data_type, std::complex<float>>) {
-        detail::expect_config<dft::config_param::PLACEMENT,
-                              dft::config_value::INPLACE>(desc,
-                                                                  "Unexpected value for placement");
-        auto commit = get_commit(desc);
-        auto queue = commit->get_queue();
-        auto plan = *static_cast<cufftHandle *>(commit->get_handle());
+    detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
+        desc, "Unexpected value for placement");
+    auto commit = get_commit(desc);
+    auto queue = commit->get_queue();
+    auto plan = static_cast<cufftHandle *>(commit->get_handle())[0];
 
-        queue.submit([&](sycl::handler &cgh) {
-            auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
+    queue.submit([&](sycl::handler &cgh) {
+        auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
 
-            cgh.host_task([=](sycl::interop_handle ih) {
-                auto inout_native = reinterpret_cast<cufftComplex *>(
-                    ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(inout_acc));
-                auto stream = ih.get_native_queue<sycl::backend::ext_oneapi_cuda>();
-                auto result = cufftSetStream(plan, stream);
-                if (result != CUFFT_SUCCESS) {
-                    throw oneapi::mkl::exception(
-                        "DFT", "compute_forward(desc, inout)",
-                        "cufftSetStream returned " + std::to_string(result));
-                }
-                result = cufftExecC2C(plan, inout_native, inout_native, CUFFT_FORWARD);
-                if (result != CUFFT_SUCCESS) {
-                    throw oneapi::mkl::exception("DFT", "compute_forward(desc, inout)",
-                                                 "cufftExecC2C returned " + std::to_string(result));
-                }
-            });
+        cgh.host_task([=](sycl::interop_handle ih) {
+            const std::string func_name = "compute_forward(desc, inout)";
+            auto stream = detail::setup_stream(func_name, ih, plan);
+
+            auto inout_native = reinterpret_cast<void *>(
+                ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(inout_acc));
+            detail::cufft_execute<detail::Direction::Forward, data_type>(
+                func_name, stream, plan, inout_native, inout_native);
         });
-    }
-    else {
-        throw oneapi::mkl::unimplemented("DFT", "compute_forward<double>(desc, inout)",
-                                         "not yet implemented");
-    }
+    });
 }
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout_re,
-                                   sycl::buffer<data_type, 1> &inout_im) {
+ONEMKL_EXPORT void compute_forward(descriptor_type &, sycl::buffer<data_type, 1> &,
+                                   sycl::buffer<data_type, 1> &) {
     throw oneapi::mkl::unimplemented("DFT", "compute_forward(desc, inout_re, inout_im)",
                                      "cuFFT does not support real-real complex storage.");
 }
@@ -111,19 +72,35 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type
 template <typename descriptor_type, typename input_type, typename output_type>
 ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_type, 1> &in,
                                    sycl::buffer<output_type, 1> &out) {
-    detail::expect_config<dft::config_param::PLACEMENT,
-                          dft::config_value::NOT_INPLACE>(desc,
-                                                                  "Unexpected value for placement");
-    throw oneapi::mkl::unimplemented("DFT", "compute_forward(desc, in, out)",
-                                     "not yet implemented");
+    detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::NOT_INPLACE>(
+        desc, "Unexpected value for placement");
+    auto commit = get_commit(desc);
+    auto queue = commit->get_queue();
+    auto plan = static_cast<cufftHandle *>(commit->get_handle())[0];
+
+    queue.submit([&](sycl::handler &cgh) {
+        auto in_acc = in.template get_access<sycl::access::mode::read_write>(cgh);
+        auto out_acc = out.template get_access<sycl::access::mode::read_write>(cgh);
+
+        cgh.host_task([=](sycl::interop_handle ih) {
+            const std::string func_name = "compute_forward(desc, in, out)";
+            auto stream = detail::setup_stream(func_name, ih, plan);
+
+            auto in_native =
+                reinterpret_cast<void *>(ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(in_acc));
+            auto out_native = reinterpret_cast<void *>(
+                ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(out_acc));
+            detail::cufft_execute<detail::Direction::Forward, input_type>(func_name, stream, plan,
+                                                                          in_native, out_native);
+        });
+    });
 }
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_type, 1> &in_re,
-                                   sycl::buffer<input_type, 1> &in_im,
-                                   sycl::buffer<output_type, 1> &out_re,
-                                   sycl::buffer<output_type, 1> &out_im) {
+ONEMKL_EXPORT void compute_forward(descriptor_type &, sycl::buffer<input_type, 1> &,
+                                   sycl::buffer<input_type, 1> &, sycl::buffer<output_type, 1> &,
+                                   sycl::buffer<output_type, 1> &) {
     throw oneapi::mkl::unimplemented("DFT", "compute_forward(desc, in_re, in_im, out_re, out_im)",
                                      "cuFFT does not support real-real complex storage.");
 }
@@ -136,15 +113,27 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inou
                                           const std::vector<sycl::event> &dependencies) {
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
-    throw oneapi::mkl::unimplemented("DFT", "compute_forward(desc, inout, dependencies)",
-                                     "not yet implemented");
+    auto commit = get_commit(desc);
+    auto queue = commit->get_queue();
+    auto plan = static_cast<cufftHandle *>(commit->get_handle())[0];
+
+    return queue.submit([&](sycl::handler &cgh) {
+	cgh.depends_on(dependencies);
+
+        cgh.host_task([=](sycl::interop_handle ih) {
+            const std::string func_name = "compute_forward(desc, inout, dependencies)";
+            auto stream = detail::setup_stream(func_name, ih, plan);
+
+            detail::cufft_execute<detail::Direction::Forward, data_type>(func_name, stream, plan,
+                                                                         inout, inout);
+        });
+    });
 }
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inout_re,
-                                          data_type *inout_im,
-                                          const std::vector<sycl::event> &dependencies) {
+ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &, data_type *, data_type *,
+                                          const std::vector<sycl::event> &) {
     throw oneapi::mkl::unimplemented("DFT",
                                      "compute_forward(desc, inout_re, inout_im, dependencies)",
                                      "cuFFT does not support real-real complex storage.");
@@ -154,16 +143,30 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inou
 template <typename descriptor_type, typename input_type, typename output_type>
 ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in, output_type *out,
                                           const std::vector<sycl::event> &dependencies) {
-    throw oneapi::mkl::unimplemented("DFT", "compute_forward(desc, in, out, dependencies)",
-                                     "not yet implemented");
+    detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::NOT_INPLACE>(
+        desc, "Unexpected value for placement");
+    auto commit = get_commit(desc);
+    auto queue = commit->get_queue();
+    auto plan = static_cast<cufftHandle *>(commit->get_handle())[0];
+
+    return queue.submit([&](sycl::handler &cgh) {
+	cgh.depends_on(dependencies);
+
+        cgh.host_task([=](sycl::interop_handle ih) {
+            const std::string func_name = "compute_forward(desc, in, out, dependencies)";
+            auto stream = detail::setup_stream(func_name, ih, plan);
+
+            detail::cufft_execute<detail::Direction::Forward, input_type>(func_name, stream, plan,
+                                                                          in, out);
+        });
+    });
 }
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in_re,
-                                          input_type *in_im, output_type *out_re,
-                                          output_type *out_im,
-                                          const std::vector<sycl::event> &dependencies) {
+ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &, input_type *, input_type *,
+                                          output_type *, output_type *,
+                                          const std::vector<sycl::event> &) {
     throw oneapi::mkl::unimplemented(
         "DFT", "compute_forward(desc, in_re, in_im, out_re, out_im, dependencies)",
         "cuFFT does not support real-real complex storage.");

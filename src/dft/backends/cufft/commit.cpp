@@ -41,7 +41,8 @@ namespace detail {
 template <dft::precision prec, dft::domain dom>
 class cufft_commit final : public dft::detail::commit_impl {
 private:
-    cufftHandle plan;
+    // plans[0] is forward, plans[1] is backward
+    std::array<cufftHandle, 2> plans;
 
 public:
     cufft_commit(sycl::queue& queue, const dft::detail::dft_values<prec, dom>& config_values)
@@ -53,33 +54,105 @@ public:
         }
 
         // The cudaStream for the plan is set at execution time so the interop handler can pick the stream.
-
-        const cufftType type = CUFFT_C2C;
+        const cufftType fwd_type = [] {
+            if constexpr (dom == dft::domain::COMPLEX) {
+                if constexpr (prec == dft::precision::SINGLE) {
+                    return CUFFT_C2C;
+                }
+                else {
+                    return CUFFT_Z2Z;
+                }
+            }
+            else {
+                if constexpr (prec == dft::precision::SINGLE) {
+                    return CUFFT_R2C;
+                }
+                else {
+                    return CUFFT_D2Z;
+                }
+            }
+        }();
+        const cufftType bwd_type = [] {
+            if constexpr (dom == dft::domain::COMPLEX) {
+                if constexpr (prec == dft::precision::SINGLE) {
+                    return CUFFT_C2C;
+                }
+                else {
+                    return CUFFT_Z2Z;
+                }
+            }
+            else {
+                if constexpr (prec == dft::precision::SINGLE) {
+                    return CUFFT_C2R;
+                }
+                else {
+                    return CUFFT_Z2D;
+                }
+            }
+        }();
 
         constexpr std::size_t max_supported_dims = 3;
         std::array<int, max_supported_dims> n_copy;
         std::copy(config_values.dimensions.begin(), config_values.dimensions.end(), n_copy.data());
+        const int rank = static_cast<int>(config_values.dimensions.size());
+        const int istride = static_cast<int>(config_values.input_strides.back());
+        const int ostride = static_cast<int>(config_values.output_strides.back());
+        const int batch = static_cast<int>(config_values.number_of_transforms);
+        const int fwd_dist = static_cast<int>(config_values.fwd_dist);
+        const int bwd_dist = static_cast<int>(config_values.bwd_dist);
+        std::array<int, max_supported_dims> inembed;
+        if (rank == 2) {
+            inembed[1] = config_values.input_strides[1];
+        }
+        else if (rank == 3) {
+            inembed[2] = config_values.input_strides[2];
+            inembed[1] = config_values.input_strides[1] / inembed[2];
+        }
+        std::array<int, max_supported_dims> onembed;
+        if (rank == 2) {
+            onembed[1] = config_values.output_strides[1];
+        }
+        else if (rank == 3) {
+            onembed[2] = config_values.output_strides[2];
+            onembed[1] = config_values.output_strides[1] / onembed[2];
+        }
 
-        cufftPlanMany(&plan, // plan
-                      static_cast<int>(config_values.dimensions.size()), // rank
+        // forward plan
+        cufftPlanMany(&plans[0], // plan
+                      rank, // rank
                       n_copy.data(), // n
-                      /*TODO*/ nullptr, // inembed
-                      /*TODO*/ 1, // istride
-                      /*TODO*/ 1, // idist
-                      /*TODO*/ nullptr, // onembed
-                      /*TODO*/ 1, // ostride
-                      /*TODO*/ 1, // odist
-                      /*TODO*/ type, // type
-                      /*TODO*/ 1 // batch
+                      inembed.data(), // inembed
+                      istride, // istride
+                      fwd_dist, // idist
+                      onembed.data(), // onembed
+                      ostride, // ostride
+                      bwd_dist, // odist
+                      fwd_type, // type
+                      batch // batch
+        );
+
+        // backward plan
+        cufftPlanMany(&plans[1], // plan
+                      rank, // rank
+                      n_copy.data(), // n
+                      onembed.data(), // inembed
+                      ostride, // istride
+                      bwd_dist, // idist
+                      inembed.data(), // onembed
+                      istride, // ostride
+                      fwd_dist, // odist
+                      bwd_type, // type
+                      batch // batch
         );
     }
 
     ~cufft_commit() override {
-        cufftDestroy(plan);
+        cufftDestroy(plans[0]);
+        cufftDestroy(plans[1]);
     }
 
     void* get_handle() noexcept override {
-        return &plan;
+        return plans.data();
     }
 };
 } // namespace detail
