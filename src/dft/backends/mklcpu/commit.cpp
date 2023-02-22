@@ -55,16 +55,18 @@ public:
                                           config_values.dimensions.data());
         }
         if (status != DFTI_NO_ERROR) {
-            throw oneapi::mkl::exception("dft/backends/mklcpu", "commit",
-                                         "DftiCreateDescriptor failed");
+            throw oneapi::mkl::exception(
+                "dft/backends/mklcpu", "commit",
+                "DftiCreateDescriptor failed with status: " + std::to_string(status));
         }
     }
 
     void commit(const detail::dft_values<prec, dom>& config_values) override {
         set_value(handle, config_values);
         if (auto status = DftiCommitDescriptor(handle); status != DFTI_NO_ERROR) {
-            throw oneapi::mkl::exception("dft/backends/mklcpu", "commit",
-                                         "DftiCommitDescriptor failed");
+            throw oneapi::mkl::exception(
+                "dft/backends/mklcpu", "commit",
+                "DftiCommitDescriptor failed with status: " + std::to_string(status));
         }
     }
 
