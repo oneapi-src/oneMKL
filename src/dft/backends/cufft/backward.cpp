@@ -78,14 +78,14 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
                 auto inout_native = reinterpret_cast<cufftComplex *>(
                     ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(inout_acc));
                 auto stream = ih.get_native_queue<sycl::backend::ext_oneapi_cuda>();
-                if (const auto result = cufftSetStream(plan, stream); result != CUFFT_SUCCESS) {
+                auto result = cufftSetStream(plan, stream);
+                if (result != CUFFT_SUCCESS) {
                     throw oneapi::mkl::exception(
                         "DFT", "compute_backward(desc, inout)",
                         "cufftSetStream returned " + std::to_string(result));
                 }
-                if (const auto result =
-                        cufftExecC2C(plan, inout_native, inout_native, CUFFT_INVERSE);
-                    result != CUFFT_SUCCESS) {
+                result = cufftExecC2C(plan, inout_native, inout_native, CUFFT_INVERSE);
+                if (result != CUFFT_SUCCESS) {
                     throw oneapi::mkl::exception("DFT", "compute_backward(desc, inout)",
                                                  "cufftExecC2C returned " + std::to_string(result));
                 }
