@@ -129,9 +129,11 @@ inline constexpr int to_mklcpu<dft::detail::config_param::COMPLEX_STORAGE>(
     if (value == dft::detail::config_value::COMPLEX_COMPLEX) {
         return DFTI_COMPLEX_COMPLEX;
     }
-    else {
-        throw mkl::unimplemented("dft", "MKLcPU descriptor set_value()",
-                                 "MKLcPU only supports complex-complex for complex storage.");
+    else if (value == dft::detail::config_value::REAL_REAL) {
+        return DFTI_REAL_REAL;
+    } else {
+        throw mkl::invalid_argument("dft", "MKLCPU descriptor set_value()",
+                                    "Invalid config value for complex storage.");
         return 0;
     }
 }
@@ -143,7 +145,7 @@ inline constexpr int to_mklcpu<dft::detail::config_param::CONJUGATE_EVEN_STORAGE
         return DFTI_COMPLEX_COMPLEX;
     }
     else {
-        throw mkl::invalid_argument("dft", "MKLcPU descriptor set_value()",
+        throw mkl::invalid_argument("dft", "MKLCPU descriptor set_value()",
                                     "Invalid config value for conjugate even storage.");
         return 0;
     }
@@ -159,7 +161,7 @@ inline constexpr int to_mklcpu<dft::detail::config_param::PLACEMENT>(
         return DFTI_NOT_INPLACE;
     }
     else {
-        throw mkl::invalid_argument("dft", "MKLcPU descriptor set_value()",
+        throw mkl::invalid_argument("dft", "MKLCPU descriptor set_value()",
                                     "Invalid config value for inplace.");
         return 0;
     }
@@ -172,7 +174,7 @@ inline constexpr int to_mklcpu<dft::detail::config_param::PACKED_FORMAT>(
         return DFTI_CCE_FORMAT;
     }
     else {
-        throw mkl::invalid_argument("dft", "MKLcPU descriptor set_value()",
+        throw mkl::invalid_argument("dft", "MKLCPU descriptor set_value()",
                                     "Invalid config value for packed format.");
         return 0;
     }

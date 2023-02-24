@@ -124,10 +124,14 @@ private:
         set_value_item(descHandle, DFTI_NUMBER_OF_TRANSFORMS, config.number_of_transforms);
         set_value_item(descHandle, DFTI_INPUT_DISTANCE, config.fwd_dist);
         set_value_item(descHandle, DFTI_OUTPUT_DISTANCE, config.bwd_dist);
+        set_value_item(descHandle, DFTI_COMPLEX_STORAGE,
+                       to_mklcpu<config_param::COMPLEX_STORAGE>(config.complex_storage));
+        set_value_item(descHandle, DFTI_REAL_STORAGE,
+                       to_mklcpu<config_param::COMPLEX_STORAGE>(config.complex_storage));
         set_value_item(descHandle, DFTI_CONJUGATE_EVEN_STORAGE,
                        to_mklcpu<config_param::CONJUGATE_EVEN_STORAGE>(config.conj_even_storage));
-            set_value_item(descHandle, DFTI_PLACEMENT,
-                           to_mklcpu<config_param::PLACEMENT>(config.placement));
+        set_value_item(descHandle, DFTI_PLACEMENT,
+                       to_mklcpu<config_param::PLACEMENT>(config.placement));
         set_value_item(descHandle, DFTI_PACKED_FORMAT,
                        to_mklcpu<config_param::PACKED_FORMAT>(config.packed_format));
     }
