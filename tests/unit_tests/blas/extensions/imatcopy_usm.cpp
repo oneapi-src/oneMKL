@@ -103,10 +103,10 @@ int test(device *dev, oneapi::mkl::layout layout) {
     AB.resize(size);
     AB_ref.resize(size);
 
-    rand_matrix(AB, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                size, 1, size);
-    copy_matrix(AB, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                size, 1, size, AB_ref);
+    rand_matrix(AB, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size, 1,
+                size);
+    copy_matrix(AB, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size, 1,
+                size, AB_ref);
 
     // Call reference IMATCOPY.
     int m_ref = (int)m;
@@ -120,12 +120,12 @@ int test(device *dev, oneapi::mkl::layout layout) {
 #ifdef CALL_RT_API
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                done = oneapi::mkl::blas::column_major::imatcopy(
-                    main_queue, trans, m, n, alpha, &AB[0], lda, ldb, dependencies);
+                done = oneapi::mkl::blas::column_major::imatcopy(main_queue, trans, m, n, alpha,
+                                                                 &AB[0], lda, ldb, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                done = oneapi::mkl::blas::row_major::imatcopy(
-                    main_queue, trans, m, n, alpha, &AB[0], lda, ldb, dependencies);
+                done = oneapi::mkl::blas::row_major::imatcopy(main_queue, trans, m, n, alpha,
+                                                              &AB[0], lda, ldb, dependencies);
                 break;
             default: break;
         }
@@ -133,12 +133,12 @@ int test(device *dev, oneapi::mkl::layout layout) {
 #else
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::imatcopy,
-                                   trans, m, n, alpha, &AB[0], lda, ldb, dependencies);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::imatcopy, trans, m,
+                                   n, alpha, &AB[0], lda, ldb, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::imatcopy,
-                                   trans, m, n, alpha, &AB[0], lda, ldb, dependencies);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::imatcopy, trans, m, n,
+                                   alpha, &AB[0], lda, ldb, dependencies);
                 break;
             default: break;
         }
@@ -156,14 +156,12 @@ int test(device *dev, oneapi::mkl::layout layout) {
     }
 
     catch (const std::runtime_error &error) {
-        std::cout << "Error raised during execution of IMATCOPY:\n"
-                  << error.what() << std::endl;
+        std::cout << "Error raised during execution of IMATCOPY:\n" << error.what() << std::endl;
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good =
-        check_equal_matrix(AB, AB_ref, oneapi::mkl::layout::column_major, size, 1,
-                           size, 10, std::cout);
+    bool good = check_equal_matrix(AB, AB_ref, oneapi::mkl::layout::column_major, size, 1, size, 10,
+                                   std::cout);
 
     return (int)good;
 }
@@ -180,13 +178,11 @@ TEST_P(ImatcopyUsmTests, RealDoublePrecision) {
 }
 
 TEST_P(ImatcopyUsmTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 TEST_P(ImatcopyUsmTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 INSTANTIATE_TEST_SUITE_P(ImatcopyUsmTestSuite, ImatcopyUsmTests,
