@@ -29,9 +29,9 @@
 #include "test_common.hpp"
 
 namespace detail {
+using ref_t = long double; /* Do the calculations using long double */
 template <typename TypeIn, typename TypeOut>
 void reference_forward_dft_impl(TypeIn *in, TypeOut *out, size_t N, size_t stride) {
-    using ref_t = long double; /* Do the calculations using long double */
     static_assert(is_complex<TypeOut>(), "Output type of DFT must be complex");
 
     constexpr ref_t TWOPI = 2.0L * 3.141592653589793238462643383279502884197L;
@@ -64,7 +64,7 @@ struct reference<TypeIn, TypeOut, 2> {
     static void forward_dft(const std::vector<std::int64_t> &sizes, TypeIn const *const in,
                             TypeOut *out) {
         const auto elements = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>{});
-        std::vector<std::complex<double>> tmp(elements);
+        std::vector<std::complex<ref_t>> tmp(elements);
         for (size_t i = 0; i < sizes[0] * sizes[1]; i += sizes[1]) {
             reference_forward_dft_impl(in + i, tmp.data() + i, sizes[1], 1);
         }
@@ -79,8 +79,8 @@ struct reference<TypeIn, TypeOut, 3> {
     static void forward_dft(const std::vector<std::int64_t> &sizes, TypeIn const *const in,
                             TypeOut *out) {
         const auto elements = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>{});
-        std::vector<std::complex<double>> tmp1(elements);
-        std::vector<std::complex<double>> tmp2(elements);
+        std::vector<std::complex<ref_t>> tmp1(elements);
+        std::vector<std::complex<ref_t>> tmp2(elements);
         for (size_t i = 0; i < sizes[0] * sizes[1] * sizes[2]; i += sizes[2]) {
             reference_forward_dft_impl(in + i, tmp1.data() + i, sizes[2], 1);
         }

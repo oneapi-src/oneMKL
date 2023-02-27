@@ -76,16 +76,15 @@ INSTANTIATE_TEST_DIMENSIONS_PRECISION_DOMAIN_PLACE_LAYOUT(USM)
 using shape = std::vector<int64_t>;
 using i64 = std::int64_t;
 // Parameter format - { shape of transform, number of transforms }
-// due to how we are testing, the last dimension must be even
 std::vector<DFTParams> test_params{
-    { shape{ 8 }, i64{ 1 } },       { shape{ 8 }, i64{ 2 } },       { shape{ 8 }, i64{ 27 } },
+    { shape{ 8 }, i64{ 1 } },       { shape{ 9 }, i64{ 2 } },       { shape{ 8 }, i64{ 27 } },
     { shape{ 22 }, i64{ 1 } },      { shape{ 128 }, i64{ 1 } },
 
-    { shape{ 4, 4 }, i64{ 1 } },    { shape{ 4, 4 }, i64{ 2 } },    { shape{ 4, 4 }, i64{ 27 } },
-    { shape{ 7, 8 }, i64{ 1 } },    { shape{ 64, 4 }, i64{ 1 } },
+    { shape{ 4, 4 }, i64{ 1 } },    { shape{ 4, 4 }, i64{ 2 } },    { shape{ 4, 3 }, i64{ 27 } },
+    { shape{ 7, 8 }, i64{ 1 } },    { shape{ 64, 5 }, i64{ 1 } },
 
-    { shape{ 2, 2, 2 }, i64{ 1 } }, { shape{ 2, 2, 2 }, i64{ 2 } }, { shape{ 2, 2, 2 }, i64{ 27 } },
-    { shape{ 3, 7, 2 }, i64{ 1 } }, { shape{ 8, 8, 8 }, i64{ 1 } },
+    { shape{ 2, 2, 2 }, i64{ 1 } }, { shape{ 2, 2, 3 }, i64{ 2 } }, { shape{ 2, 2, 2 }, i64{ 27 } },
+    { shape{ 3, 7, 2 }, i64{ 1 } }, { shape{ 8, 8, 9 }, i64{ 1 } },
 };
 
 // not currently implemented apis

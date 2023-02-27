@@ -23,6 +23,10 @@
 #include "compute_tester.hpp"
 #include <oneapi/mkl/exceptions.hpp>
 
+inline std::int64_t row_elements_to_conjugate_even_components(std::int64_t last_dim) {
+    return ((last_dim / 2) + 1) * 2;
+}
+
 std::vector<std::int64_t> get_real_strides(const std::vector<std::int64_t>& sizes) {
     switch (sizes.size()) {
         case 1: return { 0, 1 };
@@ -52,7 +56,8 @@ std::vector<std::int64_t> get_complex_strides(const std::vector<std::int64_t>& s
 template <typename fp>
 std::vector<fp> get_conjugate_even_ref(const std::vector<std::int64_t>& sizes, std::int64_t batches,
                                        std::vector<std::complex<fp>> output_ref) {
-    const std::int64_t conjugate_even_last_dim = sizes.back() + 2;
+    const std::int64_t conjugate_even_last_dim =
+        row_elements_to_conjugate_even_components(sizes.back());
     const std::int64_t rows =
         std::accumulate(sizes.begin(), sizes.end() - 1, batches, std::multiplies<>{});
     std::vector<fp> conjugate_even_ref(rows * conjugate_even_last_dim);
@@ -70,16 +75,14 @@ std::vector<fp> get_conjugate_even_ref(const std::vector<std::int64_t>& sizes, s
 template <typename T, typename al>
 void copy_strided(const std::vector<std::int64_t>& sizes, std::int64_t batches,
                   const std::vector<T>& input, std::vector<T, al>& output) {
-    const std::int64_t rows =
-        std::accumulate(sizes.begin(), sizes.end() - 1, batches, std::multiplies<>{});
-
     auto in_iter = input.cbegin();
     auto out_iter = output.begin();
     const auto row_len = sizes.back();
+    const auto conjugate_row_len = row_elements_to_conjugate_even_components(row_len);
     while (in_iter < input.cend()) {
         std::copy(in_iter, in_iter + row_len, out_iter);
         in_iter += row_len;
-        out_iter += row_len + 2;
+        out_iter += conjugate_row_len;
     }
 }
 
@@ -93,9 +96,11 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::INPLACE);
 
-    const std::int64_t container_size_total = domain == oneapi::mkl::dft::domain::REAL
-                                                  ? (size_total / sizes.back()) * (sizes.back() + 2)
-                                                  : size_total;
+    const std::int64_t container_size_total =
+        domain == oneapi::mkl::dft::domain::REAL
+            ? (size_total / sizes.back()) *
+                  (row_elements_to_conjugate_even_components(sizes.back()))
+            : size_total;
     const std::int64_t container_size_per_transform = container_size_total / batches;
     const std::int64_t backward_elements = domain == oneapi::mkl::dft::domain::REAL
                                                ? container_size_per_transform / 2 + 1
@@ -181,9 +186,10 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
 
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         for (int j = 0; j < size_total / sizes.back(); j++) {
-            EXPECT_TRUE(check_equal_vector(inout_host.data() + j * (sizes.back() + 2),
-                                           input.data() + j * sizes.back(), sizes.back(),
-                                           abs_error_margin, rel_error_margin, std::cout));
+            EXPECT_TRUE(check_equal_vector(
+                inout_host.data() + j * row_elements_to_conjugate_even_components(sizes.back()),
+                input.data() + j * sizes.back(), sizes.back(), abs_error_margin, rel_error_margin,
+                std::cout));
         }
     }
     else {
@@ -200,9 +206,10 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
         return test_skipped;
     }
 
-    const int64_t container_size_total = domain == oneapi::mkl::dft::domain::REAL
-                                             ? (size_total / sizes.back()) * (sizes.back() + 2)
-                                             : size_total;
+    const int64_t container_size_total =
+        domain == oneapi::mkl::dft::domain::REAL
+            ? (size_total / sizes.back()) * row_elements_to_conjugate_even_components(sizes.back())
+            : size_total;
     const int64_t container_size_per_transform = container_size_total / batches;
     const std::int64_t backward_elements = domain == oneapi::mkl::dft::domain::REAL
                                                ? container_size_per_transform / 2 + 1
@@ -240,7 +247,7 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
                                                                       dependencies)
             .wait();
     }
-    catch (oneapi::mkl::unimplemented &e) {
+    catch (oneapi::mkl::unimplemented& e) {
         std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
         return test_skipped;
     }
@@ -282,16 +289,17 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
                                                FwdInputType>(descriptor_back, inout.data());
         done.wait();
     }
-    catch (oneapi::mkl::unimplemented &e) {
+    catch (oneapi::mkl::unimplemented& e) {
         std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
         return test_skipped;
     }
 
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         for (int j = 0; j < size_total / sizes.back(); j++) {
-            EXPECT_TRUE(check_equal_vector(inout.data() + j * (sizes.back() + 2),
-                                           input.data() + j * sizes.back(), sizes.back(),
-                                           abs_error_margin, rel_error_margin, std::cout));
+            EXPECT_TRUE(check_equal_vector(
+                inout.data() + j * row_elements_to_conjugate_even_components(sizes.back()),
+                input.data() + j * sizes.back(), sizes.back(), abs_error_margin, rel_error_margin,
+                std::cout));
         }
     }
     else {
