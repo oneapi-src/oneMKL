@@ -31,7 +31,7 @@ namespace detail {
 
 typedef long DFT_ERROR;
 
-#define DFT_NOTSET -1
+#define DFTI_NOTSET 0 
 
 enum class precision { SINGLE, DOUBLE };
 
@@ -122,6 +122,7 @@ public:
     bool transpose;
     config_value packed_format;
     std::vector<std::int64_t> dimensions;
+    std::int64_t rank;
 };
 
 } // namespace detail
