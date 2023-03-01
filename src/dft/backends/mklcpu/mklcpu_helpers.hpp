@@ -139,6 +139,18 @@ inline constexpr int to_mklcpu<dft::detail::config_param::COMPLEX_STORAGE>(
 }
 
 template <>
+inline constexpr int to_mklcpu<dft::detail::config_param::REAL_STORAGE>(
+    dft::detail::config_value value) {
+    if (value == dft::detail::config_value::REAL_REAL) {
+        return DFTI_REAL_REAL;
+    }
+    else {
+        throw mkl::invalid_argument("dft", "MKLCPU descriptor set_value()",
+                                    "Invalid config value for real storage.");
+        return 0;
+    }
+}
+template <>
 inline constexpr int to_mklcpu<dft::detail::config_param::CONJUGATE_EVEN_STORAGE>(
     dft::detail::config_value value) {
     if (value == dft::detail::config_value::COMPLEX_COMPLEX) {
