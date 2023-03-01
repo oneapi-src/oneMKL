@@ -130,7 +130,7 @@ private:
         set_value_item(descHandle, DFTI_COMPLEX_STORAGE,
                        to_mklcpu<config_param::COMPLEX_STORAGE>(config.complex_storage));
         set_value_item(descHandle, DFTI_REAL_STORAGE,
-                       to_mklcpu<config_param::COMPLEX_STORAGE>(config.complex_storage));
+                       to_mklcpu<config_param::REAL_STORAGE>(config.real_storage));
         set_value_item(descHandle, DFTI_CONJUGATE_EVEN_STORAGE,
                        to_mklcpu<config_param::CONJUGATE_EVEN_STORAGE>(config.conj_even_storage));
         set_value_item(descHandle, DFTI_PLACEMENT,
