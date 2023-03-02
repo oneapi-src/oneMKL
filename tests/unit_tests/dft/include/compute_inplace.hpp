@@ -103,7 +103,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
             : size_total;
     const std::int64_t container_size_per_transform = container_size_total / batches;
     const std::int64_t backward_elements = domain == oneapi::mkl::dft::domain::REAL
-                                               ? container_size_per_transform / 2 + 1
+                                               ? container_size_per_transform / 2
                                                : container_size_per_transform;
 
     std::vector<FwdInputType> inout_host(container_size_total, 0);
@@ -212,7 +212,7 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
             : size_total;
     const int64_t container_size_per_transform = container_size_total / batches;
     const std::int64_t backward_elements = domain == oneapi::mkl::dft::domain::REAL
-                                               ? container_size_per_transform / 2 + 1
+                                               ? container_size_per_transform / 2
                                                : container_size_per_transform;
 
     auto ua_input = usm_allocator_t<FwdInputType>(cxt, *dev);
