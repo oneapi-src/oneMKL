@@ -46,12 +46,13 @@ public:
             : detail::commit_impl(queue, backend::mklcpu) {
         DFT_ERROR status = DFT_NOTSET;
         if (config_values.dimensions.size() == 1) {
-            status = DftiCreateDescriptor(&handle, get_precision(prec), get_domain(dom),
-                                          config_values.rank, config_values.dimensions[0]);
+            status = DftiCreateDescriptor(&handle, get_precision(prec), get_domain(dom), 1,
+                                          config_values.dimensions[0]);
         }
         else {
             status = DftiCreateDescriptor(&handle, get_precision(prec), get_domain(dom),
-                                          config_values.rank, config_values.dimensions.data());
+                                          config_values.dimensions.size(),
+                                          config_values.dimensions.data());
         }
         if (status != DFTI_NO_ERROR) {
             throw oneapi::mkl::exception("dft/backends/mklcpu", "commit",
