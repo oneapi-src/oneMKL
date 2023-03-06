@@ -39,9 +39,9 @@ extern std::vector<sycl::device *> devices;
 
 namespace {
 
-class ComputeTests : public ::testing::TestWithParam<std::tuple<sycl::device *, std::int64_t>> {};
+class ComputeTests : public ::testing::TestWithParam<std::tuple<sycl::device *, std::size_t>> {};
 
-std::vector<std::int64_t> lengths{ 8, 21, 128 };
+std::vector<std::size_t> lengths{ 8, 21, 128 };
 
 /* test_in_place_buffer() */
 TEST_P(ComputeTests, RealSinglePrecisionInPlaceBuffer) {

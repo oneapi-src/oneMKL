@@ -31,7 +31,7 @@
 #include "oneapi/mkl.hpp"
 
 void run_example(const sycl::device& dev) {
-    int N = 16;
+    constexpr std::size_t N = 16;
 
     // Catch asynchronous exceptions
     auto exception_handler = [](sycl::exception_list exceptions) {
@@ -55,10 +55,10 @@ void run_example(const sycl::device& dev) {
     // 1. create descriptors
     oneapi::mkl::dft::descriptor<oneapi::mkl::dft::precision::SINGLE,
                                  oneapi::mkl::dft::domain::REAL>
-        desc(N);
+        desc(static_cast<std::int64_t>(N));
 
     // 2. variadic set_value
-    desc.set_value(oneapi::mkl::dft::config_param::FORWARD_SCALE, 1.f / N);
+    desc.set_value(oneapi::mkl::dft::config_param::FORWARD_SCALE, 1.f / static_cast<float>(N));
     desc.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS,
                    static_cast<std::int64_t>(1));
     desc.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
@@ -103,7 +103,7 @@ void print_example_banner() {
 // Main entry point for example.
 //
 
-int main(int argc, char** argv) {
+int main(int /*argc*/, char** /*argv*/) {
     print_example_banner();
 
     try {

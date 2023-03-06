@@ -51,7 +51,7 @@ void reference_forward_dft(const std::vector<TypeIn> &in, std::vector<TypeOut> &
 
     const ref_t TWOPI = 2.0L * 3.141592653589793238462643383279502884197L;
 
-    const size_t N = out.size();
+    const std::size_t N = out.size();
     for (std::size_t k = 0; k < N; ++k) {
         std::complex<ref_t> out_temp = 0;
         const auto partial_expo = (static_cast<ref_t>(k) * TWOPI) / static_cast<ref_t>(N);

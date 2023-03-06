@@ -31,7 +31,7 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
     }
 
     try {
-        descriptor_t descriptor{ size };
+        descriptor_t descriptor{ static_cast<std::int64_t>(size) };
 
         descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                              oneapi::mkl::dft::config_value::INPLACE);
@@ -51,13 +51,14 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
             descriptor, inout_re.data(), inout_im.data(), dependencies);
         done.wait();
 
-        descriptor_t descriptor_back{ size };
+        descriptor_t descriptor_back{ static_cast<std::int64_t>(size) };
 
         descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                                   oneapi::mkl::dft::config_value::INPLACE);
         descriptor_back.set_value(oneapi::mkl::dft::config_param::COMPLEX_STORAGE,
                                   oneapi::mkl::dft::config_value::REAL_REAL);
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / size));
+        double scale = 1.0 / static_cast<double>(size);
+        descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, scale);
         commit_descriptor(descriptor_back, sycl_queue);
 
         done =
@@ -86,7 +87,7 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
     }
 
     try {
-        descriptor_t descriptor{ size };
+        descriptor_t descriptor{ static_cast<std::int64_t>(size) };
 
         descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                              oneapi::mkl::dft::config_value::INPLACE);
@@ -100,13 +101,14 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
         oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType>(descriptor, inout_re_buf,
                                                                        inout_im_buf);
 
-        descriptor_t descriptor_back{ size };
+        descriptor_t descriptor_back{ static_cast<std::int64_t>(size) };
 
         descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                                   oneapi::mkl::dft::config_value::INPLACE);
         descriptor_back.set_value(oneapi::mkl::dft::config_param::COMPLEX_STORAGE,
                                   oneapi::mkl::dft::config_value::REAL_REAL);
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / size));
+        double scale = 1.0 / static_cast<double>(size);
+        descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, scale);
         commit_descriptor(descriptor_back, sycl_queue);
 
         oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,

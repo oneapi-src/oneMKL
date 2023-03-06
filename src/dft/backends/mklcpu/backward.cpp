@@ -39,30 +39,33 @@ namespace mklcpu {
 
 //In-place transform
 template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout) {
+ONEMKL_EXPORT void compute_backward(descriptor_type& /*desc*/,
+                                    sycl::buffer<data_type, 1>& /*inout*/) {
     throw mkl::unimplemented("DFT", "compute_backward", "Not implemented for MKLCPU");
 }
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout_re,
-                                    sycl::buffer<data_type, 1> &inout_im) {
+ONEMKL_EXPORT void compute_backward(descriptor_type& /*desc*/,
+                                    sycl::buffer<data_type, 1>& /*inout_re*/,
+                                    sycl::buffer<data_type, 1>& /*inout_im*/) {
     throw mkl::unimplemented("DFT", "compute_backward", "Not implemented for MKLCPU");
 }
 
 //Out-of-place transform
 template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_type, 1> &in,
-                                    sycl::buffer<output_type, 1> &out) {
+ONEMKL_EXPORT void compute_backward(descriptor_type& /*desc*/, sycl::buffer<input_type, 1>& /*in*/,
+                                    sycl::buffer<output_type, 1>& /*out*/) {
     throw mkl::unimplemented("DFT", "compute_backward", "Not implemented for MKLCPU");
 }
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_type, 1> &in_re,
-                                    sycl::buffer<input_type, 1> &in_im,
-                                    sycl::buffer<output_type, 1> &out_re,
-                                    sycl::buffer<output_type, 1> &out_im) {
+ONEMKL_EXPORT void compute_backward(descriptor_type& /*desc*/,
+                                    sycl::buffer<input_type, 1>& /*in_re*/,
+                                    sycl::buffer<input_type, 1>& /*in_im*/,
+                                    sycl::buffer<output_type, 1>& /*out_re*/,
+                                    sycl::buffer<output_type, 1>& /*out_im*/) {
     throw mkl::unimplemented("DFT", "compute_backward", "Not implemented for MKLCPU");
 }
 
@@ -70,35 +73,36 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
 
 //In-place transform
 template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *inout,
-                                           const std::vector<sycl::event> &dependencies) {
+ONEMKL_EXPORT sycl::event compute_backward(descriptor_type& /*desc*/, data_type* /*inout*/,
+                                           const std::vector<sycl::event>& /*dependencies*/) {
     throw mkl::unimplemented("DFT", "compute_backward", "Not implemented for MKLCPU");
     return sycl::event{};
 }
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *inout_re,
-                                           data_type *inout_im,
-                                           const std::vector<sycl::event> &dependencies) {
+ONEMKL_EXPORT sycl::event compute_backward(descriptor_type& /*desc*/, data_type* /*inout_re*/,
+                                           data_type* /*inout_im*/,
+                                           const std::vector<sycl::event>& /*dependencies*/) {
     throw mkl::unimplemented("DFT", "compute_backward", "Not implemented for MKLCPU");
     return sycl::event{};
 }
 
 //Out-of-place transform
 template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in, output_type *out,
-                                           const std::vector<sycl::event> &dependencies) {
+ONEMKL_EXPORT sycl::event compute_backward(descriptor_type& /*desc*/, input_type* /*in*/,
+                                           output_type* /*out*/,
+                                           const std::vector<sycl::event>& /*dependencies*/) {
     throw mkl::unimplemented("DFT", "compute_backward", "Not implemented for MKLCPU");
     return sycl::event{};
 }
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in_re,
-                                           input_type *in_im, output_type *out_re,
-                                           output_type *out_im,
-                                           const std::vector<sycl::event> &dependencies) {
+ONEMKL_EXPORT sycl::event compute_backward(descriptor_type& /*desc*/, input_type* /*in_re*/,
+                                           input_type* /*in_im*/, output_type* /*out_re*/,
+                                           output_type* /*out_im*/,
+                                           const std::vector<sycl::event>& /*dependencies*/) {
     throw mkl::unimplemented("DFT", "compute_backward", "Not implemented for MKLCPU");
     return sycl::event{};
 }

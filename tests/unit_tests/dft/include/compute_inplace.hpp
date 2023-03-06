@@ -28,11 +28,11 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
         return test_skipped;
     }
 
-    descriptor_t descriptor{ size };
+    descriptor_t descriptor{ static_cast<std::int64_t>(size) };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::INPLACE);
 
-    const size_t container_size =
+    const std::size_t container_size =
         domain == oneapi::mkl::dft::domain::REAL ? conjugate_even_size : size;
 
     std::vector<FwdInputType> inout_host(container_size, static_cast<FwdInputType>(0));
@@ -52,7 +52,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         std::vector<FwdInputType> out_host_ref_conjugate =
             std::vector<FwdInputType>(conjugate_even_size);
-        for (int i = 0; i < out_host_ref_conjugate.size(); i += 2) {
+        for (std::size_t i = 0; i < out_host_ref_conjugate.size(); i += 2) {
             out_host_ref_conjugate[i] = out_host_ref[i / 2].real();
             out_host_ref_conjugate[i + 1] = out_host_ref[i / 2].imag();
         }
@@ -68,10 +68,11 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
                                        std::cout));
     }
 
-    descriptor_t descriptor_back{ size };
+    descriptor_t descriptor_back{ static_cast<std::int64_t>(size) };
     descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                               oneapi::mkl::dft::config_value::INPLACE);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / size));
+    double scale = 1.0 / static_cast<double>(size);
+    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, scale);
     commit_descriptor(descriptor_back, sycl_queue);
 
     try {
@@ -97,12 +98,12 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
         return test_skipped;
     }
 
-    descriptor_t descriptor{ size };
+    descriptor_t descriptor{ static_cast<std::int64_t>(size) };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::INPLACE);
     commit_descriptor(descriptor, sycl_queue);
 
-    const size_t container_size =
+    const std::size_t container_size =
         domain == oneapi::mkl::dft::domain::REAL ? conjugate_even_size : size;
 
     auto ua_input = usm_allocator_t<FwdInputType>(cxt, *dev);
@@ -124,7 +125,7 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         std::vector<FwdInputType> out_host_ref_conjugate =
             std::vector<FwdInputType>(conjugate_even_size);
-        for (int i = 0; i < out_host_ref_conjugate.size(); i += 2) {
+        for (std::size_t i = 0; i < out_host_ref_conjugate.size(); i += 2) {
             out_host_ref_conjugate[i] = out_host_ref[i / 2].real();
             out_host_ref_conjugate[i + 1] = out_host_ref[i / 2].imag();
         }
@@ -136,10 +137,11 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
                                        abs_error_margin, rel_error_margin, std::cout));
     }
 
-    descriptor_t descriptor_back{ size };
+    descriptor_t descriptor_back{ static_cast<std::int64_t>(size) };
     descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                               oneapi::mkl::dft::config_value::INPLACE);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / size));
+    double scale = 1.0 / static_cast<double>(size);
+    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, scale);
     commit_descriptor(descriptor_back, sycl_queue);
 
     try {

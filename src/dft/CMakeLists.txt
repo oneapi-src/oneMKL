@@ -43,4 +43,7 @@ else()
   target_link_libraries(onemkl_dft PUBLIC ONEMKL::SYCL::SYCL)
 endif()
 
+include(WarningsUtils)
+target_link_libraries(onemkl_dft PRIVATE onemkl_warnings)
+
 endif()

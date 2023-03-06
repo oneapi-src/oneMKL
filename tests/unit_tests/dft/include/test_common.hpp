@@ -65,8 +65,8 @@ bool check_equal(fp x, fp x_ref, double abs_error_mag, double rel_error_mag, std
             return std::numeric_limits<fp_real>::epsilon();
         }
     }();
-    const fp_real abs_bound = abs_error_mag * epsilon;
-    const fp_real rel_bound = rel_error_mag * epsilon;
+    const auto abs_bound = static_cast<fp_real>(abs_error_mag) * epsilon;
+    const auto rel_bound = static_cast<fp_real>(rel_error_mag) * epsilon;
 
     const auto aerr = std::abs(x - x_ref);
     const auto rerr = aerr / std::abs(x_ref);
@@ -80,8 +80,8 @@ bool check_equal(fp x, fp x_ref, double abs_error_mag, double rel_error_mag, std
 }
 
 template <typename vec1, typename vec2>
-bool check_equal_vector(vec1 &&v, vec2 &&v_ref, int n, double abs_error_mag, double rel_error_mag,
-                        std::ostream &out) {
+bool check_equal_vector(vec1 &&v, vec2 &&v_ref, std::size_t n, double abs_error_mag,
+                        double rel_error_mag, std::ostream &out) {
     constexpr int max_print = 20;
     int count = 0;
     bool good = true;
@@ -117,10 +117,10 @@ inline t rand_scalar() {
 }
 
 template <typename vec>
-void rand_vector(vec &v, int n) {
+void rand_vector(vec &v, std::size_t n) {
     using fp = typename vec::value_type;
     v.resize(n);
-    for (int i = 0; i < n; i++) {
+    for (std::size_t i = 0; i < n; i++) {
         v[i] = rand_scalar<fp>();
     }
 }
@@ -151,9 +151,9 @@ void commit_descriptor(oneapi::mkl::dft::descriptor<precision, domain> &descript
 class DimensionsDeviceNamePrint {
 public:
     std::string operator()(
-        testing::TestParamInfo<std::tuple<sycl::device *, std::int64_t>> dev) const {
-        std::string size = "size_" + std::to_string(std::get<1>(dev.param));
-        std::string dev_name = std::get<0>(dev.param)->get_info<sycl::info::device::name>();
+        testing::TestParamInfo<std::tuple<sycl::device *, std::size_t>> params) const {
+        std::string size = "size_" + std::to_string(std::get<1>(params.param));
+        std::string dev_name = std::get<0>(params.param)->get_info<sycl::info::device::name>();
         for (std::string::size_type i = 0; i < dev_name.size(); ++i) {
             if (!isalnum(dev_name[i]))
                 dev_name[i] = '_';

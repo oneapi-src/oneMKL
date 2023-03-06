@@ -21,6 +21,7 @@ set(LIB_NAME onemkl_dft_mklgpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
 find_package(MKL REQUIRED)
+include(WarningsUtils)
 
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
@@ -41,7 +42,11 @@ target_include_directories(${LIB_OBJ}
 
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT} ${MKL_COPT})
 
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ${MKL_LINK_SYCL})
+target_link_libraries(${LIB_OBJ}
+  PUBLIC ONEMKL::SYCL::SYCL
+  PUBLIC ${MKL_LINK_SYCL}
+  PRIVATE onemkl_warnings
+)
 
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON

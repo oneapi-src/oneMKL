@@ -217,6 +217,7 @@ static inline void aligned_free(void *p) {
 
 /* Support for Unified Shared Memory allocations for different backends */
 static inline void *malloc_shared(size_t align, size_t size, sycl::device dev, sycl::context ctx) {
+    (void)align;
 #ifdef _WIN64
     return sycl::malloc_shared(size, dev, ctx);
 #else

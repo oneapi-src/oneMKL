@@ -29,17 +29,18 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
         return test_skipped;
     }
 
-    const size_t bwd_size = domain == oneapi::mkl::dft::domain::REAL ? (size / 2) + 1 : size;
+    const std::size_t bwd_size = domain == oneapi::mkl::dft::domain::REAL ? (size / 2) + 1 : size;
 
-    descriptor_t descriptor{ size };
+    descriptor_t descriptor{ static_cast<std::int64_t>(size) };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::NOT_INPLACE);
     commit_descriptor(descriptor, sycl_queue);
 
-    descriptor_t descriptor_back{ size };
+    descriptor_t descriptor_back{ static_cast<std::int64_t>(size) };
     descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                               oneapi::mkl::dft::config_value::NOT_INPLACE);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / size));
+    double scale = 1.0 / static_cast<double>(size);
+    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, scale);
     commit_descriptor(descriptor_back, sycl_queue);
 
     std::vector<FwdInputType> fwd_data(input);
@@ -88,17 +89,18 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     }
     const std::vector<sycl::event> no_dependencies;
 
-    const size_t bwd_size = domain == oneapi::mkl::dft::domain::REAL ? (size / 2) + 1 : size;
+    const std::size_t bwd_size = domain == oneapi::mkl::dft::domain::REAL ? (size / 2) + 1 : size;
 
-    descriptor_t descriptor{ size };
+    descriptor_t descriptor{ static_cast<std::int64_t>(size) };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::NOT_INPLACE);
     commit_descriptor(descriptor, sycl_queue);
 
-    descriptor_t descriptor_back{ size };
+    descriptor_t descriptor_back{ static_cast<std::int64_t>(size) };
     descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                               oneapi::mkl::dft::config_value::NOT_INPLACE);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / size));
+    double scale = 1.0 / static_cast<double>(size);
+    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, scale);
     commit_descriptor(descriptor_back, sycl_queue);
 
     auto ua_input = usm_allocator_t<FwdInputType>(cxt, *dev);

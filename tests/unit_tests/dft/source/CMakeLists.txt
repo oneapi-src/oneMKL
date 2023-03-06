@@ -19,6 +19,8 @@
 
 set(DFT_SOURCES "compute_tests.cpp" "descriptor_tests.cpp")
 
+include(WarningsUtils)
+
 if (BUILD_SHARED_LIBS)
     add_library(dft_source_rt OBJECT ${DFT_SOURCES})
     target_compile_options(dft_source_rt PRIVATE -DCALL_RT_API -DNOMINMAX)
@@ -35,6 +37,7 @@ if (BUILD_SHARED_LIBS)
     else ()
         target_link_libraries(dft_source_rt PUBLIC ONEMKL::SYCL::SYCL)
     endif ()
+    target_link_libraries(dft_source_rt PRIVATE onemkl_warnings)
 endif ()
 
 add_library(dft_source_ct OBJECT ${DFT_SOURCES})
@@ -56,4 +59,5 @@ else ()
             ONEMKL::SYCL::SYCL
             )
 endif ()
+target_link_libraries(dft_source_ct PRIVATE onemkl_warnings)
 

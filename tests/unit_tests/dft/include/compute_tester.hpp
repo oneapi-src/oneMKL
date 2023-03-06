@@ -49,8 +49,8 @@ struct DFT_Test {
 
     enum class MemoryAccessModel { buffer, usm };
 
-    const std::int64_t size;
-    const std::int64_t conjugate_even_size;
+    const std::size_t size;
+    const std::size_t conjugate_even_size;
     double abs_error_margin;
     double rel_error_margin;
 
@@ -63,8 +63,8 @@ struct DFT_Test {
     std::vector<PrecisionType> input_im;
     std::vector<FwdOutputType> out_host_ref;
 
-    DFT_Test(sycl::device* dev, std::int64_t size)
-            : size{ static_cast<std::int64_t>(size) },
+    DFT_Test(sycl::device* dev, std::size_t size)
+            : size{ size },
               conjugate_even_size{ 2 * (size / 2 + 1) },
               abs_error_margin{ 0 },
               rel_error_margin{ 0 },
@@ -83,13 +83,13 @@ struct DFT_Test {
         rand_vector(input, size);
 
         if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-            for (int i = 0; i < input.size(); ++i) {
+            for (std::size_t i = 0; i < input.size(); ++i) {
                 input_re[i] = { input[i] };
                 input_im[i] = 0;
             }
         }
         else {
-            for (int i = 0; i < input.size(); ++i) {
+            for (std::size_t i = 0; i < input.size(); ++i) {
                 input_re[i] = { input[i].real() };
                 input_im[i] = { input[i].imag() };
             }
@@ -118,8 +118,8 @@ struct DFT_Test {
                                                   return std::abs(a) < std::abs(b);
                                               });
         // Heuristic for the average-case error margins
-        abs_error_margin = std::abs(max_norm_ref) * std::log2((double)size);
-        rel_error_margin = 5.0 * std::log2((double)size);
+        abs_error_margin = std::abs(max_norm_ref) * std::log2(static_cast<double>(size));
+        rel_error_margin = 5.0 * std::log2(static_cast<double>(size));
         return !skip_test(type);
     }
 
