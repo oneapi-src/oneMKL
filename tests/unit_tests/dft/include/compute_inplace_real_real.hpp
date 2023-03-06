@@ -29,8 +29,12 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
     if (!init(MemoryAccessModel::usm)) {
         return test_skipped;
     }
-
-    try {
+    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+        // storage schemes for real transform arn't allowed to set the REAL_STORAGE to
+        // real_real or the COMPLEX_STORAGE to real_real as well. Skip.
+        return test_skipped;
+    }
+    else {
         descriptor_t descriptor{ size };
 
         descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
@@ -47,9 +51,23 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
         std::copy(input_im.begin(), input_im.end(), inout_im.begin());
 
         std::vector<sycl::event> dependencies;
-        sycl::event done = oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType>(
-            descriptor, inout_re.data(), inout_im.data(), dependencies);
-        done.wait();
+        sycl::event done;
+        try {
+            done = oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType>(
+                descriptor, inout_re.data(), inout_im.data(), dependencies);
+            done.wait();
+        }
+        catch (oneapi::mkl::unimplemented &e) {
+            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
+            return test_skipped;
+        }
+
+        std::vector<FwdOutputType> input_data(size, static_cast<FwdOutputType>(0));
+        for (int i = 0; i < input_data.size(); ++i) {
+            input_data[i] = { inout_re[i], inout_im[i] };
+        }
+        EXPECT_TRUE(check_equal_vector(input_data.data(), out_host_ref.data(), input_data.size(),
+                                       abs_error_margin, rel_error_margin, std::cout));
 
         descriptor_t descriptor_back{ size };
 
@@ -65,16 +83,16 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
                                                PrecisionType>(descriptor_back, inout_re.data(),
                                                               inout_im.data(), dependencies);
         done.wait();
-    }
-    catch (oneapi::mkl::unimplemented &e) {
-        std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-        return test_skipped;
-    }
 
-    /* Once implementations exist, results will need to be verified */
-    EXPECT_TRUE(false);
+        for (int i = 0; i < input_data.size(); ++i) {
+            input_data[i] = { inout_re[i], inout_im[i] };
+        }
 
-    return !::testing::Test::HasFailure();
+        EXPECT_TRUE(check_equal_vector(input_data.data(), input.data(), input.size(),
+                                       abs_error_margin, rel_error_margin, std::cout));
+
+        return !::testing::Test::HasFailure();
+    }
 }
 
 /* Test is not implemented because currently there are no available dft implementations.
@@ -85,7 +103,12 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
         return test_skipped;
     }
 
-    try {
+    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+        // storage schemes for real transform arn't allowed to set the REAL_STORAGE to
+        // real_real or the COMPLEX_STORAGE to real_real as well. Skip.
+        return test_skipped;
+    }
+    else {
         descriptor_t descriptor{ size };
 
         descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
@@ -94,11 +117,34 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
                              oneapi::mkl::dft::config_value::REAL_REAL);
         commit_descriptor(descriptor, sycl_queue);
 
-        sycl::buffer<PrecisionType, 1> inout_re_buf{ input_re.data(), sycl::range<1>(size) };
-        sycl::buffer<PrecisionType, 1> inout_im_buf{ input_im.data(), sycl::range<1>(size) };
+        std::vector<PrecisionType> host_inout_re(size, static_cast<PrecisionType>(0));
+        std::vector<PrecisionType> host_inout_im(size, static_cast<PrecisionType>(0));
+        std::copy(input_re.begin(), input_re.end(), host_inout_re.begin());
+        std::copy(input_im.begin(), input_im.end(), host_inout_im.begin());
 
-        oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType>(descriptor, inout_re_buf,
-                                                                       inout_im_buf);
+        sycl::buffer<PrecisionType, 1> inout_re_buf{ host_inout_re.data(), sycl::range<1>(size) };
+        sycl::buffer<PrecisionType, 1> inout_im_buf{ host_inout_im.data(), sycl::range<1>(size) };
+
+        try {
+            oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType>(descriptor, inout_re_buf,
+                                                                           inout_im_buf);
+        }
+        catch (oneapi::mkl::unimplemented &e) {
+            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
+            return test_skipped;
+        }
+
+        {
+            auto acc_inout_re = inout_re_buf.template get_host_access();
+            auto acc_inout_im = inout_im_buf.template get_host_access();
+            std::vector<FwdOutputType> input_data(size, static_cast<FwdOutputType>(0));
+            for (int i = 0; i < input_data.size(); ++i) {
+                input_data[i] = { acc_inout_re[i], acc_inout_im[i] };
+            }
+            EXPECT_TRUE(check_equal_vector(input_data.data(), out_host_ref.data(),
+                                           input_data.size(), abs_error_margin, rel_error_margin,
+                                           std::cout));
+        }
 
         descriptor_t descriptor_back{ size };
 
@@ -109,19 +155,28 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
         descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / size));
         commit_descriptor(descriptor_back, sycl_queue);
 
-        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
-                                           PrecisionType>(descriptor_back, inout_re_buf,
-                                                          inout_im_buf);
-    }
-    catch (oneapi::mkl::unimplemented &e) {
-        std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-        return test_skipped;
-    }
+        try {
+            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
+                                               PrecisionType>(descriptor_back, inout_re_buf,
+                                                              inout_im_buf);
+        }
+        catch (oneapi::mkl::unimplemented &e) {
+            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
+            return test_skipped;
+        }
 
-    /* Once implementations exist, results will need to be verified */
-    EXPECT_TRUE(false);
-
-    return !::testing::Test::HasFailure();
+        {
+            auto acc_inout_re = inout_re_buf.template get_host_access();
+            auto acc_inout_im = inout_im_buf.template get_host_access();
+            std::vector<FwdInputType> input_data(size, static_cast<FwdInputType>(0));
+            for (int i = 0; i < input_data.size(); ++i) {
+                input_data[i] = { acc_inout_re[i], acc_inout_im[i] };
+            }
+            EXPECT_TRUE(check_equal_vector(input_data.data(), input.data(), input.size(),
+                                           abs_error_margin, rel_error_margin, std::cout));
+        }
+        return !::testing::Test::HasFailure();
+    }
 }
 
 #endif //ONEMKL_COMPUTE_INPLACE_REAL_REAL_HPP
