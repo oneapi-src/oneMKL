@@ -48,23 +48,24 @@ inline void set_and_get_lengths(sycl::queue& sycl_queue) {
 
     /* 1D */
     {
+        const std::int64_t dimensions = 1;
         oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
 
+        const std::int64_t new_lengths{ 2345 };
         std::int64_t lengths_value{ 0 };
-        std::int64_t new_lengths{ 2345 };
         std::int64_t dimensions_before_set{ 0 };
         std::int64_t dimensions_after_set{ 0 };
 
         descriptor.get_value(oneapi::mkl::dft::config_param::LENGTHS, &lengths_value);
         descriptor.get_value(oneapi::mkl::dft::config_param::DIMENSION, &dimensions_before_set);
         EXPECT_EQ(default_1d_lengths, lengths_value);
-        EXPECT_EQ(dimensions_before_set, 1);
+        EXPECT_EQ(dimensions, dimensions_before_set);
 
         descriptor.set_value(oneapi::mkl::dft::config_param::LENGTHS, new_lengths);
         descriptor.get_value(oneapi::mkl::dft::config_param::LENGTHS, &lengths_value);
         descriptor.get_value(oneapi::mkl::dft::config_param::DIMENSION, &dimensions_after_set);
         EXPECT_EQ(new_lengths, lengths_value);
-        EXPECT_EQ(dimensions_before_set, dimensions_after_set);
+        EXPECT_EQ(dimensions, dimensions_after_set);
 
         commit_descriptor(descriptor, sycl_queue);
     }
@@ -91,7 +92,7 @@ inline void set_and_get_lengths(sycl::queue& sycl_queue) {
         descriptor.get_value(oneapi::mkl::dft::config_param::DIMENSION, &dimensions_after_set);
 
         EXPECT_EQ(new_lengths, lengths_value);
-        EXPECT_EQ(dimensions_before_set, dimensions_after_set);
+        EXPECT_EQ(dimensions, dimensions_after_set);
     }
 }
 
