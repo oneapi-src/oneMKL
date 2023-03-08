@@ -38,7 +38,7 @@ constexpr std::int64_t default_1d_lengths = 4;
 const std::vector<std::int64_t> default_3d_lengths{ 124, 5, 3 };
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
-static void set_and_get_lengths() {
+static void set_and_get_lengths(sycl::queue& sycl_queue) {
     /* Negative Testing */
     {
         oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_3d_lengths };
@@ -66,6 +66,8 @@ static void set_and_get_lengths() {
         descriptor.get_value(oneapi::mkl::dft::config_param::DIMENSION, &dimensions_after_set);
         EXPECT_EQ(new_lengths, lengths_value);
         EXPECT_EQ(dimensions, dimensions_after_set);
+
+        commit_descriptor(descriptor, sycl_queue);
     }
 
     /* >= 2D */
@@ -343,7 +345,7 @@ static void set_and_get_values() {
 }
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
-static void get_readonly_values() {
+static void get_readonly_values(sycl::queue& sycl_queue) {
     oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
 
     oneapi::mkl::dft::domain domain_value;
@@ -365,10 +367,14 @@ static void get_readonly_values() {
     oneapi::mkl::dft::config_value commit_status;
     descriptor.get_value(oneapi::mkl::dft::config_param::COMMIT_STATUS, &commit_status);
     EXPECT_EQ(commit_status, oneapi::mkl::dft::config_value::UNCOMMITTED);
+
+    commit_descriptor(descriptor, sycl_queue);
+    descriptor.get_value(oneapi::mkl::dft::config_param::COMMIT_STATUS, &commit_status);
+    EXPECT_EQ(commit_status, oneapi::mkl::dft::config_value::COMMITTED);
 }
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
-static void set_readonly_values() {
+static void set_readonly_values(sycl::queue& sycl_queue) {
     oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
 
     EXPECT_THROW(descriptor.set_value(oneapi::mkl::dft::config_param::FORWARD_DOMAIN,
@@ -395,89 +401,53 @@ static void set_readonly_values() {
     EXPECT_THROW(descriptor.set_value(oneapi::mkl::dft::config_param::COMMIT_STATUS,
                                       oneapi::mkl::dft::config_value::UNCOMMITTED),
                  oneapi::mkl::invalid_argument);
-}
 
-template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
-static void get_commited(sycl::queue& sycl_queue) {
-    oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
     commit_descriptor(descriptor, sycl_queue);
-
-    oneapi::mkl::dft::config_value commit_status;
-    descriptor.get_value(oneapi::mkl::dft::config_param::COMMIT_STATUS, &commit_status);
-    EXPECT_EQ(commit_status, oneapi::mkl::dft::config_value::COMMITTED);
 }
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
-static int test_getter_setter() {
-    set_and_get_lengths<precision, domain>();
-    set_and_get_strides<precision, domain>();
-    set_and_get_values<precision, domain>();
-    get_readonly_values<precision, domain>();
-    set_readonly_values<precision, domain>();
+int test(sycl::device* dev) {
+    sycl::queue sycl_queue(*dev, exception_handler);
 
-    return !::testing::Test::HasFailure();
-}
-
-template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
-static int test_commit(sycl::device* dev) {
     if constexpr (precision == oneapi::mkl::dft::precision::DOUBLE) {
-        if (!dev->has(sycl::aspect::fp64)) {
+        if (!sycl_queue.get_device().has(sycl::aspect::fp64)) {
+            std::cout << "Device does not support double precision." << std::endl;
             return test_skipped;
         }
     }
-    sycl::queue sycl_queue(*dev, exception_handler);
-    get_commited<precision, domain>(sycl_queue);
+
+    set_and_get_lengths<precision, domain>(sycl_queue);
+    set_and_get_strides<precision, domain>();
+    set_and_get_values<precision, domain>();
+    get_readonly_values<precision, domain>(sycl_queue);
+    set_readonly_values<precision, domain>(sycl_queue);
 
     return !::testing::Test::HasFailure();
 }
 
-TEST(DescriptorTests, DescriptorTestsRealSingle) {
-    EXPECT_TRUE((
-        test_getter_setter<oneapi::mkl::dft::precision::SINGLE, oneapi::mkl::dft::domain::REAL>()));
-}
+class DescriptorTests : public ::testing::TestWithParam<sycl::device*> {};
 
-TEST(DescriptorTests, DescriptorTestsRealDouble) {
-    EXPECT_TRUE((
-        test_getter_setter<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::REAL>()));
-}
-
-TEST(DescriptorTests, DescriptorTestsComplexSingle) {
-    EXPECT_TRUE((test_getter_setter<oneapi::mkl::dft::precision::SINGLE,
-                                    oneapi::mkl::dft::domain::COMPLEX>()));
-}
-
-TEST(DescriptorTests, DescriptorTestsComplexDouble) {
-    EXPECT_TRUE((test_getter_setter<oneapi::mkl::dft::precision::DOUBLE,
-                                    oneapi::mkl::dft::domain::COMPLEX>()));
-}
-
-class DescriptorCommitTests : public ::testing::TestWithParam<sycl::device*> {};
-
-TEST_P(DescriptorCommitTests, DescriptorCommitTestsRealSingle) {
+TEST_P(DescriptorTests, DescriptorTestsRealSingle) {
     EXPECT_TRUEORSKIP(
-        (test_commit<oneapi::mkl::dft::precision::SINGLE, oneapi::mkl::dft::domain::REAL>(
-            GetParam())));
+        (test<oneapi::mkl::dft::precision::SINGLE, oneapi::mkl::dft::domain::REAL>(GetParam())));
 }
 
-TEST_P(DescriptorCommitTests, DescriptorCommitTestsRealDouble) {
+TEST_P(DescriptorTests, DescriptorTestsRealDouble) {
     EXPECT_TRUEORSKIP(
-        (test_commit<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::REAL>(
-            GetParam())));
+        (test<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::REAL>(GetParam())));
 }
 
-TEST_P(DescriptorCommitTests, DescriptorCommitTestsComplexSingle) {
+TEST_P(DescriptorTests, DescriptorTestsComplexSingle) {
     EXPECT_TRUEORSKIP(
-        (test_commit<oneapi::mkl::dft::precision::SINGLE, oneapi::mkl::dft::domain::COMPLEX>(
-            GetParam())));
+        (test<oneapi::mkl::dft::precision::SINGLE, oneapi::mkl::dft::domain::COMPLEX>(GetParam())));
 }
 
-TEST_P(DescriptorCommitTests, DescriptorCommitTestsComplexDouble) {
+TEST_P(DescriptorTests, DescriptorTestsComplexDouble) {
     EXPECT_TRUEORSKIP(
-        (test_commit<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::COMPLEX>(
-            GetParam())));
+        (test<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::COMPLEX>(GetParam())));
 }
 
-INSTANTIATE_TEST_SUITE_P(DescriptorCommitTestSuite, DescriptorCommitTests,
-                         testing::ValuesIn(devices), ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(DescriptorTestSuite, DescriptorTests, testing::ValuesIn(devices),
+                         ::DeviceNamePrint());
 
 } // anonymous namespace
