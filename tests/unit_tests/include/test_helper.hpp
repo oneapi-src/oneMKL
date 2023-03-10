@@ -146,7 +146,7 @@
                 TEST_RUN_INTELGPU_SELECT_NO_ARGS(q, func);                 \
             }                                                              \
             else if (vendor_id == NVIDIA_ID) {                             \
-                TEST_RUN_NVIDIAGPU_SELECT_NO_ARGS(q, func);                \
+                TEST_RUN_NVIDIAGPU_CUFFT_SELECT_NO_ARGS(q, func);          \
             }                                                              \
         }                                                                  \
     } while (0);
