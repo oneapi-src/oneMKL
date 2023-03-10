@@ -41,7 +41,7 @@ template <typename descriptor_type, typename data_type>
 ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout) {
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
-    auto commit = get_commit(desc);
+    auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = static_cast<cufftHandle *>(commit->get_handle())[0];
 
@@ -74,7 +74,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
                                    sycl::buffer<output_type, 1> &out) {
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::NOT_INPLACE>(
         desc, "Unexpected value for placement");
-    auto commit = get_commit(desc);
+    auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = static_cast<cufftHandle *>(commit->get_handle())[0];
 
@@ -113,7 +113,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inou
                                           const std::vector<sycl::event> &dependencies) {
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
-    auto commit = get_commit(desc);
+    auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = static_cast<cufftHandle *>(commit->get_handle())[0];
 
@@ -145,7 +145,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in,
                                           const std::vector<sycl::event> &dependencies) {
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::NOT_INPLACE>(
         desc, "Unexpected value for placement");
-    auto commit = get_commit(desc);
+    auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = static_cast<cufftHandle *>(commit->get_handle())[0];
 

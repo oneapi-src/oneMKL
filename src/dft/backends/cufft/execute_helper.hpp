@@ -37,7 +37,7 @@
 namespace oneapi::mkl::dft::cufft::detail {
 
 template <dft::precision prec, dft::domain dom>
-inline dft::detail::commit_impl *get_commit(dft::detail::descriptor<prec, dom> &desc) {
+inline dft::detail::commit_impl *checked_get_commit(dft::detail::descriptor<prec, dom> &desc) {
     auto commit_handle = dft::detail::get_commit(desc);
     if (commit_handle == nullptr || commit_handle->get_backend() != backend::cufft) {
         throw mkl::invalid_argument("dft/backends/cufft", "get_commit",
