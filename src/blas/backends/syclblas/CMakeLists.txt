@@ -140,7 +140,7 @@ if (NOT sycl_blas_FOUND)
   FetchContent_Declare(
     sycl-blas
     GIT_REPOSITORY https://github.com/codeplaysoftware/sycl-blas
-    GIT_TAG        20bfe691be07c9a2a316715094a2441f30e497d7
+    GIT_TAG        2c6c6a8a909e5a666d3426692bd33e55ba2be529
   )
   FetchContent_MakeAvailable(sycl-blas)
   message(STATUS "Looking for sycl_blas - downloaded")
