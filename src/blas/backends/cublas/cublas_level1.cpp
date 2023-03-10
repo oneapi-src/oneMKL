@@ -475,8 +475,8 @@ inline void iamax(const char *func_name, Func func, sycl::queue &queue, int64_t 
     });
     // This requires to bring the data to host, copy it, and return it back to
     // the device
-    result.template get_host_access()[0] = std::max(
-        (int64_t)int_res_buff.template get_host_access()[0] - 1, int64_t{ 0 });
+    result.template get_host_access()[0] =
+        std::max((int64_t)int_res_buff.template get_host_access()[0] - 1, int64_t{ 0 });
 }
 
 #define IAMAX_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                \
@@ -556,8 +556,8 @@ inline void iamin(const char *func_name, Func func, sycl::queue &queue, int64_t 
             cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
         });
     });
-    result.template get_host_access()[0] = std::max(
-        (int64_t)int_res_buff.template get_host_access()[0] - 1, int64_t{ 0 });
+    result.template get_host_access()[0] =
+        std::max((int64_t)int_res_buff.template get_host_access()[0] - 1, int64_t{ 0 });
 }
 
 #define IAMIN_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                \
