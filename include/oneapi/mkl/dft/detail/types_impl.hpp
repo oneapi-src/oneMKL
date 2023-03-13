@@ -116,7 +116,6 @@ public:
     bool transpose;
     config_value packed_format;
     std::vector<std::int64_t> dimensions;
-    std::int64_t rank;
 };
 
 } // namespace detail
