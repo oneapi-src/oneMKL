@@ -43,7 +43,7 @@ namespace detail {
 /// Forward a MKLGPU DFT call to the backend, checking that the commit impl is valid.
 /// Assumes backend descriptor values match those of the frontend.
 template <dft::detail::precision prec, dft::detail::domain dom, typename... ArgTs>
-inline auto compute_backward(dft::detail::descriptor<prec, dom> &desc, ArgTs &&...args) {
+inline auto compute_backward(dft::detail::descriptor<prec, dom> &desc, ArgTs &&... args) {
     using mklgpu_desc_t = dft::descriptor<to_mklgpu(prec), to_mklgpu(dom)>;
     auto commit_handle = dft::detail::get_commit(desc);
     if (commit_handle == nullptr || commit_handle->get_backend() != backend::mklgpu) {

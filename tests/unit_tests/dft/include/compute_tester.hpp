@@ -54,7 +54,7 @@ struct DFT_Test {
     double abs_error_margin;
     double rel_error_margin;
 
-    sycl::device *dev;
+    sycl::device* dev;
     sycl::queue sycl_queue;
     sycl::context cxt;
 
@@ -63,11 +63,11 @@ struct DFT_Test {
     std::vector<PrecisionType> input_im;
     std::vector<FwdOutputType> out_host_ref;
 
-    DFT_Test(sycl::device *dev, std::int64_t size)
+    DFT_Test(sycl::device* dev, std::int64_t size)
             : size{ static_cast<std::int64_t>(size) },
               conjugate_even_size{ 2 * (size / 2 + 1) },
-              abs_error_margin{0},
-              rel_error_margin{0},
+              abs_error_margin{ 0 },
+              rel_error_margin{ 0 },
               dev{ dev },
               sycl_queue{ *dev, exception_handler },
               cxt{ sycl_queue.get_context() } {
@@ -114,7 +114,9 @@ struct DFT_Test {
     bool init(MemoryAccessModel type) {
         reference_forward_dft<FwdInputType, FwdOutputType>(input, out_host_ref);
         auto max_norm_ref = *std::max_element(std::begin(out_host_ref), std::end(out_host_ref),
-          [](const FwdOutputType& a, const FwdOutputType& b) { return std::abs(a) < std::abs(b); });
+                                              [](const FwdOutputType& a, const FwdOutputType& b) {
+                                                  return std::abs(a) < std::abs(b);
+                                              });
         // Heuristic for the average-case error margins
         abs_error_margin = std::abs(max_norm_ref) * std::log2((double)size);
         rel_error_margin = 5.0 * std::log2((double)size);
