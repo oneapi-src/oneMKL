@@ -63,21 +63,19 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_USM() {
 
         std::vector<sycl::event> dependencies;
 
-        sycl::event done;
         try {
-            done = oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType, PrecisionType>(
-                descriptor, in_re.data(), in_im.data(), out_re.data(), out_im.data(), dependencies);
-            done.wait();
+            oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType, PrecisionType>(
+                descriptor, in_re.data(), in_im.data(), out_re.data(), out_im.data(), dependencies).wait();
         }
         catch (oneapi::mkl::unimplemented &e) {
             std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
             return test_skipped;
         }
-        std::vector<FwdOutputType> input_data(size, static_cast<FwdOutputType>(0));
-        for (int i = 0; i < input_data.size(); ++i) {
-            input_data[i] = { out_re[i], out_im[i] };
+        std::vector<FwdOutputType> output_data(size);
+        for (int i = 0; i < output_data.size(); ++i) {
+            output_data[i] = { out_re[i], out_im[i] };
         }
-        EXPECT_TRUE(check_equal_vector(input_data.data(), out_host_ref.data(), input_data.size(),
+        EXPECT_TRUE(check_equal_vector(output_data.data(), out_host_ref.data(), output_data.size(),
                                        abs_error_margin, rel_error_margin, std::cout));
 
         descriptor_t descriptor_back{ size };
@@ -90,22 +88,21 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_USM() {
         commit_descriptor(descriptor_back, sycl_queue);
 
         try {
-            done = oneapi::mkl::dft::compute_backward<
+            oneapi::mkl::dft::compute_backward<
                 std::remove_reference_t<decltype(descriptor_back)>, PrecisionType, PrecisionType>(
                 descriptor_back, out_re.data(), out_im.data(), out_back_re.data(),
-                out_back_im.data());
-            done.wait();
+                out_back_im.data()).wait();
         }
         catch (oneapi::mkl::unimplemented &e) {
             std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
             return test_skipped;
         }
 
-        for (int i = 0; i < input_data.size(); ++i) {
-            input_data[i] = { out_back_re[i], out_back_im[i] };
+        for (int i = 0; i < output_data.size(); ++i) {
+            output_data[i] = { out_back_re[i], out_back_im[i] };
         }
 
-        EXPECT_TRUE(check_equal_vector(input_data.data(), input.data(), input.size(),
+        EXPECT_TRUE(check_equal_vector(output_data.data(), input.data(), input.size(),
                                        abs_error_margin, rel_error_margin, std::cout));
     }
 

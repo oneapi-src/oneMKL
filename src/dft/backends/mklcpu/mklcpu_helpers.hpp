@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2022 Codeplay Software Ltd.
+* Copyright Codeplay Software Ltd.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 #ifndef _ONEMKL_DFT_SRC_MKLCPU_HELPERS_HPP_
 #define _ONEMKL_DFT_SRC_MKLCPU_HELPERS_HPP_
 
-#include "oneapi/mkl/detail/exceptions.hpp"
+#include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/dft/detail/types_impl.hpp"
 
 // MKLCPU header
@@ -32,24 +32,8 @@ namespace dft {
 namespace mklcpu {
 namespace detail {
 
-template<typename T> struct is_buffer : std::false_type {};
-template<> struct is_buffer<sycl::buffer<float>> : std::true_type {};
-template<> struct is_buffer<sycl::buffer<std::complex<float>>> : std::true_type {};
-template<> struct is_buffer<sycl::buffer<double>> : std::true_type {};
-template<> struct is_buffer<sycl::buffer<std::complex<double>>> : std::true_type {};
-
-template<typename T> struct is_usm : std::false_type {};
-template<> struct is_usm<float> : std::true_type {};
-template<> struct is_usm<std::complex<float>> : std::true_type {};
-template<> struct is_usm<double> : std::true_type {};
-template<> struct is_usm<std::complex<double>> : std::true_type {};
-
 using mklcpu_desc_t = DFTI_DESCRIPTOR_HANDLE;
 using commit_t = dft::detail::commit_impl;
-template< class T>
-inline constexpr bool is_buffer_v = is_buffer<T>::value;
-template< class T>
-inline constexpr bool is_usm_v = is_usm<T>::value;
 
 // host_task automatically uses run_on_host_intel if it is supported by the
 //  compiler. Otherwise, it falls back to single_task.
@@ -87,32 +71,31 @@ inline constexpr DFTI_CONFIG_VALUE to_mklcpu(dft::detail::precision dom) {
 }
 
 /// Convert a config_param to equivalent backend native value.
-inline constexpr dft::config_param to_mklcpu(dft::detail::config_param param) {
+inline constexpr DFTI_CONFIG_PARAM to_mklcpu(dft::detail::config_param param) {
     using iparam = dft::detail::config_param;
-    using oparam = dft::config_param;
     switch (param) {
-        case iparam::FORWARD_DOMAIN: return oparam::FORWARD_DOMAIN;
-        case iparam::DIMENSION: return oparam::DIMENSION;
-        case iparam::LENGTHS: return oparam::LENGTHS;
-        case iparam::PRECISION: return oparam::PRECISION;
-        case iparam::FORWARD_SCALE: return oparam::FORWARD_SCALE;
-        case iparam::NUMBER_OF_TRANSFORMS: return oparam::NUMBER_OF_TRANSFORMS;
-        case iparam::COMPLEX_STORAGE: return oparam::COMPLEX_STORAGE;
-        case iparam::REAL_STORAGE: return oparam::REAL_STORAGE;
-        case iparam::CONJUGATE_EVEN_STORAGE: return oparam::CONJUGATE_EVEN_STORAGE;
-        case iparam::INPUT_STRIDES: return oparam::INPUT_STRIDES;
-        case iparam::OUTPUT_STRIDES: return oparam::OUTPUT_STRIDES;
-        case iparam::FWD_DISTANCE: return oparam::FWD_DISTANCE;
-        case iparam::BWD_DISTANCE: return oparam::BWD_DISTANCE;
-        case iparam::WORKSPACE: return oparam::WORKSPACE;
-        case iparam::ORDERING: return oparam::ORDERING;
-        case iparam::TRANSPOSE: return oparam::TRANSPOSE;
-        case iparam::PACKED_FORMAT: return oparam::PACKED_FORMAT;
-        case iparam::COMMIT_STATUS: return oparam::COMMIT_STATUS;
+        case iparam::FORWARD_DOMAIN: return DFTI_FORWARD_DOMAIN;
+        case iparam::DIMENSION: return DFTI_DIMENSION;
+        case iparam::LENGTHS: return DFTI_LENGTHS;
+        case iparam::PRECISION: return DFTI_PRECISION;
+        case iparam::FORWARD_SCALE: return DFTI_FORWARD_SCALE;
+        case iparam::NUMBER_OF_TRANSFORMS: return DFTI_NUMBER_OF_TRANSFORMS;
+        case iparam::COMPLEX_STORAGE: return DFTI_COMPLEX_STORAGE;
+        case iparam::REAL_STORAGE: return DFTI_REAL_STORAGE;
+        case iparam::CONJUGATE_EVEN_STORAGE: return DFTI_CONJUGATE_EVEN_STORAGE;
+        case iparam::INPUT_STRIDES: return DFTI_INPUT_STRIDES;
+        case iparam::OUTPUT_STRIDES: return DFTI_OUTPUT_STRIDES;
+        case iparam::FWD_DISTANCE: return DFTI_FWD_DISTANCE;
+        case iparam::BWD_DISTANCE: return DFTI_BWD_DISTANCE;
+        case iparam::WORKSPACE: return DFTI_WORKSPACE;
+        case iparam::ORDERING: return DFTI_ORDERING;
+        case iparam::TRANSPOSE: return DFTI_TRANSPOSE;
+        case iparam::PACKED_FORMAT: return DFTI_PACKED_FORMAT;
+        case iparam::COMMIT_STATUS: return DFTI_COMMIT_STATUS;
         default:
-            throw mkl::invalid_argument("dft", "MKLcPU descriptor set_value()",
+            throw mkl::invalid_argument("dft", "MKLCPU descriptor set_value()",
                                         "Invalid config param.");
-            return static_cast<oparam>(0);
+            return static_cast<DFTI_CONFIG_PARAM>(0);
     }
 }
 
@@ -131,7 +114,8 @@ inline constexpr int to_mklcpu<dft::detail::config_param::COMPLEX_STORAGE>(
     }
     else if (value == dft::detail::config_value::REAL_REAL) {
         return DFTI_REAL_REAL;
-    } else {
+    }
+    else {
         throw mkl::invalid_argument("dft", "MKLCPU descriptor set_value()",
                                     "Invalid config value for complex storage.");
         return 0;
@@ -198,4 +182,3 @@ inline constexpr int to_mklcpu<dft::detail::config_param::PACKED_FORMAT>(
 } // namespace oneapi
 
 #endif // _ONEMKL_DFT_SRC_MKLCPU_HELPERS_HPP_
-
