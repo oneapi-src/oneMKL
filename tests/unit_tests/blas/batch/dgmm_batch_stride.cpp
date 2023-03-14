@@ -166,7 +166,7 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right, 
 
     // Compare the results of reference implementation and DPC++ implementation.
 
-    auto C_accessor = C_buffer.template get_access<access::mode::read>();
+    auto C_accessor = C_buffer.template get_host_access(read_only);
     bool good = true;
     for (i = 0; i < batch_size; i++) {
         good = good &&

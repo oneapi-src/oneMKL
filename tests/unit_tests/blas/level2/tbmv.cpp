@@ -127,7 +127,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    auto x_accessor = x_buffer.template get_access<access::mode::read>();
+    auto x_accessor = x_buffer.template get_host_access(read_only);
     bool good = check_equal_vector(x_accessor, x_ref, n, incx, n, std::cout);
 
     return (int)good;
