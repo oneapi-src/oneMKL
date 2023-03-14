@@ -128,7 +128,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    auto C_accessor = C_buffer.template get_access<access::mode::read>();
+    auto C_accessor = C_buffer.template get_host_access(read_only);
     bool good =
         check_equal_matrix(C_accessor, C_ref, layout, n, n, ldc, 10 * std::max(n, k), std::cout);
 

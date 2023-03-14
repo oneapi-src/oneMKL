@@ -119,7 +119,7 @@ int test(device* dev, oneapi::mkl::layout layout, int64_t N, int64_t incx) {
 
     // Compare the results of reference implementation and DPC++ implementation.
 
-    auto result_accessor = result_buffer.template get_access<access::mode::read>();
+    auto result_accessor = result_buffer.template get_host_access(read_only);
     bool good = check_equal(result_accessor[0], result_ref, N, std::cout);
 
     return (int)good;
