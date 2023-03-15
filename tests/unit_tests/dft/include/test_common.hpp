@@ -73,17 +73,15 @@ bool check_equal(fp x, fp x_ref, double abs_error_mag, double rel_error_mag, std
     const bool ok = (rerr <= rel_bound) || (aerr <= abs_bound);
     if (!ok) {
         out << "Mismatching results: actual = " << x << " vs. reference = " << x_ref << "\n";
-        out << " relative error = " << rerr
-            << " absolute error = " << aerr
-            << " relative bound = " << rel_bound
-            << " absolute bound = " << abs_bound
-            << "\n";
+        out << " relative error = " << rerr << " absolute error = " << aerr
+            << " relative bound = " << rel_bound << " absolute bound = " << abs_bound << "\n";
     }
     return ok;
 }
 
 template <typename vec1, typename vec2>
-bool check_equal_vector(vec1 &&v, vec2 &&v_ref, int n, double abs_error_mag, double rel_error_mag, std::ostream &out) {
+bool check_equal_vector(vec1 &&v, vec2 &&v_ref, int n, double abs_error_mag, double rel_error_mag,
+                        std::ostream &out) {
     constexpr int max_print = 20;
     int count = 0;
     bool good = true;
