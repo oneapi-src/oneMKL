@@ -73,8 +73,8 @@ std::vector<fp> get_conjugate_even_ref(const std::vector<std::int64_t>& sizes, s
 }
 
 template <typename T, typename al>
-void copy_strided(const std::vector<std::int64_t>& sizes, std::int64_t batches,
-                  const std::vector<T>& input, std::vector<T, al>& output) {
+void copy_strided(const std::vector<std::int64_t>& sizes, const std::vector<T>& input,
+                  std::vector<T, al>& output) {
     auto in_iter = input.cbegin();
     auto out_iter = output.begin();
     const auto row_len = sizes.back();
@@ -109,7 +109,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     std::vector<FwdInputType> inout_host(container_size_total, 0);
 
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        copy_strided(sizes, batches, input, inout_host);
+        copy_strided(sizes, input, inout_host);
         const auto real_strides = get_real_strides(sizes);
         const auto complex_strides = get_complex_strides(sizes);
         descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, real_strides.data());
@@ -223,7 +223,7 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
                          oneapi::mkl::dft::config_value::INPLACE);
 
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        copy_strided(sizes, batches, input, inout);
+        copy_strided(sizes, input, inout);
         const auto real_strides = get_real_strides(sizes);
         const auto complex_strides = get_complex_strides(sizes);
         descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, real_strides.data());

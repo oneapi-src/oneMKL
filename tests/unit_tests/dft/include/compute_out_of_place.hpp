@@ -23,7 +23,7 @@
 #include "compute_tester.hpp"
 
 template <oneapi::mkl::dft::domain domain>
-std::int64_t get_row_size(const std::vector<std::int64_t> &sizes) noexcept {
+std::int64_t get_backward_row_size(const std::vector<std::int64_t> &sizes) noexcept {
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         return sizes.back() / 2 + 1;
     }
@@ -80,7 +80,7 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
             auto ref_iter = out_host_ref.begin();
             const auto ref_row_stride = sizes.back();
             const auto backward_row_stride = sizes.back();
-            const auto backward_row_elements = get_row_size<domain>(sizes);
+            const auto backward_row_elements = get_backward_row_size<domain>(sizes);
 
             while (ref_iter < out_host_ref.end()) {
                 EXPECT_TRUE(check_equal_vector(bwd_ptr, ref_iter, backward_row_elements,
@@ -155,7 +155,7 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
 
         const auto ref_row_stride = sizes.back();
         const auto backward_row_stride = sizes.back();
-        const auto backward_row_elements = get_row_size<domain>(sizes);
+        const auto backward_row_elements = get_backward_row_size<domain>(sizes);
 
         while (ref_iter < out_host_ref.end()) {
             EXPECT_TRUE(check_equal_vector(bwd_iter, ref_iter, backward_row_elements,

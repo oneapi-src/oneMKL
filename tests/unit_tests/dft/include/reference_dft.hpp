@@ -53,7 +53,7 @@ struct reference {};
 
 template <typename TypeIn, typename TypeOut>
 struct reference<TypeIn, TypeOut, 1> {
-    static void forward_dft(const std::vector<std::int64_t> &sizes, TypeIn const *const in,
+    static void forward_dft(const std::vector<std::int64_t> &sizes, const TypeIn *in,
                             TypeOut *out) {
         reference_forward_dft_impl(in, out, sizes[0], 1);
     }
@@ -61,11 +61,11 @@ struct reference<TypeIn, TypeOut, 1> {
 
 template <typename TypeIn, typename TypeOut>
 struct reference<TypeIn, TypeOut, 2> {
-    static void forward_dft(const std::vector<std::int64_t> &sizes, TypeIn const *const in,
+    static void forward_dft(const std::vector<std::int64_t> &sizes, const TypeIn *in,
                             TypeOut *out) {
         const auto elements = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>{});
         std::vector<std::complex<ref_t>> tmp(elements);
-        for (size_t i = 0; i < sizes[0] * sizes[1]; i += sizes[1]) {
+        for (size_t i = 0; i < elements; i += sizes[1]) {
             reference_forward_dft_impl(in + i, tmp.data() + i, sizes[1], 1);
         }
         for (size_t i = 0; i < sizes[1]; i++) {
@@ -76,15 +76,15 @@ struct reference<TypeIn, TypeOut, 2> {
 
 template <typename TypeIn, typename TypeOut>
 struct reference<TypeIn, TypeOut, 3> {
-    static void forward_dft(const std::vector<std::int64_t> &sizes, TypeIn const *const in,
+    static void forward_dft(const std::vector<std::int64_t> &sizes, const TypeIn *in,
                             TypeOut *out) {
         const auto elements = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>{});
         std::vector<std::complex<ref_t>> tmp1(elements);
         std::vector<std::complex<ref_t>> tmp2(elements);
-        for (size_t i = 0; i < sizes[0] * sizes[1] * sizes[2]; i += sizes[2]) {
+        for (size_t i = 0; i < elements; i += sizes[2]) {
             reference_forward_dft_impl(in + i, tmp1.data() + i, sizes[2], 1);
         }
-        for (size_t j = 0; j < sizes[0] * sizes[1] * sizes[2]; j += sizes[1] * sizes[2]) {
+        for (size_t j = 0; j < elements; j += sizes[1] * sizes[2]) {
             for (size_t i = 0; i < sizes[2]; i++) {
                 reference_forward_dft_impl(tmp1.data() + i + j, tmp2.data() + i + j, sizes[1],
                                            sizes[2]);
@@ -114,8 +114,7 @@ struct reference<TypeIn, TypeOut, 3> {
  * @param stride the stride between elements in the data set, measured in elements.
 **/
 template <typename TypeIn, typename TypeOut>
-void reference_forward_dft(const std::vector<std::int64_t> &sizes, TypeIn const *const in,
-                           TypeOut *out) {
+void reference_forward_dft(const std::vector<std::int64_t> &sizes, const TypeIn *in, TypeOut *out) {
     switch (sizes.size()) {
         case 1: detail::reference<TypeIn, TypeOut, 1>::forward_dft(sizes, in, out); break;
         case 2: detail::reference<TypeIn, TypeOut, 2>::forward_dft(sizes, in, out); break;
