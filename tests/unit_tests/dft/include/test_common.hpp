@@ -148,6 +148,20 @@ void commit_descriptor(oneapi::mkl::dft::descriptor<precision, domain> &descript
 #endif
 }
 
+inline std::vector<std::int64_t> get_conjugate_even_complex_strides(
+    const std::vector<std::int64_t> &sizes) {
+    switch (sizes.size()) {
+        case 1: return { 0, 1 };
+        case 2: return { 0, sizes[1] / 2 + 1, 1 };
+        case 3: return { 0, sizes[1] * (sizes[2] / 2 + 1), (sizes[2] / 2 + 1), 1 };
+        default:
+            throw oneapi::mkl::unimplemented(
+                "dft/test_common", __FUNCTION__,
+                "not implemented for " + std::to_string(sizes.size()) + " dimensions");
+            return {};
+    }
+}
+
 struct DFTParams {
     std::vector<std::int64_t> sizes;
     std::int64_t batches;

@@ -31,7 +31,7 @@
 namespace detail {
 using ref_t = long double; /* Do the calculations using long double */
 template <typename TypeIn, typename TypeOut>
-void reference_forward_dft_impl(TypeIn *in, TypeOut *out, size_t N, size_t stride) {
+void reference_forward_dft_impl(const TypeIn *in, TypeOut *out, size_t N, size_t stride) {
     static_assert(is_complex<TypeOut>(), "Output type of DFT must be complex");
 
     constexpr ref_t TWOPI = 2.0L * 3.141592653589793238462643383279502884197L;

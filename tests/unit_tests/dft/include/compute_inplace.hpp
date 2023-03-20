@@ -27,24 +27,12 @@ inline std::int64_t row_elements_to_conjugate_even_components(std::int64_t last_
     return ((last_dim / 2) + 1) * 2;
 }
 
-std::vector<std::int64_t> get_real_strides(const std::vector<std::int64_t>& sizes) {
+std::vector<std::int64_t> get_conjugate_even_real_component_strides(
+    const std::vector<std::int64_t>& sizes) {
     switch (sizes.size()) {
         case 1: return { 0, 1 };
         case 2: return { 0, 2 * (sizes[1] / 2 + 1), 1 };
         case 3: return { 0, 2 * sizes[1] * (sizes[2] / 2 + 1), 2 * (sizes[2] / 2 + 1), 1 };
-        default:
-            throw oneapi::mkl::unimplemented(
-                "compute_inplace", __FUNCTION__,
-                "not implemented for " + std::to_string(sizes.size()) + " dimensions");
-            return {};
-    }
-}
-
-std::vector<std::int64_t> get_complex_strides(const std::vector<std::int64_t>& sizes) {
-    switch (sizes.size()) {
-        case 1: return { 0, 1 };
-        case 2: return { 0, sizes[1] / 2 + 1, 1 };
-        case 3: return { 0, sizes[1] * (sizes[2] / 2 + 1), (sizes[2] / 2 + 1), 1 };
         default:
             throw oneapi::mkl::unimplemented(
                 "compute_inplace", __FUNCTION__,
@@ -110,8 +98,8 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
 
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         copy_strided(sizes, input, inout_host);
-        const auto real_strides = get_real_strides(sizes);
-        const auto complex_strides = get_complex_strides(sizes);
+        const auto real_strides = get_conjugate_even_real_component_strides(sizes);
+        const auto complex_strides = get_conjugate_even_complex_strides(sizes);
         descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, real_strides.data());
         descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                              complex_strides.data());
@@ -133,8 +121,8 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
                               (1.0 / forward_elements));
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        const auto real_strides = get_real_strides(sizes);
-        const auto complex_strides = get_complex_strides(sizes);
+        const auto real_strides = get_conjugate_even_real_component_strides(sizes);
+        const auto complex_strides = get_conjugate_even_complex_strides(sizes);
         descriptor_back.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
                                   complex_strides.data());
         descriptor_back.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
@@ -224,8 +212,8 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
 
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         copy_strided(sizes, input, inout);
-        const auto real_strides = get_real_strides(sizes);
-        const auto complex_strides = get_complex_strides(sizes);
+        const auto real_strides = get_conjugate_even_real_component_strides(sizes);
+        const auto complex_strides = get_conjugate_even_complex_strides(sizes);
         descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, real_strides.data());
         descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                              complex_strides.data());
@@ -269,8 +257,8 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
     descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
                               (1.0 / forward_elements));
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        const auto real_strides = get_real_strides(sizes);
-        const auto complex_strides = get_complex_strides(sizes);
+        const auto real_strides = get_conjugate_even_real_component_strides(sizes);
+        const auto complex_strides = get_conjugate_even_complex_strides(sizes);
         descriptor_back.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
                                   complex_strides.data());
         descriptor_back.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,

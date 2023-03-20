@@ -21,6 +21,7 @@
 #define ONEMKL_COMPUTE_OUT_OF_PLACE_HPP
 
 #include "compute_tester.hpp"
+#include <numeric>
 
 template <oneapi::mkl::dft::domain domain>
 std::int64_t get_backward_row_size(const std::vector<std::int64_t> &sizes) noexcept {
@@ -32,14 +33,14 @@ std::int64_t get_backward_row_size(const std::vector<std::int64_t> &sizes) noexc
     }
 }
 
-/* Note: There is no implementation for Domain Real */
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     if (!init(MemoryAccessModel::buffer)) {
         return test_skipped;
     }
 
-    const auto backward_distance = forward_elements;
+    const auto backward_distance = std::accumulate(
+        sizes.begin(), sizes.end() - 1, get_backward_row_size<domain>(sizes), std::multiplies<>());
 
     descriptor_t descriptor{ sizes };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
@@ -47,6 +48,11 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
     descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
+    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+        const auto complex_strides = get_conjugate_even_complex_strides(sizes);
+        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
+                             complex_strides.data());
+    }
     commit_descriptor(descriptor, sycl_queue);
 
     descriptor_t descriptor_back{ sizes };
@@ -57,6 +63,11 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     descriptor_back.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
     descriptor_back.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
     descriptor_back.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
+    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+        const auto complex_strides = get_conjugate_even_complex_strides(sizes);
+        descriptor_back.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
+                                  complex_strides.data());
+    }
     commit_descriptor(descriptor_back, sycl_queue);
 
     std::vector<FwdInputType> fwd_data(input);
@@ -79,7 +90,7 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
             auto bwd_ptr = acc_bwd.get_pointer();
             auto ref_iter = out_host_ref.begin();
             const auto ref_row_stride = sizes.back();
-            const auto backward_row_stride = sizes.back();
+            const auto backward_row_stride = get_backward_row_size<domain>(sizes);
             const auto backward_row_elements = get_backward_row_size<domain>(sizes);
 
             while (ref_iter < out_host_ref.end()) {
@@ -113,7 +124,8 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     }
     const std::vector<sycl::event> no_dependencies;
 
-    const auto backward_distance = forward_elements;
+    const auto backward_distance = std::accumulate(
+        sizes.begin(), sizes.end() - 1, get_backward_row_size<domain>(sizes), std::multiplies<>());
 
     descriptor_t descriptor{ sizes };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
@@ -121,6 +133,11 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
     descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
+    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+        const auto complex_strides = get_conjugate_even_complex_strides(sizes);
+        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
+                             complex_strides.data());
+    }
     commit_descriptor(descriptor, sycl_queue);
 
     descriptor_t descriptor_back{ sizes };
@@ -131,6 +148,11 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     descriptor_back.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
     descriptor_back.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
     descriptor_back.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
+    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+        const auto complex_strides = get_conjugate_even_complex_strides(sizes);
+        descriptor_back.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
+                                  complex_strides.data());
+    }
     commit_descriptor(descriptor_back, sycl_queue);
 
     auto ua_input = usm_allocator_t<FwdInputType>(cxt, *dev);
@@ -154,7 +176,7 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
         auto ref_iter = out_host_ref.begin();
 
         const auto ref_row_stride = sizes.back();
-        const auto backward_row_stride = sizes.back();
+        const auto backward_row_stride = get_backward_row_size<domain>(sizes);
         const auto backward_row_elements = get_backward_row_size<domain>(sizes);
 
         while (ref_iter < out_host_ref.end()) {
