@@ -20,6 +20,9 @@
 #include <iostream>
 #include <vector>
 #include <variant>
+#include <thread>
+#include <chrono>
+#include <condition_variable>
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -416,37 +419,39 @@ inline void recommit_values(sycl::queue& sycl_queue) {
     using value = std::variant<config_value, std::int64_t, std::int64_t*, bool, PrecisionType>;
 
     // this will hold a param to change and the value to change it to
-    using test_params = std::pair<config_param, value>;
+    using test_params = std::vector<std::pair<config_param, value>>;
 
     oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
     EXPECT_NO_THROW(commit_descriptor(descriptor, sycl_queue));
 
     std::array<std::int64_t, 2> strides{ 0, 1 };
 
-    std::vector<test_params> arguments{
+    std::vector<test_params> argument_groups{
         // not changeable
         // FORWARD_DOMAIN, PRECISION, DIMENSION, COMMIT_STATUS
-        std::make_pair(config_param::LENGTHS, std::int64_t{ 10 }),
-        std::make_pair(config_param::FORWARD_SCALE, PrecisionType{ 1.2 }),
-        std::make_pair(config_param::BACKWARD_SCALE, PrecisionType{ 3.4 }),
-        std::make_pair(config_param::NUMBER_OF_TRANSFORMS, std::int64_t{ 5 }),
-        std::make_pair(config_param::COMPLEX_STORAGE, config_value::COMPLEX_COMPLEX),
-        std::make_pair(config_param::REAL_STORAGE, config_value::REAL_REAL),
-        std::make_pair(config_param::CONJUGATE_EVEN_STORAGE, config_value::COMPLEX_COMPLEX),
-        std::make_pair(config_param::PLACEMENT, config_value::INPLACE),
-        std::make_pair(config_param::INPUT_STRIDES, strides.data()),
-        std::make_pair(config_param::OUTPUT_STRIDES, strides.data()),
-        std::make_pair(config_param::FWD_DISTANCE, std::int64_t{ 6 }),
-        std::make_pair(config_param::BWD_DISTANCE, std::int64_t{ 7 }),
-        std::make_pair(config_param::WORKSPACE, config_value::ALLOW),
-        std::make_pair(config_param::ORDERING, config_value::ORDERED),
-        std::make_pair(config_param::TRANSPOSE, bool{ false }),
-        std::make_pair(config_param::PACKED_FORMAT, config_value::CCE_FORMAT)
+        { std::make_pair(config_param::LENGTHS, std::int64_t{ 10 }),
+          std::make_pair(config_param::FORWARD_SCALE, PrecisionType{ 1.2 }),
+          std::make_pair(config_param::BACKWARD_SCALE, PrecisionType{ 3.4 }) },
+        { std::make_pair(config_param::NUMBER_OF_TRANSFORMS, std::int64_t{ 5 }),
+          std::make_pair(config_param::COMPLEX_STORAGE, config_value::COMPLEX_COMPLEX),
+          std::make_pair(config_param::REAL_STORAGE, config_value::REAL_REAL),
+          std::make_pair(config_param::CONJUGATE_EVEN_STORAGE, config_value::COMPLEX_COMPLEX) },
+        { std::make_pair(config_param::PLACEMENT, config_value::INPLACE),
+          std::make_pair(config_param::INPUT_STRIDES, strides.data()),
+          std::make_pair(config_param::OUTPUT_STRIDES, strides.data()),
+          std::make_pair(config_param::FWD_DISTANCE, std::int64_t{ 60 }),
+          std::make_pair(config_param::BWD_DISTANCE, std::int64_t{ 70 }) },
+        { std::make_pair(config_param::WORKSPACE, config_value::ALLOW),
+          std::make_pair(config_param::ORDERING, config_value::ORDERED),
+          std::make_pair(config_param::TRANSPOSE, bool{ false }),
+          std::make_pair(config_param::PACKED_FORMAT, config_value::CCE_FORMAT) }
     };
 
-    for (int i = 0; i < arguments.size(); i += 1) {
-        std::visit([&descriptor, p = arguments[i].first](auto&& a) { descriptor.set_value(p, a); },
-                   arguments[i].second);
+    for (int i = 0; i < argument_groups.size(); i += 1) {
+        for (auto argument : argument_groups[i]) {
+            std::visit([&descriptor, p = argument.first](auto&& a) { descriptor.set_value(p, a); },
+                       argument.second);
+        }
         try {
             commit_descriptor(descriptor, sycl_queue);
         }
@@ -454,6 +459,54 @@ inline void recommit_values(sycl::queue& sycl_queue) {
             FAIL() << "exception at index " << i << " with error : " << e.what();
         }
     }
+}
+
+template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
+inline void change_queue_causes_wait(sycl::queue& busy_queue) {
+    // create a queue with work on it, and then show that work is waited on when the descriptor
+    // is committed to a new queue.
+    // its possible to have a false positive result, but a false negative should not be possible.
+    // sleeps have been added to reduce the false positives to show that we are actually waiting for
+    // notification/queue.
+    using namespace std::chrono_literals;
+    std::condition_variable cv;
+    std::mutex cv_m;
+    // signal used to avoid spurious wakeups
+    bool signal = false;
+
+    sycl::queue free_queue;
+
+    // commit the descriptor on the "busy" queue
+    oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
+    EXPECT_NO_THROW(commit_descriptor(descriptor, busy_queue));
+
+    // add some work to the busy queue
+    auto e = busy_queue.submit([&](sycl::handler& cgh) {
+        cgh.host_task([&] {
+            std::unique_lock<std::mutex> lock(cv_m);
+            ASSERT_TRUE(cv.wait_for(lock, 5s, [&] { return signal; })); // returns false on timeout
+            std::this_thread::sleep_for(500ms);
+        });
+    });
+    std::this_thread::sleep_for(500ms);
+
+    // busy queue is still waiting on that conditional_variable
+    auto before_status = e.template get_info<sycl::info::event::command_execution_status>();
+    ASSERT_NE(before_status, sycl::info::event_command_status::complete);
+
+    // notify the conditional variable
+    {
+        std::lock_guard<std::mutex> lock(cv_m);
+        signal = true;
+    }
+    cv.notify_all();
+
+    // commit the descriptor to the "free" queue
+    EXPECT_NO_THROW(commit_descriptor(descriptor, free_queue));
+
+    // busy queue task has now completed.
+    auto after_status = e.template get_info<sycl::info::event::command_execution_status>();
+    ASSERT_EQ(after_status, sycl::info::event_command_status::complete);
 }
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
@@ -473,6 +526,7 @@ int test(sycl::device* dev) {
     get_readonly_values<precision, domain>(sycl_queue);
     set_readonly_values<precision, domain>(sycl_queue);
     recommit_values<precision, domain>(sycl_queue);
+    change_queue_causes_wait<precision, domain>(sycl_queue);
 
     return !::testing::Test::HasFailure();
 }
