@@ -436,7 +436,7 @@ inline void recommit_values(sycl::queue& sycl_queue) {
           std::make_pair(config_param::COMPLEX_STORAGE, config_value::COMPLEX_COMPLEX),
           std::make_pair(config_param::REAL_STORAGE, config_value::REAL_REAL),
           std::make_pair(config_param::CONJUGATE_EVEN_STORAGE, config_value::COMPLEX_COMPLEX) },
-        { std::make_pair(config_param::PLACEMENT, config_value::INPLACE),
+        { std::make_pair(config_param::PLACEMENT, config_value::NOT_INPLACE),
           std::make_pair(config_param::INPUT_STRIDES, strides.data()),
           std::make_pair(config_param::OUTPUT_STRIDES, strides.data()),
           std::make_pair(config_param::FWD_DISTANCE, std::int64_t{ 60 }),
