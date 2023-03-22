@@ -58,12 +58,14 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
         }
         auto acc_host = inout_buf.template get_host_access();
         EXPECT_TRUE(check_equal_vector(acc_host.get_pointer(), out_host_ref_conjugate.data(),
-                                       inout_host.size(), abs_error_margin, rel_error_margin, std::cout));
+                                       inout_host.size(), abs_error_margin, rel_error_margin,
+                                       std::cout));
     }
     else {
         auto acc_host = inout_buf.template get_host_access();
         EXPECT_TRUE(check_equal_vector(acc_host.get_pointer(), out_host_ref.data(),
-                                       inout_host.size(), abs_error_margin, rel_error_margin, std::cout));
+                                       inout_host.size(), abs_error_margin, rel_error_margin,
+                                       std::cout));
     }
 
     descriptor_t descriptor_back{ size };
@@ -152,8 +154,8 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
         return test_skipped;
     }
 
-    EXPECT_TRUE(
-        check_equal_vector(inout.data(), input.data(), input.size(), abs_error_margin, rel_error_margin, std::cout));
+    EXPECT_TRUE(check_equal_vector(inout.data(), input.data(), input.size(), abs_error_margin,
+                                   rel_error_margin, std::cout));
 
     return !::testing::Test::HasFailure();
 }

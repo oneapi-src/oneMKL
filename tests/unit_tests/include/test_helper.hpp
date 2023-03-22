@@ -127,7 +127,7 @@
 
 #define TEST_RUN_CT_SELECT_NO_ARGS(q, func)                                \
     do {                                                                   \
-        if (CHECK_HOST_OR_CPU(q))   {                                      \
+        if (CHECK_HOST_OR_CPU(q)) {                                        \
             TEST_RUN_INTELCPU_SELECT_NO_ARGS(q, func);                     \
         }                                                                  \
         else if (q.get_device().is_gpu()) {                                \

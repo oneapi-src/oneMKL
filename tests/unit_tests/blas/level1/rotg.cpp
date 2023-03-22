@@ -130,13 +130,13 @@ int test(device *dev, oneapi::mkl::layout layout) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    auto a_accessor = a_buffer.template get_access<access::mode::read>();
+    auto a_accessor = a_buffer.template get_host_access(read_only);
     bool good_a = check_equal(a_accessor[0], a_ref, 4, std::cout);
-    auto b_accessor = b_buffer.template get_access<access::mode::read>();
+    auto b_accessor = b_buffer.template get_host_access(read_only);
     bool good_b = check_equal(b_accessor[0], b_ref, 4, std::cout);
-    auto s_accessor = s_buffer.template get_access<access::mode::read>();
+    auto s_accessor = s_buffer.template get_host_access(read_only);
     bool good_s = check_equal(s_accessor[0], s_ref, 4, std::cout);
-    auto c_accessor = c_buffer.template get_access<access::mode::read>();
+    auto c_accessor = c_buffer.template get_host_access(read_only);
     bool good_c = check_equal(c_accessor[0], c_ref, 4, std::cout);
 
     bool good = good_a && good_b && good_c && good_s;

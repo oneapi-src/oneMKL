@@ -565,7 +565,7 @@ CMake.
      - False     
    * - target_domains (list)
      - TARGET_DOMAINS (list)
-     - blas, lapack, rng
+     - blas, lapack, rng, dft
      - All domains 
 
 .. note::

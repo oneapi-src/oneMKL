@@ -154,7 +154,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
 
     // Compare the results of reference implementation and DPC++ implementation.
 
-    auto AB_accessor = AB_buffer.template get_access<access::mode::read>();
+    auto AB_accessor = AB_buffer.template get_host_access(read_only);
     bool good = check_equal_matrix(AB_accessor, AB_ref, oneapi::mkl::layout::column_major, size, 1,
                                    size, 10, std::cout);
 
