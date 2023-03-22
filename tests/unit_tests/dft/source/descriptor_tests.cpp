@@ -485,7 +485,7 @@ inline void change_queue_causes_wait(sycl::queue& busy_queue) {
         cgh.host_task([&] {
             std::unique_lock<std::mutex> lock(cv_m);
             ASSERT_TRUE(cv.wait_for(lock, 5s, [&] { return signal; })); // returns false on timeout
-            std::this_thread::sleep_for(500ms);
+            std::this_thread::sleep_for(100ms);
         });
     });
     std::this_thread::sleep_for(500ms);
@@ -510,6 +510,38 @@ inline void change_queue_causes_wait(sycl::queue& busy_queue) {
 }
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
+inline void swap_out_dead_queue(sycl::queue& sycl_queue) {
+    // test that commit still works when the previously committed queue is no longer in scope
+    // the queue is not actually dead (due to reference counting)
+
+    // commit the descriptor on the "busy" queue
+    oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
+    {
+        sycl::queue transient_queue;
+        EXPECT_NO_THROW(commit_descriptor(descriptor, transient_queue));
+    }
+    EXPECT_NO_THROW(commit_descriptor(descriptor, sycl_queue));
+
+    using ftype = typename std::conditional_t<precision == oneapi::mkl::dft::precision::SINGLE,
+                                              float, double>;
+    using forward_type = typename std::conditional_t<domain == oneapi::mkl::dft::domain::REAL,
+                                                     ftype, std::complex<ftype>>;
+
+    // add two so that real-complex transforms have space for all the conjugate even components
+    auto inout = sycl::malloc_device<forward_type>(default_1d_lengths + 2, sycl_queue);
+    sycl_queue.wait();
+
+    auto transform_event = oneapi::mkl::dft::compute_forward<decltype(descriptor), forward_type>(
+        descriptor, inout, std::vector<sycl::event>{});
+    sycl_queue.wait();
+
+    // after waiting on the second queue, the event should be completed
+    auto status = transform_event.template get_info<sycl::info::event::command_execution_status>();
+    ASSERT_EQ(status, sycl::info::event_command_status::complete);
+    sycl::free(inout, sycl_queue);
+}
+
+template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 int test(sycl::device* dev) {
     sycl::queue sycl_queue(*dev, exception_handler);
 
@@ -527,6 +559,7 @@ int test(sycl::device* dev) {
     set_readonly_values<precision, domain>(sycl_queue);
     recommit_values<precision, domain>(sycl_queue);
     change_queue_causes_wait<precision, domain>(sycl_queue);
+    swap_out_dead_queue<precision, domain>(sycl_queue);
 
     return !::testing::Test::HasFailure();
 }
