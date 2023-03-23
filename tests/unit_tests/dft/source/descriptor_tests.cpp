@@ -474,7 +474,7 @@ inline void change_queue_causes_wait(sycl::queue& busy_queue) {
     // signal used to avoid spurious wakeups
     bool signal = false;
 
-    sycl::queue free_queue;
+    sycl::queue free_queue(busy_queue.get_device(), exception_handler);
 
     // commit the descriptor on the "busy" queue
     oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
@@ -517,7 +517,7 @@ inline void swap_out_dead_queue(sycl::queue& sycl_queue) {
     // commit the descriptor on the "busy" queue
     oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
     {
-        sycl::queue transient_queue;
+        sycl::queue transient_queue(sycl_queue.get_device(), exception_handler);
         EXPECT_NO_THROW(commit_descriptor(descriptor, transient_queue));
     }
     EXPECT_NO_THROW(commit_descriptor(descriptor, sycl_queue));
