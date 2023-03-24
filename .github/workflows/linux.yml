@@ -152,7 +152,7 @@ jobs:
               -DBUILD_SHARED_LIBS=ON \
               -DTARGET_DOMAINS=blas \
               -DREF_BLAS_ROOT=/opt/lapack/ \
-              -DhipSYCL_DIR=/opt/OpenSYCL/lib/cmake/OpenSYCL \
+              -DhipSYCL_DIR=/opt/OpenSYCL/lib/cmake/hipSYCL \
               -DHIPSYCL_TARGETS="omp;hip:gfx906" \
               -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL ..
         cmake --build . -j2
