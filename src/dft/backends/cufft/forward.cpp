@@ -118,7 +118,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inou
     auto plan = static_cast<cufftHandle *>(commit->get_handle())[0];
 
     return queue.submit([&](sycl::handler &cgh) {
-	cgh.depends_on(dependencies);
+        cgh.depends_on(dependencies);
 
         cgh.host_task([=](sycl::interop_handle ih) {
             const std::string func_name = "compute_forward(desc, inout, dependencies)";
@@ -150,7 +150,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in,
     auto plan = static_cast<cufftHandle *>(commit->get_handle())[0];
 
     return queue.submit([&](sycl::handler &cgh) {
-	cgh.depends_on(dependencies);
+        cgh.depends_on(dependencies);
 
         cgh.host_task([=](sycl::interop_handle ih) {
             const std::string func_name = "compute_forward(desc, in, out, dependencies)";

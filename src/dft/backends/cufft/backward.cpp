@@ -116,7 +116,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *ino
     auto plan = static_cast<cufftHandle *>(commit->get_handle())[1];
 
     return queue.submit([&](sycl::handler &cgh) {
-		    cgh.depends_on(dependencies);
+        cgh.depends_on(dependencies);
 
         cgh.host_task([=](sycl::interop_handle ih) {
             const std::string func_name = "compute_backward(desc, inout, dependencies)";
@@ -148,7 +148,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in
     auto plan = static_cast<cufftHandle *>(commit->get_handle())[1];
 
     return queue.submit([&](sycl::handler &cgh) {
-		    cgh.depends_on(dependencies);
+        cgh.depends_on(dependencies);
 
         cgh.host_task([=](sycl::interop_handle ih) {
             const std::string func_name = "compute_backward(desc, in, out, dependencies)";
