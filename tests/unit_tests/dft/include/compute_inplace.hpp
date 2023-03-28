@@ -113,9 +113,10 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     std::vector<FwdInputType> inout_host(container_size_total, 0);
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         copy_strided(sizes, input, inout_host);
-        else {
-            std::copy(input.begin(), input.end(), inout_host.begin());
-        }
+    }
+    else {
+        std::copy(input.begin(), input.end(), inout_host.begin());
+    }
 
     {
         sycl::buffer<FwdInputType, 1> inout_buf{ inout_host };
@@ -155,7 +156,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
         }
 
         try {
-            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
+            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
                                                FwdInputType>(descriptor, inout_buf);
         }
         catch (oneapi::mkl::unimplemented& e) {
@@ -219,68 +220,67 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
 
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         copy_strided(sizes, input, inout);
-        else {
-            std::copy(input.begin(), input.end(), inout.begin());
-        }
-
-        try {
-            std::vector<sycl::event> dependencies;
-            oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(descriptor, inout.data(),
-                                                                          dependencies)
-                .wait();
-        }
-        catch (oneapi::mkl::unimplemented& e) {
-            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-            return test_skipped;
-        }
-
-        if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-            std::vector<FwdInputType> conjugate_even_ref =
-                get_conjugate_even_ref(sizes, batches, out_host_ref);
-            EXPECT_TRUE(check_equal_vector(inout.data(), conjugate_even_ref.data(), inout.size(),
-                                           abs_error_margin, rel_error_margin, std::cout));
-        }
-        else {
-            EXPECT_TRUE(check_equal_vector(inout.data(), out_host_ref.data(), inout.size(),
-                                           abs_error_margin, rel_error_margin, std::cout));
-        }
-
-        if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-            const auto real_strides = get_conjugate_even_real_component_strides(sizes);
-            const auto complex_strides = get_conjugate_even_complex_strides(sizes);
-            descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
-                                 complex_strides.data());
-            descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
-                                 real_strides.data());
-            commit_descriptor(descriptor, sycl_queue);
-        }
-
-        try {
-            std::vector<sycl::event> dependencies;
-            sycl::event done =
-                oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                                   FwdInputType>(descriptor, inout.data());
-            done.wait();
-        }
-        catch (oneapi::mkl::unimplemented& e) {
-            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-            return test_skipped;
-        }
-
-        if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-            for (int j = 0; j < size_total / sizes.back(); j++) {
-                EXPECT_TRUE(check_equal_vector(
-                    inout.data() + j * row_elements_to_conjugate_even_components(sizes.back()),
-                    input.data() + j * sizes.back(), sizes.back(), abs_error_margin,
-                    rel_error_margin, std::cout));
-            }
-        }
-        else {
-            EXPECT_TRUE(check_equal_vector(inout.data(), input.data(), input.size(),
-                                           abs_error_margin, rel_error_margin, std::cout));
-        }
-
-        return !::testing::Test::HasFailure();
     }
+    else {
+        std::copy(input.begin(), input.end(), inout.begin());
+    }
+
+    try {
+        std::vector<sycl::event> dependencies;
+        oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(descriptor, inout.data(),
+                                                                      dependencies)
+            .wait();
+    }
+    catch (oneapi::mkl::unimplemented& e) {
+        std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
+        return test_skipped;
+    }
+
+    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+        std::vector<FwdInputType> conjugate_even_ref =
+            get_conjugate_even_ref(sizes, batches, out_host_ref);
+        EXPECT_TRUE(check_equal_vector(inout.data(), conjugate_even_ref.data(), inout.size(),
+                                       abs_error_margin, rel_error_margin, std::cout));
+    }
+    else {
+        EXPECT_TRUE(check_equal_vector(inout.data(), out_host_ref.data(), inout.size(),
+                                       abs_error_margin, rel_error_margin, std::cout));
+    }
+
+    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+        const auto real_strides = get_conjugate_even_real_component_strides(sizes);
+        const auto complex_strides = get_conjugate_even_complex_strides(sizes);
+        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, complex_strides.data());
+        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, real_strides.data());
+        commit_descriptor(descriptor, sycl_queue);
+    }
+
+    try {
+        std::vector<sycl::event> dependencies;
+        sycl::event done =
+            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
+                                               FwdInputType>(descriptor, inout.data());
+        done.wait();
+    }
+    catch (oneapi::mkl::unimplemented& e) {
+        std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
+        return test_skipped;
+    }
+
+    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+        for (int j = 0; j < size_total / sizes.back(); j++) {
+            EXPECT_TRUE(check_equal_vector(
+                inout.data() + j * row_elements_to_conjugate_even_components(sizes.back()),
+                input.data() + j * sizes.back(), sizes.back(), abs_error_margin, rel_error_margin,
+                std::cout));
+        }
+    }
+    else {
+        EXPECT_TRUE(check_equal_vector(inout.data(), input.data(), input.size(), abs_error_margin,
+                                       rel_error_margin, std::cout));
+    }
+
+    return !::testing::Test::HasFailure();
+}
 
 #endif //ONEMKL_COMPUTE_INPLACE_HPP
