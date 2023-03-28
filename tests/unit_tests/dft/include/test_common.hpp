@@ -148,17 +148,52 @@ void commit_descriptor(oneapi::mkl::dft::descriptor<precision, domain> &descript
 #endif
 }
 
-class DimensionsDeviceNamePrint {
+inline std::vector<std::int64_t> get_conjugate_even_complex_strides(
+    const std::vector<std::int64_t> &sizes) {
+    switch (sizes.size()) {
+        case 1: return { 0, 1 };
+        case 2: return { 0, sizes[1] / 2 + 1, 1 };
+        case 3: return { 0, sizes[1] * (sizes[2] / 2 + 1), (sizes[2] / 2 + 1), 1 };
+        default:
+            throw oneapi::mkl::unimplemented(
+                "dft/test_common", __FUNCTION__,
+                "not implemented for " + std::to_string(sizes.size()) + " dimensions");
+            return {};
+    }
+}
+
+struct DFTParams {
+    std::vector<std::int64_t> sizes;
+    std::int64_t batches;
+};
+
+class DFTParamsPrint {
 public:
     std::string operator()(
-        testing::TestParamInfo<std::tuple<sycl::device *, std::int64_t>> dev) const {
-        std::string size = "size_" + std::to_string(std::get<1>(dev.param));
-        std::string dev_name = std::get<0>(dev.param)->get_info<sycl::info::device::name>();
-        for (std::string::size_type i = 0; i < dev_name.size(); ++i) {
-            if (!isalnum(dev_name[i]))
-                dev_name[i] = '_';
-        }
-        return size.append("_").append(dev_name);
+        testing::TestParamInfo<std::tuple<sycl::device *, DFTParams>> dev) const {
+        auto [device, params] = dev.param;
+        auto [sizes, batches] = params;
+        std::string info_name;
+
+        assert(sizes.size() > 0);
+        info_name.append("sizes_");
+
+        // intersperse dimensions with "x"
+        std::for_each(sizes.begin(), sizes.end() - 1,
+                      [&info_name](auto s) { info_name.append(std::to_string(s)).append("x"); });
+        info_name.append(std::to_string(sizes.back()));
+
+        info_name.append("_batches_").append(std::to_string(batches));
+
+        std::string dev_name = device->get_info<sycl::info::device::name>();
+        std::for_each(dev_name.begin(), dev_name.end(), [](auto &c) {
+            if (!isalnum(c))
+                c = '_';
+        });
+
+        info_name.append("_").append(dev_name);
+
+        return info_name;
     }
 };
 
