@@ -48,27 +48,13 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
     descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
+    descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / forward_elements));
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         const auto complex_strides = get_conjugate_even_complex_strides(sizes);
         descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                              complex_strides.data());
     }
     commit_descriptor(descriptor, sycl_queue);
-
-    descriptor_t descriptor_back{ sizes };
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
-                              oneapi::mkl::dft::config_value::NOT_INPLACE);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
-                              (1.0 / forward_elements));
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
-    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        const auto complex_strides = get_conjugate_even_complex_strides(sizes);
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
-                                  complex_strides.data());
-    }
-    commit_descriptor(descriptor_back, sycl_queue);
 
     std::vector<FwdInputType> fwd_data(input);
 
@@ -101,10 +87,20 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
             }
         }
 
+        if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+            const auto complex_strides = get_conjugate_even_complex_strides(sizes);
+            auto real_strides = get_default_strides(sizes);
+            descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
+                                 complex_strides.data());
+            descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
+                                 real_strides.data());
+            commit_descriptor(descriptor, sycl_queue);
+        }
+
         try {
-            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
-                                               FwdOutputType, FwdInputType>(descriptor_back,
-                                                                            bwd_buf, fwd_buf);
+            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
+                                               FwdOutputType, FwdInputType>(descriptor, bwd_buf,
+                                                                            fwd_buf);
         }
         catch (oneapi::mkl::unimplemented &e) {
             std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
@@ -133,27 +129,13 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
     descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
+    descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / forward_elements));
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         const auto complex_strides = get_conjugate_even_complex_strides(sizes);
         descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                              complex_strides.data());
     }
     commit_descriptor(descriptor, sycl_queue);
-
-    descriptor_t descriptor_back{ sizes };
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
-                              oneapi::mkl::dft::config_value::NOT_INPLACE);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
-                              (1.0 / forward_elements));
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
-    descriptor_back.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
-    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        const auto complex_strides = get_conjugate_even_complex_strides(sizes);
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
-                                  complex_strides.data());
-    }
-    commit_descriptor(descriptor_back, sycl_queue);
 
     auto ua_input = usm_allocator_t<FwdInputType>(cxt, *dev);
     auto ua_output = usm_allocator_t<FwdOutputType>(cxt, *dev);
@@ -187,9 +169,17 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
         }
     }
 
+    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+        const auto complex_strides = get_conjugate_even_complex_strides(sizes);
+        auto real_strides = get_default_strides(sizes);
+        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, complex_strides.data());
+        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, real_strides.data());
+        commit_descriptor(descriptor, sycl_queue);
+    }
+
     try {
-        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
-                                           FwdOutputType, FwdInputType>(descriptor_back, bwd.data(),
+        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
+                                           FwdOutputType, FwdInputType>(descriptor, bwd.data(),
                                                                         fwd.data(), no_dependencies)
             .wait();
     }

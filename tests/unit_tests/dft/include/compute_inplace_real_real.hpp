@@ -42,6 +42,8 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
                              static_cast<std::int64_t>(forward_elements));
         descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE,
                              static_cast<std::int64_t>(forward_elements));
+        descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
+                             (1.0 / forward_elements));
         commit_descriptor(descriptor, sycl_queue);
 
         auto ua_input = usm_allocator_t<PrecisionType>(cxt, *dev);
@@ -56,25 +58,9 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
             descriptor, inout_re.data(), inout_im.data(), dependencies);
         done.wait();
 
-        descriptor_t descriptor_back{ sizes };
-
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
-                                  oneapi::mkl::dft::config_value::INPLACE);
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::COMPLEX_STORAGE,
-                                  oneapi::mkl::dft::config_value::REAL_REAL);
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
-                                  (1.0 / forward_elements));
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE,
-                                  static_cast<std::int64_t>(forward_elements));
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE,
-                                  static_cast<std::int64_t>(forward_elements));
-        commit_descriptor(descriptor_back, sycl_queue);
-
-        done =
-            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
-                                               PrecisionType>(descriptor_back, inout_re.data(),
-                                                              inout_im.data(), dependencies);
+        done = oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
+                                                  PrecisionType>(descriptor, inout_re.data(),
+                                                                 inout_im.data(), dependencies);
         done.wait();
     }
     catch (oneapi::mkl::unimplemented &e) {
@@ -108,6 +94,8 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
                              static_cast<std::int64_t>(forward_elements));
         descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE,
                              static_cast<std::int64_t>(forward_elements));
+        descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
+                             (1.0 / forward_elements));
         commit_descriptor(descriptor, sycl_queue);
 
         sycl::buffer<PrecisionType, 1> inout_re_buf{ input_re.data(), sycl::range<1>(size_total) };
@@ -116,24 +104,8 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
         oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType>(descriptor, inout_re_buf,
                                                                        inout_im_buf);
 
-        descriptor_t descriptor_back{ sizes };
-
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
-                                  oneapi::mkl::dft::config_value::INPLACE);
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::COMPLEX_STORAGE,
-                                  oneapi::mkl::dft::config_value::REAL_REAL);
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
-                                  (1.0 / forward_elements));
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE,
-                                  static_cast<std::int64_t>(forward_elements));
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE,
-                                  static_cast<std::int64_t>(forward_elements));
-        commit_descriptor(descriptor_back, sycl_queue);
-
-        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
-                                           PrecisionType>(descriptor_back, inout_re_buf,
-                                                          inout_im_buf);
+        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
+                                           PrecisionType>(descriptor, inout_re_buf, inout_im_buf);
     }
     catch (oneapi::mkl::unimplemented &e) {
         std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
