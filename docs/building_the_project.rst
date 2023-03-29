@@ -293,7 +293,7 @@ Building for oneMKL
               [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]      # required only for testing
      cmake --build .
      ctest
-     cmake --install . --prefix <path_to_install_dir>                    # required to have correct package structure
+     cmake --install . --prefix <path_to_install_dir>                    # required to to have full package structure
 
 * On Windows*
 
@@ -308,7 +308,7 @@ Building for oneMKL
                        [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]      # required only for testing
      ninja 
      ctest
-     cmake --install . --prefix <path_to_install_dir>                             # required to have correct package structure
+     cmake --install . --prefix <path_to_install_dir>                             # required to have full package structure
 
 Building for CUDA (with hipSYCL)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -331,7 +331,7 @@ With the cuBLAS backend:
             [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]            # required only for testing
    cmake --build .
    ctest
-   cmake --install . --prefix <path_to_install_dir>                      # required to have correct package structure
+   cmake --install . --prefix <path_to_install_dir>                      # required to have full package structure
 
 To build with the cuRAND backend instead simply replace:
 
@@ -365,7 +365,7 @@ With the cuBLAS backend:
             [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]              # required only for testing
    cmake --build .
    ctest
-   cmake --install . --prefix <path_to_install_dir>                        # required to have correct package structure
+   cmake --install . --prefix <path_to_install_dir>                        # required to have full package structure
 
 To build with the cuRAND backend instead simply replace:
 
@@ -402,7 +402,7 @@ With the AMD rocBLAS backend:
             [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]   # required only for testing
    cmake --build .
    ctest
-   cmake --install . --prefix <path_to_install_dir>             # required to have correct package structure
+   cmake --install . --prefix <path_to_install_dir>             # required to have full package structure
 
 To build with the rocRAND backend instead simply replace:
 
@@ -441,7 +441,7 @@ With the AMD rocBLAS backend:
    cmake --build .
    export SYCL_DEVICE_FILTER=HIP
    ctest
-   cmake --install . --prefix <path_to_install_dir>                        # required to have correct package structure
+   cmake --install . --prefix <path_to_install_dir>                        # required to have full package structure
 
 To build with the rocRAND backend instead simply replace:
 
