@@ -293,7 +293,7 @@ Building for oneMKL
               [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]      # required only for testing
      cmake --build .
      ctest
-     cmake --install . --prefix <path_to_install_dir>                    # required to to have full package structure
+     cmake --install . --prefix <path_to_install_dir>                    # required to have full package structure
 
 * On Windows*
 
