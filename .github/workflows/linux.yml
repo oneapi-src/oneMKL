@@ -120,9 +120,9 @@ jobs:
               -DBUILD_SHARED_LIBS=ON \
               -DTARGET_DOMAINS=blas \
               -DREF_BLAS_ROOT=/opt/lapack/ \
-              -DOpenSYCL_DIR=/opt/OpenSYCL/lib/cmake/OpenSYCL \
+              -DhipSYCL_DIR=/opt/OpenSYCL/lib/cmake/hipSYCL \
               -DHIPSYCL_TARGETS="omp;cuda:sm_60" \
-              -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL ..
+              -DONEMKL_SYCL_IMPLEMENTATION=hipsycl ..
         cmake --build . -j2
         cmake --install . --prefix /opt/oneMKL
     - name: clone and build oneMKL with rocBLAS backend
@@ -152,8 +152,8 @@ jobs:
               -DBUILD_SHARED_LIBS=ON \
               -DTARGET_DOMAINS=blas \
               -DREF_BLAS_ROOT=/opt/lapack/ \
-              -DOpenSYCL_DIR=/opt/OpenSYCL/lib/cmake/OpenSYCL \
+              -DhipSYCL_DIR=/opt/OpenSYCL/lib/cmake/hipSYCL \
               -DHIPSYCL_TARGETS="omp;hip:gfx906" \
-              -DONEMKL_SYCL_IMPLEMENTATION=hipSYCL ..
+              -DONEMKL_SYCL_IMPLEMENTATION=hipsycl ..
         cmake --build . -j2
         cmake --install . --prefix /opt/oneMKL-rocBLAS
