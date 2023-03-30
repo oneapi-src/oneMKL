@@ -79,7 +79,7 @@ jobs:
         mkdir tests-omp && cd tests-omp
         cmake \
               -DHIPSYCL_TARGETS="omp" \
-              -DhipSYCL_DIR=/opt/OpenSYCL/lib/cmake/hipSYCL ../../tests
+              -DOpenSYCL_DIR=/opt/OpenSYCL/lib/cmake/OpenSYCL ../../tests
         make -j 2 VERBOSE=ON
     - name: Open SYCL tests for CPU
       run: |
@@ -121,7 +121,7 @@ jobs:
               -DTARGET_DOMAINS=blas \
               -DREF_BLAS_ROOT=/opt/lapack/ \
               -DhipSYCL_DIR=/opt/OpenSYCL/lib/cmake/hipSYCL \
-              -DHIPSYCL_TARGETS="omp;cuda:sm_60" \
+              -DHIPSYCL_TARGETS="omp;hip:gfx906" \
               -DONEMKL_SYCL_IMPLEMENTATION=hipsycl ..
         cmake --build . -j2
         cmake --install . --prefix /opt/oneMKL
