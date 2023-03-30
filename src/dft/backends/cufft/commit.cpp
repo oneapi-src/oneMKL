@@ -25,8 +25,10 @@
 
 #include <array>
 #include <algorithm>
+#include <optional>
 
 #include <cufft.h>
+#include <cuda.h>
 
 #include "oneapi/mkl/dft/detail/commit_impl.hpp"
 #include "oneapi/mkl/dft/detail/descriptor_impl.hpp"
@@ -39,21 +41,46 @@ namespace detail {
 
 /// Commit impl class specialization for cuFFT.
 template <dft::precision prec, dft::domain dom>
-class cufft_commit final : public dft::detail::commit_impl {
+class cufft_commit final : public dft::detail::commit_impl<prec, dom> {
 private:
     // For real to complex transforms, the "type" arg also encodes the direction (e.g. CUFFT_R2C vs CUFFT_C2R) in the plan so we must have one for each direction.
     // We also need this because oneMKL uses a directionless "FWD_DISTANCE" and "BWD_DISTANCE" while cuFFT uses a directional "idist" and "odist".
     // plans[0] is forward, plans[1] is backward
-    std::array<cufftHandle, 2> plans;
+    std::optional<std::array<cufftHandle, 2>> plans = std::nullopt;
 
 public:
     cufft_commit(sycl::queue& queue, const dft::detail::dft_values<prec, dom>& config_values)
-            : oneapi::mkl::dft::detail::commit_impl(queue, backend::cufft) {
+            : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::cufft) {
         if constexpr (prec == dft::detail::precision::DOUBLE) {
             if (!queue.get_device().has(sycl::aspect::fp64)) {
                 throw mkl::exception("DFT", "commit", "Device does not support double precision.");
             }
         }
+    }
+
+    void clean_plans() {
+        if (plans) {
+            this->get_queue()
+                .submit([&](sycl::handler& h) {
+                    h.host_task([=](sycl::interop_handle ih) {
+                        if (cufftDestroy(plans.value()[0]) != CUFFT_SUCCESS) {
+                            throw mkl::exception("dft/backends/cufft", __FUNCTION__,
+                                                 "Failed to destroy forward cuFFT plan.");
+                        }
+                        if (cufftDestroy(plans.value()[1]) != CUFFT_SUCCESS) {
+                            throw mkl::exception("dft/backends/cufft", __FUNCTION__,
+                                                 "Failed to destroy backward cuFFT plan.");
+                        }
+                    });
+                })
+                .wait_and_throw();
+            plans = std::nullopt;
+        }
+    }
+
+    void commit(const dft::detail::dft_values<prec, dom>& config_values) override {
+        // this could be a recommit
+        clean_plans();
 
         // The cudaStream for the plan is set at execution time so the interop handler can pick the stream.
         constexpr cufftType fwd_type = [] {
@@ -119,63 +146,78 @@ public:
             onembed[1] = config_values.output_strides[1] / onembed[2];
         }
 
+        cufftHandle fwd_plan, bwd_plan;
+
         // forward plan
-        cufftPlanMany(&plans[0], // plan
-                      rank, // rank
-                      n_copy.data(), // n
-                      inembed.data(), // inembed
-                      istride, // istride
-                      fwd_dist, // idist
-                      onembed.data(), // onembed
-                      ostride, // ostride
-                      bwd_dist, // odist
-                      fwd_type, // type
-                      batch // batch
+        auto res = cufftPlanMany(&fwd_plan, // plan
+                                 rank, // rank
+                                 n_copy.data(), // n
+                                 inembed.data(), // inembed
+                                 istride, // istride
+                                 fwd_dist, // idist
+                                 onembed.data(), // onembed
+                                 ostride, // ostride
+                                 bwd_dist, // odist
+                                 fwd_type, // type
+                                 batch // batch
         );
+
+        if (res != CUFFT_SUCCESS) {
+            throw mkl::exception("dft/backends/cufft", __FUNCTION__,
+                                 "Failed to create forward cuFFT plan.");
+        }
 
         // flip fwd_distance and bwd_distance because cuFFt uses input distance and output distance.
         // backward plan
-        cufftPlanMany(&plans[1], // plan
-                      rank, // rank
-                      n_copy.data(), // n
-                      inembed.data(), // inembed
-                      istride, // istride
-                      bwd_dist, // idist
-                      onembed.data(), // onembed
-                      ostride, // ostride
-                      fwd_dist, // odist
-                      bwd_type, // type
-                      batch // batch
+        res = cufftPlanMany(&bwd_plan, // plan
+                            rank, // rank
+                            n_copy.data(), // n
+                            inembed.data(), // inembed
+                            istride, // istride
+                            bwd_dist, // idist
+                            onembed.data(), // onembed
+                            ostride, // ostride
+                            fwd_dist, // odist
+                            bwd_type, // type
+                            batch // batch
         );
+        if (res != CUFFT_SUCCESS) {
+            throw mkl::exception("dft/backends/cufft", __FUNCTION__,
+                                 "Failed to create backward cuFFT plan.");
+        }
+        plans = { fwd_plan, bwd_plan };
     }
 
     ~cufft_commit() override {
-        cufftDestroy(plans[0]);
-        cufftDestroy(plans[1]);
+        clean_plans();
     }
 
     void* get_handle() noexcept override {
-        return plans.data();
+        return plans.value().data();
     }
 };
 } // namespace detail
 
 template <dft::precision prec, dft::domain dom>
-dft::detail::commit_impl* create_commit(const dft::detail::descriptor<prec, dom>& desc,
-                                        sycl::queue& sycl_queue) {
+dft::detail::commit_impl<prec, dom>* create_commit(const dft::detail::descriptor<prec, dom>& desc,
+                                                   sycl::queue& sycl_queue) {
     return new detail::cufft_commit<prec, dom>(sycl_queue, desc.get_values());
 }
 
-template dft::detail::commit_impl* create_commit(
+template dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::REAL>*
+create_commit(
     const dft::detail::descriptor<dft::detail::precision::SINGLE, dft::detail::domain::REAL>&,
     sycl::queue&);
-template dft::detail::commit_impl* create_commit(
+template dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>*
+create_commit(
     const dft::detail::descriptor<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>&,
     sycl::queue&);
-template dft::detail::commit_impl* create_commit(
+template dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>*
+create_commit(
     const dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>&,
     sycl::queue&);
-template dft::detail::commit_impl* create_commit(
+template dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>*
+create_commit(
     const dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>&,
     sycl::queue&);
 
