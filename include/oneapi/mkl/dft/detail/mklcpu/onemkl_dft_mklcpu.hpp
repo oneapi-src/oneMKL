@@ -35,6 +35,7 @@ namespace dft {
 
 namespace detail {
 // Forward declarations
+template <precision prec, domain dom>
 class commit_impl;
 
 template <precision prec, domain dom>
