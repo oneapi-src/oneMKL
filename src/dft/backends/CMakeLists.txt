@@ -20,7 +20,3 @@
 if(ENABLE_MKLGPU_BACKEND)
   add_subdirectory(mklgpu)
 endif()
-
-if(ENABLE_MKLCPU_BACKEND)
-  add_subdirectory(mklcpu)
-endif()
