@@ -73,6 +73,9 @@ public:
                                                      mklcpu_dom, config_values.dimensions.size(),
                                                      config_values.dimensions.data());
 
+                if (local_err != DFTI_NO_ERROR) {
+                    throw oneapi::mkl::exception("dft/backends/mklcpu", "commit", "DftiCreateDescriptor failed");
+                }
                 set_value(*handle_obj.get_pointer(), config_values);
                 if (local_err != DFTI_NO_ERROR) {
                     throw oneapi::mkl::exception("dft", "commit", "DftiCreateDescriptor failed");
