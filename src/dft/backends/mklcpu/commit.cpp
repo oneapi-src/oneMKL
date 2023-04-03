@@ -88,8 +88,9 @@ public:
 
         status = status_buffer.template get_access<sycl::access::mode::read>()[0];
         if (status != DFTI_NO_ERROR) {
-            throw oneapi::mkl::exception("dft/backends/mklcpu", "commit",
-                                         "DftiCommitDescriptor failed");
+            throw oneapi::mkl::exception(
+                "dft/backends/mklcpu", "commit",
+                "DftiCommitDescriptor failed with status: " + std::to_string(status));
         }
 
         device_handle = handle_buffer.template get_access<sycl::access::mode::read>()[0];

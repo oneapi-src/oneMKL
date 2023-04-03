@@ -42,17 +42,24 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_USM() {
                              oneapi::mkl::dft::config_value::NOT_INPLACE);
         descriptor.set_value(oneapi::mkl::dft::config_param::COMPLEX_STORAGE,
                              oneapi::mkl::dft::config_value::REAL_REAL);
+        descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
+        descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE,
+                             static_cast<std::int64_t>(forward_elements));
+        descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE,
+                             static_cast<std::int64_t>(forward_elements));
+        descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
+                             (1.0 / forward_elements));
         commit_descriptor(descriptor, sycl_queue);
 
         auto ua_input = usm_allocator_t<PrecisionType>(cxt, *dev);
         auto ua_output = usm_allocator_t<PrecisionType>(cxt, *dev);
 
-        std::vector<PrecisionType, decltype(ua_input)> in_re(size, ua_input);
-        std::vector<PrecisionType, decltype(ua_input)> in_im(size, ua_input);
-        std::vector<PrecisionType, decltype(ua_output)> out_re(size, ua_output);
-        std::vector<PrecisionType, decltype(ua_output)> out_im(size, ua_output);
-        std::vector<PrecisionType, decltype(ua_input)> out_back_re(size, ua_input);
-        std::vector<PrecisionType, decltype(ua_input)> out_back_im(size, ua_input);
+        std::vector<PrecisionType, decltype(ua_input)> in_re(size_total, ua_input);
+        std::vector<PrecisionType, decltype(ua_input)> in_im(size_total, ua_input);
+        std::vector<PrecisionType, decltype(ua_output)> out_re(size_total, ua_output);
+        std::vector<PrecisionType, decltype(ua_output)> out_im(size_total, ua_output);
+        std::vector<PrecisionType, decltype(ua_input)> out_back_re(size_total, ua_input);
+        std::vector<PrecisionType, decltype(ua_input)> out_back_im(size_total, ua_input);
 
         std::copy(input_re.begin(), input_re.end(), in_re.begin());
         std::copy(input_im.begin(), input_im.end(), in_im.begin());
@@ -125,14 +132,21 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
                              oneapi::mkl::dft::config_value::NOT_INPLACE);
         descriptor.set_value(oneapi::mkl::dft::config_param::COMPLEX_STORAGE,
                              oneapi::mkl::dft::config_value::REAL_REAL);
+        descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
+        descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE,
+                             static_cast<std::int64_t>(forward_elements));
+        descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE,
+                             static_cast<std::int64_t>(forward_elements));
+        descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
+                             (1.0 / forward_elements));
         commit_descriptor(descriptor, sycl_queue);
 
-        sycl::buffer<PrecisionType, 1> in_dev_re{ input_re.data(), sycl::range<1>(size) };
-        sycl::buffer<PrecisionType, 1> in_dev_im{ input_im.data(), sycl::range<1>(size) };
-        sycl::buffer<PrecisionType, 1> out_dev_re{ sycl::range<1>(size) };
-        sycl::buffer<PrecisionType, 1> out_dev_im{ sycl::range<1>(size) };
-        sycl::buffer<PrecisionType, 1> out_back_dev_re{ sycl::range<1>(size) };
-        sycl::buffer<PrecisionType, 1> out_back_dev_im{ sycl::range<1>(size) };
+        sycl::buffer<PrecisionType, 1> in_dev_re{ input_re.data(), sycl::range<1>(size_total) };
+        sycl::buffer<PrecisionType, 1> in_dev_im{ input_im.data(), sycl::range<1>(size_total) };
+        sycl::buffer<PrecisionType, 1> out_dev_re{ sycl::range<1>(size_total) };
+        sycl::buffer<PrecisionType, 1> out_dev_im{ sycl::range<1>(size_total) };
+        sycl::buffer<PrecisionType, 1> out_back_dev_re{ sycl::range<1>(size_total) };
+        sycl::buffer<PrecisionType, 1> out_back_dev_im{ sycl::range<1>(size_total) };
 
         try {
             oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType, PrecisionType>(

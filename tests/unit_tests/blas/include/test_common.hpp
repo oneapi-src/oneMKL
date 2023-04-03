@@ -572,8 +572,8 @@ bool check_equal_matrix(acc1 &M, acc2 &M_ref, oneapi::mkl::layout layout, int m,
 }
 
 template <typename fp>
-bool check_equal_matrix(const fp *M, const fp *M_ref, oneapi::mkl::layout layout, int m,
-                        int n, int ld, int error_mag, std::ostream &out) {
+bool check_equal_matrix(const fp *M, const fp *M_ref, oneapi::mkl::layout layout, int m, int n,
+                        int ld, int error_mag, std::ostream &out) {
     bool good = true;
     int idx, count = 0;
     for (int j = 0; j < n; j++) {
