@@ -32,6 +32,12 @@ enum class backend;
 
 namespace oneapi::mkl::dft::detail {
 
+enum class precision;
+enum class domain;
+template <precision prec, domain dom>
+class dft_values;
+
+template <precision prec, domain dom>
 class commit_impl {
 public:
     commit_impl(sycl::queue queue, mkl::backend backend) : backend_(backend), queue_(queue) {}
@@ -50,6 +56,8 @@ public:
     }
 
     virtual void* get_handle() noexcept = 0;
+
+    virtual void commit(const dft_values<prec, dom>&) = 0;
 
 private:
     mkl::backend backend_;

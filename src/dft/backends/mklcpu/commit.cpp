@@ -40,10 +40,10 @@ namespace dft {
 namespace mklcpu {
 
 template <precision prec, domain dom>
-class commit_derived_impl final : public detail::commit_impl {
+class commit_derived_impl final : public detail::commit_impl<prec, dom> {
 public:
     commit_derived_impl(sycl::queue queue, const detail::dft_values<prec, dom>& config_values)
-            : detail::commit_impl(queue, backend::mklcpu) {
+            : detail::commit_impl<prec, dom>(queue, backend::mklcpu) {
         DFT_ERROR status = DFT_NOTSET;
         const auto rank = static_cast<std::int64_t>(config_values.dimensions.size());
         if (rank == 1) {
@@ -55,16 +55,19 @@ public:
                                           config_values.dimensions.data());
         }
         if (status != DFTI_NO_ERROR) {
-            throw oneapi::mkl::exception("dft/backends/mklcpu", "commit",
-                                         "DftiCreateDescriptor failed");
+            throw oneapi::mkl::exception(
+                "dft/backends/mklcpu", "commit",
+                "DftiCreateDescriptor failed with status: " + std::to_string(status));
         }
+    }
 
+    void commit(const detail::dft_values<prec, dom>& config_values) override {
         set_value(handle, config_values);
-
-        status = DftiCommitDescriptor(handle);
+        auto status = DftiCommitDescriptor(handle);
         if (status != DFTI_NO_ERROR) {
-            throw oneapi::mkl::exception("dft/backends/mklcpu", "commit",
-                                         "DftiCommitDescriptor failed");
+            throw oneapi::mkl::exception(
+                "dft/backends/mklcpu", "commit",
+                "DftiCommitDescriptor failed with status: " + std::to_string(status));
         }
     }
 
@@ -122,18 +125,19 @@ private:
 };
 
 template <precision prec, domain dom>
-detail::commit_impl* create_commit(const descriptor<prec, dom>& desc, sycl::queue& sycl_queue) {
+detail::commit_impl<prec, dom>* create_commit(const descriptor<prec, dom>& desc,
+                                              sycl::queue& sycl_queue) {
     return new commit_derived_impl<prec, dom>(sycl_queue, desc.get_values());
 }
 
-template detail::commit_impl* create_commit(const descriptor<precision::SINGLE, domain::REAL>&,
-                                            sycl::queue&);
-template detail::commit_impl* create_commit(const descriptor<precision::SINGLE, domain::COMPLEX>&,
-                                            sycl::queue&);
-template detail::commit_impl* create_commit(const descriptor<precision::DOUBLE, domain::REAL>&,
-                                            sycl::queue&);
-template detail::commit_impl* create_commit(const descriptor<precision::DOUBLE, domain::COMPLEX>&,
-                                            sycl::queue&);
+template detail::commit_impl<precision::SINGLE, domain::REAL>* create_commit(
+    const descriptor<precision::SINGLE, domain::REAL>&, sycl::queue&);
+template detail::commit_impl<precision::SINGLE, domain::COMPLEX>* create_commit(
+    const descriptor<precision::SINGLE, domain::COMPLEX>&, sycl::queue&);
+template detail::commit_impl<precision::DOUBLE, domain::REAL>* create_commit(
+    const descriptor<precision::DOUBLE, domain::REAL>&, sycl::queue&);
+template detail::commit_impl<precision::DOUBLE, domain::COMPLEX>* create_commit(
+    const descriptor<precision::DOUBLE, domain::COMPLEX>&, sycl::queue&);
 
 } // namespace mklcpu
 } // namespace dft

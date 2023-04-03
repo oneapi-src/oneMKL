@@ -41,7 +41,7 @@ template <precision prec, domain dom>
 class descriptor;
 
 template <precision prec, domain dom>
-inline commit_impl* get_commit(descriptor<prec, dom>& desc);
+inline commit_impl<prec, dom>* get_commit(descriptor<prec, dom>& desc);
 
 template <precision prec, domain dom>
 class descriptor {
@@ -74,18 +74,18 @@ public:
 
 private:
     // Has a value when the descriptor is committed.
-    std::unique_ptr<commit_impl> pimpl_;
+    std::unique_ptr<commit_impl<prec, dom>> pimpl_;
 
     // descriptor configuration values_ and structs
     dft_values<prec, dom> values_;
 
-    friend commit_impl* get_commit<prec, dom>(descriptor<prec, dom>&);
+    friend commit_impl<prec, dom>* get_commit<prec, dom>(descriptor<prec, dom>&);
 
     using real_t = typename precision_t<prec>::real_t;
 };
 
 template <precision prec, domain dom>
-inline commit_impl* get_commit(descriptor<prec, dom>& desc) {
+inline commit_impl<prec, dom>* get_commit(descriptor<prec, dom>& desc) {
     return desc.pimpl_.get();
 }
 

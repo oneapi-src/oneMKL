@@ -32,6 +32,8 @@
 #include "test_common.hpp"
 #include "reference_dft.hpp"
 
+#include <numeric>
+
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 struct DFT_Test {
     using descriptor_t = oneapi::mkl::dft::descriptor<precision, domain>;
@@ -49,10 +51,12 @@ struct DFT_Test {
 
     enum class MemoryAccessModel { buffer, usm };
 
-    const std::size_t size;
-    const std::size_t conjugate_even_size;
-    double abs_error_margin;
-    double rel_error_margin;
+    const std::vector<std::int64_t> sizes;
+    const std::int64_t batches;
+    const std::int64_t forward_elements;
+    const std::int64_t size_total;
+    double abs_error_margin{ 0 };
+    double rel_error_margin{ 0 };
 
     sycl::device* dev;
     sycl::queue sycl_queue;
@@ -63,25 +67,26 @@ struct DFT_Test {
     std::vector<PrecisionType> input_im;
     std::vector<FwdOutputType> out_host_ref;
 
-    DFT_Test(sycl::device* dev, std::size_t size)
-            : size{ size },
-              conjugate_even_size{ 2 * (size / 2 + 1) },
-              abs_error_margin{ 0 },
-              rel_error_margin{ 0 },
+    DFT_Test(sycl::device* dev, std::vector<std::int64_t> sizes_, std::int64_t batches_)
+            : sizes{ std::move(sizes_) },
+              batches{ batches_ },
+              forward_elements{ std::accumulate(sizes.begin(), sizes.end(), 1,
+                                                std::multiplies<>{}) },
+              size_total{ forward_elements * batches },
               dev{ dev },
               sycl_queue{ *dev, exception_handler },
               cxt{ sycl_queue.get_context() } {
-        input = std::vector<FwdInputType>(size);
-        input_re = std::vector<PrecisionType>(size);
-        input_im = std::vector<PrecisionType>(size);
+        input = std::vector<FwdInputType>(size_total);
+        input_re = std::vector<PrecisionType>(size_total);
+        input_im = std::vector<PrecisionType>(size_total);
 
         // out_host_ref contains redundant information for domain::REAL
         // tests. This simplifies the test implementation, but increases
         // storage and computational requirements. There is scope for
         // improvement here if test performance becomes an issue.
-        out_host_ref = std::vector<FwdOutputType>(size);
-        rand_vector(input, size);
+        out_host_ref = std::vector<FwdOutputType>(size_total);
 
+        rand_vector(input, size_total);
         if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
             for (std::size_t i = 0; i < input.size(); ++i) {
                 input_re[i] = { input[i] };
@@ -96,31 +101,38 @@ struct DFT_Test {
         }
     }
 
-    bool skip_test(MemoryAccessModel type) {
+    bool skip_test(MemoryAccessModel mem_acc) {
         if constexpr (precision == oneapi::mkl::dft::precision::DOUBLE) {
             if (!sycl_queue.get_device().has(sycl::aspect::fp64)) {
                 std::cout << "Device does not support double precision." << std::endl;
                 return true;
             }
         }
-        if (type == MemoryAccessModel::usm &&
+
+        if (mem_acc == MemoryAccessModel::usm &&
             !sycl_queue.get_device().has(sycl::aspect::usm_shared_allocations)) {
             std::cout << "Device does not support usm shared allocations." << std::endl;
             return true;
         }
+
         return false;
     }
 
-    bool init(MemoryAccessModel type) {
-        reference_forward_dft<FwdInputType, FwdOutputType>(input, out_host_ref);
+    bool init(MemoryAccessModel mem_acc) {
+        for (int i = 0; i < batches; i += 1) {
+            reference_forward_dft<FwdInputType, FwdOutputType>(
+                sizes, input.data() + i * forward_elements,
+                out_host_ref.data() + i * forward_elements);
+        }
         auto max_norm_ref = *std::max_element(std::begin(out_host_ref), std::end(out_host_ref),
                                               [](const FwdOutputType& a, const FwdOutputType& b) {
                                                   return std::abs(a) < std::abs(b);
                                               });
         // Heuristic for the average-case error margins
-        abs_error_margin = std::abs(max_norm_ref) * std::log2(static_cast<double>(size));
-        rel_error_margin = 5.0 * std::log2(static_cast<double>(size));
-        return !skip_test(type);
+        abs_error_margin =
+            std::abs(max_norm_ref) * std::log2(static_cast<double>(forward_elements));
+        rel_error_margin = 5.0 * std::log2(static_cast<double>(forward_elements));
+        return !skip_test(mem_acc);
     }
 
     int test_in_place_buffer();

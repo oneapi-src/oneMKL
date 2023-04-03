@@ -44,10 +44,6 @@ void compute_default_strides(const std::vector<std::int64_t>& dimensions,
 
 template <precision prec, domain dom>
 void descriptor<prec, dom>::set_value(config_param param, ...) {
-    if (pimpl_) {
-        throw mkl::invalid_argument("DFT", "set_value",
-                                    "Cannot set value on committed descriptor.");
-    }
     va_list vl;
     va_start(vl, param);
     switch (param) {

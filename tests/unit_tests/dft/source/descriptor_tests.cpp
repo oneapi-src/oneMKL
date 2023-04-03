@@ -19,6 +19,10 @@
 
 #include <iostream>
 #include <vector>
+#include <variant>
+#include <thread>
+#include <chrono>
+#include <condition_variable>
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -406,6 +410,138 @@ static void set_readonly_values(sycl::queue& sycl_queue) {
 }
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
+inline void recommit_values(sycl::queue& sycl_queue) {
+    using oneapi::mkl::dft::config_param;
+    using oneapi::mkl::dft::config_value;
+    using PrecisionType =
+        typename std::conditional_t<precision == oneapi::mkl::dft::precision::SINGLE, float,
+                                    double>;
+    using value = std::variant<config_value, std::int64_t, std::int64_t*, bool, PrecisionType>;
+
+    // this will hold a param to change and the value to change it to
+    using test_params = std::vector<std::pair<config_param, value>>;
+
+    oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
+    EXPECT_NO_THROW(commit_descriptor(descriptor, sycl_queue));
+
+    std::array<std::int64_t, 2> strides{ 0, 1 };
+
+    std::vector<test_params> argument_groups{
+        // not changeable
+        // FORWARD_DOMAIN, PRECISION, DIMENSION, COMMIT_STATUS
+        { std::make_pair(config_param::LENGTHS, std::int64_t{ 10 }),
+          std::make_pair(config_param::FORWARD_SCALE, PrecisionType{ 1.2 }),
+          std::make_pair(config_param::BACKWARD_SCALE, PrecisionType{ 3.4 }) },
+        { std::make_pair(config_param::NUMBER_OF_TRANSFORMS, std::int64_t{ 5 }),
+          std::make_pair(config_param::COMPLEX_STORAGE, config_value::COMPLEX_COMPLEX),
+          std::make_pair(config_param::REAL_STORAGE, config_value::REAL_REAL),
+          std::make_pair(config_param::CONJUGATE_EVEN_STORAGE, config_value::COMPLEX_COMPLEX) },
+        { std::make_pair(config_param::PLACEMENT, config_value::NOT_INPLACE),
+          std::make_pair(config_param::INPUT_STRIDES, strides.data()),
+          std::make_pair(config_param::OUTPUT_STRIDES, strides.data()),
+          std::make_pair(config_param::FWD_DISTANCE, std::int64_t{ 60 }),
+          std::make_pair(config_param::BWD_DISTANCE, std::int64_t{ 70 }) },
+        { std::make_pair(config_param::WORKSPACE, config_value::ALLOW),
+          std::make_pair(config_param::ORDERING, config_value::ORDERED),
+          std::make_pair(config_param::TRANSPOSE, bool{ false }),
+          std::make_pair(config_param::PACKED_FORMAT, config_value::CCE_FORMAT) }
+    };
+
+    for (int i = 0; i < argument_groups.size(); i += 1) {
+        for (auto argument : argument_groups[i]) {
+            std::visit([&descriptor, p = argument.first](auto&& a) { descriptor.set_value(p, a); },
+                       argument.second);
+        }
+        try {
+            commit_descriptor(descriptor, sycl_queue);
+        }
+        catch (oneapi::mkl::exception& e) {
+            FAIL() << "exception at index " << i << " with error : " << e.what();
+        }
+    }
+}
+
+template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
+inline void change_queue_causes_wait(sycl::queue& busy_queue) {
+    // create a queue with work on it, and then show that work is waited on when the descriptor
+    // is committed to a new queue.
+    // its possible to have a false positive result, but a false negative should not be possible.
+    // sleeps have been added to reduce the false positives to show that we are actually waiting for
+    // notification/queue.
+    using namespace std::chrono_literals;
+    std::condition_variable cv;
+    std::mutex cv_m;
+    // signal used to avoid spurious wakeups
+    bool signal = false;
+
+    sycl::queue free_queue(busy_queue.get_device(), exception_handler);
+
+    // commit the descriptor on the "busy" queue
+    oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
+    EXPECT_NO_THROW(commit_descriptor(descriptor, busy_queue));
+
+    // add some work to the busy queue
+    auto e = busy_queue.submit([&](sycl::handler& cgh) {
+        cgh.host_task([&] {
+            std::unique_lock<std::mutex> lock(cv_m);
+            ASSERT_TRUE(cv.wait_for(lock, 5s, [&] { return signal; })); // returns false on timeout
+            std::this_thread::sleep_for(100ms);
+        });
+    });
+    std::this_thread::sleep_for(500ms);
+
+    // busy queue is still waiting on that conditional_variable
+    auto before_status = e.template get_info<sycl::info::event::command_execution_status>();
+    ASSERT_NE(before_status, sycl::info::event_command_status::complete);
+
+    // notify the conditional variable
+    {
+        std::lock_guard<std::mutex> lock(cv_m);
+        signal = true;
+    }
+    cv.notify_all();
+
+    // commit the descriptor to the "free" queue
+    EXPECT_NO_THROW(commit_descriptor(descriptor, free_queue));
+
+    // busy queue task has now completed.
+    auto after_status = e.template get_info<sycl::info::event::command_execution_status>();
+    ASSERT_EQ(after_status, sycl::info::event_command_status::complete);
+}
+
+template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
+inline void swap_out_dead_queue(sycl::queue& sycl_queue) {
+    // test that commit still works when the previously committed queue is no longer in scope
+    // the queue is not actually dead (due to reference counting)
+
+    // commit the descriptor on the "busy" queue
+    oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
+    {
+        sycl::queue transient_queue(sycl_queue.get_device(), exception_handler);
+        EXPECT_NO_THROW(commit_descriptor(descriptor, transient_queue));
+    }
+    EXPECT_NO_THROW(commit_descriptor(descriptor, sycl_queue));
+
+    using ftype = typename std::conditional_t<precision == oneapi::mkl::dft::precision::SINGLE,
+                                              float, double>;
+    using forward_type = typename std::conditional_t<domain == oneapi::mkl::dft::domain::REAL,
+                                                     ftype, std::complex<ftype>>;
+
+    // add two so that real-complex transforms have space for all the conjugate even components
+    auto inout = sycl::malloc_device<forward_type>(default_1d_lengths + 2, sycl_queue);
+    sycl_queue.wait();
+
+    auto transform_event = oneapi::mkl::dft::compute_forward<decltype(descriptor), forward_type>(
+        descriptor, inout, std::vector<sycl::event>{});
+    sycl_queue.wait();
+
+    // after waiting on the second queue, the event should be completed
+    auto status = transform_event.template get_info<sycl::info::event::command_execution_status>();
+    ASSERT_EQ(status, sycl::info::event_command_status::complete);
+    sycl::free(inout, sycl_queue);
+}
+
+template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 int test(sycl::device* dev) {
     sycl::queue sycl_queue(*dev, exception_handler);
 
@@ -421,6 +557,9 @@ int test(sycl::device* dev) {
     set_and_get_values<precision, domain>();
     get_readonly_values<precision, domain>(sycl_queue);
     set_readonly_values<precision, domain>(sycl_queue);
+    recommit_values<precision, domain>(sycl_queue);
+    change_queue_causes_wait<precision, domain>(sycl_queue);
+    swap_out_dead_queue<precision, domain>(sycl_queue);
 
     return !::testing::Test::HasFailure();
 }
