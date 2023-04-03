@@ -51,7 +51,7 @@ private:
     using mklcpu_desc_t = DFTI_DESCRIPTOR_HANDLE;
 
 public:
-    commit_derived_impl(sycl::queue queue, const dft::detail::dft_values<prec, dom> config_values)
+    commit_derived_impl(sycl::queue& queue, const dft::detail::dft_values<prec, dom> config_values)
             : dft::detail::commit_impl(queue, backend::mklcpu) {
         DFT_ERROR status = DFTI_NOTSET;
         sycl::buffer<DFT_ERROR, 1> status_buffer{ &status, sycl::range<1>{ 1 } };
@@ -63,6 +63,7 @@ public:
             auto status_obj =
                 status_buffer.template get_access<sycl::access::mode::read_write>(cgh);
 
+            // Change to a SYCL kernel if host_task is not available
             host_task<detail::kernel_name<mklcpu_desc_t>>(cgh, [=]() {
                 std::int64_t local_err = DFTI_MEMORY_ERROR;
                 if (config_values.dimensions.size() == 1)
@@ -77,23 +78,31 @@ public:
                     throw oneapi::mkl::exception("dft/backends/mklcpu", "commit", "DftiCreateDescriptor failed");
                 }
                 set_value(*handle_obj.get_pointer(), config_values);
-                if (local_err != DFTI_NO_ERROR) {
-                    throw oneapi::mkl::exception("dft", "commit", "DftiCreateDescriptor failed");
-                }
 
                 local_err = DftiCommitDescriptor(*handle_obj.get_pointer());
+
+                if (local_err != DFTI_NO_ERROR) {
+                    throw oneapi::mkl::exception("dft/backends/mklcpu", "commit",
+                                                 "DftiCommitDescriptor failed");
+                }
                 *status_obj.get_pointer() = local_err;
             });
         });
 
         status = status_buffer.template get_access<sycl::access::mode::read>()[0];
         if (status != DFTI_NO_ERROR) {
-            throw oneapi::mkl::exception(
-                "dft/backends/mklcpu", "commit",
-                "DftiCommitDescriptor failed with status: " + std::to_string(status));
+            throw oneapi::mkl::exception("dft/backends/mklcpu", "commit",
+                                         "DftiCommitDescriptor failed");
         }
 
         device_handle = handle_buffer.template get_access<sycl::access::mode::read>()[0];
+
+        // Handle error case where device_handle is still null
+        device_handle = handle_buffer.template get_access<sycl::access::mode::read>()[0];
+        if (!device_handle) {
+            throw oneapi::mkl::exception("dft/backends/mklcpu", "commit",
+                                         "Failed to create DFTI descriptor handle");
+        }
     }
 
     void* get_handle() noexcept override {
@@ -109,15 +118,14 @@ private:
 
     template <typename... Args>
     void set_value_item(mklcpu_desc_t hand, enum DFTI_CONFIG_PARAM name, Args... args) {
-        DFT_ERROR value_err = DFTI_NOTSET;
-        value_err = DftiSetValue(hand, name, args...);
+        DFTI_ERROR = value_err = DftiSetValue(hand, name, args...);
         if (value_err != DFTI_NO_ERROR) {
             throw oneapi::mkl::exception("dft/backends/mklcpu", "set_value_item",
                                          std::to_string(name));
         }
     }
 
-    void set_value(mklcpu_desc_t descHandle, const dft::detail::dft_values<prec, dom> config) {
+    void set_value(mklcpu_desc_t descHandle, const dft::detail::dft_values<prec, dom> &config) {
         set_value_item(descHandle, DFTI_INPUT_STRIDES, config.input_strides.data());
         set_value_item(descHandle, DFTI_OUTPUT_STRIDES, config.output_strides.data());
         set_value_item(descHandle, DFTI_BACKWARD_SCALE, config.bwd_scale);
