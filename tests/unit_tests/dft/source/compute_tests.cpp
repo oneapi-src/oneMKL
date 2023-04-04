@@ -73,7 +73,7 @@ class ComputeTests_real_real_out_of_place
 INSTANTIATE_TEST_DIMENSIONS_PRECISION_DOMAIN_PLACE_LAYOUT(buffer)
 INSTANTIATE_TEST_DIMENSIONS_PRECISION_DOMAIN_PLACE_LAYOUT(USM)
 
-using shape = std::vector<int64_t>;
+using shape = std::vector<std::int64_t>;
 using i64 = std::int64_t;
 // Parameter format - { shape of transform, number of transforms }
 std::vector<DFTParams> test_params{

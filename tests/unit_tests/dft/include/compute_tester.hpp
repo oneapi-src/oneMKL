@@ -54,7 +54,7 @@ struct DFT_Test {
     const std::vector<std::int64_t> sizes;
     const std::int64_t batches;
     const std::int64_t forward_elements;
-    const std::int64_t size_total;
+    const std::size_t size_total;
     double abs_error_margin{ 0 };
     double rel_error_margin{ 0 };
 
@@ -72,7 +72,7 @@ struct DFT_Test {
               batches{ batches_ },
               forward_elements{ std::accumulate(sizes.begin(), sizes.end(), 1,
                                                 std::multiplies<>{}) },
-              size_total{ forward_elements * batches },
+              size_total{ cast_unsigned(forward_elements * batches) },
               dev{ dev },
               sycl_queue{ *dev, exception_handler },
               cxt{ sycl_queue.get_context() } {

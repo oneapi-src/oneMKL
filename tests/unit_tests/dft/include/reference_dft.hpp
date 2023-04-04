@@ -20,6 +20,7 @@
 #ifndef ONEMKL_REFERENCE_DFT_HPP
 #define ONEMKL_REFERENCE_DFT_HPP
 
+#include <algorithm>
 #include <cmath>
 #include <complex>
 #include <vector>
@@ -31,7 +32,7 @@
 namespace detail {
 using ref_t = long double; /* Do the calculations using long double */
 template <typename TypeIn, typename TypeOut>
-void reference_forward_dft_impl(const TypeIn *in, TypeOut *out, size_t N, size_t stride) {
+void reference_forward_dft_impl(const TypeIn *in, TypeOut *out, std::size_t N, std::size_t stride) {
     static_assert(is_complex<TypeOut>(), "Output type of DFT must be complex");
 
     constexpr ref_t TWOPI = 2.0L * 3.141592653589793238462643383279502884197L;
@@ -53,22 +54,20 @@ struct reference {};
 
 template <typename TypeIn, typename TypeOut>
 struct reference<TypeIn, TypeOut, 1> {
-    static void forward_dft(const std::vector<std::int64_t> &sizes, const TypeIn *in,
-                            TypeOut *out) {
+    static void forward_dft(const std::vector<std::size_t> &sizes, const TypeIn *in, TypeOut *out) {
         reference_forward_dft_impl(in, out, sizes[0], 1);
     }
 };
 
 template <typename TypeIn, typename TypeOut>
 struct reference<TypeIn, TypeOut, 2> {
-    static void forward_dft(const std::vector<std::int64_t> &sizes, const TypeIn *in,
-                            TypeOut *out) {
-        const auto elements = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>{});
+    static void forward_dft(const std::vector<std::size_t> &sizes, const TypeIn *in, TypeOut *out) {
+        const auto elements = std::accumulate(sizes.begin(), sizes.end(), 1U, std::multiplies<>{});
         std::vector<std::complex<ref_t>> tmp(elements);
-        for (size_t i = 0; i < elements; i += sizes[1]) {
+        for (std::size_t i = 0; i < elements; i += sizes[1]) {
             reference_forward_dft_impl(in + i, tmp.data() + i, sizes[1], 1);
         }
-        for (size_t i = 0; i < sizes[1]; i++) {
+        for (std::size_t i = 0; i < sizes[1]; i++) {
             reference_forward_dft_impl(tmp.data() + i, out + i, sizes[0], sizes[1]);
         }
     }
@@ -76,21 +75,20 @@ struct reference<TypeIn, TypeOut, 2> {
 
 template <typename TypeIn, typename TypeOut>
 struct reference<TypeIn, TypeOut, 3> {
-    static void forward_dft(const std::vector<std::int64_t> &sizes, const TypeIn *in,
-                            TypeOut *out) {
-        const auto elements = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>{});
+    static void forward_dft(const std::vector<std::size_t> &sizes, const TypeIn *in, TypeOut *out) {
+        const auto elements = std::accumulate(sizes.begin(), sizes.end(), 1U, std::multiplies<>{});
         std::vector<std::complex<ref_t>> tmp1(elements);
         std::vector<std::complex<ref_t>> tmp2(elements);
-        for (size_t i = 0; i < elements; i += sizes[2]) {
+        for (std::size_t i = 0; i < elements; i += sizes[2]) {
             reference_forward_dft_impl(in + i, tmp1.data() + i, sizes[2], 1);
         }
-        for (size_t j = 0; j < elements; j += sizes[1] * sizes[2]) {
-            for (size_t i = 0; i < sizes[2]; i++) {
+        for (std::size_t j = 0; j < elements; j += sizes[1] * sizes[2]) {
+            for (std::size_t i = 0; i < sizes[2]; i++) {
                 reference_forward_dft_impl(tmp1.data() + i + j, tmp2.data() + i + j, sizes[1],
                                            sizes[2]);
             }
         }
-        for (size_t i = 0; i < sizes[1] * sizes[2]; i++) {
+        for (std::size_t i = 0; i < sizes[1] * sizes[2]; i++) {
             reference_forward_dft_impl(tmp2.data() + i, out + i, sizes[0], sizes[1] * sizes[2]);
         }
     }
@@ -115,13 +113,17 @@ struct reference<TypeIn, TypeOut, 3> {
 **/
 template <typename TypeIn, typename TypeOut>
 void reference_forward_dft(const std::vector<std::int64_t> &sizes, const TypeIn *in, TypeOut *out) {
-    switch (sizes.size()) {
-        case 1: detail::reference<TypeIn, TypeOut, 1>::forward_dft(sizes, in, out); break;
-        case 2: detail::reference<TypeIn, TypeOut, 2>::forward_dft(sizes, in, out); break;
-        case 3: detail::reference<TypeIn, TypeOut, 3>::forward_dft(sizes, in, out); break;
+    std::vector<std::size_t> unsigned_sizes;
+    std::transform(sizes.begin(), sizes.end(), unsigned_sizes.begin(),
+                   [](std::int64_t size) { return cast_unsigned(size); });
+    switch (unsigned_sizes.size()) {
+        case 1: detail::reference<TypeIn, TypeOut, 1>::forward_dft(unsigned_sizes, in, out); break;
+        case 2: detail::reference<TypeIn, TypeOut, 2>::forward_dft(unsigned_sizes, in, out); break;
+        case 3: detail::reference<TypeIn, TypeOut, 3>::forward_dft(unsigned_sizes, in, out); break;
         default:
-            throw oneapi::mkl::unimplemented("reference_dft", "forward_dft",
-                                             "dft with size " + std::to_string(sizes.size()));
+            throw oneapi::mkl::unimplemented(
+                "reference_dft", "forward_dft",
+                "dft with size " + std::to_string(unsigned_sizes.size()));
     }
 }
 

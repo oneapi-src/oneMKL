@@ -24,6 +24,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <limits>
+#include <stdexcept>
 #include <vector>
 
 #if __has_include(<sycl/sycl.hpp>)
@@ -47,6 +48,13 @@ struct complex_info<std::complex<T>> {
 template <typename T>
 constexpr bool is_complex() {
     return complex_info<T>::is_complex;
+}
+
+inline std::size_t cast_unsigned(std::int64_t i) {
+    if (i < 0) {
+        throw std::runtime_error("Unexpected negative value");
+    }
+    return static_cast<std::size_t>(i);
 }
 
 template <typename fp>
@@ -87,7 +95,13 @@ bool check_equal_vector(vec1 &&v, vec2 &&v_ref, std::size_t n, double abs_error_
     bool good = true;
 
     for (std::size_t i = 0; i < n; ++i) {
-        if (!check_equal(v[i], v_ref[i], abs_error_mag, rel_error_mag, out)) {
+        // Allow to convert the unsigned index `i` to a signed one to keep this function generic and allow for `v` and `v_ref` to be a vector, a pointer or a random access iterator.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wsign-conversion"
+        auto res = v[i];
+        auto ref = v_ref[i];
+#pragma clang diagnostic pop
+        if (!check_equal(res, ref, abs_error_mag, rel_error_mag, out)) {
             out << " at index i =" << i << "\n";
             good = false;
             ++count;
