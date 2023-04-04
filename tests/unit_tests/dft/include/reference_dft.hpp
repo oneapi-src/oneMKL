@@ -113,7 +113,7 @@ struct reference<TypeIn, TypeOut, 3> {
 **/
 template <typename TypeIn, typename TypeOut>
 void reference_forward_dft(const std::vector<std::int64_t> &sizes, const TypeIn *in, TypeOut *out) {
-    std::vector<std::size_t> unsigned_sizes;
+    std::vector<std::size_t> unsigned_sizes(sizes.size());
     std::transform(sizes.begin(), sizes.end(), unsigned_sizes.begin(),
                    [](std::int64_t size) { return cast_unsigned(size); });
     switch (unsigned_sizes.size()) {
