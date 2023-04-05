@@ -33,7 +33,6 @@ namespace mklcpu {
 namespace detail {
 
 using mklcpu_desc_t = DFTI_DESCRIPTOR_HANDLE;
-using commit_t = dft::detail::commit_impl;
 
 // host_task automatically uses run_on_host_intel if it is supported by the
 //  compiler. Otherwise, it falls back to single_task.

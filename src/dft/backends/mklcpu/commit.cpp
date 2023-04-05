@@ -44,47 +44,50 @@ namespace detail {
 
 /// Commit impl class specialization for MKLCPU.
 template <dft::detail::precision prec, dft::detail::domain dom>
-class commit_derived_impl : public dft::detail::commit_impl {
+class commit_derived_impl final : public dft::detail::commit_impl<prec, dom> {
 private:
     static constexpr DFTI_CONFIG_VALUE mklcpu_prec = to_mklcpu(prec);
     static constexpr DFTI_CONFIG_VALUE mklcpu_dom = to_mklcpu(dom);
     using mklcpu_desc_t = DFTI_DESCRIPTOR_HANDLE;
 
 public:
-    commit_derived_impl(sycl::queue& queue, const dft::detail::dft_values<prec, dom> config_values)
-            : dft::detail::commit_impl(queue, backend::mklcpu) {
-        DFT_ERROR status = DFTI_NOTSET;
+    commit_derived_impl(sycl::queue queue, const dft::detail::dft_values<prec, dom> config_values)
+            : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::mklcpu) {
+        // create the descriptor once for the lifetime of the descriptor class
+        DFT_ERROR status = DFTI_BAD_DESCRIPTOR;
+
+        if (config_values.dimensions.size() == 1)
+            status = DftiCreateDescriptor(&device_handle, mklcpu_prec,
+                                                mklcpu_dom, 1, config_values.dimensions[0]);
+        else
+            status = DftiCreateDescriptor(&device_handle, mklcpu_prec,
+                                                mklcpu_dom, config_values.dimensions.size(),
+                                                config_values.dimensions.data());
+        
+        if (status != DFTI_NO_ERROR)
+        {
+            throw oneapi::mkl::exception("dft/backends/mklcpu", "create_descriptor",
+                                         "DftiCreateDescriptor falied");
+        }
+    }
+
+    virtual void commit(const dft::detail::dft_values<prec, dom>& config_values) override {
+        DFT_ERROR status = DFTI_BAD_DESCRIPTOR;
         sycl::buffer<DFT_ERROR, 1> status_buffer{ &status, sycl::range<1>{ 1 } };
         sycl::buffer<mklcpu_desc_t, 1> handle_buffer{ &device_handle, sycl::range<1>{ 1 } };
 
-        queue.submit([&](sycl::handler& cgh) {
+        set_value(device_handle, config_values);
+
+        this->get_queue().submit([&](sycl::handler& cgh) {
             auto handle_obj =
                 handle_buffer.template get_access<sycl::access::mode::read_write>(cgh);
             auto status_obj =
                 status_buffer.template get_access<sycl::access::mode::read_write>(cgh);
 
-            // Change to a SYCL kernel if host_task is not available
             host_task<detail::kernel_name<mklcpu_desc_t>>(cgh, [=]() {
-                std::int64_t local_err = DFTI_MEMORY_ERROR;
-                if (config_values.dimensions.size() == 1)
-                    local_err = DftiCreateDescriptor(handle_obj.get_pointer(), mklcpu_prec,
-                                                     mklcpu_dom, 1, config_values.dimensions[0]);
-                else
-                    local_err = DftiCreateDescriptor(handle_obj.get_pointer(), mklcpu_prec,
-                                                     mklcpu_dom, config_values.dimensions.size(),
-                                                     config_values.dimensions.data());
-
-                if (local_err != DFTI_NO_ERROR) {
-                    throw oneapi::mkl::exception("dft/backends/mklcpu", "commit", "DftiCreateDescriptor failed");
-                }
-                set_value(*handle_obj.get_pointer(), config_values);
+                std::int64_t local_err = DFTI_BAD_DESCRIPTOR;
 
                 local_err = DftiCommitDescriptor(*handle_obj.get_pointer());
-
-                if (local_err != DFTI_NO_ERROR) {
-                    throw oneapi::mkl::exception("dft/backends/mklcpu", "commit",
-                                                 "DftiCommitDescriptor failed");
-                }
                 *status_obj.get_pointer() = local_err;
             });
         });
@@ -98,12 +101,9 @@ public:
 
         device_handle = handle_buffer.template get_access<sycl::access::mode::read>()[0];
 
-        // Handle error case where device_handle is still null
-        device_handle = handle_buffer.template get_access<sycl::access::mode::read>()[0];
-        if (!device_handle) {
+        if(!device_handle)
             throw oneapi::mkl::exception("dft/backends/mklcpu", "commit",
-                                         "Failed to create DFTI descriptor handle");
-        }
+                                         "DftiCommitDescriptor failed");
     }
 
     void* get_handle() noexcept override {
@@ -119,14 +119,15 @@ private:
 
     template <typename... Args>
     void set_value_item(mklcpu_desc_t hand, enum DFTI_CONFIG_PARAM name, Args... args) {
-        DFTI_ERROR = value_err = DftiSetValue(hand, name, args...);
+        DFT_ERROR value_err = DFTI_NOTSET;
+        value_err = DftiSetValue(hand, name, args...);
         if (value_err != DFTI_NO_ERROR) {
             throw oneapi::mkl::exception("dft/backends/mklcpu", "set_value_item",
                                          std::to_string(name));
         }
     }
 
-    void set_value(mklcpu_desc_t descHandle, const dft::detail::dft_values<prec, dom> &config) {
+    void set_value(mklcpu_desc_t descHandle, const dft::detail::dft_values<prec, dom> config) {
         set_value_item(descHandle, DFTI_INPUT_STRIDES, config.input_strides.data());
         set_value_item(descHandle, DFTI_OUTPUT_STRIDES, config.output_strides.data());
         set_value_item(descHandle, DFTI_BACKWARD_SCALE, config.bwd_scale);
@@ -149,21 +150,25 @@ private:
 } // namespace detail
 
 template <dft::detail::precision prec, dft::detail::domain dom>
-dft::detail::commit_impl* create_commit(const dft::detail::descriptor<prec, dom>& desc,
+dft::detail::commit_impl<prec, dom>* create_commit(const dft::detail::descriptor<prec, dom>& desc,
                                         sycl::queue& sycl_queue) {
     return new detail::commit_derived_impl<prec, dom>(sycl_queue, desc.get_values());
 }
 
-template dft::detail::commit_impl* create_commit(
+template dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::REAL>*
+create_commit(
     const dft::detail::descriptor<dft::detail::precision::SINGLE, dft::detail::domain::REAL>&,
     sycl::queue&);
-template dft::detail::commit_impl* create_commit(
+template dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>*
+create_commit(
     const dft::detail::descriptor<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>&,
     sycl::queue&);
-template dft::detail::commit_impl* create_commit(
+template dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>*
+create_commit(
     const dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>&,
     sycl::queue&);
-template dft::detail::commit_impl* create_commit(
+template dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>*
+create_commit(
     const dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>&,
     sycl::queue&);
 
