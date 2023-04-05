@@ -61,7 +61,7 @@ option(ENABLE_CUSOLVER_BACKEND "" OFF)
 option(ENABLE_ROCSOLVER_BACKEND "" OFF)
 
 # dft
-option(ENABLE_CUFFT_BACKEND "enable the cuFFT backend for DFT" OFF)
+option(ENABLE_CUFFT_BACKEND "Enable the cuFFT backend for DFT" OFF)
 
 
 set(ONEMKL_SYCL_IMPLEMENTATION "dpc++" CACHE STRING "Name of the SYCL compiler")
