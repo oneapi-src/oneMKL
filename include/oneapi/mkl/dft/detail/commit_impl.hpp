@@ -40,7 +40,7 @@ class dft_values;
 template <precision prec, domain dom>
 class commit_impl {
 public:
-    commit_impl(sycl::queue queue, mkl::backend backend) : backend_(backend), queue_(queue) {}
+    commit_impl(sycl::queue& queue, mkl::backend backend) : queue_(queue), backend_(backend) {}
 
     // rule of three
     commit_impl(const commit_impl& other) = delete;
@@ -61,7 +61,7 @@ public:
 
 private:
     mkl::backend backend_;
-    sycl::queue queue_;
+    sycl::queue& queue_;
 };
 
 } // namespace oneapi::mkl::dft::detail
