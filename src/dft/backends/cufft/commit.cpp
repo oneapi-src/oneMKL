@@ -60,20 +60,21 @@ public:
 
     void clean_plans() {
         if (plans) {
-            this->get_queue()
-                .submit([&](sycl::handler& h) {
-                    h.host_task([=](sycl::interop_handle ih) {
-                        if (cufftDestroy(plans.value()[0]) != CUFFT_SUCCESS) {
-                            throw mkl::exception("dft/backends/cufft", __FUNCTION__,
-                                                 "Failed to destroy forward cuFFT plan.");
-                        }
-                        if (cufftDestroy(plans.value()[1]) != CUFFT_SUCCESS) {
-                            throw mkl::exception("dft/backends/cufft", __FUNCTION__,
-                                                 "Failed to destroy backward cuFFT plan.");
-                        }
-                    });
-                })
-                .wait_and_throw();
+            if (cufftDestroy(plans.value()[0]) != CUFFT_SUCCESS) {
+                throw mkl::exception("dft/backends/cufft", __FUNCTION__,
+                                     "Failed to destroy forward cuFFT plan.");
+            }
+            if (cufftDestroy(plans.value()[1]) != CUFFT_SUCCESS) {
+                throw mkl::exception("dft/backends/cufft", __FUNCTION__,
+                                     "Failed to destroy backward cuFFT plan.");
+            }
+            // cufftDestroy changes the context so change it back.
+            CUcontext interopContext =
+                sycl::get_native<sycl::backend::ext_oneapi_cuda>(this->get_queue().get_context());
+            if (cuCtxSetCurrent(interopContext) != CUDA_SUCCESS) {
+                throw mkl::exception("dft/backends/cufft", __FUNCTION__,
+                                     "Failed to change cuda context.");
+            }
             plans = std::nullopt;
         }
     }
