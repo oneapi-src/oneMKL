@@ -93,7 +93,6 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     descriptor_t descriptor{ sizes };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::INPLACE);
-    descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / forward_elements));
     descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE,
                          container_size_per_transform);
@@ -137,6 +136,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
                 EXPECT_TRUE(check_equal_vector(acc_host.get_pointer(), conjugate_even_ref.data(),
                                                inout_host.size(), abs_error_margin,
                                                rel_error_margin, std::cout));
+                std::cout << "checked forward transform " << std::endl;
             }
             else {
                 EXPECT_TRUE(check_equal_vector(acc_host.get_pointer(), out_host_ref.data(),
@@ -152,6 +152,12 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
                                  complex_strides.data());
             descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                                  real_strides.data());
+            // need to do this because for mklcpu because classical API does have the mechanism to utilize the 
+            // XWD_DISATANCES to not reset the distance parameters
+            if(dev->is_cpu()) {
+                descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, backward_elements);
+                descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, container_size_per_transform);
+            }
             commit_descriptor(descriptor, sycl_queue);
         }
 
@@ -172,6 +178,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
                 input.data() + j * sizes.back(), sizes.back(), abs_error_margin, rel_error_margin,
                 std::cout));
         }
+        std::cout << "checked backward transform " << std::endl;
     }
     else {
         EXPECT_TRUE(check_equal_vector(inout_host.data(), input.data(), input.size(),
@@ -250,8 +257,15 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         const auto real_strides = get_conjugate_even_real_component_strides(sizes);
         const auto complex_strides = get_conjugate_even_complex_strides(sizes);
+
         descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, complex_strides.data());
         descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, real_strides.data());
+        // need to do this because for mklcpu because classical API does have the mechanism to utilize the 
+        // XWD_DISATANCES to not reset the distance parameters
+        if(dev->is_cpu()) {
+            descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, backward_elements);
+            descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, container_size_per_transform);
+        }
         commit_descriptor(descriptor, sycl_queue);
     }
 
