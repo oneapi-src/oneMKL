@@ -96,6 +96,8 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
                                  complex_strides.data());
             descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                                  real_strides.data());
+            descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, backward_distance);
+            descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, forward_elements);
             commit_descriptor(descriptor, sycl_queue);
         }
 
@@ -178,6 +180,8 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
         auto real_strides = get_default_strides(sizes);
         descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, complex_strides.data());
         descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, real_strides.data());
+        descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, backward_distance);
+        descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, forward_elements);
         commit_descriptor(descriptor, sycl_queue);
     }
 

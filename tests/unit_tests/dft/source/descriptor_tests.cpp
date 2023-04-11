@@ -215,7 +215,7 @@ static void set_and_get_values() {
 
         descriptor.get_value(oneapi::mkl::dft::config_param::FWD_DISTANCE,
                              &fwd_distance_before_set);
-        EXPECT_EQ(1, fwd_distance_before_set);
+        EXPECT_EQ(0, fwd_distance_before_set);
         descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, fwd_distance_set_value);
         descriptor.get_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, &fwd_distance_after_set);
         EXPECT_EQ(fwd_distance_set_value, fwd_distance_after_set);
@@ -228,7 +228,7 @@ static void set_and_get_values() {
 
         descriptor.get_value(oneapi::mkl::dft::config_param::BWD_DISTANCE,
                              &bwd_distance_before_set);
-        EXPECT_EQ(1, bwd_distance_before_set);
+        EXPECT_EQ(0, bwd_distance_before_set);
         descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, bwd_distance_set_value);
         descriptor.get_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, &bwd_distance_after_set);
         EXPECT_EQ(bwd_distance_set_value, bwd_distance_after_set);
