@@ -51,7 +51,7 @@ private:
     using mklcpu_desc_t = DFTI_DESCRIPTOR_HANDLE;
 
 public:
-    commit_derived_impl(sycl::queue& queue, const dft::detail::dft_values<prec, dom> config_values)
+    commit_derived_impl(sycl::queue queue, const dft::detail::dft_values<prec, dom> config_values)
             : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::mklcpu) {
         // create the descriptor once for the lifetime of the descriptor class
         DFT_ERROR status = DFTI_BAD_DESCRIPTOR;
