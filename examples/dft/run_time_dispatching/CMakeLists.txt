@@ -29,9 +29,6 @@ endif()
 # If users build more than one backend (i.e. mklcpu and mklgpu, or mklcpu and CUDA), they may need to
 # overwrite SYCL_DEVICE_FILTER in their environment to run on the desired backend
 set(DEVICE_FILTERS "")
-if(ENABLE_MKLCPU_BACKEND)
-  list(APPEND DEVICE_FILTERS "cpu")
-endif()
 if(ENABLE_MKLGPU_BACKEND)
   list(APPEND DEVICE_FILTERS "gpu")
 endif()

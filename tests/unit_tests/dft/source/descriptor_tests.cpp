@@ -552,6 +552,13 @@ int test(sycl::device* dev) {
         }
     }
 
+    // TODO remove after #288
+    if (sycl_queue.get_device().get_info<sycl::info::device::device_type>() ==
+        sycl::info::device_type::cpu) {
+        std::cout << "MKLCPU not implemented, skipping.\n";
+        return test_skipped;
+    }
+
     set_and_get_lengths<precision, domain>(sycl_queue);
     set_and_get_strides<precision, domain>(sycl_queue);
     set_and_get_values<precision, domain>(sycl_queue);

@@ -32,7 +32,7 @@ void descriptor<prec, dom>::commit(backend_selector<backend::mklcpu> selector) {
         if (pimpl_) {
             pimpl_->get_queue().wait();
         }
-        pimpl_.reset(mklgpu::create_commit(*this, selector.get_queue()));
+        pimpl_.reset(mklcpu::create_commit(*this, selector.get_queue()));
     }
     pimpl_->commit(values_);
 }
