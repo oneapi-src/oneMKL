@@ -140,7 +140,6 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
                 EXPECT_TRUE(check_equal_vector(acc_host.get_pointer(), conjugate_even_ref.data(),
                                                inout_host.size(), abs_error_margin,
                                                rel_error_margin, std::cout));
-                std::cout << "checked forward transform " << std::endl;
             }
             else {
                 EXPECT_TRUE(check_equal_vector(acc_host.get_pointer(), out_host_ref.data(),

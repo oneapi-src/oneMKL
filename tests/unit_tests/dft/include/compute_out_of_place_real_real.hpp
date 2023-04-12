@@ -36,7 +36,7 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_USM() {
         return test_skipped;
     }
     else {
-        descriptor_t descriptor{ size };
+        descriptor_t descriptor{ sizes };
 
         descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                              oneapi::mkl::dft::config_value::NOT_INPLACE);
@@ -45,7 +45,8 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_USM() {
         descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
         descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
         descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, forward_elements);
-        descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, backward_scale);
+        descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
+                             (1.0 / forward_elements));
         commit_descriptor(descriptor, sycl_queue);
 
         auto ua_input = usm_allocator_t<PrecisionType>(cxt, *dev);
@@ -71,26 +72,17 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_USM() {
             std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
             return test_skipped;
         }
-        std::vector<FwdOutputType> output_data(size);
+        std::vector<FwdOutputType> output_data(size_total);
         for (int i = 0; i < output_data.size(); ++i) {
             output_data[i] = { out_re[i], out_im[i] };
         }
         EXPECT_TRUE(check_equal_vector(output_data.data(), out_host_ref.data(), output_data.size(),
                                        abs_error_margin, rel_error_margin, std::cout));
 
-        descriptor_t descriptor_back{ size };
-
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
-                                  oneapi::mkl::dft::config_value::NOT_INPLACE);
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::COMPLEX_STORAGE,
-                                  oneapi::mkl::dft::config_value::REAL_REAL);
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / size));
-        commit_descriptor(descriptor_back, sycl_queue);
-
         try {
             oneapi::mkl::dft::compute_backward<
-                std::remove_reference_t<decltype(descriptor_back)>, PrecisionType, PrecisionType>(
-                descriptor_back, out_re.data(), out_im.data(), out_back_re.data(),
+                std::remove_reference_t<decltype(descriptor)>, PrecisionType, PrecisionType>(
+                descriptor, out_re.data(), out_im.data(), out_back_re.data(),
                 out_back_im.data()).wait();
         }
         catch (oneapi::mkl::unimplemented &e) {
@@ -123,7 +115,7 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
         return test_skipped;
     }
     else {
-        descriptor_t descriptor{ size };
+        descriptor_t descriptor{ sizes };
 
         descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                              oneapi::mkl::dft::config_value::NOT_INPLACE);
@@ -132,7 +124,8 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
         descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
         descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
         descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, forward_elements);
-        descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, backward_scale);
+        descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
+                             (1.0 / forward_elements));
         commit_descriptor(descriptor, sycl_queue);
 
         sycl::buffer<PrecisionType, 1> in_dev_re{ input_re.data(), sycl::range<1>(size_total) };
@@ -154,7 +147,7 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
         {
             auto acc_out_re = out_dev_re.template get_host_access();
             auto acc_out_im = out_dev_im.template get_host_access();
-            std::vector<FwdOutputType> input_data(size, static_cast<FwdOutputType>(0));
+            std::vector<FwdOutputType> input_data(size_total, static_cast<FwdOutputType>(0));
             for (int i = 0; i < input_data.size(); ++i) {
                 input_data[i] = { acc_out_re[i], acc_out_im[i] };
             }
@@ -163,19 +156,10 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
                                            std::cout));
         }
 
-        descriptor_t descriptor_back{ size };
-
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
-                                  oneapi::mkl::dft::config_value::NOT_INPLACE);
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::COMPLEX_STORAGE,
-                                  oneapi::mkl::dft::config_value::REAL_REAL);
-        descriptor_back.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / size));
-        commit_descriptor(descriptor_back, sycl_queue);
-
         try {
-            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor_back)>,
+            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
                                                PrecisionType, PrecisionType>(
-                descriptor_back, out_dev_re, out_dev_im, out_back_dev_re, out_back_dev_im);
+                descriptor, out_dev_re, out_dev_im, out_back_dev_re, out_back_dev_im);
         }
         catch (oneapi::mkl::unimplemented &e) {
             std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
@@ -185,7 +169,7 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
         {
             auto acc_back_out_re = out_back_dev_re.template get_host_access();
             auto acc_back_out_im = out_back_dev_im.template get_host_access();
-            std::vector<FwdInputType> input_data(size, static_cast<FwdInputType>(0));
+            std::vector<FwdInputType> input_data(size_total, static_cast<FwdInputType>(0));
             for (int i = 0; i < input_data.size(); ++i) {
                 input_data[i] = { acc_back_out_re[i], acc_back_out_im[i] };
             }
