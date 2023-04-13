@@ -31,8 +31,6 @@ namespace detail {
 
 typedef int DFT_ERROR;
 
-#define DFTI_NOTSET 0 
-
 enum class precision { SINGLE, DOUBLE };
 enum class domain { REAL, COMPLEX };
 enum class config_param {

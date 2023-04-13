@@ -147,12 +147,12 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
         {
             auto acc_out_re = out_dev_re.template get_host_access();
             auto acc_out_im = out_dev_im.template get_host_access();
-            std::vector<FwdOutputType> input_data(size_total, static_cast<FwdOutputType>(0));
-            for (int i = 0; i < input_data.size(); ++i) {
-                input_data[i] = { acc_out_re[i], acc_out_im[i] };
+            std::vector<FwdOutputType> output_data(size_total, static_cast<FwdOutputType>(0));
+            for (int i = 0; i < output_data.size(); ++i) {
+                output_data[i] = { acc_out_re[i], acc_out_im[i] };
             }
-            EXPECT_TRUE(check_equal_vector(input_data.data(), out_host_ref.data(),
-                                           input_data.size(), abs_error_margin, rel_error_margin,
+            EXPECT_TRUE(check_equal_vector(output_data.data(), out_host_ref.data(),
+                                           output_data.size(), abs_error_margin, rel_error_margin,
                                            std::cout));
         }
 
@@ -169,11 +169,11 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
         {
             auto acc_back_out_re = out_back_dev_re.template get_host_access();
             auto acc_back_out_im = out_back_dev_im.template get_host_access();
-            std::vector<FwdInputType> input_data(size_total, static_cast<FwdInputType>(0));
-            for (int i = 0; i < input_data.size(); ++i) {
-                input_data[i] = { acc_back_out_re[i], acc_back_out_im[i] };
+            std::vector<FwdInputType> output_data(size_total, static_cast<FwdInputType>(0));
+            for (int i = 0; i < output_data.size(); ++i) {
+                output_data[i] = { acc_back_out_re[i], acc_back_out_im[i] };
             }
-            EXPECT_TRUE(check_equal_vector(input_data.data(), input.data(), input.size(),
+            EXPECT_TRUE(check_equal_vector(output_data.data(), input.data(), input.size(),
                                            abs_error_margin, rel_error_margin, std::cout));
         }
     }
