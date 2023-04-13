@@ -138,6 +138,20 @@ private:
                        to_mklcpu<config_param::PLACEMENT>(config.placement));
         set_value_item(descHandle, DFTI_PACKED_FORMAT,
                        to_mklcpu<config_param::PACKED_FORMAT>(config.packed_format));
+        // Setting the workspace causes an FFT_INVALID_DESCRIPTOR.
+        if (config.workspace != config_value::ALLOW)
+            throw mkl::invalid_argument("dft/backends/mklgpu", "commit",
+                                        "MKLCPU only supports workspace set to allow");
+        // Setting the ordering causes an FFT_INVALID_DESCRIPTOR. Check that default is used:
+        if (config.ordering != dft::detail::config_value::ORDERED) {
+            throw mkl::invalid_argument("dft/backends/mklgpu", "commit",
+                                        "MKLCPU only supports ordered ordering.");
+        }
+        // Setting the transpose causes an FFT_INVALID_DESCRIPTOR. Check that default is used:
+        if (config.transpose != false) {
+            throw mkl::invalid_argument("dft/backends/mklgpu", "commit",
+                                        "MKLCPU only supports non-transposed.");
+        }
     }
 };
 } // namespace detail
