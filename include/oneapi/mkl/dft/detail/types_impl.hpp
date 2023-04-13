@@ -31,8 +31,6 @@ namespace detail {
 
 typedef long DFT_ERROR;
 
-#define DFTI_NOTSET 0 
-
 enum class precision { SINGLE, DOUBLE };
 
 template <precision prec>

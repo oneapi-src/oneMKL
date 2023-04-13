@@ -51,7 +51,7 @@ private:
     using mklcpu_desc_t = DFTI_DESCRIPTOR_HANDLE;
 
 public:
-    commit_derived_impl(sycl::queue queue, const dft::detail::dft_values<prec, dom> config_values)
+    commit_derived_impl(sycl::queue queue, const dft::detail::dft_values<prec, dom>& config_values)
             : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::mklcpu) {
         // create the descriptor once for the lifetime of the descriptor class
         DFT_ERROR status = DFTI_BAD_DESCRIPTOR;
@@ -113,15 +113,14 @@ private:
 
     template <typename... Args>
     void set_value_item(mklcpu_desc_t hand, enum DFTI_CONFIG_PARAM name, Args... args) {
-        DFT_ERROR value_err = DFTI_NOTSET;
-        value_err = DftiSetValue(hand, name, args...);
+        DFT_ERROR value_err = DftiSetValue(hand, name, args...);
         if (value_err != DFTI_NO_ERROR) {
             throw oneapi::mkl::exception("dft/backends/mklcpu", "set_value_item",
                                          std::to_string(name));
         }
     }
 
-    void set_value(mklcpu_desc_t descHandle, const dft::detail::dft_values<prec, dom> config) {
+    void set_value(mklcpu_desc_t descHandle, const dft::detail::dft_values<prec, dom>& config) {
         set_value_item(descHandle, DFTI_INPUT_STRIDES, config.input_strides.data());
         set_value_item(descHandle, DFTI_OUTPUT_STRIDES, config.output_strides.data());
         set_value_item(descHandle, DFTI_BACKWARD_SCALE, config.bwd_scale);
