@@ -1013,11 +1013,9 @@ inline sycl::event iamax(const char *func_name, Func func, sycl::queue &queue, i
     bool result_on_device =
         sycl::get_pointer_type(result, queue.get_context()) == sycl::usm::alloc::device;
     if (result_on_device) {
-        std::cout << "  iamax result_on_device A" << std::endl;
         int_res_p = sycl::malloc_device<int>(1, queue);
     }
     else {
-        std::cout << "  iamax NOT result_on_device A" << std::endl;
         int_res_p = &int_res;
     }
     auto done = queue.submit([&](sycl::handler &cgh) {
@@ -1028,7 +1026,6 @@ inline sycl::event iamax(const char *func_name, Func func, sycl::queue &queue, i
         onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto x_ = reinterpret_cast<const cuDataType *>(x);
-            // auto int_res_p_ = reinterpret_cast<int *>(int_res_p);
             if (result_on_device) {
                 cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
             }
@@ -1042,34 +1039,10 @@ inline sycl::event iamax(const char *func_name, Func func, sycl::queue &queue, i
         });
     });
     if (result_on_device) {
-        std::cout << "  iamax result_on_device B" << std::endl;
         done.wait();
-        std::cout << "  iamax result_on_device C" << std::endl;
-        
-        /*
-        auto change_index = queue.submit([&](sycl::handler& cgh) {
-            cgh.depends_on(done);
-            cgh.single_task([=]() {
-                // *int_res_p = std::max(*int_res_p - 1, 0);
-                *int_res_p = sycl::max(*int_res_p - 1, 0);
-                *result = (int64_t) *int_res_p;
-            });
-        });
-        change_index.wait();
-        std::cout << "  iamax result_on_device C" << std::endl;
-        sycl::free(int_res_p, queue);
-        return change_index;
-        */
-
-        /*
-    // This requires to bring the data to host, copy it, and return it back to
-    // the device
-    result.template get_host_access(sycl::write_only)[0] = std::max(
-        (int64_t)int_res_buff.template get_host_access(sycl::read_only)[0] - 1, int64_t{ 0 });
-        */
-
         // the following is terrible, should be a sycl single_task kernel
         // but with the cuda interop this always gives a PI_ERROR_INVALID_BINARY
+        // this duplicates what done in the buffer interface iamax
         // ---
         // 1. copy device int to host int
         int host_int;
@@ -1077,7 +1050,7 @@ inline sycl::event iamax(const char *func_name, Func func, sycl::queue &queue, i
         queue.memcpy(&host_int, int_res_p, sizeof(int)).wait();
         // 2. adjust host int because of 0-base indexing
         // 3. convert host int to host int64
-        host_int64 = std::max((int64_t) host_int, int64_t{ 0 });
+        host_int64 = std::max((int64_t) host_int - 1, int64_t{ 0 });
         // 4. copy host int64 to device int64 for output
         auto last_ev = queue.memcpy(result, &host_int64, sizeof(int64_t));
         last_ev.wait();
@@ -1085,7 +1058,6 @@ inline sycl::event iamax(const char *func_name, Func func, sycl::queue &queue, i
         return last_ev;
     }
     else {
-        std::cout << "  iamax NOT result_on_device A" << std::endl;
         done.wait();
         result[0] = std::max((int64_t)(*int_res_p - 1), int64_t{ 0 });
         return done;
@@ -1149,7 +1121,15 @@ inline sycl::event iamin(const char *func_name, Func func, sycl::queue &queue, i
     // This change may cause failure as the result of integer overflow
     // based on the size.
     int int_res = 0;
-    int *int_res_p = &int_res;
+    int * int_res_p = nullptr;
+    bool result_on_device =
+        sycl::get_pointer_type(result, queue.get_context()) == sycl::usm::alloc::device;
+    if (result_on_device) {
+        int_res_p = sycl::malloc_device<int>(1, queue);
+    }
+    else {
+        int_res_p = &int_res;
+    }
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1158,16 +1138,43 @@ inline sycl::event iamin(const char *func_name, Func func, sycl::queue &queue, i
         onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto x_ = reinterpret_cast<const cuDataType *>(x);
-            auto int_res_p_ = reinterpret_cast<int *>(int_res_p);
+            // auto int_res_p_ = reinterpret_cast<int *>(int_res_p);
+            if (result_on_device) {
+                cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
+            }
             cublasStatus_t err;
             // For negative incx, iamin returns 0. This behaviour is similar to that of
             // implemented iamin.
-            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, int_res_p_);
+            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, int_res_p);
+            if (result_on_device) {
+                cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
+            }
         });
     });
-    done.wait();
-    result[0] = std::max((int64_t)(*int_res_p - 1), int64_t{ 0 });
-    return done;
+    if (result_on_device) {
+        done.wait();
+        // the following is terrible, should be a sycl single_task kernel
+        // but with the cuda interop this always gives a PI_ERROR_INVALID_BINARY
+        // this duplicates what done in the buffer interface iamax
+        // ---
+        // 1. copy device int to host int
+        int host_int;
+        int64_t host_int64;
+        queue.memcpy(&host_int, int_res_p, sizeof(int)).wait();
+        // 2. adjust host int because of 0-base indexing
+        // 3. convert host int to host int64
+        host_int64 = std::max((int64_t) (host_int - 1), int64_t{ 0 });
+        // 4. copy host int64 to device int64 for output
+        auto last_ev = queue.memcpy(result, &host_int64, sizeof(int64_t));
+        last_ev.wait();
+        sycl::free(int_res_p, queue);
+        return last_ev;
+    }
+    else {
+        done.wait();
+        result[0] = std::max((int64_t)(*int_res_p - 1), int64_t{ 0 });
+        return done;
+    }
 }
 
 #define IAMIN_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                                \
