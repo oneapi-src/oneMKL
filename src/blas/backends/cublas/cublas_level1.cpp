@@ -864,6 +864,8 @@ inline sycl::event dot(const char *func_name, Func func, sycl::queue &queue, int
                        const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(n, incx, incy);
+    bool result_on_device =
+        sycl::get_pointer_type(result, queue.get_context()) == sycl::usm::alloc::device;
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -874,8 +876,14 @@ inline sycl::event dot(const char *func_name, Func func, sycl::queue &queue, int
             auto x_ = reinterpret_cast<const cuDataType *>(x);
             auto y_ = reinterpret_cast<const cuDataType *>(y);
             auto res_ = reinterpret_cast<cuDataType *>(result);
+            if (result_on_device) {
+                cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
+            }
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, y_, incy, res_);
+            if (result_on_device) {
+                cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
+            }
         });
     });
     return done;
@@ -939,7 +947,9 @@ sycl::event sdsdot(sycl::queue &queue, int64_t n, float sb, const float *x, int6
                    const float *y, int64_t incy, float *result,
                    const std::vector<sycl::event> &dependencies) {
     overflow_check(n, incx, incy);
-    // cuBLAS does not support sdot so we need to mimic sdot.
+    bool result_on_device =
+        sycl::get_pointer_type(result, queue.get_context()) == sycl::usm::alloc::device;
+    // cuBLAS does not support sdsdot so we need to mimic sdot.
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -950,13 +960,32 @@ sycl::event sdsdot(sycl::queue &queue, int64_t n, float sb, const float *x, int6
             auto x_ = reinterpret_cast<const float *>(x);
             auto y_ = reinterpret_cast<const float *>(y);
             auto res_ = reinterpret_cast<float *>(result);
+            if (result_on_device) {
+                cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
+            }
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC_SYNC(cublasSdot, err, handle, n, x_, incx, y_, incy, res_);
+            if (result_on_device) {
+                cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
+            }
         });
     });
     done.wait();
-    result[0] = result[0] + sb;
-    return done;
+    if (result_on_device) {
+        // The following does copy device to host and then host to device
+        // just to adjust with sb constant. This is pretty inefficient, and
+        // should maybe be replaced with a sycl GPU kernel, but it duplicated what
+        // is done in the buffer API
+        float host_result;
+        queue.memcpy(&host_result, result, sizeof(float)).wait();
+        host_result += sb;
+        auto last_ev = queue.memcpy(result, &host_result, sizeof(float));
+        return last_ev;
+    }
+    else {
+        result[0] = result[0] + sb;
+        return done;
+    }
 }
 
 sycl::event dot(sycl::queue &queue, int64_t n, const float *x, int64_t incx, const float *y,
@@ -1038,27 +1067,22 @@ inline sycl::event iamax(const char *func_name, Func func, sycl::queue &queue, i
             }
         });
     });
+    done.wait();
     if (result_on_device) {
-        done.wait();
-        // the following is terrible, should be a sycl single_task kernel
-        // but with the cuda interop this always gives a PI_ERROR_INVALID_BINARY
-        // this duplicates what done in the buffer interface iamax
-        // ---
-        // 1. copy device int to host int
+        // The following does copy device to host and then host to device
+        // just to adjust to 0-base indexing. This is pretty inefficient, and
+        // should maybe be replaced with a sycl GPU kernel, but it duplicated what
+        // is done in the buffer API
         int host_int;
         int64_t host_int64;
         queue.memcpy(&host_int, int_res_p, sizeof(int)).wait();
-        // 2. adjust host int because of 0-base indexing
-        // 3. convert host int to host int64
         host_int64 = std::max((int64_t) host_int - 1, int64_t{ 0 });
-        // 4. copy host int64 to device int64 for output
         auto last_ev = queue.memcpy(result, &host_int64, sizeof(int64_t));
         last_ev.wait();
         sycl::free(int_res_p, queue);
         return last_ev;
     }
     else {
-        done.wait();
         result[0] = std::max((int64_t)(*int_res_p - 1), int64_t{ 0 });
         return done;
     }
@@ -1138,7 +1162,6 @@ inline sycl::event iamin(const char *func_name, Func func, sycl::queue &queue, i
         onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto x_ = reinterpret_cast<const cuDataType *>(x);
-            // auto int_res_p_ = reinterpret_cast<int *>(int_res_p);
             if (result_on_device) {
                 cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
             }
@@ -1151,27 +1174,22 @@ inline sycl::event iamin(const char *func_name, Func func, sycl::queue &queue, i
             }
         });
     });
+    done.wait();
     if (result_on_device) {
-        done.wait();
-        // the following is terrible, should be a sycl single_task kernel
-        // but with the cuda interop this always gives a PI_ERROR_INVALID_BINARY
-        // this duplicates what done in the buffer interface iamax
-        // ---
-        // 1. copy device int to host int
+        // The following does copy device to host and then host to device
+        // just to adjust to 0-base indexing. This is pretty inefficient, and
+        // should maybe be replaced with a sycl GPU kernel, but it duplicated what
+        // is done in the buffer API
         int host_int;
         int64_t host_int64;
         queue.memcpy(&host_int, int_res_p, sizeof(int)).wait();
-        // 2. adjust host int because of 0-base indexing
-        // 3. convert host int to host int64
-        host_int64 = std::max((int64_t) (host_int - 1), int64_t{ 0 });
-        // 4. copy host int64 to device int64 for output
+        host_int64 = std::max((int64_t) host_int - 1, int64_t{ 0 });
         auto last_ev = queue.memcpy(result, &host_int64, sizeof(int64_t));
         last_ev.wait();
         sycl::free(int_res_p, queue);
         return last_ev;
     }
     else {
-        done.wait();
         result[0] = std::max((int64_t)(*int_res_p - 1), int64_t{ 0 });
         return done;
     }
@@ -1196,6 +1214,8 @@ inline sycl::event nrm2(const char *func_name, Func func, sycl::queue &queue, in
     using cuDataType2 = typename CudaEquivalentType<T2>::Type;
     overflow_check(n, incx);
 
+    bool result_on_device =
+        sycl::get_pointer_type(result, queue.get_context()) == sycl::usm::alloc::device;
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1205,9 +1225,15 @@ inline sycl::event nrm2(const char *func_name, Func func, sycl::queue &queue, in
             auto handle = sc.get_handle(queue);
             auto x_ = reinterpret_cast<const cuDataType1 *>(x);
             auto res_ = reinterpret_cast<cuDataType2 *>(result);
+            if (result_on_device) {
+                cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
+            }
             cublasStatus_t err;
             // NRM2 does not support negative index
             CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, std::abs(incx), res_);
+            if (result_on_device) {
+                cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
+            }
         });
     });
     return done;
