@@ -73,11 +73,10 @@ inline auto expect_config(DescT &desc, const char *message) {
 
 // convert the base commit class to derived cpu commit class
 template <dft::precision prec, dft::domain dom>
-auto return_buffer(commit_t<prec, dom>* commit_handle) {
+auto get_buffer(commit_t<prec, dom>* commit_handle) {
     commit_derived_t<prec, dom>* derived_commit = reinterpret_cast<commit_derived_t<prec, dom>*>(commit_handle);
     return derived_commit->get_handle_buffer();
 }
-
 } // namespace detail
 
 //In-place transform
@@ -89,7 +88,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type
     detail::check_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer = detail::return_buffer(commit_handle);
+    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer { detail::get_buffer(commit_handle) };
 
     cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
@@ -111,7 +110,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type
     detail::check_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::return_buffer(commit_handle) };
+    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
 
     cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
@@ -136,7 +135,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
     detail::check_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::return_buffer(commit_handle) };
+    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
 
     cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
@@ -163,7 +162,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
     detail::check_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::return_buffer(commit_handle) };
+    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
 
     cpu_queue.submit([&](sycl::handler &cgh) {
             auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
@@ -192,7 +191,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inou
     detail::check_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::return_buffer(commit_handle) };
+    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
 
     return cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
@@ -216,7 +215,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inou
     detail::check_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::return_buffer(commit_handle) };
+    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
 
     return cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
@@ -240,7 +239,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in,
     detail::check_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::return_buffer(commit_handle) };
+    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
 
     return cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
@@ -265,7 +264,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in_
     detail::check_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::return_buffer(commit_handle) };
+    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
 
     return cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
