@@ -93,8 +93,14 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type
     cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
         auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
-        detail::host_task<class host_kernel_inplace>(
-            cgh, [=]() { DftiComputeForward(desc_acc[0], inout_acc.get_pointer()); });
+        detail::host_task<class host_kernel_inplace>(cgh, [=]() {
+            DFT_ERROR status;
+            status = DftiComputeForward(desc_acc[0], inout_acc.get_pointer()); 
+            if (status != DFTI_NO_ERROR) {
+                throw oneapi::mkl::exception("dft/forward/mklcpu", "compute_forward",
+                                              "DftiComputeForward failed");
+            }
+        });
     });
 }
 
@@ -118,7 +124,12 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type
         auto im_acc = inout_im.template get_access<sycl::access::mode::read_write>(cgh);
 
         detail::host_task<class host_kernel_split_inplace>(cgh, [=]() {
-            DftiComputeForward(desc_acc[0], re_acc.get_pointer(), im_acc.get_pointer());
+            DFT_ERROR status;
+            status = DftiComputeForward(desc_acc[0], re_acc.get_pointer(), im_acc.get_pointer());
+            if (status != DFTI_NO_ERROR) {
+                throw oneapi::mkl::exception("dft/forward/mklcpu", "compute_forward",
+                                              "DftiComputeForward failed");
+            }
         });
     });
 }
@@ -143,7 +154,12 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
         auto out_acc = out.template get_access<sycl::access::mode::write>(cgh);
 
         detail::host_task<class host_kernel_outofplace>(cgh, [=]() {
-            DftiComputeForward(desc_acc[0], in_acc.get_pointer(), out_acc.get_pointer());
+            DFT_ERROR status;
+            status = DftiComputeForward(desc_acc[0], in_acc.get_pointer(), out_acc.get_pointer());
+            if (status != DFTI_NO_ERROR) {
+                throw oneapi::mkl::exception("dft/forward/mklcpu", "compute_forward",
+                                              "DftiComputeForward failed");
+            }
         });
     });
 }
@@ -165,17 +181,22 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
     sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
 
     cpu_queue.submit([&](sycl::handler &cgh) {
-            auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
-            auto inre_acc = in_re.template get_access<sycl::access::mode::read>(cgh);
-            auto inim_acc = in_im.template get_access<sycl::access::mode::read>(cgh);
-            auto outre_acc = out_re.template get_access<sycl::access::mode::write>(cgh);
-            auto outim_acc = out_im.template get_access<sycl::access::mode::write>(cgh);
+        auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
+        auto inre_acc = in_re.template get_access<sycl::access::mode::read>(cgh);
+        auto inim_acc = in_im.template get_access<sycl::access::mode::read>(cgh);
+        auto outre_acc = out_re.template get_access<sycl::access::mode::write>(cgh);
+        auto outim_acc = out_im.template get_access<sycl::access::mode::write>(cgh);
 
-            detail::host_task<class host_kernel_split_outofplace>(cgh, [=]() {
-                DftiComputeForward(desc_acc[0], inre_acc.get_pointer(), inim_acc.get_pointer(),
-                                   outre_acc.get_pointer(), outim_acc.get_pointer());
-            });
+        detail::host_task<class host_kernel_split_outofplace>(cgh, [=]() {
+            DFT_ERROR status;
+            status = DftiComputeForward(desc_acc[0], inre_acc.get_pointer(), inim_acc.get_pointer(),
+                                outre_acc.get_pointer(), outim_acc.get_pointer());
+            if (status != DFTI_NO_ERROR) {
+                throw oneapi::mkl::exception("dft/forward/mklcpu", "compute_forward",
+                                            "DftiComputeForward failed");
+            }
         });
+    });
 }
 
 //USM version
@@ -197,8 +218,14 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inou
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
 
         cgh.depends_on(dependencies);
-        detail::host_task<class host_usm_kernel_inplace>(
-            cgh, [=]() { DftiComputeForward(desc_acc[0], inout); });
+        detail::host_task<class host_usm_kernel_inplace>(cgh, [=]() { 
+            DFT_ERROR status;
+            status = DftiComputeForward(desc_acc[0], inout);
+            if (status != DFTI_NO_ERROR) {
+                throw oneapi::mkl::exception("dft/forward/mklcpu", "compute_forward",
+                                              "DftiComputeForward failed");
+            }
+        });
     });
 }
 
@@ -221,8 +248,14 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inou
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
 
         cgh.depends_on(dependencies);
-        detail::host_task<class host_usm_kernel_split_inplace>(
-            cgh, [=]() { DftiComputeForward(desc_acc[0], inout_re, inout_im); });
+        detail::host_task<class host_usm_kernel_split_inplace>(cgh, [=]() {
+            DFT_ERROR status;
+            status = DftiComputeForward(desc_acc[0], inout_re, inout_im); 
+            if (status != DFTI_NO_ERROR) {
+                throw oneapi::mkl::exception("dft/forward/mklcpu", "compute_forward",
+                                              "DftiComputeForward failed");
+            }
+        });
     });
 }
 
@@ -245,8 +278,14 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in,
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
 
         cgh.depends_on(dependencies);
-        detail::host_task<class host_usm_kernel_outofplace>(
-            cgh, [=]() { DftiComputeForward(desc_acc[0], in, out); });
+        detail::host_task<class host_usm_kernel_outofplace>(cgh, [=]() {
+            DFT_ERROR status;
+            status = DftiComputeForward(desc_acc[0], in, out); 
+            if (status != DFTI_NO_ERROR) {
+                throw oneapi::mkl::exception("dft/forward/mklcpu", "compute_forward",
+                                              "DftiComputeForward failed");
+            }
+        });
     });
 }
 
@@ -270,8 +309,14 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in_
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
 
         cgh.depends_on(dependencies);
-        detail::host_task<class host_usm_kernel_split_outofplace>(
-            cgh, [=]() { DftiComputeForward(desc_acc[0], in_re, in_im, out_re, out_im); });
+        detail::host_task<class host_usm_kernel_split_outofplace>(cgh, [=]() {
+            DFT_ERROR status;
+            status = DftiComputeForward(desc_acc[0], in_re, in_im, out_re, out_im); 
+            if (status != DFTI_NO_ERROR) {
+                throw oneapi::mkl::exception("dft/forward/mklcpu", "compute_forward",
+                                              "DftiComputeForward failed");
+            }
+        });
     });
 }
 
