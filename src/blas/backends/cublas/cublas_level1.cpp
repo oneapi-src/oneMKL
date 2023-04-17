@@ -760,6 +760,18 @@ inline sycl::event rotg(const char *func_name, Func func, sycl::queue &queue, T1
                         T1 *s, const std::vector<sycl::event> &dependencies) {
     using cuDataType1 = typename CudaEquivalentType<T1>::Type;
     using cuDataType2 = typename CudaEquivalentType<T2>::Type;
+    auto ctx = queue.get_context();
+    bool results_on_device =
+        sycl::get_pointer_type(a, ctx) == sycl::usm::alloc::device;
+    if (results_on_device) {
+        if (sycl::get_pointer_type(b, ctx) == sycl::usm::alloc::unknown ||
+            sycl::get_pointer_type(c, ctx) == sycl::usm::alloc::unknown ||
+            sycl::get_pointer_type(s, ctx) == sycl::usm::alloc::unknown) {
+            throw oneapi::mkl::exception(
+                "blas", "rotg",
+                "If any pointer is device-only, all must be device accessible");
+        }
+    }
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -771,8 +783,14 @@ inline sycl::event rotg(const char *func_name, Func func, sycl::queue &queue, T1
             auto b_ = reinterpret_cast<cuDataType1 *>(b);
             auto c_ = reinterpret_cast<cuDataType2 *>(c);
             auto s_ = reinterpret_cast<cuDataType1 *>(s);
+            if (results_on_device) {
+                cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
+            }
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, a_, b_, c_, s_);
+            if (results_on_device) {
+                cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
+            }           
         });
     });
     return done;
@@ -997,6 +1015,17 @@ template <typename Func, typename T>
 inline sycl::event rotmg(const char *func_name, Func func, sycl::queue &queue, T *d1, T *d2, T *x1,
                          T y1, T *param, const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
+    auto ctx = queue.get_context();
+    bool results_on_device =
+        sycl::get_pointer_type(d1, ctx) == sycl::usm::alloc::device;
+    if (results_on_device) {
+        if (sycl::get_pointer_type(d2, ctx) == sycl::usm::alloc::unknown ||
+            sycl::get_pointer_type(x1, ctx) == sycl::usm::alloc::unknown) {
+            throw oneapi::mkl::exception(
+                "blas", "rotmg",
+                "If any pointer is device-only, all must be device accessible");
+        }
+    }
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1009,8 +1038,14 @@ inline sycl::event rotmg(const char *func_name, Func func, sycl::queue &queue, T
             auto x1_ = reinterpret_cast<cuDataType *>(x1);
             auto y1_ = reinterpret_cast<const cuDataType *>(&y1);
             auto param_ = reinterpret_cast<cuDataType *>(param);
+            if (results_on_device) {
+                cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
+            }
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, d1_, d2_, x1_, y1_, param_);
+            if (results_on_device) {
+                cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
+            }
         });
     });
     return done;
