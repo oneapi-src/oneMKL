@@ -62,9 +62,7 @@
 #include <CL/sycl.hpp>
 #endif
 #ifndef __HIPSYCL__
-#if __has_include(<sycl/backend/cuda.hpp>)
-#include <sycl/backend/cuda.hpp>
-#else
+#if !__has_include(<sycl/backend/cuda.hpp>)
 #include <CL/sycl/backend/cuda.hpp>
 #endif
 #endif
