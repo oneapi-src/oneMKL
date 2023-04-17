@@ -177,7 +177,6 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
                 input.data() + j * sizes.back(), sizes.back(), abs_error_margin, rel_error_margin,
                 std::cout));
         }
-        std::cout << "checked backward transform " << std::endl;
     }
     else {
         EXPECT_TRUE(check_equal_vector(inout_host.data(), input.data(), input.size(),
