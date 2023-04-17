@@ -28,8 +28,8 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
         return test_skipped;
     }
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        // storage schemes for real transform arn't allowed to set the REAL_STORAGE to
-        // real_real or the COMPLEX_STORAGE to real_real as well. Skip.
+        std::cout << "skipping real split tests as they are not supported" << std::endl;
+
         return test_skipped;
     }
     else {
@@ -85,8 +85,6 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
     }
 }
 
-/* Test is not implemented because currently there are no available dft implementations.
- * These are stubs to make sure that dft::oneapi::mkl::unimplemented exception is thrown */
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
     if (!init(MemoryAccessModel::buffer)) {
@@ -94,8 +92,8 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
     }
 
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        // storage schemes for real transform arn't allowed to set the REAL_STORAGE to
-        // real_real or the COMPLEX_STORAGE to real_real as well. Skip.
+        std::cout << "skipping real split tests as they are not supported" << std::endl;
+
         return test_skipped;
     }
     else {
