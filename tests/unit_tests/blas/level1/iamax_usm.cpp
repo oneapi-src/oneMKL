@@ -45,7 +45,7 @@ extern std::vector<sycl::device*> devices;
 
 namespace {
 
-template <typename fp, usm::alloc alloc_type=usm::alloc::shared>
+template <typename fp, usm::alloc alloc_type = usm::alloc::shared>
 int test(device* dev, oneapi::mkl::layout layout, int N, int incx) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
@@ -147,17 +147,15 @@ class IamaxUsmTests
 TEST_P(IamaxUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2));
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1));
-    EXPECT_TRUEORSKIP(
-        (test<float, usm::alloc::device>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                         101, 1)));
+    EXPECT_TRUEORSKIP((
+        test<float, usm::alloc::device>(std::get<0>(GetParam()), std::get<1>(GetParam()), 101, 1)));
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3));
 }
 TEST_P(IamaxUsmTests, RealDoublePrecision) {
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1));
-    EXPECT_TRUEORSKIP(
-        (test<double, usm::alloc::device>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                          101, 1)));
+    EXPECT_TRUEORSKIP((test<double, usm::alloc::device>(std::get<0>(GetParam()),
+                                                        std::get<1>(GetParam()), 101, 1)));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3));
 }
 TEST_P(IamaxUsmTests, ComplexSinglePrecision) {
@@ -165,9 +163,8 @@ TEST_P(IamaxUsmTests, ComplexSinglePrecision) {
         test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2));
     EXPECT_TRUEORSKIP(
         test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1));
-    EXPECT_TRUEORSKIP(
-        (test<std::complex<float>, usm::alloc::device>(std::get<0>(GetParam()),
-                                                       std::get<1>(GetParam()), 101, 1)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, usm::alloc::device>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 101, 1)));
     EXPECT_TRUEORSKIP(
         test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3));
 }
@@ -176,9 +173,8 @@ TEST_P(IamaxUsmTests, ComplexDoublePrecision) {
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2));
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1));
-    EXPECT_TRUEORSKIP(
-        (test<std::complex<double>, usm::alloc::device>(std::get<0>(GetParam()),
-                                                        std::get<1>(GetParam()), 101, 1)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, usm::alloc::device>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 101, 1)));
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3));
 }

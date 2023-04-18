@@ -495,8 +495,7 @@ bool check_equal(fp x, fp x_ref, int error_mag, std::ostream &out) {
 }
 
 template <typename fp>
-bool check_equal_ptr(sycl::queue queue, fp *x, fp x_ref, int error_mag,
-                     std::ostream &out) {
+bool check_equal_ptr(sycl::queue queue, fp *x, fp x_ref, int error_mag, std::ostream &out) {
     fp x_host;
     queue.memcpy(&x_host, x, sizeof(fp)).wait();
     return check_equal(x_host, x_ref, error_mag, out);

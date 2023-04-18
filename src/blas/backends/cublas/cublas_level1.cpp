@@ -761,15 +761,13 @@ inline sycl::event rotg(const char *func_name, Func func, sycl::queue &queue, T1
     using cuDataType1 = typename CudaEquivalentType<T1>::Type;
     using cuDataType2 = typename CudaEquivalentType<T2>::Type;
     auto ctx = queue.get_context();
-    bool results_on_device =
-        sycl::get_pointer_type(a, ctx) == sycl::usm::alloc::device;
+    bool results_on_device = sycl::get_pointer_type(a, ctx) == sycl::usm::alloc::device;
     if (results_on_device) {
         if (sycl::get_pointer_type(b, ctx) == sycl::usm::alloc::unknown ||
             sycl::get_pointer_type(c, ctx) == sycl::usm::alloc::unknown ||
             sycl::get_pointer_type(s, ctx) == sycl::usm::alloc::unknown) {
             throw oneapi::mkl::exception(
-                "blas", "rotg",
-                "If any pointer is device-only, all must be device accessible");
+                "blas", "rotg", "If any pointer is device-only, all must be device accessible");
         }
     }
     auto done = queue.submit([&](sycl::handler &cgh) {
@@ -790,7 +788,7 @@ inline sycl::event rotg(const char *func_name, Func func, sycl::queue &queue, T1
             CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, a_, b_, c_, s_);
             if (results_on_device) {
                 cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
-            }           
+            }
         });
     });
     return done;
@@ -1016,17 +1014,15 @@ inline sycl::event rotmg(const char *func_name, Func func, sycl::queue &queue, T
                          T y1, T *param, const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     auto ctx = queue.get_context();
-    bool results_on_device =
-        sycl::get_pointer_type(d1, ctx) == sycl::usm::alloc::device;
+    bool results_on_device = sycl::get_pointer_type(d1, ctx) == sycl::usm::alloc::device;
     if (results_on_device) {
         if (sycl::get_pointer_type(d2, ctx) == sycl::usm::alloc::unknown ||
             sycl::get_pointer_type(x1, ctx) == sycl::usm::alloc::unknown) {
             throw oneapi::mkl::exception(
-                "blas", "rotmg",
-                "If any pointer is device-only, all must be device accessible");
+                "blas", "rotmg", "If any pointer is device-only, all must be device accessible");
         }
     }
-    cuDataType* y1_;
+    cuDataType *y1_;
     if (results_on_device) {
         y1_ = sycl::malloc_device<cuDataType>(1, queue);
         queue.memcpy(y1_, &y1, sizeof(cuDataType)).wait();
@@ -1084,7 +1080,7 @@ inline sycl::event iamax(const char *func_name, Func func, sycl::queue &queue, i
     // This change may cause failure as the result of integer overflow
     // based on the size.
     int int_res = 0;
-    int * int_res_p = nullptr;
+    int *int_res_p = nullptr;
     bool result_on_device =
         sycl::get_pointer_type(result, queue.get_context()) == sycl::usm::alloc::device;
     if (result_on_device) {
@@ -1122,7 +1118,7 @@ inline sycl::event iamax(const char *func_name, Func func, sycl::queue &queue, i
         int host_int;
         int64_t host_int64;
         queue.memcpy(&host_int, int_res_p, sizeof(int)).wait();
-        host_int64 = std::max((int64_t) host_int - 1, int64_t{ 0 });
+        host_int64 = std::max((int64_t)host_int - 1, int64_t{ 0 });
         auto last_ev = queue.memcpy(result, &host_int64, sizeof(int64_t));
         last_ev.wait();
         sycl::free(int_res_p, queue);
@@ -1191,7 +1187,7 @@ inline sycl::event iamin(const char *func_name, Func func, sycl::queue &queue, i
     // This change may cause failure as the result of integer overflow
     // based on the size.
     int int_res = 0;
-    int * int_res_p = nullptr;
+    int *int_res_p = nullptr;
     bool result_on_device =
         sycl::get_pointer_type(result, queue.get_context()) == sycl::usm::alloc::device;
     if (result_on_device) {
@@ -1229,7 +1225,7 @@ inline sycl::event iamin(const char *func_name, Func func, sycl::queue &queue, i
         int host_int;
         int64_t host_int64;
         queue.memcpy(&host_int, int_res_p, sizeof(int)).wait();
-        host_int64 = std::max((int64_t) host_int - 1, int64_t{ 0 });
+        host_int64 = std::max((int64_t)host_int - 1, int64_t{ 0 });
         auto last_ev = queue.memcpy(result, &host_int64, sizeof(int64_t));
         last_ev.wait();
         sycl::free(int_res_p, queue);

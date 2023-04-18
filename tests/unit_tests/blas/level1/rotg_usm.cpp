@@ -45,8 +45,7 @@ extern std::vector<sycl::device *> devices;
 
 namespace {
 
-template <typename fp, typename fp_scalar,
-          usm::alloc alloc_type=usm::alloc::shared>
+template <typename fp, typename fp_scalar, usm::alloc alloc_type = usm::alloc::shared>
 int test(device *dev, oneapi::mkl::layout layout) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
@@ -175,27 +174,25 @@ class RotgUsmTests
 
 TEST_P(RotgUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP((test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
-    EXPECT_TRUEORSKIP((test<float, float, usm::alloc::device>(
-                           std::get<0>(GetParam()), std::get<1>(GetParam()))));
+    EXPECT_TRUEORSKIP(
+        (test<float, float, usm::alloc::device>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 TEST_P(RotgUsmTests, RealDoublePrecision) {
     EXPECT_TRUEORSKIP((test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
-    EXPECT_TRUEORSKIP((test<double, double, usm::alloc::device>(
-                           std::get<0>(GetParam()), std::get<1>(GetParam()))));
+    EXPECT_TRUEORSKIP((test<double, double, usm::alloc::device>(std::get<0>(GetParam()),
+                                                                std::get<1>(GetParam()))));
 }
 TEST_P(RotgUsmTests, ComplexSinglePrecision) {
     EXPECT_TRUEORSKIP(
         (test<std::complex<float>, float>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
-    EXPECT_TRUEORSKIP(
-        (test<std::complex<float>, float, usm::alloc::device>(
-            std::get<0>(GetParam()), std::get<1>(GetParam()))));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float, usm::alloc::device>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 TEST_P(RotgUsmTests, ComplexDoublePrecision) {
     EXPECT_TRUEORSKIP(
         (test<std::complex<double>, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
-    EXPECT_TRUEORSKIP(
-        (test<std::complex<double>, double, usm::alloc::device>(
-            std::get<0>(GetParam()), std::get<1>(GetParam()))));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double, usm::alloc::device>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 
 INSTANTIATE_TEST_SUITE_P(RotgUsmTestSuite, RotgUsmTests,
