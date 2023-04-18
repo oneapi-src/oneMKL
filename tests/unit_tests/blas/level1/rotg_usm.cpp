@@ -104,10 +104,10 @@ int test(device *dev, oneapi::mkl::layout layout) {
         throw std::runtime_error("Bad alloc_type");
     }
 
-    main_queue.memcpy(a_p, &a, sizeof(fp)).wait();
-    main_queue.memcpy(b_p, &b, sizeof(fp)).wait();
-    main_queue.memcpy(s_p, &s, sizeof(fp)).wait();
-    main_queue.memcpy(c_p, &c, sizeof(fp_scalar)).wait();
+    main_queue.memcpy(a_p, &a, sizeof(fp));
+    main_queue.memcpy(b_p, &b, sizeof(fp));
+    main_queue.memcpy(s_p, &s, sizeof(fp));
+    main_queue.memcpy(c_p, &c, sizeof(fp_scalar));
     main_queue.wait();
 
     try {
