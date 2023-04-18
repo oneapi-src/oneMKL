@@ -1026,6 +1026,11 @@ inline sycl::event rotmg(const char *func_name, Func func, sycl::queue &queue, T
                 "If any pointer is device-only, all must be device accessible");
         }
     }
+    cuDataType* y1_;
+    if (results_on_device) {
+        y1_ = sycl::malloc_device<cuDataType>(1, queue);
+        queue.memcpy(y1_, &y1, sizeof(cuDataType)).wait();
+    }
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1036,18 +1041,24 @@ inline sycl::event rotmg(const char *func_name, Func func, sycl::queue &queue, T
             auto d1_ = reinterpret_cast<cuDataType *>(d1);
             auto d2_ = reinterpret_cast<cuDataType *>(d2);
             auto x1_ = reinterpret_cast<cuDataType *>(x1);
-            auto y1_ = reinterpret_cast<const cuDataType *>(&y1);
             auto param_ = reinterpret_cast<cuDataType *>(param);
+            cublasStatus_t err;
             if (results_on_device) {
                 cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
-            }
-            cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, d1_, d2_, x1_, y1_, param_);
-            if (results_on_device) {
+                CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, d1_, d2_, x1_, y1_, param_);
                 cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
+            }
+            else {
+                auto y1_c = reinterpret_cast<const cuDataType *>(&y1);
+                CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, d1_, d2_, x1_, y1_c, param_);
             }
         });
     });
+    if (results_on_device) {
+        done.wait();
+        queue.memcpy(&y1, y1_, sizeof(cuDataType)).wait();
+        sycl::free(y1_, queue);
+    }
     return done;
 }
 
