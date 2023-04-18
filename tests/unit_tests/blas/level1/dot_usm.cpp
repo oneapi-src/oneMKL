@@ -86,7 +86,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
         result_p = (fp_res*)oneapi::mkl::malloc_shared(64, sizeof(fp_res), *dev, cxt);
     }
     else if constexpr (alloc_type == usm::alloc::device) {
-        result_p = (fp_res*)oneapi::mkl::malloc_shared(64, sizeof(fp_res), *dev, cxt);
+        result_p = (fp_res*)oneapi::mkl::malloc_device(64, sizeof(fp_res), *dev, cxt);
     }
     else {
         throw std::runtime_error("Bad alloc_type");
@@ -135,9 +135,9 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good = check_equal(*result_p, result_ref, N, std::cout);
+    bool good = check_equal_ptr(main_queue, result_p, result_ref, N, std::cout);
 
-    oneapi::mkl::free_shared(result_p, cxt);
+    oneapi::mkl::free_usm(result_p, cxt);
 
     return (int)good;
 }
