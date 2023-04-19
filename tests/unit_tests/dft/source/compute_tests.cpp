@@ -96,7 +96,8 @@ INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_in_place,
                          DFTParamsPrint{});
 
 INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_real_real_in_place,
-                         testing::Combine(testing::ValuesIn(devices), testing::ValuesIn(test_params)),
+                         testing::Combine(testing::ValuesIn(devices),
+                                          testing::ValuesIn(test_params)),
                          DFTParamsPrint{});
 
 INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_out_of_place,
@@ -105,7 +106,8 @@ INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_out_of_place,
                          DFTParamsPrint{});
 
 INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_real_real_out_of_place,
-                         testing::Combine(testing::ValuesIn(devices), testing::ValuesIn(test_params)),
+                         testing::Combine(testing::ValuesIn(devices),
+                                          testing::ValuesIn(test_params)),
                          DFTParamsPrint{});
 
 } // anonymous namespace

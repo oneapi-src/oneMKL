@@ -47,50 +47,57 @@ commit_derived_impl<prec, dom>::commit_derived_impl(
     sycl::queue queue, const dft::detail::dft_values<prec, dom>& config_values)
         : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::mklcpu) {
     // create the descriptor once for the lifetime of the descriptor class
-    DFT_ERROR status[2] = {DFTI_BAD_DESCRIPTOR};
+    DFT_ERROR status[2] = { DFTI_BAD_DESCRIPTOR };
 
-    for(auto dir : {DIR::fwd, DIR::bwd}) {
+    for (auto dir : { DIR::fwd, DIR::bwd }) {
         if (config_values.dimensions.size() == 1)
-            status[dir] = DftiCreateDescriptor(&bidirection_handle[dir], mklcpu_prec,
-                                                mklcpu_dom, 1, config_values.dimensions[0]);
+            status[dir] = DftiCreateDescriptor(&bidirection_handle[dir], mklcpu_prec, mklcpu_dom, 1,
+                                               config_values.dimensions[0]);
         else
-            status[dir] = DftiCreateDescriptor(&bidirection_handle[dir], mklcpu_prec,
-                                                mklcpu_dom, config_values.dimensions.size(),
-                                                config_values.dimensions.data());
+            status[dir] = DftiCreateDescriptor(&bidirection_handle[dir], mklcpu_prec, mklcpu_dom,
+                                               config_values.dimensions.size(),
+                                               config_values.dimensions.data());
     }
 
     if (status[0] != DFTI_NO_ERROR && status[1] != DFTI_NO_ERROR) {
-        std::string err = std::string("DftiCreateDescriptor failed with status : ") + DftiErrorMessage(status[0]) + std::string(", ") + DftiErrorMessage(status[1]); 
+        std::string err = std::string("DftiCreateDescriptor failed with status : ") +
+                          DftiErrorMessage(status[0]) + std::string(", ") +
+                          DftiErrorMessage(status[1]);
         throw oneapi::mkl::exception("dft/backends/mklcpu", "create_descriptor", err);
     }
 }
 
 template <dft::detail::precision prec, dft::detail::domain dom>
 commit_derived_impl<prec, dom>::~commit_derived_impl() {
-    for(auto dir : {DIR::fwd, DIR::bwd})
+    for (auto dir : { DIR::fwd, DIR::bwd })
         DftiFreeDescriptor(&bidirection_handle[dir]);
 }
 
 template <dft::detail::precision prec, dft::detail::domain dom>
-void commit_derived_impl<prec, dom>::commit(const dft::detail::dft_values<prec, dom>& config_values) {
+void commit_derived_impl<prec, dom>::commit(
+    const dft::detail::dft_values<prec, dom>& config_values) {
     set_value(bidirection_handle.data(), config_values);
 
-    this->get_queue().submit([&](sycl::handler& cgh) {
-        auto bidir_handle_obj =
-            bidirection_buffer.template get_access<sycl::access::mode::read_write>(cgh);
+    this->get_queue()
+        .submit([&](sycl::handler& cgh) {
+            auto bidir_handle_obj =
+                bidirection_buffer.template get_access<sycl::access::mode::read_write>(cgh);
 
-        host_task<detail::kernel_name<mklcpu_desc_t>>(cgh, [=]() {
-            MKL_LONG status[2] = {DFTI_BAD_DESCRIPTOR};
+            host_task<detail::kernel_name<mklcpu_desc_t>>(cgh, [=]() {
+                MKL_LONG status[2] = { DFTI_BAD_DESCRIPTOR };
 
-            for(auto dir : {DIR::fwd, DIR::bwd})
-                status[dir] = DftiCommitDescriptor(bidir_handle_obj[0][dir]);
+                for (auto dir : { DIR::fwd, DIR::bwd })
+                    status[dir] = DftiCommitDescriptor(bidir_handle_obj[0][dir]);
 
-            if(status[0] != DFTI_NO_ERROR && status[1] != DFTI_NO_ERROR) {
-                std::string err = std::string("DftiCommitDescriptor failed with status : ") + DftiErrorMessage(status[0]) + std::string(", ") + DftiErrorMessage(status[1]); 
-                throw oneapi::mkl::exception("dft/backends/mklcpu", "commit", err);
-            }
-        });
-    }).wait();
+                if (status[0] != DFTI_NO_ERROR && status[1] != DFTI_NO_ERROR) {
+                    std::string err = std::string("DftiCommitDescriptor failed with status : ") +
+                                      DftiErrorMessage(status[0]) + std::string(", ") +
+                                      DftiErrorMessage(status[1]);
+                    throw oneapi::mkl::exception("dft/backends/mklcpu", "commit", err);
+                }
+            });
+        })
+        .wait();
 }
 
 template <dft::detail::precision prec, dft::detail::domain dom>
@@ -98,37 +105,40 @@ void* commit_derived_impl<prec, dom>::get_handle() noexcept {
     return reinterpret_cast<void*>(bidirection_handle.data());
 }
 
-
 template <dft::detail::precision prec, dft::detail::domain dom>
 template <typename... Args>
-void commit_derived_impl<prec, dom>::set_value_item(mklcpu_desc_t hand, enum DFTI_CONFIG_PARAM name, Args... args) {
+void commit_derived_impl<prec, dom>::set_value_item(mklcpu_desc_t hand, enum DFTI_CONFIG_PARAM name,
+                                                    Args... args) {
     DFT_ERROR value_err = DftiSetValue(hand, name, args...);
     if (value_err != DFTI_NO_ERROR) {
         throw oneapi::mkl::exception("dft/backends/mklcpu", "set_value_item",
-                                        DftiErrorMessage(value_err));
+                                     DftiErrorMessage(value_err));
     }
 }
 
 template <dft::detail::precision prec, dft::detail::domain dom>
-void commit_derived_impl<prec, dom>::set_value(mklcpu_desc_t* descHandle, const dft::detail::dft_values<prec, dom>& config) {
-    for(auto dir : {DIR::fwd, DIR::bwd}) {
+void commit_derived_impl<prec, dom>::set_value(mklcpu_desc_t* descHandle,
+                                               const dft::detail::dft_values<prec, dom>& config) {
+    for (auto dir : { DIR::fwd, DIR::bwd }) {
         set_value_item(descHandle[dir], DFTI_INPUT_STRIDES, config.input_strides.data());
         set_value_item(descHandle[dir], DFTI_OUTPUT_STRIDES, config.output_strides.data());
         set_value_item(descHandle[dir], DFTI_BACKWARD_SCALE, config.bwd_scale);
         set_value_item(descHandle[dir], DFTI_FORWARD_SCALE, config.fwd_scale);
         set_value_item(descHandle[dir], DFTI_NUMBER_OF_TRANSFORMS, config.number_of_transforms);
-        set_value_item(descHandle[dir], DFTI_INPUT_DISTANCE, (dir == detail::DIR::fwd) ? config.fwd_dist : config.bwd_dist);
-        set_value_item(descHandle[dir], DFTI_OUTPUT_DISTANCE, (dir == detail::DIR::fwd) ? config.bwd_dist : config.fwd_dist);
+        set_value_item(descHandle[dir], DFTI_INPUT_DISTANCE,
+                       (dir == detail::DIR::fwd) ? config.fwd_dist : config.bwd_dist);
+        set_value_item(descHandle[dir], DFTI_OUTPUT_DISTANCE,
+                       (dir == detail::DIR::fwd) ? config.bwd_dist : config.fwd_dist);
         set_value_item(descHandle[dir], DFTI_COMPLEX_STORAGE,
-                        to_mklcpu<config_param::COMPLEX_STORAGE>(config.complex_storage));
+                       to_mklcpu<config_param::COMPLEX_STORAGE>(config.complex_storage));
         set_value_item(descHandle[dir], DFTI_REAL_STORAGE,
-                        to_mklcpu<config_param::REAL_STORAGE>(config.real_storage));
+                       to_mklcpu<config_param::REAL_STORAGE>(config.real_storage));
         set_value_item(descHandle[dir], DFTI_CONJUGATE_EVEN_STORAGE,
-                        to_mklcpu<config_param::CONJUGATE_EVEN_STORAGE>(config.conj_even_storage));
+                       to_mklcpu<config_param::CONJUGATE_EVEN_STORAGE>(config.conj_even_storage));
         set_value_item(descHandle[dir], DFTI_PLACEMENT,
-                        to_mklcpu<config_param::PLACEMENT>(config.placement));
+                       to_mklcpu<config_param::PLACEMENT>(config.placement));
         set_value_item(descHandle[dir], DFTI_PACKED_FORMAT,
-                        to_mklcpu<config_param::PACKED_FORMAT>(config.packed_format));
+                       to_mklcpu<config_param::PACKED_FORMAT>(config.packed_format));
         // Setting the workspace causes an FFT_INVALID_DESCRIPTOR.
         if (config.workspace != config_value::ALLOW)
             throw mkl::invalid_argument("dft/backends/mklcpu", "commit",
@@ -147,7 +157,8 @@ void commit_derived_impl<prec, dom>::set_value(mklcpu_desc_t* descHandle, const 
 }
 
 template <dft::detail::precision prec, dft::detail::domain dom>
-sycl::buffer<std::vector<mklcpu_desc_t>, 1> commit_derived_impl<prec, dom>::get_handle_buffer() noexcept {
+sycl::buffer<std::vector<mklcpu_desc_t>, 1>
+commit_derived_impl<prec, dom>::get_handle_buffer() noexcept {
     return bidirection_buffer;
 }
 
@@ -155,7 +166,7 @@ sycl::buffer<std::vector<mklcpu_desc_t>, 1> commit_derived_impl<prec, dom>::get_
 
 template <dft::detail::precision prec, dft::detail::domain dom>
 dft::detail::commit_impl<prec, dom>* create_commit(const dft::detail::descriptor<prec, dom>& desc,
-                                        sycl::queue& sycl_queue) {
+                                                   sycl::queue& sycl_queue) {
     return new detail::commit_derived_impl<prec, dom>(sycl_queue, desc.get_values());
 }
 

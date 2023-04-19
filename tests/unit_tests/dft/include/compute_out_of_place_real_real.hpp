@@ -64,7 +64,8 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_USM() {
 
         try {
             oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType, PrecisionType>(
-                descriptor, in_re.data(), in_im.data(), out_re.data(), out_im.data(), dependencies).wait();
+                descriptor, in_re.data(), in_im.data(), out_re.data(), out_im.data(), dependencies)
+                .wait();
         }
         catch (oneapi::mkl::unimplemented &e) {
             std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
@@ -78,10 +79,10 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_USM() {
                                        abs_error_margin, rel_error_margin, std::cout));
 
         try {
-            oneapi::mkl::dft::compute_backward<
-                std::remove_reference_t<decltype(descriptor)>, PrecisionType, PrecisionType>(
-                descriptor, out_re.data(), out_im.data(), out_back_re.data(),
-                out_back_im.data()).wait();
+            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
+                                               PrecisionType, PrecisionType>(
+                descriptor, out_re.data(), out_im.data(), out_back_re.data(), out_back_im.data())
+                .wait();
         }
         catch (oneapi::mkl::unimplemented &e) {
             std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
