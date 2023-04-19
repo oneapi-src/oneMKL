@@ -70,8 +70,8 @@ void run_example(const sycl::device& cpu_device) {
     {
         sycl::buffer<std::complex<double>> input_buffer(input_data.data(), sycl::range<1>(N));
         sycl::buffer<std::complex<double>> output_buffer(output_data.data(), sycl::range<1>(N));
-        oneapi::mkl::dft::compute_forward<decltype(desc), std::complex<double>, std::complex<double>>(
-            desc, input_buffer, output_buffer);
+        oneapi::mkl::dft::compute_forward<decltype(desc), std::complex<double>,
+                                          std::complex<double>>(desc, input_buffer, output_buffer);
     }
 }
 

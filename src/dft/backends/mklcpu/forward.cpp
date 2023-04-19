@@ -98,8 +98,9 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type
             DFT_ERROR status;
             status = DftiComputeForward(desc_acc[0][detail::DIR::fwd], inout_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception("dft/forward/mklcpu", "compute_forward",
-                                             std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
+                throw oneapi::mkl::exception(
+                    "dft/forward/mklcpu", "compute_forward",
+                    std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
             }
         });
     });
@@ -126,10 +127,12 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type
 
         detail::host_task<class host_kernel_split_inplace>(cgh, [=]() {
             DFT_ERROR status;
-            status = DftiComputeForward(desc_acc[0][detail::DIR::fwd], re_acc.get_pointer(), im_acc.get_pointer());
+            status = DftiComputeForward(desc_acc[0][detail::DIR::fwd], re_acc.get_pointer(),
+                                        im_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception("dft/forward/mklcpu", "compute_forward",
-                                             std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
+                throw oneapi::mkl::exception(
+                    "dft/forward/mklcpu", "compute_forward",
+                    std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
             }
         });
     });
@@ -156,10 +159,12 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
 
         detail::host_task<class host_kernel_outofplace>(cgh, [=]() {
             DFT_ERROR status;
-            status = DftiComputeForward(desc_acc[0][detail::DIR::fwd], in_acc.get_pointer(), out_acc.get_pointer());
+            status = DftiComputeForward(desc_acc[0][detail::DIR::fwd], in_acc.get_pointer(),
+                                        out_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception("dft/forward/mklcpu", "compute_forward",
-                                             std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
+                throw oneapi::mkl::exception(
+                    "dft/forward/mklcpu", "compute_forward",
+                    std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
             }
         });
     });
@@ -190,11 +195,13 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
 
         detail::host_task<class host_kernel_split_outofplace>(cgh, [=]() {
             DFT_ERROR status;
-            status = DftiComputeForward(desc_acc[0][detail::DIR::fwd], inre_acc.get_pointer(), inim_acc.get_pointer(),
-                                        outre_acc.get_pointer(), outim_acc.get_pointer());
+            status = DftiComputeForward(desc_acc[0][detail::DIR::fwd], inre_acc.get_pointer(),
+                                        inim_acc.get_pointer(), outre_acc.get_pointer(),
+                                        outim_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception("dft/forward/mklcpu", "compute_forward",
-                                             std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
+                throw oneapi::mkl::exception(
+                    "dft/forward/mklcpu", "compute_forward",
+                    std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
             }
         });
     });
@@ -223,8 +230,9 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inou
             DFT_ERROR status;
             status = DftiComputeForward(desc_acc[0][detail::DIR::fwd], inout);
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception("dft/forward/mklcpu", "compute_forward",
-                                             std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
+                throw oneapi::mkl::exception(
+                    "dft/forward/mklcpu", "compute_forward",
+                    std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
             }
         });
     });
@@ -253,8 +261,9 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inou
             DFT_ERROR status;
             status = DftiComputeForward(desc_acc[0][detail::DIR::fwd], inout_re, inout_im);
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception("dft/forward/mklcpu", "compute_forward",
-                                             std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
+                throw oneapi::mkl::exception(
+                    "dft/forward/mklcpu", "compute_forward",
+                    std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
             }
         });
     });
@@ -283,8 +292,9 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in,
             DFT_ERROR status;
             status = DftiComputeForward(desc_acc[0][detail::DIR::fwd], in, out);
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception("dft/forward/mklcpu", "compute_forward",
-                                             std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
+                throw oneapi::mkl::exception(
+                    "dft/forward/mklcpu", "compute_forward",
+                    std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
             }
         });
     });
@@ -312,10 +322,12 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in_
         cgh.depends_on(dependencies);
         detail::host_task<class host_usm_kernel_split_outofplace>(cgh, [=]() {
             DFT_ERROR status;
-            status = DftiComputeForward(desc_acc[0][detail::DIR::fwd], in_re, in_im, out_re, out_im);
+            status =
+                DftiComputeForward(desc_acc[0][detail::DIR::fwd], in_re, in_im, out_re, out_im);
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception("dft/forward/mklcpu", "compute_forward",
-                                             std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
+                throw oneapi::mkl::exception(
+                    "dft/forward/mklcpu", "compute_forward",
+                    std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
             }
         });
     });

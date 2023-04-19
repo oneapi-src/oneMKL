@@ -35,12 +35,12 @@ namespace detail {
 // host_task automatically uses run_on_host_intel if it is supported by the
 //  compiler. Otherwise, it falls back to single_task.
 template <typename K, typename H, typename F>
-static inline auto host_task_internal(H &cgh, F f, int) -> decltype(cgh.host_task(f)) {
+static inline auto host_task_internal(H& cgh, F f, int) -> decltype(cgh.host_task(f)) {
     return cgh.host_task(f);
 }
 
 template <typename K, typename H, typename F>
-static inline void host_task(H &cgh, F f) {
+static inline void host_task(H& cgh, F f) {
     (void)host_task_internal<K>(cgh, f, 0);
 }
 
@@ -194,26 +194,23 @@ public:
     virtual sycl::buffer<std::vector<mklcpu_desc_t>, 1> get_handle_buffer() noexcept;
 
 private:
-    std::vector<mklcpu_desc_t> bidirection_handle {nullptr, nullptr};
-    sycl::buffer<std::vector<mklcpu_desc_t>, 1> bidirection_buffer { &bidirection_handle, sycl::range<1>{ 1 } };
+    std::vector<mklcpu_desc_t> bidirection_handle{ nullptr, nullptr };
+    sycl::buffer<std::vector<mklcpu_desc_t>, 1> bidirection_buffer{ &bidirection_handle,
+                                                                    sycl::range<1>{ 1 } };
 
     template <typename... Args>
     void set_value_item(mklcpu_desc_t hand, enum DFTI_CONFIG_PARAM name, Args... args);
 
     void set_value(mklcpu_desc_t* descHandle, const dft::detail::dft_values<prec, dom>& config);
-
 };
 
 using mklcpu_desc_t = DFTI_DESCRIPTOR_HANDLE;
 
-template<dft::detail::precision prec, dft::detail::domain dom>
+template <dft::detail::precision prec, dft::detail::domain dom>
 using commit_t = dft::detail::commit_impl<prec, dom>;
 
-template<dft::detail::precision prec, dft::detail::domain dom>
+template <dft::detail::precision prec, dft::detail::domain dom>
 using commit_derived_t = detail::commit_derived_impl<prec, dom>;
-
-
-
 
 } // namespace detail
 } // namespace mklcpu

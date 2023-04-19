@@ -33,7 +33,6 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
         return test_skipped;
     }
     else {
-
         descriptor_t descriptor{ sizes };
         descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                              oneapi::mkl::dft::config_value::INPLACE);
@@ -56,7 +55,8 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
         std::vector<sycl::event> dependencies;
         try {
             oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType>(
-                descriptor, inout_re.data(), inout_im.data(), dependencies).wait();
+                descriptor, inout_re.data(), inout_im.data(), dependencies)
+                .wait();
         }
         catch (oneapi::mkl::unimplemented &e) {
             std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
@@ -71,8 +71,9 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
                                        abs_error_margin, rel_error_margin, std::cout));
 
         oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                               PrecisionType>(descriptor, inout_re.data(),
-                                                              inout_im.data(), dependencies).wait();
+                                           PrecisionType>(descriptor, inout_re.data(),
+                                                          inout_im.data(), dependencies)
+            .wait();
 
         for (int i = 0; i < output_data.size(); ++i) {
             output_data[i] = { inout_re[i], inout_im[i] };
@@ -115,8 +116,10 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
         std::copy(input_re.begin(), input_re.end(), host_inout_re.begin());
         std::copy(input_im.begin(), input_im.end(), host_inout_im.begin());
 
-        sycl::buffer<PrecisionType, 1> inout_re_buf{ host_inout_re.data(), sycl::range<1>(size_total) };
-        sycl::buffer<PrecisionType, 1> inout_im_buf{ host_inout_im.data(), sycl::range<1>(size_total) };
+        sycl::buffer<PrecisionType, 1> inout_re_buf{ host_inout_re.data(),
+                                                     sycl::range<1>(size_total) };
+        sycl::buffer<PrecisionType, 1> inout_im_buf{ host_inout_im.data(),
+                                                     sycl::range<1>(size_total) };
 
         try {
             oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType>(descriptor, inout_re_buf,
