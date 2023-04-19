@@ -173,6 +173,8 @@ inline constexpr int to_mklcpu<dft::detail::config_param::PACKED_FORMAT>(
     }
 }
 
+enum DIR { fwd, bwd };
+
 template <dft::detail::precision prec, dft::detail::domain dom>
 class commit_derived_impl : public dft::detail::commit_impl<prec, dom> {
 private:
@@ -189,16 +191,20 @@ public:
 
     virtual ~commit_derived_impl() override;
 
-    virtual sycl::buffer<mklcpu_desc_t, 1> get_handle_buffer() noexcept;
+    virtual sycl::buffer<std::vector<mklcpu_desc_t>, 1> get_handle_buffer() noexcept;
 
 private:
     mklcpu_desc_t device_handle = nullptr;
     sycl::buffer<mklcpu_desc_t, 1> handle_buffer{ &device_handle, sycl::range<1>{ 1 } };
 
+    // ------- new api
+    std::vector<mklcpu_desc_t> bidirection_handle {nullptr, nullptr};
+    sycl::buffer<std::vector<mklcpu_desc_t>, 1> bidirection_buffer { &bidirection_handle, sycl::range<1>{ 1 } };
+
     template <typename... Args>
     void set_value_item(mklcpu_desc_t hand, enum DFTI_CONFIG_PARAM name, Args... args);
 
-    void set_value(mklcpu_desc_t descHandle, const dft::detail::dft_values<prec, dom>& config);
+    void set_value(mklcpu_desc_t* descHandle, const dft::detail::dft_values<prec, dom>& config);
 
 };
 
