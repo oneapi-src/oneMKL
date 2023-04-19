@@ -44,16 +44,16 @@ namespace detail {
 // BUFFER version
 // backward a MKLCPU DFT call to the backend, checking that the commit impl is valid.
 template <dft::precision prec, dft::domain dom>
-inline void check_commit(dft::descriptor<prec, dom> &desc) {
+inline void check_bwd_commit(dft::descriptor<prec, dom> &desc) {
     auto commit_handle = dft::detail::get_commit(desc);
     if (commit_handle == nullptr || commit_handle->get_backend() != backend::mklcpu) {
         throw mkl::invalid_argument("DFT", "computer_backward",
                                     "DFT descriptor has not been commited for MKLCPU");
     }
 
-    auto mklcpu_desc = reinterpret_cast<detail::mklcpu_desc_t>(commit_handle->get_handle());
+    auto mklcpu_desc = reinterpret_cast<detail::mklcpu_desc_t* >(commit_handle->get_handle());
     MKL_LONG commit_status{ DFTI_UNCOMMITTED };
-    DftiGetValue(mklcpu_desc, DFTI_COMMIT_STATUS, &commit_status);
+    DftiGetValue(mklcpu_desc[1], DFTI_COMMIT_STATUS, &commit_status);
     if (commit_status != DFTI_COMMITTED) {
         throw mkl::invalid_argument("DFT", "compute_backward",
                                     "MKLCPU DFT descriptor was not successfully committed.");
@@ -85,7 +85,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
     detail::expect_config<dft::detail::config_param::PLACEMENT, dft::detail::config_value::INPLACE>(
         desc, "Unexpected value for placement");
     auto commit_handle = dft::detail::get_commit(desc);
-    detail::check_commit(desc);
+    detail::check_bwd_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
     auto mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
@@ -113,7 +113,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
         desc, "Unexpected value for complex storage");
 
     auto commit_handle = dft::detail::get_commit(desc);
-    detail::check_commit(desc);
+    detail::check_bwd_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
     auto mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
@@ -143,7 +143,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
                                                                   "Unexpected value for placement");
 
     auto commit_handle = dft::detail::get_commit(desc);
-    detail::check_commit(desc);
+    detail::check_bwd_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
     auto mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
@@ -175,7 +175,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
         desc, "Unexpected value for complex storage");
 
     auto commit_handle = dft::detail::get_commit(desc);
-    detail::check_commit(desc);
+    detail::check_bwd_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
     auto mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
@@ -210,7 +210,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *ino
         desc, "Unexpected value for placement");
 
     auto commit_handle = dft::detail::get_commit(desc);
-    detail::check_commit(desc);
+    detail::check_bwd_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
     auto mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
@@ -238,7 +238,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *ino
                           dft::detail::config_value::REAL_REAL>(
         desc, "Unexpected value for complex storage");
     auto commit_handle = dft::detail::get_commit(desc);
-    detail::check_commit(desc);
+    detail::check_bwd_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
     auto mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
@@ -267,7 +267,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in
                                                                   "Unexpected value for placement");
 
     auto commit_handle = dft::detail::get_commit(desc);
-    detail::check_commit(desc);
+    detail::check_bwd_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
     auto mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
@@ -296,7 +296,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in
                           dft::detail::config_value::REAL_REAL>(
         desc, "Unexpected value for complex storage");
     auto commit_handle = dft::detail::get_commit(desc);
-    detail::check_commit(desc);
+    detail::check_bwd_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
     auto mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
