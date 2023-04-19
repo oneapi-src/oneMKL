@@ -98,7 +98,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
             status = DftiComputeBackward(desc_acc[0][detail::DIR::bwd], inout_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception("dft/backends/mklcpu", "compute_backward",
-                                             "DftiComputeBackward failed : " + std::to_string(status));
+                                             std::string("DftiComputeBackward failed : ") + DftiErrorMessage(status));
             }
         });
     });
@@ -128,7 +128,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
             status = DftiComputeBackward(desc_acc[0][detail::DIR::bwd], re_acc.get_pointer(), im_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception("dft/backends/mklcpu", "compute_backward",
-                                             "DftiComputeBackward failed" + std::to_string(status));
+                                             std::string("DftiComputeBackward failed : ") + DftiErrorMessage(status));
             }
         });
     });
@@ -158,7 +158,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
             status = DftiComputeBackward(desc_acc[0][detail::DIR::bwd], in_acc.get_pointer(), out_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception("dft/backends/mklcpu", "compute_backward",
-                                             "DftiComputeBackward failed" + std::to_string(status));
+                                             std::string("DftiComputeBackward failed : ") + DftiErrorMessage(status));
             }
         });
     });
@@ -194,7 +194,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
                                     outre_acc.get_pointer(), outim_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception("dft/backends/mklcpu", "compute_backward",
-                                             "DftiComputeBackward failed" + std::to_string(status));
+                                             std::string("DftiComputeBackward failed : ") + DftiErrorMessage(status));
             }
         });
     });
@@ -223,7 +223,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *ino
             status = DftiComputeBackward(desc_acc[0][detail::DIR::bwd], inout);
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception("dft/backends/mklcpu", "compute_backward",
-                                             "DftiComputeBackward failed" + std::to_string(status));
+                                             std::string("DftiComputeBackward failed : ") + DftiErrorMessage(status));
             }
         });
     });
@@ -251,7 +251,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *ino
             status = DftiComputeBackward(desc_acc[0][detail::DIR::bwd], inout_re, inout_im);
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception("dft/backends/mklcpu", "compute_backward",
-                                             "DftiComputeBackward failed" + std::to_string(status));
+                                             std::string("DftiComputeBackward failed : ") + DftiErrorMessage(status));
             }
         });
     });
@@ -280,7 +280,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in
             status = DftiComputeBackward(desc_acc[0][detail::DIR::bwd], in, out);
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception("dft/backends/mklcpu", "compute_backward",
-                                             "DftiComputeBackward failed" + std::to_string(status));
+                                             std::string("DftiComputeBackward failed : ") + DftiErrorMessage(status));
             }
         });
     });
@@ -309,7 +309,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in
             status = DftiComputeBackward(desc_acc[0][detail::DIR::bwd], in_re, in_im, out_re, out_im);
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception("dft/backends/mklcpu", "compute_backward",
-                                             "DftiComputeBackward failed" + std::to_string(status));
+                                             std::string("DftiComputeBackward failed : ") + DftiErrorMessage(status));
             }
         });
     });
