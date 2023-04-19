@@ -383,7 +383,7 @@ DFT Complex USM example ran OK on MKLGPU
 Runtime dispatching example with both MKLGPU and cuFFT backend
 
 ```none
-SYCL_DEVICE_FILTER=gpu ./bin/example_dft_complex_fwd_buffer_mklgpu
+SYCL_DEVICE_FILTER=gpu ./bin/example_dft_real_fwd_usm
 
 ########################################################################
 # DFTI complex in-place forward transform with USM API example:
@@ -408,7 +408,7 @@ DFT example ran OK
 ```
 
 ```none
-SYCL_DEVICE_FILTER=gpu ./bin/example_dft_complex_fwd_buffer_mklgpu
+SYCL_DEVICE_FILTER=gpu ./bin/example_dft_real_fwd_usm
 
 ########################################################################
 # DFTI complex in-place forward transform with USM API example:
