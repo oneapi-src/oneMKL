@@ -194,10 +194,6 @@ public:
     virtual sycl::buffer<std::vector<mklcpu_desc_t>, 1> get_handle_buffer() noexcept;
 
 private:
-    mklcpu_desc_t device_handle = nullptr;
-    sycl::buffer<mklcpu_desc_t, 1> handle_buffer{ &device_handle, sycl::range<1>{ 1 } };
-
-    // ------- new api
     std::vector<mklcpu_desc_t> bidirection_handle {nullptr, nullptr};
     sycl::buffer<std::vector<mklcpu_desc_t>, 1> bidirection_buffer { &bidirection_handle, sycl::range<1>{ 1 } };
 

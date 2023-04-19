@@ -151,12 +151,6 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
                                  complex_strides.data());
             descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                                  real_strides.data());
-            // need to do this because for mklcpu because classical API does have the mechanism to utilize the 
-            // XWD_DISATANCES to not reset the distance parameters
-            if(dev->is_cpu()) {
-                descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, backward_elements);
-                descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, container_size_per_transform);
-            }
             commit_descriptor(descriptor, sycl_queue);
         }
 
@@ -258,12 +252,6 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
 
         descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, complex_strides.data());
         descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, real_strides.data());
-        // need to do this because for mklcpu because classical API does have the mechanism to utilize the 
-        // XWD_DISATANCES to not reset the distance parameters
-        if(dev->is_cpu()) {
-            descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, backward_elements);
-            descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, container_size_per_transform);
-        }
         commit_descriptor(descriptor, sycl_queue);
     }
 
