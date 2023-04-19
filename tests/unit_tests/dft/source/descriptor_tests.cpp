@@ -215,7 +215,7 @@ static void set_and_get_values() {
 
         descriptor.get_value(oneapi::mkl::dft::config_param::FWD_DISTANCE,
                              &fwd_distance_before_set);
-        EXPECT_EQ(0, fwd_distance_before_set);
+        EXPECT_EQ(1, fwd_distance_before_set);
         descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, fwd_distance_set_value);
         descriptor.get_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, &fwd_distance_after_set);
         EXPECT_EQ(fwd_distance_set_value, fwd_distance_after_set);
@@ -228,7 +228,7 @@ static void set_and_get_values() {
 
         descriptor.get_value(oneapi::mkl::dft::config_param::BWD_DISTANCE,
                              &bwd_distance_before_set);
-        EXPECT_EQ(0, bwd_distance_before_set);
+        EXPECT_EQ(1, bwd_distance_before_set);
         descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, bwd_distance_set_value);
         descriptor.get_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, &bwd_distance_after_set);
         EXPECT_EQ(bwd_distance_set_value, bwd_distance_after_set);
@@ -430,13 +430,13 @@ inline void recommit_values(sycl::queue& sycl_queue) {
         // not changeable
         // FORWARD_DOMAIN, PRECISION, DIMENSION, COMMIT_STATUS
         { std::make_pair(config_param::LENGTHS, std::int64_t{ 10 }),
-          std::make_pair(config_param::FORWARD_SCALE, PrecisionType(1.2)),
-          std::make_pair(config_param::BACKWARD_SCALE, PrecisionType(3.4)) },
-        { std::make_pair(config_param::NUMBER_OF_TRANSFORMS, std::int64_t{ 5 }),
-          std::make_pair(config_param::COMPLEX_STORAGE, config_value::COMPLEX_COMPLEX),
+          std::make_pair(config_param::FORWARD_SCALE, PrecisionType{ 1.2 }),
+          std::make_pair(config_param::BACKWARD_SCALE, PrecisionType{ 3.4 }) },
+        { std::make_pair(config_param::COMPLEX_STORAGE, config_value::COMPLEX_COMPLEX),
           std::make_pair(config_param::REAL_STORAGE, config_value::REAL_REAL),
           std::make_pair(config_param::CONJUGATE_EVEN_STORAGE, config_value::COMPLEX_COMPLEX) },
         { std::make_pair(config_param::PLACEMENT, config_value::NOT_INPLACE),
+          std::make_pair(config_param::NUMBER_OF_TRANSFORMS, std::int64_t{ 5 }),
           std::make_pair(config_param::INPUT_STRIDES, strides.data()),
           std::make_pair(config_param::OUTPUT_STRIDES, strides.data()),
           std::make_pair(config_param::FWD_DISTANCE, std::int64_t{ 60 }),

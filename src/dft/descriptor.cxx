@@ -141,8 +141,8 @@ descriptor<prec, dom>::descriptor(std::vector<std::int64_t> dimensions) {
     values_.bwd_scale = real_t(1.0);
     values_.fwd_scale = real_t(1.0);
     values_.number_of_transforms = 1;
-    values_.fwd_dist = 0;
-    values_.bwd_dist = 0;
+    values_.fwd_dist = 1;
+    values_.bwd_dist = 1;
     values_.placement = config_value::INPLACE;
     values_.complex_storage = config_value::COMPLEX_COMPLEX;
     values_.real_storage = config_value::REAL_REAL;

@@ -59,10 +59,10 @@ commit_derived_impl<prec, dom>::commit_derived_impl(
                                                 config_values.dimensions.data());
     }
 
-    if (status[0] != DFTI_NO_ERROR &&
-        status[1] != DFTI_NO_ERROR)
-        throw oneapi::mkl::exception("dft/backends/mklcpu", "create_descriptor",
-                                        "DftiCreateDescriptor falied");
+    if (status[0] != DFTI_NO_ERROR && status[1] != DFTI_NO_ERROR) {
+        std::string err = std::string("DftiCreateDescriptor failed with status : ") + DftiErrorMessage(status[0]) + std::string(", ") + DftiErrorMessage(status[1]); 
+        throw oneapi::mkl::exception("dft/backends/mklcpu", "create_descriptor", err);
+    }
 }
 
 template <dft::detail::precision prec, dft::detail::domain dom>
@@ -85,10 +85,10 @@ void commit_derived_impl<prec, dom>::commit(const dft::detail::dft_values<prec, 
             for(auto dir : {DIR::fwd, DIR::bwd})
                 status[dir] = DftiCommitDescriptor(bidir_handle_obj[0][dir]);
 
-            if(status[0] != DFTI_NO_ERROR &&
-               status[1] != DFTI_NO_ERROR)
-                throw oneapi::mkl::exception("dft/backends/mklcpu", "commit",
-                                                "DftiCommitDescriptor failed");
+            if(status[0] != DFTI_NO_ERROR && status[1] != DFTI_NO_ERROR) {
+                std::string err = std::string("DftiCommitDescriptor failed with status : ") + DftiErrorMessage(status[0]) + std::string(", ") + DftiErrorMessage(status[1]); 
+                throw oneapi::mkl::exception("dft/backends/mklcpu", "commit", err);
+            }
         });
     }).wait();
 }
@@ -105,7 +105,7 @@ void commit_derived_impl<prec, dom>::set_value_item(mklcpu_desc_t hand, enum DFT
     DFT_ERROR value_err = DftiSetValue(hand, name, args...);
     if (value_err != DFTI_NO_ERROR) {
         throw oneapi::mkl::exception("dft/backends/mklcpu", "set_value_item",
-                                        std::to_string(name));
+                                        DftiErrorMessage(value_err));
     }
 }
 
