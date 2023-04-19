@@ -83,6 +83,12 @@ public:
         // this could be a recommit
         clean_plans();
 
+        if (config_values.fwd_scale != 1.0 || config_values.bwd_scale != 1.0) {
+            throw mkl::unimplemented(
+                "dft/backends/cufft", __FUNCTION__,
+                "cuFFT does not support values other than 1 for FORWARD/BACKWARD_SCALE");
+        }
+
         // The cudaStream for the plan is set at execution time so the interop handler can pick the stream.
         constexpr cufftType fwd_type = [] {
             if constexpr (dom == dft::domain::COMPLEX) {
