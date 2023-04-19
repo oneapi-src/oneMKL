@@ -88,14 +88,14 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
     detail::check_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
+    auto mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
 
     cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
         auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
         detail::host_task<class host_kernel_back_inplace>(cgh, [=]() {
             DFT_ERROR status;
-            status = DftiComputeBackward(desc_acc[0], inout_acc.get_pointer());
+            status = DftiComputeBackward(desc_acc[0][detail::DIR::bwd], inout_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception("dft/backends/mklcpu", "compute_backward",
                                              "DftiComputeBackward failed : " + std::to_string(status));
@@ -116,7 +116,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
     detail::check_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
+    auto mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
 
     cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
@@ -125,7 +125,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
 
         detail::host_task<class host_kernel_split_back_inplace>(cgh, [=]() {
             DFT_ERROR status;
-            status = DftiComputeBackward(desc_acc[0], re_acc.get_pointer(), im_acc.get_pointer());
+            status = DftiComputeBackward(desc_acc[0][detail::DIR::bwd], re_acc.get_pointer(), im_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception("dft/backends/mklcpu", "compute_backward",
                                              "DftiComputeBackward failed" + std::to_string(status));
@@ -146,7 +146,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
     detail::check_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
+    auto mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
 
     cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
@@ -155,7 +155,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
 
         detail::host_task<class host_kernel_back_outofplace>(cgh, [=]() {
             DFT_ERROR status;
-            status = DftiComputeBackward(desc_acc[0], in_acc.get_pointer(), out_acc.get_pointer());
+            status = DftiComputeBackward(desc_acc[0][detail::DIR::bwd], in_acc.get_pointer(), out_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception("dft/backends/mklcpu", "compute_backward",
                                              "DftiComputeBackward failed" + std::to_string(status));
@@ -178,7 +178,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
     detail::check_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
+    auto mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
 
     cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
@@ -190,7 +190,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
         detail::host_task<class host_kernel_split_back_outofplace>(cgh, [=]() {
             DFT_ERROR status;
             status =
-                DftiComputeBackward(desc_acc[0], inre_acc.get_pointer(), inim_acc.get_pointer(),
+                DftiComputeBackward(desc_acc[0][detail::DIR::bwd], inre_acc.get_pointer(), inim_acc.get_pointer(),
                                     outre_acc.get_pointer(), outim_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception("dft/backends/mklcpu", "compute_backward",
@@ -213,14 +213,14 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *ino
     detail::check_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
+    auto mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
 
     return cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
         cgh.depends_on(dependencies);
         detail::host_task<class host_usm_kernel_back_inplace>(cgh, [=]() {
             DFT_ERROR status;
-            status = DftiComputeBackward(desc_acc[0], inout);
+            status = DftiComputeBackward(desc_acc[0][detail::DIR::bwd], inout);
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception("dft/backends/mklcpu", "compute_backward",
                                              "DftiComputeBackward failed" + std::to_string(status));
@@ -241,14 +241,14 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *ino
     detail::check_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
+    auto mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
 
     return cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
         cgh.depends_on(dependencies);
         detail::host_task<class host_usm_kernel_split_back_inplace>(cgh, [=]() {
             DFT_ERROR status;
-            status = DftiComputeBackward(desc_acc[0], inout_re, inout_im);
+            status = DftiComputeBackward(desc_acc[0][detail::DIR::bwd], inout_re, inout_im);
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception("dft/backends/mklcpu", "compute_backward",
                                              "DftiComputeBackward failed" + std::to_string(status));
@@ -270,14 +270,14 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in
     detail::check_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
+    auto mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
     return cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
 
         cgh.depends_on(dependencies);
         detail::host_task<class host_usm_kernel_back_outofplace>(cgh, [=]() {
             DFT_ERROR status;
-            status = DftiComputeBackward(desc_acc[0], in, out);
+            status = DftiComputeBackward(desc_acc[0][detail::DIR::bwd], in, out);
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception("dft/backends/mklcpu", "compute_backward",
                                              "DftiComputeBackward failed" + std::to_string(status));
@@ -299,14 +299,14 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in
     detail::check_commit(desc);
     sycl::queue &cpu_queue{ commit_handle->get_queue() };
 
-    sycl::buffer<detail::mklcpu_desc_t, 1> mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
+    auto mklcpu_desc_buffer{ detail::get_buffer(commit_handle) };
     return cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
 
         cgh.depends_on(dependencies);
         detail::host_task<class host_usm_kernel_split_back_outofplace>(cgh, [=]() {
             DFT_ERROR status;
-            status = DftiComputeBackward(desc_acc[0], in_re, in_im, out_re, out_im);
+            status = DftiComputeBackward(desc_acc[0][detail::DIR::bwd], in_re, in_im, out_re, out_im);
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception("dft/backends/mklcpu", "compute_backward",
                                              "DftiComputeBackward failed" + std::to_string(status));
