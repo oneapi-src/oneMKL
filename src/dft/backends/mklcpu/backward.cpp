@@ -30,7 +30,7 @@
 #include "oneapi/mkl/dft/descriptor.hpp"
 #include "oneapi/mkl/dft/detail/mklcpu/onemkl_dft_mklcpu.hpp"
 
-#include "dft/backends/mklcpu/mklcpu_helpers.hpp"
+#include "dft/backends/mklcpu/commit_derived_impl.hpp"
 
 // MKLCPU header
 #include "mkl_dfti.h"
