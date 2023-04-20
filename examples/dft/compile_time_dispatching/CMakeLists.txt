@@ -57,7 +57,7 @@ foreach(dfti_ct_sources ${DFTI_CT_SOURCES_GPU})
   )
   # Register example as ctest
  add_test(NAME ${domain}/EXAMPLE/CT/${dfti_ct_sources} COMMAND example_${domain}_${dfti_ct_sources})
-endforeach()
+endforeach(dfti_ct_sources)
 
 foreach(dfti_ct_sources ${DFTI_CT_SOURCES_CPU})
   # add executable and define include directories
@@ -85,4 +85,4 @@ foreach(dfti_ct_sources ${DFTI_CT_SOURCES_CPU})
   )
   # Register example as ctest
  add_test(NAME ${domain}/EXAMPLE/CT/${dfti_ct_sources} COMMAND example_${domain}_${dfti_ct_sources})
-endforeach()
+endforeach(dfti_ct_sources)
