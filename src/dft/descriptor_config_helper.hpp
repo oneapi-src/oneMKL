@@ -98,7 +98,7 @@ void set_value(dft_values<prec, dom>& vals,
         if (set_val == nullptr) {
             throw mkl::invalid_argument("DFT", "set_value", "Given nullptr.");
         }
-        for (int i{ 0 }; i < vals.dimensions.size(); ++i) {
+        for (std::size_t i{ 0 }; i < vals.dimensions.size(); ++i) {
             if (set_val[i] <= 0) {
                 throw mkl::invalid_argument("DFT", "set_value",
                                             "Invalid length value (negative or 0).");

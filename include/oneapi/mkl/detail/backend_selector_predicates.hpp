@@ -35,7 +35,7 @@ namespace oneapi {
 namespace mkl {
 
 template <backend Backend>
-inline void backend_selector_precondition(sycl::queue& queue){};
+inline void backend_selector_precondition(sycl::queue&){};
 
 template <>
 inline void backend_selector_precondition<backend::netlib>(sycl::queue& queue) {

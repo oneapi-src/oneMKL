@@ -42,7 +42,7 @@ constexpr std::int64_t default_1d_lengths = 4;
 const std::vector<std::int64_t> default_3d_lengths{ 124, 5, 3 };
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
-inline void set_and_get_lengths(sycl::queue& sycl_queue) {
+static void set_and_get_lengths(sycl::queue& sycl_queue) {
     /* Negative Testing */
     {
         oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_3d_lengths };
@@ -101,7 +101,7 @@ inline void set_and_get_lengths(sycl::queue& sycl_queue) {
 }
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
-inline void set_and_get_strides(sycl::queue& sycl_queue) {
+static void set_and_get_strides() {
     oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_3d_lengths };
 
     EXPECT_THROW(descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, nullptr),
@@ -156,7 +156,7 @@ inline void set_and_get_strides(sycl::queue& sycl_queue) {
 }
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
-inline void set_and_get_values(sycl::queue& sycl_queue) {
+static void set_and_get_values() {
     oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
 
     using Precision_Type =
@@ -164,7 +164,7 @@ inline void set_and_get_values(sycl::queue& sycl_queue) {
                                     double>;
 
     {
-        Precision_Type forward_scale_set_value{ 143.5 };
+        auto forward_scale_set_value = Precision_Type(143.5);
         Precision_Type forward_scale_before_set;
         Precision_Type forward_scale_after_set;
 
@@ -179,7 +179,7 @@ inline void set_and_get_values(sycl::queue& sycl_queue) {
     }
 
     {
-        Precision_Type backward_scale_set_value{ 143.5 };
+        auto backward_scale_set_value = Precision_Type(143.5);
         Precision_Type backward_scale_before_set;
         Precision_Type backward_scale_after_set;
 
@@ -349,7 +349,7 @@ inline void set_and_get_values(sycl::queue& sycl_queue) {
 }
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
-inline void get_readonly_values(sycl::queue& sycl_queue) {
+static void get_readonly_values(sycl::queue& sycl_queue) {
     oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
 
     oneapi::mkl::dft::domain domain_value;
@@ -378,7 +378,7 @@ inline void get_readonly_values(sycl::queue& sycl_queue) {
 }
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
-inline void set_readonly_values(sycl::queue& sycl_queue) {
+static void set_readonly_values(sycl::queue& sycl_queue) {
     oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
 
     EXPECT_THROW(descriptor.set_value(oneapi::mkl::dft::config_param::FORWARD_DOMAIN,
@@ -430,8 +430,8 @@ inline void recommit_values(sycl::queue& sycl_queue) {
         // not changeable
         // FORWARD_DOMAIN, PRECISION, DIMENSION, COMMIT_STATUS
         { std::make_pair(config_param::LENGTHS, std::int64_t{ 10 }),
-          std::make_pair(config_param::FORWARD_SCALE, PrecisionType{ 1.2 }),
-          std::make_pair(config_param::BACKWARD_SCALE, PrecisionType{ 3.4 }) },
+          std::make_pair(config_param::FORWARD_SCALE, PrecisionType(1.2)),
+          std::make_pair(config_param::BACKWARD_SCALE, PrecisionType(3.4)) },
         { std::make_pair(config_param::NUMBER_OF_TRANSFORMS, std::int64_t{ 5 }),
           std::make_pair(config_param::COMPLEX_STORAGE, config_value::COMPLEX_COMPLEX),
           std::make_pair(config_param::REAL_STORAGE, config_value::REAL_REAL),
@@ -447,7 +447,7 @@ inline void recommit_values(sycl::queue& sycl_queue) {
           std::make_pair(config_param::PACKED_FORMAT, config_value::CCE_FORMAT) }
     };
 
-    for (int i = 0; i < argument_groups.size(); i += 1) {
+    for (std::size_t i = 0; i < argument_groups.size(); i += 1) {
         for (auto argument : argument_groups[i]) {
             std::visit([&descriptor, p = argument.first](auto&& a) { descriptor.set_value(p, a); },
                        argument.second);
@@ -560,8 +560,8 @@ int test(sycl::device* dev) {
     }
 
     set_and_get_lengths<precision, domain>(sycl_queue);
-    set_and_get_strides<precision, domain>(sycl_queue);
-    set_and_get_values<precision, domain>(sycl_queue);
+    set_and_get_strides<precision, domain>();
+    set_and_get_values<precision, domain>();
     get_readonly_values<precision, domain>(sycl_queue);
     set_readonly_values<precision, domain>(sycl_queue);
     recommit_values<precision, domain>(sycl_queue);

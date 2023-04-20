@@ -40,7 +40,7 @@ class dft_values;
 template <precision prec, domain dom>
 class commit_impl {
 public:
-    commit_impl(sycl::queue queue, mkl::backend backend) : queue_(queue), backend_(backend) {}
+    commit_impl(sycl::queue queue, mkl::backend backend) : backend_(backend), queue_(queue) {}
 
     // rule of three
     commit_impl(const commit_impl& other) = delete;

@@ -29,11 +29,17 @@ namespace mkl {
 namespace dft {
 namespace detail {
 
-typedef int DFT_ERROR;
+typedef long DFT_ERROR;
 
 #define DFT_NOTSET -1
 
 enum class precision { SINGLE, DOUBLE };
+
+template <precision prec>
+struct precision_t {
+    using real_t = std::conditional_t<prec == precision::SINGLE, float, double>;
+};
+
 enum class domain { REAL, COMPLEX };
 enum class config_param {
     FORWARD_DOMAIN,
@@ -97,7 +103,7 @@ enum class config_value {
 template <precision prec, domain dom>
 class dft_values {
 private:
-    using real_t = std::conditional_t<prec == precision::SINGLE, float, double>;
+    using real_t = typename precision_t<prec>::real_t;
 
 public:
     std::vector<std::int64_t> input_strides;

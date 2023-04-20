@@ -37,7 +37,7 @@ namespace rng {
 // Buffer APIs
 
 template <typename Distr, typename Engine>
-inline void generate_precondition(const Distr& distr, Engine& engine, std::int64_t n,
+inline void generate_precondition(const Distr& /*distr*/, Engine& /*engine*/, std::int64_t n,
                                   sycl::buffer<typename Distr::result_type, 1>& r) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     if (n < 0 || n > r.size()) {
@@ -49,9 +49,9 @@ inline void generate_precondition(const Distr& distr, Engine& engine, std::int64
 // USM APIs
 
 template <typename Distr, typename Engine>
-inline void generate_precondition(const Distr& distr, Engine& engine, std::int64_t n,
+inline void generate_precondition(const Distr& /*distr*/, Engine& /*engine*/, std::int64_t n,
                                   typename Distr::result_type* r,
-                                  const std::vector<sycl::event>& dependencies) {
+                                  const std::vector<sycl::event>& /*dependencies*/) {
 #ifndef ONEMKL_DISABLE_PREDICATES
     if (n < 0) {
         throw oneapi::mkl::invalid_argument("rng", "generate", "n");

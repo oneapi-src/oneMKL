@@ -24,6 +24,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <limits>
+#include <stdexcept>
 #include <vector>
 
 #if __has_include(<sycl/sycl.hpp>)
@@ -49,6 +50,13 @@ constexpr bool is_complex() {
     return complex_info<T>::is_complex;
 }
 
+inline std::size_t cast_unsigned(std::int64_t i) {
+    if (i < 0) {
+        throw std::runtime_error("Unexpected negative value");
+    }
+    return static_cast<std::size_t>(i);
+}
+
 template <typename fp>
 bool check_equal(fp x, fp x_ref, double abs_error_mag, double rel_error_mag, std::ostream &out) {
     using fp_real = typename complex_info<fp>::real_type;
@@ -65,8 +73,8 @@ bool check_equal(fp x, fp x_ref, double abs_error_mag, double rel_error_mag, std
             return std::numeric_limits<fp_real>::epsilon();
         }
     }();
-    const fp_real abs_bound = abs_error_mag * epsilon;
-    const fp_real rel_bound = rel_error_mag * epsilon;
+    const auto abs_bound = static_cast<fp_real>(abs_error_mag) * epsilon;
+    const auto rel_bound = static_cast<fp_real>(rel_error_mag) * epsilon;
 
     const auto aerr = std::abs(x - x_ref);
     const auto rerr = aerr / std::abs(x_ref);
@@ -80,14 +88,20 @@ bool check_equal(fp x, fp x_ref, double abs_error_mag, double rel_error_mag, std
 }
 
 template <typename vec1, typename vec2>
-bool check_equal_vector(vec1 &&v, vec2 &&v_ref, int n, double abs_error_mag, double rel_error_mag,
-                        std::ostream &out) {
+bool check_equal_vector(vec1 &&v, vec2 &&v_ref, std::size_t n, double abs_error_mag,
+                        double rel_error_mag, std::ostream &out) {
     constexpr int max_print = 20;
     int count = 0;
     bool good = true;
 
     for (std::size_t i = 0; i < n; ++i) {
-        if (!check_equal(v[i], v_ref[i], abs_error_mag, rel_error_mag, out)) {
+        // Allow to convert the unsigned index `i` to a signed one to keep this function generic and allow for `v` and `v_ref` to be a vector, a pointer or a random access iterator.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wsign-conversion"
+        auto res = v[i];
+        auto ref = v_ref[i];
+#pragma clang diagnostic pop
+        if (!check_equal(res, ref, abs_error_mag, rel_error_mag, out)) {
             out << " at index i =" << i << "\n";
             good = false;
             ++count;
@@ -117,10 +131,10 @@ inline t rand_scalar() {
 }
 
 template <typename vec>
-void rand_vector(vec &v, int n) {
+void rand_vector(vec &v, std::size_t n) {
     using fp = typename vec::value_type;
     v.resize(n);
-    for (int i = 0; i < n; i++) {
+    for (std::size_t i = 0; i < n; i++) {
         v[i] = rand_scalar<fp>();
     }
 }

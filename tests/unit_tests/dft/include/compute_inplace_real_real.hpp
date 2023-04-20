@@ -32,18 +32,16 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
 
     try {
         descriptor_t descriptor{ sizes };
+        PrecisionType backward_scale = 1.f / static_cast<PrecisionType>(forward_elements);
 
         descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                              oneapi::mkl::dft::config_value::INPLACE);
         descriptor.set_value(oneapi::mkl::dft::config_param::COMPLEX_STORAGE,
                              oneapi::mkl::dft::config_value::REAL_REAL);
         descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
-        descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE,
-                             static_cast<std::int64_t>(forward_elements));
-        descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE,
-                             static_cast<std::int64_t>(forward_elements));
-        descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
-                             (1.0 / forward_elements));
+        descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
+        descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, forward_elements);
+        descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, backward_scale);
         commit_descriptor(descriptor, sycl_queue);
 
         auto ua_input = usm_allocator_t<PrecisionType>(cxt, *dev);
@@ -84,18 +82,16 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
 
     try {
         descriptor_t descriptor{ sizes };
+        PrecisionType backward_scale = 1.f / static_cast<PrecisionType>(forward_elements);
 
         descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                              oneapi::mkl::dft::config_value::INPLACE);
         descriptor.set_value(oneapi::mkl::dft::config_param::COMPLEX_STORAGE,
                              oneapi::mkl::dft::config_value::REAL_REAL);
         descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
-        descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE,
-                             static_cast<std::int64_t>(forward_elements));
-        descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE,
-                             static_cast<std::int64_t>(forward_elements));
-        descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
-                             (1.0 / forward_elements));
+        descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
+        descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, forward_elements);
+        descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, backward_scale);
         commit_descriptor(descriptor, sycl_queue);
 
         sycl::buffer<PrecisionType, 1> inout_re_buf{ input_re.data(), sycl::range<1>(size_total) };

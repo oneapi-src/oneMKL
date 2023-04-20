@@ -87,8 +87,9 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout_re,
-                                    sycl::buffer<data_type, 1> &inout_im) {
+ONEMKL_EXPORT void compute_backward(descriptor_type & /*desc*/,
+                                    sycl::buffer<data_type, 1> & /*inout_re*/,
+                                    sycl::buffer<data_type, 1> & /*inout_im*/) {
     throw mkl::unimplemented("DFT", "compute_backward",
                              "MKLGPU does not support compute_backward(desc, inout_re, inout_im).");
 }
@@ -105,10 +106,10 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_type, 1> &in_re,
-                                    sycl::buffer<input_type, 1> &in_im,
-                                    sycl::buffer<output_type, 1> &out_re,
-                                    sycl::buffer<output_type, 1> &out_im) {
+ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_type, 1> & /*in_re*/,
+                                    sycl::buffer<input_type, 1> & /*in_im*/,
+                                    sycl::buffer<output_type, 1> & /*out_re*/,
+                                    sycl::buffer<output_type, 1> & /*out_im*/) {
     detail::expect_config<dft::detail::config_param::COMPLEX_STORAGE,
                           dft::detail::config_value::REAL_REAL>(
         desc, "Unexpected value for complex storage");
@@ -130,11 +131,12 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *ino
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *inout_re,
-                                           data_type *inout_im,
-                                           const std::vector<sycl::event> &dependencies) {
-    throw mkl::unimplemented("DFT", "compute_backward",
-                             "MKLGPU does not support compute_backward(desc, inout_re, inout_im).");
+ONEMKL_EXPORT sycl::event compute_backward(descriptor_type & /*desc*/, data_type * /*inout_re*/,
+                                           data_type * /*inout_im*/,
+                                           const std::vector<sycl::event> & /*dependencies*/) {
+    throw mkl::unimplemented(
+        "DFT", "compute_backward",
+        "MKLGPU does not support compute_backward(desc, inout_re, inout_im, dependencies).");
 }
 
 //Out-of-place transform
@@ -149,10 +151,10 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in_re,
-                                           input_type *in_im, output_type *out_re,
-                                           output_type *out_im,
-                                           const std::vector<sycl::event> &dependencies) {
+ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type * /*in_re*/,
+                                           input_type * /*in_im*/, output_type * /*out_re*/,
+                                           output_type * /*out_im*/,
+                                           const std::vector<sycl::event> & /*dependencies*/) {
     detail::expect_config<dft::detail::config_param::COMPLEX_STORAGE,
                           dft::detail::config_value::REAL_REAL>(
         desc, "Unexpected value for complex storage");

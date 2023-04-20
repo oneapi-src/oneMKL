@@ -45,13 +45,13 @@ public:
     commit_derived_impl(sycl::queue queue, const detail::dft_values<prec, dom>& config_values)
             : detail::commit_impl<prec, dom>(queue, backend::mklcpu) {
         DFT_ERROR status = DFT_NOTSET;
-        if (config_values.dimensions.size() == 1) {
+        const auto rank = static_cast<std::int64_t>(config_values.dimensions.size());
+        if (rank == 1) {
             status = DftiCreateDescriptor(&handle, get_precision(prec), get_domain(dom), 1,
                                           config_values.dimensions[0]);
         }
         else {
-            status = DftiCreateDescriptor(&handle, get_precision(prec), get_domain(dom),
-                                          config_values.dimensions.size(),
+            status = DftiCreateDescriptor(&handle, get_precision(prec), get_domain(dom), rank,
                                           config_values.dimensions.data());
         }
         if (status != DFTI_NO_ERROR) {
