@@ -173,7 +173,8 @@ inline constexpr int to_mklcpu<dft::detail::config_param::PACKED_FORMAT>(
     }
 }
 
-enum DIR { fwd, bwd };
+// this is used for indexing bidirectional_handle
+enum DIR { fwd=0, bwd=1 };
 
 template <dft::detail::precision prec, dft::detail::domain dom>
 class commit_derived_impl : public dft::detail::commit_impl<prec, dom> {
@@ -187,16 +188,17 @@ public:
 
     virtual void commit(const dft::detail::dft_values<prec, dom>& config_values) override;
 
-    void* get_handle() noexcept override;
+    virtual void* get_handle() noexcept override;
 
     virtual ~commit_derived_impl() override;
 
-    virtual sycl::buffer<std::vector<mklcpu_desc_t>, 1> get_handle_buffer() noexcept;
+    virtual sycl::buffer<std::array<mklcpu_desc_t, 2>, 1> get_handle_buffer() noexcept;
 
 private:
-    std::vector<mklcpu_desc_t> bidirection_handle{ nullptr, nullptr };
-    sycl::buffer<std::vector<mklcpu_desc_t>, 1> bidirection_buffer{ &bidirection_handle,
-                                                                    sycl::range<1>{ 1 } };
+    // bidirectional_handle[0] is the forward handle, bidirectional_handle[1] is the backward handle
+    std::array<mklcpu_desc_t, 2> bidirection_handle{ nullptr, nullptr };
+    sycl::buffer<std::array<mklcpu_desc_t, 2>, 1> bidirection_buffer{ &bidirection_handle,
+                                                                    sycl::range<1>{ 2 } };
 
     template <typename... Args>
     void set_value_item(mklcpu_desc_t hand, enum DFTI_CONFIG_PARAM name, Args... args);

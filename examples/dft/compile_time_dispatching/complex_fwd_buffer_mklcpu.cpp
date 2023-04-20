@@ -92,7 +92,7 @@ void print_example_banner() {
                  "# For Intel CPU with Intel MKLCPU backend.\n"
                  "#\n"
                  "# The environment variable SYCL_DEVICE_FILTER can be used to specify\n"
-                 "#SYCL device\n"
+                 "# SYCL device\n"
                  "########################################################################\n"
               << std::endl;
 }

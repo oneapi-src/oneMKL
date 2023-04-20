@@ -47,19 +47,20 @@ commit_derived_impl<prec, dom>::commit_derived_impl(
     sycl::queue queue, const dft::detail::dft_values<prec, dom>& config_values)
         : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::mklcpu) {
     // create the descriptor once for the lifetime of the descriptor class
-    DFT_ERROR status[2] = { DFTI_BAD_DESCRIPTOR };
+    DFT_ERROR status[2] = { DFTI_BAD_DESCRIPTOR, DFTI_BAD_DESCRIPTOR };
 
     for (auto dir : { DIR::fwd, DIR::bwd }) {
-        if (config_values.dimensions.size() == 1)
+        if (config_values.dimensions.size() == 1) {
             status[dir] = DftiCreateDescriptor(&bidirection_handle[dir], mklcpu_prec, mklcpu_dom, 1,
                                                config_values.dimensions[0]);
-        else
+        } else {
             status[dir] = DftiCreateDescriptor(&bidirection_handle[dir], mklcpu_prec, mklcpu_dom,
                                                config_values.dimensions.size(),
                                                config_values.dimensions.data());
+        }
     }
 
-    if (status[0] != DFTI_NO_ERROR && status[1] != DFTI_NO_ERROR) {
+    if (status[0] != DFTI_NO_ERROR || status[1] != DFTI_NO_ERROR) {
         std::string err = std::string("DftiCreateDescriptor failed with status : ") +
                           DftiErrorMessage(status[0]) + std::string(", ") +
                           DftiErrorMessage(status[1]);
@@ -69,8 +70,17 @@ commit_derived_impl<prec, dom>::commit_derived_impl(
 
 template <dft::detail::precision prec, dft::detail::domain dom>
 commit_derived_impl<prec, dom>::~commit_derived_impl() {
-    for (auto dir : { DIR::fwd, DIR::bwd })
-        DftiFreeDescriptor(&bidirection_handle[dir]);
+    DFT_ERROR status[2] = { DFTI_BAD_DESCRIPTOR, DFTI_BAD_DESCRIPTOR };
+    for (auto dir : { DIR::fwd, DIR::bwd }) {
+        status[dir] = DftiFreeDescriptor(&bidirection_handle[dir]);
+    }
+
+    if (status[0] != DFTI_NO_ERROR || status[1] != DFTI_NO_ERROR) {
+        std::string err = std::string("DftiFreeDescriptor failed with status : ") +
+                          DftiErrorMessage(status[0]) + std::string(", ") +
+                          DftiErrorMessage(status[1]);
+        throw oneapi::mkl::exception("dft/backends/mklcpu", "free_descriptor", err);
+    }
 }
 
 template <dft::detail::precision prec, dft::detail::domain dom>
@@ -81,10 +91,10 @@ void commit_derived_impl<prec, dom>::commit(
     this->get_queue()
         .submit([&](sycl::handler& cgh) {
             auto bidir_handle_obj =
-                bidirection_buffer.template get_access<sycl::access::mode::read_write>(cgh);
+                bidirection_buffer.get_access<sycl::access::mode::read_write>(cgh);
 
             host_task<detail::kernel_name<mklcpu_desc_t>>(cgh, [=]() {
-                MKL_LONG status[2] = { DFTI_BAD_DESCRIPTOR };
+                DFT_ERROR status[2] = { DFTI_BAD_DESCRIPTOR, DFTI_BAD_DESCRIPTOR };
 
                 for (auto dir : { DIR::fwd, DIR::bwd })
                     status[dir] = DftiCommitDescriptor(bidir_handle_obj[0][dir]);
@@ -140,9 +150,10 @@ void commit_derived_impl<prec, dom>::set_value(mklcpu_desc_t* descHandle,
         set_value_item(descHandle[dir], DFTI_PACKED_FORMAT,
                        to_mklcpu<config_param::PACKED_FORMAT>(config.packed_format));
         // Setting the workspace causes an FFT_INVALID_DESCRIPTOR.
-        if (config.workspace != config_value::ALLOW)
+        if (config.workspace != config_value::ALLOW) {
             throw mkl::invalid_argument("dft/backends/mklcpu", "commit",
                                         "MKLCPU only supports workspace set to allow");
+        }
         // Setting the ordering causes an FFT_INVALID_DESCRIPTOR. Check that default is used:
         if (config.ordering != dft::detail::config_value::ORDERED) {
             throw mkl::invalid_argument("dft/backends/mklcpu", "commit",
@@ -157,7 +168,7 @@ void commit_derived_impl<prec, dom>::set_value(mklcpu_desc_t* descHandle,
 }
 
 template <dft::detail::precision prec, dft::detail::domain dom>
-sycl::buffer<std::vector<mklcpu_desc_t>, 1>
+sycl::buffer<std::array<mklcpu_desc_t, 2>, 1>
 commit_derived_impl<prec, dom>::get_handle_buffer() noexcept {
     return bidirection_buffer;
 }
