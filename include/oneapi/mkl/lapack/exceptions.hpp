@@ -26,9 +26,9 @@ namespace lapack {
 class exception {
 public:
     exception(oneapi::mkl::exception *_ex, std::int64_t info, std::int64_t detail = 0)
-            : _ex(_ex),
-              _info(info),
-              _detail(detail) {}
+            : _info(info),
+              _detail(detail),
+              _ex(_ex) {}
     std::int64_t info() const {
         return _info;
     }
