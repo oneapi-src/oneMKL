@@ -97,7 +97,8 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     }
 
     // account for scaling that occurs during DFT
-    std::for_each(input.begin(), input.end(), [this](auto &x) { x *= forward_elements; });
+    std::for_each(input.begin(), input.end(),
+                  [this](auto &x) { x *= static_cast<PrecisionType>(forward_elements); });
 
     EXPECT_TRUE(check_equal_vector(fwd_data.data(), input.data(), input.size(), abs_error_margin,
                                    rel_error_margin, std::cout));
@@ -168,7 +169,8 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
         .wait_and_throw();
 
     // account for scaling that occurs during DFT
-    std::for_each(input.begin(), input.end(), [this](auto &x) { x *= forward_elements; });
+    std::for_each(input.begin(), input.end(),
+                  [this](auto &x) { x *= static_cast<PrecisionType>(forward_elements); });
 
     EXPECT_TRUE(check_equal_vector(fwd.data(), input.data(), input.size(), abs_error_margin,
                                    rel_error_margin, std::cout));

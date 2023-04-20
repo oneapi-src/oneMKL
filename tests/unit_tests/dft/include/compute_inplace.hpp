@@ -155,7 +155,8 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     }
 
     // account for scaling that occurs during DFT
-    std::for_each(input.begin(), input.end(), [this](auto& x) { x *= forward_elements; });
+    std::for_each(input.begin(), input.end(),
+                  [this](auto& x) { x *= static_cast<PrecisionType>(forward_elements); });
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         for (std::size_t j = 0; j < real_first_dims; j++) {
             EXPECT_TRUE(check_equal_vector(
@@ -247,7 +248,8 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
                                            FwdInputType>(descriptor, inout.data(), no_dependencies);
     done.wait_and_throw();
 
-    std::for_each(input.begin(), input.end(), [this](auto& x) { x *= forward_elements; });
+    std::for_each(input.begin(), input.end(),
+                  [this](auto& x) { x *= static_cast<PrecisionType>(forward_elements); });
 
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         for (std::size_t j = 0; j < real_first_dims; j++) {

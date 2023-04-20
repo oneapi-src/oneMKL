@@ -446,8 +446,8 @@ inline void recommit_values(sycl::queue& sycl_queue) {
           std::make_pair(config_param::TRANSPOSE, bool{ false }),
           std::make_pair(config_param::PACKED_FORMAT, config_value::CCE_FORMAT) },
         { std::make_pair(config_param::LENGTHS, std::int64_t{ 10 }),
-          std::make_pair(config_param::FORWARD_SCALE, PrecisionType( 1.2 )),
-          std::make_pair(config_param::BACKWARD_SCALE, PrecisionType( 3.4 )) }
+          std::make_pair(config_param::FORWARD_SCALE, PrecisionType(1.2)),
+          std::make_pair(config_param::BACKWARD_SCALE, PrecisionType(3.4)) }
     };
 
     for (std::size_t i = 0; i < argument_groups.size(); i += 1) {
