@@ -50,12 +50,13 @@ commit_derived_impl<prec, dom>::commit_derived_impl(
     DFT_ERROR status[2] = { DFTI_BAD_DESCRIPTOR, DFTI_BAD_DESCRIPTOR };
 
     for (auto dir : { DIR::fwd, DIR::bwd }) {
+        const auto rank = static_cast<std::int64_t>(config_values.dimensions.size());
         if (config_values.dimensions.size() == 1) {
             status[dir] = DftiCreateDescriptor(&bidirection_handle[dir], mklcpu_prec, mklcpu_dom, 1,
                                                config_values.dimensions[0]);
         } else {
             status[dir] = DftiCreateDescriptor(&bidirection_handle[dir], mklcpu_prec, mklcpu_dom,
-                                               config_values.dimensions.size(),
+                                               rank,
                                                config_values.dimensions.data());
         }
     }
@@ -70,16 +71,8 @@ commit_derived_impl<prec, dom>::commit_derived_impl(
 
 template <dft::detail::precision prec, dft::detail::domain dom>
 commit_derived_impl<prec, dom>::~commit_derived_impl() {
-    DFT_ERROR status[2] = { DFTI_BAD_DESCRIPTOR, DFTI_BAD_DESCRIPTOR };
     for (auto dir : { DIR::fwd, DIR::bwd }) {
-        status[dir] = DftiFreeDescriptor(&bidirection_handle[dir]);
-    }
-
-    if (status[0] != DFTI_NO_ERROR || status[1] != DFTI_NO_ERROR) {
-        std::string err = std::string("DftiFreeDescriptor failed with status : ") +
-                          DftiErrorMessage(status[0]) + std::string(", ") +
-                          DftiErrorMessage(status[1]);
-        throw oneapi::mkl::exception("dft/backends/mklcpu", "free_descriptor", err);
+        DftiFreeDescriptor(&bidirection_handle[dir]);
     }
 }
 
@@ -97,8 +90,11 @@ void commit_derived_impl<prec, dom>::commit(
                 DFT_ERROR status[2] = { DFTI_BAD_DESCRIPTOR, DFTI_BAD_DESCRIPTOR };
 
                 for (auto dir : { DIR::fwd, DIR::bwd })
-                    status[dir] = DftiCommitDescriptor(bidir_handle_obj[0][dir]);
+                    status[dir] = DftiCommitDescriptor(bidir_handle_obj[dir]);
 
+                // this and is important as for real-batched transform the backward transform would
+                // be inconsistent based on the stride setup, but once recommited before backward 
+                // it should work just fine. so we error out only if there is a issue with both.
                 if (status[0] != DFTI_NO_ERROR && status[1] != DFTI_NO_ERROR) {
                     std::string err = std::string("DftiCommitDescriptor failed with status : ") +
                                       DftiErrorMessage(status[0]) + std::string(", ") +
@@ -168,7 +164,7 @@ void commit_derived_impl<prec, dom>::set_value(mklcpu_desc_t* descHandle,
 }
 
 template <dft::detail::precision prec, dft::detail::domain dom>
-sycl::buffer<std::array<mklcpu_desc_t, 2>, 1>
+sycl::buffer<mklcpu_desc_t, 1>
 commit_derived_impl<prec, dom>::get_handle_buffer() noexcept {
     return bidirection_buffer;
 }

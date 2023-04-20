@@ -430,8 +430,8 @@ inline void recommit_values(sycl::queue& sycl_queue) {
         // not changeable
         // FORWARD_DOMAIN, PRECISION, DIMENSION, COMMIT_STATUS
         { std::make_pair(config_param::LENGTHS, std::int64_t{ 10 }),
-          std::make_pair(config_param::FORWARD_SCALE, PrecisionType{ 1.2 }),
-          std::make_pair(config_param::BACKWARD_SCALE, PrecisionType{ 3.4 }) },
+          std::make_pair(config_param::FORWARD_SCALE, PrecisionType{ 1.2f }),
+          std::make_pair(config_param::BACKWARD_SCALE, PrecisionType{ 3.4f }) },
         { std::make_pair(config_param::COMPLEX_STORAGE, config_value::COMPLEX_COMPLEX),
           std::make_pair(config_param::REAL_STORAGE, config_value::REAL_REAL),
           std::make_pair(config_param::CONJUGATE_EVEN_STORAGE, config_value::COMPLEX_COMPLEX) },
@@ -550,13 +550,6 @@ int test(sycl::device* dev) {
             std::cout << "Device does not support double precision." << std::endl;
             return test_skipped;
         }
-    }
-
-    // TODO remove after #288
-    if (sycl_queue.get_device().get_info<sycl::info::device::device_type>() ==
-        sycl::info::device_type::cpu) {
-        std::cout << "MKLCPU not implemented, skipping.\n";
-        return test_skipped;
     }
 
     set_and_get_lengths<precision, domain>(sycl_queue);

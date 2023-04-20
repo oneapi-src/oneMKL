@@ -52,13 +52,12 @@ public:
 
     virtual ~commit_derived_impl() override;
 
-    virtual sycl::buffer<std::array<mklcpu_desc_t, 2>, 1> get_handle_buffer() noexcept;
+    virtual sycl::buffer<mklcpu_desc_t, 1> get_handle_buffer() noexcept;
 
 private:
     // bidirectional_handle[0] is the forward handle, bidirectional_handle[1] is the backward handle
     std::array<mklcpu_desc_t, 2> bidirection_handle{ nullptr, nullptr };
-    sycl::buffer<std::array<mklcpu_desc_t, 2>, 1> bidirection_buffer{ &bidirection_handle,
-                                                                    sycl::range<1>{ 2 } };
+    sycl::buffer<mklcpu_desc_t , 1> bidirection_buffer{ bidirection_handle.data(), sycl::range<1>{ 2 } };
 
     template <typename... Args>
     void set_value_item(mklcpu_desc_t hand, enum DFTI_CONFIG_PARAM name, Args... args);

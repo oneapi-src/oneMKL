@@ -34,6 +34,7 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
     }
     else {
         descriptor_t descriptor{ sizes };
+        PrecisionType backward_scale = 1.f / static_cast<PrecisionType>(forward_elements);
         descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                              oneapi::mkl::dft::config_value::INPLACE);
         descriptor.set_value(oneapi::mkl::dft::config_param::COMPLEX_STORAGE,
@@ -41,8 +42,8 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
         descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
         descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
         descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, forward_elements);
-        descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
-                             (1.0 / forward_elements));
+        descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, backward_scale);
+
         commit_descriptor(descriptor, sycl_queue);
 
         auto ua_input = usm_allocator_t<PrecisionType>(cxt, *dev);
@@ -64,7 +65,7 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
         }
 
         std::vector<FwdOutputType> output_data(size_total);
-        for (int i = 0; i < output_data.size(); ++i) {
+        for (std::size_t i = 0; i < output_data.size(); ++i) {
             output_data[i] = { inout_re[i], inout_im[i] };
         }
         EXPECT_TRUE(check_equal_vector(output_data.data(), out_host_ref.data(), output_data.size(),
@@ -75,7 +76,7 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
                                                           inout_im.data(), dependencies)
             .wait();
 
-        for (int i = 0; i < output_data.size(); ++i) {
+        for (std::size_t i = 0; i < output_data.size(); ++i) {
             output_data[i] = { inout_re[i], inout_im[i] };
         }
 
@@ -100,6 +101,7 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
     else {
         descriptor_t descriptor{ sizes };
 
+        PrecisionType backward_scale = 1.f / static_cast<PrecisionType>(forward_elements);
         descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                              oneapi::mkl::dft::config_value::INPLACE);
         descriptor.set_value(oneapi::mkl::dft::config_param::COMPLEX_STORAGE,
@@ -107,8 +109,8 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
         descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
         descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
         descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, forward_elements);
-        descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE,
-                             (1.0 / forward_elements));
+        descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, backward_scale);
+
         commit_descriptor(descriptor, sycl_queue);
 
         std::vector<PrecisionType> host_inout_re(size_total, static_cast<PrecisionType>(0));
@@ -134,7 +136,7 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
             auto acc_inout_re = inout_re_buf.template get_host_access();
             auto acc_inout_im = inout_im_buf.template get_host_access();
             std::vector<FwdOutputType> output_data(size_total, static_cast<FwdOutputType>(0));
-            for (int i = 0; i < output_data.size(); ++i) {
+            for (std::size_t i = 0; i < output_data.size(); ++i) {
                 output_data[i] = { acc_inout_re[i], acc_inout_im[i] };
             }
             EXPECT_TRUE(check_equal_vector(output_data.data(), out_host_ref.data(),
@@ -156,7 +158,7 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
             auto acc_inout_re = inout_re_buf.template get_host_access();
             auto acc_inout_im = inout_im_buf.template get_host_access();
             std::vector<FwdInputType> output_data(size_total, static_cast<FwdInputType>(0));
-            for (int i = 0; i < output_data.size(); ++i) {
+            for (std::size_t i = 0; i < output_data.size(); ++i) {
                 output_data[i] = { acc_inout_re[i], acc_inout_im[i] };
             }
             EXPECT_TRUE(check_equal_vector(output_data.data(), input.data(), input.size(),
