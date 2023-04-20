@@ -29,41 +29,41 @@ using depends_vec_t = const std::vector<sycl::event> &;
 
 #define ONEMKL_DFT_BACKWARD_INSTANTIATIONS(DESCRIPTOR_T, REAL_T, FORWARD_T, BACKWARD_T)         \
     /* Buffer API */                                                                            \
-    template ONEMKL_EXPORT void compute_backward<DESCRIPTOR_T, REAL_T>(DESCRIPTOR_T & desc,     \
+    template ONEMKL_EXPORT void compute_backward<DESCRIPTOR_T, REAL_T>(DESCRIPTOR_T &,          \
                                                                        sycl::buffer<REAL_T> &); \
     template ONEMKL_EXPORT void compute_backward<DESCRIPTOR_T, BACKWARD_T>(                     \
-        DESCRIPTOR_T & desc, sycl::buffer<BACKWARD_T> &);                                       \
+        DESCRIPTOR_T &, sycl::buffer<BACKWARD_T> &);                                            \
     template ONEMKL_EXPORT void compute_backward<DESCRIPTOR_T, BACKWARD_T, FORWARD_T>(          \
-        DESCRIPTOR_T & desc, sycl::buffer<BACKWARD_T> &, sycl::buffer<FORWARD_T> &);            \
+        DESCRIPTOR_T &, sycl::buffer<BACKWARD_T> &, sycl::buffer<FORWARD_T> &);                 \
     template ONEMKL_EXPORT void compute_backward<DESCRIPTOR_T, REAL_T>(                         \
-        DESCRIPTOR_T & desc, sycl::buffer<REAL_T> &, sycl::buffer<REAL_T> &);                   \
+        DESCRIPTOR_T &, sycl::buffer<REAL_T> &, sycl::buffer<REAL_T> &);                        \
     template ONEMKL_EXPORT void compute_backward<DESCRIPTOR_T, REAL_T, REAL_T>(                 \
-        DESCRIPTOR_T & desc, sycl::buffer<REAL_T> &, sycl::buffer<REAL_T> &);                   \
+        DESCRIPTOR_T &, sycl::buffer<REAL_T> &, sycl::buffer<REAL_T> &);                        \
     template ONEMKL_EXPORT void compute_backward<DESCRIPTOR_T, REAL_T, REAL_T>(                 \
-        DESCRIPTOR_T & desc, sycl::buffer<REAL_T> &, sycl::buffer<REAL_T> &,                    \
-        sycl::buffer<REAL_T> &, sycl::buffer<REAL_T> &);                                        \
+        DESCRIPTOR_T &, sycl::buffer<REAL_T> &, sycl::buffer<REAL_T> &, sycl::buffer<REAL_T> &, \
+        sycl::buffer<REAL_T> &);                                                                \
                                                                                                 \
     /* USM API */                                                                               \
     template ONEMKL_EXPORT sycl::event compute_backward<DESCRIPTOR_T, REAL_T>(                  \
-        DESCRIPTOR_T & desc, REAL_T *, depends_vec_t);                                          \
+        DESCRIPTOR_T &, REAL_T *, depends_vec_t);                                               \
     template ONEMKL_EXPORT sycl::event compute_backward<DESCRIPTOR_T, BACKWARD_T>(              \
-        DESCRIPTOR_T & desc, BACKWARD_T *, depends_vec_t);                                      \
+        DESCRIPTOR_T &, BACKWARD_T *, depends_vec_t);                                           \
     template ONEMKL_EXPORT sycl::event compute_backward<DESCRIPTOR_T, BACKWARD_T, FORWARD_T>(   \
-        DESCRIPTOR_T & desc, BACKWARD_T *, FORWARD_T *, depends_vec_t);                         \
+        DESCRIPTOR_T &, BACKWARD_T *, FORWARD_T *, depends_vec_t);                              \
     template ONEMKL_EXPORT sycl::event compute_backward<DESCRIPTOR_T, REAL_T>(                  \
-        DESCRIPTOR_T & desc, REAL_T *, REAL_T *, depends_vec_t);                                \
+        DESCRIPTOR_T &, REAL_T *, REAL_T *, depends_vec_t);                                     \
     template ONEMKL_EXPORT sycl::event compute_backward<DESCRIPTOR_T, REAL_T, REAL_T>(          \
-        DESCRIPTOR_T & desc, REAL_T *, REAL_T *, depends_vec_t);                                \
+        DESCRIPTOR_T &, REAL_T *, REAL_T *, depends_vec_t);                                     \
     template ONEMKL_EXPORT sycl::event compute_backward<DESCRIPTOR_T, REAL_T, REAL_T>(          \
-        DESCRIPTOR_T & desc, REAL_T *, REAL_T *, REAL_T *, REAL_T *, depends_vec_t);
+        DESCRIPTOR_T &, REAL_T *, REAL_T *, REAL_T *, REAL_T *, depends_vec_t);
 
 #define ONEMKL_DFT_BACKWARD_INSTANTIATIONS_REAL_ONLY(DESCRIPTOR_T, COMPLEX_T)                \
     /* Buffer API */                                                                         \
     template ONEMKL_EXPORT void compute_backward<DESCRIPTOR_T, COMPLEX_T, COMPLEX_T>(        \
-        DESCRIPTOR_T & desc, sycl::buffer<COMPLEX_T> &, sycl::buffer<COMPLEX_T> &);          \
+        DESCRIPTOR_T &, sycl::buffer<COMPLEX_T> &, sycl::buffer<COMPLEX_T> &);               \
     /* USM API */                                                                            \
     template ONEMKL_EXPORT sycl::event compute_backward<DESCRIPTOR_T, COMPLEX_T, COMPLEX_T>( \
-        DESCRIPTOR_T & desc, COMPLEX_T *, COMPLEX_T *, depends_vec_t);
+        DESCRIPTOR_T &, COMPLEX_T *, COMPLEX_T *, depends_vec_t);
 
 ONEMKL_DFT_BACKWARD_INSTANTIATIONS(desc_rf_t, float, float, std::complex<float>)
 ONEMKL_DFT_BACKWARD_INSTANTIATIONS_REAL_ONLY(desc_rf_t, std::complex<float>)

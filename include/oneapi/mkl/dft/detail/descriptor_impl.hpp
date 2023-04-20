@@ -80,6 +80,8 @@ private:
     dft_values<prec, dom> values_;
 
     friend commit_impl<prec, dom>* get_commit<prec, dom>(descriptor<prec, dom>&);
+
+    using real_t = typename precision_t<prec>::real_t;
 };
 
 template <precision prec, domain dom>

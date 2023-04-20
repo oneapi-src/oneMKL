@@ -25,13 +25,12 @@ if(ENABLE_MKLGPU_BACKEND)
   list(APPEND DFT_RT_SOURCES "real_fwd_usm")
 endif()
 
+include(WarningsUtils)
+
 # Set up for the right backend for run-time dispatching examples
 # If users build more than one backend (i.e. mklcpu and mklgpu, or mklcpu and CUDA), they may need to
 # overwrite SYCL_DEVICE_FILTER in their environment to run on the desired backend
 set(DEVICE_FILTERS "")
-if(ENABLE_MKLCPU_BACKEND)
-  list(APPEND DEVICE_FILTERS "cpu")
-endif()
 if(ENABLE_MKLGPU_BACKEND)
   list(APPEND DEVICE_FILTERS "gpu")
 endif()
@@ -52,10 +51,11 @@ foreach(dft_rt_sources ${DFT_RT_SOURCES})
     add_sycl_to_target(TARGET example_${domain}_${dft_rt_sources} SOURCES ${DFT_RT_SOURCES})
   endif()
 
-  target_link_libraries(example_${domain}_${dft_rt_sources} PUBLIC
-      onemkl
-      ONEMKL::SYCL::SYCL
-      ${CMAKE_DL_LIBS}
+  target_link_libraries(example_${domain}_${dft_rt_sources}
+      PUBLIC onemkl
+      PUBLIC ONEMKL::SYCL::SYCL
+      PUBLIC ${CMAKE_DL_LIBS}
+      PRIVATE onemkl_warnings
   )
 
   # Register example as ctest

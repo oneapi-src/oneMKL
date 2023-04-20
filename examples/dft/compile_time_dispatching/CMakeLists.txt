@@ -23,6 +23,8 @@ if(ENABLE_MKLGPU_BACKEND)
   list(APPEND DFTI_CT_SOURCES "complex_fwd_buffer_mklgpu")
 endif()
 
+include(WarningsUtils)
+
 foreach(dfti_ct_sources ${DFTI_CT_SOURCES})
   add_executable(example_${domain}_${dfti_ct_sources} ${dfti_ct_sources}.cpp)
   target_include_directories(example_${domain}_${dfti_ct_sources}
@@ -34,10 +36,11 @@ foreach(dfti_ct_sources ${DFTI_CT_SOURCES})
     add_dependencies(example_${domain}_${dfti_ct_sources} onemkl_${domain}_mklgpu)
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklgpu)
   endif()
-  target_link_libraries(example_${domain}_${dfti_ct_sources} PUBLIC
-      ${ONEMKL_LIBRARIES_${domain}}
-      ONEMKL::SYCL::SYCL
+  target_link_libraries(example_${domain}_${dfti_ct_sources}
+      PUBLIC ${ONEMKL_LIBRARIES_${domain}}
+      PUBLIC ONEMKL::SYCL::SYCL
+      PRIVATE onemkl_warnings
   )
   # Register example as ctest
- add_test(NAME ${domain}/EXAMPLE/CT/${dfti_ct_sources} COMMAND example_${domain}_${dfti_ct_sources})
+  add_test(NAME ${domain}/EXAMPLE/CT/${dfti_ct_sources} COMMAND example_${domain}_${dfti_ct_sources})
 endforeach(dfti_ct_sources)

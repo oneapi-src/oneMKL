@@ -32,9 +32,9 @@ namespace detail {
 void compute_default_strides(const std::vector<std::int64_t>& dimensions,
                              std::vector<std::int64_t>& input_strides,
                              std::vector<std::int64_t>& output_strides) {
-    int rank = dimensions.size();
+    auto rank = dimensions.size();
     std::vector<std::int64_t> strides(rank + 1, 1);
-    for (int i = rank - 1; i > 0; --i) {
+    for (auto i = rank - 1; i > 0; --i) {
         strides[i] = strides[i + 1] * dimensions[i];
     }
     strides[0] = 0;
@@ -75,10 +75,12 @@ void descriptor<prec, dom>::set_value(config_param param, ...) {
         }
         // VA arg promotes float args to double, so the following is always double:
         case config_param::FORWARD_SCALE:
-            detail::set_value<config_param::FORWARD_SCALE>(values_, va_arg(vl, double));
+            detail::set_value<config_param::FORWARD_SCALE>(values_,
+                                                           static_cast<real_t>(va_arg(vl, double)));
             break;
         case config_param::BACKWARD_SCALE:
-            detail::set_value<config_param::BACKWARD_SCALE>(values_, va_arg(vl, double));
+            detail::set_value<config_param::BACKWARD_SCALE>(
+                values_, static_cast<real_t>(va_arg(vl, double)));
             break;
         case config_param::NUMBER_OF_TRANSFORMS:
             detail::set_value<config_param::NUMBER_OF_TRANSFORMS>(values_,
@@ -136,8 +138,8 @@ descriptor<prec, dom>::descriptor(std::vector<std::int64_t> dimensions) {
     }
     // Assume forward transform.
     compute_default_strides(dimensions, values_.input_strides, values_.output_strides);
-    values_.bwd_scale = 1.0;
-    values_.fwd_scale = 1.0;
+    values_.bwd_scale = real_t(1.0);
+    values_.fwd_scale = real_t(1.0);
     values_.number_of_transforms = 1;
     values_.fwd_dist = 1;
     values_.bwd_dist = 1;
@@ -161,8 +163,6 @@ descriptor<prec, dom>::~descriptor() {}
 
 template <precision prec, domain dom>
 void descriptor<prec, dom>::get_value(config_param param, ...) const {
-    int err = 0;
-    using real_t = std::conditional_t<prec == precision::SINGLE, float, double>;
     va_list vl;
     va_start(vl, param);
     if (va_arg(vl, void*) == nullptr) {

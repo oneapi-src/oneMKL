@@ -130,7 +130,7 @@ $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl_blas_mklcpu –lonemkl_blas_c
 
 ### Supported Configurations:
 
-Supported domains: BLAS, LAPACK, RNG
+Supported domains: BLAS, LAPACK, RNG, DFT
 
 #### Linux*
 

@@ -43,12 +43,13 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
         sizes.begin(), sizes.end() - 1, get_backward_row_size<domain>(sizes), std::multiplies<>());
 
     descriptor_t descriptor{ sizes };
+    PrecisionType backward_scale = 1.f / static_cast<PrecisionType>(forward_elements);
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::NOT_INPLACE);
     descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
     descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
-    descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / forward_elements));
+    descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, backward_scale);
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         const auto complex_strides = get_conjugate_even_complex_strides(sizes);
         descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
@@ -60,7 +61,8 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
 
     {
         sycl::buffer<FwdInputType, 1> fwd_buf{ fwd_data };
-        sycl::buffer<FwdOutputType, 1> bwd_buf{ sycl::range<1>(backward_distance * batches) };
+        sycl::buffer<FwdOutputType, 1> bwd_buf{ sycl::range<1>(
+            cast_unsigned(backward_distance * batches)) };
 
         try {
             oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
@@ -76,8 +78,8 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
             auto bwd_ptr = acc_bwd.get_pointer();
             auto ref_iter = out_host_ref.begin();
             const auto ref_row_stride = sizes.back();
-            const auto backward_row_stride = get_backward_row_size<domain>(sizes);
-            const auto backward_row_elements = get_backward_row_size<domain>(sizes);
+            const auto backward_row_stride = cast_unsigned(get_backward_row_size<domain>(sizes));
+            const auto backward_row_elements = cast_unsigned(get_backward_row_size<domain>(sizes));
 
             while (ref_iter < out_host_ref.end()) {
                 EXPECT_TRUE(check_equal_vector(bwd_ptr, ref_iter, backward_row_elements,
@@ -124,12 +126,13 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
         sizes.begin(), sizes.end() - 1, get_backward_row_size<domain>(sizes), std::multiplies<>());
 
     descriptor_t descriptor{ sizes };
+    PrecisionType backward_scale = 1.f / static_cast<PrecisionType>(forward_elements);
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::NOT_INPLACE);
     descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
     descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
-    descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, (1.0 / forward_elements));
+    descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, backward_scale);
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         const auto complex_strides = get_conjugate_even_complex_strides(sizes);
         descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
@@ -141,7 +144,8 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     auto ua_output = usm_allocator_t<FwdOutputType>(cxt, *dev);
 
     std::vector<FwdInputType, decltype(ua_input)> fwd(input.begin(), input.end(), ua_input);
-    std::vector<FwdOutputType, decltype(ua_output)> bwd(backward_distance * batches, ua_output);
+    std::vector<FwdOutputType, decltype(ua_output)> bwd(cast_unsigned(backward_distance * batches),
+                                                        ua_output);
 
     try {
         oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
@@ -159,7 +163,7 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
 
         const auto ref_row_stride = sizes.back();
         const auto backward_row_stride = get_backward_row_size<domain>(sizes);
-        const auto backward_row_elements = get_backward_row_size<domain>(sizes);
+        const auto backward_row_elements = cast_unsigned(get_backward_row_size<domain>(sizes));
 
         while (ref_iter < out_host_ref.end()) {
             EXPECT_TRUE(check_equal_vector(bwd_iter, ref_iter, backward_row_elements,
