@@ -92,7 +92,7 @@ void commit_derived_impl<prec, dom>::commit(
                 for (auto dir : { DIR::fwd, DIR::bwd })
                     status[dir] = DftiCommitDescriptor(bidir_handle_obj[dir]);
 
-                // this and is important as for real-batched transform the backward transform would
+                // this is important for real-batched transforms, as the backward transform would
                 // be inconsistent based on the stride setup, but once recommited before backward 
                 // it should work just fine. so we error out only if there is a issue with both.
                 if (status[0] != DFTI_NO_ERROR && status[1] != DFTI_NO_ERROR) {
