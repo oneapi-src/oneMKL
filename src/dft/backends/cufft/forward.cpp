@@ -34,6 +34,13 @@
 
 namespace oneapi::mkl::dft::cufft {
 
+namespace detail {
+template <dft::precision prec, dft::domain dom>
+cufftHandle get_fwd_plan(dft::detail::commit_impl<prec, dom> *commit) {
+    return static_cast<std::optional<cufftHandle> *>(commit->get_handle())[0].value();
+}
+} // namespace detail
+
 // BUFFER version
 
 //In-place transform
@@ -43,7 +50,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
-    auto plan = static_cast<cufftHandle *>(commit->get_handle())[0];
+    auto plan = detail::get_fwd_plan(commit);
 
     queue.submit([&](sycl::handler &cgh) {
         auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
@@ -76,7 +83,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
-    auto plan = static_cast<cufftHandle *>(commit->get_handle())[0];
+    auto plan = detail::get_fwd_plan(commit);
 
     queue.submit([&](sycl::handler &cgh) {
         auto in_acc = in.template get_access<sycl::access::mode::read_write>(cgh);
@@ -115,7 +122,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inou
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
-    auto plan = static_cast<cufftHandle *>(commit->get_handle())[0];
+    auto plan = detail::get_fwd_plan(commit);
 
     return queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
@@ -147,7 +154,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in,
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
-    auto plan = static_cast<cufftHandle *>(commit->get_handle())[0];
+    auto plan = detail::get_fwd_plan(commit);
 
     return queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
