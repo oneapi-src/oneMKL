@@ -18,20 +18,19 @@
 #===============================================================================
 
 #Build object from all sources
-set(DFTI_CT_SOURCES_GPU "")
-set(DFTI_CT_SOURCES_CPU "")
+set(DFTI_CT_SOURCES "")
 
 if(ENABLE_MKLGPU_BACKEND)
-  list(APPEND DFTI_CT_SOURCES_GPU "complex_fwd_buffer_mklgpu")
+  list(APPEND DFTI_CT_SOURCES "complex_fwd_buffer_mklgpu")
 endif()
 
 if(ENABLE_MKLCPU_BACKEND)
-  list(APPEND DFTI_CT_SOURCES_CPU "complex_fwd_buffer_mklcpu")
+  list(APPEND DFTI_CT_SOURCES "complex_fwd_buffer_mklcpu")
 endif()
 
 include(WarningsUtils)
 
-foreach(dfti_ct_sources ${DFTI_CT_SOURCES_GPU})
+foreach(dfti_ct_sources ${DFTI_CT_SOURCES})
   # add executable and define include directories
   # add dependencies and link libraries
   # register example as ctest
@@ -44,38 +43,14 @@ foreach(dfti_ct_sources ${DFTI_CT_SOURCES_GPU})
 
   set(ONEMKL_LIBRARIES_${domain} "")
   if(domain STREQUAL "dft")
-    if(ENABLE_MKLGPU_BACKEND)
-      add_dependencies(example_${domain}_${dfti_ct_sources} onemkl_${domain}_mklgpu)
-      list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklgpu)
-    endif()
-  endif()
-
-  target_link_libraries(example_${domain}_${dfti_ct_sources}
-      PUBLIC ${ONEMKL_LIBRARIES_${domain}}
-      ${ONEMKL_LIBRARIES_${domain}}
-      ONEMKL::SYCL::SYCL
-  )
-  # Register example as ctest
- add_test(NAME ${domain}/EXAMPLE/CT/${dfti_ct_sources} COMMAND example_${domain}_${dfti_ct_sources})
-endforeach(dfti_ct_sources)
-
-foreach(dfti_ct_sources ${DFTI_CT_SOURCES_CPU})
-  # add executable and define include directories
-  # add dependencies and link libraries
-  # register example as ctest
- add_executable(example_${domain}_${dfti_ct_sources} ${dfti_ct_sources}.cpp)
-  target_include_directories(example_${domain}_${dfti_ct_sources}
-      PUBLIC ${PROJECT_SOURCE_DIR}/examples/include
-      PUBLIC ${PROJECT_SOURCE_DIR}/include
-      PUBLIC ${CMAKE_BINARY_DIR}/bin
-  )
-
-  set(ONEMKL_LIBRARIES_${domain} "")
-  if(domain STREQUAL "dft")
-    if(ENABLE_MKLCPU_BACKEND)
+    if(dfti_ct_sources MATCHES "_mklcpu$")
       add_dependencies(example_${domain}_${dfti_ct_sources} onemkl_${domain}_mklcpu)
       list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu)
     endif()
+    if(dfti_ct_sources MATCHES "_mklgpu$")
+      add_dependencies(example_${domain}_${dfti_ct_sources} onemkl_${domain}_mklgpu)
+      list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklgpu)
+    endif() 
   endif()
 
   target_link_libraries(example_${domain}_${dfti_ct_sources}
