@@ -78,7 +78,7 @@ jobs:
         cd $HOME/OpenSYCL/build
         mkdir tests-omp && cd tests-omp
         cmake \
-              -DHIPSYCL_TARGETS="omp" \
+              -DOPENSYCL_TARGETS="omp" \
               -DOpenSYCL_DIR=/opt/OpenSYCL/lib/cmake/OpenSYCL ../../tests
         make -j 2 VERBOSE=ON
     - name: Open SYCL tests for CPU
