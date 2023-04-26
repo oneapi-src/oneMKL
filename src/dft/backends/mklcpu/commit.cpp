@@ -162,13 +162,6 @@ void commit_derived_impl<prec, dom>::set_value(mklcpu_desc_t* descHandle,
         }
     }
 }
-
-template <dft::detail::precision prec, dft::detail::domain dom>
-sycl::buffer<mklcpu_desc_t, 1>
-commit_derived_impl<prec, dom>::get_handle_buffer() noexcept {
-    return bidirection_buffer;
-}
-
 } // namespace detail
 
 template <dft::detail::precision prec, dft::detail::domain dom>
