@@ -121,7 +121,7 @@ jobs:
               -DTARGET_DOMAINS=blas \
               -DREF_BLAS_ROOT=/opt/lapack/ \
               -DhipSYCL_DIR=/opt/OpenSYCL/lib/cmake/hipSYCL \
-              -DHIPSYCL_TARGETS="omp;hip:gfx906" \
+              -DHIPSYCL_TARGETS="omp;cuda:sm_60" \
               -DONEMKL_SYCL_IMPLEMENTATION=hipsycl ..
         cmake --build . -j2
         cmake --install . --prefix /opt/oneMKL
