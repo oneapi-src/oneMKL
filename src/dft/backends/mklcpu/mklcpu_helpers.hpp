@@ -32,8 +32,6 @@ namespace dft {
 namespace mklcpu {
 namespace detail {
 
-// host_task automatically uses run_on_host_intel if it is supported by the
-//  compiler. Otherwise, it falls back to single_task.
 template <typename K, typename H, typename F>
 static inline auto host_task_internal(H& cgh, F f, int) -> decltype(cgh.host_task(f)) {
     return cgh.host_task(f);
