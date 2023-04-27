@@ -26,7 +26,6 @@ set(ONEMKL_WARNINGS "")
 include(CheckCXXCompilerFlag)
 macro(add_warning flag)
   check_cxx_compiler_flag(${flag} IS_SUPPORTED)
-  message(STATUS "DBG '${flag}': ${IS_SUPPORTED}")
   if(${IS_SUPPORTED})
     list(APPEND ONEMKL_WARNINGS ${flag})
   else()
@@ -40,7 +39,7 @@ add_warning("-Wshadow")
 add_warning("-Wconversion")
 add_warning("-Wpedantic")
 
-message(STATUS "Using warnings: ${ONEMKL_WARNINGS}")
+message(VERBOSE "Domains with warnings enabled use: ${ONEMKL_WARNINGS}")
 
 # The onemkl_warnings target can be linked to any other target to enable warnings.
 target_compile_options(onemkl_warnings INTERFACE ${ONEMKL_WARNINGS})

@@ -62,8 +62,10 @@
 #include <CL/sycl.hpp>
 #endif
 #ifndef __HIPSYCL__
-#if __has_include(<sycl/backend/cuda.hpp>)
+#if __has_include(<sycl/context.hpp>)
+#if __SYCL_COMPILER_VERSION <= 20220930
 #include <sycl/backend/cuda.hpp>
+#endif
 #else
 #include <CL/sycl/backend/cuda.hpp>
 #endif
