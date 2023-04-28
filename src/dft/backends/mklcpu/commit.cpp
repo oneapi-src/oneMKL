@@ -54,10 +54,10 @@ commit_derived_impl<prec, dom>::commit_derived_impl(
         if (config_values.dimensions.size() == 1) {
             status[dir] = DftiCreateDescriptor(&bidirection_handle[dir], mklcpu_prec, mklcpu_dom, 1,
                                                config_values.dimensions[0]);
-        } else {
+        }
+        else {
             status[dir] = DftiCreateDescriptor(&bidirection_handle[dir], mklcpu_prec, mklcpu_dom,
-                                               rank,
-                                               config_values.dimensions.data());
+                                               rank, config_values.dimensions.data());
         }
     }
 
@@ -93,7 +93,7 @@ void commit_derived_impl<prec, dom>::commit(
                     status[dir] = DftiCommitDescriptor(bidir_handle_obj[dir]);
 
                 // this is important for real-batched transforms, as the backward transform would
-                // be inconsistent based on the stride setup, but once recommited before backward 
+                // be inconsistent based on the stride setup, but once recommited before backward
                 // it should work just fine. so we error out only if there is a issue with both.
                 if (status[0] != DFTI_NO_ERROR && status[1] != DFTI_NO_ERROR) {
                     std::string err = std::string("DftiCommitDescriptor failed with status : ") +

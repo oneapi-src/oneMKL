@@ -34,7 +34,7 @@ namespace mklcpu {
 namespace detail {
 
 // this is used for indexing bidirectional_handle
-enum DIR { fwd=0, bwd=1 };
+enum DIR { fwd = 0, bwd = 1 };
 
 template <dft::detail::precision prec, dft::detail::domain dom>
 class commit_derived_impl final : public dft::detail::commit_impl<prec, dom> {
@@ -52,12 +52,15 @@ public:
 
     virtual ~commit_derived_impl() override;
 
-    sycl::buffer<mklcpu_desc_t, 1> get_handle_buffer() noexcept { return bidirection_buffer; };
+    sycl::buffer<mklcpu_desc_t, 1> get_handle_buffer() noexcept {
+        return bidirection_buffer;
+    };
 
 private:
     // bidirectional_handle[0] is the forward handle, bidirectional_handle[1] is the backward handle
     std::array<mklcpu_desc_t, 2> bidirection_handle{ nullptr, nullptr };
-    sycl::buffer<mklcpu_desc_t , 1> bidirection_buffer{ bidirection_handle.data(), sycl::range<1>{ 2 } };
+    sycl::buffer<mklcpu_desc_t, 1> bidirection_buffer{ bidirection_handle.data(),
+                                                       sycl::range<1>{ 2 } };
 
     template <typename... Args>
     void set_value_item(mklcpu_desc_t hand, enum DFTI_CONFIG_PARAM name, Args... args);

@@ -94,7 +94,8 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
         auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
         detail::host_task<class host_kernel_back_inplace>(cgh, [=]() {
-            DFT_ERROR status = DftiComputeBackward(desc_acc[detail::DIR::bwd], inout_acc.get_pointer());
+            DFT_ERROR status =
+                DftiComputeBackward(desc_acc[detail::DIR::bwd], inout_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception(
                     "dft/backends/mklcpu", "compute_backward",
@@ -125,7 +126,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
 
         detail::host_task<class host_kernel_split_back_inplace>(cgh, [=]() {
             DFT_ERROR status = DftiComputeBackward(desc_acc[detail::DIR::bwd], re_acc.get_pointer(),
-                                         im_acc.get_pointer());
+                                                   im_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception(
                     "dft/backends/mklcpu", "compute_backward",
@@ -156,7 +157,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
 
         detail::host_task<class host_kernel_back_outofplace>(cgh, [=]() {
             DFT_ERROR status = DftiComputeBackward(desc_acc[detail::DIR::bwd], in_acc.get_pointer(),
-                                         out_acc.get_pointer());
+                                                   out_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception(
                     "dft/backends/mklcpu", "compute_backward",
@@ -190,9 +191,9 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
         auto outim_acc = out_im.template get_access<sycl::access::mode::write>(cgh);
 
         detail::host_task<class host_kernel_split_back_outofplace>(cgh, [=]() {
-            DFT_ERROR status = DftiComputeBackward(desc_acc[detail::DIR::bwd], inre_acc.get_pointer(),
-                                         inim_acc.get_pointer(), outre_acc.get_pointer(),
-                                         outim_acc.get_pointer());
+            DFT_ERROR status = DftiComputeBackward(
+                desc_acc[detail::DIR::bwd], inre_acc.get_pointer(), inim_acc.get_pointer(),
+                outre_acc.get_pointer(), outim_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception(
                     "dft/backends/mklcpu", "compute_backward",
