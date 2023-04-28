@@ -432,13 +432,13 @@ inline void recommit_values(sycl::queue& sycl_queue) {
         // not changeable
         // FORWARD_DOMAIN, PRECISION, DIMENSION, COMMIT_STATUS
         { std::make_pair(config_param::LENGTHS, std::int64_t{ 10 }),
-          std::make_pair(config_param::FORWARD_SCALE, PrecisionType(1.2)),
-          std::make_pair(config_param::BACKWARD_SCALE, PrecisionType(3.4)) },
-        { std::make_pair(config_param::NUMBER_OF_TRANSFORMS, std::int64_t{ 5 }),
-          std::make_pair(config_param::COMPLEX_STORAGE, config_value::COMPLEX_COMPLEX),
+          std::make_pair(config_param::FORWARD_SCALE, PrecisionType{ 1.2f }),
+          std::make_pair(config_param::BACKWARD_SCALE, PrecisionType{ 3.4f }) },
+        { std::make_pair(config_param::COMPLEX_STORAGE, config_value::COMPLEX_COMPLEX),
           std::make_pair(config_param::REAL_STORAGE, config_value::REAL_REAL),
           std::make_pair(config_param::CONJUGATE_EVEN_STORAGE, config_value::COMPLEX_COMPLEX) },
         { std::make_pair(config_param::PLACEMENT, config_value::NOT_INPLACE),
+          std::make_pair(config_param::NUMBER_OF_TRANSFORMS, std::int64_t{ 5 }),
           std::make_pair(config_param::INPUT_STRIDES, strides.data()),
           std::make_pair(config_param::OUTPUT_STRIDES, strides.data()),
           std::make_pair(config_param::FWD_DISTANCE, std::int64_t{ 60 }),
@@ -563,13 +563,6 @@ int test_commit(sycl::device* dev) {
             std::cout << "Device does not support double precision." << std::endl;
             return test_skipped;
         }
-    }
-
-    // TODO remove after #288
-    if (sycl_queue.get_device().get_info<sycl::info::device::device_type>() ==
-        sycl::info::device_type::cpu) {
-        std::cout << "MKLCPU not implemented, skipping.\n";
-        return test_skipped;
     }
 
     get_commited<precision, domain>(sycl_queue);
