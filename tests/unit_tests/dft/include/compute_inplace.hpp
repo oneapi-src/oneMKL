@@ -256,6 +256,7 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         const auto real_strides = get_conjugate_even_real_component_strides(sizes);
         const auto complex_strides = get_conjugate_even_complex_strides(sizes);
+
         descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, complex_strides.data());
         descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, real_strides.data());
         commit_descriptor(descriptor, sycl_queue);

@@ -87,16 +87,14 @@ std::vector<DFTParams> test_params{
     { shape{ 3, 7, 2 }, i64{ 1 } }, { shape{ 8, 8, 9 }, i64{ 1 } },
 };
 
-// not currently implemented apis
-std::vector<DFTParams> no_tests{};
-
 INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_in_place,
                          testing::Combine(testing::ValuesIn(devices),
                                           testing::ValuesIn(test_params)),
                          DFTParamsPrint{});
 
 INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_real_real_in_place,
-                         testing::Combine(testing::ValuesIn(devices), testing::ValuesIn(no_tests)),
+                         testing::Combine(testing::ValuesIn(devices),
+                                          testing::ValuesIn(test_params)),
                          DFTParamsPrint{});
 
 INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_out_of_place,
@@ -105,7 +103,8 @@ INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_out_of_place,
                          DFTParamsPrint{});
 
 INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_real_real_out_of_place,
-                         testing::Combine(testing::ValuesIn(devices), testing::ValuesIn(no_tests)),
+                         testing::Combine(testing::ValuesIn(devices),
+                                          testing::ValuesIn(test_params)),
                          DFTParamsPrint{});
 
 } // anonymous namespace

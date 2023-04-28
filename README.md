@@ -224,9 +224,14 @@ Supported domains: BLAS, LAPACK, RNG, DFT
             <td align="center">LLVM*, hipSYCL</td>
         </tr>
         <tr>
-            <td rowspan=1 align="center">DFT</td>
+            <td rowspan=2 align="center">DFT</td>
             <td align="center">Intel GPU</td>
-            <td rowspan=1 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++</td>
+        </tr>
+        <tr>
+            <td align="center">x86 CPU</td>
             <td align="center">Dynamic, Static</td>
             <td align="center">DPC++</td>
         </tr>
