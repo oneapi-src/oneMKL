@@ -20,7 +20,6 @@
 set(LIB_NAME onemkl_dft_mklgpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
-find_package(MKL REQUIRED)
 include(WarningsUtils)
 
 add_library(${LIB_NAME})
@@ -37,14 +36,13 @@ target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
           ${PROJECT_SOURCE_DIR}/src
           ${CMAKE_BINARY_DIR}/bin
-          ${MKL_INCLUDE}
 )
 
-target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT} ${MKL_COPT})
+target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
 
 target_link_libraries(${LIB_OBJ}
   PUBLIC ONEMKL::SYCL::SYCL
-  PUBLIC ${MKL_LINK_SYCL}
+  PUBLIC MKL::MKL_DPCPP
   PRIVATE onemkl_warnings
 )
 
