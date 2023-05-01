@@ -50,12 +50,18 @@ class ComputeTests_real_real_out_of_place
 
 #define INSTANTIATE_TEST(PRECISION, DOMAIN, PLACE, LAYOUT, STORAGE)                              \
     TEST_P(ComputeTests##_##LAYOUT##PLACE, DOMAIN##_##PRECISION##_##PLACE##_##LAYOUT##STORAGE) { \
-        auto test =                                                                              \
-            DFT_Test<oneapi::mkl::dft::precision::PRECISION, oneapi::mkl::dft::domain::DOMAIN>{  \
-                std::get<0>(GetParam()), std::get<1>(GetParam()).sizes,                          \
-                std::get<1>(GetParam()).batches                                                  \
-            };                                                                                   \
-        EXPECT_TRUEORSKIP(test.test_##PLACE##_##LAYOUT##STORAGE());                              \
+        try {                                                                                    \
+            auto test =                                                                          \
+                DFT_Test<oneapi::mkl::dft::precision::PRECISION,                                 \
+                         oneapi::mkl::dft::domain::DOMAIN>{ std::get<0>(GetParam()),             \
+                                                            std::get<1>(GetParam()).sizes,       \
+                                                            std::get<1>(GetParam()).batches };   \
+            EXPECT_TRUE(test.test_##PLACE##_##LAYOUT##STORAGE());                                \
+        }                                                                                        \
+        catch (oneapi::mkl::unimplemented & e) {                                                 \
+            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;           \
+            GTEST_SKIP();                                                                        \
+        }                                                                                        \
     }
 
 #define INSTANTIATE_TEST_DIMENSIONS_PRECISION_DOMAIN(PLACE, LAYOUT, STORAGE) \

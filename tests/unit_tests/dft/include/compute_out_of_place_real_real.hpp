@@ -61,17 +61,11 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_USM() {
         std::copy(input_re.begin(), input_re.end(), in_re.begin());
         std::copy(input_im.begin(), input_im.end(), in_im.begin());
 
-        std::vector<sycl::event> dependencies;
+        std::vector<sycl::event> no_dependencies;
 
-        try {
-            oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType, PrecisionType>(
-                descriptor, in_re.data(), in_im.data(), out_re.data(), out_im.data(), dependencies)
-                .wait();
-        }
-        catch (oneapi::mkl::unimplemented &e) {
-            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-            return test_skipped;
-        }
+        oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType, PrecisionType>(
+            descriptor, in_re.data(), in_im.data(), out_re.data(), out_im.data(), no_dependencies)
+            .wait();
         std::vector<FwdOutputType> output_data(size_total);
         for (std::size_t i = 0; i < output_data.size(); ++i) {
             output_data[i] = { out_re[i], out_im[i] };
@@ -79,16 +73,11 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_USM() {
         EXPECT_TRUE(check_equal_vector(output_data.data(), out_host_ref.data(), output_data.size(),
                                        abs_error_margin, rel_error_margin, std::cout));
 
-        try {
-            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                               PrecisionType, PrecisionType>(
-                descriptor, out_re.data(), out_im.data(), out_back_re.data(), out_back_im.data())
-                .wait();
-        }
-        catch (oneapi::mkl::unimplemented &e) {
-            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-            return test_skipped;
-        }
+        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
+                                           PrecisionType, PrecisionType>(
+            descriptor, out_re.data(), out_im.data(), out_back_re.data(), out_back_im.data(),
+            no_dependencies)
+            .wait();
 
         for (std::size_t i = 0; i < output_data.size(); ++i) {
             output_data[i] = { out_back_re[i], out_back_im[i] };
@@ -134,14 +123,8 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
         sycl::buffer<PrecisionType, 1> out_back_dev_re{ sycl::range<1>(size_total) };
         sycl::buffer<PrecisionType, 1> out_back_dev_im{ sycl::range<1>(size_total) };
 
-        try {
-            oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType, PrecisionType>(
-                descriptor, in_dev_re, in_dev_im, out_dev_re, out_dev_im);
-        }
-        catch (oneapi::mkl::unimplemented &e) {
-            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-            return test_skipped;
-        }
+        oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType, PrecisionType>(
+            descriptor, in_dev_re, in_dev_im, out_dev_re, out_dev_im);
 
         {
             auto acc_out_re = out_dev_re.template get_host_access();
@@ -155,15 +138,9 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
                                            std::cout));
         }
 
-        try {
-            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                               PrecisionType, PrecisionType>(
-                descriptor, out_dev_re, out_dev_im, out_back_dev_re, out_back_dev_im);
-        }
-        catch (oneapi::mkl::unimplemented &e) {
-            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-            return test_skipped;
-        }
+        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
+                                           PrecisionType, PrecisionType>(
+            descriptor, out_dev_re, out_dev_im, out_back_dev_re, out_back_dev_im);
 
         {
             auto acc_back_out_re = out_back_dev_re.template get_host_access();

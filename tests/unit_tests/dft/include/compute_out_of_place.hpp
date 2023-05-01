@@ -64,14 +64,8 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
         sycl::buffer<FwdOutputType, 1> bwd_buf{ sycl::range<1>(
             cast_unsigned(backward_distance * batches)) };
 
-        try {
-            oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
-                descriptor, fwd_buf, bwd_buf);
-        }
-        catch (oneapi::mkl::unimplemented &e) {
-            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-            return test_skipped;
-        }
+        oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
+            descriptor, fwd_buf, bwd_buf);
 
         {
             auto acc_bwd = bwd_buf.template get_host_access();
@@ -99,15 +93,9 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
             commit_descriptor(descriptor, sycl_queue);
         }
 
-        try {
-            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                               FwdOutputType, FwdInputType>(descriptor, bwd_buf,
-                                                                            fwd_buf);
-        }
-        catch (oneapi::mkl::unimplemented &e) {
-            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-            return test_skipped;
-        }
+        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
+                                           FwdOutputType, FwdInputType>(descriptor, bwd_buf,
+                                                                        fwd_buf);
     }
 
     EXPECT_TRUE(check_equal_vector(fwd_data.data(), input.data(), input.size(), abs_error_margin,
@@ -147,15 +135,9 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     std::vector<FwdOutputType, decltype(ua_output)> bwd(cast_unsigned(backward_distance * batches),
                                                         ua_output);
 
-    try {
-        oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
-            descriptor, fwd.data(), bwd.data(), no_dependencies)
-            .wait();
-    }
-    catch (oneapi::mkl::unimplemented &e) {
-        std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-        return test_skipped;
-    }
+    oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
+        descriptor, fwd.data(), bwd.data(), no_dependencies)
+        .wait();
 
     {
         auto bwd_iter = bwd.begin();
@@ -181,16 +163,10 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
         commit_descriptor(descriptor, sycl_queue);
     }
 
-    try {
-        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                           FwdOutputType, FwdInputType>(descriptor, bwd.data(),
-                                                                        fwd.data(), no_dependencies)
-            .wait();
-    }
-    catch (oneapi::mkl::unimplemented &e) {
-        std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-        return test_skipped;
-    }
+    oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>, FwdOutputType,
+                                       FwdInputType>(descriptor, bwd.data(), fwd.data(),
+                                                     no_dependencies)
+        .wait();
 
     EXPECT_TRUE(check_equal_vector(fwd.data(), input.data(), input.size(), abs_error_margin,
                                    rel_error_margin, std::cout));

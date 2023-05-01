@@ -53,16 +53,10 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
         std::copy(input_re.begin(), input_re.end(), inout_re.begin());
         std::copy(input_im.begin(), input_im.end(), inout_im.begin());
 
-        std::vector<sycl::event> dependencies;
-        try {
-            oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType>(
-                descriptor, inout_re.data(), inout_im.data(), dependencies)
-                .wait();
-        }
-        catch (oneapi::mkl::unimplemented &e) {
-            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-            return test_skipped;
-        }
+        std::vector<sycl::event> no_dependencies;
+        oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType>(
+            descriptor, inout_re.data(), inout_im.data(), no_dependencies)
+            .wait();
 
         std::vector<FwdOutputType> output_data(size_total);
         for (std::size_t i = 0; i < output_data.size(); ++i) {
@@ -73,7 +67,7 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
 
         oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
                                            PrecisionType>(descriptor, inout_re.data(),
-                                                          inout_im.data(), dependencies)
+                                                          inout_im.data(), no_dependencies)
             .wait();
 
         for (std::size_t i = 0; i < output_data.size(); ++i) {
@@ -123,14 +117,8 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
         sycl::buffer<PrecisionType, 1> inout_im_buf{ host_inout_im.data(),
                                                      sycl::range<1>(size_total) };
 
-        try {
-            oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType>(descriptor, inout_re_buf,
-                                                                           inout_im_buf);
-        }
-        catch (oneapi::mkl::unimplemented &e) {
-            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-            return test_skipped;
-        }
+        oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType>(descriptor, inout_re_buf,
+                                                                       inout_im_buf);
 
         {
             auto acc_inout_re = inout_re_buf.template get_host_access();
@@ -144,15 +132,8 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
                                            std::cout));
         }
 
-        try {
-            oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                               PrecisionType>(descriptor, inout_re_buf,
-                                                              inout_im_buf);
-        }
-        catch (oneapi::mkl::unimplemented &e) {
-            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;
-            return test_skipped;
-        }
+        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
+                                           PrecisionType>(descriptor, inout_re_buf, inout_im_buf);
 
         {
             auto acc_inout_re = inout_re_buf.template get_host_access();
