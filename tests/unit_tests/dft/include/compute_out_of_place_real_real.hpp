@@ -65,7 +65,7 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_USM() {
 
         oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType, PrecisionType>(
             descriptor, in_re.data(), in_im.data(), out_re.data(), out_im.data(), no_dependencies)
-            .wait();
+            .wait_and_throw();
         std::vector<FwdOutputType> output_data(size_total);
         for (std::size_t i = 0; i < output_data.size(); ++i) {
             output_data[i] = { out_re[i], out_im[i] };
@@ -77,7 +77,7 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_USM() {
                                            PrecisionType, PrecisionType>(
             descriptor, out_re.data(), out_im.data(), out_back_re.data(), out_back_im.data(),
             no_dependencies)
-            .wait();
+            .wait_and_throw();
 
         for (std::size_t i = 0; i < output_data.size(); ++i) {
             output_data[i] = { out_back_re[i], out_back_im[i] };

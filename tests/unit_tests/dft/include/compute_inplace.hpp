@@ -222,7 +222,7 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
     std::vector<sycl::event> no_dependencies;
     oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(descriptor, inout.data(),
                                                                   no_dependencies)
-        .wait();
+        .wait_and_throw();
 
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         std::vector<FwdInputType> conjugate_even_ref =
@@ -247,7 +247,7 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
     sycl::event done =
         oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
                                            FwdInputType>(descriptor, inout.data(), no_dependencies);
-    done.wait();
+    done.wait_and_throw();
 
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         for (std::size_t j = 0; j < real_first_dims; j++) {

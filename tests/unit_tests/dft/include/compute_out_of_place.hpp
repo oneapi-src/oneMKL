@@ -137,7 +137,7 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
 
     oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
         descriptor, fwd.data(), bwd.data(), no_dependencies)
-        .wait();
+        .wait_and_throw();
 
     {
         auto bwd_iter = bwd.begin();
@@ -166,7 +166,7 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>, FwdOutputType,
                                        FwdInputType>(descriptor, bwd.data(), fwd.data(),
                                                      no_dependencies)
-        .wait();
+        .wait_and_throw();
 
     EXPECT_TRUE(check_equal_vector(fwd.data(), input.data(), input.size(), abs_error_margin,
                                    rel_error_margin, std::cout));

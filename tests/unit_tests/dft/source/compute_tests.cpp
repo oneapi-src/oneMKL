@@ -56,7 +56,7 @@ class ComputeTests_real_real_out_of_place
                          oneapi::mkl::dft::domain::DOMAIN>{ std::get<0>(GetParam()),             \
                                                             std::get<1>(GetParam()).sizes,       \
                                                             std::get<1>(GetParam()).batches };   \
-            EXPECT_TRUE(test.test_##PLACE##_##LAYOUT##STORAGE());                                \
+            EXPECT_TRUEORSKIP(test.test_##PLACE##_##LAYOUT##STORAGE());                          \
         }                                                                                        \
         catch (oneapi::mkl::unimplemented & e) {                                                 \
             std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;           \
