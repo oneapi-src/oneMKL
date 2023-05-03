@@ -233,7 +233,12 @@ if(ENABLE_MKLGPU_BACKEND OR ENABLE_MKLCPU_BACKEND)
   else()
     set(MKL_LINK static)
   endif()
-  find_package(MKL REQUIRED)
+  # In case Intel oneMKL package doesn't include MKLConfig,
+  # use MKLConfig from the repo
+  find_package(MKL REQUIRED
+          HINTS ${MKL_ROOT}/lib/cmake
+                ${MKL_ROOT}/lib/cmake/mkl
+                ${PROJECT_SOURCE_DIR}/cmake/mkl)
 endif()
 
 # Set output directories for the project
