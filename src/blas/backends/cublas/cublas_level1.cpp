@@ -761,13 +761,19 @@ inline sycl::event rotg(const char *func_name, Func func, sycl::queue &queue, T1
     using cuDataType1 = typename CudaEquivalentType<T1>::Type;
     using cuDataType2 = typename CudaEquivalentType<T2>::Type;
     auto ctx = queue.get_context();
-    bool results_on_device = sycl::get_pointer_type(a, ctx) == sycl::usm::alloc::device;
+    bool results_on_device =
+        (sycl::get_pointer_type(a, ctx) == sycl::usm::alloc::device ||
+         sycl::get_pointer_type(b, ctx) == sycl::usm::alloc::device ||
+         sycl::get_pointer_type(c, ctx) == sycl::usm::alloc::device ||
+         sycl::get_pointer_type(s, ctx) == sycl::usm::alloc::device);
     if (results_on_device) {
-        if (sycl::get_pointer_type(b, ctx) == sycl::usm::alloc::unknown ||
+        if (sycl::get_pointer_type(a, ctx) == sycl::usm::alloc::unknown
+            sycl::get_pointer_type(b, ctx) == sycl::usm::alloc::unknown ||
             sycl::get_pointer_type(c, ctx) == sycl::usm::alloc::unknown ||
             sycl::get_pointer_type(s, ctx) == sycl::usm::alloc::unknown) {
             throw oneapi::mkl::exception(
-                "blas", "rotg", "If any pointer is device-only, all must be device accessible");
+                "blas", "rotg",
+                "If any pointer is only device accessible, all must be device accessible");
         }
     }
     auto done = queue.submit([&](sycl::handler &cgh) {
@@ -1014,12 +1020,17 @@ inline sycl::event rotmg(const char *func_name, Func func, sycl::queue &queue, T
                          T y1, T *param, const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     auto ctx = queue.get_context();
-    bool results_on_device = sycl::get_pointer_type(d1, ctx) == sycl::usm::alloc::device;
+    bool results_on_device =
+        (sycl::get_pointer_type(d1, ctx) == sycl::usm::alloc::device ||
+         sycl::get_pointer_type(d2, ctx) == sycl::usm::alloc::device ||
+         sycl::get_pointer_type(x1, ctx) == sycl::usm::alloc::device);
     if (results_on_device) {
-        if (sycl::get_pointer_type(d2, ctx) == sycl::usm::alloc::unknown ||
+        if (sycl::get_pointer_type(d1, ctx) == sycl::usm::alloc::unknown ||
+            sycl::get_pointer_type(d2, ctx) == sycl::usm::alloc::unknown ||
             sycl::get_pointer_type(x1, ctx) == sycl::usm::alloc::unknown) {
             throw oneapi::mkl::exception(
-                "blas", "rotmg", "If any pointer is device-only, all must be device accessible");
+                "blas", "rotmg",
+                "If any pointer is only device accessible, all must be device accessible");
         }
     }
     cuDataType *y1_;
