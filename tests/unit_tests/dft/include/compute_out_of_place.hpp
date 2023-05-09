@@ -43,13 +43,11 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
         sizes.begin(), sizes.end() - 1, get_backward_row_size<domain>(sizes), std::multiplies<>());
 
     descriptor_t descriptor{ sizes };
-    PrecisionType backward_scale = 1.f / static_cast<PrecisionType>(forward_elements);
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::NOT_INPLACE);
     descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
     descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
-    descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, backward_scale);
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         const auto complex_strides = get_conjugate_even_complex_strides(sizes);
         descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
@@ -98,6 +96,10 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
                                                                         fwd_buf);
     }
 
+    // account for scaling that occurs during DFT
+    std::for_each(input.begin(), input.end(),
+                  [this](auto &x) { x *= static_cast<PrecisionType>(forward_elements); });
+
     EXPECT_TRUE(check_equal_vector(fwd_data.data(), input.data(), input.size(), abs_error_margin,
                                    rel_error_margin, std::cout));
     return !::testing::Test::HasFailure();
@@ -114,13 +116,11 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
         sizes.begin(), sizes.end() - 1, get_backward_row_size<domain>(sizes), std::multiplies<>());
 
     descriptor_t descriptor{ sizes };
-    PrecisionType backward_scale = 1.f / static_cast<PrecisionType>(forward_elements);
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::NOT_INPLACE);
     descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_elements);
     descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
-    descriptor.set_value(oneapi::mkl::dft::config_param::BACKWARD_SCALE, backward_scale);
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         const auto complex_strides = get_conjugate_even_complex_strides(sizes);
         descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
@@ -167,6 +167,10 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
                                        FwdInputType>(descriptor, bwd.data(), fwd.data(),
                                                      no_dependencies)
         .wait_and_throw();
+
+    // account for scaling that occurs during DFT
+    std::for_each(input.begin(), input.end(),
+                  [this](auto &x) { x *= static_cast<PrecisionType>(forward_elements); });
 
     EXPECT_TRUE(check_equal_vector(fwd.data(), input.data(), input.size(), abs_error_margin,
                                    rel_error_margin, std::cout));

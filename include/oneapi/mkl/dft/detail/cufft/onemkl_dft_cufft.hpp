@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2022 Intel Corporation
+* Copyright Codeplay Software Ltd
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,21 +17,33 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef ONEMKL_CONFIG_H
-#define ONEMKL_CONFIG_H
+#ifndef _ONEMKL_DFT_CUFFT_HPP_
+#define _ONEMKL_DFT_CUFFT_HPP_
 
-#cmakedefine ENABLE_CUBLAS_BACKEND
-#cmakedefine ENABLE_CUSOLVER_BACKEND
-#cmakedefine ENABLE_CUFFT_BACKEND
-#cmakedefine ENABLE_ROCBLAS_BACKEND
-#cmakedefine ENABLE_ROCRAND_BACKEND
-#cmakedefine ENABLE_ROCSOLVER_BACKEND
-#cmakedefine ENABLE_CURAND_BACKEND
-#cmakedefine ENABLE_MKLCPU_BACKEND
-#cmakedefine ENABLE_MKLGPU_BACKEND
-#cmakedefine ENABLE_NETLIB_BACKEND
-#cmakedefine BUILD_SHARED_LIBS
-#cmakedefine REF_BLAS_LIBNAME "@REF_BLAS_LIBNAME@"
-#cmakedefine REF_CBLAS_LIBNAME "@REF_CBLAS_LIBNAME@"
-
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
+#include <CL/sycl.hpp>
 #endif
+
+#include "oneapi/mkl/detail/export.hpp"
+#include "oneapi/mkl/dft/detail/types_impl.hpp"
+
+namespace oneapi::mkl::dft {
+
+namespace detail {
+// Forward declarations
+template <precision prec, domain dom>
+class commit_impl;
+
+template <precision prec, domain dom>
+class descriptor;
+} // namespace detail
+
+namespace cufft {
+#include "oneapi/mkl/dft/detail/dft_ct.hxx"
+} // namespace cufft
+
+} // namespace oneapi::mkl::dft
+
+#endif // _ONEMKL_DFT_CUFFT_HPP_

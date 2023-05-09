@@ -58,7 +58,6 @@ void run_example(const sycl::device& dev) {
         desc(static_cast<std::int64_t>(N));
 
     // 2. variadic set_value
-    desc.set_value(oneapi::mkl::dft::config_param::FORWARD_SCALE, 1.f / static_cast<float>(N));
     desc.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS,
                    static_cast<std::int64_t>(1));
     desc.set_value(oneapi::mkl::dft::config_param::PLACEMENT,

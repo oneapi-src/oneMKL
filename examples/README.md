@@ -353,7 +353,7 @@ Random number generator example with uniform distribution ran OK on MKLCPU and C
 
 ## dft
 
-Compile-time dispatching example with mklgpu backend
+Compile-time dispatching example with MKLGPU backend
 
 ```none
 $ SYCL_DEVICE_FILTER=gpu ./bin/example_dft_complex_fwd_buffer_mklgpu
@@ -380,29 +380,54 @@ Running with single precision real data type on:
 DFT Complex USM example ran OK on MKLGPU
 ```
 
-Runtime dispatching example with both mklgpu backend
+Runtime dispatching example with both MKLGPU and cuFFT backend
 
 ```none
-SYCL_DEVICE_FILTER=gpu ./bin/example_dft_complex_fwd_buffer_mklgpu
+SYCL_DEVICE_FILTER=gpu ./bin/example_dft_real_fwd_usm
 
 ########################################################################
-# Complex out-of-place forward transform for Buffer API's example:
+# DFTI complex in-place forward transform with USM API example:
 #
 # Using APIs:
-#   Compile-time dispatch API
-#   Buffer forward complex out-of-place
+#   USM forward complex in-place
+#   Run-time dispatch
 #
 # Using single precision (float) data type
 #
-# For Intel GPU with Intel MKLGPU backend.
-#
+# Device will be selected during runtime.
 # The environment variable SYCL_DEVICE_FILTER can be used to specify
 # SYCL device
+#
 ########################################################################
 
-Running DFT Complex forward out-of-place buffer example
-Using compile-time dispatch API with MKLGPU.
-Running with single precision real data type on:
-	GPU device :Intel(R) UHD Graphics 750 [0x4c8a]
-DFT Complex USM example ran OK on MKLGPU
+Running DFT complex forward example on GPU device
+Device name is: Intel(R) UHD Graphics 750 [0x4c8a]
+Running with single precision real data type:
+DFT example run_time dispatch
+DFT example ran OK
+```
+
+```none
+SYCL_DEVICE_FILTER=gpu ./bin/example_dft_real_fwd_usm
+
+########################################################################
+# DFTI complex in-place forward transform with USM API example:
+#
+# Using APIs:
+#   USM forward complex in-place
+#   Run-time dispatch
+#
+# Using single precision (float) data type
+#
+# Device will be selected during runtime.
+# The environment variable SYCL_DEVICE_FILTER can be used to specify
+# SYCL device
+#
+########################################################################
+
+Running DFT complex forward example on GPU device
+Device name is: NVIDIA A100-PCIE-40GB
+Running with single precision real data type:
+DFT example run_time dispatch
+DFT example ran OK
 ```

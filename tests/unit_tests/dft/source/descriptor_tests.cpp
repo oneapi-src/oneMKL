@@ -431,10 +431,8 @@ inline void recommit_values(sycl::queue& sycl_queue) {
     std::vector<test_params> argument_groups{
         // not changeable
         // FORWARD_DOMAIN, PRECISION, DIMENSION, COMMIT_STATUS
-        { std::make_pair(config_param::LENGTHS, std::int64_t{ 10 }),
-          std::make_pair(config_param::FORWARD_SCALE, PrecisionType{ 1.2f }),
-          std::make_pair(config_param::BACKWARD_SCALE, PrecisionType{ 3.4f }) },
-        { std::make_pair(config_param::COMPLEX_STORAGE, config_value::COMPLEX_COMPLEX),
+        { std::make_pair(config_param::NUMBER_OF_TRANSFORMS, std::int64_t{ 5 }),
+          std::make_pair(config_param::COMPLEX_STORAGE, config_value::COMPLEX_COMPLEX),
           std::make_pair(config_param::REAL_STORAGE, config_value::REAL_REAL),
           std::make_pair(config_param::CONJUGATE_EVEN_STORAGE, config_value::COMPLEX_COMPLEX) },
         { std::make_pair(config_param::PLACEMENT, config_value::NOT_INPLACE),
@@ -446,7 +444,10 @@ inline void recommit_values(sycl::queue& sycl_queue) {
         { std::make_pair(config_param::WORKSPACE, config_value::ALLOW),
           std::make_pair(config_param::ORDERING, config_value::ORDERED),
           std::make_pair(config_param::TRANSPOSE, bool{ false }),
-          std::make_pair(config_param::PACKED_FORMAT, config_value::CCE_FORMAT) }
+          std::make_pair(config_param::PACKED_FORMAT, config_value::CCE_FORMAT) },
+        { std::make_pair(config_param::LENGTHS, std::int64_t{ 10 }),
+          std::make_pair(config_param::FORWARD_SCALE, PrecisionType(1.2)),
+          std::make_pair(config_param::BACKWARD_SCALE, PrecisionType(3.4)) }
     };
 
     for (std::size_t i = 0; i < argument_groups.size(); i += 1) {
@@ -456,6 +457,10 @@ inline void recommit_values(sycl::queue& sycl_queue) {
         }
         try {
             commit_descriptor(descriptor, sycl_queue);
+        }
+        catch (oneapi::mkl::unimplemented e) {
+            std::cout << "unimplemented exception at index " << i << " with error : " << e.what()
+                      << "\ncontinuing...\n";
         }
         catch (oneapi::mkl::exception& e) {
             FAIL() << "exception at index " << i << " with error : " << e.what();

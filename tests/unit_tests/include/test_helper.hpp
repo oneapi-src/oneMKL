@@ -119,6 +119,16 @@
 #define TEST_RUN_AMDGPU_ROCSOLVER_SELECT(q, func, ...)
 #endif
 
+#ifdef ENABLE_CUFFT_BACKEND
+#define TEST_RUN_NVIDIAGPU_CUFFT_SELECT_NO_ARGS(q, func) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::cufft>{ q })
+#define TEST_RUN_NVIDIAGPU_CUFFT_SELECT(q, func, ...) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::cufft>{ q }, __VA_ARGS__)
+#else
+#define TEST_RUN_NVIDIAGPU_CUFFT_SELECT_NO_ARGS(q, func)
+#define TEST_RUN_NVIDIAGPU_CUFFT_SELECT(q, func, ...)
+#endif
+
 #ifndef __HIPSYCL__
 #define CHECK_HOST_OR_CPU(q) q.get_device().is_cpu()
 #else
@@ -135,6 +145,9 @@
                 q.get_device().get_info<sycl::info::device::vendor_id>()); \
             if (vendor_id == INTEL_ID) {                                   \
                 TEST_RUN_INTELGPU_SELECT_NO_ARGS(q, func);                 \
+            }                                                              \
+            else if (vendor_id == NVIDIA_ID) {                             \
+                TEST_RUN_NVIDIAGPU_CUFFT_SELECT_NO_ARGS(q, func);          \
             }                                                              \
         }                                                                  \
     } while (0);

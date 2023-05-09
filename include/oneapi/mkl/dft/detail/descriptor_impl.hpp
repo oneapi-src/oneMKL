@@ -68,6 +68,10 @@ public:
     void commit(backend_selector<backend::mklgpu> selector);
 #endif
 
+#ifdef ENABLE_CUFFT_BACKEND
+    void commit(backend_selector<backend::cufft> selector);
+#endif
+
     const dft_values<prec, dom>& get_values() const noexcept {
         return values_;
     };
