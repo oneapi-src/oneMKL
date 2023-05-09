@@ -134,7 +134,7 @@ $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl_blas_mklcpu –lonemkl_blas_c
 
 ### Supported Configurations:
 
-Supported domains: BLAS, LAPACK, RNG
+Supported domains: BLAS, LAPACK, RNG, DFT
 
 #### Linux*
 
@@ -232,6 +232,18 @@ Supported domains: BLAS, LAPACK, RNG
             <td align="center">AMD rocRAND</td>
             <td align="center">Dynamic, Static</td>
             <td align="center">LLVM*, hipSYCL</td>
+        </tr>
+        <tr>
+            <td rowspan=2 align="center">DFT</td>
+            <td align="center">Intel GPU</td>
+            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++</td>
+        </tr>
+        <tr>
+            <td align="center">x86 CPU</td>
+            <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++</td>
         </tr>
     </tbody>
 </table>

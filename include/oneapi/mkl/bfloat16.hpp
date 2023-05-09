@@ -64,13 +64,13 @@ static inline float raw_to_float(std::uint32_t i) {
 struct bfloat16 {
     std::uint16_t raw;
 
-    bfloat16(int raw_, bool) : raw(raw_) {}
+    bfloat16(int raw_, bool) : raw(static_cast<std::uint16_t>(raw_)) {}
 
     bfloat16() = default;
     inline bfloat16(float f);
     bfloat16(double d) : bfloat16(float(d)) {}
     template <typename T>
-    bfloat16(T i, typename std::enable_if<std::is_integral<T>::value>::type *_ = nullptr)
+    bfloat16(T i, typename std::enable_if<std::is_integral<T>::value>::type * = nullptr)
             : bfloat16(float(i)) {}
 
     inline operator float() const;
@@ -219,7 +219,7 @@ bfloat16::bfloat16(float f) {
 }
 
 inline bfloat16::operator float() const {
-    return bfloat16_impl::raw_to_float(raw << 16);
+    return bfloat16_impl::raw_to_float(static_cast<std::uint32_t>(raw << 16));
 }
 
 } /* namespace mkl */

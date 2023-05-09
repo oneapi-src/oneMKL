@@ -1,5 +1,5 @@
 #===============================================================================
-# Copyright 2020-2022 Intel Corporation
+# Copyright 2020-2023 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -58,6 +58,12 @@ set(rng_TEST_LIST
       rng_service)
 
 set(rng_TEST_LINK "")
+
+# DFT config
+set(dft_TEST_LIST
+      dft_source)
+
+set(dft_TEST_LINK "")
 
 foreach(domain ${TARGET_DOMAINS})
   # Generate RT and CT test lists

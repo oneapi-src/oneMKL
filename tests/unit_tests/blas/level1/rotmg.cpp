@@ -130,15 +130,59 @@ int test(device* dev, oneapi::mkl::layout layout) {
 
     int error_mag = 50;
 
-    auto d1_accessor = d1_buffer.template get_access<access::mode::read>();
+    auto d1_accessor = d1_buffer.template get_host_access(read_only);
     bool good_d1 = check_equal(d1_accessor[0], d1_ref, error_mag, std::cout);
-    auto d2_accessor = d2_buffer.template get_access<access::mode::read>();
+    auto d2_accessor = d2_buffer.template get_host_access(read_only);
     bool good_d2 = check_equal(d2_accessor[0], d2_ref, error_mag, std::cout);
-    auto x1_accessor = x1_buffer.template get_access<access::mode::read>();
+    auto x1_accessor = x1_buffer.template get_host_access(read_only);
     bool good_x1 = check_equal(x1_accessor[0], x1_ref, error_mag, std::cout);
-    auto param_accessor = param_buffer.template get_access<access::mode::read>();
-    bool good_param = check_equal_vector(param_accessor, param_ref, 5, 1, error_mag, std::cout);
-    bool good = good_d1 && good_d2 && good_x1 && good_param;
+    auto param_accessor = param_buffer.template get_host_access(read_only);
+
+    constexpr fp unit_matrix = -2;
+    constexpr fp rescaled_matrix = -1;
+    constexpr fp sltc_matrix = 0;
+    constexpr fp clts_matrix = 1;
+
+    fp flag = param_accessor[0];
+    fp h11 = param_accessor[1];
+    fp h12 = param_accessor[3];
+    fp h21 = param_accessor[2];
+    fp h22 = param_accessor[4];
+
+    fp flag_ref = param_ref[0];
+    fp h11_ref = param_ref[1];
+    fp h12_ref = param_ref[3];
+    fp h21_ref = param_ref[2];
+    fp h22_ref = param_ref[4];
+
+    bool flag_good = (flag_ref == flag);
+    bool h11_good = true;
+    bool h12_good = true;
+    bool h21_good = true;
+    bool h22_good = true;
+
+    /* Some values of param have to be ignored depending on the flag value since they are
+     * implementation defined */
+    if (flag_ref != unit_matrix) {
+        if (flag_ref == sltc_matrix) {
+            h12_good = check_equal(h12, h12_ref, error_mag, std::cout);
+            h21_good = check_equal(h21, h21_ref, error_mag, std::cout);
+        }
+        else if (flag_ref == clts_matrix) {
+            h11_good = check_equal(h11, h11_ref, error_mag, std::cout);
+            h22_good = check_equal(h22, h22_ref, error_mag, std::cout);
+        }
+        else {
+            flag_good = flag_good && (flag == rescaled_matrix);
+            h11_good = check_equal(h11, h11_ref, error_mag, std::cout);
+            h12_good = check_equal(h12, h12_ref, error_mag, std::cout);
+            h21_good = check_equal(h21, h21_ref, error_mag, std::cout);
+            h22_good = check_equal(h22, h22_ref, error_mag, std::cout);
+        }
+    }
+
+    bool good =
+        good_d1 && good_d2 && good_x1 && flag_good && h11_good && h12_good && h21_good && h22_good;
 
     return (int)good;
 }

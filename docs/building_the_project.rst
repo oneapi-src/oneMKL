@@ -293,7 +293,7 @@ Building for oneMKL
               [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]      # required only for testing
      cmake --build .
      ctest
-     cmake --install . --prefix <path_to_install_dir>
+     cmake --install . --prefix <path_to_install_dir>                    # required to have full package structure
 
 * On Windows*
 
@@ -308,7 +308,7 @@ Building for oneMKL
                        [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]      # required only for testing
      ninja 
      ctest
-     cmake --install . --prefix <path_to_install_dir>
+     cmake --install . --prefix <path_to_install_dir>                             # required to have full package structure
 
 Building for CUDA (with hipSYCL)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -331,7 +331,7 @@ With the cuBLAS backend:
             [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]            # required only for testing
    cmake --build .
    ctest
-   cmake --install . --prefix <path_to_install_dir>
+   cmake --install . --prefix <path_to_install_dir>                      # required to have full package structure
 
 To build with the cuRAND backend instead simply replace:
 
@@ -365,7 +365,7 @@ With the cuBLAS backend:
             [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]              # required only for testing
    cmake --build .
    ctest
-   cmake --install . --prefix <path_to_install_dir>
+   cmake --install . --prefix <path_to_install_dir>                        # required to have full package structure
 
 To build with the cuRAND backend instead simply replace:
 
@@ -402,7 +402,7 @@ With the AMD rocBLAS backend:
             [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]   # required only for testing
    cmake --build .
    ctest
-   cmake --install . --prefix <path_to_install_dir>
+   cmake --install . --prefix <path_to_install_dir>             # required to have full package structure
 
 To build with the rocRAND backend instead simply replace:
 
@@ -441,7 +441,7 @@ With the AMD rocBLAS backend:
    cmake --build .
    export SYCL_DEVICE_FILTER=HIP
    ctest
-   cmake --install . --prefix <path_to_install_dir>
+   cmake --install . --prefix <path_to_install_dir>                        # required to have full package structure
 
 To build with the rocRAND backend instead simply replace:
 
@@ -614,7 +614,7 @@ CMake.
      - False     
    * - target_domains (list)
      - TARGET_DOMAINS (list)
-     - blas, lapack, rng
+     - blas, lapack, rng, dft
      - All domains 
 
 .. note::
@@ -633,6 +633,10 @@ CMake.
   ``SYCL_DEVICE_FILTER`` to ``HIP`` and provide ``-DHIP_TARGETS`` according to
   the targeted hardware. This backend has only been tested for the ``gfx90a``
   architecture (MI210) at the time of writing.
+
+.. note::
+  When building with ``BUILD_FUNCTIONAL_TESTS=yes`` (default option) only single CUDA backend can be built
+  (`#270 <https://github.com/oneapi-src/oneMKL/issues/270>`_).
 
 .. _project_cleanup:
 

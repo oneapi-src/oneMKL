@@ -181,7 +181,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t incx, int64_t incy, in
 
     // Compare the results of reference implementation and DPC++ implementation.
 
-    auto y_accessor = y_buffer.template get_access<access::mode::read>();
+    auto y_accessor = y_buffer.template get_host_access(read_only);
     bool good = true;
     for (i = 0; i < batch_size; i++) {
         good = good && check_equal_vector(y_accessor.get_pointer() + i * stride_y,

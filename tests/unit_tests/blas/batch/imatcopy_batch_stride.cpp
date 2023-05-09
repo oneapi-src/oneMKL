@@ -67,13 +67,13 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     int64_t stride_a, stride_b, stride;
     switch (layout) {
         case oneapi::mkl::layout::column_major:
-            stride_a = lda * m;
-            stride_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * m : ldb * n;
+            stride_a = lda * n;
+            stride_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * m;
             stride = std::max(stride_a, stride_b);
             break;
         case oneapi::mkl::layout::row_major:
-            stride_a = lda * n;
-            stride_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * m;
+            stride_a = lda * m;
+            stride_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * m : ldb * n;
             stride = std::max(stride_a, stride_b);
             break;
         default: break;
@@ -161,7 +161,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
 
     // Compare the results of reference implementation and DPC++ implementation.
 
-    auto AB_accessor = AB_buffer.template get_access<access::mode::read>();
+    auto AB_accessor = AB_buffer.template get_host_access(read_only);
     bool good = check_equal_matrix(AB_accessor, AB_ref, oneapi::mkl::layout::column_major,
                                    stride * batch_size, 1, stride * batch_size, 10, std::cout);
 

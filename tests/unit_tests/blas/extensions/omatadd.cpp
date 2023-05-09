@@ -82,8 +82,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
         default: break;
     }
 
-    vector<fp, allocator_helper<fp, 64>> A(size_a), B(size_b),
-        C(size_c), C_ref(size_c);
+    vector<fp, allocator_helper<fp, 64>> A(size_a), B(size_b), C(size_c), C_ref(size_c);
 
     rand_matrix(A.data(), oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
                 size_a, 1, size_a);
@@ -94,15 +93,14 @@ int test(device *dev, oneapi::mkl::layout layout) {
     copy_matrix(C.data(), oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
                 size_c, 1, size_c, C_ref.data());
 
-
     // Call reference OMATADD.
     int m_ref = (int)m;
     int n_ref = (int)n;
     int lda_ref = (int)lda;
     int ldb_ref = (int)ldb;
     int ldc_ref = (int)ldc;
-    omatadd_ref(layout, transa, transb, m_ref, n_ref, alpha, A.data(), lda_ref, beta,
-                B.data(), ldb_ref, C_ref.data(), ldc_ref);
+    omatadd_ref(layout, transa, transb, m_ref, n_ref, alpha, A.data(), lda_ref, beta, B.data(),
+                ldb_ref, C_ref.data(), ldc_ref);
 
     // Call DPC++ OMATADD
 
@@ -130,36 +128,35 @@ int test(device *dev, oneapi::mkl::layout layout) {
 #ifdef CALL_RT_API
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                oneapi::mkl::blas::column_major::omatadd(
-                    main_queue, transa, transb, m, n, alpha, A_buffer, lda, beta,
-                    B_buffer, ldb, C_buffer, ldc);
+                oneapi::mkl::blas::column_major::omatadd(main_queue, transa, transb, m, n, alpha,
+                                                         A_buffer, lda, beta, B_buffer, ldb,
+                                                         C_buffer, ldc);
                 break;
             case oneapi::mkl::layout::row_major:
-                oneapi::mkl::blas::row_major::omatadd(
-                    main_queue, transa, transb, m, n, alpha, A_buffer, lda, beta,
-                    B_buffer, ldb, C_buffer, ldc);
+                oneapi::mkl::blas::row_major::omatadd(main_queue, transa, transb, m, n, alpha,
+                                                      A_buffer, lda, beta, B_buffer, ldb, C_buffer,
+                                                      ldc);
                 break;
             default: break;
         }
 #else
         switch (layout) {
             case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatadd,
-                                   transa, transb, m, n, alpha, A_buffer, lda, beta,
-                                   B_buffer, ldb, C_buffer, ldc);
+                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatadd, transa,
+                                   transb, m, n, alpha, A_buffer, lda, beta, B_buffer, ldb,
+                                   C_buffer, ldc);
                 break;
             case oneapi::mkl::layout::row_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatadd, transa,
-                                   transb, m, n, alpha, A_buffer, lda, beta, B_buffer,
-                                   ldb, C_buffer, ldc);
+                                   transb, m, n, alpha, A_buffer, lda, beta, B_buffer, ldb,
+                                   C_buffer, ldc);
                 break;
             default: break;
         }
 #endif
     }
     catch (exception const &e) {
-        std::cout << "Caught synchronous SYCL exception during OMATADD:\n"
-                  << e.what() << std::endl;
+        std::cout << "Caught synchronous SYCL exception during OMATADD:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
@@ -168,16 +165,14 @@ int test(device *dev, oneapi::mkl::layout layout) {
     }
 
     catch (const std::runtime_error &error) {
-        std::cout << "Error raised during execution of OMATADD:\n"
-                  << error.what() << std::endl;
+        std::cout << "Error raised during execution of OMATADD:\n" << error.what() << std::endl;
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
 
-    auto C_accessor = C_buffer.template get_access<access::mode::read>();
-    bool good =
-        check_equal_matrix(C_accessor, C_ref, oneapi::mkl::layout::column_major,
-                           size_c, 1, size_c, 10, std::cout);
+    auto C_accessor = C_buffer.template get_host_access(read_only);
+    bool good = check_equal_matrix(C_accessor, C_ref, oneapi::mkl::layout::column_major, size_c, 1,
+                                   size_c, 10, std::cout);
 
     return (int)good;
 }
@@ -194,13 +189,11 @@ TEST_P(OmataddTests, RealDoublePrecision) {
 }
 
 TEST_P(OmataddTests, ComplexSinglePrecision) {
-    EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 TEST_P(OmataddTests, ComplexDoublePrecision) {
-    EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 INSTANTIATE_TEST_SUITE_P(OmataddTestSuite, OmataddTests,
