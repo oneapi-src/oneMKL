@@ -230,7 +230,24 @@ static inline void *malloc_shared(size_t align, size_t size, sycl::device dev, s
 #endif
 }
 
+static inline void *malloc_device(size_t align, size_t size, sycl::device dev, sycl::context ctx) {
+#ifdef _WIN64
+    return sycl::malloc_device(size, dev, ctx);
+#else
+#if defined(ENABLE_CUBLAS_BACKEND) || defined(ENABLE_ROCBLAS_BACKEND)
+    return sycl::aligned_alloc_device(align, size, dev, ctx);
+#endif
+#if !defined(ENABLE_CUBLAS_BACKEND) && !defined(ENABLE_ROCBLAS_BACKEND)
+    return sycl::malloc_device(size, dev, ctx);
+#endif
+#endif
+}
+
 static inline void free_shared(void *p, sycl::context ctx) {
+    sycl::free(p, ctx);
+}
+
+static inline void free_usm(void *p, sycl::context ctx) {
     sycl::free(p, ctx);
 }
 
