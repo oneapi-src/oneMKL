@@ -45,7 +45,7 @@ extern std::vector<sycl::device *> devices;
 
 namespace {
 
-template <typename fp, typename fp_scalar>
+template <typename fp, typename fp_scalar, usm::alloc alloc_type = usm::alloc::shared>
 int test(device *dev, oneapi::mkl::layout layout) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
@@ -86,15 +86,29 @@ int test(device *dev, oneapi::mkl::layout layout) {
     ::rotg((fp_ref *)&a_ref, (fp_ref *)&b_ref, (fp_scalar *)&c_ref, (fp_ref *)&s_ref);
 
     // Call DPC++ ROTG.
-    fp *a_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), *dev, cxt);
-    fp *b_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), *dev, cxt);
-    fp *s_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), *dev, cxt);
-    fp_scalar *c_p = (fp_scalar *)oneapi::mkl::malloc_shared(64, sizeof(fp_scalar), *dev, cxt);
+    fp *a_p, *b_p, *s_p;
+    fp_scalar *c_p;
+    if constexpr (alloc_type == usm::alloc::shared) {
+        a_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), *dev, cxt);
+        b_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), *dev, cxt);
+        s_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), *dev, cxt);
+        c_p = (fp_scalar *)oneapi::mkl::malloc_shared(64, sizeof(fp_scalar), *dev, cxt);
+    }
+    else if constexpr (alloc_type == usm::alloc::device) {
+        a_p = (fp *)oneapi::mkl::malloc_device(64, sizeof(fp), *dev, cxt);
+        b_p = (fp *)oneapi::mkl::malloc_device(64, sizeof(fp), *dev, cxt);
+        s_p = (fp *)oneapi::mkl::malloc_device(64, sizeof(fp), *dev, cxt);
+        c_p = (fp_scalar *)oneapi::mkl::malloc_device(64, sizeof(fp_scalar), *dev, cxt);
+    }
+    else {
+        throw std::runtime_error("Bad alloc_type");
+    }
 
-    a_p[0] = a;
-    b_p[0] = b;
-    s_p[0] = s;
-    c_p[0] = c;
+    main_queue.memcpy(a_p, &a, sizeof(fp));
+    main_queue.memcpy(b_p, &b, sizeof(fp));
+    main_queue.memcpy(s_p, &s, sizeof(fp));
+    main_queue.memcpy(c_p, &c, sizeof(fp_scalar));
+    main_queue.wait();
 
     try {
 #ifdef CALL_RT_API
@@ -140,17 +154,17 @@ int test(device *dev, oneapi::mkl::layout layout) {
 
     // Compare the results of reference implementation and DPC++ implementation.
 
-    bool good_a = check_equal(a_p[0], a_ref, 4, std::cout);
-    bool good_b = check_equal(b_p[0], b_ref, 4, std::cout);
-    bool good_s = check_equal(s_p[0], s_ref, 4, std::cout);
-    bool good_c = check_equal(c_p[0], c_ref, 4, std::cout);
+    bool good_a = check_equal_ptr(main_queue, a_p, a_ref, 4, std::cout);
+    bool good_b = check_equal_ptr(main_queue, b_p, b_ref, 4, std::cout);
+    bool good_s = check_equal_ptr(main_queue, s_p, s_ref, 4, std::cout);
+    bool good_c = check_equal_ptr(main_queue, c_p, c_ref, 4, std::cout);
 
     bool good = good_a && good_b && good_c && good_s;
 
-    oneapi::mkl::free_shared(a_p, cxt);
-    oneapi::mkl::free_shared(b_p, cxt);
-    oneapi::mkl::free_shared(s_p, cxt);
-    oneapi::mkl::free_shared(c_p, cxt);
+    oneapi::mkl::free_usm(a_p, cxt);
+    oneapi::mkl::free_usm(b_p, cxt);
+    oneapi::mkl::free_usm(s_p, cxt);
+    oneapi::mkl::free_usm(c_p, cxt);
 
     return (int)good;
 }
@@ -160,17 +174,25 @@ class RotgUsmTests
 
 TEST_P(RotgUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP((test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
+    EXPECT_TRUEORSKIP(
+        (test<float, float, usm::alloc::device>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 TEST_P(RotgUsmTests, RealDoublePrecision) {
     EXPECT_TRUEORSKIP((test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
+    EXPECT_TRUEORSKIP((test<double, double, usm::alloc::device>(std::get<0>(GetParam()),
+                                                                std::get<1>(GetParam()))));
 }
 TEST_P(RotgUsmTests, ComplexSinglePrecision) {
     EXPECT_TRUEORSKIP(
         (test<std::complex<float>, float>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float, usm::alloc::device>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 TEST_P(RotgUsmTests, ComplexDoublePrecision) {
     EXPECT_TRUEORSKIP(
         (test<std::complex<double>, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double, usm::alloc::device>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 
 INSTANTIATE_TEST_SUITE_P(RotgUsmTestSuite, RotgUsmTests,

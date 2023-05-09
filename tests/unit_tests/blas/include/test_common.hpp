@@ -461,6 +461,13 @@ typename std::enable_if<std::is_integral<fp>::value, bool>::type check_equal(fp 
 }
 
 template <typename fp>
+bool check_equal_ptr(sycl::queue queue, fp *x, fp x_ref, int error_mag) {
+    fp x_host;
+    queue.memcpy(&x_host, x, sizeof(fp)).wait();
+    return check_equal(x_host, x_ref, error_mag);
+}
+
+template <typename fp>
 bool check_equal_trsm(fp x, fp x_ref, int error_mag) {
     using fp_real = typename complex_info<fp>::real_type;
     fp_real bound = std::max(fp_real(5e-5), (error_mag * num_components<fp>() *
@@ -485,6 +492,13 @@ bool check_equal(fp x, fp x_ref, int error_mag, std::ostream &out) {
         out << "Difference in result: DPC++ " << x << " vs. Reference " << x_ref << std::endl;
     }
     return good;
+}
+
+template <typename fp>
+bool check_equal_ptr(sycl::queue queue, fp *x, fp x_ref, int error_mag, std::ostream &out) {
+    fp x_host;
+    queue.memcpy(&x_host, x, sizeof(fp)).wait();
+    return check_equal(x_host, x_ref, error_mag, out);
 }
 
 template <typename fp>
