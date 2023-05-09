@@ -159,7 +159,7 @@ descriptor<prec, dom>::descriptor(std::int64_t length)
         : descriptor<prec, dom>(std::vector<std::int64_t>{ length }) {}
 
 template <precision prec, domain dom>
-descriptor<prec, dom>::~descriptor() {}
+descriptor<prec, dom>::~descriptor() = default;
 
 template <precision prec, domain dom>
 void descriptor<prec, dom>::get_value(config_param param, ...) const {

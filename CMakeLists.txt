@@ -41,20 +41,29 @@ endif()
 option(BUILD_SHARED_LIBS "Build dynamic libraries" ON)
 
 ## Backends
-option(ENABLE_MKLCPU_BACKEND "" ON)
-option(ENABLE_MKLGPU_BACKEND "" ON)
+option(ENABLE_MKLCPU_BACKEND "Enable the Intel oneMKL CPU backend for supported interfaces" ON)
+option(ENABLE_MKLGPU_BACKEND "Enable the Intel oneMKL GPU backend for supported interfaces" ON)
 if(ENABLE_MKLCPU_BACKEND)
-  option(ENABLE_MKLCPU_THREAD_TBB "" ON)
+  option(ENABLE_MKLCPU_THREAD_TBB "Enable the use of Intel TBB with the oneMKL CPU backend" ON)
 endif()
-option(ENABLE_CUBLAS_BACKEND "" OFF)
 
-option(ENABLE_CUSOLVER_BACKEND "" OFF)
+# blas
+option(ENABLE_CUBLAS_BACKEND "Enable the cuBLAS backend for the BLAS interface" OFF)
+option(ENABLE_ROCBLAS_BACKEND "Enable the rocBLAS backend for the BLAS interface" OFF)
+option(ENABLE_NETLIB_BACKEND "Enable the Netlib backend for the BLAS interface" OFF)
 
-option(ENABLE_ROCBLAS_BACKEND "" OFF)
-option(ENABLE_CURAND_BACKEND "" OFF)
-option(ENABLE_ROCRAND_BACKEND "" OFF)
-option(ENABLE_ROCSOLVER_BACKEND "" OFF)
-option(ENABLE_NETLIB_BACKEND "" OFF)
+# rand
+option(ENABLE_CURAND_BACKEND "Enable the cuRAND backend for the RNG interface" OFF)
+option(ENABLE_ROCRAND_BACKEND "Enable the rocRAND backend for the RNG interface" OFF)
+
+# lapack
+option(ENABLE_CUSOLVER_BACKEND "Enable the cuSOLVER backend for the LAPACK interface" OFF)
+option(ENABLE_ROCSOLVER_BACKEND "Enable the rocSOLVER backend for the LAPACK interface" OFF)
+
+# dft
+option(ENABLE_CUFFT_BACKEND "Enable the cuFFT backend for the DFT interface" OFF)
+
+
 set(ONEMKL_SYCL_IMPLEMENTATION "dpc++" CACHE STRING "Name of the SYCL compiler")
 set(HIP_TARGETS "" CACHE STRING "Target HIP architectures")
 
@@ -89,7 +98,8 @@ if(ENABLE_MKLCPU_BACKEND
   list(APPEND DOMAINS_LIST "rng")
 endif()
 if(ENABLE_MKLGPU_BACKEND
-        OR ENABLE_MKLCPU_BACKEND)
+        OR ENABLE_MKLCPU_BACKEND
+        OR ENABLE_CUFFT_BACKEND)
   list(APPEND DOMAINS_LIST "dft")
 endif()
 
@@ -99,8 +109,8 @@ if(CMAKE_CXX_COMPILER OR NOT ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++")
     string(REPLACE "\\" "/" CMAKE_CXX_COMPILER ${CMAKE_CXX_COMPILER})
   endif()
 else()
-  if(ENABLE_CUBLAS_BACKEND OR ENABLE_CURAND_BACKEND OR ENABLE_ROCBLAS_BACKEND
-	  OR ENABLE_ROCRAND_BACKEND OR ENABLE_ROCSOLVER_BACKEND)
+  if(ENABLE_CUBLAS_BACKEND OR ENABLE_CURAND_BACKEND OR ENABLE_CUFFT_BACKEND
+   OR ENABLE_ROCBLAS_BACKEND OR ENABLE_ROCRAND_BACKEND OR ENABLE_ROCSOLVER_BACKEND)
     set(CMAKE_CXX_COMPILER "clang++")
   elseif(ENABLE_MKLGPU_BACKEND)
     if(UNIX)
