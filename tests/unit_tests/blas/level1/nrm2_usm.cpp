@@ -45,7 +45,7 @@ extern std::vector<sycl::device*> devices;
 
 namespace {
 
-template <typename fp, typename fp_res>
+template <typename fp, typename fp_res, usm::alloc alloc_type = usm::alloc::shared>
 int test(device* dev, oneapi::mkl::layout layout, int N, int incx) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
@@ -81,7 +81,16 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx) {
 
     // Call DPC++ NRM2.
 
-    auto result_p = (fp_res*)oneapi::mkl::malloc_shared(64, sizeof(fp_res), *dev, cxt);
+    fp_res* result_p;
+    if constexpr (alloc_type == usm::alloc::shared) {
+        result_p = (fp_res*)oneapi::mkl::malloc_shared(64, sizeof(fp_res), *dev, cxt);
+    }
+    else if constexpr (alloc_type == usm::alloc::device) {
+        result_p = (fp_res*)oneapi::mkl::malloc_device(64, sizeof(fp_res), *dev, cxt);
+    }
+    else {
+        throw std::runtime_error("Bad alloc_type");
+    }
 
     try {
 #ifdef CALL_RT_API
@@ -127,8 +136,8 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx) {
 
     // Compare the results of reference implementation and DPC++ implementation.
 
-    bool good = check_equal(*result_p, result_ref, N, std::cout);
-    oneapi::mkl::free_shared(result_p, cxt);
+    bool good = check_equal_ptr(main_queue, result_p, result_ref, N, std::cout);
+    oneapi::mkl::free_usm(result_p, cxt);
 
     return (int)good;
 }
@@ -141,6 +150,8 @@ TEST_P(Nrm2UsmTests, RealSinglePrecision) {
         (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2)));
     EXPECT_TRUEORSKIP(
         (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1)));
+    EXPECT_TRUEORSKIP((test<float, float, usm::alloc::device>(std::get<0>(GetParam()),
+                                                              std::get<1>(GetParam()), 101, 1)));
     EXPECT_TRUEORSKIP(
         (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3)));
 }
@@ -149,6 +160,8 @@ TEST_P(Nrm2UsmTests, RealDoublePrecision) {
         (test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2)));
     EXPECT_TRUEORSKIP(
         (test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1)));
+    EXPECT_TRUEORSKIP((test<double, double, usm::alloc::device>(std::get<0>(GetParam()),
+                                                                std::get<1>(GetParam()), 101, 1)));
     EXPECT_TRUEORSKIP(
         (test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3)));
 }
@@ -157,6 +170,8 @@ TEST_P(Nrm2UsmTests, ComplexSinglePrecision) {
                                                         std::get<1>(GetParam()), 1357, 2)));
     EXPECT_TRUEORSKIP((test<std::complex<float>, float>(std::get<0>(GetParam()),
                                                         std::get<1>(GetParam()), 1357, 1)));
+    EXPECT_TRUEORSKIP((test<std::complex<float>, float, usm::alloc::device>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 101, 1)));
     EXPECT_TRUEORSKIP((test<std::complex<float>, float>(std::get<0>(GetParam()),
                                                         std::get<1>(GetParam()), 1357, -3)));
 }
@@ -165,6 +180,8 @@ TEST_P(Nrm2UsmTests, ComplexDoublePrecision) {
                                                           std::get<1>(GetParam()), 1357, 2)));
     EXPECT_TRUEORSKIP((test<std::complex<double>, double>(std::get<0>(GetParam()),
                                                           std::get<1>(GetParam()), 1357, 1)));
+    EXPECT_TRUEORSKIP((test<std::complex<double>, double, usm::alloc::device>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 101, 1)));
     EXPECT_TRUEORSKIP((test<std::complex<double>, double>(std::get<0>(GetParam()),
                                                           std::get<1>(GetParam()), 1357, -3)));
 }

@@ -45,7 +45,7 @@ extern std::vector<sycl::device *> devices;
 
 namespace {
 
-template <typename fp>
+template <typename fp, usm::alloc alloc_type = usm::alloc::shared>
 int test(device *dev, oneapi::mkl::layout layout) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
@@ -80,17 +80,30 @@ int test(device *dev, oneapi::mkl::layout layout) {
     d2_ref = d2;
     x1_ref = x1;
 
+    fp *d1_p, *d2_p, *x1_p;
+    if constexpr (alloc_type == usm::alloc::device) {
+        d1_p = (fp *)oneapi::mkl::malloc_device(64, sizeof(fp), *dev, cxt);
+        d2_p = (fp *)oneapi::mkl::malloc_device(64, sizeof(fp), *dev, cxt);
+        x1_p = (fp *)oneapi::mkl::malloc_device(64, sizeof(fp), *dev, cxt);
+    }
+    else if constexpr (alloc_type == usm::alloc::shared) {
+        d1_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), *dev, cxt);
+        d2_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), *dev, cxt);
+        x1_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), *dev, cxt);
+    }
+    else {
+        throw std::runtime_error("Bad alloc_type");
+    }
+    main_queue.memcpy(d1_p, &d1, sizeof(fp));
+    main_queue.memcpy(d2_p, &d2, sizeof(fp));
+    main_queue.memcpy(x1_p, &x1, sizeof(fp));
+    main_queue.wait();
+
     // Call Reference ROTMG.
 
     ::rotmg(&d1_ref, &d2_ref, &x1_ref, &y1, (fp *)param_ref.data());
 
     // Call DPC++ ROTMG.
-    fp *d1_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), *dev, cxt);
-    fp *d2_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), *dev, cxt);
-    fp *x1_p = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp), *dev, cxt);
-    d1_p[0] = d1;
-    d2_p[0] = d2;
-    x1_p[0] = x1;
 
     try {
 #ifdef CALL_RT_API
@@ -136,15 +149,15 @@ int test(device *dev, oneapi::mkl::layout layout) {
 
     // Compare the results of reference implementation and DPC++ implementation.
 
-    bool good_d1 = check_equal(d1_p[0], d1_ref, 1, std::cout);
-    bool good_d2 = check_equal(d2_p[0], d2_ref, 1, std::cout);
-    bool good_x1 = check_equal(x1_p[0], x1_ref, 1, std::cout);
+    bool good_d1 = check_equal_ptr(main_queue, d1_p, d1_ref, 1, std::cout);
+    bool good_d2 = check_equal_ptr(main_queue, d2_p, d2_ref, 1, std::cout);
+    bool good_x1 = check_equal_ptr(main_queue, x1_p, x1_ref, 1, std::cout);
     bool good_param = check_equal_vector(param, param_ref, 5, 1, 1, std::cout);
     bool good = good_d1 && good_d2 && good_x1 && good_param;
 
-    oneapi::mkl::free_shared(d1_p, cxt);
-    oneapi::mkl::free_shared(d2_p, cxt);
-    oneapi::mkl::free_shared(x1_p, cxt);
+    oneapi::mkl::free_usm(d1_p, cxt);
+    oneapi::mkl::free_usm(d2_p, cxt);
+    oneapi::mkl::free_usm(x1_p, cxt);
 
     return (int)good;
 }
@@ -154,9 +167,13 @@ class RotmgUsmTests
 
 TEST_P(RotmgUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam())));
+    EXPECT_TRUEORSKIP(
+        (test<float, usm::alloc::device>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 TEST_P(RotmgUsmTests, RealDoublePrecision) {
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam())));
+    EXPECT_TRUEORSKIP(
+        (test<double, usm::alloc::device>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 
 INSTANTIATE_TEST_SUITE_P(RotmgUsmTestSuite, RotmgUsmTests,
