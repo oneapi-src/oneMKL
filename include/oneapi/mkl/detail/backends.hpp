@@ -36,6 +36,7 @@ enum class backend {
     netlib,
     rocblas,
     rocrand,
+    syclblas,
     cufft,
     unsupported
 };
@@ -47,8 +48,8 @@ static backendmap backend_map = {
     { backend::cublas, "cublas" },          { backend::cusolver, "cusolver" },
     { backend::curand, "curand" },          { backend::netlib, "netlib" },
     { backend::rocblas, "rocblas" },        { backend::rocrand, "rocrand" },
-    { backend::rocsolver, "rocsolver" },    { backend::cufft, "cufft" },
-    { backend::unsupported, "unsupported" }
+    { backend::rocsolver, "rocsolver" },    { backend::syclblas, "syclblas" },
+    { backend::cufft, "cufft" },            { backend::unsupported, "unsupported" }
 };
 
 } //namespace mkl

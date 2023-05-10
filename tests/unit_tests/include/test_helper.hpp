@@ -119,6 +119,13 @@
 #define TEST_RUN_AMDGPU_ROCSOLVER_SELECT(q, func, ...)
 #endif
 
+#ifdef ENABLE_SYCLBLAS_BACKEND
+#define TEST_RUN_SYCLBLAS_SELECT(q, func, ...) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::syclblas>{ q }, __VA_ARGS__)
+#else
+#define TEST_RUN_SYCLBLAS_SELECT(q, func, ...)
+#endif
+
 #ifdef ENABLE_CUFFT_BACKEND
 #define TEST_RUN_NVIDIAGPU_CUFFT_SELECT_NO_ARGS(q, func) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::cufft>{ q })
@@ -172,6 +179,7 @@
                 TEST_RUN_AMDGPU_ROCSOLVER_SELECT(q, func, __VA_ARGS__);    \
             }                                                              \
         }                                                                  \
+        TEST_RUN_SYCLBLAS_SELECT(q, func, __VA_ARGS__);                    \
     } while (0);
 
 void print_error_code(sycl::exception const &e);
