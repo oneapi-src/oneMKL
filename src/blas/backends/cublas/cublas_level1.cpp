@@ -767,7 +767,7 @@ inline sycl::event rotg(const char *func_name, Func func, sycl::queue &queue, T1
          sycl::get_pointer_type(c, ctx) == sycl::usm::alloc::device ||
          sycl::get_pointer_type(s, ctx) == sycl::usm::alloc::device);
     if (results_on_device) {
-        if (sycl::get_pointer_type(a, ctx) == sycl::usm::alloc::unknown
+        if (sycl::get_pointer_type(a, ctx) == sycl::usm::alloc::unknown ||
             sycl::get_pointer_type(b, ctx) == sycl::usm::alloc::unknown ||
             sycl::get_pointer_type(c, ctx) == sycl::usm::alloc::unknown ||
             sycl::get_pointer_type(s, ctx) == sycl::usm::alloc::unknown) {
