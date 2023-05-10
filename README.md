@@ -40,6 +40,10 @@ oneMKL is part of [oneAPI](https://oneapi.io).
             <td align="center">NVIDIA GPU</td>
         </tr>
         <tr>
+            <td align="center"><a href="https://developer.nvidia.com/cufft"> NVIDIA cuFFT</a> for NVIDIA GPU </td>
+            <td align="center">NVIDIA GPU</td>
+        </tr>
+        <tr>
             <td align="center"><a href="https://ww.netlib.org"> NETLIB LAPACK</a> for x86 CPU </td>
             <td align="center">x86 CPU</td>
         </tr>
@@ -242,6 +246,12 @@ Supported domains: BLAS, LAPACK, RNG, DFT
         </tr>
         <tr>
             <td align="center">x86 CPU</td>
+            <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++</td>
+        </tr>
+        <tr>
+            <td align="center">NVIDIA GPU</td>
+            <td align="center">NVIDIA cuFFT</td>
             <td align="center">Dynamic, Static</td>
             <td align="center">DPC++</td>
         </tr>

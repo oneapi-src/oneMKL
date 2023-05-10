@@ -97,6 +97,12 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
 #ifdef ENABLE_MKLGPU_BACKEND
               LIB_NAME("dft_mklgpu")
 #endif
+          } },
+        { device::nvidiagpu,
+          {
+#ifdef ENABLE_CUFFT_BACKEND
+              LIB_NAME("dft_cufft")
+#endif
           } } } },
 
     { domain::lapack,
