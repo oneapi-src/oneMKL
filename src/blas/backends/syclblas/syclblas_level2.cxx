@@ -186,7 +186,7 @@ void tbsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transp
 void tpmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
           oneapi::mkl::diag unit_diag, std::int64_t n, sycl::buffer<real_t, 1> &a,
           sycl::buffer<real_t, 1> &x, std::int64_t incx) {
-    throw unimplemented("blas", "tpmv", "");
+    CALL_SYCLBLAS_FN(::blas::_tpmv, queue, upper_lower, trans, unit_diag, n, a, x, incx);
 }
 
 void tpmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
