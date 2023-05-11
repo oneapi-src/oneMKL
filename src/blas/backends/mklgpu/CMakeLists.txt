@@ -19,7 +19,6 @@
 
 set(LIB_NAME onemkl_blas_mklgpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
-find_package(MKL REQUIRED)
 
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
@@ -32,12 +31,15 @@ target_include_directories(${LIB_OBJ}
           ${PROJECT_SOURCE_DIR}/src
           ${PROJECT_SOURCE_DIR}/src/include
           ${CMAKE_BINARY_DIR}/bin
-          ${MKL_INCLUDE}
 )
 
-target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT} ${MKL_COPT})
+target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
 
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ${MKL_LINK_SYCL})
+if(TARGET MKL::MKL_SYCL::BLAS)
+  target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL MKL::MKL_SYCL::BLAS)
+else()
+  target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL MKL::MKL_DPCPP)
+endif()
 
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON

@@ -21,6 +21,8 @@
 
 #include <complex>
 
+// INTEL_MKL_VERSION
+#include "mkl_version.h"
 #include "oneapi/mkl/types.hpp"
 
 namespace oneapi {

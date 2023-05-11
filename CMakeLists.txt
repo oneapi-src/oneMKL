@@ -187,14 +187,10 @@ if(WIN32 AND ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++")
   endforeach()
   set(CMAKE_CXX_COMPILE_OBJECT "<CMAKE_CXX_COMPILER> -fsycl /nologo <DEFINES> <INCLUDES> /EHsc <FLAGS> /Fo<OBJECT> -c <SOURCE>")
   set(CMAKE_CXX_CREATE_STATIC_LIBRARY "lib /nologo <OBJECTS> /out:<TARGET>")
-  set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> -fsycl -fsycl-device-code-split=per_kernel /nologo <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
-  set(MKL_SYCL_LIB "")
-  if(ENABLE_MKLGPU_BACKEND OR ENABLE_MKLCPU_BACKEND)
-    find_library(MKL_SYCL_LIB NAMES mkl_sycl
-      HINTS $ENV{MKLROOT} ${MKL_ROOT}
-      PATH_SUFFIXES lib/intel64)
+  if(CMAKE_VERSION VERSION_LESS "3.25.2")
+    set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> -fsycl -fsycl-device-code-split=per_kernel /nologo <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
+    set(CMAKE_CXX_CREATE_SHARED_LIBRARY "<CMAKE_CXX_COMPILER> -fsycl -fsycl-device-code-split=per_kernel /nologo <OBJECTS> <LINK_LIBRARIES> /link /out:<TARGET> /implib:<TARGET_IMPLIB> /pdb:<TARGET_PDB> /dll /version:<TARGET_VERSION_MAJOR>.<TARGET_VERSION_MINOR>")
   endif()
-  set(CMAKE_CXX_CREATE_SHARED_LIBRARY "<CMAKE_CXX_COMPILER> -fsycl -fsycl-device-code-split=per_kernel /nologo <OBJECTS> ${MKL_SYCL_LIB} /link /out:<TARGET> /implib:<TARGET_IMPLIB> /pdb:<TARGET_PDB> /dll /version:<TARGET_VERSION_MAJOR>.<TARGET_VERSION_MINOR> <LINK_FLAGS> <LINK_LIBRARIES>")
 endif()
 
 # Temporary disable sycl 2020 deprecations warnings for cuSOLVER and rocSOLVER
@@ -222,6 +218,28 @@ else()
   endif()
 endif()
 message(STATUS "TARGET_DOMAINS: ${TARGET_DOMAINS}")
+
+# Include Intel oneMKL
+if(ENABLE_MKLGPU_BACKEND OR ENABLE_MKLCPU_BACKEND)
+  set(MKL_ARCH intel64)
+  set(MKL_INTERFACE ilp64)
+  if(ENABLE_MKLCPU_THREAD_TBB)
+    set(MKL_THREADING tbb_thread)
+  else()
+    set(MKL_THREADING sequential)
+  endif()
+  if(BUILD_SHARED_LIBS AND NOT WIN32)
+    set(MKL_LINK dynamic)
+  else()
+    set(MKL_LINK static)
+  endif()
+  # In case Intel oneMKL package doesn't include MKLConfig,
+  # use MKLConfig from the repo
+  find_package(MKL REQUIRED
+          HINTS ${MKL_ROOT}/lib/cmake
+                ${MKL_ROOT}/lib/cmake/mkl
+                ${PROJECT_SOURCE_DIR}/cmake/mkl)
+endif()
 
 # Set output directories for the project
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
