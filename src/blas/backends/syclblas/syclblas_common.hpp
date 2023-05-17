@@ -141,7 +141,7 @@ inline auto convert_to_syclblas_type(ArgT... args) {
 **/
 template <typename CheckT, sycl::aspect AspectVal>
 struct throw_if_unsupported_by_device {
-/** Operator to throw if unsupported.
+    /** Operator to throw if unsupported.
  * 
  *  @tparam ArgTs The argument types to check.
  *  @param The message to include in the exception.
@@ -165,9 +165,9 @@ struct throw_if_unsupported_by_device {
 #define CALL_SYCLBLAS_FN(syclblasFunc, ...)                                                     \
     if constexpr (is_column_major()) {                                                          \
         detail::throw_if_unsupported_by_device<sycl::buffer<double>, sycl::aspect::fp64>{}(     \
-            " SYCL-BLAS function requiring fp64 support", __VA_ARGS__);                          \
+            " SYCL-BLAS function requiring fp64 support", __VA_ARGS__);                         \
         detail::throw_if_unsupported_by_device<sycl::buffer<sycl::half>, sycl::aspect::fp16>{}( \
-            " SYCL-BLAS function requiring fp16 support", __VA_ARGS__);                          \
+            " SYCL-BLAS function requiring fp16 support", __VA_ARGS__);                         \
         auto args = detail::convert_to_syclblas_type(__VA_ARGS__);                              \
         auto fn = [](auto&&... targs) {                                                         \
             syclblasFunc(std::forward<decltype(targs)>(targs)...);                              \
