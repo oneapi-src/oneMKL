@@ -118,9 +118,9 @@ int main(int argc, char** argv) {
                         if (dev.is_gpu() && vendor_id == INTEL_ID)
                             continue;
 #endif
-#if !defined(ENABLE_CUBLAS_BACKEND) && !defined(ENABLE_CURAND_BACKEND) && \
-    !defined(ENABLE_CUSOLVER_BACKEND) && !defined(ENABLE_SYCLBLAS_BACKEND_NVIDIA_GPU) \
-    && !defined(ENABLE_CUFFT_BACKEND)
+#if !defined(ENABLE_CUBLAS_BACKEND) && !defined(ENABLE_CURAND_BACKEND) &&                \
+    !defined(ENABLE_CUSOLVER_BACKEND) && !defined(ENABLE_SYCLBLAS_BACKEND_NVIDIA_GPU) && \
+    !defined(ENABLE_CUFFT_BACKEND)
                         if (dev.is_gpu() && vendor_id == NVIDIA_ID)
                             continue;
 #endif
