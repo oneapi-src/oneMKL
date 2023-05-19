@@ -17,7 +17,12 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-install(FILES FindMKL.cmake
-              FindCompiler.cmake
+install(FILES FindCompiler.cmake
         DESTINATION "lib/cmake/${PROJECT_NAME}"
 )
+
+if(ENABLE_MKLGPU_BACKEND OR ENABLE_MKLCPU_BACKEND)
+  install(FILES mkl/MKLConfig.cmake
+        DESTINATION "lib/cmake/${PROJECT_NAME}"
+  )
+endif()
