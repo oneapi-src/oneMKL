@@ -18,8 +18,8 @@ oneMKL is part of [oneAPI](https://oneapi.io).
     </thead>
     <tbody>
         <tr>
-            <td rowspan=10 align="center">oneMKL interface</td>
-            <td rowspan=10 align="center">oneMKL selector</td>
+            <td rowspan=11 align="center">oneMKL interface</td>
+            <td rowspan=11 align="center">oneMKL selector</td>
             <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for x86 CPU</td>
             <td align="center">x86 CPU</td>
         </tr>
@@ -238,7 +238,7 @@ Supported domains: BLAS, LAPACK, RNG, DFT
             <td align="center">LLVM*, hipSYCL</td>
         </tr>
         <tr>
-            <td rowspan=2 align="center">DFT</td>
+            <td rowspan=3 align="center">DFT</td>
             <td align="center">Intel GPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
