@@ -26,20 +26,31 @@
 #include <CL/sycl.hpp>
 #endif
 
+#include "types_impl.hpp"
+
 namespace oneapi::mkl {
 enum class backend;
 }
 
 namespace oneapi::mkl::dft::detail {
 
-enum class precision;
-enum class domain;
+template <precision prec, domain dom>
+class descriptor;
+
 template <precision prec, domain dom>
 class dft_values;
 
 template <precision prec, domain dom>
 class commit_impl {
+    sycl::queue queue_;
+    mkl::backend backend_;
+
 public:
+    using scalar_type = typename std::conditional_t<prec == precision::SINGLE, float, double>;
+    using fwd_type =
+        typename std::conditional_t<dom == domain::REAL, scalar_type, std::complex<scalar_type>>;
+    using bwd_type = std::complex<scalar_type>;
+
     commit_impl(sycl::queue queue, mkl::backend backend) : queue_(queue), backend_(backend) {}
 
     // rule of three
@@ -59,9 +70,90 @@ public:
 
     virtual void commit(const dft_values<prec, dom>&) = 0;
 
-private:
-    sycl::queue queue_;
-    mkl::backend backend_;
+    // xxxxward_oop_complex is only exposed for the REAL domain currently
+
+    // forward inplace COMPLEX_COMPLEX
+    virtual void forward_real(descriptor<prec, dom>& desc, sycl::buffer<scalar_type, 1>& inout) = 0;
+    virtual void forward_complex(descriptor<prec, dom>& desc, sycl::buffer<bwd_type, 1>& inout) = 0;
+    virtual sycl::event forward_real(descriptor<prec, dom>& desc, scalar_type* inout,
+                                     const std::vector<sycl::event>& dependencies) = 0;
+    virtual sycl::event forward_complex(descriptor<prec, dom>& desc, bwd_type* inout,
+                                        const std::vector<sycl::event>& dependencies) = 0;
+
+    // forward inplace REAL_REAL
+    virtual void forward_rr(descriptor<prec, dom>& desc, sycl::buffer<scalar_type, 1>& inout_re,
+                            sycl::buffer<scalar_type, 1>& inout_im) = 0;
+    virtual sycl::event forward_rr(descriptor<prec, dom>& desc, scalar_type* inout_re,
+                                   scalar_type* inout_im,
+                                   const std::vector<sycl::event>& dependencies) = 0;
+
+    // forward out-of-place COMPLEX_COMPLEX
+    virtual void forward_oop_real(descriptor<prec, dom>& desc, sycl::buffer<scalar_type, 1>& in,
+                                  sycl::buffer<scalar_type, 1>& out) = 0;
+    virtual void forward_oop_complex(descriptor<prec, dom>& desc, sycl::buffer<bwd_type, 1>& in,
+                                     sycl::buffer<bwd_type, 1>& out) = 0;
+    virtual void forward_oop_mixed(descriptor<prec, dom>& desc, sycl::buffer<fwd_type, 1>& in,
+                                   sycl::buffer<bwd_type, 1>& out) = 0;
+    virtual sycl::event forward_oop_real(descriptor<prec, dom>& desc, scalar_type* in,
+                                         scalar_type* out,
+                                         const std::vector<sycl::event>& dependencies) = 0;
+    virtual sycl::event forward_oop_complex(descriptor<prec, dom>& desc, bwd_type* in,
+                                            bwd_type* out,
+                                            const std::vector<sycl::event>& dependencies) = 0;
+    virtual sycl::event forward_oop_mixed(descriptor<prec, dom>& desc, fwd_type* in, bwd_type* out,
+                                          const std::vector<sycl::event>& dependencies) = 0;
+
+    // forward out-of-place REAL_REAL
+    virtual void forward_oop_rr(descriptor<prec, dom>& desc, sycl::buffer<scalar_type, 1>& in_re,
+                                sycl::buffer<scalar_type, 1>& in_im,
+                                sycl::buffer<scalar_type, 1>& out_re,
+                                sycl::buffer<scalar_type, 1>& out_im) = 0;
+    virtual sycl::event forward_oop_rr(descriptor<prec, dom>& desc, scalar_type* in_re,
+                                       scalar_type* in_im, scalar_type* out_re, scalar_type* out_im,
+                                       const std::vector<sycl::event>& dependencies) = 0;
+
+    // backward inplace COMPLEX_COMPLEX
+    virtual void backward_real(descriptor<prec, dom>& desc,
+                               sycl::buffer<scalar_type, 1>& inout) = 0;
+    virtual void backward_complex(descriptor<prec, dom>& desc,
+                                  sycl::buffer<bwd_type, 1>& inout) = 0;
+    virtual sycl::event backward_real(descriptor<prec, dom>& desc, scalar_type* inout,
+                                      const std::vector<sycl::event>& dependencies) = 0;
+    virtual sycl::event backward_complex(descriptor<prec, dom>& desc, bwd_type* inout,
+                                         const std::vector<sycl::event>& dependencies) = 0;
+
+    // backward inplace REAL_REAL
+    virtual void backward_rr(descriptor<prec, dom>& desc, sycl::buffer<scalar_type, 1>& inout_re,
+                             sycl::buffer<scalar_type, 1>& inout_im) = 0;
+    virtual sycl::event backward_rr(descriptor<prec, dom>& desc, scalar_type* inout_re,
+                                    scalar_type* inout_im,
+                                    const std::vector<sycl::event>& dependencies) = 0;
+
+    // backward out-of-place COMPLEX_COMPLEX
+    virtual void backward_oop_real(descriptor<prec, dom>& desc, sycl::buffer<scalar_type, 1>& in,
+                                   sycl::buffer<scalar_type, 1>& out) = 0;
+    virtual void backward_oop_complex(descriptor<prec, dom>& desc, sycl::buffer<bwd_type, 1>& in,
+                                      sycl::buffer<bwd_type, 1>& out) = 0;
+    virtual void backward_oop_mixed(descriptor<prec, dom>& desc, sycl::buffer<bwd_type, 1>& in,
+                                    sycl::buffer<fwd_type, 1>& out) = 0;
+    virtual sycl::event backward_oop_real(descriptor<prec, dom>& desc, scalar_type* in,
+                                          scalar_type* out,
+                                          const std::vector<sycl::event>& dependencies) = 0;
+    virtual sycl::event backward_oop_complex(descriptor<prec, dom>& desc, bwd_type* in,
+                                             bwd_type* out,
+                                             const std::vector<sycl::event>& dependencies) = 0;
+    virtual sycl::event backward_oop_mixed(descriptor<prec, dom>& desc, bwd_type* in, fwd_type* out,
+                                           const std::vector<sycl::event>& dependencies) = 0;
+
+    // backward out-of-place REAL_REAL
+    virtual void backward_oop_rr(descriptor<prec, dom>& desc, sycl::buffer<scalar_type, 1>& in_re,
+                                 sycl::buffer<scalar_type, 1>& in_im,
+                                 sycl::buffer<scalar_type, 1>& out_re,
+                                 sycl::buffer<scalar_type, 1>& out_im) = 0;
+    virtual sycl::event backward_oop_rr(descriptor<prec, dom>& desc, scalar_type* in_re,
+                                        scalar_type* in_im, scalar_type* out_re,
+                                        scalar_type* out_im,
+                                        const std::vector<sycl::event>& dependencies) = 0;
 };
 
 } // namespace oneapi::mkl::dft::detail

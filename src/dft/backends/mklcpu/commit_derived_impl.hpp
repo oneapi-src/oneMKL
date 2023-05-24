@@ -27,11 +27,7 @@
 // MKLCPU header
 #include "mkl_dfti.h"
 
-namespace oneapi {
-namespace mkl {
-namespace dft {
-namespace mklcpu {
-namespace detail {
+namespace oneapi::mkl::dft::mklcpu::detail {
 
 // this is used for indexing bidirectional_handle
 enum DIR { fwd = 0, bwd = 1 };
@@ -66,6 +62,9 @@ private:
     void set_value_item(mklcpu_desc_t hand, enum DFTI_CONFIG_PARAM name, Args... args);
 
     void set_value(mklcpu_desc_t* descHandle, const dft::detail::dft_values<prec, dom>& config);
+#define BACKEND mklcpu
+#include "../backend_compute_signature.cxx"
+#undef BACKEND
 };
 
 template <dft::detail::precision prec, dft::detail::domain dom>
@@ -74,10 +73,6 @@ using commit_t = dft::detail::commit_impl<prec, dom>;
 template <dft::detail::precision prec, dft::detail::domain dom>
 using commit_derived_t = detail::commit_derived_impl<prec, dom>;
 
-} // namespace detail
-} // namespace mklcpu
-} // namespace dft
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::dft::mklcpu::detail
 
 #endif // _ONEMKL_DFT_COMMIT_DERIVED_IMPL_HPP_

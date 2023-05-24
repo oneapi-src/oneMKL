@@ -431,8 +431,7 @@ inline void recommit_values(sycl::queue& sycl_queue) {
     std::vector<test_params> argument_groups{
         // not changeable
         // FORWARD_DOMAIN, PRECISION, DIMENSION, COMMIT_STATUS
-        { std::make_pair(config_param::NUMBER_OF_TRANSFORMS, std::int64_t{ 5 }),
-          std::make_pair(config_param::COMPLEX_STORAGE, config_value::COMPLEX_COMPLEX),
+        { std::make_pair(config_param::COMPLEX_STORAGE, config_value::COMPLEX_COMPLEX),
           std::make_pair(config_param::REAL_STORAGE, config_value::REAL_REAL),
           std::make_pair(config_param::CONJUGATE_EVEN_STORAGE, config_value::COMPLEX_COMPLEX) },
         { std::make_pair(config_param::PLACEMENT, config_value::NOT_INPLACE),
@@ -538,8 +537,9 @@ inline void swap_out_dead_queue(sycl::queue& sycl_queue) {
     auto inout = sycl::malloc_device<forward_type>(default_1d_lengths + 2, sycl_queue);
     sycl_queue.wait();
 
-    auto transform_event = oneapi::mkl::dft::compute_forward<decltype(descriptor), forward_type>(
-        descriptor, inout, std::vector<sycl::event>{});
+    sycl::event transform_event =
+        oneapi::mkl::dft::compute_forward<decltype(descriptor), forward_type>(
+            descriptor, inout, std::vector<sycl::event>{});
     sycl_queue.wait();
 
     // after waiting on the second queue, the event should be completed

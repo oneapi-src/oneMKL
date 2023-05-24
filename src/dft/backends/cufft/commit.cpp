@@ -224,6 +224,10 @@ public:
     void* get_handle() noexcept override {
         return plans.data();
     }
+
+#define BACKEND cufft
+#include "../backend_compute_signature.cxx"
+#undef BACKEND
 };
 } // namespace detail
 

@@ -82,16 +82,14 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     template <>                                                                                         \
     ONEMKL_EXPORT void compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(             \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & inout) {           \
-        detail::function_tables[detail::get_device(desc, "compute_forward")]                            \
-            .compute_forward_buffer_inplace_real_##EXT(desc, inout);                                    \
+        get_commit(desc)->forward_real(desc, inout);                                                    \
     }                                                                                                   \
                                                                                                         \
     /*In-place transform - complex*/                                                                    \
     template <>                                                                                         \
     ONEMKL_EXPORT void compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_BACKWARD>(         \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_BACKWARD, 1> & inout) {       \
-        detail::function_tables[detail::get_device(desc, "compute_forward")]                            \
-            .compute_forward_buffer_inplace_complex_##EXT(desc, inout);                                 \
+        get_commit(desc)->forward_complex(desc, inout);                                                 \
     }                                                                                                   \
                                                                                                         \
     /*In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format*/     \
@@ -99,8 +97,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     ONEMKL_EXPORT void compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(             \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & inout_re,          \
         sycl::buffer<T_REAL, 1> & inout_im) {                                                           \
-        detail::function_tables[detail::get_device(desc, "compute_forward")]                            \
-            .compute_forward_buffer_inplace_split_##EXT(desc, inout_re, inout_im);                      \
+        get_commit(desc)->forward_rr(desc, inout_re, inout_im);                                         \
     }                                                                                                   \
                                                                                                         \
     /*Out-of-place transform*/                                                                          \
@@ -109,8 +106,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_FORWARD, T_BACKWARD>(                 \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_FORWARD, 1> & in,             \
         sycl::buffer<T_BACKWARD, 1> & out) {                                                            \
-        detail::function_tables[detail::get_device(desc, "compute_forward")]                            \
-            .compute_forward_buffer_outofplace_##EXT(desc, in, out);                                    \
+        get_commit(desc)->forward_oop_mixed(desc, in, out);                                             \
     }                                                                                                   \
                                                                                                         \
     /*Out-of-place transform - real*/                                                                   \
@@ -119,8 +115,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                        \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & in,                \
         sycl::buffer<T_REAL, 1> & out) {                                                                \
-        detail::function_tables[detail::get_device(desc, "compute_forward")]                            \
-            .compute_forward_buffer_outofplace_real_##EXT(desc, in, out);                               \
+        get_commit(desc)->forward_oop_real(desc, in, out);                                              \
     }                                                                                                   \
                                                                                                         \
     /*Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format*/ \
@@ -130,8 +125,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & in_re,             \
         sycl::buffer<T_REAL, 1> & in_im, sycl::buffer<T_REAL, 1> & out_re,                              \
         sycl::buffer<T_REAL, 1> & out_im) {                                                             \
-        detail::function_tables[detail::get_device(desc, "compute_forward")]                            \
-            .compute_forward_buffer_outofplace_split_##EXT(desc, in_re, in_im, out_re, out_im);         \
+        get_commit(desc)->forward_oop_rr(desc, in_re, in_im, out_re, out_im);                           \
     }                                                                                                   \
                                                                                                         \
     /*USM version*/                                                                                     \
@@ -141,8 +135,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     ONEMKL_EXPORT sycl::event compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(      \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * inout,                              \
         const std::vector<sycl::event>& dependencies) {                                                 \
-        return detail::function_tables[detail::get_device(desc, "compute_forward")]                     \
-            .compute_forward_usm_inplace_real_##EXT(desc, inout, dependencies);                         \
+        return get_commit(desc)->forward_real(desc, inout, dependencies);                               \
     }                                                                                                   \
                                                                                                         \
     /*In-place transform - complex*/                                                                    \
@@ -151,8 +144,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_BACKWARD>(                            \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_BACKWARD * inout,                          \
         const std::vector<sycl::event>& dependencies) {                                                 \
-        return detail::function_tables[detail::get_device(desc, "compute_forward")]                     \
-            .compute_forward_usm_inplace_complex_##EXT(desc, inout, dependencies);                      \
+        return get_commit(desc)->forward_complex(desc, inout, dependencies);                            \
     }                                                                                                   \
                                                                                                         \
     /*In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format*/     \
@@ -160,8 +152,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     ONEMKL_EXPORT sycl::event compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(      \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * inout_re, T_REAL * inout_im,        \
         const std::vector<sycl::event>& dependencies) {                                                 \
-        return detail::function_tables[detail::get_device(desc, "compute_forward")]                     \
-            .compute_forward_usm_inplace_split_##EXT(desc, inout_re, inout_im, dependencies);           \
+        return get_commit(desc)->forward_rr(desc, inout_re, inout_im, dependencies);                    \
     }                                                                                                   \
                                                                                                         \
     /*Out-of-place transform*/                                                                          \
@@ -170,8 +161,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_FORWARD, T_BACKWARD>(                 \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_FORWARD * in, T_BACKWARD * out,            \
         const std::vector<sycl::event>& dependencies) {                                                 \
-        return detail::function_tables[detail::get_device(desc, "compute_forward")]                     \
-            .compute_forward_usm_outofplace_##EXT(desc, in, out, dependencies);                         \
+        return get_commit(desc)->forward_oop_mixed(desc, in, out, dependencies);                        \
     }                                                                                                   \
                                                                                                         \
     /*Out-of-place transform*/                                                                          \
@@ -180,8 +170,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                        \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * in, T_REAL * out,                   \
         const std::vector<sycl::event>& dependencies) {                                                 \
-        return detail::function_tables[detail::get_device(desc, "compute_forward")]                     \
-            .compute_forward_usm_outofplace_real_##EXT(desc, in, out, dependencies);                    \
+        return get_commit(desc)->forward_oop_real(desc, in, out, dependencies);                         \
     }                                                                                                   \
                                                                                                         \
     /*Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format*/ \
@@ -190,9 +179,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                        \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * in_re, T_REAL * in_im,              \
         T_REAL * out_re, T_REAL * out_im, const std::vector<sycl::event>& dependencies) {               \
-        return detail::function_tables[detail::get_device(desc, "compute_forward")]                     \
-            .compute_forward_usm_outofplace_split_##EXT(desc, in_re, in_im, out_re, out_im,             \
-                                                        dependencies);                                  \
+        return get_commit(desc)->forward_oop_rr(desc, in_re, in_im, out_re, out_im, dependencies);      \
     }                                                                                                   \
                                                                                                         \
     /*Buffer version*/                                                                                  \
@@ -201,16 +188,14 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     template <>                                                                                         \
     ONEMKL_EXPORT void compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(            \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & inout) {           \
-        detail::function_tables[detail::get_device(desc, "compute_backward")]                           \
-            .compute_backward_buffer_inplace_real_##EXT(desc, inout);                                   \
+        get_commit(desc)->backward_real(desc, inout);                                                   \
     }                                                                                                   \
                                                                                                         \
     /*In-place transform - complex */                                                                   \
     template <>                                                                                         \
     ONEMKL_EXPORT void compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_BACKWARD>(        \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_BACKWARD, 1> & inout) {       \
-        detail::function_tables[detail::get_device(desc, "compute_backward")]                           \
-            .compute_backward_buffer_inplace_complex_##EXT(desc, inout);                                \
+        get_commit(desc)->backward_complex(desc, inout);                                                \
     }                                                                                                   \
                                                                                                         \
     /*In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format*/     \
@@ -218,8 +203,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     ONEMKL_EXPORT void compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(            \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & inout_re,          \
         sycl::buffer<T_REAL, 1> & inout_im) {                                                           \
-        detail::function_tables[detail::get_device(desc, "compute_backward")]                           \
-            .compute_backward_buffer_inplace_split_##EXT(desc, inout_re, inout_im);                     \
+        get_commit(desc)->backward_rr(desc, inout_re, inout_im);                                        \
     }                                                                                                   \
                                                                                                         \
     /*Out-of-place transform*/                                                                          \
@@ -228,8 +212,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_BACKWARD, T_FORWARD>(                \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_BACKWARD, 1> & in,            \
         sycl::buffer<T_FORWARD, 1> & out) {                                                             \
-        detail::function_tables[detail::get_device(desc, "compute_backward")]                           \
-            .compute_backward_buffer_outofplace_##EXT(desc, in, out);                                   \
+        get_commit(desc)->backward_oop_mixed(desc, in, out);                                            \
     }                                                                                                   \
                                                                                                         \
     /*Out-of-place transform - real*/                                                                   \
@@ -238,8 +221,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                       \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & in,                \
         sycl::buffer<T_REAL, 1> & out) {                                                                \
-        return detail::function_tables[detail::get_device(desc, "compute_backward")]                    \
-            .compute_backward_buffer_outofplace_real_##EXT(desc, in, out);                              \
+        get_commit(desc)->backward_oop_real(desc, in, out);                                             \
     }                                                                                                   \
                                                                                                         \
     /*Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format*/ \
@@ -249,8 +231,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & in_re,             \
         sycl::buffer<T_REAL, 1> & in_im, sycl::buffer<T_REAL, 1> & out_re,                              \
         sycl::buffer<T_REAL, 1> & out_im) {                                                             \
-        detail::function_tables[detail::get_device(desc, "compute_backward")]                           \
-            .compute_backward_buffer_outofplace_split_##EXT(desc, in_re, in_im, out_re, out_im);        \
+        get_commit(desc)->backward_oop_rr(desc, in_re, in_im, out_re, out_im);                          \
     }                                                                                                   \
                                                                                                         \
     /*USM version*/                                                                                     \
@@ -261,8 +242,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(                               \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * inout,                              \
         const std::vector<sycl::event>& dependencies) {                                                 \
-        return detail::function_tables[detail::get_device(desc, "compute_backward")]                    \
-            .compute_backward_usm_inplace_real_##EXT(desc, inout, dependencies);                        \
+        return get_commit(desc)->backward_real(desc, inout, dependencies);                              \
     }                                                                                                   \
                                                                                                         \
     /*In-place transform - complex*/                                                                    \
@@ -271,8 +251,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_BACKWARD>(                           \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_BACKWARD * inout,                          \
         const std::vector<sycl::event>& dependencies) {                                                 \
-        return detail::function_tables[detail::get_device(desc, "compute_backward")]                    \
-            .compute_backward_usm_inplace_complex_##EXT(desc, inout, dependencies);                     \
+        return get_commit(desc)->backward_complex(desc, inout, dependencies);                           \
     }                                                                                                   \
                                                                                                         \
     /*In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format*/     \
@@ -281,8 +260,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(                               \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * inout_re, T_REAL * inout_im,        \
         const std::vector<sycl::event>& dependencies) {                                                 \
-        return detail::function_tables[detail::get_device(desc, "compute_backward")]                    \
-            .compute_backward_usm_inplace_split_##EXT(desc, inout_re, inout_im, dependencies);          \
+        return get_commit(desc)->backward_rr(desc, inout_re, inout_im, dependencies);                   \
     }                                                                                                   \
                                                                                                         \
     /*Out-of-place transform*/                                                                          \
@@ -291,8 +269,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_BACKWARD, T_FORWARD>(                \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_BACKWARD * in, T_FORWARD * out,            \
         const std::vector<sycl::event>& dependencies) {                                                 \
-        return detail::function_tables[detail::get_device(desc, "compute_backward")]                    \
-            .compute_backward_usm_outofplace_##EXT(desc, in, out, dependencies);                        \
+        return get_commit(desc)->backward_oop_mixed(desc, in, out, dependencies);                       \
     }                                                                                                   \
                                                                                                         \
     /*Out-of-place transform - real*/                                                                   \
@@ -301,8 +278,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                       \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * in, T_REAL * out,                   \
         const std::vector<sycl::event>& dependencies) {                                                 \
-        return detail::function_tables[detail::get_device(desc, "compute_backward")]                    \
-            .compute_backward_usm_outofplace_real_##EXT(desc, in, out, dependencies);                   \
+        return get_commit(desc)->backward_oop_real(desc, in, out, dependencies);                        \
     }                                                                                                   \
                                                                                                         \
     /*Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format*/ \
@@ -311,9 +287,8 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                       \
         dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * in_re, T_REAL * in_im,              \
         T_REAL * out_re, T_REAL * out_im, const std::vector<sycl::event>& dependencies) {               \
-        return detail::function_tables[detail::get_device(desc, "compute_backward")]                    \
-            .compute_backward_usm_outofplace_split_##EXT(desc, in_re, in_im, out_re, out_im,            \
-                                                         dependencies);                                 \
+        return get_commit(desc)->backward_oop_rr(desc, in_re, in_im, out_re, out_im,                    \
+                                                 dependencies);                                         \
     }
 
 // Signatures with forward_t=complex, backwards_t=complex are already instantiated for complex domain
@@ -325,8 +300,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_forward<dft::detail::descriptor<PRECISION, domain::REAL>, T_COMPLEX, T_COMPLEX>(      \
         dft::detail::descriptor<PRECISION, domain::REAL> & desc, sycl::buffer<T_COMPLEX, 1> & in, \
         sycl::buffer<T_COMPLEX, 1> & out) {                                                       \
-        detail::function_tables[detail::get_device(desc, "compute_forward")]                      \
-            .compute_forward_buffer_outofplace_complex_##EXT(desc, in, out);                      \
+        get_commit(desc)->forward_oop_complex(desc, in, out);                                     \
     }                                                                                             \
                                                                                                   \
     /*Out-of-place transform - complex*/                                                          \
@@ -335,8 +309,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_forward<dft::detail::descriptor<PRECISION, domain::REAL>, T_COMPLEX, T_COMPLEX>(      \
         dft::detail::descriptor<PRECISION, domain::REAL> & desc, T_COMPLEX * in, T_COMPLEX * out, \
         const std::vector<sycl::event>& dependencies) {                                           \
-        return detail::function_tables[detail::get_device(desc, "compute_forward")]               \
-            .compute_forward_usm_outofplace_complex_##EXT(desc, in, out, dependencies);           \
+        return get_commit(desc)->forward_oop_complex(desc, in, out, dependencies);                \
     }                                                                                             \
                                                                                                   \
     /*Out-of-place transform - complex*/                                                          \
@@ -345,8 +318,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_backward<dft::detail::descriptor<PRECISION, domain::REAL>, T_COMPLEX, T_COMPLEX>(     \
         dft::detail::descriptor<PRECISION, domain::REAL> & desc, sycl::buffer<T_COMPLEX, 1> & in, \
         sycl::buffer<T_COMPLEX, 1> & out) {                                                       \
-        detail::function_tables[detail::get_device(desc, "compute_backward")]                     \
-            .compute_backward_buffer_outofplace_complex_##EXT(desc, in, out);                     \
+        get_commit(desc)->backward_oop_complex(desc, in, out);                                    \
     }                                                                                             \
                                                                                                   \
     /*Out-of-place transform - complex*/                                                          \
@@ -355,8 +327,7 @@ inline oneapi::mkl::device get_device(descriptor<prec, dom>& desc, const char* f
     compute_backward<dft::detail::descriptor<PRECISION, domain::REAL>, T_COMPLEX, T_COMPLEX>(     \
         dft::detail::descriptor<PRECISION, domain::REAL> & desc, T_COMPLEX * in, T_COMPLEX * out, \
         const std::vector<sycl::event>& dependencies) {                                           \
-        return detail::function_tables[detail::get_device(desc, "compute_backward")]              \
-            .compute_backward_usm_outofplace_complex_##EXT(desc, in, out, dependencies);          \
+        return get_commit(desc)->backward_oop_complex(desc, in, out, dependencies);               \
     }
 
 ONEAPI_MKL_DFT_SIGNATURES(f, dft::detail::precision::SINGLE, dft::detail::domain::REAL, float,

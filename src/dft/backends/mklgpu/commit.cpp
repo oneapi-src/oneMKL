@@ -43,15 +43,12 @@ of this OneMKL open-source library. Consequently, the types under dft::TYPE are 
 and types under dft::detail::TYPE are from this library.
 **/
 
-namespace oneapi {
-namespace mkl {
-namespace dft {
-namespace mklgpu {
+namespace oneapi::mkl::dft::mklgpu {
 namespace detail {
 
 /// Commit impl class specialization for MKLGPU.
 template <dft::detail::precision prec, dft::detail::domain dom>
-class commit_derived_impl final : public dft::detail::commit_impl<prec, dom> {
+class mklgpu_commit final : public dft::detail::commit_impl<prec, dom> {
 private:
     // Equivalent MKLGPU precision and domain from OneMKL's precision / domain.
     static constexpr dft::precision mklgpu_prec = to_mklgpu(prec);
@@ -59,7 +56,7 @@ private:
     using mklgpu_descriptor_t = dft::descriptor<mklgpu_prec, mklgpu_dom>;
 
 public:
-    commit_derived_impl(sycl::queue queue, const dft::detail::dft_values<prec, dom>& config_values)
+    mklgpu_commit(sycl::queue queue, const dft::detail::dft_values<prec, dom>& config_values)
             : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::mklgpu),
               handle(config_values.dimensions) {
         // MKLGPU does not throw an informative exception for the following:
@@ -86,8 +83,11 @@ public:
         return &handle;
     }
 
-    ~commit_derived_impl() override = default;
+    ~mklgpu_commit() override = default;
 
+#define BACKEND mklgpu
+#include "../backend_compute_signature.cxx"
+#undef BACKEND
 private:
     // The native MKLGPU class.
     mklgpu_descriptor_t handle;
@@ -134,7 +134,7 @@ private:
 template <dft::detail::precision prec, dft::detail::domain dom>
 dft::detail::commit_impl<prec, dom>* create_commit(const dft::detail::descriptor<prec, dom>& desc,
                                                    sycl::queue& sycl_queue) {
-    return new detail::commit_derived_impl<prec, dom>(sycl_queue, desc.get_values());
+    return new detail::mklgpu_commit<prec, dom>(sycl_queue, desc.get_values());
 }
 
 template dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::REAL>*
@@ -154,7 +154,4 @@ create_commit(
     const dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>&,
     sycl::queue&);
 
-} // namespace mklgpu
-} // namespace dft
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::dft::mklgpu

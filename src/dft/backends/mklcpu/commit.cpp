@@ -36,10 +36,7 @@
 #include "mkl_service.h"
 #include "mkl_dfti.h"
 
-namespace oneapi {
-namespace mkl {
-namespace dft {
-namespace mklcpu {
+namespace oneapi::mkl::dft::mklcpu {
 namespace detail {
 
 template <dft::detail::precision prec, dft::detail::domain dom>
@@ -103,7 +100,7 @@ void commit_derived_impl<prec, dom>::commit(
                 }
             });
         })
-        .wait();
+        .wait_and_throw();
 }
 
 template <dft::detail::precision prec, dft::detail::domain dom>
@@ -187,7 +184,4 @@ create_commit(
     const dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>&,
     sycl::queue&);
 
-} // namespace mklcpu
-} // namespace dft
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::dft::mklcpu
