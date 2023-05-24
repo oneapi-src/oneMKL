@@ -20,7 +20,6 @@
 set(LIB_NAME onemkl_dft_cufft)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
-find_package(CUDAToolkit REQUIRED)
 
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
@@ -41,7 +40,14 @@ target_include_directories(${LIB_OBJ}
 
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT} ${MKL_COPT})
 
-target_link_libraries(${LIB_OBJ} PRIVATE CUDA::cufft CUDA::cuda_driver)
+if (${CMAKE_VERSION} VERSION_LESS "3.17.0")
+  find_package(CUDA REQUIRED)
+  target_include_directories(${LIB_OBJ} PRIVATE ${CUDA_INCLUDE_DIRS})
+  target_link_libraries(${LIB_OBJ} PRIVATE cuda ${CUDA_CUFFT_LIBRARIES})
+else()
+  find_package(CUDAToolkit REQUIRED)
+  target_link_libraries(${LIB_OBJ} PRIVATE CUDA::cufft CUDA::cuda_driver)
+endif()
 
 target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ${MKL_LINK_SYCL})
 
