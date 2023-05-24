@@ -103,7 +103,7 @@ void commit_derived_impl<prec, dom>::commit(
                 }
             });
         })
-        .wait();
+        .wait_and_throw();
 }
 
 template <dft::detail::precision prec, dft::detail::domain dom>

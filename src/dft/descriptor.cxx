@@ -29,9 +29,9 @@ namespace dft {
 namespace detail {
 
 // Compute the default strides. Modifies real_strides and complex_strides arguments.
-void compute_default_strides(const std::vector<std::int64_t>& dimensions,
-                             std::vector<std::int64_t>& input_strides,
-                             std::vector<std::int64_t>& output_strides) {
+inline void compute_default_strides(const std::vector<std::int64_t>& dimensions,
+                                    std::vector<std::int64_t>& input_strides,
+                                    std::vector<std::int64_t>& output_strides) {
     auto rank = dimensions.size();
     std::vector<std::int64_t> strides(rank + 1, 1);
     for (auto i = rank - 1; i > 0; --i) {

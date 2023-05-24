@@ -172,6 +172,7 @@
                 TEST_RUN_NVIDIAGPU_CUBLAS_SELECT(q, func, __VA_ARGS__);    \
                 TEST_RUN_NVIDIAGPU_CUSOLVER_SELECT(q, func, __VA_ARGS__);  \
                 TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, __VA_ARGS__);    \
+                TEST_RUN_NVIDIAGPU_CUFFT_SELECT(q, func, __VA_ARGS__);     \
             }                                                              \
             else if (vendor_id == AMD_ID) {                                \
                 TEST_RUN_AMDGPU_ROCBLAS_SELECT(q, func, __VA_ARGS__);      \
@@ -253,12 +254,14 @@ static inline void *malloc_shared(size_t align, size_t size, sycl::device dev, s
 
 static inline void *malloc_device(size_t align, size_t size, sycl::device dev, sycl::context ctx) {
 #ifdef _WIN64
+    (void)align;
     return sycl::malloc_device(size, dev, ctx);
 #else
 #if defined(ENABLE_CUBLAS_BACKEND) || defined(ENABLE_ROCBLAS_BACKEND)
     return sycl::aligned_alloc_device(align, size, dev, ctx);
 #endif
 #if !defined(ENABLE_CUBLAS_BACKEND) && !defined(ENABLE_ROCBLAS_BACKEND)
+    (void)align;
     return sycl::malloc_device(size, dev, ctx);
 #endif
 #endif

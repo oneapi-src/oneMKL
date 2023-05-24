@@ -62,8 +62,11 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
         sycl::buffer<FwdOutputType, 1> bwd_buf{ sycl::range<1>(
             cast_unsigned(backward_distance * batches)) };
 
-        oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
-            descriptor, fwd_buf, bwd_buf);
+        auto forward = [](auto &&... params) {
+            oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(params...);
+        };
+
+        dispatch(sycl_queue, forward, descriptor, fwd_buf, bwd_buf);
 
         {
             auto acc_bwd = bwd_buf.template get_host_access();
@@ -91,9 +94,11 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
             commit_descriptor(descriptor, sycl_queue);
         }
 
-        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                           FwdOutputType, FwdInputType>(descriptor, bwd_buf,
-                                                                        fwd_buf);
+        auto backward = [](auto &&... params) {
+            oneapi::mkl::dft::compute_backward<descriptor_t, FwdOutputType, FwdInputType>(
+                params...);
+        };
+        dispatch(sycl_queue, backward, descriptor, bwd_buf, fwd_buf);
     }
 
     // account for scaling that occurs during DFT
@@ -135,9 +140,13 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     std::vector<FwdOutputType, decltype(ua_output)> bwd(cast_unsigned(backward_distance * batches),
                                                         ua_output);
 
-    oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
-        descriptor, fwd.data(), bwd.data(), no_dependencies)
-        .wait_and_throw();
+    sycl::event forward_event;
+    auto forward = [&forward_event](auto &&... params) {
+        forward_event =
+            oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(params...);
+    };
+    dispatch(sycl_queue, forward, descriptor, fwd.data(), bwd.data(), no_dependencies);
+    forward_event.wait_and_throw();
 
     {
         auto bwd_iter = bwd.begin();
@@ -163,10 +172,14 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
         commit_descriptor(descriptor, sycl_queue);
     }
 
-    oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>, FwdOutputType,
-                                       FwdInputType>(descriptor, bwd.data(), fwd.data(),
-                                                     no_dependencies)
-        .wait_and_throw();
+    sycl::event backward_event;
+    auto backward = [&backward_event](auto &&... params) {
+        backward_event =
+            oneapi::mkl::dft::compute_backward<descriptor_t, FwdOutputType, FwdInputType>(
+                params...);
+    };
+    dispatch(sycl_queue, backward, descriptor, bwd.data(), fwd.data(), no_dependencies);
+    backward_event.wait_and_throw();
 
     // account for scaling that occurs during DFT
     std::for_each(input.begin(), input.end(),

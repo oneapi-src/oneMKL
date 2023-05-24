@@ -64,14 +64,16 @@ void run_example(const sycl::device& cpu_device) {
                    static_cast<std::int64_t>(1));
 
     // 3. commit_descriptor (compile_time MKLCPU)
-    desc.commit(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue });
+    auto selector = oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ cpu_queue };
+    desc.commit(selector);
 
     // 4. compute_forward / compute_backward (MKLCPU)
     {
         sycl::buffer<std::complex<double>> input_buffer(input_data.data(), sycl::range<1>(N));
         sycl::buffer<std::complex<double>> output_buffer(output_data.data(), sycl::range<1>(N));
         oneapi::mkl::dft::compute_forward<decltype(desc), std::complex<double>,
-                                          std::complex<double>>(desc, input_buffer, output_buffer);
+                                          std::complex<double>>(selector, desc, input_buffer,
+                                                                output_buffer);
     }
 }
 

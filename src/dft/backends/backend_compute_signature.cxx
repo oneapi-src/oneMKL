@@ -18,13 +18,8 @@
 *******************************************************************************/
 
 /*
-When only a specific backend library is required (eg. libonemkl_dft_<BACKEND>) 
-it may be preferenable to only link to that specific backend library without
-the requirement that the main OneMKL library also be linked.
-
-To enable this, function signatures from the main dft library are duplicated
-here, forwarding directly to the backend implementation instead of the function
-table lookup mechanism.
+To allow applications to call the backend specific methods directly, function signatures from the main
+dft library are duplicated here, but with a `backend_selector` argument added to give the function a unique signature.
 
 This file should be included for each backend, with <BACKEND> defined to match
 the namespace of the backend's implementation.
@@ -32,10 +27,13 @@ the namespace of the backend's implementation.
 
 #include "oneapi/mkl/dft/forward.hpp"
 #include "oneapi/mkl/dft/backward.hpp"
+#include "oneapi/mkl/detail/backend_selector.hpp"
 
 namespace oneapi {
 namespace mkl {
 namespace dft {
+
+using selector = oneapi::mkl::backend_selector<backend::BACKEND>;
 
 #define ONEAPI_MKL_DFT_SIGNATURES(EXT, PRECISION, DOMAIN, T_REAL, T_FORWARD, T_BACKWARD)                \
                                                                                                         \
@@ -44,7 +42,8 @@ namespace dft {
     /*In-place transform - real*/                                                                       \
     template <>                                                                                         \
     ONEMKL_EXPORT void compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(             \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & inout) {           \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc,                                    \
+        sycl::buffer<T_REAL, 1> & inout) {                                                              \
         oneapi::mkl::dft::BACKEND::compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>,          \
                                                    T_REAL>(desc, inout);                                \
     }                                                                                                   \
@@ -52,7 +51,8 @@ namespace dft {
     /*In-place transform - complex*/                                                                    \
     template <>                                                                                         \
     ONEMKL_EXPORT void compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_BACKWARD>(         \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_BACKWARD, 1> & inout) {       \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc,                                    \
+        sycl::buffer<T_BACKWARD, 1> & inout) {                                                          \
         oneapi::mkl::dft::BACKEND::compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>,          \
                                                    T_BACKWARD>(desc, inout);                            \
     }                                                                                                   \
@@ -60,8 +60,8 @@ namespace dft {
     /*In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format*/     \
     template <>                                                                                         \
     ONEMKL_EXPORT void compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(             \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & inout_re,          \
-        sycl::buffer<T_REAL, 1> & inout_im) {                                                           \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc,                                    \
+        sycl::buffer<T_REAL, 1> & inout_re, sycl::buffer<T_REAL, 1> & inout_im) {                       \
         oneapi::mkl::dft::BACKEND::compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>,          \
                                                    T_REAL>(desc, inout_re, inout_im);                   \
     }                                                                                                   \
@@ -70,8 +70,8 @@ namespace dft {
     template <>                                                                                         \
     ONEMKL_EXPORT void                                                                                  \
     compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_FORWARD, T_BACKWARD>(                 \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_FORWARD, 1> & in,             \
-        sycl::buffer<T_BACKWARD, 1> & out) {                                                            \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc,                                    \
+        sycl::buffer<T_FORWARD, 1> & in, sycl::buffer<T_BACKWARD, 1> & out) {                           \
         oneapi::mkl::dft::BACKEND::compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>,          \
                                                    T_FORWARD, T_BACKWARD>(desc, in, out);               \
     }                                                                                                   \
@@ -80,7 +80,7 @@ namespace dft {
     template <>                                                                                         \
     ONEMKL_EXPORT void                                                                                  \
     compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                        \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & in,                \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & in,      \
         sycl::buffer<T_REAL, 1> & out) {                                                                \
         oneapi::mkl::dft::BACKEND::compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>,          \
                                                    T_REAL, T_REAL>(desc, in, out);                      \
@@ -90,9 +90,9 @@ namespace dft {
     template <>                                                                                         \
     ONEMKL_EXPORT void                                                                                  \
     compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                        \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & in_re,             \
-        sycl::buffer<T_REAL, 1> & in_im, sycl::buffer<T_REAL, 1> & out_re,                              \
-        sycl::buffer<T_REAL, 1> & out_im) {                                                             \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc,                                    \
+        sycl::buffer<T_REAL, 1> & in_re, sycl::buffer<T_REAL, 1> & in_im,                               \
+        sycl::buffer<T_REAL, 1> & out_re, sycl::buffer<T_REAL, 1> & out_im) {                           \
         oneapi::mkl::dft::BACKEND::compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>,          \
                                                    T_REAL, T_REAL>(desc, in_re, in_im, out_re,          \
                                                                    out_im);                             \
@@ -103,7 +103,7 @@ namespace dft {
     /*In-place transform - real*/                                                                       \
     template <>                                                                                         \
     ONEMKL_EXPORT sycl::event compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(      \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * inout,                              \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * inout,                    \
         const std::vector<sycl::event>& dependencies) {                                                 \
         return oneapi::mkl::dft::BACKEND::compute_forward<                                              \
             dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(desc, inout, dependencies);             \
@@ -113,7 +113,7 @@ namespace dft {
     template <>                                                                                         \
     ONEMKL_EXPORT sycl::event                                                                           \
     compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_BACKWARD>(                            \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_BACKWARD * inout,                          \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_BACKWARD * inout,                \
         const std::vector<sycl::event>& dependencies) {                                                 \
         return oneapi::mkl::dft::BACKEND::compute_forward<                                              \
             dft::detail::descriptor<PRECISION, DOMAIN>, T_BACKWARD>(desc, inout, dependencies);         \
@@ -122,8 +122,8 @@ namespace dft {
     /*In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format*/     \
     template <>                                                                                         \
     ONEMKL_EXPORT sycl::event compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(      \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * inout_re, T_REAL * inout_im,        \
-        const std::vector<sycl::event>& dependencies) {                                                 \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * inout_re,                 \
+        T_REAL * inout_im, const std::vector<sycl::event>& dependencies) {                              \
         return oneapi::mkl::dft::BACKEND::compute_forward<                                              \
             dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(desc, inout_re, inout_im,               \
                                                                 dependencies);                          \
@@ -133,8 +133,8 @@ namespace dft {
     template <>                                                                                         \
     ONEMKL_EXPORT sycl::event                                                                           \
     compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_FORWARD, T_BACKWARD>(                 \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_FORWARD * in, T_BACKWARD * out,            \
-        const std::vector<sycl::event>& dependencies) {                                                 \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_FORWARD * in,                    \
+        T_BACKWARD * out, const std::vector<sycl::event>& dependencies) {                               \
         return oneapi::mkl::dft::BACKEND::compute_forward<                                              \
             dft::detail::descriptor<PRECISION, DOMAIN>, T_FORWARD, T_BACKWARD>(desc, in, out,           \
                                                                                dependencies);           \
@@ -144,7 +144,7 @@ namespace dft {
     template <>                                                                                         \
     ONEMKL_EXPORT sycl::event                                                                           \
     compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                        \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * in, T_REAL * out,                   \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * in, T_REAL * out,         \
         const std::vector<sycl::event>& dependencies) {                                                 \
         return oneapi::mkl::dft::BACKEND::compute_forward<                                              \
             dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(desc, in, out,                  \
@@ -155,8 +155,9 @@ namespace dft {
     template <>                                                                                         \
     ONEMKL_EXPORT sycl::event                                                                           \
     compute_forward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                        \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * in_re, T_REAL * in_im,              \
-        T_REAL * out_re, T_REAL * out_im, const std::vector<sycl::event>& dependencies) {               \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * in_re,                    \
+        T_REAL * in_im, T_REAL * out_re, T_REAL * out_im,                                               \
+        const std::vector<sycl::event>& dependencies) {                                                 \
         return oneapi::mkl::dft::BACKEND::compute_forward<                                              \
             dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                                \
             desc, in_re, in_im, out_re, out_im, dependencies);                                          \
@@ -167,7 +168,8 @@ namespace dft {
     /*In-place transform - real*/                                                                       \
     template <>                                                                                         \
     ONEMKL_EXPORT void compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(            \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & inout) {           \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc,                                    \
+        sycl::buffer<T_REAL, 1> & inout) {                                                              \
         oneapi::mkl::dft::BACKEND::compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>,         \
                                                     T_REAL>(desc, inout);                               \
     }                                                                                                   \
@@ -175,7 +177,8 @@ namespace dft {
     /*In-place transform - complex */                                                                   \
     template <>                                                                                         \
     ONEMKL_EXPORT void compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_BACKWARD>(        \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_BACKWARD, 1> & inout) {       \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc,                                    \
+        sycl::buffer<T_BACKWARD, 1> & inout) {                                                          \
         oneapi::mkl::dft::BACKEND::compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>,         \
                                                     T_BACKWARD>(desc, inout);                           \
     }                                                                                                   \
@@ -183,8 +186,8 @@ namespace dft {
     /*In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format*/     \
     template <>                                                                                         \
     ONEMKL_EXPORT void compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(            \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & inout_re,          \
-        sycl::buffer<T_REAL, 1> & inout_im) {                                                           \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc,                                    \
+        sycl::buffer<T_REAL, 1> & inout_re, sycl::buffer<T_REAL, 1> & inout_im) {                       \
         oneapi::mkl::dft::BACKEND::compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>,         \
                                                     T_REAL>(desc, inout_re, inout_im);                  \
     }                                                                                                   \
@@ -193,8 +196,8 @@ namespace dft {
     template <>                                                                                         \
     ONEMKL_EXPORT void                                                                                  \
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_BACKWARD, T_FORWARD>(                \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_BACKWARD, 1> & in,            \
-        sycl::buffer<T_FORWARD, 1> & out) {                                                             \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc,                                    \
+        sycl::buffer<T_BACKWARD, 1> & in, sycl::buffer<T_FORWARD, 1> & out) {                           \
         oneapi::mkl::dft::BACKEND::compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>,         \
                                                     T_BACKWARD, T_FORWARD>(desc, in, out);              \
     }                                                                                                   \
@@ -203,7 +206,7 @@ namespace dft {
     template <>                                                                                         \
     ONEMKL_EXPORT void                                                                                  \
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                       \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & in,                \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & in,      \
         sycl::buffer<T_REAL, 1> & out) {                                                                \
         oneapi::mkl::dft::BACKEND::compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>,         \
                                                     T_REAL, T_REAL>(desc, in, out);                     \
@@ -213,9 +216,9 @@ namespace dft {
     template <>                                                                                         \
     ONEMKL_EXPORT void                                                                                  \
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                       \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, sycl::buffer<T_REAL, 1> & in_re,             \
-        sycl::buffer<T_REAL, 1> & in_im, sycl::buffer<T_REAL, 1> & out_re,                              \
-        sycl::buffer<T_REAL, 1> & out_im) {                                                             \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc,                                    \
+        sycl::buffer<T_REAL, 1> & in_re, sycl::buffer<T_REAL, 1> & in_im,                               \
+        sycl::buffer<T_REAL, 1> & out_re, sycl::buffer<T_REAL, 1> & out_im) {                           \
         oneapi::mkl::dft::BACKEND::compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>,         \
                                                     T_REAL, T_REAL>(desc, in_re, in_im, out_re,         \
                                                                     out_im);                            \
@@ -227,7 +230,7 @@ namespace dft {
     template <>                                                                                         \
     ONEMKL_EXPORT sycl::event                                                                           \
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(                               \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * inout,                              \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * inout,                    \
         const std::vector<sycl::event>& dependencies) {                                                 \
         return oneapi::mkl::dft::BACKEND::compute_backward<                                             \
             dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(desc, inout, dependencies);             \
@@ -237,7 +240,7 @@ namespace dft {
     template <>                                                                                         \
     ONEMKL_EXPORT sycl::event                                                                           \
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_BACKWARD>(                           \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_BACKWARD * inout,                          \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_BACKWARD * inout,                \
         const std::vector<sycl::event>& dependencies) {                                                 \
         return oneapi::mkl::dft::BACKEND::compute_backward<                                             \
             dft::detail::descriptor<PRECISION, DOMAIN>, T_BACKWARD>(desc, inout, dependencies);         \
@@ -247,8 +250,8 @@ namespace dft {
     template <>                                                                                         \
     ONEMKL_EXPORT sycl::event                                                                           \
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(                               \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * inout_re, T_REAL * inout_im,        \
-        const std::vector<sycl::event>& dependencies) {                                                 \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * inout_re,                 \
+        T_REAL * inout_im, const std::vector<sycl::event>& dependencies) {                              \
         return oneapi::mkl::dft::BACKEND::compute_backward<                                             \
             dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL>(desc, inout_re, inout_im,               \
                                                                 dependencies);                          \
@@ -258,8 +261,8 @@ namespace dft {
     template <>                                                                                         \
     ONEMKL_EXPORT sycl::event                                                                           \
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_BACKWARD, T_FORWARD>(                \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_BACKWARD * in, T_FORWARD * out,            \
-        const std::vector<sycl::event>& dependencies) {                                                 \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_BACKWARD * in,                   \
+        T_FORWARD * out, const std::vector<sycl::event>& dependencies) {                                \
         return oneapi::mkl::dft::BACKEND::compute_backward<                                             \
             dft::detail::descriptor<PRECISION, DOMAIN>, T_BACKWARD, T_FORWARD>(desc, in, out,           \
                                                                                dependencies);           \
@@ -269,7 +272,7 @@ namespace dft {
     template <>                                                                                         \
     ONEMKL_EXPORT sycl::event                                                                           \
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                       \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * in, T_REAL * out,                   \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * in, T_REAL * out,         \
         const std::vector<sycl::event>& dependencies) {                                                 \
         return oneapi::mkl::dft::BACKEND::compute_backward<                                             \
             dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(desc, in, out,                  \
@@ -280,8 +283,9 @@ namespace dft {
     template <>                                                                                         \
     ONEMKL_EXPORT sycl::event                                                                           \
     compute_backward<dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                       \
-        dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * in_re, T_REAL * in_im,              \
-        T_REAL * out_re, T_REAL * out_im, const std::vector<sycl::event>& dependencies) {               \
+        selector, dft::detail::descriptor<PRECISION, DOMAIN> & desc, T_REAL * in_re,                    \
+        T_REAL * in_im, T_REAL * out_re, T_REAL * out_im,                                               \
+        const std::vector<sycl::event>& dependencies) {                                                 \
         return oneapi::mkl::dft::BACKEND::compute_backward<                                             \
             dft::detail::descriptor<PRECISION, DOMAIN>, T_REAL, T_REAL>(                                \
             desc, in_re, in_im, out_re, out_im, dependencies);                                          \
@@ -289,49 +293,49 @@ namespace dft {
 
 // Signatures with forward_t=complex, backwards_t=complex are already instantiated for complex domain
 // but not real domain.
-#define ONEAPI_MKL_DFT_REAL_ONLY_SIGNATURES(EXT, PRECISION, T_COMPLEX)                            \
-    /*Out-of-place transform - complex*/                                                          \
-    template <>                                                                                   \
-    ONEMKL_EXPORT void compute_forward<dft::detail::descriptor<PRECISION, detail::domain::REAL>,  \
-                                       T_COMPLEX, T_COMPLEX>(                                     \
-        dft::detail::descriptor<PRECISION, detail::domain::REAL> & desc,                          \
-        sycl::buffer<T_COMPLEX, 1> & in, sycl::buffer<T_COMPLEX, 1> & out) {                      \
-        oneapi::mkl::dft::BACKEND::compute_forward<                                               \
-            dft::detail::descriptor<PRECISION, detail::domain::REAL>, T_COMPLEX, T_COMPLEX>(      \
-            desc, in, out);                                                                       \
-    }                                                                                             \
-                                                                                                  \
-    /*Out-of-place transform - complex*/                                                          \
-    template <>                                                                                   \
-    ONEMKL_EXPORT sycl::event compute_forward<                                                    \
-        dft::detail::descriptor<PRECISION, detail::domain::REAL>, T_COMPLEX, T_COMPLEX>(          \
-        dft::detail::descriptor<PRECISION, detail::domain::REAL> & desc, T_COMPLEX * in,          \
-        T_COMPLEX * out, const std::vector<sycl::event>& dependencies) {                          \
-        return oneapi::mkl::dft::BACKEND::compute_forward<                                        \
-            dft::detail::descriptor<PRECISION, detail::domain::REAL>, T_COMPLEX, T_COMPLEX>(      \
-            desc, in, out, dependencies);                                                         \
-    }                                                                                             \
-                                                                                                  \
-    /*Out-of-place transform - complex*/                                                          \
-    template <>                                                                                   \
-    ONEMKL_EXPORT void compute_backward<dft::detail::descriptor<PRECISION, detail::domain::REAL>, \
-                                        T_COMPLEX, T_COMPLEX>(                                    \
-        dft::detail::descriptor<PRECISION, detail::domain::REAL> & desc,                          \
-        sycl::buffer<T_COMPLEX, 1> & in, sycl::buffer<T_COMPLEX, 1> & out) {                      \
-        oneapi::mkl::dft::BACKEND::compute_backward<                                              \
-            dft::detail::descriptor<PRECISION, detail::domain::REAL>, T_COMPLEX, T_COMPLEX>(      \
-            desc, in, out);                                                                       \
-    }                                                                                             \
-                                                                                                  \
-    /*Out-of-place transform - complex*/                                                          \
-    template <>                                                                                   \
-    ONEMKL_EXPORT sycl::event compute_backward<                                                   \
-        dft::detail::descriptor<PRECISION, detail::domain::REAL>, T_COMPLEX, T_COMPLEX>(          \
-        dft::detail::descriptor<PRECISION, detail::domain::REAL> & desc, T_COMPLEX * in,          \
-        T_COMPLEX * out, const std::vector<sycl::event>& dependencies) {                          \
-        return oneapi::mkl::dft::BACKEND::compute_backward<                                       \
-            dft::detail::descriptor<PRECISION, detail::domain::REAL>, T_COMPLEX, T_COMPLEX>(      \
-            desc, in, out, dependencies);                                                         \
+#define ONEAPI_MKL_DFT_REAL_ONLY_SIGNATURES(EXT, PRECISION, T_COMPLEX)                             \
+    /*Out-of-place transform - complex*/                                                           \
+    template <>                                                                                    \
+    ONEMKL_EXPORT void compute_forward<dft::detail::descriptor<PRECISION, detail::domain::REAL>,   \
+                                       T_COMPLEX, T_COMPLEX>(                                      \
+        selector, dft::detail::descriptor<PRECISION, detail::domain::REAL> & desc,                 \
+        sycl::buffer<T_COMPLEX, 1> & in, sycl::buffer<T_COMPLEX, 1> & out) {                       \
+        oneapi::mkl::dft::BACKEND::compute_forward<                                                \
+            dft::detail::descriptor<PRECISION, detail::domain::REAL>, T_COMPLEX, T_COMPLEX>(       \
+            desc, in, out);                                                                        \
+    }                                                                                              \
+                                                                                                   \
+    /*Out-of-place transform - complex*/                                                           \
+    template <>                                                                                    \
+    ONEMKL_EXPORT sycl::event compute_forward<                                                     \
+        dft::detail::descriptor<PRECISION, detail::domain::REAL>, T_COMPLEX, T_COMPLEX>(           \
+        selector, dft::detail::descriptor<PRECISION, detail::domain::REAL> & desc, T_COMPLEX * in, \
+        T_COMPLEX * out, const std::vector<sycl::event>& dependencies) {                           \
+        return oneapi::mkl::dft::BACKEND::compute_forward<                                         \
+            dft::detail::descriptor<PRECISION, detail::domain::REAL>, T_COMPLEX, T_COMPLEX>(       \
+            desc, in, out, dependencies);                                                          \
+    }                                                                                              \
+                                                                                                   \
+    /*Out-of-place transform - complex*/                                                           \
+    template <>                                                                                    \
+    ONEMKL_EXPORT void compute_backward<dft::detail::descriptor<PRECISION, detail::domain::REAL>,  \
+                                        T_COMPLEX, T_COMPLEX>(                                     \
+        selector, dft::detail::descriptor<PRECISION, detail::domain::REAL> & desc,                 \
+        sycl::buffer<T_COMPLEX, 1> & in, sycl::buffer<T_COMPLEX, 1> & out) {                       \
+        oneapi::mkl::dft::BACKEND::compute_backward<                                               \
+            dft::detail::descriptor<PRECISION, detail::domain::REAL>, T_COMPLEX, T_COMPLEX>(       \
+            desc, in, out);                                                                        \
+    }                                                                                              \
+                                                                                                   \
+    /*Out-of-place transform - complex*/                                                           \
+    template <>                                                                                    \
+    ONEMKL_EXPORT sycl::event compute_backward<                                                    \
+        dft::detail::descriptor<PRECISION, detail::domain::REAL>, T_COMPLEX, T_COMPLEX>(           \
+        selector, dft::detail::descriptor<PRECISION, detail::domain::REAL> & desc, T_COMPLEX * in, \
+        T_COMPLEX * out, const std::vector<sycl::event>& dependencies) {                           \
+        return oneapi::mkl::dft::BACKEND::compute_backward<                                        \
+            dft::detail::descriptor<PRECISION, detail::domain::REAL>, T_COMPLEX, T_COMPLEX>(       \
+            desc, in, out, dependencies);                                                          \
     }
 
 ONEAPI_MKL_DFT_SIGNATURES(f, dft::detail::precision::SINGLE, dft::detail::domain::REAL, float,

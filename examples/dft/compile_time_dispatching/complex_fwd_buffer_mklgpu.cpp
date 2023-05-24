@@ -64,14 +64,15 @@ void run_example(const sycl::device& gpu_device) {
                    static_cast<std::int64_t>(1));
 
     // 3. commit_descriptor (compile_time MKLGPU)
-    desc.commit(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklgpu>{ gpu_queue });
+    auto selector = oneapi::mkl::backend_selector<oneapi::mkl::backend::mklgpu>{ gpu_queue };
+    desc.commit(selector);
 
     // 4. compute_forward / compute_backward (MKLGPU)
     {
         sycl::buffer<std::complex<float>> input_buffer(input_data.data(), sycl::range<1>(N));
         sycl::buffer<std::complex<float>> output_buffer(output_data.data(), sycl::range<1>(N));
         oneapi::mkl::dft::compute_forward<decltype(desc), std::complex<float>, std::complex<float>>(
-            desc, input_buffer, output_buffer);
+            selector, desc, input_buffer, output_buffer);
     }
 }
 

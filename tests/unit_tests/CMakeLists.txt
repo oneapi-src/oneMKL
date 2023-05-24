@@ -182,6 +182,9 @@ foreach(domain ${TARGET_DOMAINS})
       PROPERTIES TEST_PREFIX ${DOMAIN_PREFIX}/RT/
       DISCOVERY_TIMEOUT 30
     )
+
+    # ensure rt tests have up-to-date libs
+    add_dependencies(test_main_${domain}_rt ${ONEMKL_LIBRARIES_${domain}})
   endif()
 
   gtest_discover_tests(test_main_${domain}_ct

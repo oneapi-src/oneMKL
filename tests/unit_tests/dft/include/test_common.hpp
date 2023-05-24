@@ -162,6 +162,17 @@ void commit_descriptor(oneapi::mkl::dft::descriptor<precision, domain> &descript
 #endif
 }
 
+template <typename Func, typename... Args>
+void dispatch(sycl::queue queue, Func func, Args &&... args) {
+#ifdef CALL_RT_API
+    (void)queue;
+    func(std::forward<Args>(args)...);
+#else
+    // can't get return from this, so func must capture return values by reference in a lambda
+    TEST_RUN_CT_SELECT(queue, func, std::forward<Args>(args)...);
+#endif
+}
+
 // is it assumed that the unused elements of the array are ignored
 inline std::array<std::int64_t, 4> get_conjugate_even_complex_strides(
     const std::vector<std::int64_t> &sizes) {

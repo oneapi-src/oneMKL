@@ -121,8 +121,10 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
 
     {
         sycl::buffer<FwdInputType, 1> inout_buf{ inout_host };
-
-        oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(descriptor, inout_buf);
+        auto forward = [](auto&&... params) {
+            oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(params...);
+        };
+        dispatch(sycl_queue, forward, descriptor, inout_buf);
 
         {
             auto acc_host = inout_buf.template get_host_access();
@@ -150,8 +152,10 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
             commit_descriptor(descriptor, sycl_queue);
         }
 
-        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                           FwdInputType>(descriptor, inout_buf);
+        auto backward = [](auto&&... params) {
+            oneapi::mkl::dft::compute_backward<descriptor_t, FwdInputType>(params...);
+        };
+        dispatch(sycl_queue, backward, descriptor, inout_buf);
     }
 
     // account for scaling that occurs during DFT
@@ -219,9 +223,12 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
     }
 
     std::vector<sycl::event> no_dependencies;
-    oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(descriptor, inout.data(),
-                                                                  no_dependencies)
-        .wait_and_throw();
+    sycl::event forward_event;
+    auto forward = [&forward_event](auto&&... params) {
+        forward_event = oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(params...);
+    };
+    dispatch(sycl_queue, forward, descriptor, inout.data(), no_dependencies);
+    forward_event.wait_and_throw();
 
     if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         std::vector<FwdInputType> conjugate_even_ref =
@@ -243,10 +250,12 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
         commit_descriptor(descriptor, sycl_queue);
     }
 
-    sycl::event done =
-        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                           FwdInputType>(descriptor, inout.data(), no_dependencies);
-    done.wait_and_throw();
+    sycl::event backward_event;
+    auto backward = [&backward_event](auto&&... params) {
+        backward_event = oneapi::mkl::dft::compute_backward<descriptor_t, FwdInputType>(params...);
+    };
+    dispatch(sycl_queue, backward, descriptor, inout.data(), no_dependencies);
+    backward_event.wait_and_throw();
 
     std::for_each(input.begin(), input.end(),
                   [this](auto& x) { x *= static_cast<PrecisionType>(forward_elements); });

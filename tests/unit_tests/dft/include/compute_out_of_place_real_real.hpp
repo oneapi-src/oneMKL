@@ -63,9 +63,16 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_USM() {
 
         std::vector<sycl::event> no_dependencies;
 
-        oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType, PrecisionType>(
-            descriptor, in_re.data(), in_im.data(), out_re.data(), out_im.data(), no_dependencies)
-            .wait_and_throw();
+        sycl::event forward_event;
+        auto forward = [&forward_event](auto&&... params) {
+            forward_event =
+                oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType, PrecisionType>(
+                    params...);
+        };
+        dispatch(sycl_queue, forward, descriptor, in_re.data(), in_im.data(), out_re.data(),
+                 out_im.data(), no_dependencies);
+        forward_event.wait_and_throw();
+
         std::vector<FwdOutputType> output_data(size_total);
         for (std::size_t i = 0; i < output_data.size(); ++i) {
             output_data[i] = { out_re[i], out_im[i] };
@@ -73,11 +80,15 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_USM() {
         EXPECT_TRUE(check_equal_vector(output_data.data(), out_host_ref.data(), output_data.size(),
                                        abs_error_margin, rel_error_margin, std::cout));
 
-        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                           PrecisionType, PrecisionType>(
-            descriptor, out_re.data(), out_im.data(), out_back_re.data(), out_back_im.data(),
-            no_dependencies)
-            .wait_and_throw();
+        sycl::event backward_event;
+        auto backward = [&backward_event](auto&&... params) {
+            backward_event =
+                oneapi::mkl::dft::compute_backward<descriptor_t, PrecisionType, PrecisionType>(
+                    params...);
+        };
+        dispatch(sycl_queue, backward, descriptor, out_re.data(), out_im.data(), out_back_re.data(),
+                 out_back_im.data(), no_dependencies);
+        backward_event.wait_and_throw();
 
         for (std::size_t i = 0; i < output_data.size(); ++i) {
             output_data[i] = { out_back_re[i], out_back_im[i] };
@@ -123,8 +134,12 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
         sycl::buffer<PrecisionType, 1> out_back_dev_re{ sycl::range<1>(size_total) };
         sycl::buffer<PrecisionType, 1> out_back_dev_im{ sycl::range<1>(size_total) };
 
-        oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType, PrecisionType>(
-            descriptor, in_dev_re, in_dev_im, out_dev_re, out_dev_im);
+        auto forward = [](auto&&... params) {
+            oneapi::mkl::dft::compute_forward<descriptor_t, PrecisionType, PrecisionType>(
+                params...);
+        };
+
+        dispatch(sycl_queue, forward, descriptor, in_dev_re, in_dev_im, out_dev_re, out_dev_im);
 
         {
             auto acc_out_re = out_dev_re.template get_host_access();
@@ -138,9 +153,13 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
                                            std::cout));
         }
 
-        oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                           PrecisionType, PrecisionType>(
-            descriptor, out_dev_re, out_dev_im, out_back_dev_re, out_back_dev_im);
+        auto backward = [](auto&&... params) {
+            oneapi::mkl::dft::compute_backward<descriptor_t, PrecisionType, PrecisionType>(
+                params...);
+        };
+
+        dispatch(sycl_queue, backward, descriptor, out_dev_re, out_dev_im, out_back_dev_re,
+                 out_back_dev_im);
 
         {
             auto acc_back_out_re = out_back_dev_re.template get_host_access();
