@@ -147,7 +147,7 @@ void spmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, rea
 
 void spr(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, real_t alpha,
          sycl::buffer<real_t, 1> &x, std::int64_t incx, sycl::buffer<real_t, 1> &a) {
-    throw unimplemented("blas", "spr", "");
+    CALL_SYCLBLAS_FN(::blas::_spr, queue, upper_lower, n, alpha, x, incx, a);
 }
 
 void spr2(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, real_t alpha,
