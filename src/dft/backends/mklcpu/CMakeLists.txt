@@ -60,7 +60,7 @@ endif()
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON
 )
-target_link_libraries(${LIB_NAME} PUBLIC ${LIB_OBJ})
+target_link_libraries(${LIB_NAME} PUBLIC ${LIB_OBJ} onemkl_dft)
 
 #Set oneMKL libraries as not transitive for dynamic
 if(BUILD_SHARED_LIBS)
