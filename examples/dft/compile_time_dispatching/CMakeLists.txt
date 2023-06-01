@@ -45,3 +45,4 @@ foreach(dfti_backend ${DFTI_CT_BACKENDS})
   # Register example as ctest
   add_test(NAME dft/EXAMPLE/CT/complex_fwd_buffer_${dfti_backend} COMMAND ${EXAMPLE_NAME})
 endforeach(dfti_backend)
+
