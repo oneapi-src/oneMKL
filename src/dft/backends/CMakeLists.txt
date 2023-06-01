@@ -28,3 +28,7 @@ endif()
 if(ENABLE_CUFFT_BACKEND)
   add_subdirectory(cufft)
 endif()
+
+if(ENABLE_ROCFFT_BACKEND)
+  add_subdirectory(rocfft)
+endif()
