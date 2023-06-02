@@ -195,26 +195,19 @@ GETRF_LAUNCHER(std::complex<double>, cusolverDnZgetrf)
 
 #undef GETRF_LAUNCHER
 
-void getri(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<float>> &a,
-           std::int64_t lda, sycl::buffer<std::int64_t> &ipiv,
-           sycl::buffer<std::complex<float>> &scratchpad, std::int64_t scratchpad_size) {
-    throw unimplemented("lapack", "getri");
-}
-void getri(sycl::queue &queue, std::int64_t n, sycl::buffer<double> &a, std::int64_t lda,
-           sycl::buffer<std::int64_t> &ipiv, sycl::buffer<double> &scratchpad,
-           std::int64_t scratchpad_size) {
-    throw unimplemented("lapack", "getri");
-}
-void getri(sycl::queue &queue, std::int64_t n, sycl::buffer<float> &a, std::int64_t lda,
-           sycl::buffer<std::int64_t> &ipiv, sycl::buffer<float> &scratchpad,
-           std::int64_t scratchpad_size) {
-    throw unimplemented("lapack", "getri");
-}
-void getri(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<double>> &a,
-           std::int64_t lda, sycl::buffer<std::int64_t> &ipiv,
-           sycl::buffer<std::complex<double>> &scratchpad, std::int64_t scratchpad_size) {
-    throw unimplemented("lapack", "getri");
-}
+#define GETRI_LAUNCHER(TYPE)                                                                    \
+    void getri(sycl::queue &queue, std::int64_t n, sycl::buffer<TYPE> &a, std::int64_t lda,     \
+               sycl::buffer<std::int64_t> &ipiv, sycl::buffer<TYPE> &scratchpad,                \
+               std::int64_t scratchpad_size) {                                                  \
+        return getri_batch(queue, n, a, lda, lda * n, ipiv, n, 1, scratchpad, scratchpad_size); \
+    }
+
+GETRI_LAUNCHER(float)
+GETRI_LAUNCHER(double)
+GETRI_LAUNCHER(std::complex<float>)
+GETRI_LAUNCHER(std::complex<double>)
+
+#undef GETRI_LAUNCHER
 
 // cusolverDnXgetrs does not use scratchpad memory
 template <typename Func, typename T>
@@ -1380,26 +1373,20 @@ GETRF_LAUNCHER_USM(std::complex<double>, cusolverDnZgetrf)
 
 #undef GETRF_LAUNCHER_USM
 
-sycl::event getri(sycl::queue &queue, std::int64_t n, std::complex<float> *a, std::int64_t lda,
-                  std::int64_t *ipiv, std::complex<float> *scratchpad, std::int64_t scratchpad_size,
-                  const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("lapack", "getri");
-}
-sycl::event getri(sycl::queue &queue, std::int64_t n, double *a, std::int64_t lda,
-                  std::int64_t *ipiv, double *scratchpad, std::int64_t scratchpad_size,
-                  const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("lapack", "getri");
-}
-sycl::event getri(sycl::queue &queue, std::int64_t n, float *a, std::int64_t lda,
-                  std::int64_t *ipiv, float *scratchpad, std::int64_t scratchpad_size,
-                  const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("lapack", "getri");
-}
-sycl::event getri(sycl::queue &queue, std::int64_t n, std::complex<double> *a, std::int64_t lda,
-                  std::int64_t *ipiv, std::complex<double> *scratchpad,
-                  std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("lapack", "getri");
-}
+#define GETRI_LAUNCHER_USM(TYPE)                                                               \
+    sycl::event getri(sycl::queue &queue, std::int64_t n, TYPE *a, std::int64_t lda,           \
+                      std::int64_t *ipiv, TYPE *scratchpad, std::int64_t scratchpad_size,      \
+                      const std::vector<sycl::event> &dependencies) {                          \
+        return getri_batch(queue, n, a, lda, lda * n, ipiv, n, 1, scratchpad, scratchpad_size, \
+                           dependencies);                                                      \
+    }
+
+GETRI_LAUNCHER_USM(float)
+GETRI_LAUNCHER_USM(double)
+GETRI_LAUNCHER_USM(std::complex<float>)
+GETRI_LAUNCHER_USM(std::complex<double>)
+
+#undef GETRI_LAUNCHER_USM
 
 // cusolverDnXgetrs does not use scratchpad memory
 template <typename Func, typename T>
@@ -2603,24 +2590,19 @@ GETRF_LAUNCHER_SCRATCH(std::complex<double>, cusolverDnZgetrf_bufferSize)
 
 #undef GETRF_LAUNCHER_SCRATCH
 
-template <>
-std::int64_t getri_scratchpad_size<float>(sycl::queue &queue, std::int64_t n, std::int64_t lda) {
-    throw unimplemented("lapack", "getri_scratchpad_size");
-}
-template <>
-std::int64_t getri_scratchpad_size<double>(sycl::queue &queue, std::int64_t n, std::int64_t lda) {
-    throw unimplemented("lapack", "getri_scratchpad_size");
-}
-template <>
-std::int64_t getri_scratchpad_size<std::complex<float>>(sycl::queue &queue, std::int64_t n,
-                                                        std::int64_t lda) {
-    throw unimplemented("lapack", "getri_scratchpad_size");
-}
-template <>
-std::int64_t getri_scratchpad_size<std::complex<double>>(sycl::queue &queue, std::int64_t n,
-                                                         std::int64_t lda) {
-    throw unimplemented("lapack", "getri_scratchpad_size");
-}
+#define GETRI_LAUNCHER_SCRATCH(TYPE)                                              \
+    template <>                                                                   \
+    std::int64_t getri_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t n, \
+                                             std::int64_t lda) {                  \
+        return lda * n;                                                           \
+    }
+
+GETRI_LAUNCHER_SCRATCH(float)
+GETRI_LAUNCHER_SCRATCH(double)
+GETRI_LAUNCHER_SCRATCH(std::complex<float>)
+GETRI_LAUNCHER_SCRATCH(std::complex<double>)
+
+#undef GETRI_LAUNCHER_SCRATCH
 
 // cusolverDnXgetrs does not use scratchpad memory
 #define GETRS_LAUNCHER_SCRATCH(TYPE)                                                              \
