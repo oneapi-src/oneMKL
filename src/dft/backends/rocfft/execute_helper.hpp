@@ -34,15 +34,6 @@
 #include <hip/hip_runtime.h>
 #include <rocfft.h>
 
-#define HIP_CHECK(expr)                                                                 \
-    {                                                                                   \
-        auto status = expr;                                                             \
-        if (status != hipSuccess) {                                                     \
-            throw std::runtime_error("HIP expression (" #expr ") failed with status " + \
-                                     std::to_string(status));                           \
-        }                                                                               \
-    }
-
 namespace oneapi::mkl::dft::rocfft::detail {
 
 template <dft::precision prec, dft::domain dom>

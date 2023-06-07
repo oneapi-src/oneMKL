@@ -37,16 +37,6 @@
 #include "oneapi/mkl/exceptions.hpp"
 #include "rocfft_handle.hpp"
 
-// TODO remove
-#define HIP_CHECK(expr)                                                                 \
-    {                                                                                   \
-        auto status = expr;                                                             \
-        if (status != hipSuccess) {                                                     \
-            throw std::runtime_error("HIP expression (" #expr ") failed with status " + \
-                                     std::to_string(status));                           \
-        }                                                                               \
-    }
-
 namespace oneapi::mkl::dft::rocfft {
 namespace detail {
 
@@ -58,15 +48,16 @@ namespace detail {
 // the static initialisation order fiasco.
 class rocfft_singleton {
     rocfft_singleton() {
-        const auto res = rocfft_setup();
-        if (res != rocfft_status_success) {
-            throw mkl::exception("DFT", "rocfft", "Failed to setup rocfft.");
+        const auto result = rocfft_setup();
+        if (result != rocfft_status_success) {
+            throw mkl::exception(
+                "DFT", "rocfft",
+                "Failed to setup rocfft. returned status " + std::to_string(result));
         }
     }
 
     ~rocfft_singleton() {
-        const auto res = rocfft_cleanup();
-        (void)res; // can't really do anything with this
+        (void)rocfft_cleanup();
     }
 
     // no copies or moves allowed
@@ -76,9 +67,9 @@ class rocfft_singleton {
     rocfft_singleton& operator=(rocfft_singleton&& other) noexcept = delete;
 
 public:
-    static rocfft_singleton& get_instance() {
+    static void init() {
         static rocfft_singleton instance;
-        return instance;
+        (void)instance;
     }
 };
 
@@ -86,9 +77,11 @@ public:
 template <dft::precision prec, dft::domain dom>
 class rocfft_commit final : public dft::detail::commit_impl<prec, dom> {
 private:
-    // For real to complex transforms, the "transform_type" arg also encodes the direction (e.g. rocfft_transform_type_*_forward vs rocfft_transform_type_*_backward) in the plan so we must have one for each direction.
+    // For real to complex transforms, the "transform_type" arg also encodes the direction (e.g. rocfft_transform_type_*_forward vs rocfft_transform_type_*_backward)
+    // in the plan so we must have one for each direction.
     // We also need this because oneMKL uses a directionless "FWD_DISTANCE" and "BWD_DISTANCE" while rocFFT uses a directional "in_distance" and "out_distance".
-    // plans[0] is forward, plans[1] is backward
+    // The same is also true for "FORWARD_SCALE" and "BACKWARD_SCALE".
+    // handles[0] is forward, handles[1] is backward
     std::array<rocfft_handle, 2> handles{};
 
 public:
@@ -100,7 +93,7 @@ public:
             }
         }
         // initialise the rocFFT global state
-        rocfft_singleton::get_instance();
+        rocfft_singleton::init();
     }
 
     void clean_plans() {
@@ -134,11 +127,17 @@ public:
             handles[1].info = std::nullopt;
         }
         if (handles[0].buffer) {
-            HIP_CHECK(hipFree(handles[0].buffer.value()));
+            if (hipFree(handles[0].buffer.value()) != hipSuccess) {
+                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                     "Failed to free forward buffer.");
+            }
             handles[0].buffer = std::nullopt;
         }
         if (handles[1].buffer) {
-            HIP_CHECK(hipFree(handles[1].buffer.value()));
+            if (hipFree(handles[1].buffer.value()) != hipSuccess) {
+                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                     "Failed to free backward buffer.");
+            }
             handles[1].buffer = std::nullopt;
         }
     }
@@ -246,120 +245,148 @@ public:
                                  "Failed to create plan description.");
         }
 
-        auto res = rocfft_plan_description_set_data_layout(plan_desc, fwd_array_ty, bwd_array_ty,
-                                                           in_offsets.data(), // in offsets
-                                                           out_offsets.data(), // out offsets
-                                                           dimensions,
-                                                           in_strides.data(), //in strides
-                                                           fwd_distance, // in distance
-                                                           dimensions,
-                                                           out_strides.data(), // out strides
-                                                           bwd_distance // out distance
-        );
-        if (res != rocfft_status_success) {
-            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                 "Failed to set forward data layout.");
-        }
+        // plan_description can be destroyed afted plan_create
+        auto description_destroy = [](rocfft_plan_description p) {
+            if (rocfft_plan_description_destroy(p) != rocfft_status_success) {
+                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                     "Failed to destroy plan description.");
+            }
+        };
+        auto description_destroyer =
+            new std::unique_ptr<rocfft_plan_description_t, decltype(description_destroy)>(
+                plan_desc, description_destroy);
 
-        if (rocfft_plan_description_set_scale_factor(plan_desc, config_values.fwd_scale) !=
-            rocfft_status_success) {
-            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                 "Failed to set forward scale factor.");
-        }
+        // When creating real-complex descriptions, the strides will always be wrong for one of the directions.
+        // This is because the least significant dimension is symmetric.
+        // If the strides are invalid (too small to fit) then just don't bother creating the plan.
+        const bool ignore_strides = dom == dft::domain::COMPLEX || dimensions == 1;
+        const bool valid_forward =
+            ignore_strides || (lengths[0] <= in_strides[1] && lengths[0] / 2 + 1 <= out_strides[1]);
+        const bool valid_backward =
+            ignore_strides || (lengths[0] <= out_strides[1] && lengths[0] / 2 + 1 <= in_strides[1]);
 
-        rocfft_plan fwd_plan;
-        res = rocfft_plan_create(&fwd_plan, placement, fwd_type, precision, dimensions,
-                                 lengths.data(), number_of_transforms, plan_desc);
+        if (valid_forward) {
+            auto res =
+                rocfft_plan_description_set_data_layout(plan_desc, fwd_array_ty, bwd_array_ty,
+                                                        in_offsets.data(), // in offsets
+                                                        out_offsets.data(), // out offsets
+                                                        dimensions,
+                                                        in_strides.data(), //in strides
+                                                        fwd_distance, // in distance
+                                                        dimensions,
+                                                        out_strides.data(), // out strides
+                                                        bwd_distance // out distance
+                );
+            if (res != rocfft_status_success) {
+                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                     "Failed to set forward data layout.");
+            }
 
-        if (res != rocfft_status_success) {
-            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                 "Failed to create forward plan.");
-        }
-
-        handles[0].plan = fwd_plan;
-
-        rocfft_execution_info fwd_info;
-        if (rocfft_execution_info_create(&fwd_info) != rocfft_status_success) {
-            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                 "Failed to create forward execution info.");
-        }
-        handles[0].info = fwd_info;
-
-        // plan work buffer
-        std::size_t work_buf_size;
-        if (rocfft_plan_get_work_buffer_size(fwd_plan, &work_buf_size) != rocfft_status_success) {
-            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                 "Failed to get forward work buffer size.");
-        }
-        if (work_buf_size != 0) {
-            void* work_buf;
-            HIP_CHECK(hipMalloc(&work_buf, work_buf_size));
-            handles[0].buffer = work_buf;
-            if (rocfft_execution_info_set_work_buffer(fwd_info, work_buf, work_buf_size) !=
+            if (rocfft_plan_description_set_scale_factor(plan_desc, config_values.fwd_scale) !=
                 rocfft_status_success) {
                 throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                     "Failed to set forward work buffer.");
+                                     "Failed to set forward scale factor.");
+            }
+
+            rocfft_plan fwd_plan;
+            res = rocfft_plan_create(&fwd_plan, placement, fwd_type, precision, dimensions,
+                                     lengths.data(), number_of_transforms, plan_desc);
+
+            if (res != rocfft_status_success) {
+                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                     "Failed to create forward plan.");
+            }
+
+            handles[0].plan = fwd_plan;
+
+            rocfft_execution_info fwd_info;
+            if (rocfft_execution_info_create(&fwd_info) != rocfft_status_success) {
+                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                     "Failed to create forward execution info.");
+            }
+            handles[0].info = fwd_info;
+
+            // plan work buffer
+            std::size_t work_buf_size;
+            if (rocfft_plan_get_work_buffer_size(fwd_plan, &work_buf_size) !=
+                rocfft_status_success) {
+                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                     "Failed to get forward work buffer size.");
+            }
+            if (work_buf_size != 0) {
+                void* work_buf;
+                if (hipMalloc(&work_buf, work_buf_size) != hipSuccess) {
+                    throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                         "Failed to get allocate forward work buffer.");
+                }
+                handles[0].buffer = work_buf;
+                if (rocfft_execution_info_set_work_buffer(fwd_info, work_buf, work_buf_size) !=
+                    rocfft_status_success) {
+                    throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                         "Failed to set forward work buffer.");
+                }
             }
         }
 
-        res = rocfft_plan_description_set_data_layout(plan_desc, bwd_array_ty, fwd_array_ty,
-                                                      in_offsets.data(), // in offsets
-                                                      out_offsets.data(), // out offsets
-                                                      dimensions,
-                                                      in_strides.data(), //in strides
-                                                      bwd_distance, // in distance
-                                                      dimensions,
-                                                      out_strides.data(), // out strides
-                                                      fwd_distance // out distance
-        );
-        if (res != rocfft_status_success) {
-            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                 "Failed to set backward data layout.");
-        }
+        if (valid_backward) {
+            auto res =
+                rocfft_plan_description_set_data_layout(plan_desc, bwd_array_ty, fwd_array_ty,
+                                                        in_offsets.data(), // in offsets
+                                                        out_offsets.data(), // out offsets
+                                                        dimensions,
+                                                        in_strides.data(), //in strides
+                                                        bwd_distance, // in distance
+                                                        dimensions,
+                                                        out_strides.data(), // out strides
+                                                        fwd_distance // out distance
+                );
+            if (res != rocfft_status_success) {
+                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                     "Failed to set backward data layout.");
+            }
 
-        if (rocfft_plan_description_set_scale_factor(plan_desc, config_values.bwd_scale) !=
-            rocfft_status_success) {
-            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                 "Failed to set backward scale factor.");
-        }
-
-        rocfft_plan bwd_plan;
-        res = rocfft_plan_create(&bwd_plan, placement, bwd_type, precision, dimensions,
-                                 lengths.data(), number_of_transforms, plan_desc);
-        if (res != rocfft_status_success) {
-            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                 "Failed to create backward rocFFT plan.");
-        }
-        handles[1].plan = bwd_plan;
-
-        // TODO could leak
-        // plan_description can be destroyed afted plan_create
-        if (rocfft_plan_description_destroy(plan_desc) != rocfft_status_success) {
-            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                 "Failed to destroy plan description.");
-        }
-
-        rocfft_execution_info bwd_info;
-        if (rocfft_execution_info_create(&bwd_info) != rocfft_status_success) {
-            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                 "Failed to create backward execution info.");
-        }
-        handles[1].info = bwd_info;
-
-        if (rocfft_plan_get_work_buffer_size(bwd_plan, &work_buf_size) != rocfft_status_success) {
-            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                 "Failed to get backward work buffer size.");
-        }
-
-        if (work_buf_size != 0) {
-            void* work_buf;
-            HIP_CHECK(hipMalloc(&work_buf, work_buf_size));
-            handles[1].buffer = work_buf;
-
-            if (rocfft_execution_info_set_work_buffer(bwd_info, work_buf, work_buf_size) !=
+            if (rocfft_plan_description_set_scale_factor(plan_desc, config_values.bwd_scale) !=
                 rocfft_status_success) {
                 throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                     "Failed to set backward work buffer.");
+                                     "Failed to set backward scale factor.");
+            }
+
+            rocfft_plan bwd_plan;
+            res = rocfft_plan_create(&bwd_plan, placement, bwd_type, precision, dimensions,
+                                     lengths.data(), number_of_transforms, plan_desc);
+            if (res != rocfft_status_success) {
+                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                     "Failed to create backward rocFFT plan.");
+            }
+            handles[1].plan = bwd_plan;
+
+            rocfft_execution_info bwd_info;
+            if (rocfft_execution_info_create(&bwd_info) != rocfft_status_success) {
+                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                     "Failed to create backward execution info.");
+            }
+            handles[1].info = bwd_info;
+
+            std::size_t work_buf_size;
+            if (rocfft_plan_get_work_buffer_size(bwd_plan, &work_buf_size) !=
+                rocfft_status_success) {
+                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                     "Failed to get backward work buffer size.");
+            }
+
+            if (work_buf_size != 0) {
+                void* work_buf;
+                if (hipMalloc(&work_buf, work_buf_size) != hipSuccess) {
+                    throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                         "Failed to get allocate backward work buffer.");
+                }
+                handles[1].buffer = work_buf;
+
+                if (rocfft_execution_info_set_work_buffer(bwd_info, work_buf, work_buf_size) !=
+                    rocfft_status_success) {
+                    throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                         "Failed to set backward work buffer.");
+                }
             }
         }
     }
