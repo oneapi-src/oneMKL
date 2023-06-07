@@ -18,8 +18,8 @@ oneMKL is part of [oneAPI](https://oneapi.io).
     </thead>
     <tbody>
         <tr>
-            <td rowspan=11 align="center">oneMKL interface</td>
-            <td rowspan=11 align="center">oneMKL selector</td>
+            <td rowspan=12 align="center">oneMKL interface</td>
+            <td rowspan=12 align="center">oneMKL selector</td>
             <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for x86 CPU</td>
             <td align="center">x86 CPU</td>
         </tr>
@@ -57,6 +57,10 @@ oneMKL is part of [oneAPI](https://oneapi.io).
         </tr>
         <tr>
             <td align="center"><a href="https://github.com/ROCmSoftwarePlatform/rocRAND"> AMD rocRAND</a> for AMD GPU </td>
+            <td align="center">AMD GPU</td>
+        </tr>
+        <tr>
+            <td align="center"><a href="https://github.com/ROCmSoftwarePlatform/rocFFT">AMD rocFFT</a> for AMD and NVIDIA GPU </td>
             <td align="center">AMD GPU</td>
         </tr>
         <tr>
@@ -238,7 +242,7 @@ Supported domains: BLAS, LAPACK, RNG, DFT
             <td align="center">LLVM*, hipSYCL</td>
         </tr>
         <tr>
-            <td rowspan=3 align="center">DFT</td>
+            <td rowspan=4 align="center">DFT</td>
             <td align="center">Intel GPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
@@ -252,6 +256,12 @@ Supported domains: BLAS, LAPACK, RNG, DFT
         <tr>
             <td align="center">NVIDIA GPU</td>
             <td align="center">NVIDIA cuFFT</td>
+            <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++</td>
+        </tr>
+        <tr>
+            <td align="center">AMD GPU</td>
+            <td align="center">AMD rocFFT</td>
             <td align="center">Dynamic, Static</td>
             <td align="center">DPC++</td>
         </tr>
