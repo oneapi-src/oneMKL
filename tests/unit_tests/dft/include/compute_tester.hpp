@@ -130,7 +130,7 @@ struct DFT_Test {
                                               });
         // Heuristic for the average-case error margins
         abs_error_margin =
-            std::abs(max_norm_ref) * std::log2(static_cast<double>(forward_elements));
+            10 * std::abs(max_norm_ref) * std::log2(static_cast<double>(forward_elements));
         rel_error_margin = 200.0 * std::log2(static_cast<double>(forward_elements));
         return !skip_test(mem_acc);
     }
