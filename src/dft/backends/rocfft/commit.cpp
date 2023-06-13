@@ -252,9 +252,8 @@ public:
                                      "Failed to destroy plan description.");
             }
         };
-        auto description_destroyer =
-            new std::unique_ptr<rocfft_plan_description_t, decltype(description_destroy)>(
-                plan_desc, description_destroy);
+        std::unique_ptr<rocfft_plan_description_t, decltype(description_destroy)>
+            description_destroyer(plan_desc, description_destroy);
 
         // When creating real-complex descriptions, the strides will always be wrong for one of the directions.
         // This is because the least significant dimension is symmetric.
