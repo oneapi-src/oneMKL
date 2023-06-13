@@ -537,9 +537,8 @@ inline void swap_out_dead_queue(sycl::queue& sycl_queue) {
     auto inout = sycl::malloc_device<forward_type>(default_1d_lengths + 2, sycl_queue);
     sycl_queue.wait();
 
-    sycl::event transform_event =
-        oneapi::mkl::dft::compute_forward<decltype(descriptor), forward_type>(
-            descriptor, inout, std::vector<sycl::event>{});
+    auto transform_event = oneapi::mkl::dft::compute_forward<decltype(descriptor), forward_type>(
+        descriptor, inout, std::vector<sycl::event>{});
     sycl_queue.wait();
 
     // after waiting on the second queue, the event should be completed
