@@ -39,6 +39,7 @@ template <dft::precision prec, dft::domain dom>
 rocfft_plan get_bwd_plan(dft::detail::commit_impl<prec, dom> *commit) {
     return static_cast<rocfft_handle *>(commit->get_handle())[1].plan.value();
 }
+
 template <dft::precision prec, dft::domain dom>
 rocfft_execution_info get_bwd_info(dft::detail::commit_impl<prec, dom> *commit) {
     return static_cast<rocfft_handle *>(commit->get_handle())[1].info.value();
