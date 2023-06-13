@@ -60,7 +60,7 @@ oneMKL is part of [oneAPI](https://oneapi.io).
             <td align="center">AMD GPU</td>
         </tr>
         <tr>
-            <td align="center"><a href="https://github.com/ROCmSoftwarePlatform/rocFFT">AMD rocFFT</a> for AMD and NVIDIA GPU </td>
+            <td align="center"><a href="https://github.com/ROCmSoftwarePlatform/rocFFT">AMD rocFFT</a> for AMD GPU </td>
             <td align="center">AMD GPU</td>
         </tr>
         <tr>
