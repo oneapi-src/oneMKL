@@ -136,6 +136,16 @@
 #define TEST_RUN_NVIDIAGPU_CUFFT_SELECT(q, func, ...)
 #endif
 
+#ifdef ENABLE_ROCFFT_BACKEND
+#define TEST_RUN_AMDGPU_ROCFFT_SELECT_NO_ARGS(q, func) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::rocfft>{ q })
+#define TEST_RUN_AMDGPU_ROCFFT_SELECT(q, func, ...) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::rocfft>{ q }, __VA_ARGS__)
+#else
+#define TEST_RUN_AMDGPU_ROCFFT_SELECT_NO_ARGS(q, func)
+#define TEST_RUN_AMDGPU_ROCFFT_SELECT(q, func, ...)
+#endif
+
 #ifndef __HIPSYCL__
 #define CHECK_HOST_OR_CPU(q) q.get_device().is_cpu()
 #else
@@ -155,6 +165,9 @@
             }                                                              \
             else if (vendor_id == NVIDIA_ID) {                             \
                 TEST_RUN_NVIDIAGPU_CUFFT_SELECT_NO_ARGS(q, func);          \
+            }                                                              \
+            else if (vendor_id == AMD_ID) {                                \
+                TEST_RUN_AMDGPU_ROCFFT_SELECT_NO_ARGS(q, func);            \
             }                                                              \
         }                                                                  \
     } while (0);
@@ -177,6 +190,7 @@
                 TEST_RUN_AMDGPU_ROCBLAS_SELECT(q, func, __VA_ARGS__);      \
                 TEST_RUN_AMDGPU_ROCRAND_SELECT(q, func, __VA_ARGS__);      \
                 TEST_RUN_AMDGPU_ROCSOLVER_SELECT(q, func, __VA_ARGS__);    \
+                TEST_RUN_AMDGPU_ROCFFT_SELECT(q, func, __VA_ARGS__);       \
             }                                                              \
         }                                                                  \
         TEST_RUN_SYCLBLAS_SELECT(q, func, __VA_ARGS__);                    \

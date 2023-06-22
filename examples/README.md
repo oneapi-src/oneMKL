@@ -380,7 +380,7 @@ Running with single precision real data type on:
 DFT Complex USM example ran OK on MKLGPU
 ```
 
-Runtime dispatching example with both MKLGPU and cuFFT backend
+Runtime dispatching example with MKLGPU, cuFFT, and rocFFT backends:
 
 ```none
 SYCL_DEVICE_FILTER=gpu ./bin/example_dft_real_fwd_usm
@@ -427,6 +427,31 @@ SYCL_DEVICE_FILTER=gpu ./bin/example_dft_real_fwd_usm
 
 Running DFT complex forward example on GPU device
 Device name is: NVIDIA A100-PCIE-40GB
+Running with single precision real data type:
+DFT example run_time dispatch
+DFT example ran OK
+```
+
+```none
+./bin/example_dft_real_fwd_usm
+
+########################################################################
+# DFTI complex in-place forward transform with USM API example:
+#
+# Using APIs:
+#   USM forward complex in-place
+#   Run-time dispatch
+#
+# Using single precision (float) data type
+#
+# Device will be selected during runtime.
+# The environment variable SYCL_DEVICE_FILTER can be used to specify
+# SYCL device
+#
+########################################################################
+
+Running DFT complex forward example on GPU device
+Device name is: AMD Radeon PRO W6800
 Running with single precision real data type:
 DFT example run_time dispatch
 DFT example ran OK

@@ -124,8 +124,9 @@ int main(int argc, char** argv) {
                         if (dev.is_gpu() && vendor_id == NVIDIA_ID)
                             continue;
 #endif
-#if !defined(ENABLE_ROCBLAS_BACKEND) && !defined(ENABLE_ROCRAND_BACKEND) && \
-    !defined(ENABLE_ROCSOLVER_BACKEND) && !defined(ENABLE_SYCLBLAS_BACKEND_AMD_GPU)
+#if !defined(ENABLE_ROCBLAS_BACKEND) && !defined(ENABLE_ROCRAND_BACKEND) &&            \
+    !defined(ENABLE_ROCSOLVER_BACKEND) && !defined(ENABLE_SYCLBLAS_BACKEND_AMD_GPU) && \
+    !defined(ENABLE_ROCFFT_BACKEND)
                         if (dev.is_gpu() && vendor_id == AMD_ID)
                             continue;
 #endif
