@@ -98,6 +98,12 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
               LIB_NAME("dft_mklgpu")
 #endif
           } },
+        { device::amdgpu,
+          {
+#ifdef ENABLE_ROCFFT_BACKEND
+              LIB_NAME("dft_rocfft"),
+#endif
+          } },
         { device::nvidiagpu,
           {
 #ifdef ENABLE_CUFFT_BACKEND
