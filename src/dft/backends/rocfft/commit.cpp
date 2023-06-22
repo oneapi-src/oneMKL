@@ -394,6 +394,10 @@ public:
         clean_plans();
     }
 
+    // Rule of three. Copying could lead to memory safety issues.
+    rocfft_commit(const rocfft_commit& other) = delete;
+    rocfft_commit& operator=(const rocfft_commit& other) = delete;
+
     void* get_handle() noexcept override {
         return handles.data();
     }
