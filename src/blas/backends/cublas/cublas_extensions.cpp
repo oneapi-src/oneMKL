@@ -298,6 +298,8 @@ sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int6
 }
 
 } // namespace column_major
+
+
 namespace row_major {
 
 // Buffer APIs
@@ -360,24 +362,82 @@ void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose tra
 
 void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
               sycl::buffer<float, 1> &a, int64_t lda, sycl::buffer<float, 1> &b, int64_t ldb) {
-    throw unimplemented("blas", "omatcopy", "for row_major layout");
+    overflow_check(m, n, lda, ldb);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::write>(cgh);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+            auto handle = sc.get_handle(queue);
+            auto a_ = sc.get_mem<const float *>(a_acc);
+            auto b_ = sc.get_mem<float *>(b_acc);
+            const float beta = 0.f;
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC_SYNC(cublasSgeam, err, handle, get_cublas_operation(trans),
+                                   CUBLAS_OP_N, m, n, &alpha,
+                                   a_, lda, &beta, a_, ldb, b_, ldb);
+       });
+    });
 }
 
 void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
               sycl::buffer<double, 1> &a, int64_t lda, sycl::buffer<double, 1> &b, int64_t ldb) {
-    throw unimplemented("blas", "omatcopy", "for row_major layout");
+    overflow_check(m, n, lda, ldb);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::write>(cgh);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+            auto handle = sc.get_handle(queue);
+            auto a_ = sc.get_mem<const double *>(a_acc);
+            auto b_ = sc.get_mem<double *>(b_acc);
+            const double beta = 0.0;
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC_SYNC(cublasDgeam, err, handle, get_cublas_operation(trans),
+                                   CUBLAS_OP_N, m, n, &alpha,
+                                   a_, lda, &beta, a_, ldb, b_, ldb);
+       });
+    });
 }
 
 void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<float> alpha,
               sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
               sycl::buffer<std::complex<float>, 1> &b, int64_t ldb) {
-    throw unimplemented("blas", "omatcopy", "for row_major layout");
+    using cuDataType = typename CudaEquivalentType<std::complex<float>>::Type;
+    overflow_check(m, n, lda, ldb);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::write>(cgh);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+            auto handle = sc.get_handle(queue);
+            auto a_ = sc.get_mem<const cuDataType *>(a_acc);
+            auto b_ = sc.get_mem<cuDataType *>(b_acc);
+            const cuDataType beta = {0.f, 0.f};
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC_SYNC(cublasCgeam, err, handle, get_cublas_operation(trans),
+                                   CUBLAS_OP_N, m, n, (cuDataType *)&alpha,
+                                   a_, lda, &beta, a_, ldb, b_, ldb);
+       });
+    });
 }
 
 void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<double> alpha,
               sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
               sycl::buffer<std::complex<double>, 1> &b, int64_t ldb) {
-    throw unimplemented("blas", "omatcopy", "for row_major layout");
+    using cuDataType = typename CudaEquivalentType<std::complex<double>>::Type;
+    overflow_check(m, n, lda, ldb);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::write>(cgh);
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+            auto handle = sc.get_handle(queue);
+            auto a_ = sc.get_mem<const cuDataType *>(a_acc);
+            auto b_ = sc.get_mem<cuDataType *>(b_acc);
+            const cuDataType beta = {0.0, 0.0};
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC_SYNC(cublasZgeam, err, handle, get_cublas_operation(trans),
+                                   CUBLAS_OP_N, m, n, (cuDataType *)&alpha,
+                                   a_, lda, &beta, a_, ldb, b_, ldb);
+       });
+    });
 }
 
 void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
@@ -493,27 +553,93 @@ sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transp
 sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
                      const float *a, int64_t lda, float *b, int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatcopy", "for row_major layout");
+    overflow_check(m, n, lda, ldb);
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+            auto handle = sc.get_handle(queue);
+            const float beta = 0.f;
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC_SYNC(cublasSgeam, err, handle, get_cublas_operation(trans),
+                                   CUBLAS_OP_N, m, n, &alpha,
+                                   a, lda, &beta, a, ldb, b, ldb);
+       });
+    });
+    return done;
 }
 
 sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
                      const double *a, int64_t lda, double *b, int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatcopy", "for row_major layout");
+    overflow_check(m, n, lda, ldb);
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+            auto handle = sc.get_handle(queue);
+            const double beta = 0.0;
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC_SYNC(cublasDgeam, err, handle, get_cublas_operation(trans),
+                                   CUBLAS_OP_N, m, n, &alpha,
+                                   a, lda, &beta, a, ldb, b, ldb);
+       });
+    });
+    return done;
 }
 
 sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                      std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
                      std::complex<float> *b, int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatcopy", "for row_major layout");
+    using cuDataType = typename CudaEquivalentType<std::complex<float>>::Type;
+    overflow_check(m, n, lda, ldb);
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+            auto handle = sc.get_handle(queue);
+            auto a_ = reinterpret_cast<const cuDataType *>(a);
+            auto b_ = reinterpret_cast<cuDataType *>(b);
+            const cuDataType beta = {0.f, 0.f};
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC_SYNC(cublasCgeam, err, handle, get_cublas_operation(trans),
+                                   CUBLAS_OP_N, m, n, (cuDataType *)&alpha,
+                                   a_, lda, &beta, a_, ldb, b_, ldb);
+       });
+    });
+    return done;
 }
 
 sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                      std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
                      std::complex<double> *b, int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatcopy", "for row_major layout");
+    using cuDataType = typename CudaEquivalentType<std::complex<double>>::Type;
+    overflow_check(m, n, lda, ldb);
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        int64_t num_events = dependencies.size();
+        for (int64_t i = 0; i < num_events; i++) {
+            cgh.depends_on(dependencies[i]);
+        }
+        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+            auto handle = sc.get_handle(queue);
+            auto a_ = reinterpret_cast<const cuDataType *>(a);
+            auto b_ = reinterpret_cast<cuDataType *>(b);
+            const cuDataType beta = {0.0, 0.0};
+            cublasStatus_t err;
+            CUBLAS_ERROR_FUNC_SYNC(cublasZgeam, err, handle, get_cublas_operation(trans),
+                                   CUBLAS_OP_N, m, n, (cuDataType *)&alpha,
+                                   a_, lda, &beta, a_, ldb, b_, ldb);
+       });
+    });
+    return done;
 }
 
 sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
