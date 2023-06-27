@@ -364,8 +364,8 @@ void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float a
               sycl::buffer<float, 1> &a, int64_t lda, sycl::buffer<float, 1> &b, int64_t ldb) {
     overflow_check(m, n, lda, ldb);
     queue.submit([&](sycl::handler &cgh) {
-        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
-        auto b_acc = b.template get_access<sycl::access::mode::write>(cgh);
+        auto a_acc = a.get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<sycl::access::mode::write>(cgh);
         onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<const float *>(a_acc);
@@ -383,8 +383,8 @@ void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double 
               sycl::buffer<double, 1> &a, int64_t lda, sycl::buffer<double, 1> &b, int64_t ldb) {
     overflow_check(m, n, lda, ldb);
     queue.submit([&](sycl::handler &cgh) {
-        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
-        auto b_acc = b.template get_access<sycl::access::mode::write>(cgh);
+        auto a_acc = a.get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<sycl::access::mode::write>(cgh);
         onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<const double *>(a_acc);
@@ -404,13 +404,13 @@ void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::co
     using cuDataType = typename CudaEquivalentType<std::complex<float>>::Type;
     overflow_check(m, n, lda, ldb);
     queue.submit([&](sycl::handler &cgh) {
-        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
-        auto b_acc = b.template get_access<sycl::access::mode::write>(cgh);
+        auto a_acc = a.get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<sycl::access::mode::write>(cgh);
         onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<const cuDataType *>(a_acc);
             auto b_ = sc.get_mem<cuDataType *>(b_acc);
-            const cuDataType beta = {0.f, 0.f};
+            const cuDataType beta {0.f, 0.f};
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC_SYNC(cublasCgeam, err, handle, get_cublas_operation(trans),
                                    CUBLAS_OP_N, m, n, (cuDataType *)&alpha,
@@ -425,13 +425,13 @@ void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::co
     using cuDataType = typename CudaEquivalentType<std::complex<double>>::Type;
     overflow_check(m, n, lda, ldb);
     queue.submit([&](sycl::handler &cgh) {
-        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
-        auto b_acc = b.template get_access<sycl::access::mode::write>(cgh);
+        auto a_acc = a.get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.get_access<sycl::access::mode::write>(cgh);
         onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<const cuDataType *>(a_acc);
             auto b_ = sc.get_mem<cuDataType *>(b_acc);
-            const cuDataType beta = {0.0, 0.0};
+            const cuDataType beta {0.0, 0.0};
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC_SYNC(cublasZgeam, err, handle, get_cublas_operation(trans),
                                    CUBLAS_OP_N, m, n, (cuDataType *)&alpha,
@@ -607,7 +607,7 @@ sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
             auto b_ = reinterpret_cast<cuDataType *>(b);
-            const cuDataType beta = {0.f, 0.f};
+            const cuDataType beta {0.f, 0.f};
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC_SYNC(cublasCgeam, err, handle, get_cublas_operation(trans),
                                    CUBLAS_OP_N, m, n, (cuDataType *)&alpha,
@@ -632,7 +632,7 @@ sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
             auto b_ = reinterpret_cast<cuDataType *>(b);
-            const cuDataType beta = {0.0, 0.0};
+            const cuDataType beta {0.0, 0.0};
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC_SYNC(cublasZgeam, err, handle, get_cublas_operation(trans),
                                    CUBLAS_OP_N, m, n, (cuDataType *)&alpha,
