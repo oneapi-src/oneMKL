@@ -266,6 +266,7 @@ static inline void *malloc_shared(size_t align, size_t size, sycl::device dev, s
 }
 
 static inline void *malloc_device(size_t align, size_t size, sycl::device dev, sycl::context ctx) {
+    (void)align;
 #ifdef _WIN64
     return sycl::malloc_device(size, dev, ctx);
 #else
