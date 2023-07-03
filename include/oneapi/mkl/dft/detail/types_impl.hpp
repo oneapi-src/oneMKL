@@ -39,6 +39,59 @@ struct precision_t {
 };
 
 enum class domain { REAL, COMPLEX };
+
+// Forward declarations
+template <precision prec, domain dom>
+class commit_impl;
+
+template <precision prec, domain dom>
+class descriptor;
+
+template <class... T>
+constexpr bool always_false = false;
+
+template <typename descriptor_type>
+struct descriptor_info {
+    static_assert(always_false<descriptor_type>, "Not a valid descriptor type");
+};
+
+template <>
+struct descriptor_info<descriptor<precision::SINGLE, domain::REAL>> {
+    using scalar_type = float;
+    using forward_type = float;
+    using backward_type = std::complex<float>;
+};
+template <>
+struct descriptor_info<descriptor<precision::SINGLE, domain::COMPLEX>> {
+    using scalar_type = float;
+    using forward_type = std::complex<float>;
+    using backward_type = std::complex<float>;
+};
+template <>
+struct descriptor_info<descriptor<precision::DOUBLE, domain::REAL>> {
+    using scalar_type = double;
+    using forward_type = double;
+    using backward_type = std::complex<double>;
+};
+template <>
+struct descriptor_info<descriptor<precision::DOUBLE, domain::COMPLEX>> {
+    using scalar_type = double;
+    using forward_type = std::complex<double>;
+    using backward_type = std::complex<double>;
+};
+
+// compute the range of a reinterpreted buffer
+template <typename In, typename Out>
+std::size_t reinterpret_range(std::size_t size) {
+    static_assert(sizeof(In) % sizeof(Out) == 0 || sizeof(Out) % sizeof(In) == 0);
+    if constexpr (sizeof(In) >= sizeof(Out)) {
+        return size * (sizeof(In) / sizeof(Out));
+    }
+    else {
+        return size / (sizeof(Out) / sizeof(In));
+    }
+}
+
 enum class config_param {
     FORWARD_DOMAIN,
     DIMENSION,
