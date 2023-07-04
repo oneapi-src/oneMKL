@@ -83,11 +83,12 @@ struct descriptor_info<descriptor<precision::DOUBLE, domain::COMPLEX>> {
 // compute the range of a reinterpreted buffer
 template <typename In, typename Out>
 std::size_t reinterpret_range(std::size_t size) {
-    static_assert(sizeof(In) % sizeof(Out) == 0 || sizeof(Out) % sizeof(In) == 0);
     if constexpr (sizeof(In) >= sizeof(Out)) {
+        static_assert(sizeof(In) % sizeof(Out) == 0);
         return size * (sizeof(In) / sizeof(Out));
     }
     else {
+        static_assert(sizeof(Out) % sizeof(In) == 0);
         return size / (sizeof(Out) / sizeof(In));
     }
 }
