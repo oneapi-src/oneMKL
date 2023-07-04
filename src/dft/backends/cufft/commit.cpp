@@ -144,19 +144,19 @@ public:
         const int bwd_dist = static_cast<int>(config_values.bwd_dist);
         std::array<int, max_supported_dims> inembed;
         if (rank == 2) {
-            inembed[1] = config_values.input_strides[1];
+            inembed[1] = config_values.input_strides[1] / istride;
         }
         else if (rank == 3) {
-            inembed[2] = config_values.input_strides[2];
-            inembed[1] = config_values.input_strides[1] / inembed[2];
+            inembed[2] = config_values.input_strides[2] / istride;
+            inembed[1] = (config_values.input_strides[1] / inembed[2]) / istride;
         }
         std::array<int, max_supported_dims> onembed;
         if (rank == 2) {
-            onembed[1] = config_values.output_strides[1];
+            onembed[1] = config_values.output_strides[1] / ostride;
         }
         else if (rank == 3) {
-            onembed[2] = config_values.output_strides[2];
-            onembed[1] = config_values.output_strides[1] / onembed[2];
+            onembed[2] = config_values.output_strides[2] / ostride;
+            onembed[1] = (config_values.output_strides[1] / onembed[2]) / ostride;
         }
 
         // When creating real-complex descriptions, the strides will always be wrong for one of the directions.
