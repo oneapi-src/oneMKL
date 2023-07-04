@@ -24,14 +24,12 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl/types.hpp"
 #include "oneapi/mkl/exceptions.hpp"
 
 #include "oneapi/mkl/dft/detail/mklgpu/onemkl_dft_mklgpu.hpp"
-#include "oneapi/mkl/dft/detail/types_impl.hpp"
 #include "oneapi/mkl/dft/detail/descriptor_impl.hpp"
 
-#include "dft/backends/mklgpu/mklgpu_helpers.hpp"
+#include "mklgpu_helpers.hpp"
 
 // MKLGPU header
 #include "oneapi/mkl/dfti.hpp"

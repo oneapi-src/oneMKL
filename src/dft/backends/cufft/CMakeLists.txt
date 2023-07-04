@@ -27,7 +27,6 @@ add_library(${LIB_OBJ} OBJECT
   commit.cpp
   forward.cpp
   backward.cpp
-  compute_signature.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_dft_cufft_wrappers.cpp>
 )
 

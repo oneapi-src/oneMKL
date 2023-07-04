@@ -29,10 +29,10 @@
 #include "oneapi/mkl/detail/export.hpp"
 #include "oneapi/mkl/dft/detail/types_impl.hpp"
 
-namespace oneapi::mkl::dft : cufft {
+namespace oneapi::mkl::dft::cufft {
 
 #include "oneapi/mkl/dft/detail/dft_ct.hxx"
 
-} // namespace oneapi::mkl::dft:cufft
+} // namespace oneapi::mkl::dft::cufft
 
 #endif // _ONEMKL_DFT_CUFFT_HPP_
