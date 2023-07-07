@@ -90,9 +90,9 @@ void omatcopy(const char *func_name, Func func, sycl::queue &queue, transpose tr
               int64_t n, T alpha, sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &b,
               int64_t ldb) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
+    overflow_check(m, n, lda, ldb);
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
-        // auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
         const int64_t logical_m = (trans == oneapi::mkl::transpose::nontrans ? m : n);
         const int64_t logical_n = (trans == oneapi::mkl::transpose::nontrans ? n : m);
@@ -100,7 +100,6 @@ void omatcopy(const char *func_name, Func func, sycl::queue &queue, transpose tr
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
             auto b_ = sc.get_mem<cuDataType *>(b_acc);
-            // auto c_ = sc.get_mem<cuDataType *>(c_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_operation(trans),
                                      get_cublas_operation(trans), logical_m, logical_n,
@@ -147,6 +146,7 @@ void omatadd(const char *func_name, Func func, sycl::queue &queue, transpose tra
              transpose transb, int64_t m, int64_t n, T alpha, sycl::buffer<T, 1> &a, int64_t lda,
              T beta, sycl::buffer<T, 1> &b, int64_t ldb, sycl::buffer<T, 1> &c, int64_t ldc) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
+    overflow_check(m, n, lda, ldb, ldc);
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
@@ -248,7 +248,7 @@ sycl::event omatcopy(const char *func_name, Func func, sycl::queue &queue, trans
                      int64_t m, int64_t n, T alpha, const T *a, int64_t lda, T *b, int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
-    // overflow_check(...);
+    overflow_check(m, n, lda, ldb);
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
         const int64_t logical_m = (trans == oneapi::mkl::transpose::nontrans ? m : n);
@@ -311,7 +311,7 @@ inline sycl::event omatadd(const char *func_name, Func func, sycl::queue &queue,
                            T beta, const T *b, int64_t ldb, T *c, int64_t ldc,
                            const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
-    // overflow_check(m, n, k, lda, ldb, ldc);
+    overflow_check(m, n, lda, ldb, ldc);
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
         onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
