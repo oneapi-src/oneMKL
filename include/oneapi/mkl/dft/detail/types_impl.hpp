@@ -80,6 +80,17 @@ struct descriptor_info<descriptor<precision::DOUBLE, domain::COMPLEX>> {
     using backward_type = std::complex<double>;
 };
 
+template <typename T, typename... Ts>
+using is_one_of = typename std::bool_constant<(std::is_same_v<T, Ts> || ...)>;
+
+template <typename descriptor_type, typename T>
+using valid_compute_arg = typename std::bool_constant<
+    (std::is_same_v<typename detail::descriptor_info<descriptor_type>::scalar_type, float> &&
+     is_one_of<T, float, sycl::float2, sycl::float4, std::complex<float>>::value) ||
+    (std::is_same_v<typename detail::descriptor_info<descriptor_type>::scalar_type, double> &&
+     is_one_of<T, double, sycl::double2, sycl::double4, std::complex<double>>::value)>;
+
+
 // compute the range of a reinterpreted buffer
 template <typename In, typename Out>
 std::size_t reinterpret_range(std::size_t size) {
@@ -89,6 +100,9 @@ std::size_t reinterpret_range(std::size_t size) {
     }
     else {
         static_assert(sizeof(Out) % sizeof(In) == 0);
+        if (size % (sizeof(Out) / sizeof(In))) {
+            throw std::runtime_error("buffer cannot be evenly divived into the expected type");
+        }
         return size / (sizeof(Out) / sizeof(In));
     }
 }
