@@ -20,9 +20,16 @@
 #ifndef _ONEMKL_DETAIL_TYPES_IMPL_HPP_
 #define _ONEMKL_DETAIL_TYPES_IMPL_HPP_
 
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
+#include <CL/sycl.hpp>
+#endif
+
 #include <cstdint>
 #include <vector>
 #include <type_traits>
+#include <complex>
 
 namespace oneapi {
 namespace mkl {
