@@ -549,7 +549,8 @@ void rotg(sycl::queue &queue, sycl::buffer<std::complex<double>, 1> &a,
         auto accessor_c = c.get_access<sycl::access::mode::read_write>(cgh);
         auto accessor_s = s.get_access<sycl::access::mode::read_write>(cgh);
         host_task<class netlib_zrotg>(cgh, [=]() {
-            ::cblas_zrotg(accessor_a.get_pointer(), accessor_b.get_pointer(),
+            ::cblas_zrotg(accessor_a.get_pointer(),
+                          const_cast<std::complex<double>*>(accessor_b.get_pointer()),
                           accessor_c.get_pointer(), accessor_s.get_pointer());
         });
     });
