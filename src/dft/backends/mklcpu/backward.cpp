@@ -186,8 +186,8 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
 
     cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
-        auto inre_acc = in_re.template get_access<sycl::access::mode::read_write>(cgh);
-        auto inim_acc = in_im.template get_access<sycl::access::mode::read_write>(cgh);
+        auto inre_acc = in_re.template get_access<sycl::access::mode::read>(cgh);
+        auto inim_acc = in_im.template get_access<sycl::access::mode::read>(cgh);
         auto outre_acc = out_re.template get_access<sycl::access::mode::write>(cgh);
         auto outim_acc = out_im.template get_access<sycl::access::mode::write>(cgh);
 
