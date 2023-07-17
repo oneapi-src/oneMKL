@@ -152,11 +152,12 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
 
     cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
-        auto in_acc = in.template get_access<sycl::access::mode::read_write>(cgh);
+        auto in_acc = in.template get_access<sycl::access::mode::read>(cgh);
         auto out_acc = out.template get_access<sycl::access::mode::write>(cgh);
 
         detail::host_task<class host_kernel_back_outofplace>(cgh, [=]() {
-            DFT_ERROR status = DftiComputeBackward(desc_acc[detail::DIR::bwd], in_acc.get_pointer(),
+            auto inPtr = const_cast<input_type*>(in_acc.get_pointer());
+            DFT_ERROR status = DftiComputeBackward(desc_acc[detail::DIR::bwd], inPtr,
                                                    out_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception(
@@ -191,8 +192,9 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
         auto outim_acc = out_im.template get_access<sycl::access::mode::write>(cgh);
 
         detail::host_task<class host_kernel_split_back_outofplace>(cgh, [=]() {
-            DFT_ERROR status = DftiComputeBackward(
-                desc_acc[detail::DIR::bwd], inre_acc.get_pointer(), inim_acc.get_pointer(),
+            auto inrePtr = const_cast<input_type*>(inre_acc.get_pointer());
+            auto inimPtr = const_cast<input_type*>(inim_acc.get_pointer());
+            DFT_ERROR status = DftiComputeBackward(desc_acc[detail::DIR::bwd], inrePtr, inimPtr, 
                 outre_acc.get_pointer(), outim_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception(

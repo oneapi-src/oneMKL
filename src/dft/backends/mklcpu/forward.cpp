@@ -153,12 +153,13 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
 
     cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
-        auto in_acc = in.template get_access<sycl::access::mode::read_write>(cgh);
+        auto in_acc = in.template get_access<sycl::access::mode::read>(cgh);
         auto out_acc = out.template get_access<sycl::access::mode::write>(cgh);
 
         detail::host_task<class host_kernel_outofplace>(cgh, [=]() {
-            DFT_ERROR status = DftiComputeForward(desc_acc[detail::DIR::fwd], in_acc.get_pointer(),
-                                                  out_acc.get_pointer());
+            auto inPtr = const_cast<input_type *>(in_acc.get_pointer());
+            DFT_ERROR status =
+                DftiComputeForward(desc_acc[detail::DIR::fwd], inPtr, out_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception(
                     "dft/forward/mklcpu", "compute_forward",
@@ -186,14 +187,15 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
 
     cpu_queue.submit([&](sycl::handler &cgh) {
         auto desc_acc = mklcpu_desc_buffer.template get_access<sycl::access::mode::read>(cgh);
-        auto inre_acc = in_re.template get_access<sycl::access::mode::read_write>(cgh);
-        auto inim_acc = in_im.template get_access<sycl::access::mode::read_write>(cgh);
+        auto inre_acc = in_re.template get_access<sycl::access::mode::read>(cgh);
+        auto inim_acc = in_im.template get_access<sycl::access::mode::read>(cgh);
         auto outre_acc = out_re.template get_access<sycl::access::mode::write>(cgh);
         auto outim_acc = out_im.template get_access<sycl::access::mode::write>(cgh);
 
         detail::host_task<class host_kernel_split_outofplace>(cgh, [=]() {
-            DFT_ERROR status = DftiComputeForward(desc_acc[detail::DIR::fwd],
-                                                  inre_acc.get_pointer(), inim_acc.get_pointer(),
+            auto inrePtr = const_cast<input_type *>(inre_acc.get_pointer());
+            auto inimPtr = const_cast<input_type *>(inim_acc.get_pointer());
+            DFT_ERROR status = DftiComputeForward(desc_acc[detail::DIR::fwd], inrePtr, inimPtr,
                                                   outre_acc.get_pointer(), outim_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception(
