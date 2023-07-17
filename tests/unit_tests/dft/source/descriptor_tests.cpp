@@ -552,7 +552,7 @@ static int test_move() {
     using config_param = oneapi::mkl::dft::config_param;
     // Use forward distance to test an element copied by value (ie. not on heap)
     std::int64_t fwdDistanceRef(123);
-    // Use the DFT dimenensions to test heap allocated values.
+    // Use the DFT dimensions to test heap allocated values.
     {
         // Move constructor
         oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
