@@ -55,6 +55,8 @@ class ComputeTests_real_real_out_of_place
                 DFT_Test<oneapi::mkl::dft::precision::PRECISION,                                 \
                          oneapi::mkl::dft::domain::DOMAIN>{ std::get<0>(GetParam()),             \
                                                             std::get<1>(GetParam()).sizes,       \
+                                                            std::get<1>(GetParam()).strides_fwd, \
+                                                            std::get<1>(GetParam()).strides_bwd, \
                                                             std::get<1>(GetParam()).batches };   \
             EXPECT_TRUEORSKIP(test.test_##PLACE##_##LAYOUT##STORAGE());                          \
         }                                                                                        \
@@ -81,7 +83,7 @@ INSTANTIATE_TEST_DIMENSIONS_PRECISION_DOMAIN_PLACE_LAYOUT(USM)
 
 using shape = std::vector<std::int64_t>;
 using i64 = std::int64_t;
-// Parameter format - { shape of transform, number of transforms }
+// Parameter format - { shape of transform, number of transforms } or { shape, forward strides, backward strides, number of transforms }
 std::vector<DFTParams> test_params{
     { shape{ 8 }, i64{ 1 } },       { shape{ 9 }, i64{ 2 } },       { shape{ 8 }, i64{ 27 } },
     { shape{ 22 }, i64{ 1 } },      { shape{ 128 }, i64{ 1 } },
@@ -91,6 +93,18 @@ std::vector<DFTParams> test_params{
 
     { shape{ 2, 2, 2 }, i64{ 1 } }, { shape{ 2, 2, 3 }, i64{ 2 } }, { shape{ 2, 2, 2 }, i64{ 27 } },
     { shape{ 3, 7, 2 }, i64{ 1 } }, { shape{ 8, 8, 9 }, i64{ 1 } },
+
+    { shape{ 4 }, shape{ 1, 3}, shape{ 1, 3}, i64{ 2 } },
+
+    { shape{ 4, 4 }, shape{ 1, 1, 4}, shape{ 1, 1, 4}, i64{ 2 } },
+    { shape{ 4, 4 }, shape{ 0, 7, 1}, shape{ 0, 5, 1}, i64{ 2 } },
+    { shape{ 4, 4 }, shape{ 0, 8, 2}, shape{ 0, 8, 2}, i64{ 2 } },
+    { shape{ 4, 4 }, shape{ 1, 4, 1}, shape{ 1, 1, 4}, i64{ 2 } },
+
+    { shape{ 4, 4, 4 }, shape{ 1, 1, 4, 16}, shape{ 1, 1, 4, 16}, i64{ 2 } },
+    { shape{ 4, 4, 4 }, shape{ 0, 17, 4, 1}, shape{ 0, 23, 5, 1}, i64{ 2 } },
+    { shape{ 4, 4, 4 }, shape{ 0, 32, 8, 2}, shape{ 0, 32, 8, 2}, i64{ 2 } },
+    { shape{ 4, 4, 4 }, shape{ 1, 4, 1, 16}, shape{ 1, 4, 16, 1}, i64{ 2 } },
 };
 
 INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_in_place,
