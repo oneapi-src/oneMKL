@@ -43,7 +43,7 @@
 #             pgi_thread (PGI OpenMP) [PGI support is deprecated],
 #             tbb_thread
 #    Default: intel_thread
-#       Exceptions:- DPC++ defaults to tbb, PGI compiler on Windows defaults to pgi_thread
+#       Exceptions:- DPC++ defaults to oneTBB, PGI compiler on Windows defaults to pgi_thread
 # MKL_INTERFACE (for MKL_ARCH=intel64 only)
 #    Values:  lp64, ilp64
 #       GNU or INTEL interface will be selected based on Compiler.
@@ -82,7 +82,7 @@
 #     endif()
 #
 # MKL::<library name>
-#     IMPORTED targets to link MKL libraries individually or when using a custom link-line.
+#     IMPORTED targets to link oneMKL libraries individually or when using a custom link-line.
 #     mkl_core and mkl_rt have INTERFACE_* properties set to them.
 #     Please refer to Intel(R) oneMKL Link Line Advisor for help with linking.
 #
@@ -285,9 +285,9 @@ define_param(MKL_ARCH DEFAULT_MKL_ARCH MKL_ARCH_LIST)
 
 #================
 
-#==========
-# Setup MKL
-#==========
+#=============
+# Setup oneMKL
+#=============
 
 # Set MKL_ROOT directory
 if(NOT DEFINED MKL_ROOT)
@@ -365,7 +365,7 @@ else()
   set(MKL_INTERFACE "lp64")
 endif()
 
-# Define MKL headers
+# Define oneMKL headers
 find_path(MKL_H mkl.h
   HINTS ${MKL_ROOT}
   PATH_SUFFIXES include)
@@ -382,7 +382,7 @@ endif()
 
 # Define MKL_THREADING
 # All APIs support sequential threading
-# DPC++ API supports TBB threading, but not OpenMP threading
+# DPC++ API supports oneTBB threading, but not OpenMP threading
 if(DPCPP_COMPILER)
   set(MKL_DPCPP_THREADING_LIST "sequential" "tbb_thread")
   set(DEFAULT_MKL_DPCPP_THREADING tbb_thread)
@@ -401,7 +401,7 @@ set(DEFAULT_MKL_THREADING intel_thread)
 if(PGI_COMPILER)
   # PGI compiler supports PGI OpenMP threading, additionally
   list(APPEND MKL_THREADING_LIST pgi_thread)
-  # PGI compiler does not support TBB threading
+  # PGI compiler does not support oneTBB threading
   list(REMOVE_ITEM MKL_THREADING_LIST tbb_thread)
   if(WIN32)
     # PGI 19.10 and 20.1 on Windows, do not support Intel OpenMP threading
@@ -577,7 +577,7 @@ if(MKL_INTERFACE_FULL)
   endif()
 endif() # MKL_INTERFACE_FULL
 
-# All MKL Libraries
+# All oneMKL Libraries
 if(DPCPP_COMPILER)
   set(MKL_DPCPP_IFACE_LIB mkl_${MKL_DPCPP_INTERFACE_FULL})
   if(WIN32 AND CMAKE_BUILD_TYPE MATCHES "Debug|DebInfo" AND MKL_DPCPP_THREADING STREQUAL "tbb_thread")
@@ -759,7 +759,7 @@ endforeach()
 
 # Threading selection
 if(MKL_THREADING STREQUAL "tbb_thread" OR MKL_DPCPP_THREADING STREQUAL "tbb_thread")
-  find_package(TBB REQUIRED CONFIG COMPONENTS tbb)
+  find_package(TBB CONFIG COMPONENTS tbb )
   if(MKL_THREADING STREQUAL "tbb_thread")
     set(MKL_THREAD_LIB $<TARGET_LINKER_FILE:TBB::tbb>)
     set(MKL_SDL_THREAD_ENV "TBB")
@@ -955,7 +955,7 @@ if(WIN32 AND NOT MKL_LINK STREQUAL "static")
   list(APPEND MKL_ENV "MKL_BLACS_MPI=${MKL_BLACS_ENV}")
 endif()
 
-# Add MKL dynamic libraries if RPATH is not defined on Unix
+# Add oneMKL dynamic libraries if RPATH is not defined on Unix
 if(UNIX AND CMAKE_SKIP_BUILD_RPATH)
   if(MKL_LINK STREQUAL "sdl")
     set(MKL_LIB_DIR $<TARGET_FILE_DIR:MKL::${MKL_SDL}>)
@@ -969,7 +969,7 @@ if(UNIX AND CMAKE_SKIP_BUILD_RPATH)
   endif()
 endif()
 
-# Add MKL dynamic libraries to PATH on Windows
+# Add oneMKL dynamic libraries to PATH on Windows
 if(WIN32 AND NOT MKL_LINK STREQUAL "static")
   get_filename_component(MKL_DLL_DIR ${MKL_DLL_FILE} DIRECTORY)
   set(MKL_ENV_PATH "${MKL_DLL_DIR}\;${MKL_ENV_PATH}")
