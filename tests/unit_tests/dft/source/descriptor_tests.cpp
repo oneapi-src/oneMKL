@@ -548,6 +548,39 @@ inline void swap_out_dead_queue(sycl::queue& sycl_queue) {
 }
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
+static int test_move() {
+    using config_param = oneapi::mkl::dft::config_param;
+    // Use forward distance to test an element copied by value (ie. not on heap)
+    std::int64_t fwdDistanceRef(123);
+    // Use the DFT dimensions to test heap allocated values.
+    {
+        // Move constructor
+        oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
+        descriptor.set_value(config_param::FWD_DISTANCE, fwdDistanceRef);
+        oneapi::mkl::dft::descriptor<precision, domain> descMoved{ std::move(descriptor) };
+        std::int64_t fwdDistance(0), dftLength(0);
+        descMoved.get_value(config_param::FWD_DISTANCE, &fwdDistance);
+        EXPECT_EQ(fwdDistance, fwdDistanceRef);
+        descMoved.get_value(config_param::LENGTHS, &dftLength);
+        EXPECT_EQ(default_1d_lengths, dftLength);
+    }
+    {
+        // Move assignment
+        oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
+        descriptor.set_value(config_param::FWD_DISTANCE, fwdDistanceRef);
+        oneapi::mkl::dft::descriptor<precision, domain> descMoved{ default_1d_lengths };
+        descMoved = std::move(descriptor);
+        std::int64_t fwdDistance(0), dftLength(0);
+        descMoved.get_value(config_param::FWD_DISTANCE, &fwdDistance);
+        EXPECT_EQ(fwdDistance, fwdDistanceRef);
+        descMoved.get_value(config_param::LENGTHS, &dftLength);
+        EXPECT_EQ(default_1d_lengths, dftLength);
+    }
+
+    return !::testing::Test::HasFailure();
+}
+
+template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 static int test_getter_setter() {
     set_and_get_lengths<precision, domain>();
     set_and_get_strides<precision, domain>();
@@ -575,6 +608,24 @@ int test_commit(sycl::device* dev) {
     swap_out_dead_queue<precision, domain>(sycl_queue);
 
     return !::testing::Test::HasFailure();
+}
+
+TEST(DescriptorTests, DescriptorMoveRealSingle) {
+    EXPECT_TRUE((test_move<oneapi::mkl::dft::precision::SINGLE, oneapi::mkl::dft::domain::REAL>()));
+}
+
+TEST(DescriptorTests, DescriptorMoveRealDouble) {
+    EXPECT_TRUE((test_move<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::REAL>()));
+}
+
+TEST(DescriptorTests, DescriptorMoveComplexSingle) {
+    EXPECT_TRUE(
+        (test_move<oneapi::mkl::dft::precision::SINGLE, oneapi::mkl::dft::domain::COMPLEX>()));
+}
+
+TEST(DescriptorTests, DescriptorMoveComplexDouble) {
+    EXPECT_TRUE(
+        (test_move<oneapi::mkl::dft::precision::DOUBLE, oneapi::mkl::dft::domain::COMPLEX>()));
 }
 
 TEST(DescriptorTests, DescriptorTestsRealSingle) {
