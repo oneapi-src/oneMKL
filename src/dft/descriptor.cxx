@@ -159,6 +159,12 @@ descriptor<prec, dom>::descriptor(std::int64_t length)
         : descriptor<prec, dom>(std::vector<std::int64_t>{ length }) {}
 
 template <precision prec, domain dom>
+descriptor<prec, dom>::descriptor(descriptor<prec, dom>&& other) = default;
+
+template <precision prec, domain dom>
+descriptor<prec, dom>& descriptor<prec, dom>::operator=(descriptor<prec, dom>&&) = default;
+
+template <precision prec, domain dom>
 descriptor<prec, dom>::~descriptor() = default;
 
 template <precision prec, domain dom>
