@@ -760,15 +760,39 @@ endforeach()
 # Threading selection
 if(MKL_THREADING STREQUAL "tbb_thread" OR MKL_DPCPP_THREADING STREQUAL "tbb_thread")
   find_package(TBB CONFIG COMPONENTS tbb )
-  if(MKL_THREADING STREQUAL "tbb_thread")
-    set(MKL_THREAD_LIB $<TARGET_LINKER_FILE:TBB::tbb>)
-    set(MKL_SDL_THREAD_ENV "TBB")
+  if(TARGET TBB::tbb)
+    if(MKL_THREADING STREQUAL "tbb_thread")
+      set(MKL_THREAD_LIB $<TARGET_LINKER_FILE:TBB::tbb>)
+      set(MKL_SDL_THREAD_ENV "TBB")
+    endif()
+    if(MKL_DPCPP_THREADING STREQUAL "tbb_thread")
+      set(MKL_DPCPP_THREAD_LIB $<TARGET_LINKER_FILE:TBB::tbb>)
+    endif()
+    get_property(TBB_LIB TARGET TBB::tbb PROPERTY IMPORTED_LOCATION_RELEASE)
+    get_filename_component(TBB_LIB_DIR ${TBB_LIB} DIRECTORY)
+  else()
+    if(UNIX)
+      set(TBB_LIBNAME libtbb.so)
+    else()
+      set(TBB_LIBNAME tbb.lib)
+    endif()
+    find_path(TBB_LIB_DIR ${TBB_LIBNAME}
+        HINTS $ENV{TBBROOT} $ENV{MKLROOT} ${MKL_ROOT} ${TBB_ROOT}
+        PATH_SUFFIXES "lib" "lib/intel64/gcc4.4" "lib/intel64/gcc4.8"
+                 "../tbb/lib/intel64/gcc4.4" "../tbb/lib/intel64/gcc4.8"
+                 "../../tbb/latest/lib/intel64/gcc4.8"
+                 "../tbb/lib/intel64/vc14" "lib/intel64/vc14"
+    )
+    find_library(TBB_LIBRARIES NAMES tbb
+        HINTS $ENV{TBBROOT} $ENV{MKLROOT} ${MKL_ROOT} ${TBB_ROOT}
+        PATH_SUFFIXES "lib" "lib/intel64/gcc4.4" "lib/intel64/gcc4.8"
+                 "../tbb/lib/intel64/gcc4.4" "../tbb/lib/intel64/gcc4.8"
+                 "../../tbb/latest/lib/intel64/gcc4.8"
+                 "../tbb/lib/intel64/vc14" "lib/intel64/vc14"
+    )
+    include(FindPackageHandleStandardArgs)
+    find_package_handle_standard_args(MKL REQUIRED_VARS TBB_LIBRARIES)
   endif()
-  if(MKL_DPCPP_THREADING STREQUAL "tbb_thread")
-    set(MKL_DPCPP_THREAD_LIB $<TARGET_LINKER_FILE:TBB::tbb>)
-  endif()
-  get_property(TBB_LIB TARGET TBB::tbb PROPERTY IMPORTED_LOCATION_RELEASE)
-  get_filename_component(TBB_LIB_DIR ${TBB_LIB} DIRECTORY)
   if(UNIX)
     if(CMAKE_SKIP_BUILD_RPATH)
       set(TBB_LINK "-L${TBB_LIB_DIR} -ltbb")
