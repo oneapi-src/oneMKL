@@ -331,7 +331,7 @@ sycl::event rotm(sycl::queue &queue, std::int64_t n, real_t *x, std::int64_t inc
 
 sycl::event rotmg(sycl::queue &queue, real_t *d1, real_t *d2, real_t *x1, real_t y1, real_t *param,
                   const std::vector<sycl::event> &dependencies) {
-    CALL_SYCLBLAS_USM_FN(::blas::_rotmg, queue, d1, d2, x1, &y1, param, dependencies);
+    CALL_PORTBLAS_USM_FN(::blas::_rotmg, queue, d1, d2, x1, &y1, param, dependencies);
 }
 
 sycl::event scal(sycl::queue &queue, std::int64_t n, real_t alpha, real_t *x, std::int64_t incx,
