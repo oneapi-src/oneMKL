@@ -346,7 +346,6 @@ OMATADD_LAUNCHER_USM(std::complex<double>, cublasZgeam)
 
 } // namespace column_major
 
-
 namespace row_major {
 
 // Buffer APIs
@@ -480,9 +479,8 @@ void omatadd(const char *func_name, Func func, sycl::queue &queue, transpose tra
             auto c_ = sc.get_mem<cuDataType *>(c_acc);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_operation(transa),
-                                     get_cublas_operation(transb), n, m,
-                                     (cuDataType *)&alpha, a_, lda,
-                                     (cuDataType *)&beta, b_, ldb, c_, ldc);
+                                     get_cublas_operation(transb), n, m, (cuDataType *)&alpha, a_,
+                                     lda, (cuDataType *)&beta, b_, ldb, c_, ldc);
         });
     });
 }
@@ -644,9 +642,8 @@ inline sycl::event omatadd(const char *func_name, Func func, sycl::queue &queue,
             auto c_ = reinterpret_cast<cuDataType *>(c);
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_operation(transa),
-                                     get_cublas_operation(transb), n, m,
-                                     (cuDataType *)&alpha, a_, lda,
-                                     (cuDataType *)&beta, b_, ldb, c_, ldc);
+                                     get_cublas_operation(transb), n, m, (cuDataType *)&alpha, a_,
+                                     lda, (cuDataType *)&beta, b_, ldb, c_, ldc);
         });
     });
     return done;
