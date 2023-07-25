@@ -59,7 +59,7 @@ if(SYCLBLAS_TUNING_TARGET)
         -fsycl-targets=amdgcn-amd-amdhsa -fsycl-unnamed-lambda
       -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
       target_link_options(ONEMKL::SYCL::SYCL INTERFACE
-        -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend)
+        -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
     else()
       message(WARNING "Compiler is not supported."
       " Unable to automatically set the required flags for the target '${SYCLBLAS_TUNING_TARGET}'."
