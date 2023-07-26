@@ -94,11 +94,9 @@ inline void getri_batch(const char *func_name, Func func, sycl::queue &queue, st
     queue.submit([&](sycl::handler &cgh) {
         auto ipiv_acc = sycl::accessor{ ipiv, cgh, sycl::read_only };
         auto ipiv32_acc = sycl::accessor{ ipiv32, cgh, sycl::write_only };
-        cgh.parallel_for(sycl::range<1>{ ipiv32_size },
-                         [=](sycl::id<1> index) {
-                             ipiv32_acc[index] =
-                                 static_cast<int>(ipiv_acc[(index / n) * stride_ipiv + index % n]);
-                         });
+        cgh.parallel_for(sycl::range<1>{ ipiv32_size }, [=](sycl::id<1> index) {
+            ipiv32_acc[index] = static_cast<int>(ipiv_acc[(index / n) * stride_ipiv + index % n]);
+        });
     });
 
     // getri_batched is contained within cublas, not cusolver. For this reason
