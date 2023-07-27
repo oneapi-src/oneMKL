@@ -97,7 +97,6 @@ using valid_compute_arg = typename std::bool_constant<
     (std::is_same_v<typename detail::descriptor_info<descriptor_type>::scalar_type, double> &&
      is_one_of<T, double, sycl::double2, sycl::double4, std::complex<double>>::value)>;
 
-
 // compute the range of a reinterpreted buffer
 template <typename In, typename Out>
 std::size_t reinterpret_range(std::size_t size) {
