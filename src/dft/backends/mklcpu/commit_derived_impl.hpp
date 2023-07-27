@@ -56,6 +56,10 @@ public:
         return bidirection_buffer;
     };
 
+#define BACKEND mklcpu
+#include "../backend_compute_signature.cxx"
+#undef BACKEND
+
 private:
     // bidirectional_handle[0] is the forward handle, bidirectional_handle[1] is the backward handle
     std::array<mklcpu_desc_t, 2> bidirection_handle{ nullptr, nullptr };

@@ -23,13 +23,15 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include <cufft.h>
+#include "oneapi/mkl/exceptions.hpp"
+
+#include "oneapi/mkl/dft/detail/commit_impl.hpp"
+#include "oneapi/mkl/dft/detail/cufft/onemkl_dft_cufft.hpp"
+#include "oneapi/mkl/dft/types.hpp"
 
 #include "execute_helper.hpp"
-#include "oneapi/mkl/dft/backward.hpp"
-#include "oneapi/mkl/dft/detail/commit_impl.hpp"
-#include "oneapi/mkl/dft/types.hpp"
-#include "oneapi/mkl/exceptions.hpp"
+
+#include <cufft.h>
 
 namespace oneapi::mkl::dft::cufft {
 namespace detail {
@@ -41,8 +43,9 @@ cufftHandle get_bwd_plan(dft::detail::commit_impl<prec, dom> *commit) {
 // BUFFER version
 
 //In-place transform
-template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout) {
+template <typename descriptor_type>
+ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
+                                    sycl::buffer<fwd<descriptor_type>, 1> &inout) {
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
@@ -58,24 +61,25 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
 
             auto inout_native = reinterpret_cast<void *>(
                 ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(inout_acc));
-            detail::cufft_execute<detail::Direction::Backward, data_type>(
+            detail::cufft_execute<detail::Direction::Backward, fwd<descriptor_type>>(
                 func_name, stream, plan, inout_native, inout_native);
         });
     });
 }
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
-template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &, sycl::buffer<data_type, 1> &,
-                                    sycl::buffer<data_type, 1> &) {
+template <typename descriptor_type>
+ONEMKL_EXPORT void compute_backward(descriptor_type &, sycl::buffer<scalar<descriptor_type>, 1> &,
+                                    sycl::buffer<scalar<descriptor_type>, 1> &) {
     throw oneapi::mkl::unimplemented("DFT", "compute_backward(desc, inout_re, inout_im)",
                                      "cuFFT does not support real-real complex storage.");
 }
 
 //Out-of-place transform
-template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_type, 1> &in,
-                                    sycl::buffer<output_type, 1> &out) {
+template <typename descriptor_type>
+ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
+                                    sycl::buffer<bwd<descriptor_type>, 1> &in,
+                                    sycl::buffer<fwd<descriptor_type>, 1> &out) {
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::NOT_INPLACE>(
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
@@ -94,17 +98,18 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
                 reinterpret_cast<void *>(ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(in_acc));
             auto out_native = reinterpret_cast<void *>(
                 ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(out_acc));
-            detail::cufft_execute<detail::Direction::Backward, output_type>(func_name, stream, plan,
-                                                                            in_native, out_native);
+            detail::cufft_execute<detail::Direction::Backward, fwd<descriptor_type>>(
+                func_name, stream, plan, in_native, out_native);
         });
     });
 }
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
-template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &, sycl::buffer<input_type, 1> &,
-                                    sycl::buffer<input_type, 1> &, sycl::buffer<output_type, 1> &,
-                                    sycl::buffer<output_type, 1> &) {
+template <typename descriptor_type>
+ONEMKL_EXPORT void compute_backward(descriptor_type &, sycl::buffer<scalar<descriptor_type>, 1> &,
+                                    sycl::buffer<scalar<descriptor_type>, 1> &,
+                                    sycl::buffer<scalar<descriptor_type>, 1> &,
+                                    sycl::buffer<scalar<descriptor_type>, 1> &) {
     throw oneapi::mkl::unimplemented("DFT", "compute_backward(desc, in_re, in_im, out_re, out_im)",
                                      "cuFFT does not support real-real complex storage.");
 }
@@ -112,8 +117,8 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &, sycl::buffer<input_type, 
 //USM version
 
 //In-place transform
-template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *inout,
+template <typename descriptor_type>
+ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor_type> *inout,
                                            const std::vector<sycl::event> &dependencies) {
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
@@ -128,15 +133,16 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *ino
             const std::string func_name = "compute_backward(desc, inout, dependencies)";
             auto stream = detail::setup_stream(func_name, ih, plan);
 
-            detail::cufft_execute<detail::Direction::Backward, data_type>(func_name, stream, plan,
-                                                                          inout, inout);
+            detail::cufft_execute<detail::Direction::Backward, fwd<descriptor_type>>(
+                func_name, stream, plan, inout, inout);
         });
     });
 }
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
-template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &, data_type *, data_type *,
+template <typename descriptor_type>
+ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &, scalar<descriptor_type> *,
+                                           scalar<descriptor_type> *,
                                            const std::vector<sycl::event> &) {
     throw oneapi::mkl::unimplemented("DFT",
                                      "compute_backward(desc, inout_re, inout_im, dependencies)",
@@ -144,8 +150,9 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &, data_type *, data_
 }
 
 //Out-of-place transform
-template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in, output_type *out,
+template <typename descriptor_type>
+ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor_type> *in,
+                                           fwd<descriptor_type> *out,
                                            const std::vector<sycl::event> &dependencies) {
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::NOT_INPLACE>(
         desc, "Unexpected value for placement");
@@ -160,16 +167,17 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in
             const std::string func_name = "compute_backward(desc, in, out, dependencies)";
             auto stream = detail::setup_stream(func_name, ih, plan);
 
-            detail::cufft_execute<detail::Direction::Backward, output_type>(func_name, stream, plan,
-                                                                            in, out);
+            detail::cufft_execute<detail::Direction::Backward, fwd<descriptor_type>>(
+                func_name, stream, plan, in, out);
         });
     });
 }
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
-template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &, input_type *, input_type *,
-                                           output_type *, output_type *,
+template <typename descriptor_type>
+ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &, scalar<descriptor_type> *,
+                                           scalar<descriptor_type> *, scalar<descriptor_type> *,
+                                           scalar<descriptor_type> *,
                                            const std::vector<sycl::event> &) {
     throw oneapi::mkl::unimplemented("DFT",
                                      "compute_backward(desc, in_re, in_im, out_re, out_im, deps)",

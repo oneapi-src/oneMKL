@@ -29,21 +29,10 @@
 #include "oneapi/mkl/detail/export.hpp"
 #include "oneapi/mkl/dft/detail/types_impl.hpp"
 
-namespace oneapi::mkl::dft {
+namespace oneapi::mkl::dft::cufft {
 
-namespace detail {
-// Forward declarations
-template <precision prec, domain dom>
-class commit_impl;
-
-template <precision prec, domain dom>
-class descriptor;
-} // namespace detail
-
-namespace cufft {
 #include "oneapi/mkl/dft/detail/dft_ct.hxx"
-} // namespace cufft
 
-} // namespace oneapi::mkl::dft
+} // namespace oneapi::mkl::dft::cufft
 
 #endif // _ONEMKL_DFT_CUFFT_HPP_

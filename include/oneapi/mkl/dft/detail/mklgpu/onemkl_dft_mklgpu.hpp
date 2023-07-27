@@ -29,26 +29,10 @@
 #include "oneapi/mkl/detail/export.hpp"
 #include "oneapi/mkl/dft/detail/types_impl.hpp"
 
-namespace oneapi {
-namespace mkl {
-namespace dft {
-
-namespace detail {
-// Forward declarations
-template <precision prec, domain dom>
-class commit_impl;
-
-template <precision prec, domain dom>
-class descriptor;
-} // namespace detail
-
-namespace mklgpu {
+namespace oneapi::mkl::dft::mklgpu {
 
 #include "oneapi/mkl/dft/detail/dft_ct.hxx"
 
-} // namespace mklgpu
-} // namespace dft
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::dft::mklgpu
 
 #endif // _ONEMKL_DFT_MKLGPU_HPP_

@@ -23,22 +23,18 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl/types.hpp"
-#include "oneapi/mkl/dft/types.hpp"
-#include "oneapi/mkl/detail/exceptions.hpp"
+#include "oneapi/mkl/exceptions.hpp"
 
 #include "oneapi/mkl/dft/descriptor.hpp"
 #include "oneapi/mkl/dft/detail/mklcpu/onemkl_dft_mklcpu.hpp"
+#include "oneapi/mkl/dft/types.hpp"
 
 #include "dft/backends/mklcpu/commit_derived_impl.hpp"
 
 // MKLCPU header
 #include "mkl_dfti.h"
 
-namespace oneapi {
-namespace mkl {
-namespace dft {
-namespace mklcpu {
+namespace oneapi::mkl::dft::mklcpu {
 namespace detail {
 
 // BUFFER version
@@ -81,8 +77,9 @@ auto get_buffer(commit_t<prec, dom> *commit_handle) {
 } // namespace detail
 
 //In-place transform
-template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout) {
+template <typename descriptor_type>
+ONEMKL_EXPORT void compute_forward(descriptor_type &desc,
+                                   sycl::buffer<fwd<descriptor_type>, 1> &inout) {
     detail::expect_config<dft::detail::config_param::PLACEMENT, dft::detail::config_value::INPLACE>(
         desc, "Unexpected value for placement");
     auto commit_handle = dft::detail::get_commit(desc);
@@ -107,9 +104,10 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type
 }
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
-template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout_re,
-                                   sycl::buffer<data_type, 1> &inout_im) {
+template <typename descriptor_type>
+ONEMKL_EXPORT void compute_forward(descriptor_type &desc,
+                                   sycl::buffer<scalar<descriptor_type>, 1> &inout_re,
+                                   sycl::buffer<scalar<descriptor_type>, 1> &inout_im) {
     detail::expect_config<dft::detail::config_param::COMPLEX_STORAGE,
                           dft::detail::config_value::REAL_REAL>(
         desc, "Unexpected value for complex storage");
@@ -138,9 +136,9 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type
 }
 
 //Out-of-place transform
-template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_type, 1> &in,
-                                   sycl::buffer<output_type, 1> &out) {
+template <typename descriptor_type>
+ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<fwd<descriptor_type>, 1> &in,
+                                   sycl::buffer<bwd<descriptor_type>, 1> &out) {
     detail::expect_config<dft::detail::config_param::PLACEMENT,
                           dft::detail::config_value::NOT_INPLACE>(desc,
                                                                   "Unexpected value for placement");
@@ -157,7 +155,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
         auto out_acc = out.template get_access<sycl::access::mode::write>(cgh);
 
         detail::host_task<class host_kernel_outofplace>(cgh, [=]() {
-            auto in_ptr = const_cast<input_type *>(&in_acc.get_pointer()[0]);
+            auto in_ptr = const_cast<fwd<descriptor_type> *>(&in_acc.get_pointer()[0]);
             DFT_ERROR status =
                 DftiComputeForward(desc_acc[detail::DIR::fwd], in_ptr, out_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
@@ -170,11 +168,12 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
 }
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
-template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_type, 1> &in_re,
-                                   sycl::buffer<input_type, 1> &in_im,
-                                   sycl::buffer<output_type, 1> &out_re,
-                                   sycl::buffer<output_type, 1> &out_im) {
+template <typename descriptor_type>
+ONEMKL_EXPORT void compute_forward(descriptor_type &desc,
+                                   sycl::buffer<scalar<descriptor_type>, 1> &in_re,
+                                   sycl::buffer<scalar<descriptor_type>, 1> &in_im,
+                                   sycl::buffer<scalar<descriptor_type>, 1> &out_re,
+                                   sycl::buffer<scalar<descriptor_type>, 1> &out_im) {
     detail::expect_config<dft::detail::config_param::COMPLEX_STORAGE,
                           dft::detail::config_value::REAL_REAL>(
         desc, "Unexpected value for complex storage");
@@ -193,8 +192,8 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
         auto outim_acc = out_im.template get_access<sycl::access::mode::write>(cgh);
 
         detail::host_task<class host_kernel_split_outofplace>(cgh, [=]() {
-            auto inre_ptr = const_cast<input_type *>(&inre_acc.get_pointer()[0]);
-            auto inim_ptr = const_cast<input_type *>(&inim_acc.get_pointer()[0]);
+            auto inre_ptr = const_cast<scalar<descriptor_type> *>(&inre_acc.get_pointer()[0]);
+            auto inim_ptr = const_cast<scalar<descriptor_type> *>(&inim_acc.get_pointer()[0]);
             DFT_ERROR status = DftiComputeForward(desc_acc[detail::DIR::fwd], inre_ptr, inim_ptr,
                                                   outre_acc.get_pointer(), outim_acc.get_pointer());
             if (status != DFTI_NO_ERROR) {
@@ -209,8 +208,8 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
 //USM version
 
 //In-place transform
-template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inout,
+template <typename descriptor_type>
+ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor_type> *inout,
                                           const std::vector<sycl::event> &dependencies) {
     detail::expect_config<dft::detail::config_param::PLACEMENT, dft::detail::config_value::INPLACE>(
         desc, "Unexpected value for placement");
@@ -237,9 +236,9 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inou
 }
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
-template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inout_re,
-                                          data_type *inout_im,
+template <typename descriptor_type>
+ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, scalar<descriptor_type> *inout_re,
+                                          scalar<descriptor_type> *inout_im,
                                           const std::vector<sycl::event> &dependencies) {
     detail::expect_config<dft::detail::config_param::COMPLEX_STORAGE,
                           dft::detail::config_value::REAL_REAL>(
@@ -267,8 +266,9 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inou
 }
 
 //Out-of-place transform
-template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in, output_type *out,
+template <typename descriptor_type>
+ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor_type> *in,
+                                          bwd<descriptor_type> *out,
                                           const std::vector<sycl::event> &dependencies) {
     // Check: inplace
     detail::expect_config<dft::detail::config_param::PLACEMENT,
@@ -297,10 +297,11 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in,
 }
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
-template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in_re,
-                                          input_type *in_im, output_type *out_re,
-                                          output_type *out_im,
+template <typename descriptor_type>
+ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, scalar<descriptor_type> *in_re,
+                                          scalar<descriptor_type> *in_im,
+                                          scalar<descriptor_type> *out_re,
+                                          scalar<descriptor_type> *out_im,
                                           const std::vector<sycl::event> &dependencies) {
     detail::expect_config<dft::detail::config_param::COMPLEX_STORAGE,
                           dft::detail::config_value::REAL_REAL>(
@@ -331,7 +332,4 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in_
 // Template function instantiations
 #include "dft/backends/backend_forward_instantiations.cxx"
 
-} // namespace mklcpu
-} // namespace dft
-} // namespace mkl
-} // namespace oneapi
+} // namespace oneapi::mkl::dft::mklcpu
