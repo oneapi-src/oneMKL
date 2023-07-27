@@ -23,15 +23,16 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include <rocfft.h>
-#include <hip/hip_runtime_api.h>
+#include "oneapi/mkl/exceptions.hpp"
+
+#include "oneapi/mkl/dft/detail/rocfft/onemkl_dft_rocfft.hpp"
+#include "oneapi/mkl/dft/descriptor.hpp"
 
 #include "execute_helper.hpp"
-#include "oneapi/mkl/dft/backward.hpp"
-#include "oneapi/mkl/dft/detail/commit_impl.hpp"
-#include "oneapi/mkl/dft/types.hpp"
-#include "oneapi/mkl/exceptions.hpp"
 #include "rocfft_handle.hpp"
+
+#include <rocfft.h>
+#include <hip/hip_runtime_api.h>
 
 namespace oneapi::mkl::dft::rocfft {
 namespace detail {
@@ -48,8 +49,9 @@ rocfft_execution_info get_bwd_info(dft::detail::commit_impl<prec, dom> *commit) 
 // BUFFER version
 
 //In-place transform
-template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout) {
+template <typename descriptor_type>
+ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
+                                    sycl::buffer<fwd<descriptor_type>, 1> &inout) {
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
@@ -72,9 +74,10 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
 }
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
-template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout_re,
-                                    sycl::buffer<data_type, 1> &inout_im) {
+template <typename descriptor_type>
+ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
+                                    sycl::buffer<scalar<descriptor_type>, 1> &inout_re,
+                                    sycl::buffer<scalar<descriptor_type>, 1> &inout_im) {
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
@@ -97,9 +100,10 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
 }
 
 //Out-of-place transform
-template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_type, 1> &in,
-                                    sycl::buffer<output_type, 1> &out) {
+template <typename descriptor_type>
+ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
+                                    sycl::buffer<bwd<descriptor_type>, 1> &in,
+                                    sycl::buffer<fwd<descriptor_type>, 1> &out) {
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::NOT_INPLACE>(
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
@@ -124,11 +128,12 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
 }
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
-template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_type, 1> &in_re,
-                                    sycl::buffer<input_type, 1> &in_im,
-                                    sycl::buffer<output_type, 1> &out_re,
-                                    sycl::buffer<output_type, 1> &out_im) {
+template <typename descriptor_type>
+ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
+                                    sycl::buffer<scalar<descriptor_type>, 1> &in_re,
+                                    sycl::buffer<scalar<descriptor_type>, 1> &in_im,
+                                    sycl::buffer<scalar<descriptor_type>, 1> &out_re,
+                                    sycl::buffer<scalar<descriptor_type>, 1> &out_im) {
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
@@ -157,8 +162,8 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
 //USM version
 
 //In-place transform
-template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *inout,
+template <typename descriptor_type>
+ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor_type> *inout,
                                            const std::vector<sycl::event> &deps) {
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
@@ -182,9 +187,9 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *ino
 }
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
-template <typename descriptor_type, typename data_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *inout_re,
-                                           data_type *inout_im,
+template <typename descriptor_type>
+ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descriptor_type> *inout_re,
+                                           scalar<descriptor_type> *inout_im,
                                            const std::vector<sycl::event> &deps) {
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
@@ -206,8 +211,9 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *ino
 }
 
 //Out-of-place transform
-template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in, output_type *out,
+template <typename descriptor_type>
+ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor_type> *in,
+                                           fwd<descriptor_type> *out,
                                            const std::vector<sycl::event> &deps) {
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::NOT_INPLACE>(
         desc, "Unexpected value for placement");
@@ -232,10 +238,11 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in
 }
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
-template <typename descriptor_type, typename input_type, typename output_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in_re,
-                                           input_type *in_im, output_type *out_re,
-                                           output_type *out_im,
+template <typename descriptor_type>
+ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descriptor_type> *in_re,
+                                           scalar<descriptor_type> *in_im,
+                                           scalar<descriptor_type> *out_re,
+                                           scalar<descriptor_type> *out_im,
                                            const std::vector<sycl::event> &deps) {
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
