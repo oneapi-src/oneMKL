@@ -473,10 +473,13 @@ inline void iamax(const char *func_name, Func func, sycl::queue &queue, int64_t 
             cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
         });
     });
-    // This requires to bring the data to host, copy it, and return it back to
-    // the device
-    result.template get_host_access(sycl::write_only)[0] = std::max(
-        (int64_t)int_res_buff.template get_host_access(sycl::read_only)[0] - 1, int64_t{ 0 });
+
+    queue.submit([&](sycl::handler &cgh) {
+        auto int_res_acc = int_res_buff.template get_access<sycl::access::mode::read>(cgh);
+        auto result_acc = result.template get_access<sycl::access::mode::write>(cgh);
+        cgh.single_task(
+            [=]() { result_acc[0] = std::max((int64_t)int_res_acc[0] - 1, (int64_t)0); });
+    });
 }
 
 #define IAMAX_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                \
@@ -556,8 +559,13 @@ inline void iamin(const char *func_name, Func func, sycl::queue &queue, int64_t 
             cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
         });
     });
-    result.template get_host_access(sycl::write_only)[0] = std::max(
-        (int64_t)int_res_buff.template get_host_access(sycl::read_only)[0] - 1, int64_t{ 0 });
+
+    queue.submit([&](sycl::handler &cgh) {
+        auto int_res_acc = int_res_buff.template get_access<sycl::access::mode::read>(cgh);
+        auto result_acc = result.template get_access<sycl::access::mode::write>(cgh);
+        cgh.single_task(
+            [=]() { result_acc[0] = std::max((int64_t)int_res_acc[0] - 1, (int64_t)0); });
+    });
 }
 
 #define IAMIN_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                                \
@@ -1120,15 +1128,9 @@ inline sycl::event iamax(const char *func_name, Func func, sycl::queue &queue, i
     });
     done.wait();
     if (result_on_device) {
-        // The following does copy device to host and then host to device
-        // just to adjust to 0-base indexing. This is pretty inefficient, and
-        // should maybe be replaced with a sycl GPU kernel, but it duplicated what
-        // is done in the buffer API
-        int host_int;
-        int64_t host_int64;
-        queue.memcpy(&host_int, int_res_p, sizeof(int)).wait();
-        host_int64 = std::max((int64_t)host_int - 1, int64_t{ 0 });
-        auto last_ev = queue.memcpy(result, &host_int64, sizeof(int64_t));
+        auto last_ev = queue.submit([&](sycl::handler &cgh) {
+            cgh.single_task([=]() { *result = std::max((int64_t)*int_res_p - 1, (int64_t)0); });
+        });
         last_ev.wait();
         sycl::free(int_res_p, queue);
         return last_ev;
@@ -1227,15 +1229,9 @@ inline sycl::event iamin(const char *func_name, Func func, sycl::queue &queue, i
     });
     done.wait();
     if (result_on_device) {
-        // The following does copy device to host and then host to device
-        // just to adjust to 0-base indexing. This is pretty inefficient, and
-        // should maybe be replaced with a sycl GPU kernel, but it duplicated what
-        // is done in the buffer API
-        int host_int;
-        int64_t host_int64;
-        queue.memcpy(&host_int, int_res_p, sizeof(int)).wait();
-        host_int64 = std::max((int64_t)host_int - 1, int64_t{ 0 });
-        auto last_ev = queue.memcpy(result, &host_int64, sizeof(int64_t));
+        auto last_ev = queue.submit([&](sycl::handler &cgh) {
+            cgh.single_task([=]() { *result = std::max((int64_t)*int_res_p - 1, (int64_t)0); });
+        });
         last_ev.wait();
         sycl::free(int_res_p, queue);
         return last_ev;
