@@ -149,7 +149,7 @@ void gemmt(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::trans
 void omatcopy(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, real_t alpha,
               sycl::buffer<real_t, 1> &a, std::int64_t lda, sycl::buffer<real_t, 1> &b,
               std::int64_t ldb) {
-    throw unimplemented("blas", "omatcopy", "");
+    CALL_SYCLBLAS_FN(::blas::_omatcopy, queue, trans, m, n, alpha, a, lda, b, ldb);
 }
 
 void omatcopy(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
