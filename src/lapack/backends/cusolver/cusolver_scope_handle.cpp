@@ -88,8 +88,8 @@ void ContextCallback(void *userData) {
 }
 
 cusolverDnHandle_t CusolverScopedContextHandler::get_handle(const sycl::queue &queue) {
-    auto piPlacedContext_ =
-        reinterpret_cast<pi_context>(sycl::get_native<sycl::backend::ext_oneapi_cuda>(*placedContext_));
+    auto piPlacedContext_ = reinterpret_cast<pi_context>(
+        sycl::get_native<sycl::backend::ext_oneapi_cuda>(*placedContext_));
     CUstream streamId = get_stream(queue);
     cusolverStatus_t err;
     auto it = handle_helper.cusolver_handle_mapper_.find(piPlacedContext_);
