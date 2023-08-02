@@ -478,10 +478,13 @@ inline void iamax(Func func, sycl::queue &queue, int64_t n, sycl::buffer<T, 1> &
             rocblas_set_pointer_mode(handle, rocblas_pointer_mode_host);
         });
     });
-    // This requires to bring the data to host, copy it, and return it back to
-    // the device
-    result.template get_access<sycl::access::mode::write>()[0] = std::max(
-        (int64_t)int_res_buff.template get_access<sycl::access::mode::read>()[0] - 1, int64_t{ 0 });
+
+    queue.submit([&](sycl::handler &cgh) {
+        auto int_res_acc = int_res_buff.template get_access<sycl::access::mode::read>(cgh);
+        auto result_acc = result.template get_access<sycl::access::mode::write>(cgh);
+        cgh.single_task(
+            [=]() { result_acc[0] = std::max((int64_t)int_res_acc[0] - 1, (int64_t)0); });
+    });
 }
 
 #define IAMAX_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                               \
@@ -563,8 +566,13 @@ inline void iamin(Func func, sycl::queue &queue, int64_t n, sycl::buffer<T, 1> &
             rocblas_set_pointer_mode(handle, rocblas_pointer_mode_host);
         });
     });
-    result.template get_access<sycl::access::mode::write>()[0] = std::max(
-        (int64_t)int_res_buff.template get_access<sycl::access::mode::read>()[0] - 1, int64_t{ 0 });
+
+    queue.submit([&](sycl::handler &cgh) {
+        auto int_res_acc = int_res_buff.template get_access<sycl::access::mode::read>(cgh);
+        auto result_acc = result.template get_access<sycl::access::mode::write>(cgh);
+        cgh.single_task(
+            [=]() { result_acc[0] = std::max((int64_t)int_res_acc[0] - 1, (int64_t)0); });
+    });
 }
 
 #define IAMIN_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                               \
