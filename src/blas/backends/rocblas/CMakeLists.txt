@@ -39,6 +39,12 @@ target_include_directories(${LIB_OBJ}
           ${PROJECT_BINARY_DIR}/bin
 )
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
+target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
+    -fsycl-targets=amdgcn-amd-amdhsa -fsycl-unnamed-lambda
+    -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
+target_link_options(ONEMKL::SYCL::SYCL INTERFACE
+    -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend 
+    --offload-arch=${HIP_TARGETS})
 target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ONEMKL::rocBLAS::rocBLAS)
 target_compile_features(${LIB_OBJ} PUBLIC cxx_std_17)
 set_target_properties(${LIB_OBJ} PROPERTIES
