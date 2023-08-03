@@ -2467,7 +2467,7 @@ inline void gebrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                         \
         gebrd_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, m, n, lda,              \
                               &scratch_size);                                                     \
-        return scratch_size;                                                                      \
+        return std::max(scratch_size, 1);                                                         \
     }
 
 GEBRD_LAUNCHER_SCRATCH(float, cusolverDnSgebrd_bufferSize)
@@ -2518,7 +2518,7 @@ inline void geqrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                         \
         geqrf_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, m, n, lda,              \
                               &scratch_size);                                                     \
-        return scratch_size;                                                                      \
+        return std::max(scratch_size, 1);                                                         \
     }
 
 GEQRF_LAUNCHER_SCRATCH(float, cusolverDnSgeqrf_bufferSize)
@@ -2550,7 +2550,7 @@ inline void gesvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                         \
         gesvd_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, jobu, jobvt, m, n, lda, \
                               ldu, ldvt, &scratch_size);                                          \
-        return scratch_size;                                                                      \
+        return std::max(scratch_size, 1);                                                         \
     }
 
 GESVD_LAUNCHER_SCRATCH(float, cusolverDnSgesvd_bufferSize)
@@ -2580,7 +2580,7 @@ inline void getrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                         \
         getrf_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, m, n, lda,              \
                               &scratch_size);                                                     \
-        return scratch_size;                                                                      \
+        return std::max(scratch_size, 1);                                                         \
     }
 
 GETRF_LAUNCHER_SCRATCH(float, cusolverDnSgetrf_bufferSize)
@@ -2643,7 +2643,7 @@ inline void heevd_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                     \
         heevd_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, jobz, uplo, n, lda, \
                               &scratch_size);                                                 \
-        return scratch_size;                                                                  \
+        return std::max(scratch_size, 1);                                                     \
     }
 
 HEEVD_LAUNCHER_SCRATCH(std::complex<float>, cusolverDnCheevd_bufferSize)
@@ -2675,7 +2675,7 @@ inline void hegvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                          \
         hegvd_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, itype, jobz, uplo, n,    \
                               lda, ldb, &scratch_size);                                            \
-        return scratch_size;                                                                       \
+        return std::max(scratch_size, 1);                                                          \
     }
 
 HEGVD_LAUNCHER_SCRATCH(std::complex<float>, cusolverDnChegvd_bufferSize)
@@ -2704,7 +2704,7 @@ inline void hetrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                 \
         hetrd_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, uplo, n, lda,   \
                               &scratch_size);                                             \
-        return scratch_size;                                                              \
+        return std::max(scratch_size, 1);                                                 \
     }
 
 HETRD_LAUNCHER_SCRATCH(std::complex<float>, cusolverDnChetrd_bufferSize)
@@ -2745,7 +2745,7 @@ inline void orgbr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                    \
         orgbr_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, vec, m, n, k, lda, \
                               &scratch_size);                                                \
-        return scratch_size;                                                                 \
+        return std::max(scratch_size, 1);                                                    \
     }
 
 ORGBR_LAUNCHER_SCRATCH(float, cusolverDnSorgbr_bufferSize)
@@ -2774,7 +2774,7 @@ inline void orgtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                 \
         orgtr_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, uplo, n, lda,   \
                               &scratch_size);                                             \
-        return scratch_size;                                                              \
+        return std::max(scratch_size, 1);                                                 \
     }
 
 ORGTR_LAUNCHER_SCRATCH(float, cusolverDnSorgtr_bufferSize)
@@ -2803,7 +2803,7 @@ inline void orgqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                         \
         orgqr_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, m, n, k, lda,           \
                               &scratch_size);                                                     \
-        return scratch_size;                                                                      \
+        return std::max(scratch_size, 1);                                                         \
     }
 
 ORGQR_LAUNCHER_SCRATCH(float, cusolverDnSorgqr_bufferSize)
@@ -2850,7 +2850,7 @@ inline void ormqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                          \
         ormqr_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, side, trans, m, n, k,    \
                               lda, ldc, &scratch_size);                                            \
-        return scratch_size;                                                                       \
+        return std::max(scratch_size, 1);                                                          \
     }
 
 ORMQRF_LAUNCHER_SCRATCH(float, cusolverDnSormqr_bufferSize)
@@ -2883,7 +2883,7 @@ inline void ormtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                          \
         ormtr_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, side, uplo, trans, m, n, \
                               lda, ldc, &scratch_size);                                            \
-        return scratch_size;                                                                       \
+        return std::max(scratch_size, 1);                                                          \
     }
 
 ORMTR_LAUNCHER_SCRATCH(float, cusolverDnSormtr_bufferSize)
@@ -2912,7 +2912,7 @@ inline void potrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                 \
         potrf_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, uplo, n, lda,   \
                               &scratch_size);                                             \
-        return scratch_size;                                                              \
+        return std::max(scratch_size, 1);                                                 \
     }
 
 POTRF_LAUNCHER_SCRATCH(float, cusolverDnSpotrf_bufferSize)
@@ -2959,7 +2959,7 @@ inline void potri_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                 \
         potri_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, uplo, n, lda,   \
                               &scratch_size);                                             \
-        return scratch_size;                                                              \
+        return std::max(scratch_size, 1);                                                 \
     }
 
 POTRI_LAUNCHER_SCRATCH(float, cusolverDnSpotri_bufferSize)
@@ -2989,7 +2989,7 @@ inline void sytrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                 \
         sytrf_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, uplo, n, lda,   \
                               &scratch_size);                                             \
-        return scratch_size;                                                              \
+        return std::max(scratch_size, 1);                                                 \
     }
 
 SYTRF_LAUNCHER_SCRATCH(float, cusolverDnSsytrf_bufferSize)
@@ -3022,7 +3022,7 @@ inline void syevd_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                     \
         syevd_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, jobz, uplo, n, lda, \
                               &scratch_size);                                                 \
-        return scratch_size;                                                                  \
+        return std::max(scratch_size, 1);                                                     \
     }
 
 SYEVD_LAUNCHER_SCRATCH(float, cusolverDnSsyevd_bufferSize)
@@ -3054,7 +3054,7 @@ inline void sygvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                          \
         sygvd_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, itype, jobz, uplo, n,    \
                               lda, ldb, &scratch_size);                                            \
-        return scratch_size;                                                                       \
+        return std::max(scratch_size, 1);                                                          \
     }
 
 SYGVD_LAUNCHER_SCRATCH(float, cusolverDnSsygvd_bufferSize)
@@ -3083,7 +3083,7 @@ inline void sytrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                 \
         sytrd_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, uplo, n, lda,   \
                               &scratch_size);                                             \
-        return scratch_size;                                                              \
+        return std::max(scratch_size, 1);                                                 \
     }
 
 SYTRD_LAUNCHER_SCRATCH(float, cusolverDnSsytrd_bufferSize)
@@ -3144,7 +3144,7 @@ inline void ungbr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                    \
         ungbr_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, vec, m, n, k, lda, \
                               &scratch_size);                                                \
-        return scratch_size;                                                                 \
+        return std::max(scratch_size, 1);                                                    \
     }
 
 UNGBR_LAUNCHER_SCRATCH(std::complex<float>, cusolverDnCungbr_bufferSize)
@@ -3173,7 +3173,7 @@ inline void ungqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                         \
         ungqr_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, m, n, k, lda,           \
                               &scratch_size);                                                     \
-        return scratch_size;                                                                      \
+        return std::max(scratch_size, 1);                                                         \
     }
 
 UNGQR_LAUNCHER_SCRATCH(std::complex<float>, cusolverDnCungqr_bufferSize)
@@ -3202,7 +3202,7 @@ inline void ungtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                 \
         ungtr_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, uplo, n, lda,   \
                               &scratch_size);                                             \
-        return scratch_size;                                                              \
+        return std::max(scratch_size, 1);                                                 \
     }
 
 UNGTR_LAUNCHER_SCRATCH(std::complex<float>, cusolverDnCungtr_bufferSize)
@@ -3251,7 +3251,7 @@ inline void unmqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                          \
         unmqr_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, side, trans, m, n, k,    \
                               lda, ldc, &scratch_size);                                            \
-        return scratch_size;                                                                       \
+        return std::max(scratch_size, 1);                                                          \
     }
 
 UNMQR_LAUNCHER_SCRATCH(std::complex<float>, cusolverDnCunmqr_bufferSize)
@@ -3284,7 +3284,7 @@ inline void unmtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         int scratch_size;                                                                          \
         unmtr_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, side, uplo, trans, m, n, \
                               lda, ldc, &scratch_size);                                            \
-        return scratch_size;                                                                       \
+        return std::max(scratch_size, 1);                                                          \
     }
 
 UNMTR_LAUNCHER_SCRATCH(std::complex<float>, cusolverDnCunmtr_bufferSize)
