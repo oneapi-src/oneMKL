@@ -39,6 +39,14 @@
 namespace oneapi::mkl::dft::cufft {
 namespace detail {
 
+template<typename T>
+void print(std::vector<T> v){
+    for(T a : v){
+        std::cout << a << ", ";
+    }
+    std::cout << std::endl;
+}
+
 /// Commit impl class specialization for cuFFT.
 template <dft::precision prec, dft::domain dom>
 class cufft_commit final : public dft::detail::commit_impl<prec, dom> {
@@ -47,6 +55,8 @@ private:
     // We also need this because oneMKL uses a directionless "FWD_DISTANCE" and "BWD_DISTANCE" while cuFFT uses a directional "idist" and "odist".
     // plans[0] is forward, plans[1] is backward
     std::array<std::optional<cufftHandle>, 2> plans = { std::nullopt, std::nullopt };
+    int64_t in_offset;
+    int64_t out_offset;
 
 public:
     cufft_commit(sycl::queue& queue, const dft::detail::dft_values<prec, dom>& config_values)
@@ -137,27 +147,99 @@ public:
         std::array<int, max_supported_dims> n_copy;
         std::copy(config_values.dimensions.begin(), config_values.dimensions.end(), n_copy.data());
         const int rank = static_cast<int>(config_values.dimensions.size());
-        const int istride = static_cast<int>(config_values.input_strides.back());
-        const int ostride = static_cast<int>(config_values.output_strides.back());
+        std::vector<int> inembed = {config_values.input_strides.begin(), config_values.input_strides.end()};
+        std::vector<int> onembed = {config_values.output_strides.begin(), config_values.output_strides.end()};
+        std::cout << "inembed "; 
+        print(inembed);
+        auto i_min = std::min_element(inembed.begin()+1, inembed.end());
+        auto o_min = std::min_element(onembed.begin()+1, onembed.end());
+        std::cout << "i_min " << *i_min << std::endl; 
+        if constexpr(dom == dft::domain::REAL){
+            if(i_min != inembed.begin() + rank){
+                throw mkl::unimplemented("dft/backends/cufft", __FUNCTION__,
+                                     "cufft requires the last input stride to be the the smallest one for real transforms!");
+            }
+            if(o_min != onembed.begin() + rank){
+                throw mkl::unimplemented("dft/backends/cufft", __FUNCTION__,
+                                     "cufft requires the last output stride to be the the smallest one for real transforms!");
+            }
+        } else{
+            if(o_min - onembed.begin() != i_min - inembed.begin()){
+                    throw mkl::unimplemented("dft/backends/cufft", __FUNCTION__,
+                                        "cufft requires that if the strides are ordered by stride length, the order is the same for input and output strides!");
+            }
+        }
+        const int istride = static_cast<int>(*i_min);
+        const int ostride = static_cast<int>(*o_min);
+        inembed.erase(i_min);
+        onembed.erase(o_min);
+        if(o_min - onembed.begin() != rank){
+            // swap dimensions to have the last one have the smallest stride
+            std::swap(n_copy[o_min - onembed.begin()-1], n_copy[rank-1]);
+        }
+        for(int i=0;i<rank-1;i++){
+            std::cout << "inembed stride div " << i << ": " << inembed[i+1] << " / " << istride << std::endl;
+            if(inembed[i+1] % istride != 0){
+                throw mkl::unimplemented("dft/backends/cufft", __FUNCTION__,
+                                     "cufft requires an input stride to be divisible by all smaller input strides!");
+            }
+            inembed[i+1] /= istride;
+            if(onembed[i+1] % ostride != 0){
+                throw mkl::unimplemented("dft/backends/cufft", __FUNCTION__,
+                                     "cufft requires an output stride to be divisible by all smaller output strides!");
+            }
+            onembed[i+1] /= ostride;
+        }
+        if(rank>2){
+            if(inembed[1]>inembed[2] && onembed[1]<onembed[2]){
+                throw mkl::unimplemented("dft/backends/cufft", __FUNCTION__,
+                                    "cufft requires that if the strides are ordered by stride length, the order is the same for input and output strides!");
+            } else if(inembed[1]<inembed[2] && onembed[1]<onembed[2]){
+                // swap dimensions to have the first one have the biggest stride
+                std::swap(inembed[1],inembed[2]);
+                std::swap(onembed[1],onembed[2]);
+                std::swap(n_copy[0],n_copy[1]);
+            }
+            if(inembed[1] % inembed[2] != 0){
+                throw mkl::unimplemented("dft/backends/cufft", __FUNCTION__,
+                                     "cufft requires an input stride to be divisible by all smaller input strides!");
+            }
+            if(onembed[1] % onembed[2] != 0){
+                throw mkl::unimplemented("dft/backends/cufft", __FUNCTION__,
+                                     "cufft requires an output stride to be divisible by all smaller output strides!");
+            }
+            std::cout << "inembed inembed div " << inembed[1] << " / " << inembed[2] << std::endl;
+            inembed[1] /= inembed[2];
+            onembed[1] /= onembed[2];
+        }
+        in_offset = config_values.input_strides[0];
+        out_offset = config_values.output_strides[0];
         const int batch = static_cast<int>(config_values.number_of_transforms);
         const int fwd_dist = static_cast<int>(config_values.fwd_dist);
         const int bwd_dist = static_cast<int>(config_values.bwd_dist);
-        std::array<int, max_supported_dims> inembed;
+        std::cout << "rank: " << rank << std::endl;
+        std::cout << "dimensions: " << n_copy[0] << " " << n_copy[1] << " " << n_copy[2] << std::endl; 
+        std::cout << "embeds1: " << inembed[1] << " " << onembed[1];
+        if(rank>2){
+          std::cout << "embeds2: " << inembed[2] << " " << onembed[2];
+        }
+        std::cout << " strides: " << istride << " " << ostride << " distances " << fwd_dist << " " << bwd_dist << std::endl;
+        /*std::array<int, max_supported_dims> inembed;
         if (rank == 2) {
-            inembed[1] = config_values.input_strides[1];
+            inembed[1] = config_values.input_strides[1] / istride;
         }
         else if (rank == 3) {
-            inembed[2] = config_values.input_strides[2];
-            inembed[1] = config_values.input_strides[1] / inembed[2];
+            inembed[2] = config_values.input_strides[2] / istride;
+            inembed[1] = config_values.input_strides[1] / inembed[2] / istride;
         }
         std::array<int, max_supported_dims> onembed;
         if (rank == 2) {
-            onembed[1] = config_values.output_strides[1];
+            onembed[1] = config_values.output_strides[1] / ostride;
         }
         else if (rank == 3) {
-            onembed[2] = config_values.output_strides[2];
-            onembed[1] = config_values.output_strides[1] / onembed[2];
-        }
+            onembed[2] = config_values.output_strides[2] / ostride;
+            onembed[1] = config_values.output_strides[1] / onembed[2] / ostride;
+        }*/
 
         // When creating real-complex descriptions, the strides will always be wrong for one of the directions.
         // This is because the least significant dimension is symmetric.

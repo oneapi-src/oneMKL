@@ -52,6 +52,11 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
 
     auto [forward_distance, backward_distance] = get_default_distances<domain>(sizes, strides_fwd, strides_bwd);
 
+
+    std::cout << "forward_distance: " << forward_distance << std::endl;
+    std::cout << "fwd stride: ";
+    print(strides_fwd);
+
     descriptor_t descriptor{ sizes };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::NOT_INPLACE);
@@ -72,14 +77,11 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     std::vector<FwdInputType> fwd_data(strided_copy(input, sizes, strides_fwd, batches));
     std::vector<FwdInputType> fwd_data_ref = fwd_data;
 
-    std::cout << "forward_distance: " << forward_distance << std::endl;
-    std::cout << "fwd stride: ";
-    print(strides_fwd);
     std::cout << "input: ";
     print(input);
     std::cout << "fwd_data: ";
     print(fwd_data);
-
+    
     auto tmp = std::vector<FwdOutputType>(cast_unsigned(backward_distance * batches), 0);
     {
         sycl::buffer<FwdInputType, 1> fwd_buf{ fwd_data };
