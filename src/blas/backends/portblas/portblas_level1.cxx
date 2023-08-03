@@ -275,7 +275,6 @@ sycl::event copy(sycl::queue &queue, std::int64_t n, const std::complex<real_t> 
 sycl::event dot(sycl::queue &queue, std::int64_t n, const real_t *x, std::int64_t incx,
                 const real_t *y, std::int64_t incy, real_t *result,
                 const std::vector<sycl::event> &dependencies) {
-//    CALL_SYCLBLAS_USM_FN(::blas::_dot, queue, n, x, incx, y, incy, result, dependencies);
     throw unimplemented("blas", "dot", " for USM");
 }
 
@@ -290,7 +289,6 @@ sycl::event dot(sycl::queue &queue, std::int64_t n, const float *x, std::int64_t
 sycl::event sdsdot(sycl::queue &queue, std::int64_t n, real_t sb, const real_t *x,
                    std::int64_t incx, const real_t *y, std::int64_t incy, real_t *result,
                    const std::vector<sycl::event> &dependencies) {
-//    CALL_SYCLBLAS_USM_FN(::blas::_sdsdot, queue, n, sb, x, incx, y, incy, result, dependencies);
     throw unimplemented("blas", "sdsdot", " for USM");
 }
 
