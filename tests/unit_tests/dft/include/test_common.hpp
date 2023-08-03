@@ -225,12 +225,14 @@ std::pair<std::int64_t,std::int64_t> get_default_distances(const std::vector<std
 }
 
 //up to 3 dimensions, empty strides = default
-template<typename T_vec>
-auto strided_copy(const T_vec& contiguous, const std::vector<std::int64_t>& sizes, const std::vector<std::int64_t>& strides, std::int64_t batches) -> std::vector<std::decay_t<decltype(contiguous[0])>>{ 
+template<typename T_vec, typename Allocator=std::allocator<typename T_vec::value_type>>
+auto strided_copy(const T_vec& contiguous, const std::vector<std::int64_t>& sizes, 
+                  const std::vector<std::int64_t>& strides, std::int64_t batches, Allocator alloc = {})
+         -> std::vector<typename T_vec::value_type, Allocator>{
     if (strides.size() == 0){
-        return contiguous;
+        return {contiguous.begin(), contiguous.end(), alloc};
     }
-    using T = std::decay_t<decltype(contiguous[0])>;
+    using T = typename T_vec::value_type;
     std::int64_t size0 = sizes[0];
     std::int64_t size1 = getdefault(sizes, 1, 1l);
     std::int64_t size2 = getdefault(sizes, 2, 1l);
@@ -240,7 +242,7 @@ auto strided_copy(const T_vec& contiguous, const std::vector<std::int64_t>& size
     std::int64_t stride2 = getdefault(strides, 2, 0l);
     std::int64_t stride3 = getdefault(strides, 3, 0l);
     std::int64_t distance = std::max({size0 * stride1, size1 * stride2, size2 * stride3}) + stride0;
-    std::vector<T> res(cast_unsigned(distance * batches));
+    std::vector<T, Allocator> res(cast_unsigned(distance * batches), alloc);
     for(std::int64_t b=0;b<batches;b++){
         for(std::int64_t i=0;i<size0;i++){
             for(std::int64_t j=0;j<size1;j++){
