@@ -84,8 +84,9 @@ INSTANTIATE_TEST_DIMENSIONS_PRECISION_DOMAIN_PLACE_LAYOUT(USM)
 using shape = std::vector<std::int64_t>;
 using i64 = std::int64_t;
 // Parameter format - { shape of transform, number of transforms } or { shape, forward strides, backward strides, number of transforms }
+// strides need to be chosen in a way that also makes sense for real transforms
 std::vector<DFTParams> test_params{
-    { shape{ 8 }, i64{ 1 } },       { shape{ 9 }, i64{ 2 } },       { shape{ 8 }, i64{ 27*5 } },
+    { shape{ 8 }, i64{ 1 } },       { shape{ 9 }, i64{ 2 } },       { shape{ 8 }, i64{ 27 } },
     { shape{ 22 }, i64{ 1 } },      { shape{ 128 }, i64{ 1 } },
 
     { shape{ 4, 4 }, i64{ 1 } },    { shape{ 4, 4 }, i64{ 2 } },    { shape{ 4, 3 }, i64{ 9 } },
@@ -96,7 +97,7 @@ std::vector<DFTParams> test_params{
 
     //{ shape{ 4 }, shape{ 1, 3}, shape{ 1, 3}, i64{ 2 } },
 
-    { shape{ 4, 3 }, shape{ 0, 3, 1}, shape{ 0, 3, 1}, i64{ 27*5 } },
+    { shape{ 4, 3 }, shape{ 0, 4, 1}, shape{ 0, 3, 1}, i64{ 9 } },
     { shape{ 4, 3 }, shape{ 0, 6, 2}, shape{ 0, 6, 2}, i64{ 2 } },
     { shape{ 4, 3 }, shape{ 0, 1, 4}, shape{ 0, 1, 4}, i64{ 1 } },
     { shape{ 4, 4 }, shape{ 0, 4, 1}, shape{ 0, 4, 1}, i64{ 2 } },

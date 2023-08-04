@@ -252,6 +252,11 @@ public:
             ignore_strides || (n_copy[rank - 1] <= onembed[rank - 1] &&
                                (n_copy[rank - 1] / 2 + 1) <= inembed[rank - 1]);
 
+        if (!valid_forward && !valid_backward) {
+            throw mkl::exception("dft/backends/cufft", __FUNCTION__,
+                                    "Invalid strides.");
+        }
+
         if (valid_forward) {
             cufftHandle fwd_plan;
             auto res = cufftPlanMany(&fwd_plan, // plan
