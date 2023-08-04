@@ -33,13 +33,13 @@ std::int64_t get_backward_row_size(const std::vector<std::int64_t> &sizes) noexc
     }
 }
 
-template<typename T>
+/*template<typename T>
 void print(std::vector<T> v){
     for(T a : v){
         std::cout << a << ", ";
     }
     std::cout << std::endl;
-}
+}*/
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 int DFT_Test<precision, domain>::test_out_of_place_buffer() {
@@ -99,7 +99,7 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
             }
             std::cout << std::endl;
             for(int64_t i=0;i<batches;i++){
-                EXPECT_TRUE(check_equal_strided<domain>(bwd_ptr + backward_distance * i, out_host_ref.data() + ref_distance * i, sizes, strides_bwd, abs_error_margin, rel_error_margin, std::cout));
+                EXPECT_TRUE(check_equal_strided<domain == oneapi::mkl::dft::domain::REAL>(bwd_ptr + backward_distance * i, out_host_ref.data() + ref_distance * i, sizes, strides_bwd, abs_error_margin, rel_error_margin, std::cout));
             }
         }
 
@@ -183,7 +183,7 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     auto bwd_ptr = &bwd[0];
     auto ref_distance = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>());
     for(int64_t i=0;i<batches;i++){
-        EXPECT_TRUE(check_equal_strided<domain>(bwd_ptr + backward_distance * i, out_host_ref.data() + ref_distance * i, sizes, strides_bwd, abs_error_margin, rel_error_margin, std::cout));
+        EXPECT_TRUE(check_equal_strided<domain == oneapi::mkl::dft::domain::REAL>(bwd_ptr + backward_distance * i, out_host_ref.data() + ref_distance * i, sizes, strides_bwd, abs_error_margin, rel_error_margin, std::cout));
     }
 
     if(strides_bwd.size()){

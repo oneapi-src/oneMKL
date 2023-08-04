@@ -256,12 +256,12 @@ auto strided_copy(const T_vec& contiguous, const std::vector<std::int64_t>& size
 }
 
 //up to 3 dimensions, empty strides = default
-template<oneapi::mkl::dft::domain domain, typename vec1, typename vec2>
+template<bool ConjugateEvenStrides, typename vec1, typename vec2>
 bool check_equal_strided(const vec1& v, const vec2& v_ref, std::vector<int64_t> sizes, std::vector<int64_t> strides, double abs_error_mag,
                         double rel_error_mag, std::ostream &out){
     if(strides.size() == 0){
         std::array<std::int64_t, 4> strides_arr;
-        if constexpr(domain == oneapi::mkl::dft::domain::REAL){
+        if constexpr(ConjugateEvenStrides){
             strides_arr = get_conjugate_even_complex_strides(sizes);
         } else{
             strides_arr = get_default_strides(sizes);
@@ -273,9 +273,9 @@ bool check_equal_strided(const vec1& v, const vec2& v_ref, std::vector<int64_t> 
     std::int64_t size0 = sizes[0];
     std::int64_t size1 = getdefault(sizes, 1, 1l);
     std::int64_t size2 = getdefault(sizes, 2, 1l);
-    std::int64_t size0_real = domain == oneapi::mkl::dft::domain::REAL && sizes.size() == 1 ? size0/2+1 : size0;
-    std::int64_t size1_real = domain == oneapi::mkl::dft::domain::REAL && sizes.size() == 2 ? size1/2+1 : size1;
-    std::int64_t size2_real = domain == oneapi::mkl::dft::domain::REAL && sizes.size() == 3 ? size2/2+1 : size2;
+    std::int64_t size0_real = ConjugateEvenStrides && sizes.size() == 1 ? size0/2+1 : size0;
+    std::int64_t size1_real = ConjugateEvenStrides && sizes.size() == 2 ? size1/2+1 : size1;
+    std::int64_t size2_real = ConjugateEvenStrides && sizes.size() == 3 ? size2/2+1 : size2;
     std::cout << "sizes " << size0 << " " << size1 << " " << size2 << std::endl;
     std::cout << "sizes real " << size0_real << " " << size1_real << " " << size2_real << std::endl;
 

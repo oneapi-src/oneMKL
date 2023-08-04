@@ -76,57 +76,94 @@ void copy_strided(const std::vector<std::int64_t>& sizes, const std::vector<T>& 
     }
 }
 
+template<typename T>
+void print(std::vector<T> v){
+    for(T a : v){
+        std::cout << a << ", ";
+    }
+    std::cout << std::endl;
+}
+
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 int DFT_Test<precision, domain>::test_in_place_buffer() {
     if (!init(MemoryAccessModel::buffer)) {
         return test_skipped;
     }
 
-    const std::size_t last_dim_size = cast_unsigned(sizes.back());
+    /*const std::size_t last_dim_size = cast_unsigned(sizes.back());
     const std::size_t real_first_dims = size_total / last_dim_size;
     const std::size_t real_last_dim = row_elements_to_conjugate_even_components(last_dim_size);
-    const std::size_t container_size_total =
-        domain == oneapi::mkl::dft::domain::REAL ? real_first_dims * real_last_dim : size_total;
-    const std::int64_t container_size_per_transform =
+*/
+
+    auto [forward_distance, backward_distance] = get_default_distances<domain>(sizes, strides_fwd, strides_bwd);
+    auto ref_distance = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>());
+
+    //const std::size_t container_size_total =
+      //  domain == oneapi::mkl::dft::domain::REAL ? real_first_dims * real_last_dim : size_total;
+
+    /*const std::int64_t container_size_per_transform =
         static_cast<std::int64_t>(container_size_total) / batches;
     const std::int64_t backward_elements = domain == oneapi::mkl::dft::domain::REAL
                                                ? container_size_per_transform / 2
                                                : container_size_per_transform;
+                                               */
 
     descriptor_t descriptor{ sizes };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::INPLACE);
     descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE,
-                         container_size_per_transform);
-    descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_elements);
-
-    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        const auto real_strides = get_conjugate_even_real_component_strides(sizes);
+                         forward_distance);
+    descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
+    if(strides_fwd.size()){
+        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, strides_fwd.data());
+    }
+    if(strides_bwd.size()){
+        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, strides_bwd.data());
+    } else if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         const auto complex_strides = get_conjugate_even_complex_strides(sizes);
-        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, real_strides.data());
         descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                              complex_strides.data());
     }
-
     commit_descriptor(descriptor, sycl_queue);
 
-    std::vector<FwdInputType> inout_host(container_size_total, 0);
-    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+    std::vector<FwdInputType> inout_host(strided_copy(input, sizes, strides_fwd, batches));
+    inout_host.resize(cast_unsigned(std::max(forward_distance, (domain == oneapi::mkl::dft::domain::REAL ? 2 : 1) * backward_distance) * batches));
+
+    std::cout << "input: ";
+    print(input);
+    std::cout << "inout_host.size: " << inout_host.size() << std::endl;
+    std::cout << "inout_host: ";
+    print(inout_host);
+    /*if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         copy_strided(sizes, input, inout_host);
     }
     else {
         std::copy(input.begin(), input.end(), inout_host.begin());
-    }
+    }*/
 
     {
         sycl::buffer<FwdInputType, 1> inout_buf{ inout_host };
-
+        
         oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(descriptor, inout_buf);
 
         {
-            auto acc_host = inout_buf.template get_host_access();
-            if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+            auto inout_buf_cplx = inout_buf/*.template reinterpret<FwdOutputType>()*/;
+            auto acc_host = inout_buf_cplx.template get_host_access();
+            auto ptr_host = reinterpret_cast<FwdOutputType*>(acc_host.get_pointer());
+            std::cout << "backward_distance " << backward_distance << " batches " << batches << std::endl;
+            std::cout << "out_host_ref: ";
+            print(out_host_ref);
+            std::cout << "ptr_host: " << std::endl;
+            for(int i=0;i<backward_distance * batches;i++){
+                std::cout << ptr_host[i] << ", ";
+            }
+            std::cout << std::endl;
+            for(int64_t i=0;i<batches;i++){
+                std::cout << i << std::endl;
+                EXPECT_TRUE(check_equal_strided<domain == oneapi::mkl::dft::domain::REAL>(ptr_host + backward_distance * i, out_host_ref.data() + ref_distance * i, sizes, strides_bwd, abs_error_margin, rel_error_margin, std::cout));
+            }
+            /*if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
                 std::vector<FwdInputType> conjugate_even_ref =
                     get_conjugate_even_ref(sizes, batches, out_host_ref);
                 EXPECT_TRUE(check_equal_vector(acc_host.get_pointer(), conjugate_even_ref.data(),
@@ -137,27 +174,42 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
                 EXPECT_TRUE(check_equal_vector(acc_host.get_pointer(), out_host_ref.data(),
                                                inout_host.size(), abs_error_margin,
                                                rel_error_margin, std::cout));
-            }
+            }*/
         }
 
-        if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-            const auto real_strides = get_conjugate_even_real_component_strides(sizes);
+        if(strides_bwd.size()){
+            descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, strides_bwd.data());
+        } else if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
             const auto complex_strides = get_conjugate_even_complex_strides(sizes);
             descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
-                                 complex_strides.data());
-            descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
-                                 real_strides.data());
-            commit_descriptor(descriptor, sycl_queue);
+                                complex_strides.data());
+        } else{
+            auto real_strides = get_default_strides(sizes);
+            descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
+                                real_strides.data());
         }
+        if(strides_fwd.size()){
+            descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, strides_fwd.data());
+        } else{
+            auto real_strides = get_default_strides(sizes);
+            descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
+                                real_strides.data());
+        }
+        commit_descriptor(descriptor, sycl_queue);
 
         oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
                                            FwdInputType>(descriptor, inout_buf);
     }
 
+    std::vector<FwdInputType> fwd_data_ref = input;
     // account for scaling that occurs during DFT
-    std::for_each(input.begin(), input.end(),
+    std::for_each(fwd_data_ref.begin(), fwd_data_ref.end(),
                   [this](auto& x) { x *= static_cast<PrecisionType>(forward_elements); });
-    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
+    std::cout << "fwd_data_ref: ";
+    print(fwd_data_ref);
+    std::cout << "inout_host: ";
+    print(inout_host);
+    /*if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         for (std::size_t j = 0; j < real_first_dims; j++) {
             EXPECT_TRUE(check_equal_vector(
                 inout_host.data() + j * row_elements_to_conjugate_even_components(last_dim_size),
@@ -168,6 +220,11 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     else {
         EXPECT_TRUE(check_equal_vector(inout_host.data(), input.data(), input.size(),
                                        abs_error_margin, rel_error_margin, std::cout));
+    }*/
+    //EXPECT_TRUE(check_equal_vector(inout_host.data(), fwd_data_ref.data(), fwd_data_ref.size(), abs_error_margin,
+      //                             rel_error_margin, std::cout));
+    for(int64_t i=0;i<batches;i++){
+        EXPECT_TRUE(check_equal_strided<false>(inout_host.data() + forward_distance * i, fwd_data_ref.data() + ref_distance * i, sizes, strides_fwd, abs_error_margin, rel_error_margin, std::cout));
     }
 
     return !::testing::Test::HasFailure();
