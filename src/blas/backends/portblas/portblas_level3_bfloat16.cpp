@@ -24,12 +24,12 @@
 #endif
 
 #include "oneapi/mkl/exceptions.hpp"
-#include "oneapi/mkl/blas/detail/syclblas/onemkl_blas_syclblas.hpp"
+#include "oneapi/mkl/blas/detail/portblas/onemkl_blas_portblas.hpp"
 
 namespace oneapi {
 namespace mkl {
 namespace blas {
-namespace syclblas {
+namespace portblas {
 namespace column_major {
 
 // BUFFER
@@ -72,7 +72,7 @@ sycl::event gemm(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl:
 }
 
 } // namespace row_major
-} // namespace syclblas
+} // namespace portblas
 } // namespace blas
 } // namespace mkl
 } // namespace oneapi

@@ -22,7 +22,7 @@
 void gemv(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
           real_t alpha, sycl::buffer<real_t, 1> &a, std::int64_t lda, sycl::buffer<real_t, 1> &x,
           std::int64_t incx, real_t beta, sycl::buffer<real_t, 1> &y, std::int64_t incy) {
-    CALL_SYCLBLAS_FN(::blas::_gemv, queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
+    CALL_PORTBLAS_FN(::blas::_gemv, queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy);
 }
 
 void gemv(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
@@ -36,7 +36,7 @@ void gbmv(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std:
           std::int64_t kl, std::int64_t ku, real_t alpha, sycl::buffer<real_t, 1> &a,
           std::int64_t lda, sycl::buffer<real_t, 1> &x, std::int64_t incx, real_t beta,
           sycl::buffer<real_t, 1> &y, std::int64_t incy) {
-    CALL_SYCLBLAS_FN(::blas::_gbmv, queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
+    CALL_PORTBLAS_FN(::blas::_gbmv, queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
                      incy);
 }
 
@@ -51,7 +51,7 @@ void gbmv(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std:
 void ger(sycl::queue &queue, std::int64_t m, std::int64_t n, real_t alpha,
          sycl::buffer<real_t, 1> &x, std::int64_t incx, sycl::buffer<real_t, 1> &y,
          std::int64_t incy, sycl::buffer<real_t, 1> &a, std::int64_t lda) {
-    CALL_SYCLBLAS_FN(::blas::_ger, queue, m, n, alpha, x, incx, y, incy, a, lda);
+    CALL_PORTBLAS_FN(::blas::_ger, queue, m, n, alpha, x, incx, y, incy, a, lda);
 }
 
 void gerc(sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<real_t> alpha,
@@ -118,49 +118,49 @@ void hpr2(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n,
 void sbmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, std::int64_t k,
           real_t alpha, sycl::buffer<real_t, 1> &a, std::int64_t lda, sycl::buffer<real_t, 1> &x,
           std::int64_t incx, real_t beta, sycl::buffer<real_t, 1> &y, std::int64_t incy) {
-    CALL_SYCLBLAS_FN(::blas::_sbmv, queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
+    CALL_PORTBLAS_FN(::blas::_sbmv, queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
                      incy);
 }
 
 void symv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, real_t alpha,
           sycl::buffer<real_t, 1> &a, std::int64_t lda, sycl::buffer<real_t, 1> &x,
           std::int64_t incx, real_t beta, sycl::buffer<real_t, 1> &y, std::int64_t incy) {
-    CALL_SYCLBLAS_FN(::blas::_symv, queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy);
+    CALL_PORTBLAS_FN(::blas::_symv, queue, upper_lower, n, alpha, a, lda, x, incx, beta, y, incy);
 }
 
 void syr(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, real_t alpha,
          sycl::buffer<real_t, 1> &x, std::int64_t incx, sycl::buffer<real_t, 1> &a,
          std::int64_t lda) {
-    CALL_SYCLBLAS_FN(::blas::_syr, queue, upper_lower, n, alpha, x, incx, a, lda);
+    CALL_PORTBLAS_FN(::blas::_syr, queue, upper_lower, n, alpha, x, incx, a, lda);
 }
 
 void syr2(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, real_t alpha,
           sycl::buffer<real_t, 1> &x, std::int64_t incx, sycl::buffer<real_t, 1> &y,
           std::int64_t incy, sycl::buffer<real_t, 1> &a, std::int64_t lda) {
-    CALL_SYCLBLAS_FN(::blas::_syr2, queue, upper_lower, n, alpha, x, incx, y, incy, a, lda);
+    CALL_PORTBLAS_FN(::blas::_syr2, queue, upper_lower, n, alpha, x, incx, y, incy, a, lda);
 }
 
 void spmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, real_t alpha,
           sycl::buffer<real_t, 1> &a, sycl::buffer<real_t, 1> &x, std::int64_t incx, real_t beta,
           sycl::buffer<real_t, 1> &y, std::int64_t incy) {
-    CALL_SYCLBLAS_FN(::blas::_spmv, queue, upper_lower, n, alpha, a, x, incx, beta, y, incy);
+    CALL_PORTBLAS_FN(::blas::_spmv, queue, upper_lower, n, alpha, a, x, incx, beta, y, incy);
 }
 
 void spr(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, real_t alpha,
          sycl::buffer<real_t, 1> &x, std::int64_t incx, sycl::buffer<real_t, 1> &a) {
-    CALL_SYCLBLAS_FN(::blas::_spr, queue, upper_lower, n, alpha, x, incx, a);
+    CALL_PORTBLAS_FN(::blas::_spr, queue, upper_lower, n, alpha, x, incx, a);
 }
 
 void spr2(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, real_t alpha,
           sycl::buffer<real_t, 1> &x, std::int64_t incx, sycl::buffer<real_t, 1> &y,
           std::int64_t incy, sycl::buffer<real_t, 1> &a) {
-    CALL_SYCLBLAS_FN(::blas::_spr2, queue, upper_lower, n, alpha, x, incx, y, incy, a);
+    CALL_PORTBLAS_FN(::blas::_spr2, queue, upper_lower, n, alpha, x, incx, y, incy, a);
 }
 
 void tbmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
           oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k, sycl::buffer<real_t, 1> &a,
           std::int64_t lda, sycl::buffer<real_t, 1> &x, std::int64_t incx) {
-    CALL_SYCLBLAS_FN(::blas::_tbmv, queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
+    CALL_PORTBLAS_FN(::blas::_tbmv, queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
 void tbmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
@@ -173,7 +173,7 @@ void tbmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transp
 void tbsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
           oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k, sycl::buffer<real_t, 1> &a,
           std::int64_t lda, sycl::buffer<real_t, 1> &x, std::int64_t incx) {
-    CALL_SYCLBLAS_FN(::blas::_tbsv, queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
+    CALL_PORTBLAS_FN(::blas::_tbsv, queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx);
 }
 
 void tbsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
@@ -186,7 +186,7 @@ void tbsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transp
 void tpmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
           oneapi::mkl::diag unit_diag, std::int64_t n, sycl::buffer<real_t, 1> &a,
           sycl::buffer<real_t, 1> &x, std::int64_t incx) {
-    CALL_SYCLBLAS_FN(::blas::_tpmv, queue, upper_lower, trans, unit_diag, n, a, x, incx);
+    CALL_PORTBLAS_FN(::blas::_tpmv, queue, upper_lower, trans, unit_diag, n, a, x, incx);
 }
 
 void tpmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
@@ -198,7 +198,7 @@ void tpmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transp
 void tpsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
           oneapi::mkl::diag unit_diag, std::int64_t n, sycl::buffer<real_t, 1> &a,
           sycl::buffer<real_t, 1> &x, std::int64_t incx) {
-    CALL_SYCLBLAS_FN(::blas::_tpsv, queue, upper_lower, trans, unit_diag, n, a, x, incx);
+    CALL_PORTBLAS_FN(::blas::_tpsv, queue, upper_lower, trans, unit_diag, n, a, x, incx);
 }
 
 void tpsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
@@ -210,7 +210,7 @@ void tpsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transp
 void trmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
           oneapi::mkl::diag unit_diag, std::int64_t n, sycl::buffer<real_t, 1> &a, std::int64_t lda,
           sycl::buffer<real_t, 1> &x, std::int64_t incx) {
-    CALL_SYCLBLAS_FN(::blas::_trmv, queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
+    CALL_PORTBLAS_FN(::blas::_trmv, queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
 }
 
 void trmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
@@ -222,7 +222,7 @@ void trmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transp
 void trsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
           oneapi::mkl::diag unit_diag, std::int64_t n, sycl::buffer<real_t, 1> &a, std::int64_t lda,
           sycl::buffer<real_t, 1> &x, std::int64_t incx) {
-    CALL_SYCLBLAS_FN(::blas::_trsv, queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
+    CALL_PORTBLAS_FN(::blas::_trsv, queue, upper_lower, trans, unit_diag, n, a, lda, x, incx);
 }
 
 void trsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,

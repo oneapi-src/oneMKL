@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef _DETAIL_SYCLBLAS_BLAS_CT_HPP_
-#define _DETAIL_SYCLBLAS_BLAS_CT_HPP_
+#ifndef _DETAIL_PORTBLAS_BLAS_CT_HPP_
+#define _DETAIL_PORTBLAS_BLAS_CT_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -30,7 +30,7 @@
 
 #include "oneapi/mkl/types.hpp"
 #include "oneapi/mkl/detail/backend_selector.hpp"
-#include "oneapi/mkl/blas/detail/syclblas/onemkl_blas_syclblas.hpp"
+#include "oneapi/mkl/blas/detail/portblas/onemkl_blas_portblas.hpp"
 #include "oneapi/mkl/blas/detail/blas_ct_backends.hpp"
 
 namespace oneapi {
@@ -54,4 +54,4 @@ namespace row_major {
 } //namespace mkl
 } //namespace oneapi
 
-#endif //_DETAIL_SYCLBLAS_BLAS_CT_HPP_
+#endif //_DETAIL_PORTBLAS_BLAS_CT_HPP_

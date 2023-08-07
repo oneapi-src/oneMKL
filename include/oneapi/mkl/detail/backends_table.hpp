@@ -53,8 +53,8 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
 #ifdef ENABLE_NETLIB_BACKEND
               LIB_NAME("blas_netlib"),
 #endif
-#ifdef ENABLE_SYCLBLAS_BACKEND_INTEL_CPU
-              LIB_NAME("blas_syclblas"),
+#ifdef ENABLE_PORTBLAS_BACKEND_INTEL_CPU
+              LIB_NAME("blas_portblas"),
 #endif
           } },
         { device::intelgpu,
@@ -62,8 +62,8 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
 #ifdef ENABLE_MKLGPU_BACKEND
               LIB_NAME("blas_mklgpu"),
 #endif
-#ifdef ENABLE_SYCLBLAS_BACKEND_INTEL_GPU
-              LIB_NAME("blas_syclblas"),
+#ifdef ENABLE_PORTBLAS_BACKEND_INTEL_GPU
+              LIB_NAME("blas_portblas"),
 #endif
           } },
         { device::amdgpu,
@@ -71,8 +71,8 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
 #ifdef ENABLE_ROCBLAS_BACKEND
               LIB_NAME("blas_rocblas"),
 #endif
-#ifdef ENABLE_SYCLBLAS_BACKEND_AMD_GPU
-              LIB_NAME("blas_syclblas"),
+#ifdef ENABLE_PORTBLAS_BACKEND_AMD_GPU
+              LIB_NAME("blas_portblas"),
 #endif
           } },
         { device::nvidiagpu,
@@ -80,8 +80,8 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
 #ifdef ENABLE_CUBLAS_BACKEND
               LIB_NAME("blas_cublas"),
 #endif
-#ifdef ENABLE_SYCLBLAS_BACKEND_NVIDIA_GPU
-              LIB_NAME("blas_syclblas"),
+#ifdef ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU
+              LIB_NAME("blas_portblas"),
 #endif
           } } } },
 
