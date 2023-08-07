@@ -27,15 +27,17 @@
 #include <algorithm>
 #include <optional>
 
-#include <rocfft.h>
-#include <hip/hip_runtime_api.h>
+#include "oneapi/mkl/exceptions.hpp"
 
 #include "oneapi/mkl/dft/detail/commit_impl.hpp"
 #include "oneapi/mkl/dft/detail/descriptor_impl.hpp"
-#include "oneapi/mkl/dft/detail/types_impl.hpp"
+#include "oneapi/mkl/dft/detail/rocfft/onemkl_dft_rocfft.hpp"
 #include "oneapi/mkl/dft/types.hpp"
-#include "oneapi/mkl/exceptions.hpp"
+
 #include "rocfft_handle.hpp"
+
+#include <rocfft.h>
+#include <hip/hip_runtime_api.h>
 
 namespace oneapi::mkl::dft::rocfft {
 namespace detail {
@@ -401,6 +403,10 @@ public:
     void* get_handle() noexcept override {
         return handles.data();
     }
+
+#define BACKEND rocfft
+#include "../backend_compute_signature.cxx"
+#undef BACKEND
 };
 } // namespace detail
 

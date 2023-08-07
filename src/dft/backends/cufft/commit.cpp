@@ -27,14 +27,15 @@
 #include <algorithm>
 #include <optional>
 
-#include <cufft.h>
-#include <cuda.h>
+#include "oneapi/mkl/exceptions.hpp"
 
 #include "oneapi/mkl/dft/detail/commit_impl.hpp"
 #include "oneapi/mkl/dft/detail/descriptor_impl.hpp"
-#include "oneapi/mkl/dft/detail/types_impl.hpp"
+#include "oneapi/mkl/dft/detail/cufft/onemkl_dft_cufft.hpp"
 #include "oneapi/mkl/dft/types.hpp"
-#include "oneapi/mkl/exceptions.hpp"
+
+#include <cufft.h>
+#include <cuda.h>
 
 namespace oneapi::mkl::dft::cufft {
 namespace detail {
@@ -278,6 +279,11 @@ public:
     std::array<int64_t,2> get_offsets() noexcept {
         return offsets;
     }
+
+#define BACKEND cufft
+#include "../backend_compute_signature.cxx"
+#undef BACKEND
+
 };
 } // namespace detail
 

@@ -79,7 +79,7 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
         sycl::queue queue{ dev, async_error_handler };
 
         std::list<std::vector<fp, sycl::usm_allocator<fp, sycl::usm::alloc::shared>>> A_dev_list;
-        std::vector<fp*> A_dev_ptrs(batch_size, nullptr);
+        fp** A_dev_ptrs = sycl::malloc_shared<fp*>(batch_size, queue);
 
         /* Allocate on device */
         sycl::usm_allocator<fp, sycl::usm::alloc::shared> usm_fp_allocator{ queue.get_context(),
@@ -113,12 +113,12 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
         queue.wait_and_throw();
 
 #ifdef CALL_RT_API
-        oneapi::mkl::lapack::potrf_batch(queue, uplo_vec.data(), n_vec.data(), A_dev_ptrs.data(),
+        oneapi::mkl::lapack::potrf_batch(queue, uplo_vec.data(), n_vec.data(), A_dev_ptrs,
                                          lda_vec.data(), group_count, group_sizes_vec.data(),
                                          scratchpad_dev, scratchpad_size);
 #else
         TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::potrf_batch, uplo_vec.data(), n_vec.data(),
-                           A_dev_ptrs.data(), lda_vec.data(), group_count, group_sizes_vec.data(),
+                           A_dev_ptrs, lda_vec.data(), group_count, group_sizes_vec.data(),
                            scratchpad_dev, scratchpad_size);
 #endif
         queue.wait_and_throw();
@@ -128,6 +128,12 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
             device_to_host_copy(queue, A_dev_ptrs[global_id], A_iter->data(), A_iter->size());
         }
         queue.wait_and_throw();
+        if (scratchpad_dev) {
+            sycl::free(scratchpad_dev, queue);
+        }
+        if (A_dev_ptrs) {
+            sycl::free(A_dev_ptrs, queue);
+        }
     }
 
     bool result = true;
@@ -196,7 +202,7 @@ bool usm_dependency(const sycl::device& dev, uint64_t seed) {
         sycl::queue queue{ dev, async_error_handler };
 
         std::list<std::vector<fp, sycl::usm_allocator<fp, sycl::usm::alloc::shared>>> A_dev_list;
-        std::vector<fp*> A_dev_ptrs(batch_size, nullptr);
+        fp** A_dev_ptrs = sycl::malloc_shared<fp*>(batch_size, queue);
 
         /* Allocate on device */
         sycl::usm_allocator<fp, sycl::usm::alloc::shared> usm_fp_allocator{ queue.get_context(),
@@ -233,19 +239,25 @@ bool usm_dependency(const sycl::device& dev, uint64_t seed) {
         auto in_event = create_dependency(queue);
 #ifdef CALL_RT_API
         sycl::event func_event = oneapi::mkl::lapack::potrf_batch(
-            queue, uplo_vec.data(), n_vec.data(), A_dev_ptrs.data(), lda_vec.data(), group_count,
+            queue, uplo_vec.data(), n_vec.data(), A_dev_ptrs, lda_vec.data(), group_count,
             group_sizes_vec.data(), scratchpad_dev, scratchpad_size,
             std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
         TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::potrf_batch, uplo_vec.data(),
-                           n_vec.data(), A_dev_ptrs.data(), lda_vec.data(), group_count,
+                           n_vec.data(), A_dev_ptrs, lda_vec.data(), group_count,
                            group_sizes_vec.data(), scratchpad_dev, scratchpad_size,
                            std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);
 
         queue.wait_and_throw();
+        if (scratchpad_dev) {
+            sycl::free(scratchpad_dev, queue);
+        }
+        if (A_dev_ptrs) {
+            sycl::free(A_dev_ptrs, queue);
+        }
     }
 
     return result;
