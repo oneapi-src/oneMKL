@@ -55,8 +55,7 @@ private:
     // We also need this because oneMKL uses a directionless "FWD_DISTANCE" and "BWD_DISTANCE" while cuFFT uses a directional "idist" and "odist".
     // plans[0] is forward, plans[1] is backward
     std::array<std::optional<cufftHandle>, 2> plans = { std::nullopt, std::nullopt };
-    int64_t in_offset;
-    int64_t out_offset;
+    std::array<int64_t, 2> offsets;
 
 public:
     cufft_commit(sycl::queue& queue, const dft::detail::dft_values<prec, dom>& config_values)
@@ -212,8 +211,8 @@ public:
             inembed[1] /= inembed[2];
             onembed[1] /= onembed[2];
         }
-        in_offset = config_values.input_strides[0];
-        out_offset = config_values.output_strides[0];
+        offsets[0] = config_values.input_strides[0];
+        offsets[1] = config_values.output_strides[0];
         const int batch = static_cast<int>(config_values.number_of_transforms);
         const int fwd_dist = static_cast<int>(config_values.fwd_dist);
         const int bwd_dist = static_cast<int>(config_values.bwd_dist);
@@ -311,6 +310,10 @@ public:
     void* get_handle() noexcept override {
         return plans.data();
     }
+
+    std::array<int64_t,2> get_offsets() noexcept {
+        return offsets;
+    }
 };
 } // namespace detail
 
@@ -336,5 +339,21 @@ template dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::d
 create_commit(
     const dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>&,
     sycl::queue&);
+
+namespace detail{
+template <dft::precision prec, dft::domain dom>
+std::array<int64_t,2> get_offsets(dft::detail::commit_impl<prec, dom> *commit) {
+    return static_cast<cufft_commit<prec, dom>*>(commit)->get_offsets();
+}
+template std::array<int64_t,2> get_offsets<dft::detail::precision::SINGLE, dft::detail::domain::REAL>(
+    dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::REAL>*);
+template std::array<int64_t,2> get_offsets<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>(
+    dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>*);
+template std::array<int64_t,2> get_offsets<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>(
+    dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>*);
+template std::array<int64_t,2> get_offsets<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>(
+    dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>*);
+
+} //namespace detail
 
 } // namespace oneapi::mkl::dft::cufft

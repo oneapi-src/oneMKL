@@ -53,6 +53,9 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     std::cout << "forward_distance: " << forward_distance << std::endl;
     std::cout << "fwd stride: ";
     print(strides_fwd);
+    std::cout << "backward_distance: " << backward_distance << std::endl;
+    std::cout << "bwd stride: ";
+    print(strides_bwd);
 
     descriptor_t descriptor{ sizes };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
@@ -79,7 +82,7 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     std::cout << "fwd_data: ";
     print(fwd_data);
     
-    auto tmp = std::vector<FwdOutputType>(cast_unsigned(backward_distance * batches), 0);
+    auto tmp = std::vector<FwdOutputType>(cast_unsigned(backward_distance * batches + getdefault(strides_bwd,0,0L)), 0);
     {
         sycl::buffer<FwdInputType, 1> fwd_buf{ fwd_data };
         sycl::buffer<FwdOutputType, 1> bwd_buf{ tmp };
@@ -127,16 +130,26 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
                                            FwdOutputType, FwdInputType>(descriptor, bwd_buf,
                                                                         fwd_buf);
     }
-    std::cerr << 5;
 
     // account for scaling that occurs during DFT
     std::for_each(input.begin(), input.end(),
                   [this](auto &x) { x *= static_cast<PrecisionType>(forward_elements); });
-    
+    std::cout << "BWD TEST" << std::endl;
+    std::cout << "fwd_data: " << std::endl;
+    for(int i=0;i<backward_distance * batches;i++){
+        std::cout << fwd_data[i] << ", ";
+    }
+    std::cout << std::endl;
+    std::cout << "input: " << std::endl;
+    for(int i=0;i<backward_distance * batches;i++){
+        std::cout << input[i] << ", ";
+    }
+    std::cout << std::endl;
+
     for(int64_t i=0;i<batches;i++){
         EXPECT_TRUE(check_equal_strided<false>(fwd_data.data() + forward_distance * i, input.data() + ref_distance * i, sizes, strides_fwd, abs_error_margin, rel_error_margin, std::cout));
     }
-    std::cerr << 7;
+    
     return !::testing::Test::HasFailure();
 }
 
@@ -172,7 +185,7 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
 
     std::vector<FwdInputType, decltype(ua_input)> fwd(strided_copy(input, sizes, strides_fwd, batches, ua_input), ua_input);
     auto fwd_ref = fwd;
-    std::vector<FwdOutputType, decltype(ua_output)> bwd(cast_unsigned(backward_distance * batches),
+    std::vector<FwdOutputType, decltype(ua_output)> bwd(cast_unsigned(backward_distance * batches + getdefault(strides_bwd,0,0L)),
                                                         ua_output);
 
     oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(

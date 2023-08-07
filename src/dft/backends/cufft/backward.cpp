@@ -33,6 +33,10 @@
 
 namespace oneapi::mkl::dft::cufft {
 namespace detail {
+//forward declaration
+template <dft::precision prec, dft::domain dom>
+std::array<int64_t,2> get_offsets(dft::detail::commit_impl<prec, dom> *commit);
+
 template <dft::precision prec, dft::domain dom>
 cufftHandle get_bwd_plan(dft::detail::commit_impl<prec, dom> *commit) {
     return static_cast<std::optional<cufftHandle> *>(commit->get_handle())[1].value();
@@ -48,6 +52,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
+    auto offsets = detail::get_offsets(commit);
 
     queue.submit([&](sycl::handler &cgh) {
         auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
@@ -56,10 +61,11 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
             const std::string func_name = "compute_backward(desc, inout)";
             auto stream = detail::setup_stream(func_name, ih, plan);
 
-            auto inout_native = reinterpret_cast<void *>(
-                ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(inout_acc));
+            auto inout_native = 
+                reinterpret_cast<data_type*>(ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(inout_acc));
             detail::cufft_execute<detail::Direction::Backward, data_type>(
-                func_name, stream, plan, inout_native, inout_native);
+                func_name, stream, plan, reinterpret_cast<void *>(inout_native + offsets[0]), 
+                reinterpret_cast<void *>(inout_native + offsets[1]));
         });
     });
 }
@@ -81,6 +87,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
+    auto offsets = detail::get_offsets(commit);
 
     queue.submit([&](sycl::handler &cgh) {
         auto in_acc = in.template get_access<sycl::access::mode::read_write>(cgh);
@@ -91,9 +98,9 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<input_ty
             auto stream = detail::setup_stream(func_name, ih, plan);
 
             auto in_native =
-                reinterpret_cast<void *>(ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(in_acc));
-            auto out_native = reinterpret_cast<void *>(
-                ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(out_acc));
+                reinterpret_cast<void *>(reinterpret_cast<input_type *>(ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(in_acc)) + offsets[0]);
+            auto out_native = reinterpret_cast<void *>(reinterpret_cast<output_type *>(
+                ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(out_acc)) + offsets[1]);
             detail::cufft_execute<detail::Direction::Backward, output_type>(func_name, stream, plan,
                                                                             in_native, out_native);
         });
@@ -120,6 +127,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *ino
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
+    auto offsets = detail::get_offsets(commit);
 
     return queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
@@ -129,7 +137,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *ino
             auto stream = detail::setup_stream(func_name, ih, plan);
 
             detail::cufft_execute<detail::Direction::Backward, data_type>(func_name, stream, plan,
-                                                                          inout, inout);
+                                                                          inout + offsets[0], inout + offsets[1]);
         });
     });
 }
@@ -152,6 +160,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
+    auto offsets = detail::get_offsets(commit);
 
     return queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
@@ -161,7 +170,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, input_type *in
             auto stream = detail::setup_stream(func_name, ih, plan);
 
             detail::cufft_execute<detail::Direction::Backward, output_type>(func_name, stream, plan,
-                                                                            in, out);
+                                                                            in + offsets[0], out + offsets[1]);
         });
     });
 }

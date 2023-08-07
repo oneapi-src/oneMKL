@@ -216,10 +216,10 @@ std::pair<std::int64_t,std::int64_t> get_default_distances(const std::vector<std
     std::int64_t backward_distance = size0_real * size1_real * size2_real;
     std::int64_t forward_distance = size0 * size1 * size2;
     if(strides_fwd.size()>1){
-        forward_distance = std::max({size0 * strides_fwd[1], size1 * getdefault(strides_fwd, 2, 0l), size2 * getdefault(strides_fwd, 3, 0l)}) + strides_fwd[0];;
+        forward_distance = std::max({size0 * strides_fwd[1], size1 * getdefault(strides_fwd, 2, 0l), size2 * getdefault(strides_fwd, 3, 0l)});
     }
     if(strides_bwd.size()>1){
-        backward_distance = std::max({size0 * strides_bwd[1], size1 * getdefault(strides_bwd, 2, 0l), size2 * getdefault(strides_bwd, 3, 0l)}) + strides_bwd[0];;
+        backward_distance = std::max({size0 * strides_bwd[1], size1 * getdefault(strides_bwd, 2, 0l), size2 * getdefault(strides_bwd, 3, 0l)});
     }
     return {forward_distance, backward_distance};
 }
@@ -241,8 +241,8 @@ auto strided_copy(const T_vec& contiguous, const std::vector<std::int64_t>& size
     std::int64_t stride1 = strides[1];
     std::int64_t stride2 = getdefault(strides, 2, 0l);
     std::int64_t stride3 = getdefault(strides, 3, 0l);
-    std::int64_t distance = std::max({size0 * stride1, size1 * stride2, size2 * stride3}) + stride0;
-    std::vector<T, Allocator> res(cast_unsigned(distance * batches), alloc);
+    std::int64_t distance = std::max({size0 * stride1, size1 * stride2, size2 * stride3});
+    std::vector<T, Allocator> res(cast_unsigned(distance * batches + stride0), alloc);
     for(std::int64_t b=0;b<batches;b++){
         for(std::int64_t i=0;i<size0;i++){
             for(std::int64_t j=0;j<size1;j++){
@@ -296,6 +296,7 @@ bool check_equal_strided(const vec1& v, const vec2& v_ref, std::vector<int64_t> 
                 T ref = v_ref[cast_unsigned((i * size1 + j) * size2 + k)];
                 if (!check_equal(res, ref, abs_error_mag, rel_error_mag, out)) {
                     out << " at position " << i << ", " << j << ", " << k << "\n";
+                    out << " at indices " << i * stride1 + j * stride2 + k * stride3 + stride0 << ", " << (i * size1 + j) * size2 + k << "\n";
                     good = false;
                     ++count;
                     if (count > max_print) {

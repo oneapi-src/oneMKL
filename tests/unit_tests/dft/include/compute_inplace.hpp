@@ -143,7 +143,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     commit_descriptor(descriptor, sycl_queue);
 
     std::vector<FwdInputType> inout_host(strided_copy(input, sizes, strides_fwd, batches));
-    inout_host.resize(cast_unsigned(std::max(forward_distance, (domain == oneapi::mkl::dft::domain::REAL ? 2 : 1) * backward_distance) * batches));
+    inout_host.resize(cast_unsigned(std::max(forward_distance, (domain == oneapi::mkl::dft::domain::REAL ? 2 : 1) * backward_distance) * batches + getdefault(strides_bwd,0,0L)));
 
     std::cout << "input: ";
     print(input);
@@ -291,7 +291,7 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
 
     auto ua_input = usm_allocator_t<FwdInputType>(cxt, *dev);
     std::vector<FwdInputType, decltype(ua_input)> inout(strided_copy(input, sizes, strides_fwd, batches, ua_input), ua_input);
-    inout.resize(cast_unsigned(std::max(forward_distance, (domain == oneapi::mkl::dft::domain::REAL ? 2 : 1) * backward_distance) * batches));
+    inout.resize(cast_unsigned(std::max(forward_distance, (domain == oneapi::mkl::dft::domain::REAL ? 2 : 1) * backward_distance) * batches + getdefault(strides_bwd,0,0L)));
 
     std::vector<sycl::event> no_dependencies;
     oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(descriptor, inout.data(),
