@@ -150,7 +150,11 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     commit_descriptor(descriptor, sycl_queue);
 
     std::vector<FwdInputType> inout_host(strided_copy(input, sizes, strides_fwd, batches));
-    inout_host.resize(cast_unsigned(std::max(forward_distance, (domain == oneapi::mkl::dft::domain::REAL ? 2 : 1) * backward_distance) * batches + getdefault(strides_bwd,0,0L)));
+    int real_multiplier = (domain == oneapi::mkl::dft::domain::REAL ? 2 : 1);
+    inout_host.resize(cast_unsigned(std::max(
+            forward_distance, 
+            real_multiplier * backward_distance
+        ) * batches + getdefault(strides_bwd,0,0L) * real_multiplier));
 
     std::cout << "input: ";
     print(input);
@@ -177,7 +181,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
             std::cout << "out_host_ref: ";
             print(out_host_ref);
             std::cout << "ptr_host: " << std::endl;
-            for(int i=0;i<backward_distance * batches;i++){
+            for(int i=0;i<backward_distance * batches + getdefault(strides_bwd,0,0L);i++){
                 std::cout << ptr_host[i] << ", ";
             }
             std::cout << std::endl;
@@ -298,7 +302,8 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
 
     auto ua_input = usm_allocator_t<FwdInputType>(cxt, *dev);
     std::vector<FwdInputType, decltype(ua_input)> inout(strided_copy(input, sizes, strides_fwd, batches, ua_input), ua_input);
-    inout.resize(cast_unsigned(std::max(forward_distance, (domain == oneapi::mkl::dft::domain::REAL ? 2 : 1) * backward_distance) * batches + getdefault(strides_bwd,0,0L)));
+    int real_multiplier = (domain == oneapi::mkl::dft::domain::REAL ? 2 : 1);
+    inout.resize(cast_unsigned(std::max(forward_distance, real_multiplier * backward_distance) * batches + real_multiplier * getdefault(strides_bwd,0,0L)));
 
     std::vector<sycl::event> no_dependencies;
     oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(descriptor, inout.data(),

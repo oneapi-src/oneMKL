@@ -65,6 +65,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type
         }
         offsets[1] *= 2; // offset is supplied in complex but we offset scalar pointer
     }
+    std::cout << "offsets (IN_PLACE) " << offsets[0] << " " << offsets[1] << std::endl;
 
     queue.submit([&](sycl::handler &cgh) {
         auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
