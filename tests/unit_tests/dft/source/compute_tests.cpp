@@ -51,13 +51,12 @@ class ComputeTests_real_real_out_of_place
 #define INSTANTIATE_TEST(PRECISION, DOMAIN, PLACE, LAYOUT, STORAGE)                              \
     TEST_P(ComputeTests##_##LAYOUT##PLACE, DOMAIN##_##PRECISION##_##PLACE##_##LAYOUT##STORAGE) { \
         try {                                                                                    \
-            auto test =                                                                          \
-                DFT_Test<oneapi::mkl::dft::precision::PRECISION,                                 \
-                         oneapi::mkl::dft::domain::DOMAIN>{ std::get<0>(GetParam()),             \
-                                                            std::get<1>(GetParam()).sizes,       \
-                                                            std::get<1>(GetParam()).strides_fwd, \
-                                                            std::get<1>(GetParam()).strides_bwd, \
-                                                            std::get<1>(GetParam()).batches };   \
+            auto test = DFT_Test<oneapi::mkl::dft::precision::PRECISION,                         \
+                                 oneapi::mkl::dft::domain::DOMAIN>{                              \
+                std::get<0>(GetParam()), std::get<1>(GetParam()).sizes,                          \
+                std::get<1>(GetParam()).strides_fwd, std::get<1>(GetParam()).strides_bwd,        \
+                std::get<1>(GetParam()).batches                                                  \
+            };                                                                                   \
             EXPECT_TRUEORSKIP(test.test_##PLACE##_##LAYOUT##STORAGE());                          \
         }                                                                                        \
         catch (oneapi::mkl::unimplemented & e) {                                                 \
@@ -66,9 +65,9 @@ class ComputeTests_real_real_out_of_place
         }                                                                                        \
         catch (std::exception & e) {                                                             \
             std::string msg = e.what();                                                          \
-            if(msg.find("FFT_UNIMPLEMENTED") != std::string::npos) {                             \
-              std::cout << "Skipping test because: \"" << msg << "\"" << std::endl;              \
-              GTEST_SKIP();                                                                      \
+            if (msg.find("FFT_UNIMPLEMENTED") != std::string::npos) {                            \
+                std::cout << "Skipping test because: \"" << msg << "\"" << std::endl;            \
+                GTEST_SKIP();                                                                    \
             }                                                                                    \
         }                                                                                        \
     }
@@ -93,28 +92,37 @@ using i64 = std::int64_t;
 // Parameter format - { shape of transform, number of transforms } or { shape, forward strides, backward strides, number of transforms }
 // strides need to be chosen in a way that also makes sense for real transforms
 std::vector<DFTParams> test_params{
-    { shape{ 8 }, i64{ 1 } },       { shape{ 9 }, i64{ 2 } },       { shape{ 8 }, i64{ 27 } },
-    { shape{ 22 }, i64{ 1 } },      { shape{ 128 }, i64{ 1 } },
+    { shape{ 8 }, i64{ 1 } },
+    { shape{ 9 }, i64{ 2 } },
+    { shape{ 8 }, i64{ 27 } },
+    { shape{ 22 }, i64{ 1 } },
+    { shape{ 128 }, i64{ 1 } },
 
-    { shape{ 4, 4 }, i64{ 1 } },    { shape{ 4, 4 }, i64{ 2 } },    { shape{ 4, 3 }, i64{ 9 } },
-    { shape{ 7, 8 }, i64{ 1 } },    { shape{ 64, 5 }, i64{ 1 } },
+    { shape{ 4, 4 }, i64{ 1 } },
+    { shape{ 4, 4 }, i64{ 2 } },
+    { shape{ 4, 3 }, i64{ 9 } },
+    { shape{ 7, 8 }, i64{ 1 } },
+    { shape{ 64, 5 }, i64{ 1 } },
 
-    { shape{ 2, 2, 2 }, i64{ 1 } }, { shape{ 2, 2, 3 }, i64{ 2 } }, { shape{ 2, 2, 2 }, i64{ 27 } },
-    { shape{ 3, 7, 2 }, i64{ 1 } }, { shape{ 8, 8, 9 }, i64{ 1 } },
+    { shape{ 2, 2, 2 }, i64{ 1 } },
+    { shape{ 2, 2, 3 }, i64{ 2 } },
+    { shape{ 2, 2, 2 }, i64{ 27 } },
+    { shape{ 3, 7, 2 }, i64{ 1 } },
+    { shape{ 8, 8, 9 }, i64{ 1 } },
 
-    { shape{ 4, 3 }, shape{ 4, 4, 1}, shape{ 4, 3, 1}, i64{ 2 } },
-    { shape{ 4, 3 }, shape{ 1, 6, 2}, shape{ 0, 6, 2}, i64{ 2 } },
-    { shape{ 4, 3 }, shape{ 0, 1, 4}, shape{ 1, 1, 4}, i64{ 2 } },
-    { shape{ 4, 4 }, shape{ 2, 4, 1}, shape{ 0, 4, 1}, i64{ 2 } },
-    { shape{ 4, 4 }, shape{ 0, 1, 4}, shape{ 2, 1, 4}, i64{ 2 } },
-    { shape{ 4, 4 }, shape{ 2, 7, 1}, shape{ 3, 5, 1}, i64{ 2 } },
-    { shape{ 4, 4 }, shape{ 3, 8, 2}, shape{ 2, 8, 2}, i64{ 2 } },
-    { shape{ 4, 4 }, shape{ 0, 4, 1}, shape{ 0, 1, 4}, i64{ 2 } },
+    { shape{ 4, 3 }, shape{ 4, 4, 1 }, shape{ 4, 3, 1 }, i64{ 2 } },
+    { shape{ 4, 3 }, shape{ 1, 6, 2 }, shape{ 0, 6, 2 }, i64{ 2 } },
+    { shape{ 4, 3 }, shape{ 0, 1, 4 }, shape{ 1, 1, 4 }, i64{ 2 } },
+    { shape{ 4, 4 }, shape{ 2, 4, 1 }, shape{ 0, 4, 1 }, i64{ 2 } },
+    { shape{ 4, 4 }, shape{ 0, 1, 4 }, shape{ 2, 1, 4 }, i64{ 2 } },
+    { shape{ 4, 4 }, shape{ 2, 7, 1 }, shape{ 3, 5, 1 }, i64{ 2 } },
+    { shape{ 4, 4 }, shape{ 3, 8, 2 }, shape{ 2, 8, 2 }, i64{ 2 } },
+    { shape{ 4, 4 }, shape{ 0, 4, 1 }, shape{ 0, 1, 4 }, i64{ 2 } },
 
-    { shape{ 4, 4, 4 }, shape{ 2, 1, 4, 16}, shape{ 4, 1, 4, 16}, i64{ 2 } },
-    { shape{ 4, 4, 4 }, shape{ 4, 17, 4, 1}, shape{ 2, 23, 5, 1}, i64{ 2 } },
-    { shape{ 4, 4, 4 }, shape{ 4, 32, 8, 2}, shape{ 4, 32, 8, 2}, i64{ 2 } },
-    { shape{ 4, 4, 4 }, shape{ 0, 4, 1, 16}, shape{ 0, 4, 16, 1}, i64{ 2 } },
+    { shape{ 4, 4, 4 }, shape{ 2, 1, 4, 16 }, shape{ 4, 1, 4, 16 }, i64{ 2 } },
+    { shape{ 4, 4, 4 }, shape{ 4, 17, 4, 1 }, shape{ 2, 23, 5, 1 }, i64{ 2 } },
+    { shape{ 4, 4, 4 }, shape{ 4, 32, 8, 2 }, shape{ 4, 32, 8, 2 }, i64{ 2 } },
+    { shape{ 4, 4, 4 }, shape{ 0, 4, 1, 16 }, shape{ 0, 4, 16, 1 }, i64{ 2 } },
 };
 
 INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_in_place,

@@ -139,62 +139,74 @@ public:
         std::array<int, max_supported_dims> n_copy;
         std::copy(config_values.dimensions.begin(), config_values.dimensions.end(), n_copy.data());
         const int rank = static_cast<int>(config_values.dimensions.size());
-        std::vector<int> inembed = {config_values.input_strides.begin(), config_values.input_strides.end()};
-        std::vector<int> onembed = {config_values.output_strides.begin(), config_values.output_strides.end()};
-        auto i_min = std::min_element(inembed.begin()+1, inembed.end());
-        auto o_min = std::min_element(onembed.begin()+1, onembed.end());
-        if constexpr(dom == dft::domain::REAL){
-            if(i_min != inembed.begin() + rank){
-                throw mkl::unimplemented("dft/backends/cufft", __FUNCTION__,
-                                     "cufft requires the last input stride to be the the smallest one for real transforms!");
+        std::vector<int> inembed = { config_values.input_strides.begin(),
+                                     config_values.input_strides.end() };
+        std::vector<int> onembed = { config_values.output_strides.begin(),
+                                     config_values.output_strides.end() };
+        auto i_min = std::min_element(inembed.begin() + 1, inembed.end());
+        auto o_min = std::min_element(onembed.begin() + 1, onembed.end());
+        if constexpr (dom == dft::domain::REAL) {
+            if (i_min != inembed.begin() + rank) {
+                throw mkl::unimplemented(
+                    "dft/backends/cufft", __FUNCTION__,
+                    "cufft requires the last input stride to be the the smallest one for real transforms!");
             }
-            if(o_min != onembed.begin() + rank){
-                throw mkl::unimplemented("dft/backends/cufft", __FUNCTION__,
-                                     "cufft requires the last output stride to be the the smallest one for real transforms!");
+            if (o_min != onembed.begin() + rank) {
+                throw mkl::unimplemented(
+                    "dft/backends/cufft", __FUNCTION__,
+                    "cufft requires the last output stride to be the the smallest one for real transforms!");
             }
-        } else{
-            if(o_min - onembed.begin() != i_min - inembed.begin()){
-                    throw mkl::unimplemented("dft/backends/cufft", __FUNCTION__,
-                                        "cufft requires that if  ordered by stride length, the order of strides is the same for input and output strides!");
+        }
+        else {
+            if (o_min - onembed.begin() != i_min - inembed.begin()) {
+                throw mkl::unimplemented(
+                    "dft/backends/cufft", __FUNCTION__,
+                    "cufft requires that if  ordered by stride length, the order of strides is the same for input and output strides!");
             }
         }
         const int istride = static_cast<int>(*i_min);
         const int ostride = static_cast<int>(*o_min);
         inembed.erase(i_min);
         onembed.erase(o_min);
-        if(o_min - onembed.begin() != rank){
+        if (o_min - onembed.begin() != rank) {
             // swap dimensions to have the last one have the smallest stride
-            std::swap(n_copy[o_min - onembed.begin()-1], n_copy[rank-1]);
+            std::swap(n_copy[o_min - onembed.begin() - 1], n_copy[rank - 1]);
         }
-        for(int i=0;i<rank-1;i++){
-            if(inembed[i+1] % istride != 0){
-                throw mkl::unimplemented("dft/backends/cufft", __FUNCTION__,
-                                     "cufft requires an input stride to be divisible by all smaller input strides!");
+        for (int i = 0; i < rank - 1; i++) {
+            if (inembed[i + 1] % istride != 0) {
+                throw mkl::unimplemented(
+                    "dft/backends/cufft", __FUNCTION__,
+                    "cufft requires an input stride to be divisible by all smaller input strides!");
             }
-            inembed[i+1] /= istride;
-            if(onembed[i+1] % ostride != 0){
-                throw mkl::unimplemented("dft/backends/cufft", __FUNCTION__,
-                                     "cufft requires an output stride to be divisible by all smaller output strides!");
+            inembed[i + 1] /= istride;
+            if (onembed[i + 1] % ostride != 0) {
+                throw mkl::unimplemented(
+                    "dft/backends/cufft", __FUNCTION__,
+                    "cufft requires an output stride to be divisible by all smaller output strides!");
             }
-            onembed[i+1] /= ostride;
+            onembed[i + 1] /= ostride;
         }
-        if(rank>2){
-            if(inembed[1]>inembed[2] && onembed[1]<onembed[2]){
-                throw mkl::unimplemented("dft/backends/cufft", __FUNCTION__,
-                                    "cufft requires that if the strides are ordered by stride length, the order is the same for input and output strides!");
-            } else if(inembed[1]<inembed[2] && onembed[1]<onembed[2]){
+        if (rank > 2) {
+            if (inembed[1] > inembed[2] && onembed[1] < onembed[2]) {
+                throw mkl::unimplemented(
+                    "dft/backends/cufft", __FUNCTION__,
+                    "cufft requires that if the strides are ordered by stride length, the order is the same for input and output strides!");
+            }
+            else if (inembed[1] < inembed[2] && onembed[1] < onembed[2]) {
                 // swap dimensions to have the first one have the biggest stride
-                std::swap(inembed[1],inembed[2]);
-                std::swap(onembed[1],onembed[2]);
-                std::swap(n_copy[0],n_copy[1]);
+                std::swap(inembed[1], inembed[2]);
+                std::swap(onembed[1], onembed[2]);
+                std::swap(n_copy[0], n_copy[1]);
             }
-            if(inembed[1] % inembed[2] != 0){
-                throw mkl::unimplemented("dft/backends/cufft", __FUNCTION__,
-                                     "cufft requires an input stride to be divisible by all smaller input strides!");
+            if (inembed[1] % inembed[2] != 0) {
+                throw mkl::unimplemented(
+                    "dft/backends/cufft", __FUNCTION__,
+                    "cufft requires an input stride to be divisible by all smaller input strides!");
             }
-            if(onembed[1] % onembed[2] != 0){
-                throw mkl::unimplemented("dft/backends/cufft", __FUNCTION__,
-                                     "cufft requires an output stride to be divisible by all smaller output strides!");
+            if (onembed[1] % onembed[2] != 0) {
+                throw mkl::unimplemented(
+                    "dft/backends/cufft", __FUNCTION__,
+                    "cufft requires an output stride to be divisible by all smaller output strides!");
             }
             inembed[1] /= inembed[2];
             onembed[1] /= onembed[2];
@@ -217,8 +229,7 @@ public:
                                (n_copy[rank - 1] / 2 + 1) <= inembed[rank - 1]);
 
         if (!valid_forward && !valid_backward) {
-            throw mkl::exception("dft/backends/cufft", __FUNCTION__,
-                                    "Invalid strides.");
+            throw mkl::exception("dft/backends/cufft", __FUNCTION__, "Invalid strides.");
         }
 
         if (valid_forward) {
@@ -276,14 +287,13 @@ public:
         return plans.data();
     }
 
-    std::array<int64_t,2> get_offsets() noexcept {
+    std::array<int64_t, 2> get_offsets() noexcept {
         return offsets;
     }
 
 #define BACKEND cufft
 #include "../backend_compute_signature.cxx"
 #undef BACKEND
-
 };
 } // namespace detail
 
@@ -310,18 +320,22 @@ create_commit(
     const dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>&,
     sycl::queue&);
 
-namespace detail{
+namespace detail {
 template <dft::precision prec, dft::domain dom>
-std::array<int64_t,2> get_offsets(dft::detail::commit_impl<prec, dom> *commit) {
+std::array<int64_t, 2> get_offsets(dft::detail::commit_impl<prec, dom>* commit) {
     return static_cast<cufft_commit<prec, dom>*>(commit)->get_offsets();
 }
-template std::array<int64_t,2> get_offsets<dft::detail::precision::SINGLE, dft::detail::domain::REAL>(
+template std::array<int64_t, 2>
+get_offsets<dft::detail::precision::SINGLE, dft::detail::domain::REAL>(
     dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::REAL>*);
-template std::array<int64_t,2> get_offsets<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>(
+template std::array<int64_t, 2>
+get_offsets<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>(
     dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>*);
-template std::array<int64_t,2> get_offsets<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>(
+template std::array<int64_t, 2>
+get_offsets<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>(
     dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>*);
-template std::array<int64_t,2> get_offsets<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>(
+template std::array<int64_t, 2>
+get_offsets<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>(
     dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>*);
 
 } //namespace detail

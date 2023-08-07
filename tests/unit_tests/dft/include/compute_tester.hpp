@@ -69,7 +69,9 @@ struct DFT_Test {
     std::vector<PrecisionType> input_im;
     std::vector<FwdOutputType> out_host_ref;
 
-    DFT_Test(sycl::device* dev, std::vector<std::int64_t> sizes_, std::vector<std::int64_t> strides_fwd, std::vector<std::int64_t> strides_bwd, std::int64_t batches_)
+    DFT_Test(sycl::device* dev, std::vector<std::int64_t> sizes_,
+             std::vector<std::int64_t> strides_fwd, std::vector<std::int64_t> strides_bwd,
+             std::int64_t batches_)
             : sizes{ std::move(sizes_) },
               strides_fwd(std::move(strides_fwd)),
               strides_bwd(std::move(strides_bwd)),
