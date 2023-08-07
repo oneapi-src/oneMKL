@@ -64,6 +64,13 @@ class ComputeTests_real_real_out_of_place
             std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;           \
             GTEST_SKIP();                                                                        \
         }                                                                                        \
+        catch (std::exception & e) {                                                             \
+            std::string msg = e.what();                                                          \
+            if(msg.find("FFT_UNIMPLEMENTED") != std::string::npos) {                             \
+              std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;         \
+              GTEST_SKIP();                                                                      \
+            }                                                                                    \
+        }                                                                                        \
     }
 
 #define INSTANTIATE_TEST_DIMENSIONS_PRECISION_DOMAIN(PLACE, LAYOUT, STORAGE) \

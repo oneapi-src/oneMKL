@@ -48,6 +48,7 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     }
 
     auto [forward_distance, backward_distance] = get_default_distances<domain>(sizes, strides_fwd, strides_bwd);
+    auto ref_distance = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>());
 
     std::cout << "forward_distance: " << forward_distance << std::endl;
     std::cout << "fwd stride: ";
@@ -89,7 +90,6 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
         {
             auto acc_bwd = bwd_buf.template get_host_access();
             auto bwd_ptr = acc_bwd.get_pointer();
-            auto ref_distance = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>());
             std::cout << "ref_distance: " << ref_distance << std::endl;
             std::cout << "out_host_ref: ";
             print(out_host_ref);
@@ -130,13 +130,12 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     std::cerr << 5;
 
     // account for scaling that occurs during DFT
-    std::for_each(fwd_data_ref.begin(), fwd_data_ref.end(),
+    std::for_each(input.begin(), input.end(),
                   [this](auto &x) { x *= static_cast<PrecisionType>(forward_elements); });
-
-    std::cerr << 6;
-    EXPECT_TRUE(check_equal_vector(fwd_data.data(), fwd_data_ref.data(), fwd_data_ref.size(), abs_error_margin,
-                                   rel_error_margin, std::cout));
-                                   
+    
+    for(int64_t i=0;i<batches;i++){
+        EXPECT_TRUE(check_equal_strided<false>(fwd_data.data() + forward_distance * i, input.data() + ref_distance * i, sizes, strides_fwd, abs_error_margin, rel_error_margin, std::cout));
+    }
     std::cerr << 7;
     return !::testing::Test::HasFailure();
 }
@@ -212,11 +211,12 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
         .wait_and_throw();
 
     // account for scaling that occurs during DFT
-    std::for_each(fwd_ref.begin(), fwd_ref.end(),
+    std::for_each(input.begin(), input.end(),
                   [this](auto &x) { x *= static_cast<PrecisionType>(forward_elements); });
 
-    EXPECT_TRUE(check_equal_vector(fwd.data(), fwd_ref.data(), fwd_ref.size(), abs_error_margin,
-                                   rel_error_margin, std::cout));
+    for(int64_t i=0;i<batches;i++){
+        EXPECT_TRUE(check_equal_strided<false>(fwd.data() + forward_distance * i, input.data() + ref_distance * i, sizes, strides_fwd, abs_error_margin, rel_error_margin, std::cout));
+    }
 
     return !::testing::Test::HasFailure();
 }

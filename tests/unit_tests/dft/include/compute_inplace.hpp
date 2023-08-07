@@ -105,7 +105,10 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
             }
             strides_fwd.push_back(1);
         }
-    } 
+    } else {
+        // spec says strides_bwd is ignored and strides_fwd is reused for backward domain for in-place complex
+        strides_fwd = strides_bwd;
+    }
 
     auto [forward_distance, backward_distance] = get_default_distances<domain>(sizes, strides_fwd, strides_bwd);
     auto ref_distance = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>());
@@ -259,7 +262,10 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
             }
             strides_fwd.push_back(1);
         }
-    } 
+    } else {
+        // spec says strides_bwd is ignored and strides_fwd is reused for backward domain for in-place complex
+        strides_fwd = strides_bwd;
+    }
 
     auto [forward_distance, backward_distance] = get_default_distances<domain>(sizes, strides_fwd, strides_bwd);
     auto ref_distance = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>());
