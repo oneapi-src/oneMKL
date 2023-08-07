@@ -57,6 +57,13 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type
     auto plan = detail::get_fwd_plan(commit);
 
     auto offsets = detail::get_offsets(commit);
+    
+    if constexpr(std::is_floating_point_v<data_type>){
+        if(offsets[0] % 2 != 0){
+            throw oneapi::mkl::unimplemented("DFT", "compute_forward(desc, inout)",
+                                            "cuFFT requires offset (first value in strides) to be multiple of `sizeof(complex)`!");
+        }
+    }
 
     queue.submit([&](sycl::handler &cgh) {
         auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
@@ -93,6 +100,13 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<input_typ
     auto plan = detail::get_fwd_plan(commit);
 
     auto offsets = detail::get_offsets(commit);
+
+    if constexpr(std::is_floating_point_v<input_type>){
+        if(offsets[0] % 2 != 0){
+            throw oneapi::mkl::unimplemented("DFT", "compute_forward(desc, inout)",
+                                            "cuFFT requires offset (first value in strides) to be multiple of `sizeof(complex)`!");
+        }
+    }
 
     queue.submit([&](sycl::handler &cgh) {
         auto in_acc = in.template get_access<sycl::access::mode::read_write>(cgh);
@@ -138,6 +152,13 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inou
     auto plan = detail::get_fwd_plan(commit);
     auto offsets = detail::get_offsets(commit);
 
+    if constexpr(std::is_floating_point_v<data_type>){
+        if(offsets[0] % 2 != 0){
+            throw oneapi::mkl::unimplemented("DFT", "compute_forward(desc, inout)",
+                                            "cuFFT requires offset (first value in strides) to be multiple of `sizeof(complex)`!");
+        }
+    }
+
     return queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
 
@@ -171,6 +192,13 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, input_type *in,
     auto queue = commit->get_queue();
     auto plan = detail::get_fwd_plan(commit);
     auto offsets = detail::get_offsets(commit);
+
+    if constexpr(std::is_floating_point_v<input_type>){
+        if(offsets[0] % 2 != 0){
+            throw oneapi::mkl::unimplemented("DFT", "compute_forward(desc, inout)",
+                                            "cuFFT requires offset (first value in strides) to be multiple of `sizeof(complex)`!");
+        }
+    }
 
     return queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);

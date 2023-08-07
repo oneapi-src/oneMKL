@@ -80,9 +80,9 @@ class ComputeTests_real_real_out_of_place
     INSTANTIATE_TEST(DOUBLE, REAL, PLACE, LAYOUT, STORAGE)
 
 #define INSTANTIATE_TEST_DIMENSIONS_PRECISION_DOMAIN_PLACE_LAYOUT(STORAGE)      \
-    /*INSTANTIATE_TEST_DIMENSIONS_PRECISION_DOMAIN(in_place, , STORAGE)           \
+    INSTANTIATE_TEST_DIMENSIONS_PRECISION_DOMAIN(in_place, , STORAGE)           \
     INSTANTIATE_TEST_DIMENSIONS_PRECISION_DOMAIN(in_place, real_real_, STORAGE) \
-    */INSTANTIATE_TEST_DIMENSIONS_PRECISION_DOMAIN(out_of_place, , STORAGE)       \
+    INSTANTIATE_TEST_DIMENSIONS_PRECISION_DOMAIN(out_of_place, , STORAGE)       \
     INSTANTIATE_TEST_DIMENSIONS_PRECISION_DOMAIN(out_of_place, real_real_, STORAGE)
 
 INSTANTIATE_TEST_DIMENSIONS_PRECISION_DOMAIN_PLACE_LAYOUT(buffer)
@@ -104,9 +104,9 @@ std::vector<DFTParams> test_params{
 
     //{ shape{ 4 }, shape{ 1, 3}, shape{ 1, 3}, i64{ 2 } },
 
-    //{ shape{ 4, 3 }, shape{ 2, 4, 1}, shape{ 4, 3, 1}, i64{ 2 } },
-    { shape{ 4, 3 }, shape{ 32, 6, 2}, shape{ 0, 6, 2}, i64{ 2 } },
-    { shape{ 4, 3 }, shape{ 0, 1, 4}, shape{ 0, 1, 4}, i64{ 2 } },
+    //{ shape{ 4, 3 }, shape{ 8, 4, 1}, shape{ 8, 3, 1}, i64{ 2 } },
+    { shape{ 4, 3 }, shape{ 1, 6, 2}, shape{ 0, 6, 2}, i64{ 2 } },
+    { shape{ 4, 3 }, shape{ 0, 1, 4}, shape{ 1, 1, 4}, i64{ 2 } },
     { shape{ 4, 4 }, shape{ 0, 4, 1}, shape{ 0, 4, 1}, i64{ 2 } },
     { shape{ 4, 4 }, shape{ 0, 1, 4}, shape{ 0, 1, 4}, i64{ 2 } },
     { shape{ 4, 4 }, shape{ 0, 7, 1}, shape{ 0, 5, 1}, i64{ 2 } },
