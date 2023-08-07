@@ -67,7 +67,7 @@ class ComputeTests_real_real_out_of_place
         catch (std::exception & e) {                                                             \
             std::string msg = e.what();                                                          \
             if(msg.find("FFT_UNIMPLEMENTED") != std::string::npos) {                             \
-              std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;         \
+              std::cout << "Skipping test because: \"" << msg << "\"" << std::endl;              \
               GTEST_SKIP();                                                                      \
             }                                                                                    \
         }                                                                                        \
@@ -101,8 +101,6 @@ std::vector<DFTParams> test_params{
 
     { shape{ 2, 2, 2 }, i64{ 1 } }, { shape{ 2, 2, 3 }, i64{ 2 } }, { shape{ 2, 2, 2 }, i64{ 27 } },
     { shape{ 3, 7, 2 }, i64{ 1 } }, { shape{ 8, 8, 9 }, i64{ 1 } },
-
-    //{ shape{ 4 }, shape{ 1, 3}, shape{ 1, 3}, i64{ 2 } },
 
     { shape{ 4, 3 }, shape{ 4, 4, 1}, shape{ 4, 3, 1}, i64{ 2 } },
     { shape{ 4, 3 }, shape{ 1, 6, 2}, shape{ 0, 6, 2}, i64{ 2 } },

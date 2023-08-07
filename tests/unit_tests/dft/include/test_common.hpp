@@ -226,9 +226,8 @@ std::pair<std::int64_t,std::int64_t> get_default_distances(const std::vector<std
 
 //up to 3 dimensions, empty strides = default
 template<typename T_vec, typename Allocator=std::allocator<typename T_vec::value_type>>
-auto strided_copy(const T_vec& contiguous, const std::vector<std::int64_t>& sizes, 
-                  const std::vector<std::int64_t>& strides, std::int64_t batches, Allocator alloc = {})
-         -> std::vector<typename T_vec::value_type, Allocator>{
+std::vector<typename T_vec::value_type, Allocator> strided_copy(const T_vec& contiguous, const std::vector<std::int64_t>& sizes, 
+                  const std::vector<std::int64_t>& strides, std::int64_t batches, Allocator alloc = {}){
     if (strides.size() == 0){
         return {contiguous.begin(), contiguous.end(), alloc};
     }
@@ -266,7 +265,6 @@ bool check_equal_strided(const vec1& v, const vec2& v_ref, std::vector<int64_t> 
         } else{
             strides_arr = get_default_strides(sizes);
         }
-        std::cout << "strides " << strides_arr[0] << " " << strides_arr[1] << " " << strides_arr[2] << " " << strides_arr[3] << std::endl;
         strides = {&strides_arr[0], &strides_arr[sizes.size()+1]};
     }
     using T = std::decay_t<decltype(v[0])>;
@@ -276,14 +274,11 @@ bool check_equal_strided(const vec1& v, const vec2& v_ref, std::vector<int64_t> 
     std::int64_t size0_real = ConjugateEvenStrides && sizes.size() == 1 ? size0/2+1 : size0;
     std::int64_t size1_real = ConjugateEvenStrides && sizes.size() == 2 ? size1/2+1 : size1;
     std::int64_t size2_real = ConjugateEvenStrides && sizes.size() == 3 ? size2/2+1 : size2;
-    std::cout << "sizes " << size0 << " " << size1 << " " << size2 << std::endl;
-    std::cout << "sizes real " << size0_real << " " << size1_real << " " << size2_real << std::endl;
 
     std::int64_t stride0 = strides[0];
     std::int64_t stride1 = strides[1];
     std::int64_t stride2 = getdefault(strides, 2, 0l);
     std::int64_t stride3 = getdefault(strides, 3, 0l);
-    std::cout << "strides " << stride0 << " " << stride1 << " " << stride2 << " " << stride3 << std::endl;
     
     constexpr int max_print = 20;
     int count = 0;

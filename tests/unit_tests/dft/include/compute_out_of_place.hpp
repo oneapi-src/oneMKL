@@ -23,24 +23,6 @@
 #include "compute_tester.hpp"
 #include <numeric>
 
-template <oneapi::mkl::dft::domain domain>
-std::int64_t get_backward_row_size(const std::vector<std::int64_t> &sizes) noexcept {
-    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        return sizes.back() / 2 + 1;
-    }
-    else {
-        return sizes.back();
-    }
-}
-
-/*template<typename T>
-void print(std::vector<T> v){
-    for(T a : v){
-        std::cout << a << ", ";
-    }
-    std::cout << std::endl;
-}*/
-
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     if (!init(MemoryAccessModel::buffer)) {
@@ -49,13 +31,6 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
 
     auto [forward_distance, backward_distance] = get_default_distances<domain>(sizes, strides_fwd, strides_bwd);
     auto ref_distance = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>());
-
-    std::cout << "forward_distance: " << forward_distance << std::endl;
-    std::cout << "fwd stride: ";
-    print(strides_fwd);
-    std::cout << "backward_distance: " << backward_distance << std::endl;
-    std::cout << "bwd stride: ";
-    print(strides_bwd);
 
     descriptor_t descriptor{ sizes };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
@@ -76,11 +51,6 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     commit_descriptor(descriptor, sycl_queue);
     std::vector<FwdInputType> fwd_data(strided_copy(input, sizes, strides_fwd, batches));
     std::vector<FwdInputType> fwd_data_ref = fwd_data;
-
-    std::cout << "input: ";
-    print(input);
-    std::cout << "fwd_data: ";
-    print(fwd_data);
     
     auto tmp = std::vector<FwdOutputType>(cast_unsigned(backward_distance * batches + getdefault(strides_bwd,0,0L)), 0);
     {
@@ -93,14 +63,6 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
         {
             auto acc_bwd = bwd_buf.template get_host_access();
             auto bwd_ptr = acc_bwd.get_pointer();
-            std::cout << "ref_distance: " << ref_distance << std::endl;
-            std::cout << "out_host_ref: ";
-            print(out_host_ref);
-            std::cout << "bwd_ptr: " << std::endl;
-            for(int i=0;i<backward_distance * batches;i++){
-                std::cout << bwd_ptr[i] << ", ";
-            }
-            std::cout << std::endl;
             for(int64_t i=0;i<batches;i++){
                 EXPECT_TRUE(check_equal_strided<domain == oneapi::mkl::dft::domain::REAL>(bwd_ptr + backward_distance * i, out_host_ref.data() + ref_distance * i, sizes, strides_bwd, abs_error_margin, rel_error_margin, std::cout));
             }
@@ -134,17 +96,6 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     // account for scaling that occurs during DFT
     std::for_each(input.begin(), input.end(),
                   [this](auto &x) { x *= static_cast<PrecisionType>(forward_elements); });
-    std::cout << "BWD TEST" << std::endl;
-    std::cout << "fwd_data: " << std::endl;
-    for(int i=0;i<backward_distance * batches;i++){
-        std::cout << fwd_data[i] << ", ";
-    }
-    std::cout << std::endl;
-    std::cout << "input: " << std::endl;
-    for(int i=0;i<backward_distance * batches;i++){
-        std::cout << input[i] << ", ";
-    }
-    std::cout << std::endl;
 
     for(int64_t i=0;i<batches;i++){
         EXPECT_TRUE(check_equal_strided<false>(fwd_data.data() + forward_distance * i, input.data() + ref_distance * i, sizes, strides_fwd, abs_error_margin, rel_error_margin, std::cout));
