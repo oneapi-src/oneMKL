@@ -55,6 +55,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc, sycl::buffer<data_typ
     auto offsets = detail::get_offsets(commit);
 
     if constexpr(std::is_floating_point_v<data_type>){
+        offsets[0] *= 2; // offset is supplied in complex but we offset scalar pointer
         if(offsets[1] % 2 != 0){
             throw oneapi::mkl::unimplemented("DFT", "compute_forward(desc, inout)",
                                             "cuFFT requires offset (first value in strides) to be multiple of `sizeof(complex)`!");
@@ -144,6 +145,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, data_type *ino
     auto offsets = detail::get_offsets(commit);
 
     if constexpr(std::is_floating_point_v<data_type>){
+        offsets[0] *= 2; // offset is supplied in complex but we offset scalar pointer
         if(offsets[1] % 2 != 0){
             throw oneapi::mkl::unimplemented("DFT", "compute_forward(desc, inout)",
                                             "cuFFT requires offset (first value in strides) to be multiple of `sizeof(complex)`!");

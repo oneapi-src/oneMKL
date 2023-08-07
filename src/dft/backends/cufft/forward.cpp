@@ -63,6 +63,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<data_type
             throw oneapi::mkl::unimplemented("DFT", "compute_forward(desc, inout)",
                                             "cuFFT requires offset (first value in strides) to be multiple of `sizeof(complex)`!");
         }
+        offsets[1] *= 2; // offset is supplied in complex but we offset scalar pointer
     }
 
     queue.submit([&](sycl::handler &cgh) {
@@ -157,6 +158,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, data_type *inou
             throw oneapi::mkl::unimplemented("DFT", "compute_forward(desc, inout)",
                                             "cuFFT requires offset (first value in strides) to be multiple of `sizeof(complex)`!");
         }
+        offsets[1] *= 2; // offset is supplied in complex but we offset scalar pointer
     }
 
     return queue.submit([&](sycl::handler &cgh) {

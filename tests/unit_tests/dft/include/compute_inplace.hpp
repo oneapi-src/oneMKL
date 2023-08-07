@@ -113,6 +113,13 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     auto [forward_distance, backward_distance] = get_default_distances<domain>(sizes, strides_fwd, strides_bwd);
     auto ref_distance = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>());
 
+    std::cout << "forward_distance: " << forward_distance << std::endl;
+    std::cout << "fwd stride: ";
+    print(strides_fwd);
+    std::cout << "backward_distance: " << backward_distance << std::endl;
+    std::cout << "bwd stride: ";
+    print(strides_bwd);
+
     //const std::size_t container_size_total =
       //  domain == oneapi::mkl::dft::domain::REAL ? real_first_dims * real_last_dim : size_total;
 
