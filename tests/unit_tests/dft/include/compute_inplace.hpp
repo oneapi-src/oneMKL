@@ -47,7 +47,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     }
 
     auto [forward_distance, backward_distance] =
-        get_default_distances<domain>(sizes, strides_fwd, strides_bwd);
+        get_default_distances<domain, true>(sizes, strides_fwd, strides_bwd);
     auto ref_distance = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>());
 
     descriptor_t descriptor{ sizes };
@@ -69,7 +69,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     }
     commit_descriptor(descriptor, sycl_queue);
 
-    std::vector<FwdInputType> inout_host(strided_copy(input, sizes, strides_fwd, batches));
+    std::vector<FwdInputType> inout_host(strided_copy(input, sizes, strides_fwd, batches, forward_distance));
     int real_multiplier = (domain == oneapi::mkl::dft::domain::REAL ? 2 : 1);
     inout_host.resize(
         cast_unsigned(std::max(forward_distance, real_multiplier * backward_distance) * batches +
@@ -156,7 +156,7 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
     }
 
     auto [forward_distance, backward_distance] =
-        get_default_distances<domain>(sizes, strides_fwd, strides_bwd);
+        get_default_distances<domain, true>(sizes, strides_fwd, strides_bwd);
     auto ref_distance = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>());
 
     descriptor_t descriptor = { sizes };
@@ -180,7 +180,7 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
 
     auto ua_input = usm_allocator_t<FwdInputType>(cxt, *dev);
     std::vector<FwdInputType, decltype(ua_input)> inout(
-        strided_copy(input, sizes, strides_fwd, batches, ua_input), ua_input);
+        strided_copy(input, sizes, strides_fwd, batches, forward_distance, ua_input), ua_input);
     int real_multiplier = (domain == oneapi::mkl::dft::domain::REAL ? 2 : 1);
     inout.resize(
         cast_unsigned(std::max(forward_distance, real_multiplier * backward_distance) * batches +

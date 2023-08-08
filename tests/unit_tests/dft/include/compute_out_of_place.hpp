@@ -51,7 +51,7 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
                              complex_strides.data());
     }
     commit_descriptor(descriptor, sycl_queue);
-    std::vector<FwdInputType> fwd_data(strided_copy(input, sizes, strides_fwd, batches));
+    std::vector<FwdInputType> fwd_data(strided_copy(input, sizes, strides_fwd, batches, forward_distance));
     std::vector<FwdInputType> fwd_data_ref = fwd_data;
 
     auto tmp = std::vector<FwdOutputType>(
@@ -148,7 +148,7 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     auto ua_output = usm_allocator_t<FwdOutputType>(cxt, *dev);
 
     std::vector<FwdInputType, decltype(ua_input)> fwd(
-        strided_copy(input, sizes, strides_fwd, batches, ua_input), ua_input);
+        strided_copy(input, sizes, strides_fwd, batches, forward_distance, ua_input), ua_input);
     auto fwd_ref = fwd;
     std::vector<FwdOutputType, decltype(ua_output)> bwd(
         cast_unsigned(backward_distance * batches + getdefault(strides_bwd, 0, 0L)), ua_output);
