@@ -190,8 +190,8 @@ sycl::event gemm(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl:
                  std::int64_t m, std::int64_t n, std::int64_t k, real_t alpha, const real_t *a,
                  std::int64_t lda, const real_t *b, std::int64_t ldb, real_t beta, real_t *c,
                  std::int64_t ldc, const std::vector<sycl::event> &dependencies) {
-    CALL_SYCLBLAS_USM_FN(::blas::_gemm, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,
-                         beta, c, ldc, dependencies);
+    CALL_SYCLBLAS_USM_FN(::blas::_gemm, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                         c, ldc, dependencies);
 }
 
 sycl::event gemm(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
@@ -206,8 +206,8 @@ sycl::event symm(sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::
                  std::int64_t m, std::int64_t n, real_t alpha, const real_t *a, std::int64_t lda,
                  const real_t *b, std::int64_t ldb, real_t beta, real_t *c, std::int64_t ldc,
                  const std::vector<sycl::event> &dependencies) {
-    CALL_SYCLBLAS_USM_FN(::blas::_symm, queue, left_right, upper_lower, m, n, alpha, a, lda,
-                         b, ldb, beta, c, ldc, dependencies);
+    CALL_SYCLBLAS_USM_FN(::blas::_symm, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
+                         beta, c, ldc, dependencies);
 }
 
 sycl::event symm(sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
