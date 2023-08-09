@@ -53,7 +53,7 @@ cufftHandle get_fwd_plan(dft::detail::commit_impl<prec, dom> *commit) {
 template <typename descriptor_type>
 ONEMKL_EXPORT void compute_forward(descriptor_type &desc,
                                    sycl::buffer<fwd<descriptor_type>, 1> &inout) {
-            const std::string func_name = "compute_forward(desc, inout)";
+    const std::string func_name = "compute_forward(desc, inout)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
@@ -97,7 +97,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &, sycl::buffer<scalar<descri
 template <typename descriptor_type>
 ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<fwd<descriptor_type>, 1> &in,
                                    sycl::buffer<bwd<descriptor_type>, 1> &out) {
-            const std::string func_name = "compute_forward(desc, in, out)";
+    const std::string func_name = "compute_forward(desc, in, out)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::NOT_INPLACE>(
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
@@ -150,7 +150,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &, sycl::buffer<scalar<descri
 template <typename descriptor_type>
 ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor_type> *inout,
                                           const std::vector<sycl::event> &dependencies) {
-            const std::string func_name = "compute_forward(desc, inout, dependencies)";
+    const std::string func_name = "compute_forward(desc, inout, dependencies)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
@@ -194,7 +194,7 @@ template <typename descriptor_type>
 ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor_type> *in,
                                           bwd<descriptor_type> *out,
                                           const std::vector<sycl::event> &dependencies) {
-            const std::string func_name = "compute_forward(desc, in, out, dependencies)";
+    const std::string func_name = "compute_forward(desc, in, out, dependencies)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::NOT_INPLACE>(
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);

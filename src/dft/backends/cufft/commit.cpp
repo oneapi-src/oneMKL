@@ -140,10 +140,10 @@ public:
         std::copy(config_values.dimensions.begin(), config_values.dimensions.end(), n_copy.data());
         const int rank = static_cast<int>(config_values.dimensions.size());
         // cufft ignores the first value in inembed and onembed, so there is no harm in putting offset there
-        std::vector<int> inembed { config_values.input_strides.begin(),
-                                     config_values.input_strides.end() };
-        std::vector<int> onembed { config_values.output_strides.begin(),
-                                     config_values.output_strides.end() };
+        std::vector<int> inembed{ config_values.input_strides.begin(),
+                                  config_values.input_strides.end() };
+        std::vector<int> onembed{ config_values.output_strides.begin(),
+                                  config_values.output_strides.end() };
         auto i_min = std::min_element(inembed.begin() + 1, inembed.end());
         auto o_min = std::min_element(onembed.begin() + 1, onembed.end());
         if constexpr (dom == dft::domain::REAL) {
@@ -173,7 +173,7 @@ public:
             // swap dimensions to have the last one have the smallest stride
             std::swap(n_copy[o_min - onembed.begin() - 1], n_copy[rank - 1]);
         }
-        for (int i = 1; i < rank ; i++) {
+        for (int i = 1; i < rank; i++) {
             if (inembed[i] % istride != 0) {
                 throw mkl::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,

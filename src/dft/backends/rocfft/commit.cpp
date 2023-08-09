@@ -230,12 +230,15 @@ public:
         offsets[1] = config_values.output_strides[0];
 
         auto func = __FUNCTION__;
-        auto check_strides = [&](const std::vector<std::int64_t>& strides){
-            for(int i = 1;i<=dimensions;i++){
-                for(int j = 1;j<=dimensions;j++){
-                    std::int64_t cplx_dim = config_values.dimensions[j-1];
-                    std::int64_t real_dim = (dom == dft::domain::REAL && j == dimensions) ? (cplx_dim / 2 + 1) : cplx_dim;
-                    if(strides[i]>strides[j] && strides[i]%cplx_dim!=0 && strides[i]%real_dim!=0){
+        auto check_strides = [&](const std::vector<std::int64_t>& strides) {
+            for (int i = 1; i <= dimensions; i++) {
+                for (int j = 1; j <= dimensions; j++) {
+                    std::int64_t cplx_dim = config_values.dimensions[j - 1];
+                    std::int64_t real_dim = (dom == dft::domain::REAL && j == dimensions)
+                                                ? (cplx_dim / 2 + 1)
+                                                : cplx_dim;
+                    if (strides[i] > strides[j] && strides[i] % cplx_dim != 0 &&
+                        strides[i] % real_dim != 0) {
                         // rocfft does not throw, it just produces wrong results
                         throw oneapi::mkl::unimplemented(
                             "DFT", func,
@@ -280,7 +283,7 @@ public:
         const bool valid_backward =
             ignore_strides || (lengths[0] <= out_strides[1] && lengths[0] / 2 + 1 <= in_strides[1]);
 
-        if(!valid_forward && !valid_backward){
+        if (!valid_forward && !valid_backward) {
             throw mkl::exception("dft/backends/cufft", __FUNCTION__, "Invalid strides.");
         }
 

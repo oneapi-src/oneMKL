@@ -205,7 +205,7 @@ T get_default(const std::vector<T> vec, std::size_t idx, T default_) {
     return vec[idx];
 }
 
-template <oneapi::mkl::dft::domain domain, bool in_place=false>
+template <oneapi::mkl::dft::domain domain, bool in_place = false>
 std::pair<std::int64_t, std::int64_t> get_default_distances(
     const std::vector<std::int64_t> &sizes, const std::vector<std::int64_t> &strides_fwd,
     const std::vector<std::int64_t> &strides_bwd) {
@@ -230,8 +230,10 @@ std::pair<std::int64_t, std::int64_t> get_default_distances(
             std::max({ size0 * strides_bwd[1], size1 * get_default(strides_bwd, 2, 0l),
                        size2 * get_default(strides_bwd, 3, 0l) });
     }
-    if(in_place){
-        forward_distance = std::max(forward_distance, backward_distance * (domain == oneapi::mkl::dft::domain::REAL ? 2L : 1L));
+    if (in_place) {
+        forward_distance =
+            std::max(forward_distance,
+                     backward_distance * (domain == oneapi::mkl::dft::domain::REAL ? 2L : 1L));
     }
     return { forward_distance, backward_distance };
 }
@@ -240,7 +242,8 @@ std::pair<std::int64_t, std::int64_t> get_default_distances(
 template <typename T_vec, typename Allocator = std::allocator<typename T_vec::value_type>>
 std::vector<typename T_vec::value_type, Allocator> strided_copy(
     const T_vec &contiguous, const std::vector<std::int64_t> &sizes,
-    const std::vector<std::int64_t> &strides, std::int64_t batches, std::int64_t distance, Allocator alloc = {}) {
+    const std::vector<std::int64_t> &strides, std::int64_t batches, std::int64_t distance,
+    Allocator alloc = {}) {
     if (strides.size() == 0) {
         return { contiguous.begin(), contiguous.end(), alloc };
     }

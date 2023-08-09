@@ -32,7 +32,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     auto strides_fwd = this->strides_fwd;
     auto strides_bwd = this->strides_bwd;
     if (domain == oneapi::mkl::dft::domain::REAL) {
-        // both input and output strides must be set 
+        // both input and output strides must be set
         if (strides_fwd.size() == 0) {
             auto strides_tmp = get_conjugate_even_complex_strides(sizes);
             strides_fwd = { strides_tmp[0] };
@@ -80,7 +80,8 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     }
     commit_descriptor(descriptor, sycl_queue);
 
-    std::vector<FwdInputType> inout_host(strided_copy(input, sizes, strides_fwd, batches, forward_distance));
+    std::vector<FwdInputType> inout_host(
+        strided_copy(input, sizes, strides_fwd, batches, forward_distance));
     int real_multiplier = (domain == oneapi::mkl::dft::domain::REAL ? 2 : 1);
     inout_host.resize(
         cast_unsigned(std::max(forward_distance, real_multiplier * backward_distance) * batches +
@@ -152,7 +153,7 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
     auto strides_fwd = this->strides_fwd;
     auto strides_bwd = this->strides_bwd;
     if (domain == oneapi::mkl::dft::domain::REAL) {
-        // both input and output strides must be set 
+        // both input and output strides must be set
         if (strides_fwd.size() == 0) {
             auto strides_tmp = get_conjugate_even_complex_strides(sizes);
             strides_fwd = { strides_tmp[0] };

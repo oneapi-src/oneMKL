@@ -51,7 +51,8 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
                              complex_strides.data());
     }
     commit_descriptor(descriptor, sycl_queue);
-    std::vector<FwdInputType> fwd_data(strided_copy(input, sizes, strides_fwd, batches, forward_distance));
+    std::vector<FwdInputType> fwd_data(
+        strided_copy(input, sizes, strides_fwd, batches, forward_distance));
 
     auto tmp = std::vector<FwdOutputType>(
         cast_unsigned(backward_distance * batches + get_default(strides_bwd, 0, 0L)), 0);
