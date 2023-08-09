@@ -58,7 +58,6 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc,
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_fwd_plan(commit);
-
     auto offsets = detail::get_offsets(commit);
 
     if constexpr (std::is_floating_point_v<fwd<descriptor_type>>) {
@@ -103,7 +102,6 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<fwd<descr
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_fwd_plan(commit);
-
     auto offsets = detail::get_offsets(commit);
 
     if constexpr (std::is_floating_point_v<fwd<descriptor_type>>) {

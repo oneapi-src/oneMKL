@@ -122,7 +122,7 @@ std::vector<DFTParams> test_params{
     { shape{ 4, 4, 4 }, shape{ 2, 1, 4, 16 }, shape{ 4, 1, 4, 16 }, i64{ 2 } },
     { shape{ 4, 4, 4 }, shape{ 4, 17, 4, 1 }, shape{ 2, 23, 5, 1 }, i64{ 2 } },
     { shape{ 4, 4, 4 }, shape{ 4, 32, 8, 2 }, shape{ 4, 32, 8, 2 }, i64{ 2 } },
-    { shape{ 4, 4, 4 }, shape{ 0, 4, 1, 16 }, shape{ 0, 4, 16, 1 }, i64{ 2 } },
+    { shape{ 4, 4, 4 }, shape{ 1, 4, 1, 16 }, shape{ 1, 4, 16, 1 }, i64{ 2 } },
 };
 
 INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_in_place,
