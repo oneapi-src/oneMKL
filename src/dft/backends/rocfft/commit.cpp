@@ -85,7 +85,7 @@ private:
     // The same is also true for "FORWARD_SCALE" and "BACKWARD_SCALE".
     // handles[0] is forward, handles[1] is backward
     std::array<rocfft_handle, 2> handles{};
-    std::array<int64_t, 2> offsets;
+    std::array<std::int64_t, 2> offsets;
 
 public:
     rocfft_commit(sycl::queue& queue, const dft::detail::dft_values<prec, dom>& config_values)
@@ -230,11 +230,11 @@ public:
         offsets[1] = config_values.output_strides[0];
 
         auto func = __FUNCTION__;
-        auto check_strides = [&](const std::vector<int64_t>& strides){
+        auto check_strides = [&](const std::vector<std::int64_t>& strides){
             for(int i = 1;i<=dimensions;i++){
                 for(int j = 1;j<=dimensions;j++){
-                    int64_t cplx_dim = config_values.dimensions[j-1];
-                    int64_t real_dim = (dom == dft::domain::REAL && j == dimensions) ? (cplx_dim / 2 + 1) : cplx_dim;
+                    std::int64_t cplx_dim = config_values.dimensions[j-1];
+                    std::int64_t real_dim = (dom == dft::domain::REAL && j == dimensions) ? (cplx_dim / 2 + 1) : cplx_dim;
                     if(strides[i]>strides[j] && strides[i]%cplx_dim!=0 && strides[i]%real_dim!=0){
                         // rocfft does not throw, it just produces wrong results
                         throw oneapi::mkl::unimplemented(
@@ -422,7 +422,7 @@ public:
         return handles.data();
     }
 
-    std::array<int64_t, 2> get_offsets() noexcept {
+    std::array<std::int64_t, 2> get_offsets() noexcept {
         return offsets;
     }
 
@@ -457,19 +457,19 @@ create_commit(
 
 namespace detail {
 template <dft::precision prec, dft::domain dom>
-std::array<int64_t, 2> get_offsets(dft::detail::commit_impl<prec, dom>* commit) {
+std::array<std::int64_t, 2> get_offsets(dft::detail::commit_impl<prec, dom>* commit) {
     return static_cast<rocfft_commit<prec, dom>*>(commit)->get_offsets();
 }
-template std::array<int64_t, 2>
+template std::array<std::int64_t, 2>
 get_offsets<dft::detail::precision::SINGLE, dft::detail::domain::REAL>(
     dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::REAL>*);
-template std::array<int64_t, 2>
+template std::array<std::int64_t, 2>
 get_offsets<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>(
     dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>*);
-template std::array<int64_t, 2>
+template std::array<std::int64_t, 2>
 get_offsets<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>(
     dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>*);
-template std::array<int64_t, 2>
+template std::array<std::int64_t, 2>
 get_offsets<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>(
     dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>*);
 

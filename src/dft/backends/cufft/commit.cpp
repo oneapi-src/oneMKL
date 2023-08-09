@@ -48,7 +48,7 @@ private:
     // We also need this because oneMKL uses a directionless "FWD_DISTANCE" and "BWD_DISTANCE" while cuFFT uses a directional "idist" and "odist".
     // plans[0] is forward, plans[1] is backward
     std::array<std::optional<cufftHandle>, 2> plans = { std::nullopt, std::nullopt };
-    std::array<int64_t, 2> offsets;
+    std::array<std::int64_t, 2> offsets;
 
 public:
     cufft_commit(sycl::queue& queue, const dft::detail::dft_values<prec, dom>& config_values)
@@ -139,9 +139,10 @@ public:
         std::array<int, max_supported_dims> n_copy;
         std::copy(config_values.dimensions.begin(), config_values.dimensions.end(), n_copy.data());
         const int rank = static_cast<int>(config_values.dimensions.size());
-        std::vector<int> inembed = { config_values.input_strides.begin(),
+        // cufft ignores the first value in inembed and onembed, so there is no harm in putting offset there
+        std::vector<int> inembed { config_values.input_strides.begin(),
                                      config_values.input_strides.end() };
-        std::vector<int> onembed = { config_values.output_strides.begin(),
+        std::vector<int> onembed { config_values.output_strides.begin(),
                                      config_values.output_strides.end() };
         auto i_min = std::min_element(inembed.begin() + 1, inembed.end());
         auto o_min = std::min_element(onembed.begin() + 1, onembed.end());
@@ -161,7 +162,7 @@ public:
             if (o_min - onembed.begin() != i_min - inembed.begin()) {
                 throw mkl::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,
-                    "cufft requires that if  ordered by stride length, the order of strides is the same for input and output strides!");
+                    "cufft requires that if ordered by stride length, the order of strides is the same for input and output strides!");
             }
         }
         const int istride = static_cast<int>(*i_min);
@@ -172,19 +173,19 @@ public:
             // swap dimensions to have the last one have the smallest stride
             std::swap(n_copy[o_min - onembed.begin() - 1], n_copy[rank - 1]);
         }
-        for (int i = 0; i < rank - 1; i++) {
-            if (inembed[i + 1] % istride != 0) {
+        for (int i = 1; i < rank ; i++) {
+            if (inembed[i] % istride != 0) {
                 throw mkl::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,
                     "cufft requires an input stride to be divisible by all smaller input strides!");
             }
-            inembed[i + 1] /= istride;
-            if (onembed[i + 1] % ostride != 0) {
+            inembed[i] /= istride;
+            if (onembed[i] % ostride != 0) {
                 throw mkl::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,
                     "cufft requires an output stride to be divisible by all smaller output strides!");
             }
-            onembed[i + 1] /= ostride;
+            onembed[i] /= ostride;
         }
         if (rank > 2) {
             if (inembed[1] > inembed[2] && onembed[1] < onembed[2]) {
@@ -287,7 +288,7 @@ public:
         return plans.data();
     }
 
-    std::array<int64_t, 2> get_offsets() noexcept {
+    std::array<std::int64_t, 2> get_offsets() noexcept {
         return offsets;
     }
 
@@ -322,19 +323,19 @@ create_commit(
 
 namespace detail {
 template <dft::precision prec, dft::domain dom>
-std::array<int64_t, 2> get_offsets(dft::detail::commit_impl<prec, dom>* commit) {
+std::array<std::int64_t, 2> get_offsets(dft::detail::commit_impl<prec, dom>* commit) {
     return static_cast<cufft_commit<prec, dom>*>(commit)->get_offsets();
 }
-template std::array<int64_t, 2>
+template std::array<std::int64_t, 2>
 get_offsets<dft::detail::precision::SINGLE, dft::detail::domain::REAL>(
     dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::REAL>*);
-template std::array<int64_t, 2>
+template std::array<std::int64_t, 2>
 get_offsets<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>(
     dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>*);
-template std::array<int64_t, 2>
+template std::array<std::int64_t, 2>
 get_offsets<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>(
     dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>*);
-template std::array<int64_t, 2>
+template std::array<std::int64_t, 2>
 get_offsets<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>(
     dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>*);
 

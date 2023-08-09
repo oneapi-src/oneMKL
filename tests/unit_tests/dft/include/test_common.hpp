@@ -198,7 +198,7 @@ inline std::array<std::int64_t, 4> get_default_strides(const std::vector<std::in
 }
 
 template <typename T>
-T getdefault(const std::vector<T> vec, std::size_t idx, T default_) {
+T get_default(const std::vector<T> vec, std::size_t idx, T default_) {
     if (idx >= vec.size()) {
         return default_;
     }
@@ -210,8 +210,8 @@ std::pair<std::int64_t, std::int64_t> get_default_distances(
     const std::vector<std::int64_t> &sizes, const std::vector<std::int64_t> &strides_fwd,
     const std::vector<std::int64_t> &strides_bwd) {
     std::int64_t size0 = sizes[0];
-    std::int64_t size1 = getdefault(sizes, 1, 1l);
-    std::int64_t size2 = getdefault(sizes, 2, 1l);
+    std::int64_t size1 = get_default(sizes, 1, 1l);
+    std::int64_t size2 = get_default(sizes, 2, 1l);
     std::int64_t size0_real =
         domain == oneapi::mkl::dft::domain::REAL && sizes.size() == 1 ? size0 / 2 + 1 : size0;
     std::int64_t size1_real =
@@ -222,13 +222,13 @@ std::pair<std::int64_t, std::int64_t> get_default_distances(
     std::int64_t forward_distance = size0 * size1 * size2;
     if (strides_fwd.size() > 1) {
         forward_distance =
-            std::max({ size0 * strides_fwd[1], size1 * getdefault(strides_fwd, 2, 0l),
-                       size2 * getdefault(strides_fwd, 3, 0l) });
+            std::max({ size0 * strides_fwd[1], size1 * get_default(strides_fwd, 2, 0l),
+                       size2 * get_default(strides_fwd, 3, 0l) });
     }
     if (strides_bwd.size() > 1) {
         backward_distance =
-            std::max({ size0 * strides_bwd[1], size1 * getdefault(strides_bwd, 2, 0l),
-                       size2 * getdefault(strides_bwd, 3, 0l) });
+            std::max({ size0 * strides_bwd[1], size1 * get_default(strides_bwd, 2, 0l),
+                       size2 * get_default(strides_bwd, 3, 0l) });
     }
     if(in_place){
         forward_distance = std::max(forward_distance, backward_distance * (domain == oneapi::mkl::dft::domain::REAL ? 2L : 1L));
@@ -246,13 +246,13 @@ std::vector<typename T_vec::value_type, Allocator> strided_copy(
     }
     using T = typename T_vec::value_type;
     std::int64_t size0 = sizes[0];
-    std::int64_t size1 = getdefault(sizes, 1, 1l);
-    std::int64_t size2 = getdefault(sizes, 2, 1l);
+    std::int64_t size1 = get_default(sizes, 1, 1l);
+    std::int64_t size2 = get_default(sizes, 2, 1l);
 
     std::int64_t stride0 = strides[0];
     std::int64_t stride1 = strides[1];
-    std::int64_t stride2 = getdefault(strides, 2, 0l);
-    std::int64_t stride3 = getdefault(strides, 3, 0l);
+    std::int64_t stride2 = get_default(strides, 2, 0l);
+    std::int64_t stride3 = get_default(strides, 3, 0l);
     std::vector<T, Allocator> res(cast_unsigned(distance * batches + stride0), alloc);
     for (std::int64_t b = 0; b < batches; b++) {
         for (std::int64_t i = 0; i < size0; i++) {
@@ -285,16 +285,16 @@ bool check_equal_strided(const vec1 &v, const vec2 &v_ref, std::vector<int64_t> 
     }
     using T = std::decay_t<decltype(v[0])>;
     std::int64_t size0 = sizes[0];
-    std::int64_t size1 = getdefault(sizes, 1, 1l);
-    std::int64_t size2 = getdefault(sizes, 2, 1l);
+    std::int64_t size1 = get_default(sizes, 1, 1l);
+    std::int64_t size2 = get_default(sizes, 2, 1l);
     std::int64_t size0_real = ConjugateEvenStrides && sizes.size() == 1 ? size0 / 2 + 1 : size0;
     std::int64_t size1_real = ConjugateEvenStrides && sizes.size() == 2 ? size1 / 2 + 1 : size1;
     std::int64_t size2_real = ConjugateEvenStrides && sizes.size() == 3 ? size2 / 2 + 1 : size2;
 
     std::int64_t stride0 = strides[0];
     std::int64_t stride1 = strides[1];
-    std::int64_t stride2 = getdefault(strides, 2, 0l);
-    std::int64_t stride3 = getdefault(strides, 3, 0l);
+    std::int64_t stride2 = get_default(strides, 2, 0l);
+    std::int64_t stride3 = get_default(strides, 3, 0l);
 
     constexpr int max_print = 20;
     int count = 0;

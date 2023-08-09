@@ -84,7 +84,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     int real_multiplier = (domain == oneapi::mkl::dft::domain::REAL ? 2 : 1);
     inout_host.resize(
         cast_unsigned(std::max(forward_distance, real_multiplier * backward_distance) * batches +
-                      getdefault(strides_bwd, 0, 0L) * real_multiplier));
+                      get_default(strides_bwd, 0, 0L) * real_multiplier));
 
     {
         sycl::buffer<FwdInputType, 1> inout_buf{ inout_host };
@@ -206,7 +206,7 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
     int real_multiplier = (domain == oneapi::mkl::dft::domain::REAL ? 2 : 1);
     inout.resize(
         cast_unsigned(std::max(forward_distance, real_multiplier * backward_distance) * batches +
-                      real_multiplier * getdefault(strides_bwd, 0, 0L)));
+                      real_multiplier * get_default(strides_bwd, 0, 0L)));
 
     std::vector<sycl::event> no_dependencies;
     oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(descriptor, inout.data(),

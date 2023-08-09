@@ -50,6 +50,7 @@ cufftHandle get_bwd_plan(dft::detail::commit_impl<prec, dom> *commit) {
 template <typename descriptor_type>
 ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
                                     sycl::buffer<fwd<descriptor_type>, 1> &inout) {
+            const std::string func_name = "compute_backward(desc, inout)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
@@ -61,8 +62,8 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
         offsets[0] *= 2; // offset is supplied in complex but we offset scalar pointer
         if (offsets[1] % 2 != 0) {
             throw oneapi::mkl::unimplemented(
-                "DFT", "compute_forward(desc, inout)",
-                "cuFFT requires offset (first value in strides) to be multiple of `sizeof(complex)`!");
+                "DFT", func_name,
+                "cuFFT requires offset (first value in strides) to be multiple of 2!");
         }
     }
 
@@ -70,7 +71,6 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
         auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
 
         cgh.host_task([=](sycl::interop_handle ih) {
-            const std::string func_name = "compute_backward(desc, inout)";
             auto stream = detail::setup_stream(func_name, ih, plan);
 
             auto inout_native = reinterpret_cast<fwd<descriptor_type> *>(
@@ -95,6 +95,7 @@ template <typename descriptor_type>
 ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
                                     sycl::buffer<bwd<descriptor_type>, 1> &in,
                                     sycl::buffer<fwd<descriptor_type>, 1> &out) {
+    const std::string func_name = "compute_backward(desc, in, out)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::NOT_INPLACE>(
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
@@ -105,8 +106,8 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
     if constexpr (std::is_floating_point_v<fwd<descriptor_type>>) {
         if (offsets[1] % 2 != 0) {
             throw oneapi::mkl::unimplemented(
-                "DFT", "compute_forward(desc, inout)",
-                "cuFFT requires offset (first value in strides) to be multiple of `sizeof(complex)`!");
+                "DFT", func_name,
+                "cuFFT requires offset (first value in strides) to be multiple of 2!");
         }
     }
 
@@ -115,7 +116,6 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
         auto out_acc = out.template get_access<sycl::access::mode::read_write>(cgh);
 
         cgh.host_task([=](sycl::interop_handle ih) {
-            const std::string func_name = "compute_backward(desc, in, out)";
             auto stream = detail::setup_stream(func_name, ih, plan);
 
             auto in_native = reinterpret_cast<void *>(
@@ -148,6 +148,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &, sycl::buffer<scalar<descr
 template <typename descriptor_type>
 ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor_type> *inout,
                                            const std::vector<sycl::event> &dependencies) {
+            const std::string func_name = "compute_backward(desc, inout, dependencies)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
@@ -159,8 +160,8 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor
         offsets[0] *= 2; // offset is supplied in complex but we offset scalar pointer
         if (offsets[1] % 2 != 0) {
             throw oneapi::mkl::unimplemented(
-                "DFT", "compute_forward(desc, inout)",
-                "cuFFT requires offset (first value in strides) to be multiple of `sizeof(complex)`!");
+                "DFT", func_name,
+                "cuFFT requires offset (first value in strides) to be multiple of 2!");
         }
     }
 
@@ -168,7 +169,6 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor
         cgh.depends_on(dependencies);
 
         cgh.host_task([=](sycl::interop_handle ih) {
-            const std::string func_name = "compute_backward(desc, inout, dependencies)";
             auto stream = detail::setup_stream(func_name, ih, plan);
 
             detail::cufft_execute<detail::Direction::Backward, fwd<descriptor_type>>(
@@ -192,6 +192,7 @@ template <typename descriptor_type>
 ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor_type> *in,
                                            fwd<descriptor_type> *out,
                                            const std::vector<sycl::event> &dependencies) {
+            const std::string func_name = "compute_backward(desc, in, out, dependencies)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::NOT_INPLACE>(
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
@@ -202,8 +203,8 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor
     if constexpr (std::is_floating_point_v<fwd<descriptor_type>>) {
         if (offsets[1] % 2 != 0) {
             throw oneapi::mkl::unimplemented(
-                "DFT", "compute_forward(desc, inout)",
-                "cuFFT requires offset (first value in strides) to be multiple of `sizeof(complex)`!");
+                "DFT", func_name,
+                "cuFFT requires offset (first value in strides) to be multiple of 2!");
         }
     }
 
@@ -211,7 +212,6 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor
         cgh.depends_on(dependencies);
 
         cgh.host_task([=](sycl::interop_handle ih) {
-            const std::string func_name = "compute_backward(desc, in, out, dependencies)";
             auto stream = detail::setup_stream(func_name, ih, plan);
 
             detail::cufft_execute<detail::Direction::Backward, fwd<descriptor_type>>(

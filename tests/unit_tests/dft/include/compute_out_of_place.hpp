@@ -55,7 +55,7 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     std::vector<FwdInputType> fwd_data_ref = fwd_data;
 
     auto tmp = std::vector<FwdOutputType>(
-        cast_unsigned(backward_distance * batches + getdefault(strides_bwd, 0, 0L)), 0);
+        cast_unsigned(backward_distance * batches + get_default(strides_bwd, 0, 0L)), 0);
     {
         sycl::buffer<FwdInputType, 1> fwd_buf{ fwd_data };
         sycl::buffer<FwdOutputType, 1> bwd_buf{ tmp };
@@ -151,7 +151,7 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
         strided_copy(input, sizes, strides_fwd, batches, forward_distance, ua_input), ua_input);
     auto fwd_ref = fwd;
     std::vector<FwdOutputType, decltype(ua_output)> bwd(
-        cast_unsigned(backward_distance * batches + getdefault(strides_bwd, 0, 0L)), ua_output);
+        cast_unsigned(backward_distance * batches + get_default(strides_bwd, 0, 0L)), ua_output);
 
     oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType, FwdOutputType>(
         descriptor, fwd.data(), bwd.data(), no_dependencies)

@@ -56,6 +56,7 @@ rocfft_execution_info get_bwd_info(dft::detail::commit_impl<prec, dom> *commit) 
 template <typename descriptor_type>
 ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
                                     sycl::buffer<fwd<descriptor_type>, 1> &inout) {
+            const std::string func_name = "compute_backward(desc, inout)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
@@ -69,7 +70,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
     }
     if(offsets[0]!=offsets[1]){
             throw oneapi::mkl::unimplemented(
-                "DFT", "compute_forward(desc, inout)",
+                "DFT", func_name,
                 "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
     }
 
@@ -77,7 +78,6 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
         auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
 
         cgh.host_task([=](sycl::interop_handle ih) {
-            const std::string func_name = "compute_backward(desc, inout)";
             auto stream = detail::setup_stream(func_name, ih, info);
 
             auto inout_native = reinterpret_cast<void*>(reinterpret_cast<fwd<descriptor_type> *>(
@@ -93,6 +93,7 @@ template <typename descriptor_type>
 ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
                                     sycl::buffer<scalar<descriptor_type>, 1> &inout_re,
                                     sycl::buffer<scalar<descriptor_type>, 1> &inout_im) {
+            const std::string func_name = "compute_backward(desc, inout_re, inout_im)";
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
@@ -101,7 +102,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
     
     if(offsets[0]!=offsets[1]){
             throw oneapi::mkl::unimplemented(
-                "DFT", "compute_forward(desc, inout)",
+                "DFT", func_name,
                 "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
     }
 
@@ -110,7 +111,6 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
         auto inout_im_acc = inout_im.template get_access<sycl::access::mode::read_write>(cgh);
 
         cgh.host_task([=](sycl::interop_handle ih) {
-            const std::string func_name = "compute_backward(desc, inout_re, inout_im)";
             auto stream = detail::setup_stream(func_name, ih, info);
 
             std::array<void *, 2> inout_native{ reinterpret_cast<void*>(reinterpret_cast<scalar<descriptor_type> *>(detail::native_mem(ih, inout_re_acc)) + offsets[0]),
@@ -205,6 +205,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
 template <typename descriptor_type>
 ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor_type> *inout,
                                            const std::vector<sycl::event> &deps) {
+            const std::string func_name = "compute_backward(desc, inout, deps)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
@@ -218,7 +219,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor
     }
     if(offsets[0]!=offsets[1]){
             throw oneapi::mkl::unimplemented(
-                "DFT", "compute_forward(desc, inout)",
+                "DFT", func_name,
                 "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
     }
     inout += offsets[0];
@@ -227,7 +228,6 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor
         cgh.depends_on(deps);
 
         cgh.host_task([=](sycl::interop_handle ih) {
-            const std::string func_name = "compute_backward(desc, inout, deps)";
             auto stream = detail::setup_stream(func_name, ih, info);
 
             void *inout_ptr = inout;
@@ -242,6 +242,7 @@ template <typename descriptor_type>
 ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descriptor_type> *inout_re,
                                            scalar<descriptor_type> *inout_im,
                                            const std::vector<sycl::event> &deps) {
+            const std::string func_name = "compute_backward(desc, inout_re, inout_im, deps)";
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
@@ -250,7 +251,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descrip
 
     if(offsets[0]!=offsets[1]){
             throw oneapi::mkl::unimplemented(
-                "DFT", "compute_forward(desc, inout)",
+                "DFT", func_name,
                 "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
     }
 
@@ -258,7 +259,6 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descrip
         cgh.depends_on(deps);
 
         cgh.host_task([=](sycl::interop_handle ih) {
-            const std::string func_name = "compute_backward(desc, inout_re, inout_im, deps)";
             auto stream = detail::setup_stream(func_name, ih, info);
 
             std::array<void *, 2> inout_native{ inout_re +  offsets[0], inout_im + offsets[0]};
