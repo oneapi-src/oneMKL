@@ -30,7 +30,9 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     }
 
     auto strides_fwd = this->strides_fwd;
+    auto strides_bwd = this->strides_bwd;
     if (domain == oneapi::mkl::dft::domain::REAL) {
+        // both input and output strides must be set 
         if (strides_fwd.size() == 0) {
             auto strides_tmp = get_conjugate_even_complex_strides(sizes);
             strides_fwd = { strides_tmp[0] };
@@ -39,6 +41,15 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
                 strides_fwd.push_back(strides_tmp[i + 1] * 2);
             }
             strides_fwd.push_back(1);
+        }
+        if (strides_bwd.size() == 0) {
+            auto strides_tmp = get_default_strides(sizes);
+            strides_bwd = { strides_tmp[0] };
+            //to be able to calculate in place each row must fit backward data
+            for (size_t i = 0; i < sizes.size() - 1; i++) {
+                strides_bwd.push_back(strides_tmp[i + 1] * 2);
+            }
+            strides_bwd.push_back(1);
         }
     }
     else {
@@ -139,7 +150,9 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
     }
 
     auto strides_fwd = this->strides_fwd;
+    auto strides_bwd = this->strides_bwd;
     if (domain == oneapi::mkl::dft::domain::REAL) {
+        // both input and output strides must be set 
         if (strides_fwd.size() == 0) {
             auto strides_tmp = get_conjugate_even_complex_strides(sizes);
             strides_fwd = { strides_tmp[0] };
@@ -148,6 +161,15 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
                 strides_fwd.push_back(strides_tmp[i + 1] * 2);
             }
             strides_fwd.push_back(1);
+        }
+        if (strides_bwd.size() == 0) {
+            auto strides_tmp = get_default_strides(sizes);
+            strides_bwd = { strides_tmp[0] };
+            //to be able to calculate in place each row must fit backward data
+            for (size_t i = 0; i < sizes.size() - 1; i++) {
+                strides_bwd.push_back(strides_tmp[i + 1] * 2);
+            }
+            strides_bwd.push_back(1);
         }
     }
     else {
