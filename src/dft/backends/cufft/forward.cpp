@@ -39,7 +39,7 @@ namespace oneapi::mkl::dft::cufft {
 namespace detail {
 //forward declaration
 template <dft::precision prec, dft::domain dom>
-std::array<int64_t, 2> get_offsets(dft::detail::commit_impl<prec, dom> *commit);
+std::array<std::int64_t, 2> get_offsets(dft::detail::commit_impl<prec, dom> *commit);
 
 template <dft::precision prec, dft::domain dom>
 cufftHandle get_fwd_plan(dft::detail::commit_impl<prec, dom> *commit) {
