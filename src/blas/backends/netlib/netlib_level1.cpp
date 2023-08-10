@@ -185,7 +185,7 @@ void cblas_zdrot(const int n, std::complex<double> *zx, const int incx, std::com
     }
 }
 
-void cblas_crotg(std::complex<float> *ca, std::complex<float> *cb, float *c,
+void cblas_crotg(std::complex<float> *ca, const std::complex<float> *cb, float *c,
                  std::complex<float> *s) {
     if (std::abs(ca[0]) == 0) {
         c[0] = 0.0;
@@ -203,7 +203,7 @@ void cblas_crotg(std::complex<float> *ca, std::complex<float> *cb, float *c,
     }
 }
 
-void cblas_zrotg(std::complex<double> *ca, std::complex<double> *cb, double *c,
+void cblas_zrotg(std::complex<double> *ca, const std::complex<double> *cb, double *c,
                  std::complex<double> *s) {
     if (std::abs(ca[0]) == 0) {
         c[0] = 0.0;
