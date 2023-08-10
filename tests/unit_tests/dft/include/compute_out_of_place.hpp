@@ -66,7 +66,7 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
         {
             auto acc_bwd = bwd_buf.template get_host_access();
             auto bwd_ptr = acc_bwd.get_pointer();
-            for (int64_t i = 0; i < batches; i++) {
+            for (std::int64_t i = 0; i < batches; i++) {
                 EXPECT_TRUE(check_equal_strided<domain == oneapi::mkl::dft::domain::REAL>(
                     bwd_ptr + backward_distance * i, out_host_ref.data() + ref_distance * i, sizes,
                     strides_bwd, abs_error_margin, rel_error_margin, std::cout));
@@ -106,7 +106,7 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     std::for_each(input.begin(), input.end(),
                   [this](auto &x) { x *= static_cast<PrecisionType>(forward_elements); });
 
-    for (int64_t i = 0; i < batches; i++) {
+    for (std::int64_t i = 0; i < batches; i++) {
         EXPECT_TRUE(check_equal_strided<false>(fwd_data.data() + forward_distance * i,
                                                input.data() + ref_distance * i, sizes, strides_fwd,
                                                abs_error_margin, rel_error_margin, std::cout));
@@ -158,7 +158,7 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
 
     auto bwd_ptr = &bwd[0];
     auto ref_distance = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>());
-    for (int64_t i = 0; i < batches; i++) {
+    for (std::int64_t i = 0; i < batches; i++) {
         EXPECT_TRUE(check_equal_strided<domain == oneapi::mkl::dft::domain::REAL>(
             bwd_ptr + backward_distance * i, out_host_ref.data() + ref_distance * i, sizes,
             strides_bwd, abs_error_margin, rel_error_margin, std::cout));
@@ -193,7 +193,7 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     std::for_each(input.begin(), input.end(),
                   [this](auto &x) { x *= static_cast<PrecisionType>(forward_elements); });
 
-    for (int64_t i = 0; i < batches; i++) {
+    for (std::int64_t i = 0; i < batches; i++) {
         EXPECT_TRUE(check_equal_strided<false>(fwd.data() + forward_distance * i,
                                                input.data() + ref_distance * i, sizes, strides_fwd,
                                                abs_error_margin, rel_error_margin, std::cout));
