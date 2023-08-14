@@ -274,10 +274,12 @@ public:
         std::unique_ptr<rocfft_plan_description_t, decltype(description_destroy)>
             description_destroyer(plan_desc, description_destroy);
 
-        std::array<std::size_t, 3> in_stride_indices {0,1,2};
-        std::sort(&in_stride_indices[0], &in_stride_indices[dimensions], [&](std::size_t a, std::size_t b){ return in_strides[a] < in_strides[b];});
-        std::array<std::size_t, 3> out_stride_indices {0,1,2};
-        std::sort(&out_stride_indices[0], &out_stride_indices[dimensions], [&](std::size_t a, std::size_t b){ return out_strides[a] < out_strides[b];});
+        std::array<std::size_t, 3> in_stride_indices{ 0, 1, 2 };
+        std::sort(&in_stride_indices[0], &in_stride_indices[dimensions],
+                  [&](std::size_t a, std::size_t b) { return in_strides[a] < in_strides[b]; });
+        std::array<std::size_t, 3> out_stride_indices{ 0, 1, 2 };
+        std::sort(&out_stride_indices[0], &out_stride_indices[dimensions],
+                  [&](std::size_t a, std::size_t b) { return out_strides[a] < out_strides[b]; });
         std::array<std::size_t, max_supported_dims> lengths_cplx = lengths;
         lengths_cplx[0] = lengths_cplx[0] / 2 + 1;
         // When creating real-complex descriptions, the strides will always be wrong for one of the directions.
@@ -285,11 +287,15 @@ public:
         // If the strides are invalid (too small to fit) then just don't bother creating the plan.
         const bool ignore_strides = dom == dft::domain::COMPLEX || dimensions == 1;
         const bool valid_forward =
-            ignore_strides || (lengths_cplx[in_stride_indices[0]] <= in_strides[in_stride_indices[1]] && 
-                               (dimensions == 2 || lengths_cplx[in_stride_indices[1]] <= in_strides[in_stride_indices[2]]));
+            ignore_strides ||
+            (lengths_cplx[in_stride_indices[0]] <= in_strides[in_stride_indices[1]] &&
+             (dimensions == 2 ||
+              lengths_cplx[in_stride_indices[1]] <= in_strides[in_stride_indices[2]]));
         const bool valid_backward =
-            ignore_strides || (lengths_cplx[out_stride_indices[0]] <= out_strides[out_stride_indices[1]] && 
-                               (dimensions == 2 || lengths_cplx[out_stride_indices[1]] <= out_strides[out_stride_indices[2]]));
+            ignore_strides ||
+            (lengths_cplx[out_stride_indices[0]] <= out_strides[out_stride_indices[1]] &&
+             (dimensions == 2 ||
+              lengths_cplx[out_stride_indices[1]] <= out_strides[out_stride_indices[2]]));
 
         if (!valid_forward && !valid_backward) {
             throw mkl::exception("dft/backends/cufft", __FUNCTION__, "Invalid strides.");

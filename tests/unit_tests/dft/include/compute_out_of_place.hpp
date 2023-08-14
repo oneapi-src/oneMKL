@@ -36,11 +36,11 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     descriptor_t descriptor{ sizes };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::NOT_INPLACE);
-    if constexpr(domain == oneapi::mkl::dft::domain::REAL){
+    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         descriptor.set_value(oneapi::mkl::dft::config_param::CONJUGATE_EVEN_STORAGE,
-                                oneapi::mkl::dft::config_value::COMPLEX_COMPLEX);
+                             oneapi::mkl::dft::config_value::COMPLEX_COMPLEX);
         descriptor.set_value(oneapi::mkl::dft::config_param::PACKED_FORMAT,
-                                oneapi::mkl::dft::config_value::CCE_FORMAT);
+                             oneapi::mkl::dft::config_value::CCE_FORMAT);
     }
     descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_distance);
@@ -134,11 +134,11 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     descriptor_t descriptor{ sizes };
     descriptor.set_value(oneapi::mkl::dft::config_param::PLACEMENT,
                          oneapi::mkl::dft::config_value::NOT_INPLACE);
-    if constexpr(domain == oneapi::mkl::dft::domain::REAL){
+    if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         descriptor.set_value(oneapi::mkl::dft::config_param::CONJUGATE_EVEN_STORAGE,
-                                oneapi::mkl::dft::config_value::COMPLEX_COMPLEX);
+                             oneapi::mkl::dft::config_value::COMPLEX_COMPLEX);
         descriptor.set_value(oneapi::mkl::dft::config_param::PACKED_FORMAT,
-                                oneapi::mkl::dft::config_value::CCE_FORMAT);
+                             oneapi::mkl::dft::config_value::CCE_FORMAT);
     }
     descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_distance);
