@@ -69,6 +69,7 @@ class ComputeTests_real_real_out_of_place
                 std::cout << "Skipping test because: \"" << msg << "\"" << std::endl;            \
                 GTEST_SKIP();                                                                    \
             }                                                                                    \
+            throw;                                                                               \
         }                                                                                        \
     }
 
