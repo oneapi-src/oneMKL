@@ -166,6 +166,16 @@
 #define TEST_RUN_AMDGPU_ROCFFT_SELECT(q, func, ...)
 #endif
 
+#ifdef ENABLE_PORTFFT_BACKEND
+#define TEST_RUN_PORTFFT_SELECT_NO_ARGS(q, func) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::portfft>{ q })
+#define TEST_RUN_PORTFFT_SELECT(q, func, ...) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::portfft>{ q }, __VA_ARGS__)
+#else
+#define TEST_RUN_PORTFFT_SELECT_NO_ARGS(q, func)
+#define TEST_RUN_PORTFFT_SELECT(q, func, ...)
+#endif
+
 #ifndef __HIPSYCL__
 #define CHECK_HOST_OR_CPU(q) q.get_device().is_cpu()
 #else
@@ -190,6 +200,7 @@
                 TEST_RUN_AMDGPU_ROCFFT_SELECT_NO_ARGS(q, func);            \
             }                                                              \
         }                                                                  \
+        TEST_RUN_PORTFFT_SELECT_NO_ARGS(q, func);                          \
     } while (0);
 
 #define TEST_RUN_CT_SELECT(q, func, ...)                                   \
@@ -214,6 +225,7 @@
             }                                                              \
         }                                                                  \
         TEST_RUN_PORTBLAS_SELECT(q, func, __VA_ARGS__);                    \
+        TEST_RUN_PORTFFT_SELECT(q, func, __VA_ARGS__);                     \
     } while (0);
 
 void print_error_code(sycl::exception const &e);

@@ -381,10 +381,10 @@ Running with single precision real data type on:
 DFT Complex USM example ran OK on MKLGPU
 ```
 
-Runtime dispatching example with MKLGPU, cuFFT, and rocFFT backends:
+Runtime dispatching example with MKLGPU, cuFFT, rocFFT and portFFT backends:
 
 ```none
-SYCL_DEVICE_FILTER=gpu ./bin/example_dft_real_fwd_usm
+$ SYCL_DEVICE_FILTER=gpu ./bin/example_dft_real_fwd_usm
 
 ########################################################################
 # DFTI complex in-place forward transform with USM API example:
@@ -409,7 +409,7 @@ DFT example ran OK
 ```
 
 ```none
-SYCL_DEVICE_FILTER=gpu ./bin/example_dft_real_fwd_usm
+$ SYCL_DEVICE_FILTER=gpu ./bin/example_dft_real_fwd_usm
 
 ########################################################################
 # DFTI complex in-place forward transform with USM API example:
@@ -434,7 +434,7 @@ DFT example ran OK
 ```
 
 ```none
-./bin/example_dft_real_fwd_usm
+$ ./bin/example_dft_real_fwd_usm
 
 ########################################################################
 # DFTI complex in-place forward transform with USM API example:
@@ -456,6 +456,31 @@ Device name is: AMD Radeon PRO W6800
 Running with single precision real data type:
 DFT example run_time dispatch
 DFT example ran OK
+```
+
+```none
+$ LD_LIBRARY_PATH=lib:$LD_LIBRARY_PATH ./bin/example_dft_real_fwd_usm 
+########################################################################
+# DFT complex in-place forward transform with USM API example:
+#
+# Using APIs:
+#   USM forward complex in-place
+#   Run-time dispatch
+#
+# Using single precision (float) data type
+#
+# Device will be selected during runtime.
+# The environment variable SYCL_DEVICE_FILTER can be used to specify
+# SYCL device
+#
+########################################################################
+
+Running DFT complex forward example on GPU device
+Device name is: Intel(R) UHD Graphics 750
+Running with single precision real data type:
+DFT example run_time dispatch
+Unsupported Configuration:
+	oneMKL: dft/backends/portfft/commit: function is not implemented portFFT only supports complex to complex transforms
 ```
 
 ## sparse_blas

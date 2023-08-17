@@ -80,8 +80,7 @@ void run_example(const sycl::device& dev) {
 // Description of example setup, APIs used and supported floating point type precisions
 //
 void print_example_banner() {
-    std::cout << "\n"
-                 "########################################################################\n"
+    std::cout << "########################################################################\n"
                  "# DFTI complex in-place forward transform with USM API example:\n"
                  "#\n"
                  "# Using APIs:\n"

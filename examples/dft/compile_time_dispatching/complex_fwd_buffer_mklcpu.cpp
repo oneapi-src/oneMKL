@@ -100,7 +100,7 @@ void print_example_banner() {
 //
 // Main entry point for example.
 //
-int main(int argc, char** argv) {
+int main() {
     print_example_banner();
 
     try {
