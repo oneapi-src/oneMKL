@@ -39,17 +39,26 @@ extern std::vector<sycl::device *> devices;
 
 namespace {
 
-class ComputeTests_in_place
+class ComputeTests_in_place_COMPLEX
         : public ::testing::TestWithParam<std::tuple<sycl::device *, DFTParams>> {};
-class ComputeTests_real_real_in_place
+class ComputeTests_real_real_in_place_COMPLEX
         : public ::testing::TestWithParam<std::tuple<sycl::device *, DFTParams>> {};
-class ComputeTests_out_of_place
+class ComputeTests_out_of_place_COMPLEX
         : public ::testing::TestWithParam<std::tuple<sycl::device *, DFTParams>> {};
-class ComputeTests_real_real_out_of_place
+class ComputeTests_real_real_out_of_place_COMPLEX
+        : public ::testing::TestWithParam<std::tuple<sycl::device *, DFTParams>> {};
+
+class ComputeTests_in_place_REAL
+        : public ::testing::TestWithParam<std::tuple<sycl::device *, DFTParams>> {};
+class ComputeTests_real_real_in_place_REAL
+        : public ::testing::TestWithParam<std::tuple<sycl::device *, DFTParams>> {};
+class ComputeTests_out_of_place_REAL
+        : public ::testing::TestWithParam<std::tuple<sycl::device *, DFTParams>> {};
+class ComputeTests_real_real_out_of_place_REAL
         : public ::testing::TestWithParam<std::tuple<sycl::device *, DFTParams>> {};
 
 #define INSTANTIATE_TEST(PRECISION, DOMAIN, PLACE, LAYOUT, STORAGE)                              \
-    TEST_P(ComputeTests##_##LAYOUT##PLACE, DOMAIN##_##PRECISION##_##PLACE##_##LAYOUT##STORAGE) { \
+    TEST_P(ComputeTests##_##LAYOUT##PLACE##_##DOMAIN, DOMAIN##_##PRECISION##_##PLACE##_##LAYOUT##STORAGE) { \
         try {                                                                                    \
             auto test = DFT_Test<oneapi::mkl::dft::precision::PRECISION,                         \
                                  oneapi::mkl::dft::domain::DOMAIN>{                              \
@@ -116,7 +125,8 @@ std::vector<DFTParams> test_params{
     { shape{ 4, 3 }, shape{ 4, 6, 2 }, shape{ 2, 6, 2 }, i64{ 2 } },
     { shape{ 4, 3 }, shape{ 1, 1, 4 }, shape{ 1, 1, 4 }, i64{ 9 } },
     { shape{ 4, 4 }, shape{ 2, 4, 1 }, shape{ 0, 4, 1 }, i64{ 2 } },
-    { shape{ 4, 4 }, shape{ 0, 1, 4 }, shape{ 2, 1, 4 }, i64{ 2 } },
+    { shape{ 4, 4 }, shape{ 0, 1, 5 }, shape{ 0, 1, 4 }, i64{ 2 } },
+    { shape{ 4, 4 }, shape{ 0, 1, 4 }, shape{ 0, 2, 9 }, i64{ 2 } },
     { shape{ 4, 4 }, shape{ 0, 7, 1 }, shape{ 0, 5, 1 }, i64{ 2 } },
     { shape{ 4, 4 }, shape{ 0, 8, 2 }, shape{ 0, 8, 2 }, i64{ 2 } },
     { shape{ 4, 4 }, shape{ 0, 4, 1 }, shape{ 0, 1, 4 }, i64{ 2 } },
@@ -125,24 +135,71 @@ std::vector<DFTParams> test_params{
     { shape{ 4, 4, 4 }, shape{ 4, 17, 4, 1 }, shape{ 4, 23, 5, 1 }, i64{ 2 } },
     { shape{ 4, 4, 4 }, shape{ 0, 32, 8, 2 }, shape{ 0, 32, 8, 2 }, i64{ 2 } },
     { shape{ 4, 4, 4 }, shape{ 2, 4, 1, 16 }, shape{ 1, 4, 16, 1 }, i64{ 2 } },
+    { shape{ 4, 4, 4 }, shape{ 0, 1, 32, 8 }, shape{ 0, 1, 32, 8 }, i64{ 2 } },
+};
+std::vector<DFTParams> test_params_real_in_place{
+    { shape{ 8 }, i64{ 1 } },
+    { shape{ 9 }, i64{ 2 } },
+    { shape{ 8 }, i64{ 27 } },
+    { shape{ 22 }, i64{ 1 } },
+    { shape{ 128 }, i64{ 1 } },
+
+    { shape{ 4, 4 }, i64{ 1 } },
+    { shape{ 4, 4 }, i64{ 2 } },
+    { shape{ 4, 3 }, i64{ 9 } },
+    { shape{ 7, 8 }, i64{ 1 } },
+    { shape{ 64, 5 }, i64{ 1 } },
+
+    { shape{ 2, 2, 2 }, i64{ 1 } },
+    { shape{ 2, 2, 3 }, i64{ 2 } },
+    { shape{ 2, 2, 2 }, i64{ 27 } },
+    { shape{ 3, 7, 2 }, i64{ 1 } },
+    { shape{ 8, 8, 9 }, i64{ 1 } },
+
+    { shape{ 4, 3 }, shape{ 0, 4, 1 }, shape{ 0, 2, 1 }, i64{ 2 } },
+    { shape{ 4, 3 }, shape{ 0, 6, 1 }, shape{ 0, 3, 1 }, i64{ 2 } },
+    { shape{ 4, 3 }, shape{ 0, 8, 2 }, shape{ 0, 4, 2 }, i64{ 2 } },
+    { shape{ 4, 3 }, shape{ 2, 4, 1 }, shape{ 1, 2, 1 }, i64{ 2 } },
+    { shape{ 4, 3 }, shape{ 6, 1, 4 }, shape{ 3, 1, 4 }, i64{ 9 } },
+    { shape{ 4, 3 }, shape{ 0, 1, 5 }, shape{ 0, 1, 5 }, i64{ 2 } },
+    { shape{ 4, 3 }, shape{ 0, 3, 12 }, shape{ 0, 3, 12 }, i64{ 9 } },
+
+    { shape{ 4, 4, 4 }, shape{ 4, 1, 4, 16 }, shape{ 2, 1, 4, 16 }, i64{ 2 } },
+    { shape{ 4, 4, 4 }, shape{ 0, 48, 12, 2 }, shape{ 0, 24, 6, 2 }, i64{ 2 } },
+    { shape{ 4, 4, 4 }, shape{ 0, 1, 48, 8 }, shape{ 0, 1, 24, 8 }, i64{ 2 } },
 };
 
-INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_in_place,
+INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_in_place_COMPLEX,
+                         testing::Combine(testing::ValuesIn(devices),
+                                          testing::ValuesIn(test_params)),
+                         DFTParamsPrint{});
+INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_real_real_in_place_COMPLEX,
+                         testing::Combine(testing::ValuesIn(devices),
+                                          testing::ValuesIn(test_params)),
+                         DFTParamsPrint{});
+INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_out_of_place_COMPLEX,
+                         testing::Combine(testing::ValuesIn(devices),
+                                          testing::ValuesIn(test_params)),
+                         DFTParamsPrint{});
+INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_real_real_out_of_place_COMPLEX,
                          testing::Combine(testing::ValuesIn(devices),
                                           testing::ValuesIn(test_params)),
                          DFTParamsPrint{});
 
-INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_real_real_in_place,
+
+INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_in_place_REAL,
+                         testing::Combine(testing::ValuesIn(devices),
+                                          testing::ValuesIn(test_params_real_in_place)),
+                         DFTParamsPrint{});
+INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_real_real_in_place_REAL,
+                         testing::Combine(testing::ValuesIn(devices),
+                                          testing::ValuesIn(test_params_real_in_place)),
+                         DFTParamsPrint{});
+INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_out_of_place_REAL,
                          testing::Combine(testing::ValuesIn(devices),
                                           testing::ValuesIn(test_params)),
                          DFTParamsPrint{});
-
-INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_out_of_place,
-                         testing::Combine(testing::ValuesIn(devices),
-                                          testing::ValuesIn(test_params)),
-                         DFTParamsPrint{});
-
-INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_real_real_out_of_place,
+INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_real_real_out_of_place_REAL,
                          testing::Combine(testing::ValuesIn(devices),
                                           testing::ValuesIn(test_params)),
                          DFTParamsPrint{});
