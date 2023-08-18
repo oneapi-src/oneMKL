@@ -161,11 +161,11 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
             strides_fwd.push_back(1);
         }
         if (strides_bwd.size() == 0) {
-            auto strides_tmp = get_default_strides(sizes);
+            auto strides_tmp = get_conjugate_even_complex_strides(sizes);
             strides_bwd = { strides_tmp[0] };
             //to be able to calculate in place each row must fit backward data
             for (size_t i = 0; i < sizes.size() - 1; i++) {
-                strides_bwd.push_back(strides_tmp[i + 1] * 2);
+                strides_bwd.push_back(strides_tmp[i + 1]);
             }
             strides_bwd.push_back(1);
         }
