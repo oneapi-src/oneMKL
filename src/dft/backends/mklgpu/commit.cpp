@@ -113,10 +113,10 @@ private:
                        to_mklgpu<onemkl_param::CONJUGATE_EVEN_STORAGE>(config.conj_even_storage));
         desc.set_value(backend_param::PLACEMENT,
                        to_mklgpu<onemkl_param::PLACEMENT>(config.placement));
-        
+
         if (config.input_strides[0] != 0 || config.output_strides[0] != 0) {
             throw mkl::unimplemented("dft/backends/mklgpu", "commit",
-                                        "MKLGPU does not support nonzero offsets.");
+                                     "MKLGPU does not support nonzero offsets.");
         }
         desc.set_value(backend_param::INPUT_STRIDES, config.input_strides.data());
         desc.set_value(backend_param::OUTPUT_STRIDES, config.output_strides.data());

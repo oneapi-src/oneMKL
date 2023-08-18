@@ -57,29 +57,30 @@ class ComputeTests_out_of_place_REAL
 class ComputeTests_real_real_out_of_place_REAL
         : public ::testing::TestWithParam<std::tuple<sycl::device *, DFTParams>> {};
 
-#define INSTANTIATE_TEST(PRECISION, DOMAIN, PLACE, LAYOUT, STORAGE)                              \
-    TEST_P(ComputeTests##_##LAYOUT##PLACE##_##DOMAIN, DOMAIN##_##PRECISION##_##PLACE##_##LAYOUT##STORAGE) { \
-        try {                                                                                    \
-            auto test = DFT_Test<oneapi::mkl::dft::precision::PRECISION,                         \
-                                 oneapi::mkl::dft::domain::DOMAIN>{                              \
-                std::get<0>(GetParam()), std::get<1>(GetParam()).sizes,                          \
-                std::get<1>(GetParam()).strides_fwd, std::get<1>(GetParam()).strides_bwd,        \
-                std::get<1>(GetParam()).batches                                                  \
-            };                                                                                   \
-            EXPECT_TRUEORSKIP(test.test_##PLACE##_##LAYOUT##STORAGE());                          \
-        }                                                                                        \
-        catch (oneapi::mkl::unimplemented & e) {                                                 \
-            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;           \
-            GTEST_SKIP();                                                                        \
-        }                                                                                        \
-        catch (std::exception & e) {                                                             \
-            std::string msg = e.what();                                                          \
-            if (msg.find("FFT_UNIMPLEMENTED") != std::string::npos) {                            \
-                std::cout << "Skipping test because: \"" << msg << "\"" << std::endl;            \
-                GTEST_SKIP();                                                                    \
-            }                                                                                    \
-            throw;                                                                               \
-        }                                                                                        \
+#define INSTANTIATE_TEST(PRECISION, DOMAIN, PLACE, LAYOUT, STORAGE)                       \
+    TEST_P(ComputeTests##_##LAYOUT##PLACE##_##DOMAIN,                                     \
+           DOMAIN##_##PRECISION##_##PLACE##_##LAYOUT##STORAGE) {                          \
+        try {                                                                             \
+            auto test = DFT_Test<oneapi::mkl::dft::precision::PRECISION,                  \
+                                 oneapi::mkl::dft::domain::DOMAIN>{                       \
+                std::get<0>(GetParam()), std::get<1>(GetParam()).sizes,                   \
+                std::get<1>(GetParam()).strides_fwd, std::get<1>(GetParam()).strides_bwd, \
+                std::get<1>(GetParam()).batches                                           \
+            };                                                                            \
+            EXPECT_TRUEORSKIP(test.test_##PLACE##_##LAYOUT##STORAGE());                   \
+        }                                                                                 \
+        catch (oneapi::mkl::unimplemented & e) {                                          \
+            std::cout << "Skipping test because: \"" << e.what() << "\"" << std::endl;    \
+            GTEST_SKIP();                                                                 \
+        }                                                                                 \
+        catch (std::exception & e) {                                                      \
+            std::string msg = e.what();                                                   \
+            if (msg.find("FFT_UNIMPLEMENTED") != std::string::npos) {                     \
+                std::cout << "Skipping test because: \"" << msg << "\"" << std::endl;     \
+                GTEST_SKIP();                                                             \
+            }                                                                             \
+            throw;                                                                        \
+        }                                                                                 \
     }
 
 #define INSTANTIATE_TEST_DIMENSIONS_PRECISION_DOMAIN(PLACE, LAYOUT, STORAGE) \
@@ -185,7 +186,6 @@ INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_real_real_out_of_place_C
                          testing::Combine(testing::ValuesIn(devices),
                                           testing::ValuesIn(test_params)),
                          DFTParamsPrint{});
-
 
 INSTANTIATE_TEST_SUITE_P(ComputeTestSuite, ComputeTests_in_place_REAL,
                          testing::Combine(testing::ValuesIn(devices),
