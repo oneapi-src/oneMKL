@@ -88,27 +88,41 @@ void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose tra
     throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
-void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
-              sycl::buffer<float, 1> &a, int64_t lda, sycl::buffer<float, 1> &b, int64_t ldb) {
-    throw unimplemented("blas", "omatcopy", "for column_major layout");
+template <typename Func, typename T>
+void omatcopy(const char *func_name, Func func, sycl::queue &queue, transpose trans, int64_t m,
+              int64_t n, T alpha, sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &b,
+              int64_t ldb) {
+    using rocDataType = typename RocEquivalentType<T>::Type;
+    overflow_check(m, n, lda, ldb);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
+        const int64_t logical_m = (trans == oneapi::mkl::transpose::nontrans ? m : n);
+        const int64_t logical_n = (trans == oneapi::mkl::transpose::nontrans ? n : m);
+        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+            auto handle = sc.get_handle(queue);
+            auto a_ = sc.get_mem<rocDataType *>(a_acc);
+            auto b_ = sc.get_mem<rocDataType *>(b_acc);
+            rocblas_status err;
+            ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(trans),
+                                      get_rocblas_operation(trans), logical_m, logical_n,
+                                      (rocDataType *)&alpha, a_, lda, nullptr, nullptr, lda, b_, ldb);
+        });
+    });
 }
 
-void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
-              sycl::buffer<double, 1> &a, int64_t lda, sycl::buffer<double, 1> &b, int64_t ldb) {
-    throw unimplemented("blas", "omatcopy", "for column_major layout");
-}
+#define OMATCOPY_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                                  \
+    void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, TYPE alpha,          \
+                  sycl::buffer<TYPE, 1> &a, int64_t lda, sycl::buffer<TYPE, 1> &b, int64_t ldb) { \
+        omatcopy(#ROCBLAS_ROUTINE, ROCBLAS_ROUTINE, queue, trans, m, n, alpha, a, lda, b, ldb);   \
+    }
 
-void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<float> alpha,
-              sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
-              sycl::buffer<std::complex<float>, 1> &b, int64_t ldb) {
-    throw unimplemented("blas", "omatcopy", "for column_major layout");
-}
+OMATCOPY_LAUNCHER(float, rocblas_sgeam)
+OMATCOPY_LAUNCHER(double, rocblas_dgeam)
+OMATCOPY_LAUNCHER(std::complex<float>, rocblas_cgeam)
+OMATCOPY_LAUNCHER(std::complex<double>, rocblas_zgeam)
 
-void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<double> alpha,
-              sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
-              sycl::buffer<std::complex<double>, 1> &b, int64_t ldb) {
-    throw unimplemented("blas", "omatcopy", "for column_major layout");
-}
+#undef OMATCOPY_LAUNCHER
 
 void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
               sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb) {
@@ -130,31 +144,44 @@ void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::co
     throw unimplemented("blas", "imatcopy", "for column_major layout");
 }
 
-void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-             float alpha, sycl::buffer<float, 1> &a, int64_t lda, float beta,
-             sycl::buffer<float, 1> &b, int64_t ldb, sycl::buffer<float, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "omatadd", "for column_major layout");
+template <typename Func, typename T>
+void omatadd(const char *func_name, Func func, sycl::queue &queue, transpose transa,
+             transpose transb, int64_t m, int64_t n, T alpha, sycl::buffer<T, 1> &a, int64_t lda,
+             T beta, sycl::buffer<T, 1> &b, int64_t ldb, sycl::buffer<T, 1> &c, int64_t ldc) {
+    using rocDataType = typename RocEquivalentType<T>::Type;
+    overflow_check(m, n, lda, ldb, ldc);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
+        auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
+        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+            auto handle = sc.get_handle(queue);
+            auto a_ = sc.get_mem<rocDataType *>(a_acc);
+            auto b_ = sc.get_mem<rocDataType *>(b_acc);
+            auto c_ = sc.get_mem<rocDataType *>(c_acc);
+            rocblas_status err;
+            ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(transa),
+                                      get_rocblas_operation(transb), m, n, (rocDataType *)&alpha, a_,
+                                      lda, (rocDataType *)&beta, b_, ldb, c_, ldc);
+        });
+    });
 }
 
-void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-             double alpha, sycl::buffer<double, 1> &a, int64_t lda, double beta,
-             sycl::buffer<double, 1> &b, int64_t ldb, sycl::buffer<double, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "omatadd", "for column_major layout");
-}
+#define OMATADD_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                                      \
+    void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,       \
+                 TYPE alpha, sycl::buffer<TYPE, 1> &a, int64_t lda, TYPE beta,                       \
+                 sycl::buffer<TYPE, 1> &b, int64_t ldb, sycl::buffer<TYPE, 1> &c, int64_t ldc) {     \
+        omatadd(#ROCBLAS_ROUTINE, ROCBLAS_ROUTINE, queue, transa, transb, m, n, alpha, a, lda, beta, \
+                b, ldb, c, ldc);                                                                     \
+    }
 
-void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-             std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
-             std::complex<float> beta, sycl::buffer<std::complex<float>, 1> &b, int64_t ldb,
-             sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "omatadd", "for column_major layout");
-}
+OMATADD_LAUNCHER(float, rocblas_sgeam)
+OMATADD_LAUNCHER(double, rocblas_dgeam)
+OMATADD_LAUNCHER(std::complex<float>, rocblas_cgeam)
+OMATADD_LAUNCHER(std::complex<double>, rocblas_zgeam)
 
-void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-             std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
-             std::complex<double> beta, sycl::buffer<std::complex<double>, 1> &b, int64_t ldb,
-             sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "omatadd", "for column_major layout");
-}
+#undef OMATADD_LAUNCHER
+
 
 // USM APIs
 
@@ -220,31 +247,43 @@ sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transp
     throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
-sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
-                     const float *a, int64_t lda, float *b, int64_t ldb,
+template <typename Func, typename T>
+sycl::event omatcopy(const char *func_name, Func func, sycl::queue &queue, transpose trans,
+                     int64_t m, int64_t n, T alpha, const T *a, int64_t lda, T *b, int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatcopy", "for column_major layout");
+    using rocDataType = typename RocEquivalentType<T>::Type;
+    overflow_check(m, n, lda, ldb);
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        cgh.depends_on(dependencies);
+        const int64_t logical_m = (trans == oneapi::mkl::transpose::nontrans ? m : n);
+        const int64_t logical_n = (trans == oneapi::mkl::transpose::nontrans ? n : m);
+        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+            auto handle = sc.get_handle(queue);
+            auto a_ = reinterpret_cast<const rocDataType *>(a);
+            auto b_ = reinterpret_cast<rocDataType *>(b);
+            rocblas_status err;
+            ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(trans),
+                                      get_rocblas_operation(trans), logical_m, logical_n,
+                                      (rocDataType *)&alpha, a_, lda, nullptr, nullptr, lda, b_, ldb);
+        });
+    });
+    return done;
 }
 
-sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
-                     const double *a, int64_t lda, double *b, int64_t ldb,
-                     const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatcopy", "for column_major layout");
-}
+#define OMATCOPY_LAUNCHER_USM(TYPE, ROCBLAS_ROUTINE)                                             \
+    sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, TYPE alpha,  \
+                         const TYPE *a, int64_t lda, TYPE *b, int64_t ldb,                       \
+                         const std::vector<sycl::event> &dependencies) {                         \
+        return omatcopy(#ROCBLAS_ROUTINE, ROCBLAS_ROUTINE, queue, trans, m, n, alpha, a, lda, b, \
+                        ldb, dependencies);                                                      \
+    }
 
-sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
-                     std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
-                     std::complex<float> *b, int64_t ldb,
-                     const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatcopy", "for column_major layout");
-}
+OMATCOPY_LAUNCHER_USM(float, rocblas_sgeam)
+OMATCOPY_LAUNCHER_USM(double, rocblas_dgeam)
+OMATCOPY_LAUNCHER_USM(std::complex<float>, rocblas_cgeam)
+OMATCOPY_LAUNCHER_USM(std::complex<double>, rocblas_zgeam)
 
-sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
-                     std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
-                     std::complex<double> *b, int64_t ldb,
-                     const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatcopy", "for column_major layout");
-}
+#undef OMATCOPY_LAUNCHER_USM
 
 sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
                      float *ab, int64_t lda, int64_t ldb,
@@ -270,35 +309,44 @@ sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
     throw unimplemented("blas", "imatcopy", "for column_major layout");
 }
 
-sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                    float alpha, const float *a, int64_t lda, float beta, const float *b,
-                    int64_t ldb, float *c, int64_t ldc,
-                    const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatadd", "for column_major layout");
+template <typename Func, typename T>
+inline sycl::event omatadd(const char *func_name, Func func, sycl::queue &queue, transpose transa,
+                           transpose transb, int64_t m, int64_t n, T alpha, const T *a, int64_t lda,
+                           T beta, const T *b, int64_t ldb, T *c, int64_t ldc,
+                           const std::vector<sycl::event> &dependencies) {
+    using rocDataType = typename RocEquivalentType<T>::Type;
+    overflow_check(m, n, lda, ldb, ldc);
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        cgh.depends_on(dependencies);
+        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+            auto handle = sc.get_handle(queue);
+            auto a_ = reinterpret_cast<const rocDataType *>(a);
+            auto b_ = reinterpret_cast<const rocDataType *>(b);
+            auto c_ = reinterpret_cast<rocDataType *>(c);
+            rocblas_status err;
+            ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(transa),
+                                      get_rocblas_operation(transb), m, n, (rocDataType *)&alpha, a_,
+                                      lda, (rocDataType *)&beta, b_, ldb, c_, ldc);
+        });
+    });
+    return done;
 }
 
-sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                    double alpha, const double *a, int64_t lda, double beta, const double *b,
-                    int64_t ldb, double *c, int64_t ldc,
-                    const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatadd", "for column_major layout");
-}
+#define OMATADD_LAUNCHER_USM(TYPE, ROCBLAS_ROUTINE)                                              \
+    sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m,       \
+                        int64_t n, TYPE alpha, const TYPE *a, int64_t lda, TYPE beta,            \
+                        const TYPE *b, int64_t ldb, TYPE *c, int64_t ldc,                        \
+                        const std::vector<sycl::event> &dependencies) {                          \
+        return omatadd(#ROCBLAS_ROUTINE, ROCBLAS_ROUTINE, queue, transa, transb, m, n, alpha, a, \
+                       lda, beta, b, ldb, c, ldc, dependencies);                                 \
+    }
 
-sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                    std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
-                    std::complex<float> beta, const std::complex<float> *b, int64_t ldb,
-                    std::complex<float> *c, int64_t ldc,
-                    const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatadd", "for column_major layout");
-}
+OMATADD_LAUNCHER_USM(float, rocblas_sgeam)
+OMATADD_LAUNCHER_USM(double, rocblas_dgeam)
+OMATADD_LAUNCHER_USM(std::complex<float>, rocblas_cgeam)
+OMATADD_LAUNCHER_USM(std::complex<double>, rocblas_zgeam)
 
-sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                    std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
-                    std::complex<double> beta, const std::complex<double> *b, int64_t ldb,
-                    std::complex<double> *c, int64_t ldc,
-                    const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatadd", "for column_major layout");
-}
+#undef OMATADD_LAUNCHER_USM
 
 } // namespace column_major
 namespace row_major {
@@ -361,85 +409,41 @@ void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose tra
     throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
-void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
-              sycl::buffer<float, 1> &a, int64_t lda, sycl::buffer<float, 1> &b, int64_t ldb) {
+template <typename Func, typename T>
+void omatcopy(const char *func_name, Func func, sycl::queue &queue, transpose trans, int64_t m,
+              int64_t n, T alpha, sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &b,
+              int64_t ldb) {
+    using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb);
     queue.submit([&](sycl::handler &cgh) {
-        auto a_acc = a.get_access<sycl::access::mode::read>(cgh);
-        auto b_acc = b.get_access<sycl::access::mode::write>(cgh);
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
+        const int64_t logical_m = (trans == oneapi::mkl::transpose::nontrans ? n : m);
+        const int64_t logical_n = (trans == oneapi::mkl::transpose::nontrans ? m : n);
         onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
-            auto a_ = sc.get_mem<const float *>(a_acc);
-            auto b_ = sc.get_mem<float *>(b_acc);
-	    const float beta = 0.f;
-            rocblas_status err;
-            ROCBLAS_ERROR_FUNC_SYNC(rocblas_sgeam, err, handle, get_rocblas_operation(trans),
-                                   rocblas_operation_none, m, n, &alpha,
-                                   a_, lda, &beta, a_, ldb, b_, ldb);
-        });
-    });
-}
-
-void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
-              sycl::buffer<double, 1> &a, int64_t lda, sycl::buffer<double, 1> &b, int64_t ldb) {
-    overflow_check(m, n, lda, ldb);
-    queue.submit([&](sycl::handler &cgh) {
-        auto a_acc = a.get_access<sycl::access::mode::read>(cgh);
-        auto b_acc = b.get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            auto a_ = sc.get_mem<const double *>(a_acc);
-            auto b_ = sc.get_mem<double *>(b_acc);
-	    const double beta = 0.0;
-            rocblas_status err;
-            ROCBLAS_ERROR_FUNC_SYNC(rocblas_dgeam, err, handle, get_rocblas_operation(trans),
-                                    rocblas_operation_none, m, n, &alpha,
-                                    a_, lda, &beta, a_, ldb, b_, ldb);
-        });
-    });
-}
-
-void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<float> alpha,
-              sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
-              sycl::buffer<std::complex<float>, 1> &b, int64_t ldb) {
-    using rocDataType = typename RocEquivalentType<std::complex<float>>::Type;
-    overflow_check(m, n, lda, ldb);
-    queue.submit([&](sycl::handler &cgh) {
-        auto a_acc = a.get_access<sycl::access::mode::read>(cgh);
-        auto b_acc = b.get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            auto a_ = sc.get_mem<const rocDataType *>(a_acc);
+            auto a_ = sc.get_mem<rocDataType *>(a_acc);
             auto b_ = sc.get_mem<rocDataType *>(b_acc);
-            const rocDataType beta {0.f, 0.f};
             rocblas_status err;
-            ROCBLAS_ERROR_FUNC_SYNC(rocblas_cgeam, err, handle, get_rocblas_operation(trans),
-                                   rocblas_operation_none, m, n, (rocDataType *)&alpha,
-                                   a_, lda, &beta, a_, ldb, b_, ldb);
+            ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(trans),
+                                      get_rocblas_operation(trans), logical_m, logical_n,
+                                      (rocDataType *)&alpha, a_, lda, nullptr, nullptr, lda, b_, ldb);
         });
     });
 }
 
-void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<double> alpha,
-              sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
-              sycl::buffer<std::complex<double>, 1> &b, int64_t ldb) {
-    using rocDataType = typename RocEquivalentType<std::complex<double>>::Type;
-    overflow_check(m, n, lda, ldb);
-    queue.submit([&](sycl::handler &cgh) {
-        auto a_acc = a.get_access<sycl::access::mode::read>(cgh);
-        auto b_acc = b.get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            auto a_ = sc.get_mem<const rocDataType *>(a_acc);
-            auto b_ = sc.get_mem<rocDataType *>(b_acc);
-            const rocDataType beta {0.0, 0.0};
-            rocblas_status err;
-            ROCBLAS_ERROR_FUNC_SYNC(rocblas_zgeam, err, handle, get_rocblas_operation(trans),
-                                   rocblas_operation_none, m, n, (rocDataType *)&alpha,
-                                   a_, lda, &beta, a_, ldb, b_, ldb);
-        });
-    });
-}
+#define OMATCOPY_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                                  \
+    void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, TYPE alpha,          \
+                  sycl::buffer<TYPE, 1> &a, int64_t lda, sycl::buffer<TYPE, 1> &b, int64_t ldb) { \
+        omatcopy(#ROCBLAS_ROUTINE, ROCBLAS_ROUTINE, queue, trans, m, n, alpha, a, lda, b, ldb);   \
+    }
+
+OMATCOPY_LAUNCHER(float, rocblas_sgeam)
+OMATCOPY_LAUNCHER(double, rocblas_dgeam)
+OMATCOPY_LAUNCHER(std::complex<float>, rocblas_cgeam)
+OMATCOPY_LAUNCHER(std::complex<double>, rocblas_zgeam)
+
+#undef OMATCOPY_LAUNCHER
 
 void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
               sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb) {
@@ -461,31 +465,43 @@ void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::co
     throw unimplemented("blas", "imatcopy", "for row_major layout");
 }
 
-void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-             float alpha, sycl::buffer<float, 1> &a, int64_t lda, float beta,
-             sycl::buffer<float, 1> &b, int64_t ldb, sycl::buffer<float, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "omatadd", "for row_major layout");
+template <typename Func, typename T>
+void omatadd(const char *func_name, Func func, sycl::queue &queue, transpose transa,
+             transpose transb, int64_t m, int64_t n, T alpha, sycl::buffer<T, 1> &a, int64_t lda,
+             T beta, sycl::buffer<T, 1> &b, int64_t ldb, sycl::buffer<T, 1> &c, int64_t ldc) {
+    using rocDataType = typename RocEquivalentType<T>::Type;
+    overflow_check(m, n, lda, ldb, ldc);
+    queue.submit([&](sycl::handler &cgh) {
+        auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
+        auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
+        auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
+        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+            auto handle = sc.get_handle(queue);
+            auto a_ = sc.get_mem<rocDataType *>(a_acc);
+            auto b_ = sc.get_mem<rocDataType *>(b_acc);
+            auto c_ = sc.get_mem<rocDataType *>(c_acc);
+            rocblas_status err;
+            ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(transa),
+                                      get_rocblas_operation(transb), n, m, (rocDataType *)&alpha, a_,
+                                      lda, (rocDataType *)&beta, b_, ldb, c_, ldc);
+        });
+    });
 }
 
-void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-             double alpha, sycl::buffer<double, 1> &a, int64_t lda, double beta,
-             sycl::buffer<double, 1> &b, int64_t ldb, sycl::buffer<double, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "omatadd", "for row_major layout");
-}
+#define OMATADD_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                                      \
+    void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,       \
+                 TYPE alpha, sycl::buffer<TYPE, 1> &a, int64_t lda, TYPE beta,                       \
+                 sycl::buffer<TYPE, 1> &b, int64_t ldb, sycl::buffer<TYPE, 1> &c, int64_t ldc) {     \
+        omatadd(#ROCBLAS_ROUTINE, ROCBLAS_ROUTINE, queue, transa, transb, m, n, alpha, a, lda, beta, \
+                b, ldb, c, ldc);                                                                     \
+    }
 
-void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-             std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a, int64_t lda,
-             std::complex<float> beta, sycl::buffer<std::complex<float>, 1> &b, int64_t ldb,
-             sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "omatadd", "for row_major layout");
-}
+OMATADD_LAUNCHER(float, rocblas_sgeam)
+OMATADD_LAUNCHER(double, rocblas_dgeam)
+OMATADD_LAUNCHER(std::complex<float>, rocblas_cgeam)
+OMATADD_LAUNCHER(std::complex<double>, rocblas_zgeam)
 
-void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-             std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
-             std::complex<double> beta, sycl::buffer<std::complex<double>, 1> &b, int64_t ldb,
-             sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "omatadd", "for row_major layout");
-}
+#undef OMATADD_LAUNCHER
 
 // USM APIs
 
@@ -551,97 +567,43 @@ sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transp
     throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
-sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
-                     const float *a, int64_t lda, float *b, int64_t ldb,
+template <typename Func, typename T>
+sycl::event omatcopy(const char *func_name, Func func, sycl::queue &queue, transpose trans,
+                     int64_t m, int64_t n, T alpha, const T *a, int64_t lda, T *b, int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
+    using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb);
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            const float beta = 0.f;
-            rocblas_status err;
-            ROCBLAS_ERROR_FUNC_SYNC(rocblas_sgeam, err, handle, get_rocblas_operation(trans),
-                                   rocblas_operation_none, m, n, &alpha,
-                                   a, lda, &beta, a, ldb, b, ldb);
-       });
-    });
-    return done;
-}
-
-sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
-                     const double *a, int64_t lda, double *b, int64_t ldb,
-                     const std::vector<sycl::event> &dependencies) {
-    overflow_check(m, n, lda, ldb);
-    auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            const double beta = 0.0;
-            rocblas_status err;
-            ROCBLAS_ERROR_FUNC_SYNC(rocblas_dgeam, err, handle, get_rocblas_operation(trans),
-                                   rocblas_operation_none, m, n, &alpha,
-                                   a, lda, &beta, a, ldb, b, ldb);
-       });
-    });
-    return done;
-}
-
-sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
-                     std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
-                     std::complex<float> *b, int64_t ldb,
-                     const std::vector<sycl::event> &dependencies) {
-    using rocDataType = typename RocEquivalentType<std::complex<float>>::Type;
-    overflow_check(m, n, lda, ldb);
-    auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
+        const int64_t logical_m = (trans == oneapi::mkl::transpose::nontrans ? n : m);
+        const int64_t logical_n = (trans == oneapi::mkl::transpose::nontrans ? m : n);
         onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const rocDataType *>(a);
             auto b_ = reinterpret_cast<rocDataType *>(b);
-            const rocDataType beta {0.f, 0.f};
             rocblas_status err;
-            ROCBLAS_ERROR_FUNC_SYNC(rocblas_cgeam, err, handle, get_rocblas_operation(trans),
-                                   rocblas_operation_none, m, n, (rocDataType *)&alpha,
-                                   a_, lda, &beta, a_, ldb, b_, ldb);
-       });
+            ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(trans),
+                                      get_rocblas_operation(trans), logical_m, logical_n,
+                                      (rocDataType *)&alpha, a_, lda, nullptr, nullptr, ldb, b_, ldb);
+        });
     });
     return done;
 }
 
-sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
-                     std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
-                     std::complex<double> *b, int64_t ldb,
-                     const std::vector<sycl::event> &dependencies) {
-    using rocDataType = typename RocEquivalentType<std::complex<double>>::Type;
-    overflow_check(m, n, lda, ldb);
-    auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
-            auto handle = sc.get_handle(queue);
-            const rocDataType beta {0.0, 0.0};
-            auto a_ = reinterpret_cast<const rocDataType *>(a);
-            auto b_ = reinterpret_cast<rocDataType *>(b);
-            rocblas_status err;
-            ROCBLAS_ERROR_FUNC_SYNC(rocblas_zgeam, err, handle, get_rocblas_operation(trans),
-                                   rocblas_operation_none, m, n, (rocDataType *)&alpha,
-                                   a_, lda, &beta, a_, ldb, b_, ldb);
-       });
-    });
-    return done;
-}
+#define OMATCOPY_LAUNCHER_USM(TYPE, ROCBLAS_ROUTINE)                                             \
+    sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, TYPE alpha,  \
+                         const TYPE *a, int64_t lda, TYPE *b, int64_t ldb,                       \
+                         const std::vector<sycl::event> &dependencies) {                         \
+        return omatcopy(#ROCBLAS_ROUTINE, ROCBLAS_ROUTINE, queue, trans, m, n, alpha, a, lda, b, \
+                        ldb, dependencies);                                                      \
+    }
+
+OMATCOPY_LAUNCHER_USM(float, rocblas_sgeam)
+OMATCOPY_LAUNCHER_USM(double, rocblas_dgeam)
+OMATCOPY_LAUNCHER_USM(std::complex<float>, rocblas_cgeam)
+OMATCOPY_LAUNCHER_USM(std::complex<double>, rocblas_zgeam)
+
+#undef OMATCOPY_LAUNCHER_USM
 
 sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
                      float *ab, int64_t lda, int64_t ldb,
@@ -667,35 +629,44 @@ sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
     throw unimplemented("blas", "imatcopy", "for row_major layout");
 }
 
-sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                    float alpha, const float *a, int64_t lda, float beta, const float *b,
-                    int64_t ldb, float *c, int64_t ldc,
-                    const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatadd", "for row_major layout");
+template <typename Func, typename T>
+inline sycl::event omatadd(const char *func_name, Func func, sycl::queue &queue, transpose transa,
+                           transpose transb, int64_t m, int64_t n, T alpha, const T *a, int64_t lda,
+                           T beta, const T *b, int64_t ldb, T *c, int64_t ldc,
+                           const std::vector<sycl::event> &dependencies) {
+    using rocDataType = typename RocEquivalentType<T>::Type;
+    overflow_check(m, n, lda, ldb, ldc);
+    auto done = queue.submit([&](sycl::handler &cgh) {
+        cgh.depends_on(dependencies);
+        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+            auto handle = sc.get_handle(queue);
+            auto a_ = reinterpret_cast<const rocDataType *>(a);
+            auto b_ = reinterpret_cast<const rocDataType *>(b);
+            auto c_ = reinterpret_cast<rocDataType *>(c);
+            rocblas_status err;
+            ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(transa),
+                                      get_rocblas_operation(transb), n, m, (rocDataType *)&alpha, a_,
+                                      lda, (rocDataType *)&beta, b_, ldb, c_, ldc);
+        });
+    });
+    return done;
 }
 
-sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                    double alpha, const double *a, int64_t lda, double beta, const double *b,
-                    int64_t ldb, double *c, int64_t ldc,
-                    const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatadd", "for row_major layout");
-}
+#define OMATADD_LAUNCHER_USM(TYPE, ROCBLAS_ROUTINE)                                              \
+    sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m,       \
+                        int64_t n, TYPE alpha, const TYPE *a, int64_t lda, TYPE beta,            \
+                        const TYPE *b, int64_t ldb, TYPE *c, int64_t ldc,                        \
+                        const std::vector<sycl::event> &dependencies) {                          \
+        return omatadd(#ROCBLAS_ROUTINE, ROCBLAS_ROUTINE, queue, transa, transb, m, n, alpha, a, \
+                       lda, beta, b, ldb, c, ldc, dependencies);                                 \
+    }
 
-sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                    std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
-                    std::complex<float> beta, const std::complex<float> *b, int64_t ldb,
-                    std::complex<float> *c, int64_t ldc,
-                    const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatadd", "for row_major layout");
-}
+OMATADD_LAUNCHER_USM(float, rocblas_sgeam)
+OMATADD_LAUNCHER_USM(double, rocblas_dgeam)
+OMATADD_LAUNCHER_USM(std::complex<float>, rocblas_cgeam)
+OMATADD_LAUNCHER_USM(std::complex<double>, rocblas_zgeam)
 
-sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                    std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
-                    std::complex<double> beta, const std::complex<double> *b, int64_t ldb,
-                    std::complex<double> *c, int64_t ldc,
-                    const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatadd", "for row_major layout");
-}
+#undef OMATADD_LAUNCHER_USM
 
 } // namespace row_major
 } // namespace rocblas
