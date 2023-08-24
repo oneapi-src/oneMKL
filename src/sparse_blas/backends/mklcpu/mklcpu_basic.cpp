@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2021 Intel Corporation
+* Copyright 2023 Codeplay Software Ltd.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,15 +17,12 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_HPP_
-#define _ONEMKL_HPP_
+#include "../mkl_common/mkl_helper.hpp"
 
-#include "oneapi/mkl/types.hpp"
+#include "oneapi/mkl/sparse_blas/detail/mklcpu/onemkl_sparse_blas_mklcpu.hpp"
 
-#include "oneapi/mkl/blas.hpp"
-#include "oneapi/mkl/dft.hpp"
-#include "oneapi/mkl/lapack.hpp"
-#include "oneapi/mkl/rng.hpp"
-#include "oneapi/mkl/sparse_blas.hpp"
+namespace oneapi::mkl::sparse::mklcpu {
 
-#endif //_ONEMKL_HPP_
+#include "../mkl_common/mkl_basic.cxx"
+
+} // namespace oneapi::mkl::sparse::mklcpu

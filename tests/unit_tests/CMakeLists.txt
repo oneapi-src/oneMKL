@@ -65,6 +65,12 @@ set(dft_TEST_LIST
 
 set(dft_TEST_LINK "")
 
+# Sparse BLAS config
+set(sparse_blas_TEST_LIST
+      spblas_source)
+
+set(sparse_blas_TEST_LINK "")
+
 foreach(domain ${TARGET_DOMAINS})
   # Generate RT and CT test lists
   set(${domain}_TEST_LIST_RT ${${domain}_TEST_LIST})
