@@ -66,6 +66,11 @@ set(dft_TEST_LIST
 set(dft_TEST_LINK "")
 
 foreach(domain ${TARGET_DOMAINS})
+  # TODO: Add sparse_blas tests and CMake logic
+  if (domain STREQUAL "sparse_blas")
+    continue()
+  endif()
+
   # Generate RT and CT test lists
   set(${domain}_TEST_LIST_RT ${${domain}_TEST_LIST})
   set(${domain}_TEST_LIST_CT ${${domain}_TEST_LIST})
