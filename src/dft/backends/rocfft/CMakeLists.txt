@@ -29,6 +29,7 @@ add_library(${LIB_OBJ} OBJECT
   backward.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_dft_rocfft_wrappers.cpp>
 )
+add_dependencies(onemkl_backend_libs_dft ${LIB_NAME})
 
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include

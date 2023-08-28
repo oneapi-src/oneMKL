@@ -25,6 +25,7 @@ add_library(${LIB_OBJ} OBJECT
   mklgpu_level1.cpp mklgpu_level2.cpp mklgpu_level3.cpp mklgpu_batch.cpp mklgpu_extensions.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mklgpu_wrappers.cpp>
 )
+add_dependencies(onemkl_backend_libs_blas ${LIB_NAME})
 
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include

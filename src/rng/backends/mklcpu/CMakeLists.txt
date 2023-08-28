@@ -28,6 +28,7 @@ set(SOURCES cpu_common.hpp
 
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
+add_dependencies(onemkl_backend_libs_rng ${LIB_NAME})
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
           ${PROJECT_SOURCE_DIR}/src

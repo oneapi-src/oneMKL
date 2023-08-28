@@ -27,6 +27,7 @@ add_library(${LIB_OBJ} OBJECT
   mrg32k3a.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_rng_gpu_wrappers.cpp>
 )
+add_dependencies(onemkl_backend_libs_rng ${LIB_NAME})
 
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
