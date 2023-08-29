@@ -20,113 +20,99 @@
 // This file is meant to be included in each backend onemkl_sparse_blas_BACKEND.hpp files.
 // It is used to exports each symbol to the onemkl_sparse_blas_BACKEND library.
 
-ONEMKL_EXPORT void init_matrix_handle(sycl::queue &queue,
-                                      oneapi::mkl::sparse::matrix_handle_t *handle);
+ONEMKL_EXPORT void init_matrix_handle(sycl::queue &queue, matrix_handle_t *handle);
 
-ONEMKL_EXPORT sycl::event release_matrix_handle(sycl::queue &queue,
-                                                oneapi::mkl::sparse::matrix_handle_t *handle,
+ONEMKL_EXPORT sycl::event release_matrix_handle(sycl::queue &queue, matrix_handle_t *handle,
                                                 const std::vector<sycl::event> &dependencies = {});
 
 template <typename fpType, typename intType>
 ONEMKL_EXPORT std::enable_if_t<detail::are_fp_int_supported_v<fpType, intType>> set_csr_data(
-    sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t handle, intType num_rows,
-    intType num_cols, oneapi::mkl::index_base index, sycl::buffer<intType, 1> &row_ptr,
-    sycl::buffer<intType, 1> &col_ind, sycl::buffer<fpType, 1> &val);
+    sycl::queue &queue, matrix_handle_t handle, intType num_rows, intType num_cols,
+    index_base index, sycl::buffer<intType, 1> &row_ptr, sycl::buffer<intType, 1> &col_ind,
+    sycl::buffer<fpType, 1> &val);
 
 template <typename fpType, typename intType>
 ONEMKL_EXPORT std::enable_if_t<detail::are_fp_int_supported_v<fpType, intType>, sycl::event>
-set_csr_data(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t handle, intType num_rows,
-             intType num_cols, oneapi::mkl::index_base index, intType *row_ptr, intType *col_ind,
-             fpType *val, const std::vector<sycl::event> &dependencies = {});
+set_csr_data(sycl::queue &queue, matrix_handle_t handle, intType num_rows, intType num_cols,
+             index_base index, intType *row_ptr, intType *col_ind, fpType *val,
+             const std::vector<sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT sycl::event optimize_gemv(sycl::queue &queue, oneapi::mkl::transpose transpose_val,
-                                        oneapi::mkl::sparse::matrix_handle_t handle,
+ONEMKL_EXPORT sycl::event optimize_gemv(sycl::queue &queue, transpose transpose_val,
+                                        matrix_handle_t handle,
                                         const std::vector<sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT sycl::event optimize_trmv(sycl::queue &queue, oneapi::mkl::uplo uplo_val,
-                                        oneapi::mkl::transpose transpose_val,
-                                        oneapi::mkl::diag diag_val,
-                                        oneapi::mkl::sparse::matrix_handle_t handle,
+ONEMKL_EXPORT sycl::event optimize_trmv(sycl::queue &queue, uplo uplo_val, transpose transpose_val,
+                                        diag diag_val, matrix_handle_t handle,
                                         const std::vector<sycl::event> &dependencies = {});
 
-ONEMKL_EXPORT sycl::event optimize_trsv(sycl::queue &queue, oneapi::mkl::uplo uplo_val,
-                                        oneapi::mkl::transpose transpose_val,
-                                        oneapi::mkl::diag diag_val,
-                                        oneapi::mkl::sparse::matrix_handle_t handle,
+ONEMKL_EXPORT sycl::event optimize_trsv(sycl::queue &queue, uplo uplo_val, transpose transpose_val,
+                                        diag diag_val, matrix_handle_t handle,
                                         const std::vector<sycl::event> &dependencies = {});
 
 template <typename fpType>
 ONEMKL_EXPORT std::enable_if_t<detail::is_fp_supported_v<fpType>> gemv(
-    sycl::queue &queue, oneapi::mkl::transpose transpose_val, const fpType alpha,
-    oneapi::mkl::sparse::matrix_handle_t A_handle, sycl::buffer<fpType, 1> &x, const fpType beta,
-    sycl::buffer<fpType, 1> &y);
+    sycl::queue &queue, transpose transpose_val, const fpType alpha, matrix_handle_t A_handle,
+    sycl::buffer<fpType, 1> &x, const fpType beta, sycl::buffer<fpType, 1> &y);
 
 template <typename fpType>
 ONEMKL_EXPORT std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemv(
-    sycl::queue &queue, oneapi::mkl::transpose transpose_val, const fpType alpha,
-    oneapi::mkl::sparse::matrix_handle_t A_handle, const fpType *x, const fpType beta,
-    const fpType *y, const std::vector<sycl::event> &dependencies = {});
+    sycl::queue &queue, transpose transpose_val, const fpType alpha, matrix_handle_t A_handle,
+    const fpType *x, const fpType beta, const fpType *y,
+    const std::vector<sycl::event> &dependencies = {});
 
 template <typename fpType>
 ONEMKL_EXPORT std::enable_if_t<detail::is_fp_supported_v<fpType>> gemvdot(
-    sycl::queue &queue, oneapi::mkl::transpose transpose_val, fpType alpha,
-    oneapi::mkl::sparse::matrix_handle_t A_handle, sycl::buffer<fpType, 1> &x, fpType beta,
-    sycl::buffer<fpType, 1> &y, sycl::buffer<fpType, 1> &d);
+    sycl::queue &queue, transpose transpose_val, fpType alpha, matrix_handle_t A_handle,
+    sycl::buffer<fpType, 1> &x, fpType beta, sycl::buffer<fpType, 1> &y,
+    sycl::buffer<fpType, 1> &d);
 
 template <typename fpType>
 ONEMKL_EXPORT std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemvdot(
-    sycl::queue &queue, oneapi::mkl::transpose transpose_val, fpType alpha,
-    oneapi::mkl::sparse::matrix_handle_t A_handle, fpType *x, fpType beta, fpType *y, fpType *d,
-    const std::vector<sycl::event> &dependencies = {});
+    sycl::queue &queue, transpose transpose_val, fpType alpha, matrix_handle_t A_handle, fpType *x,
+    fpType beta, fpType *y, fpType *d, const std::vector<sycl::event> &dependencies = {});
 
 template <typename fpType>
 ONEMKL_EXPORT std::enable_if_t<detail::is_fp_supported_v<fpType>> symv(
-    sycl::queue &queue, oneapi::mkl::uplo uplo_val, fpType alpha,
-    oneapi::mkl::sparse::matrix_handle_t A_handle, sycl::buffer<fpType, 1> &x, fpType beta,
-    sycl::buffer<fpType, 1> &y);
-
-template <typename fpType>
-ONEMKL_EXPORT std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> symv(
-    sycl::queue &queue, oneapi::mkl::uplo uplo_val, fpType alpha,
-    oneapi::mkl::sparse::matrix_handle_t A_handle, fpType *x, fpType beta, fpType *y,
-    const std::vector<sycl::event> &dependencies = {});
-
-template <typename fpType>
-ONEMKL_EXPORT std::enable_if_t<detail::is_fp_supported_v<fpType>> trmv(
-    sycl::queue &queue, oneapi::mkl::uplo uplo_val, oneapi::mkl::transpose transpose_val,
-    oneapi::mkl::diag diag_val, fpType alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
+    sycl::queue &queue, uplo uplo_val, fpType alpha, matrix_handle_t A_handle,
     sycl::buffer<fpType, 1> &x, fpType beta, sycl::buffer<fpType, 1> &y);
 
 template <typename fpType>
+ONEMKL_EXPORT std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> symv(
+    sycl::queue &queue, uplo uplo_val, fpType alpha, matrix_handle_t A_handle, fpType *x,
+    fpType beta, fpType *y, const std::vector<sycl::event> &dependencies = {});
+
+template <typename fpType>
+ONEMKL_EXPORT std::enable_if_t<detail::is_fp_supported_v<fpType>> trmv(
+    sycl::queue &queue, uplo uplo_val, transpose transpose_val, diag diag_val, fpType alpha,
+    matrix_handle_t A_handle, sycl::buffer<fpType, 1> &x, fpType beta, sycl::buffer<fpType, 1> &y);
+
+template <typename fpType>
 ONEMKL_EXPORT std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> trmv(
-    sycl::queue &queue, oneapi::mkl::uplo uplo_val, oneapi::mkl::transpose transpose_val,
-    oneapi::mkl::diag diag_val, fpType alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
-    fpType *x, fpType beta, fpType *y, const std::vector<sycl::event> &dependencies = {});
+    sycl::queue &queue, uplo uplo_val, transpose transpose_val, diag diag_val, fpType alpha,
+    matrix_handle_t A_handle, fpType *x, fpType beta, fpType *y,
+    const std::vector<sycl::event> &dependencies = {});
 
 template <typename fpType>
 ONEMKL_EXPORT std::enable_if_t<detail::is_fp_supported_v<fpType>> trsv(
-    sycl::queue &queue, oneapi::mkl::uplo uplo_val, oneapi::mkl::transpose transpose_val,
-    oneapi::mkl::diag diag_val, oneapi::mkl::sparse::matrix_handle_t A_handle,
-    sycl::buffer<fpType, 1> &x, sycl::buffer<fpType, 1> &y);
+    sycl::queue &queue, uplo uplo_val, transpose transpose_val, diag diag_val,
+    matrix_handle_t A_handle, sycl::buffer<fpType, 1> &x, sycl::buffer<fpType, 1> &y);
 
 template <typename fpType>
 ONEMKL_EXPORT std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> trsv(
-    sycl::queue &queue, oneapi::mkl::uplo uplo_val, oneapi::mkl::transpose transpose_val,
-    oneapi::mkl::diag diag_val, oneapi::mkl::sparse::matrix_handle_t A_handle, fpType *x, fpType *y,
+    sycl::queue &queue, uplo uplo_val, transpose transpose_val, diag diag_val,
+    matrix_handle_t A_handle, fpType *x, fpType *y,
     const std::vector<sycl::event> &dependencies = {});
 
 template <typename fpType>
 ONEMKL_EXPORT std::enable_if_t<detail::is_fp_supported_v<fpType>> gemm(
-    sycl::queue &queue, oneapi::mkl::layout dense_matrix_layout, oneapi::mkl::transpose transpose_A,
-    oneapi::mkl::transpose transpose_B, const fpType alpha,
-    oneapi::mkl::sparse::matrix_handle_t A_handle, sycl::buffer<fpType, 1> &B,
+    sycl::queue &queue, layout dense_matrix_layout, transpose transpose_A, transpose transpose_B,
+    const fpType alpha, matrix_handle_t A_handle, sycl::buffer<fpType, 1> &B,
     const std::int64_t columns, const std::int64_t ldb, const fpType beta,
     sycl::buffer<fpType, 1> &C, const std::int64_t ldc);
 
 template <typename fpType>
 ONEMKL_EXPORT std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemm(
-    sycl::queue &queue, oneapi::mkl::layout dense_matrix_layout, oneapi::mkl::transpose transpose_A,
-    oneapi::mkl::transpose transpose_B, const fpType alpha,
-    oneapi::mkl::sparse::matrix_handle_t A_handle, const fpType *B, const std::int64_t columns,
+    sycl::queue &queue, layout dense_matrix_layout, transpose transpose_A, transpose transpose_B,
+    const fpType alpha, matrix_handle_t A_handle, const fpType *B, const std::int64_t columns,
     const std::int64_t ldb, const fpType beta, const fpType *C, const std::int64_t ldc,
     const std::vector<sycl::event> &dependencies = {});
