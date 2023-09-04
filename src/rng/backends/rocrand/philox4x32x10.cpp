@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (C) 2022 Heidelberg University, Engineering Mathematics and Computing Lab (EMCL) 
  * and Computing Centre (URZ)
- * cuRAND back-end Copyright (c) 2021, The Regents of the University of
+ * rocRAND back-end Copyright (c) 2021, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject to receipt
  * of any required approvals from the U.S. Dept. of Energy). All rights
  * reserved.
@@ -86,7 +86,7 @@ namespace rocrand {
 
 #if !defined(_WIN64)
 /*
- * Note that cuRAND consists of two pieces: a host (CPU) API and a device (GPU)
+ * Note that rocRAND consists of two pieces: a host (CPU) API and a device (GPU)
  * API. The host API acts like any standard library; the `rocrand.h' header is
  * included and the functions can be called as usual. The generator is
  * instantiated on the host and random numbers can be generated on either the
@@ -110,7 +110,9 @@ namespace rocrand {
 class philox4x32x10_impl : public oneapi::mkl::rng::detail::engine_impl {
 public:
     philox4x32x10_impl(sycl::queue queue, std::uint64_t seed)
-            : oneapi::mkl::rng::detail::engine_impl(queue) {
+            : oneapi::mkl::rng::detail::engine_impl(queue),
+              seed_(seed),
+              offset_(0) {
         rocrand_status status;
         ROCRAND_CALL(rocrand_create_generator, status, &engine_, ROCRAND_RNG_PSEUDO_PHILOX4_32_10);
         ROCRAND_CALL(rocrand_set_seed, status, engine_, (unsigned long long)seed);
@@ -119,13 +121,19 @@ public:
     philox4x32x10_impl(sycl::queue queue, std::initializer_list<std::uint64_t> seed)
             : oneapi::mkl::rng::detail::engine_impl(queue) {
         throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine",
-                                         "multi-seed unsupported by cuRAND backend");
+                                         "multi-seed unsupported by rocRAND backend");
     }
 
     philox4x32x10_impl(const philox4x32x10_impl* other)
-            : oneapi::mkl::rng::detail::engine_impl(*other) {
-        throw oneapi::mkl::unimplemented("rng", "philox4x32x10 engine",
-                                         "copy construction unsupported by cuRAND backend");
+            : oneapi::mkl::rng::detail::engine_impl(*other),
+              seed_(other->seed_),
+              offset_(other->offset_) {
+        rocrand_status status;
+        ROCRAND_CALL(rocrand_create_generator, status, &engine_, ROCRAND_RNG_PSEUDO_PHILOX4_32_10);
+        ROCRAND_CALL(rocrand_set_seed, status, engine_, (unsigned long long)seed_);
+
+        // Allign this->engine_'s offset state with other->engine_'s offset
+        skip_ahead(offset_);
     }
 
     // Buffers API
@@ -142,6 +150,9 @@ public:
                 });
             })
             .wait_and_throw();
+
+        increment_internal_offset(n);
+
         range_transform_fp<float>(queue_, distr.a(), distr.b(), n, r);
     }
 
@@ -157,6 +168,9 @@ public:
                 });
             })
             .wait_and_throw();
+
+        increment_internal_offset(n);
+
         range_transform_fp<double>(queue_, distr.a(), distr.b(), n, r);
     }
 
@@ -173,6 +187,9 @@ public:
                 });
             })
             .wait_and_throw();
+
+        increment_internal_offset(n);
+
         range_transform_int<std::int32_t>(queue_, distr.a(), distr.b(), n, ib, r);
     }
 
@@ -188,6 +205,9 @@ public:
                 });
             })
             .wait_and_throw();
+
+        increment_internal_offset(n);
+
         range_transform_fp_accurate<float>(queue_, distr.a(), distr.b(), n, r);
     }
 
@@ -203,6 +223,9 @@ public:
                 });
             })
             .wait_and_throw();
+
+        increment_internal_offset(n);
+
         range_transform_fp_accurate<double>(queue_, distr.a(), distr.b(), n, r);
     }
 
@@ -219,6 +242,8 @@ public:
                 });
             })
             .wait_and_throw();
+
+        increment_internal_offset(n);
     }
 
     virtual void generate(const oneapi::mkl::rng::gaussian<
@@ -234,22 +259,42 @@ public:
                 });
             })
             .wait_and_throw();
+
+        increment_internal_offset(n);
     }
 
     virtual void generate(
         const oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::icdf>& distr,
         std::int64_t n, sycl::buffer<float, 1>& r) override {
-        throw oneapi::mkl::unimplemented(
-            "rng", "philox4x32x10 engine",
-            "ICDF method not used for pseudorandom generators in cuRAND backend");
+        queue_
+            .submit([&](sycl::handler& cgh) {
+                auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
+                onemkl_rocrand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
+                    rocrand_status status;
+                    ROCRAND_CALL(rocrand_generate_normal, status, engine_, r_ptr, n, distr.mean(),
+                                 distr.stddev());
+                });
+            })
+            .wait_and_throw();
+
+        increment_internal_offset(n);
     }
 
     virtual void generate(
         const oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>& distr,
         std::int64_t n, sycl::buffer<double, 1>& r) override {
-        throw oneapi::mkl::unimplemented(
-            "rng", "philox4x32x10 engine",
-            "ICDF method not used for pseudorandom generators in cuRAND backend");
+        queue_
+            .submit([&](sycl::handler& cgh) {
+                auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
+                onemkl_rocrand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
+                    rocrand_status status;
+                    ROCRAND_CALL(rocrand_generate_normal_double, status, engine_, r_ptr, n,
+                                 distr.mean(), distr.stddev());
+                });
+            })
+            .wait_and_throw();
+
+        increment_internal_offset(n);
     }
 
     virtual void generate(const oneapi::mkl::rng::lognormal<
@@ -265,6 +310,8 @@ public:
                 });
             })
             .wait_and_throw();
+
+        increment_internal_offset(n);
     }
 
     virtual void generate(const oneapi::mkl::rng::lognormal<
@@ -280,50 +327,88 @@ public:
                 });
             })
             .wait_and_throw();
+
+        increment_internal_offset(n);
     }
 
     virtual void generate(
         const oneapi::mkl::rng::lognormal<float, oneapi::mkl::rng::lognormal_method::icdf>& distr,
         std::int64_t n, sycl::buffer<float, 1>& r) override {
-        throw oneapi::mkl::unimplemented(
-            "rng", "philox4x32x10 engine",
-            "ICDF method not used for pseudorandom generators in cuRAND backend");
+        queue_
+            .submit([&](sycl::handler& cgh) {
+                auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
+                onemkl_rocrand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
+                    rocrand_status status;
+                    ROCRAND_CALL(rocrand_generate_log_normal, status, engine_, r_ptr, n, distr.m(),
+                                 distr.s());
+                });
+            })
+            .wait_and_throw();
+
+        increment_internal_offset(n);
     }
 
     virtual void generate(
         const oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::icdf>& distr,
         std::int64_t n, sycl::buffer<double, 1>& r) override {
-        throw oneapi::mkl::unimplemented(
-            "rng", "philox4x32x10 engine",
-            "ICDF method not used for pseudorandom generators in cuRAND backend");
+        queue_
+            .submit([&](sycl::handler& cgh) {
+                auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
+                onemkl_rocrand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
+                    rocrand_status status;
+                    ROCRAND_CALL(rocrand_generate_log_normal_double, status, engine_, r_ptr, n,
+                                 distr.m(), distr.s());
+                });
+            })
+            .wait_and_throw();
+
+        increment_internal_offset(n);
     }
 
     virtual void generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
                           std::int64_t n, sycl::buffer<std::int32_t, 1>& r) override {
         throw oneapi::mkl::unimplemented(
             "rng", "philox4x32x10 engine",
-            "ICDF method not used for pseudorandom generators in cuRAND backend");
+            "Bernoulli distribution method unsupported by rocRAND backend");
     }
 
     virtual void generate(const bernoulli<std::uint32_t, bernoulli_method::icdf>& distr,
                           std::int64_t n, sycl::buffer<std::uint32_t, 1>& r) override {
         throw oneapi::mkl::unimplemented(
             "rng", "philox4x32x10 engine",
-            "ICDF method not used for pseudorandom generators in cuRAND backend");
+            "Bernoulli distribution method unsupported by rocRAND backend");
     }
 
     virtual void generate(const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr,
                           std::int64_t n, sycl::buffer<std::int32_t, 1>& r) override {
-        throw oneapi::mkl::unimplemented(
-            "rng", "philox4x32x10 engine",
-            "ICDF method not used for pseudorandom generators in cuRAND backend");
+        queue_
+            .submit([&](sycl::handler& cgh) {
+                auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
+                onemkl_rocrand_host_task(cgh, acc, engine_, [=](std::int32_t* r_ptr) {
+                    rocrand_status status;
+                    ROCRAND_CALL(rocrand_generate_poisson, status, engine_, (std::uint32_t*)r_ptr,
+                                 n, distr.lambda());
+                });
+            })
+            .wait_and_throw();
+
+        increment_internal_offset(n);
     }
 
     virtual void generate(const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr,
                           std::int64_t n, sycl::buffer<std::uint32_t, 1>& r) override {
-        throw oneapi::mkl::unimplemented(
-            "rng", "philox4x32x10 engine",
-            "ICDF method not used for pseudorandom generators in cuRAND backend");
+        queue_
+            .submit([&](sycl::handler& cgh) {
+                auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
+                onemkl_rocrand_host_task(cgh, acc, engine_, [=](std::uint32_t* r_ptr) {
+                    rocrand_status status;
+                    ROCRAND_CALL(rocrand_generate_poisson, status, engine_, r_ptr, n,
+                                 distr.lambda());
+                });
+            })
+            .wait_and_throw();
+
+        increment_internal_offset(n);
     }
 
     virtual void generate(const bits<std::uint32_t>& distr, std::int64_t n,
@@ -337,6 +422,8 @@ public:
                 });
             })
             .wait_and_throw();
+
+        increment_internal_offset(n);
     }
 
     // USM APIs
@@ -353,6 +440,9 @@ public:
                 });
             })
             .wait_and_throw();
+
+        increment_internal_offset(n);
+
         return range_transform_fp<float>(queue_, distr.a(), distr.b(), n, r);
     }
 
@@ -368,6 +458,9 @@ public:
                 });
             })
             .wait_and_throw();
+
+        increment_internal_offset(n);
+
         return range_transform_fp<double>(queue_, distr.a(), distr.b(), n, r);
     }
 
@@ -385,6 +478,9 @@ public:
                 });
             })
             .wait_and_throw();
+
+        increment_internal_offset(n);
+
         return range_transform_int(queue_, distr.a(), distr.b(), n, ib, r);
     }
 
@@ -400,6 +496,9 @@ public:
                 });
             })
             .wait_and_throw();
+
+        increment_internal_offset(n);
+
         return range_transform_fp_accurate<float>(queue_, distr.a(), distr.b(), n, r);
     }
 
@@ -415,6 +514,9 @@ public:
                 });
             })
             .wait_and_throw();
+
+        increment_internal_offset(n);
+
         return range_transform_fp_accurate<double>(queue_, distr.a(), distr.b(), n, r);
     }
 
@@ -423,13 +525,17 @@ public:
             distr,
         std::int64_t n, float* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        auto event = queue_.submit([&](sycl::handler& cgh) {
             onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                 rocrand_status status;
                 ROCRAND_CALL(rocrand_generate_normal, status, engine_, r, n, distr.mean(),
                              distr.stddev());
             });
         });
+
+        increment_internal_offset(n);
+
+        return event;
     }
 
     virtual sycl::event generate(
@@ -437,31 +543,51 @@ public:
             distr,
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        auto event = queue_.submit([&](sycl::handler& cgh) {
             onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                 rocrand_status status;
                 ROCRAND_CALL(rocrand_generate_normal_double, status, engine_, r, n, distr.mean(),
                              distr.stddev());
             });
         });
+
+        increment_internal_offset(n);
+
+        return event;
     }
 
     virtual sycl::event generate(
         const oneapi::mkl::rng::gaussian<float, oneapi::mkl::rng::gaussian_method::icdf>& distr,
         std::int64_t n, float* r, const std::vector<sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented(
-            "rng", "philox4x32x10 engine",
-            "ICDF method not used for pseudorandom generators in cuRAND backend");
-        return sycl::event{};
+        sycl::event::wait_and_throw(dependencies);
+        auto event = queue_.submit([&](sycl::handler& cgh) {
+            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+                rocrand_status status;
+                ROCRAND_CALL(rocrand_generate_normal, status, engine_, r, n, distr.mean(),
+                             distr.stddev());
+            });
+        });
+
+        increment_internal_offset(n);
+
+        return event;
     }
 
     virtual sycl::event generate(
         const oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>& distr,
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented(
-            "rng", "philox4x32x10 engine",
-            "ICDF method not used for pseudorandom generators in cuRAND backend");
-        return sycl::event{};
+        sycl::event::wait_and_throw(dependencies);
+        auto event = queue_.submit([&](sycl::handler& cgh) {
+            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+                rocrand_status status;
+                ROCRAND_CALL(rocrand_generate_normal_double, status, engine_, r, n, distr.mean(),
+                             distr.stddev());
+            });
+        });
+
+        increment_internal_offset(n);
+
+        return event;
     }
 
     virtual sycl::event generate(
@@ -469,13 +595,17 @@ public:
             distr,
         std::int64_t n, float* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        auto event = queue_.submit([&](sycl::handler& cgh) {
             onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                 rocrand_status status;
                 ROCRAND_CALL(rocrand_generate_log_normal, status, engine_, r, n, distr.m(),
                              distr.s());
             });
         });
+
+        increment_internal_offset(n);
+
+        return event;
     }
 
     virtual sycl::event generate(
@@ -483,31 +613,51 @@ public:
             distr,
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        auto event = queue_.submit([&](sycl::handler& cgh) {
             onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                 rocrand_status status;
                 ROCRAND_CALL(rocrand_generate_log_normal_double, status, engine_, r, n, distr.m(),
                              distr.s());
             });
         });
+
+        increment_internal_offset(n);
+
+        return event;
     }
 
     virtual sycl::event generate(
         const oneapi::mkl::rng::lognormal<float, oneapi::mkl::rng::lognormal_method::icdf>& distr,
         std::int64_t n, float* r, const std::vector<sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented(
-            "rng", "philox4x32x10 engine",
-            "ICDF method not used for pseudorandom generators in cuRAND backend");
-        return sycl::event{};
+        sycl::event::wait_and_throw(dependencies);
+        auto event = queue_.submit([&](sycl::handler& cgh) {
+            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+                rocrand_status status;
+                ROCRAND_CALL(rocrand_generate_log_normal, status, engine_, r, n, distr.m(),
+                             distr.s());
+            });
+        });
+
+        increment_internal_offset(n);
+
+        return event;
     }
 
     virtual sycl::event generate(
         const oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::icdf>& distr,
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented(
-            "rng", "philox4x32x10 engine",
-            "ICDF method not used for pseudorandom generators in cuRAND backend");
-        return sycl::event{};
+        sycl::event::wait_and_throw(dependencies);
+        auto event = queue_.submit([&](sycl::handler& cgh) {
+            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+                rocrand_status status;
+                ROCRAND_CALL(rocrand_generate_log_normal_double, status, engine_, r, n, distr.m(),
+                             distr.s());
+            });
+        });
+
+        increment_internal_offset(n);
+
+        return event;
     }
 
     virtual sycl::event generate(const bernoulli<std::int32_t, bernoulli_method::icdf>& distr,
@@ -515,7 +665,7 @@ public:
                                  const std::vector<sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented(
             "rng", "philox4x32x10 engine",
-            "ICDF method not used for pseudorandom generators in cuRAND backend");
+            "Bernoulli distribution method unsupported by rocRAND backend");
         return sycl::event{};
     }
 
@@ -524,37 +674,56 @@ public:
                                  const std::vector<sycl::event>& dependencies) override {
         throw oneapi::mkl::unimplemented(
             "rng", "philox4x32x10 engine",
-            "ICDF method not used for pseudorandom generators in cuRAND backend");
+            "Bernoulli distribution method unsupported by rocRAND backend");
         return sycl::event{};
     }
 
     virtual sycl::event generate(
         const poisson<std::int32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
         std::int32_t* r, const std::vector<sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented(
-            "rng", "philox4x32x10 engine",
-            "ICDF method not used for pseudorandom generators in cuRAND backend");
-        return sycl::event{};
+        sycl::event::wait_and_throw(dependencies);
+        auto event = queue_.submit([&](sycl::handler& cgh) {
+            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+                rocrand_status status;
+                ROCRAND_CALL(rocrand_generate_poisson, status, engine_, (std::uint32_t*)r, n,
+                             distr.lambda());
+            });
+        });
+
+        increment_internal_offset(n);
+
+        return event;
     }
 
     virtual sycl::event generate(
         const poisson<std::uint32_t, poisson_method::gaussian_icdf_based>& distr, std::int64_t n,
         std::uint32_t* r, const std::vector<sycl::event>& dependencies) override {
-        throw oneapi::mkl::unimplemented(
-            "rng", "philox4x32x10 engine",
-            "ICDF method not used for pseudorandom generators in cuRAND backend");
-        return sycl::event{};
+        sycl::event::wait_and_throw(dependencies);
+        auto event = queue_.submit([&](sycl::handler& cgh) {
+            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+                rocrand_status status;
+                ROCRAND_CALL(rocrand_generate_poisson, status, engine_, r, n, distr.lambda());
+            });
+        });
+
+        increment_internal_offset(n);
+
+        return event;
     }
 
     virtual sycl::event generate(const bits<std::uint32_t>& distr, std::int64_t n, std::uint32_t* r,
                                  const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
-        return queue_.submit([&](sycl::handler& cgh) {
+        auto event = queue_.submit([&](sycl::handler& cgh) {
             onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                 rocrand_status status;
                 ROCRAND_CALL(rocrand_generate, status, engine_, r, n);
             });
         });
+
+        increment_internal_offset(n);
+
+        return event;
     }
 
     virtual oneapi::mkl::rng::detail::engine_impl* copy_state() override {
@@ -568,11 +737,11 @@ public:
 
     virtual void skip_ahead(std::initializer_list<std::uint64_t> num_to_skip) override {
         throw oneapi::mkl::unimplemented("rng", "skip_ahead",
-                                         "initializer list unsupported by cuRAND backend");
+                                         "initializer list unsupported by rocRAND backend");
     }
 
     virtual void leapfrog(std::uint64_t idx, std::uint64_t stride) override {
-        throw oneapi::mkl::unimplemented("rng", "leapfrog", "unsupported by cuRAND backend");
+        throw oneapi::mkl::unimplemented("rng", "leapfrog", "unsupported by rocRAND backend");
     }
 
     virtual ~philox4x32x10_impl() override {
@@ -581,8 +750,14 @@ public:
 
 private:
     rocrand_generator engine_;
+    std::uint64_t seed_;
+    std::uint64_t offset_;
+
+    void increment_internal_offset(std::uint64_t n) {
+        offset_ += n;
+    }
 };
-#else // cuRAND backend is currently not supported on Windows
+#else // rocRAND backend is currently not supported on Windows
 class philox4x32x10_impl : public oneapi::mkl::rng::detail::engine_impl {
 public:
     philox4x32x10_impl(sycl::queue queue, std::uint64_t seed)
@@ -859,8 +1034,7 @@ public:
 #endif
 
 oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(sycl::queue queue, std::uint64_t seed) {
-    auto a = new philox4x32x10_impl(queue, seed);
-    return a;
+    return new philox4x32x10_impl(queue, seed);
 }
 
 oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(
