@@ -49,8 +49,8 @@
 #ifdef ENABLE_NETLIB_BACKEND
 #include "oneapi/mkl/blas/detail/netlib/blas_ct.hpp"
 #endif
-#ifdef ENABLE_SYCLBLAS_BACKEND
-#include "oneapi/mkl/blas/detail/syclblas/blas_ct.hpp"
+#ifdef ENABLE_PORTBLAS_BACKEND
+#include "oneapi/mkl/blas/detail/portblas/blas_ct.hpp"
 #endif
 
 namespace oneapi {

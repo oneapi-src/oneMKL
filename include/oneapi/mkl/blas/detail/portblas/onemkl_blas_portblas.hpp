@@ -17,44 +17,43 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
+#ifndef _ONEMKL_BLAS_PORTBLAS_HPP_
+#define _ONEMKL_BLAS_PORTBLAS_HPP_
+
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
 #else
 #include <CL/sycl.hpp>
 #endif
 
-#include "syclblas_common.hpp"
-#include "oneapi/mkl/exceptions.hpp"
-#include "oneapi/mkl/blas/detail/syclblas/onemkl_blas_syclblas.hpp"
+#include "oneapi/mkl/types.hpp"
+
+#include "oneapi/mkl/detail/export.hpp"
 
 namespace oneapi {
 namespace mkl {
+
+using oneapi::mkl::transpose;
+using oneapi::mkl::uplo;
+using oneapi::mkl::side;
+using oneapi::mkl::diag;
+using oneapi::mkl::offset;
+
 namespace blas {
-namespace syclblas {
-
-using real_t = float;
-
+namespace portblas {
 namespace column_major {
 
-#define COLUMN_MAJOR
-constexpr bool is_column_major() {
-    return true;
-}
-#include "syclblas_level1.cxx"
-#undef COLUMN_MAJOR
+#include "oneapi/mkl/blas/detail/onemkl_blas_backends.hxx"
 
-} // namespace column_major
+} //namespace column_major
 namespace row_major {
 
-#define ROW_MAJOR
-constexpr bool is_column_major() {
-    return false;
-}
-#include "syclblas_level1.cxx"
-#undef ROW_MAJOR
+#include "oneapi/mkl/blas/detail/onemkl_blas_backends.hxx"
 
-} // namespace row_major
-} // namespace syclblas
+} //namespace row_major
+} // namespace portblas
 } // namespace blas
 } // namespace mkl
 } // namespace oneapi
+
+#endif // _ONEMKL_BLAS_PORTBLAS_HPP_

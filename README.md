@@ -64,7 +64,7 @@ oneMKL is part of [oneAPI](https://oneapi.io).
             <td align="center">AMD GPU</td>
         </tr>
         <tr>
-            <td align="center"><a href="https://github.com/codeplaysoftware/sycl-blas"> SYCL-BLAS </a></td>
+            <td align="center"><a href="https://github.com/codeplaysoftware/portBLAS"> portBLAS </a></td>
             <td align="center">x86 CPU, Intel GPU, NVIDIA GPU, AMD GPU</td>
         </tr>
     </tbody>
@@ -189,7 +189,7 @@ Supported domains: BLAS, LAPACK, RNG, DFT
         </tr>
 	    <tr >
             <td align="center">x86 CPU, Intel GPU, NVIDIA GPU, AMD GPU</td>
-            <td align="center">SYCL-BLAS</td>
+            <td align="center">portBLAS</td>
             <td align="center">Dynamic, Static</td>
             <td align="center">DPC++, LLVM*</td>
         </tr>
@@ -477,7 +477,7 @@ Python | 3.6 or higher | No | *N/A* | *Pre-installed or Installed by user* | [PS
 [AMD rocFFT](https://github.com/ROCmSoftwarePlatform/rocFFT) | rocm-5.4.3 | No | *N/A* | *Installed by user* |[AMD License](https://github.com/ROCmSoftwarePlatform/rocFFT/blob/rocm-5.4.3/LICENSE.md)
 [NETLIB LAPACK](https://www.netlib.org/) | 3.7.1 | Yes | conan-community | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [BSD like license](http://www.netlib.org/lapack/LICENSE.txt)
 [Sphinx](https://www.sphinx-doc.org/en/master/) | 2.4.4 | Yes | pip | ~/.local/bin (or similar user local directory) | [BSD License](https://github.com/sphinx-doc/sphinx/blob/3.x/LICENSE)
-[SYCL-BLAS](https://github.com/codeplaysoftware/sycl-blas) | 0.1 | No | *N/A* | *Installed by user* | [Apache License v2.0](https://github.com/codeplaysoftware/sycl-blas/blob/master/LICENSE)
+[portBLAS](https://github.com/codeplaysoftware/portBLAS) | 0.1 | No | *N/A* | *Installed by user* | [Apache License v2.0](https://github.com/codeplaysoftware/portBLAS/blob/master/LICENSE)
 
 *conan-center: https://api.bintray.com/conan/conan/conan-center*
 

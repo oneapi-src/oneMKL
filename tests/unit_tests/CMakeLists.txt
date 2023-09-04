@@ -124,9 +124,9 @@ foreach(domain ${TARGET_DOMAINS})
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_netlib)
   endif()
 
-  if(domain STREQUAL "blas" AND ENABLE_SYCLBLAS_BACKEND)
-    add_dependencies(test_main_${domain}_ct onemkl_${domain}_syclblas)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_syclblas)
+  if(domain STREQUAL "blas" AND ENABLE_PORTBLAS_BACKEND)
+    add_dependencies(test_main_${domain}_ct onemkl_${domain}_portblas)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_portblas)
   endif()
 
   if(domain STREQUAL "lapack" AND ENABLE_CUSOLVER_BACKEND)

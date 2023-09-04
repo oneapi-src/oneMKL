@@ -23,16 +23,16 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "syclblas_common.hpp"
+#include "portblas_common.hpp"
 #include "oneapi/mkl/exceptions.hpp"
-#include "oneapi/mkl/blas/detail/syclblas/onemkl_blas_syclblas.hpp"
+#include "oneapi/mkl/blas/detail/portblas/onemkl_blas_portblas.hpp"
 
 namespace oneapi {
 namespace mkl {
 namespace blas {
-namespace syclblas {
+namespace portblas {
 
-using real_t = double;
+using real_t = float;
 
 namespace column_major {
 
@@ -40,7 +40,7 @@ namespace column_major {
 constexpr bool is_column_major() {
     return true;
 }
-#include "syclblas_level2.cxx"
+#include "portblas_level2.cxx"
 #undef COLUMN_MAJOR
 
 } // namespace column_major
@@ -50,11 +50,11 @@ namespace row_major {
 constexpr bool is_column_major() {
     return false;
 }
-#include "syclblas_level2.cxx"
+#include "portblas_level2.cxx"
 #undef ROW_MAJOR
 
 } // namespace row_major
-} // namespace syclblas
+} // namespace portblas
 } // namespace blas
 } // namespace mkl
 } // namespace oneapi
