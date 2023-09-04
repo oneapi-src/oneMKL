@@ -23,7 +23,7 @@ void gemm(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transp
           std::int64_t m, std::int64_t n, std::int64_t k, real_t alpha, sycl::buffer<real_t, 1> &a,
           std::int64_t lda, sycl::buffer<real_t, 1> &b, std::int64_t ldb, real_t beta,
           sycl::buffer<real_t, 1> &c, std::int64_t ldc) {
-    CALL_SYCLBLAS_FN(::blas::_gemm, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
+    CALL_PORTBLAS_FN(::blas::_gemm, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
                      ldc);
 }
 
@@ -39,7 +39,7 @@ void symm(sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo up
           std::int64_t m, std::int64_t n, real_t alpha, sycl::buffer<real_t, 1> &a,
           std::int64_t lda, sycl::buffer<real_t, 1> &b, std::int64_t ldb, real_t beta,
           sycl::buffer<real_t, 1> &c, std::int64_t ldc) {
-    CALL_SYCLBLAS_FN(::blas::_symm, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
+    CALL_PORTBLAS_FN(::blas::_symm, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb,
                      beta, c, ldc);
 }
 
@@ -120,7 +120,7 @@ void trsm(sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo up
           oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,
           real_t alpha, sycl::buffer<real_t, 1> &a, std::int64_t lda, sycl::buffer<real_t, 1> &b,
           std::int64_t ldb) {
-    CALL_SYCLBLAS_FN(::blas::_trsm, queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
+    CALL_PORTBLAS_FN(::blas::_trsm, queue, left_right, upper_lower, trans, unit_diag, m, n, alpha,
                      a, lda, b, ldb);
 }
 
@@ -149,7 +149,7 @@ void gemmt(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::trans
 void omatcopy(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, real_t alpha,
               sycl::buffer<real_t, 1> &a, std::int64_t lda, sycl::buffer<real_t, 1> &b,
               std::int64_t ldb) {
-    CALL_SYCLBLAS_FN(::blas::_omatcopy, queue, trans, m, n, alpha, a, lda, b, ldb);
+    CALL_PORTBLAS_FN(::blas::_omatcopy, queue, trans, m, n, alpha, a, lda, b, ldb);
 }
 
 void omatcopy(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,

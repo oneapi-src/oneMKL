@@ -17,10 +17,10 @@
 #
 #=========================================================================
 
-set(LIB_NAME onemkl_blas_syclblas)
+set(LIB_NAME onemkl_blas_portblas)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
-option(SYCLBLAS_TUNING_TARGET "Set a TUNING_TARGET for SYCL-BLAS" "")
+option(PORTBLAS_TUNING_TARGET "Set a TUNING_TARGET for portBLAS" "")
 
 # Parse compiler flags and return a list of SYCL targets
 # The list is empty if no targets are set
@@ -31,7 +31,7 @@ function(get_sycl_targets FLAGS)
   set(SYCL_TARGETS ${SYCL_TARGETS} PARENT_SCOPE)
 endfunction(get_sycl_targets)
 
-# SYCL-BLAS supports tuning for some device types, but can only be compiled
+# portBLAS supports tuning for some device types, but can only be compiled
 # for one at a time currently. Work out which device to tune for based on the
 # DPC++ target triple specified via -fsycl-targets
 if(TARGET ONEMKL::SYCL::SYCL)
@@ -44,16 +44,16 @@ if(NUM_TARGETS EQUAL 0)
   list(LENGTH SYCL_TARGETS NUM_TARGETS)
 endif()
 
-if(SYCLBLAS_TUNING_TARGET)
+if(PORTBLAS_TUNING_TARGET)
   # Allow the user to manually enable a specific device type without relying on the sycl target.
-  if(SYCLBLAS_TUNING_TARGET STREQUAL "INTEL_CPU")
-    # Allow the user to enable only the INTEL_CPU backend even though SYCL-BLAS cannot be tuned for INTEL_CPU.
-    set(ENABLE_SYCLBLAS_BACKEND_INTEL_CPU "ON" CACHE INTERNAL "")
-    set(SYCLBLAS_TUNING_TARGET "")
-  elseif(SYCLBLAS_TUNING_TARGET STREQUAL "INTEL_GPU")
-    set(ENABLE_SYCLBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
-  elseif(SYCLBLAS_TUNING_TARGET STREQUAL "AMD_GPU")
-    set(ENABLE_SYCLBLAS_BACKEND_AMD_GPU "ON" CACHE INTERNAL "")
+  if(PORTBLAS_TUNING_TARGET STREQUAL "INTEL_CPU")
+    # Allow the user to enable only the INTEL_CPU backend even though portBLAS cannot be tuned for INTEL_CPU.
+    set(ENABLE_PORTBLAS_BACKEND_INTEL_CPU "ON" CACHE INTERNAL "")
+    set(PORTBLAS_TUNING_TARGET "")
+  elseif(PORTBLAS_TUNING_TARGET STREQUAL "INTEL_GPU")
+    set(ENABLE_PORTBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
+  elseif(PORTBLAS_TUNING_TARGET STREQUAL "AMD_GPU")
+    set(ENABLE_PORTBLAS_BACKEND_AMD_GPU "ON" CACHE INTERNAL "")
     if (is_dpcpp)
       target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
         -fsycl-targets=amdgcn-amd-amdhsa -fsycl-unnamed-lambda
@@ -62,11 +62,11 @@ if(SYCLBLAS_TUNING_TARGET)
         -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
     else()
       message(WARNING "Compiler is not supported."
-      " Unable to automatically set the required flags for the target '${SYCLBLAS_TUNING_TARGET}'."
+      " Unable to automatically set the required flags for the target '${PORTBLAS_TUNING_TARGET}'."
       " Compilation may fail.")
     endif()
-  elseif(SYCLBLAS_TUNING_TARGET STREQUAL "NVIDIA_GPU")
-    set(ENABLE_SYCLBLAS_BACKEND_NVIDIA_GPU "ON" CACHE INTERNAL "")
+  elseif(PORTBLAS_TUNING_TARGET STREQUAL "NVIDIA_GPU")
+    set(ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU "ON" CACHE INTERNAL "")
     if (is_dpcpp)
       target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
         -fsycl-targets=nvptx64-nvidia-cuda -fsycl-unnamed-lambda)
@@ -74,96 +74,96 @@ if(SYCLBLAS_TUNING_TARGET)
         -fsycl-targets=nvptx64-nvidia-cuda)
     else()
       message(WARNING "Compiler is not supported."
-      " Unable to automatically set the required flags for the target '${SYCLBLAS_TUNING_TARGET}'."
+      " Unable to automatically set the required flags for the target '${PORTBLAS_TUNING_TARGET}'."
       " Compilation may fail.")
     endif()
   else()
-    message(FATAL_ERROR "Unsupported SYCLBLAS_TUNING_TARGET: '${SYCLBLAS_TUNING_TARGET}'")
+    message(FATAL_ERROR "Unsupported PORTBLAS_TUNING_TARGET: '${PORTBLAS_TUNING_TARGET}'")
   endif()
 elseif(NUM_TARGETS EQUAL 0)
-  # Enable SYCL-BLAS backend for all devices types
-  set(ENABLE_SYCLBLAS_BACKEND_INTEL_CPU "ON" CACHE INTERNAL "")
-  set(ENABLE_SYCLBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
-  set(ENABLE_SYCLBLAS_BACKEND_AMD_GPU "ON" CACHE INTERNAL "")
-  set(ENABLE_SYCLBLAS_BACKEND_NVIDIA_GPU "ON" CACHE INTERNAL "")
+  # Enable portBLAS backend for all devices types
+  set(ENABLE_PORTBLAS_BACKEND_INTEL_CPU "ON" CACHE INTERNAL "")
+  set(ENABLE_PORTBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
+  set(ENABLE_PORTBLAS_BACKEND_AMD_GPU "ON" CACHE INTERNAL "")
+  set(ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU "ON" CACHE INTERNAL "")
 else()
-  # Try to automatically detect the SYCLBLAS_TUNING_TARGET
+  # Try to automatically detect the PORTBLAS_TUNING_TARGET
   foreach(SYCL_TARGET IN LISTS SYCL_TARGETS)
     if(SYCL_TARGETS MATCHES "^intel_gpu" OR SYCL_TARGETS MATCHES "^spir64_gen")
-      set(ENABLE_SYCLBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
-      set(SYCLBLAS_TUNING_TARGET "INTEL_GPU")
+      set(ENABLE_PORTBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
+      set(PORTBLAS_TUNING_TARGET "INTEL_GPU")
     elseif(SYCL_TARGETS MATCHES "^spir64_x86_64")
-      set(ENABLE_SYCLBLAS_BACKEND_INTEL_CPU "ON" CACHE INTERNAL "")
+      set(ENABLE_PORTBLAS_BACKEND_INTEL_CPU "ON" CACHE INTERNAL "")
     elseif(SYCL_TARGETS MATCHES "^spir64")
-      set(ENABLE_SYCLBLAS_BACKEND_INTEL_CPU "ON" CACHE INTERNAL "")
-      set(ENABLE_SYCLBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
-      set(SYCLBLAS_TUNING_TARGET "INTEL_GPU")
+      set(ENABLE_PORTBLAS_BACKEND_INTEL_CPU "ON" CACHE INTERNAL "")
+      set(ENABLE_PORTBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
+      set(PORTBLAS_TUNING_TARGET "INTEL_GPU")
     elseif(SYCL_TARGETS MATCHES "^amd_gpu" OR SYCL_TARGETS MATCHES "-amd-")
-      set(ENABLE_SYCLBLAS_BACKEND_AMD_GPU "ON" CACHE INTERNAL "")
-      set(SYCLBLAS_TUNING_TARGET "AMD_GPU")
+      set(ENABLE_PORTBLAS_BACKEND_AMD_GPU "ON" CACHE INTERNAL "")
+      set(PORTBLAS_TUNING_TARGET "AMD_GPU")
     elseif(SYCL_TARGETS MATCHES "^nvidia_gpu" OR SYCL_TARGETS MATCHES "-nvidia-")
-      set(ENABLE_SYCLBLAS_BACKEND_NVIDIA_GPU "ON" CACHE INTERNAL "")
-      set(SYCLBLAS_TUNING_TARGET "NVIDIA_GPU")
+      set(ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU "ON" CACHE INTERNAL "")
+      set(PORTBLAS_TUNING_TARGET "NVIDIA_GPU")
     endif()
   endforeach()
-  # Currently SYCL-BLAS can only be tuned for one type of device.
+  # Currently portBLAS can only be tuned for one type of device.
   if(NUM_TARGETS GREATER 1)
-    set(SYCLBLAS_TUNING_TARGET "")
+    set(PORTBLAS_TUNING_TARGET "")
   endif()
 endif()
 
-if(SYCLBLAS_TUNING_TARGET STREQUAL "INTEL_GPU")
-  message(STATUS "Tuning SYCL-BLAS for Intel GPU devices")
-elseif(SYCLBLAS_TUNING_TARGET STREQUAL "AMD_GPU")
-  message(STATUS "Tuning SYCL-BLAS for AMD GPU devices")
-elseif(SYCLBLAS_TUNING_TARGET STREQUAL "NVIDIA_GPU")
-  message(STATUS "Tuning SYCL-BLAS for Nvidia GPU devices")
+if(PORTBLAS_TUNING_TARGET STREQUAL "INTEL_GPU")
+  message(STATUS "Tuning portBLAS for Intel GPU devices")
+elseif(PORTBLAS_TUNING_TARGET STREQUAL "AMD_GPU")
+  message(STATUS "Tuning portBLAS for AMD GPU devices")
+elseif(PORTBLAS_TUNING_TARGET STREQUAL "NVIDIA_GPU")
+  message(STATUS "Tuning portBLAS for Nvidia GPU devices")
 else()
-  message(STATUS "SYCL-BLAS is not tuned for any device which can impact performance")
+  message(STATUS "portBLAS is not tuned for any device which can impact performance")
 endif()
 
-# If find_package doesn't work, download SYCL-BLAS from Github. This is
+# If find_package doesn't work, download portBLAS from Github. This is
 # intended to make OneMKL easier to use.
-message(STATUS "Looking for sycl_blas")
-find_package(sycl_blas QUIET)
-if (NOT sycl_blas_FOUND)
-  message(STATUS "Looking for sycl_blas - could not find sycl_blas with sycl_blas_DIR")
+message(STATUS "Looking for portBLAS")
+find_package(PORTBLAS QUIET)
+if (NOT PORTBLAS_FOUND)
+  message(STATUS "Looking for portBLAS - could not find portBLAS with PORTBLAS_DIR")
   include(FetchContent)
   set(INSTALL_HEADER_ONLY ON)
   set(BLAS_BUILD_SAMPLES OFF)
   set(BLAS_ENABLE_BENCHMARK OFF)
   set(BLAS_ENABLE_TESTING OFF)
   set(ENABLE_EXPRESSION_TESTS OFF)
-  # Set the policy to forward variables to SYCL-BLAS configure step
+  # Set the policy to forward variables to portBLAS configure step
   set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
   set(FETCHCONTENT_BASE_DIR "${CMAKE_BINARY_DIR}/deps")
   FetchContent_Declare(
-    sycl-blas
-    GIT_REPOSITORY https://github.com/codeplaysoftware/sycl-blas
+    portBLAS
+    GIT_REPOSITORY https://github.com/codeplaysoftware/portBLAS
     GIT_TAG        master
   )
-  FetchContent_MakeAvailable(sycl-blas)
-  message(STATUS "Looking for sycl_blas - downloaded")
+  FetchContent_MakeAvailable(portBLAS)
+  message(STATUS "Looking for portBLAS - downloaded")
 
-  add_library(SYCL_BLAS::sycl_blas INTERFACE IMPORTED)
-  target_include_directories(SYCL_BLAS::sycl_blas
-    INTERFACE ${FETCHCONTENT_BASE_DIR}/sycl-blas-src/include
-    INTERFACE ${FETCHCONTENT_BASE_DIR}/sycl-blas-src/src
+  add_library(PORTBLAS::PORTBLAS INTERFACE IMPORTED)
+  target_include_directories(PORTBLAS::PORTBLAS
+    INTERFACE ${FETCHCONTENT_BASE_DIR}/portblas-src/include
+    INTERFACE ${FETCHCONTENT_BASE_DIR}/portblas-src/src
   )
 else()
-  message(STATUS "Looking for sycl_blas - found")
+  message(STATUS "Looking for portBLAS - found")
 endif()
 
-# This define is tuning SYCL-BLAS in header-only mode
-target_compile_definitions(SYCL_BLAS::sycl_blas INTERFACE ${SYCLBLAS_TUNING_TARGET})
+# This define is tuning portBLAS in header-only mode
+target_compile_definitions(PORTBLAS::PORTBLAS INTERFACE ${PORTBLAS_TUNING_TARGET})
 
 set(SOURCES
-  syclblas_level1_double.cpp syclblas_level1_float.cpp
-  syclblas_level2_double.cpp syclblas_level2_float.cpp
-  syclblas_level3_double.cpp syclblas_level3_float.cpp 
-  syclblas_level3_half.cpp syclblas_level3_bfloat16.cpp 
-  syclblas_batch.cpp
-  $<$<BOOL:${BUILD_SHARED_LIBS}>: syclblas_wrappers.cpp>)
+  portblas_level1_double.cpp portblas_level1_float.cpp
+  portblas_level2_double.cpp portblas_level2_float.cpp
+  portblas_level3_double.cpp portblas_level3_float.cpp
+  portblas_level3_half.cpp portblas_level3_bfloat16.cpp
+  portblas_batch.cpp
+  $<$<BOOL:${BUILD_SHARED_LIBS}>: portblas_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
 
@@ -179,7 +179,7 @@ target_include_directories(${LIB_OBJ}
 )
 
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL SYCL_BLAS::sycl_blas)
+target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL PORTBLAS::PORTBLAS)
 
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON)

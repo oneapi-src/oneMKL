@@ -36,7 +36,7 @@ enum class backend {
     netlib,
     rocblas,
     rocrand,
-    syclblas,
+    portblas,
     cufft,
     rocfft,
     unsupported
@@ -53,7 +53,7 @@ static backendmap backend_map = { { backend::mklcpu, "mklcpu" },
                                   { backend::rocblas, "rocblas" },
                                   { backend::rocrand, "rocrand" },
                                   { backend::rocsolver, "rocsolver" },
-                                  { backend::syclblas, "syclblas" },
+                                  { backend::portblas, "portblas" },
                                   { backend::cufft, "cufft" },
                                   { backend::rocfft, "rocfft" },
                                   { backend::unsupported, "unsupported" } };

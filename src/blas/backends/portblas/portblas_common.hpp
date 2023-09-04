@@ -17,10 +17,10 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _SYCLBLAS_COMMON_HPP_
-#define _SYCLBLAS_COMMON_HPP_
+#ifndef _PORTBLAS_COMMON_HPP_
+#define _PORTBLAS_COMMON_HPP_
 
-#include "sycl_blas.hpp"
+#include "portblas.hpp"
 #include "oneapi/mkl/types.hpp"
 #include "oneapi/mkl/exceptions.hpp"
 
@@ -30,63 +30,63 @@
 namespace oneapi {
 namespace mkl {
 namespace blas {
-namespace syclblas {
+namespace portblas {
 
 namespace detail {
-// SYCL-BLAS handle type. Constructed with sycl::queue.
+// portBLAS handle type. Constructed with sycl::queue.
 using handle_t = ::blas::SB_Handle;
 
-// SYCL-BLAS buffer iterator. Constructed with sycl::buffer<ElemT,1>
+// portBLAS buffer iterator. Constructed with sycl::buffer<ElemT,1>
 template <typename ElemT>
 using buffer_iterator_t = ::blas::BufferIterator<ElemT>;
 
-/** A trait for obtaining equivalent SYCL-BLAS API types from oneMKL API
+/** A trait for obtaining equivalent portBLAS API types from oneMKL API
  *  types.
  * 
  *  @tparam InputT is the oneMKL type.
- *  syclblas_type<InputT>::type should be the equivalent SYCL-BLAS type.
+ *  portblas_type<InputT>::type should be the equivalent portBLAS type.
 **/
 template <typename InputT>
-struct syclblas_type;
+struct portblas_type;
 
-#define DEF_SYCLBLAS_TYPE(onemkl_t, syclblas_t) \
+#define DEF_PORTBLAS_TYPE(onemkl_t, portblas_t) \
     template <>                                 \
-    struct syclblas_type<onemkl_t> {            \
-        using type = syclblas_t;                \
+    struct portblas_type<onemkl_t> {            \
+        using type = portblas_t;                \
     };
 
-DEF_SYCLBLAS_TYPE(sycl::queue, handle_t)
-DEF_SYCLBLAS_TYPE(int64_t, int64_t)
-DEF_SYCLBLAS_TYPE(sycl::half, sycl::half)
-DEF_SYCLBLAS_TYPE(float, float)
-DEF_SYCLBLAS_TYPE(double, double)
-DEF_SYCLBLAS_TYPE(oneapi::mkl::transpose, char)
-DEF_SYCLBLAS_TYPE(oneapi::mkl::uplo, char)
-DEF_SYCLBLAS_TYPE(oneapi::mkl::side, char)
-DEF_SYCLBLAS_TYPE(oneapi::mkl::diag, char)
-// Passthrough of SYCL-BLAS arg types for more complex wrapping.
-DEF_SYCLBLAS_TYPE(::blas::gemm_batch_type_t, ::blas::gemm_batch_type_t)
+DEF_PORTBLAS_TYPE(sycl::queue, handle_t)
+DEF_PORTBLAS_TYPE(int64_t, int64_t)
+DEF_PORTBLAS_TYPE(sycl::half, sycl::half)
+DEF_PORTBLAS_TYPE(float, float)
+DEF_PORTBLAS_TYPE(double, double)
+DEF_PORTBLAS_TYPE(oneapi::mkl::transpose, char)
+DEF_PORTBLAS_TYPE(oneapi::mkl::uplo, char)
+DEF_PORTBLAS_TYPE(oneapi::mkl::side, char)
+DEF_PORTBLAS_TYPE(oneapi::mkl::diag, char)
+// Passthrough of portBLAS arg types for more complex wrapping.
+DEF_PORTBLAS_TYPE(::blas::gemm_batch_type_t, ::blas::gemm_batch_type_t)
 
-#undef DEF_SYCLBLAS_TYPE
+#undef DEF_PORTBLAS_TYPE
 
 template <typename ElemT>
-struct syclblas_type<sycl::buffer<ElemT, 1>> {
+struct portblas_type<sycl::buffer<ElemT, 1>> {
     using type = buffer_iterator_t<ElemT>;
 };
 
-/** Convert a OneMKL argument to the type required for SYCL-BLAS.
+/** Convert a OneMKL argument to the type required for portBLAS.
  *  
  *  @tparam InputT The OneMKL type.
  *  @param input The value of the oneMKL type.
- *  @return The SYCL-BLAS value with appropriate type.
+ *  @return The portBLAS value with appropriate type.
 **/
 template <typename InputT>
-inline typename syclblas_type<InputT>::type convert_to_syclblas_type(InputT& input) {
-    return typename syclblas_type<InputT>::type(input);
+inline typename portblas_type<InputT>::type convert_to_portblas_type(InputT& input) {
+    return typename portblas_type<InputT>::type(input);
 }
 
 template <>
-inline char convert_to_syclblas_type<oneapi::mkl::transpose>(oneapi::mkl::transpose& trans) {
+inline char convert_to_portblas_type<oneapi::mkl::transpose>(oneapi::mkl::transpose& trans) {
     if (trans == oneapi::mkl::transpose::nontrans) {
         return 'n';
     }
@@ -99,7 +99,7 @@ inline char convert_to_syclblas_type<oneapi::mkl::transpose>(oneapi::mkl::transp
 }
 
 template <>
-inline char convert_to_syclblas_type<oneapi::mkl::uplo>(oneapi::mkl::uplo& upper_lower) {
+inline char convert_to_portblas_type<oneapi::mkl::uplo>(oneapi::mkl::uplo& upper_lower) {
     if (upper_lower == oneapi::mkl::uplo::upper) {
         return 'u';
     }
@@ -109,7 +109,7 @@ inline char convert_to_syclblas_type<oneapi::mkl::uplo>(oneapi::mkl::uplo& upper
 }
 
 template <>
-inline char convert_to_syclblas_type<oneapi::mkl::side>(oneapi::mkl::side& left_right) {
+inline char convert_to_portblas_type<oneapi::mkl::side>(oneapi::mkl::side& left_right) {
     if (left_right == oneapi::mkl::side::left) {
         return 'l';
     }
@@ -119,7 +119,7 @@ inline char convert_to_syclblas_type<oneapi::mkl::side>(oneapi::mkl::side& left_
 }
 
 template <>
-inline char convert_to_syclblas_type<oneapi::mkl::diag>(oneapi::mkl::diag& unit_diag) {
+inline char convert_to_portblas_type<oneapi::mkl::diag>(oneapi::mkl::diag& unit_diag) {
     if (unit_diag == oneapi::mkl::diag::unit) {
         return 'u';
     }
@@ -129,8 +129,8 @@ inline char convert_to_syclblas_type<oneapi::mkl::diag>(oneapi::mkl::diag& unit_
 }
 
 template <typename... ArgT>
-inline auto convert_to_syclblas_type(ArgT... args) {
-    return std::make_tuple(convert_to_syclblas_type(args)...);
+inline auto convert_to_portblas_type(ArgT... args) {
+    return std::make_tuple(convert_to_portblas_type(args)...);
 }
 
 /** Throw an MKL unsuppored device exception if a certain argument
@@ -162,25 +162,25 @@ struct throw_if_unsupported_by_device {
 
 } // namespace detail
 
-#define CALL_SYCLBLAS_FN(syclblasFunc, ...)                                                     \
+#define CALL_PORTBLAS_FN(portBLASFunc, ...)                                                     \
     if constexpr (is_column_major()) {                                                          \
         detail::throw_if_unsupported_by_device<sycl::buffer<double>, sycl::aspect::fp64>{}(     \
-            " SYCL-BLAS function requiring fp64 support", __VA_ARGS__);                         \
+            " portBLAS function requiring fp64 support", __VA_ARGS__);                          \
         detail::throw_if_unsupported_by_device<sycl::buffer<sycl::half>, sycl::aspect::fp16>{}( \
-            " SYCL-BLAS function requiring fp16 support", __VA_ARGS__);                         \
-        auto args = detail::convert_to_syclblas_type(__VA_ARGS__);                              \
+            " portBLAS function requiring fp16 support", __VA_ARGS__);                          \
+        auto args = detail::convert_to_portblas_type(__VA_ARGS__);                              \
         auto fn = [](auto&&... targs) {                                                         \
-            syclblasFunc(std::forward<decltype(targs)>(targs)...);                              \
+            portBLASFunc(std::forward<decltype(targs)>(targs)...);                              \
         };                                                                                      \
         std::apply(fn, args);                                                                   \
     }                                                                                           \
     else {                                                                                      \
-        throw unimplemented("blas", "SyclBLAS function", " for row-major");                     \
+        throw unimplemented("blas", "portBLAS function", " for row-major");                     \
     }
 
-} // namespace syclblas
+} // namespace portblas
 } // namespace blas
 } // namespace mkl
 } // namespace oneapi
 
-#endif // _SYCLBLAS_COMMON_HPP_
+#endif // _PORTBLAS_COMMON_HPP_

@@ -84,7 +84,7 @@ if(ENABLE_MKLCPU_BACKEND
         OR ENABLE_CUBLAS_BACKEND
         OR ENABLE_ROCBLAS_BACKEND
         OR ENABLE_NETLIB_BACKEND
-        OR ENABLE_SYCLBLAS_BACKEND)
+        OR ENABLE_PORTBLAS_BACKEND)
   list(APPEND DOMAINS_LIST "blas")
 endif()
 if(ENABLE_MKLCPU_BACKEND
@@ -106,13 +106,13 @@ if(ENABLE_MKLGPU_BACKEND
   list(APPEND DOMAINS_LIST "dft")
 endif()
 
-if(ENABLE_SYCLBLAS_BACKEND AND
+if(ENABLE_PORTBLAS_BACKEND AND
     (ENABLE_MKLCPU_BACKEND OR
      ENABLE_MKLGPU_BACKEND OR
      ENABLE_CUBLAS_BACKEND OR
      ENABLE_ROCBLAS_BACKEND OR
      ENABLE_NETLIB_BACKEND))
-  message(FATAL_ERROR "SYCL-BLAS backend cannot be enabled with other backends")
+  message(FATAL_ERROR "portBLAS backend cannot be enabled with other backends")
 endif()
 
 # Define required CXX compilers before project

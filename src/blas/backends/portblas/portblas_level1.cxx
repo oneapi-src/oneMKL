@@ -58,12 +58,12 @@ void asum(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<real_t>,
 
 void asum(sycl::queue &queue, std::int64_t n, sycl::buffer<real_t, 1> &x, std::int64_t incx,
           sycl::buffer<real_t, 1> &result) {
-    CALL_SYCLBLAS_FN(::blas::_asum, queue, n, x, incx, result);
+    CALL_PORTBLAS_FN(::blas::_asum, queue, n, x, incx, result);
 }
 
 void axpy(sycl::queue &queue, std::int64_t n, real_t alpha, sycl::buffer<real_t, 1> &x,
           std::int64_t incx, sycl::buffer<real_t, 1> &y, std::int64_t incy) {
-    CALL_SYCLBLAS_FN(::blas::_axpy, queue, n, alpha, x, incx, y, incy);
+    CALL_PORTBLAS_FN(::blas::_axpy, queue, n, alpha, x, incx, y, incy);
 }
 
 void axpy(sycl::queue &queue, std::int64_t n, std::complex<real_t> alpha,
@@ -85,7 +85,7 @@ void axpby(sycl::queue &queue, std::int64_t n, std::complex<real_t> alpha,
 
 void copy(sycl::queue &queue, std::int64_t n, sycl::buffer<real_t, 1> &x, std::int64_t incx,
           sycl::buffer<real_t, 1> &y, std::int64_t incy) {
-    CALL_SYCLBLAS_FN(::blas::_copy, queue, n, x, incx, y, incy);
+    CALL_PORTBLAS_FN(::blas::_copy, queue, n, x, incx, y, incy);
 }
 
 void copy(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<real_t>, 1> &x,
@@ -95,7 +95,7 @@ void copy(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<real_t>,
 
 void dot(sycl::queue &queue, std::int64_t n, sycl::buffer<real_t, 1> &x, std::int64_t incx,
          sycl::buffer<real_t, 1> &y, std::int64_t incy, sycl::buffer<real_t, 1> &result) {
-    CALL_SYCLBLAS_FN(::blas::_dot, queue, n, x, incx, y, incy, result);
+    CALL_PORTBLAS_FN(::blas::_dot, queue, n, x, incx, y, incy, result);
 }
 
 #ifdef ENABLE_MIXED_PRECISION_WITH_DOUBLE
@@ -108,7 +108,7 @@ void dot(sycl::queue &queue, std::int64_t n, sycl::buffer<float, 1> &x, std::int
 void sdsdot(sycl::queue &queue, std::int64_t n, real_t sb, sycl::buffer<real_t, 1> &x,
             std::int64_t incx, sycl::buffer<real_t, 1> &y, std::int64_t incy,
             sycl::buffer<real_t, 1> &result) {
-    CALL_SYCLBLAS_FN(::blas::_sdsdot, queue, n, sb, x, incx, y, incy, result);
+    CALL_PORTBLAS_FN(::blas::_sdsdot, queue, n, sb, x, incx, y, incy, result);
 }
 
 void nrm2(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<real_t>, 1> &x,
@@ -118,7 +118,7 @@ void nrm2(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<real_t>,
 
 void nrm2(sycl::queue &queue, std::int64_t n, sycl::buffer<real_t, 1> &x, std::int64_t incx,
           sycl::buffer<real_t, 1> &result) {
-    CALL_SYCLBLAS_FN(::blas::_nrm2, queue, n, x, incx, result);
+    CALL_PORTBLAS_FN(::blas::_nrm2, queue, n, x, incx, result);
 }
 
 void rot(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<real_t>, 1> &x,
@@ -129,12 +129,12 @@ void rot(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<real_t>, 
 
 void rot(sycl::queue &queue, std::int64_t n, sycl::buffer<real_t, 1> &x, std::int64_t incx,
          sycl::buffer<real_t, 1> &y, std::int64_t incy, real_t c, real_t s) {
-    CALL_SYCLBLAS_FN(::blas::_rot, queue, n, x, incx, y, incy, c, s);
+    CALL_PORTBLAS_FN(::blas::_rot, queue, n, x, incx, y, incy, c, s);
 }
 
 void rotg(sycl::queue &queue, sycl::buffer<real_t, 1> &a, sycl::buffer<real_t, 1> &b,
           sycl::buffer<real_t, 1> &c, sycl::buffer<real_t, 1> &s) {
-    CALL_SYCLBLAS_FN(::blas::_rotg, queue, a, b, c, s);
+    CALL_PORTBLAS_FN(::blas::_rotg, queue, a, b, c, s);
 }
 
 void rotg(sycl::queue &queue, sycl::buffer<std::complex<real_t>, 1> &a,
@@ -145,18 +145,18 @@ void rotg(sycl::queue &queue, sycl::buffer<std::complex<real_t>, 1> &a,
 
 void rotm(sycl::queue &queue, std::int64_t n, sycl::buffer<real_t, 1> &x, std::int64_t incx,
           sycl::buffer<real_t, 1> &y, std::int64_t incy, sycl::buffer<real_t, 1> &param) {
-    CALL_SYCLBLAS_FN(::blas::_rotm, queue, n, x, incx, y, incy, param);
+    CALL_PORTBLAS_FN(::blas::_rotm, queue, n, x, incx, y, incy, param);
 }
 
 void rotmg(sycl::queue &queue, sycl::buffer<real_t, 1> &d1, sycl::buffer<real_t, 1> &d2,
            sycl::buffer<real_t, 1> &x1, real_t y1, sycl::buffer<real_t, 1> &param) {
     sycl::buffer<real_t, 1> y1_buffer(&y1, sycl::range<1>{ 1 });
-    CALL_SYCLBLAS_FN(::blas::_rotmg, queue, d1, d2, x1, y1_buffer, param);
+    CALL_PORTBLAS_FN(::blas::_rotmg, queue, d1, d2, x1, y1_buffer, param);
 }
 
 void scal(sycl::queue &queue, std::int64_t n, real_t alpha, sycl::buffer<real_t, 1> &x,
           std::int64_t incx) {
-    CALL_SYCLBLAS_FN(::blas::_scal, queue, n, alpha, x, incx);
+    CALL_PORTBLAS_FN(::blas::_scal, queue, n, alpha, x, incx);
 }
 
 void scal(sycl::queue &queue, std::int64_t n, std::complex<real_t> alpha,
@@ -171,7 +171,7 @@ void scal(sycl::queue &queue, std::int64_t n, real_t alpha,
 
 void swap(sycl::queue &queue, std::int64_t n, sycl::buffer<real_t, 1> &x, std::int64_t incx,
           sycl::buffer<real_t, 1> &y, std::int64_t incy) {
-    CALL_SYCLBLAS_FN(::blas::_swap, queue, n, x, incx, y, incy);
+    CALL_PORTBLAS_FN(::blas::_swap, queue, n, x, incx, y, incy);
 }
 
 void swap(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<real_t>, 1> &x,
