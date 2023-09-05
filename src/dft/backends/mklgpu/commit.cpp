@@ -114,6 +114,7 @@ private:
         desc.set_value(backend_param::PLACEMENT,
                        to_mklgpu<onemkl_param::PLACEMENT>(config.placement));
 
+        // This can be removed in favor of proper exception handling in closed source MKL once MKLD-16060 is completed.
         if (config.input_strides[0] != 0 || config.output_strides[0] != 0) {
             throw mkl::unimplemented("dft/backends/mklgpu", "commit",
                                      "MKLGPU does not support nonzero offsets.");

@@ -88,18 +88,18 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
                                  complex_strides.data());
         }
         else {
-            auto real_strides = get_default_strides(sizes);
+            auto input_strides = get_default_strides(sizes);
             descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
-                                 real_strides.data());
+                                 input_strides.data());
         }
         if (strides_fwd.size()) {
             descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                                  strides_fwd.data());
         }
         else {
-            auto real_strides = get_default_strides(sizes);
+            auto output_strides = get_default_strides(sizes);
             descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
-                                 real_strides.data());
+                                 output_strides.data());
         }
         commit_descriptor(descriptor, sycl_queue);
 
@@ -184,15 +184,15 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
         descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, complex_strides.data());
     }
     else {
-        auto real_strides = get_default_strides(sizes);
-        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, real_strides.data());
+        auto input_strides = get_default_strides(sizes);
+        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, input_strides.data());
     }
     if (strides_fwd.size()) {
         descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, strides_fwd.data());
     }
     else {
-        auto real_strides = get_default_strides(sizes);
-        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, real_strides.data());
+        auto output_strides = get_default_strides(sizes);
+        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, output_strides.data());
     }
     commit_descriptor(descriptor, sycl_queue);
 

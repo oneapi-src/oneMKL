@@ -225,9 +225,15 @@ public:
             }
         }();
 
+        auto input_strides = config_values.input_strides;
+        auto output_strides = config_values.output_strides;
+        if(dom == dft::domain::COMPLEX && config_values.placement == config_value::INPLACE){
+            output_strides = input_strides;
+        }
+
         // while rocfft interface accepts offsets, it does not actually handle them
-        offsets[0] = config_values.input_strides[0];
-        offsets[1] = config_values.output_strides[0];
+        offsets[0] = input_strides[0];
+        offsets[1] = output_strides[0];
 
         auto func = __FUNCTION__;
         auto check_strides = [&](const std::vector<std::int64_t>& strides) {
@@ -247,15 +253,15 @@ public:
                 }
             }
         };
-        check_strides(config_values.input_strides);
-        check_strides(config_values.output_strides);
+        check_strides(input_strides);
+        check_strides(output_strides);
 
         std::array<std::size_t, max_supported_dims> in_strides;
         std::array<std::size_t, max_supported_dims> out_strides;
 
         for (std::size_t i = 0; i != dimensions; ++i) {
-            in_strides[i] = config_values.input_strides[dimensions - i];
-            out_strides[i] = config_values.output_strides[dimensions - i];
+            in_strides[i] = input_strides[dimensions - i];
+            out_strides[i] = output_strides[dimensions - i];
         }
 
         rocfft_plan_description plan_desc;
@@ -281,21 +287,23 @@ public:
         std::sort(&out_stride_indices[0], &out_stride_indices[dimensions],
                   [&](std::size_t a, std::size_t b) { return out_strides[a] < out_strides[b]; });
         std::array<std::size_t, max_supported_dims> lengths_cplx = lengths;
-        lengths_cplx[0] = lengths_cplx[0] / 2 + 1;
+        if(dom == dft::domain::REAL){
+            lengths_cplx[0] = lengths_cplx[0] / 2 + 1;
+        }
         // When creating real-complex descriptions, the strides will always be wrong for one of the directions.
         // This is because the least significant dimension is symmetric.
         // If the strides are invalid (too small to fit) then just don't bother creating the plan.
         const bool ignore_strides = dom == dft::domain::COMPLEX || dimensions == 1;
         const bool valid_forward =
-            ignore_strides ||
+            dimensions == 1 ||
             (lengths_cplx[in_stride_indices[0]] <= in_strides[in_stride_indices[1]] &&
              (dimensions == 2 ||
-              lengths_cplx[in_stride_indices[1]] <= in_strides[in_stride_indices[2]]));
+              lengths_cplx[in_stride_indices[0]] * lengths_cplx[in_stride_indices[1]] <= in_strides[in_stride_indices[2]]));
         const bool valid_backward =
-            ignore_strides ||
+            dimensions == 1 ||
             (lengths_cplx[out_stride_indices[0]] <= out_strides[out_stride_indices[1]] &&
              (dimensions == 2 ||
-              lengths_cplx[out_stride_indices[1]] <= out_strides[out_stride_indices[2]]));
+              lengths_cplx[out_stride_indices[0]] * lengths_cplx[out_stride_indices[1]] <= out_strides[out_stride_indices[2]]));
 
         if (!valid_forward && !valid_backward) {
             throw mkl::exception("dft/backends/cufft", __FUNCTION__, "Invalid strides.");

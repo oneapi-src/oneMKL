@@ -159,7 +159,9 @@ public:
             }
         }
         else {
-            if (o_min - onembed.begin() != i_min - inembed.begin()) {
+            if(config_values.placement == config_value::INPLACE){
+                onembed = inembed;
+            } else if (o_min - onembed.begin() != i_min - inembed.begin()) {
                 throw mkl::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,
                     "cufft requires that if ordered by stride length, the order of strides is the same for input and output strides!");
@@ -191,7 +193,7 @@ public:
             if (inembed[1] > inembed[2] && onembed[1] < onembed[2]) {
                 throw mkl::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,
-                    "cufft requires that if the strides are ordered by stride length, the order is the same for input and output strides!");
+                    "cufft requires that if ordered by stride length, the order of strides is the same for input and output strides!");
             }
             else if (inembed[1] < inembed[2] && onembed[1] < onembed[2]) {
                 // swap dimensions to have the first one have the biggest stride
@@ -221,13 +223,36 @@ public:
         // When creating real-complex descriptions, the strides will always be wrong for one of the directions.
         // This is because the least significant dimension is symmetric.
         // If the strides are invalid (too small to fit) then just don't bother creating the plan.
-        const bool ignore_strides = dom == dft::domain::COMPLEX || rank == 1;
-        const bool valid_forward =
-            ignore_strides || (n_copy[rank - 1] <= inembed[rank - 1] &&
-                               (n_copy[rank - 1] / 2 + 1) <= onembed[rank - 1]);
-        const bool valid_backward =
-            ignore_strides || (n_copy[rank - 1] <= onembed[rank - 1] &&
-                               (n_copy[rank - 1] / 2 + 1) <= inembed[rank - 1]);
+        bool valid_forward = true;
+        bool valid_backward = true;
+        if(rank>1){
+            if(dom == dft::domain::REAL){
+                valid_forward =
+                    (n_copy[rank - 1] <= inembed[rank - 1] &&
+                                    (n_copy[rank - 1] / 2 + 1) <= onembed[rank - 1]);
+                valid_backward =
+                    (n_copy[rank - 1] <= onembed[rank - 1] &&
+                                    (n_copy[rank - 1] / 2 + 1) <= inembed[rank - 1]);
+            } else{
+                valid_forward = valid_backward =
+                    (n_copy[rank - 1] <= inembed[rank - 1] &&
+                                    n_copy[rank - 1] <= onembed[rank - 1]);
+            }
+            if(rank>2){
+                if(dom == dft::domain::REAL){
+                    valid_forward = valid_forward &&
+                        (n_copy[rank - 1] * n_copy[rank - 2] <= inembed[rank - 1] * inembed[rank - 2] &&
+                                        (n_copy[rank - 1] / 2 + 1) * n_copy[rank - 2] <= onembed[rank - 1] * onembed[rank - 2]);
+                    valid_backward = valid_backward &&
+                        (n_copy[rank - 1] * n_copy[rank - 2] <= onembed[rank - 1] * onembed[rank - 2] &&
+                                        (n_copy[rank - 1] / 2 + 1) * n_copy[rank - 2] <= inembed[rank - 1] * inembed[rank - 2]);
+                } else{
+                    valid_forward = valid_backward = valid_forward &&
+                        (n_copy[rank - 1] * n_copy[rank - 2] <= inembed[rank - 1] * inembed[rank - 2] &&
+                                        n_copy[rank - 1] * n_copy[rank - 2] <= onembed[rank - 1] * onembed[rank - 2]);
+                }
+            }
+        }
 
         if (!valid_forward && !valid_backward) {
             throw mkl::exception("dft/backends/cufft", __FUNCTION__, "Invalid strides.");
