@@ -173,7 +173,7 @@ void omatadd(sycl::queue &queue, transpose transa, transpose transb, std::int64_
              real_t alpha, sycl::buffer<real_t, 1> &a, std::int64_t lda, real_t beta,
              sycl::buffer<real_t, 1> &b, std::int64_t ldb, sycl::buffer<real_t, 1> &c,
              std::int64_t ldc) {
-    CALL_SYCLBLAS_FN(::blas::_omatadd, queue, transa, transb, m, n, alpha, a, lda, beta, b, ldb, c,
+    CALL_PORTBLAS_FN(::blas::_omatadd, queue, transa, transb, m, n, alpha, a, lda, beta, b, ldb, c,
                      ldc);
 }
 
