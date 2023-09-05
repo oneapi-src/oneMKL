@@ -227,7 +227,7 @@ public:
 
         auto input_strides = config_values.input_strides;
         auto output_strides = config_values.output_strides;
-        if(dom == dft::domain::COMPLEX && config_values.placement == config_value::INPLACE){
+        if (dom == dft::domain::COMPLEX && config_values.placement == config_value::INPLACE) {
             output_strides = input_strides;
         }
 
@@ -287,7 +287,7 @@ public:
         std::sort(&out_stride_indices[0], &out_stride_indices[dimensions],
                   [&](std::size_t a, std::size_t b) { return out_strides[a] < out_strides[b]; });
         std::array<std::size_t, max_supported_dims> lengths_cplx = lengths;
-        if(dom == dft::domain::REAL){
+        if (dom == dft::domain::REAL) {
             lengths_cplx[0] = lengths_cplx[0] / 2 + 1;
         }
         // When creating real-complex descriptions, the strides will always be wrong for one of the directions.
@@ -298,12 +298,14 @@ public:
             dimensions == 1 ||
             (lengths_cplx[in_stride_indices[0]] <= in_strides[in_stride_indices[1]] &&
              (dimensions == 2 ||
-              lengths_cplx[in_stride_indices[0]] * lengths_cplx[in_stride_indices[1]] <= in_strides[in_stride_indices[2]]));
+              lengths_cplx[in_stride_indices[0]] * lengths_cplx[in_stride_indices[1]] <=
+                  in_strides[in_stride_indices[2]]));
         const bool valid_backward =
             dimensions == 1 ||
             (lengths_cplx[out_stride_indices[0]] <= out_strides[out_stride_indices[1]] &&
              (dimensions == 2 ||
-              lengths_cplx[out_stride_indices[0]] * lengths_cplx[out_stride_indices[1]] <= out_strides[out_stride_indices[2]]));
+              lengths_cplx[out_stride_indices[0]] * lengths_cplx[out_stride_indices[1]] <=
+                  out_strides[out_stride_indices[2]]));
 
         if (!valid_forward && !valid_backward) {
             throw mkl::exception("dft/backends/cufft", __FUNCTION__, "Invalid strides.");
