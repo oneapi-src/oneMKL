@@ -36,6 +36,10 @@
 
 namespace oneapi::mkl::dft::rocfft {
 namespace detail {
+//forward declaration
+template <dft::precision prec, dft::domain dom>
+std::array<std::int64_t, 2> get_offsets(dft::detail::commit_impl<prec, dom> *commit);
+
 template <dft::precision prec, dft::domain dom>
 rocfft_plan get_bwd_plan(dft::detail::commit_impl<prec, dom> *commit) {
     return static_cast<rocfft_handle *>(commit->get_handle())[1].plan.value();
@@ -52,21 +56,33 @@ rocfft_execution_info get_bwd_info(dft::detail::commit_impl<prec, dom> *commit) 
 template <typename descriptor_type>
 ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
                                     sycl::buffer<fwd<descriptor_type>, 1> &inout) {
+    const std::string func_name = "compute_backward(desc, inout)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
     auto info = detail::get_bwd_info(commit);
+    auto offsets = detail::get_offsets(commit);
+
+    if constexpr (std::is_floating_point_v<fwd<descriptor_type>>) {
+        offsets[0] *= 2; // offset is supplied in complex but we offset scalar pointer
+    }
+    if (offsets[0] != offsets[1]) {
+        throw oneapi::mkl::unimplemented(
+            "DFT", func_name,
+            "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
+    }
 
     queue.submit([&](sycl::handler &cgh) {
         auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
 
         cgh.host_task([=](sycl::interop_handle ih) {
-            const std::string func_name = "compute_backward(desc, inout)";
             auto stream = detail::setup_stream(func_name, ih, info);
 
-            auto inout_native = detail::native_mem(ih, inout_acc);
+            auto inout_native = reinterpret_cast<void *>(
+                reinterpret_cast<fwd<descriptor_type> *>(detail::native_mem(ih, inout_acc)) +
+                offsets[0]);
             detail::execute_checked(func_name, plan, &inout_native, nullptr, info);
             detail::sync_checked(func_name, stream);
         });
@@ -78,21 +94,34 @@ template <typename descriptor_type>
 ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
                                     sycl::buffer<scalar<descriptor_type>, 1> &inout_re,
                                     sycl::buffer<scalar<descriptor_type>, 1> &inout_im) {
+    const std::string func_name = "compute_backward(desc, inout_re, inout_im)";
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
     auto info = detail::get_bwd_info(commit);
+    auto offsets = detail::get_offsets(commit);
+
+    if (offsets[0] != offsets[1]) {
+        throw oneapi::mkl::unimplemented(
+            "DFT", func_name,
+            "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
+    }
 
     queue.submit([&](sycl::handler &cgh) {
         auto inout_re_acc = inout_re.template get_access<sycl::access::mode::read_write>(cgh);
         auto inout_im_acc = inout_im.template get_access<sycl::access::mode::read_write>(cgh);
 
         cgh.host_task([=](sycl::interop_handle ih) {
-            const std::string func_name = "compute_backward(desc, inout_re, inout_im)";
             auto stream = detail::setup_stream(func_name, ih, info);
 
-            std::array<void *, 2> inout_native = { detail::native_mem(ih, inout_re_acc),
-                                                   detail::native_mem(ih, inout_im_acc) };
+            std::array<void *, 2> inout_native{
+                reinterpret_cast<void *>(reinterpret_cast<scalar<descriptor_type> *>(
+                                             detail::native_mem(ih, inout_re_acc)) +
+                                         offsets[0]),
+                reinterpret_cast<void *>(reinterpret_cast<scalar<descriptor_type> *>(
+                                             detail::native_mem(ih, inout_im_acc)) +
+                                         offsets[0])
+            };
             detail::execute_checked(func_name, plan, inout_native.data(), nullptr, info);
             detail::sync_checked(func_name, stream);
         });
@@ -110,6 +139,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
     auto info = detail::get_bwd_info(commit);
+    auto offsets = detail::get_offsets(commit);
 
     queue.submit([&](sycl::handler &cgh) {
         auto in_acc = in.template get_access<sycl::access::mode::read_write>(cgh);
@@ -119,8 +149,12 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
             const std::string func_name = "compute_backward(desc, in, out)";
             auto stream = detail::setup_stream(func_name, ih, info);
 
-            auto in_native = detail::native_mem(ih, in_acc);
-            auto out_native = detail::native_mem(ih, out_acc);
+            auto in_native = reinterpret_cast<void *>(
+                reinterpret_cast<bwd<descriptor_type> *>(detail::native_mem(ih, in_acc)) +
+                offsets[0]);
+            auto out_native = reinterpret_cast<void *>(
+                reinterpret_cast<fwd<descriptor_type> *>(detail::native_mem(ih, out_acc)) +
+                offsets[1]);
             detail::execute_checked(func_name, plan, &in_native, &out_native, info);
             detail::sync_checked(func_name, stream);
         });
@@ -138,6 +172,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
     auto info = detail::get_bwd_info(commit);
+    auto offsets = detail::get_offsets(commit);
 
     queue.submit([&](sycl::handler &cgh) {
         auto in_re_acc = in_re.template get_access<sycl::access::mode::read_write>(cgh);
@@ -149,10 +184,22 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
             const std::string func_name = "compute_backward(desc, in_re, in_im, out_re, out_im)";
             auto stream = detail::setup_stream(func_name, ih, info);
 
-            std::array<void *, 2> in_native = { detail::native_mem(ih, in_re_acc),
-                                                detail::native_mem(ih, in_im_acc) };
-            std::array<void *, 2> out_native = { detail::native_mem(ih, out_re_acc),
-                                                 detail::native_mem(ih, out_im_acc) };
+            std::array<void *, 2> in_native{
+                reinterpret_cast<void *>(
+                    reinterpret_cast<scalar<descriptor_type> *>(detail::native_mem(ih, in_re_acc)) +
+                    offsets[0]),
+                reinterpret_cast<void *>(
+                    reinterpret_cast<scalar<descriptor_type> *>(detail::native_mem(ih, in_im_acc)) +
+                    offsets[0])
+            };
+            std::array<void *, 2> out_native{
+                reinterpret_cast<void *>(reinterpret_cast<scalar<descriptor_type> *>(
+                                             detail::native_mem(ih, out_re_acc)) +
+                                         offsets[1]),
+                reinterpret_cast<void *>(reinterpret_cast<scalar<descriptor_type> *>(
+                                             detail::native_mem(ih, out_im_acc)) +
+                                         offsets[1])
+            };
             detail::execute_checked(func_name, plan, in_native.data(), out_native.data(), info);
             detail::sync_checked(func_name, stream);
         });
@@ -165,18 +212,29 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
 template <typename descriptor_type>
 ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor_type> *inout,
                                            const std::vector<sycl::event> &deps) {
+    const std::string func_name = "compute_backward(desc, inout, deps)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
     auto info = detail::get_bwd_info(commit);
+    auto offsets = detail::get_offsets(commit);
+
+    if constexpr (std::is_floating_point_v<fwd<descriptor_type>>) {
+        offsets[0] *= 2; // offset is supplied in complex but we offset scalar pointer
+    }
+    if (offsets[0] != offsets[1]) {
+        throw oneapi::mkl::unimplemented(
+            "DFT", func_name,
+            "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
+    }
+    inout += offsets[0];
 
     return queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(deps);
 
         cgh.host_task([=](sycl::interop_handle ih) {
-            const std::string func_name = "compute_backward(desc, inout, deps)";
             auto stream = detail::setup_stream(func_name, ih, info);
 
             void *inout_ptr = inout;
@@ -191,19 +249,26 @@ template <typename descriptor_type>
 ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descriptor_type> *inout_re,
                                            scalar<descriptor_type> *inout_im,
                                            const std::vector<sycl::event> &deps) {
+    const std::string func_name = "compute_backward(desc, inout_re, inout_im, deps)";
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
     auto info = detail::get_bwd_info(commit);
+    auto offsets = detail::get_offsets(commit);
+
+    if (offsets[0] != offsets[1]) {
+        throw oneapi::mkl::unimplemented(
+            "DFT", func_name,
+            "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
+    }
 
     return queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(deps);
 
         cgh.host_task([=](sycl::interop_handle ih) {
-            const std::string func_name = "compute_backward(desc, inout_re, inout_im, deps)";
             auto stream = detail::setup_stream(func_name, ih, info);
 
-            std::array<void *, 2> inout_native = { inout_re, inout_im };
+            std::array<void *, 2> inout_native{ inout_re + offsets[0], inout_im + offsets[0] };
             detail::execute_checked(func_name, plan, inout_native.data(), nullptr, info);
             detail::sync_checked(func_name, stream);
         });
@@ -221,6 +286,10 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
     auto info = detail::get_bwd_info(commit);
+    auto offsets = detail::get_offsets(commit);
+
+    in += offsets[0];
+    out += offsets[1];
 
     return queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(deps);
@@ -248,6 +317,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descrip
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
     auto info = detail::get_bwd_info(commit);
+    auto offsets = detail::get_offsets(commit);
 
     return queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(deps);
@@ -257,8 +327,8 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descrip
                 "compute_backward(desc, in_re, in_im, out_re, out_im, deps)";
             auto stream = detail::setup_stream(func_name, ih, info);
 
-            std::array<void *, 2> in_native = { in_re, in_im };
-            std::array<void *, 2> out_native = { out_re, out_im };
+            std::array<void *, 2> in_native{ in_re + offsets[0], in_im + offsets[0] };
+            std::array<void *, 2> out_native{ out_re + offsets[1], out_im + offsets[1] };
             detail::execute_checked(func_name, plan, in_native.data(), out_native.data(), info);
             detail::sync_checked(func_name, stream);
         });
