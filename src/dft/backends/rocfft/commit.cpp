@@ -293,7 +293,6 @@ public:
         // When creating real-complex descriptions, the strides will always be wrong for one of the directions.
         // This is because the least significant dimension is symmetric.
         // If the strides are invalid (too small to fit) then just don't bother creating the plan.
-        const bool ignore_strides = dom == dft::domain::COMPLEX || dimensions == 1;
         const bool valid_forward =
             dimensions == 1 ||
             (lengths_cplx[in_stride_indices[0]] <= in_strides[in_stride_indices[1]] &&
