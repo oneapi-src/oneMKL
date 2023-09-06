@@ -220,20 +220,20 @@ struct throw_if_unsupported_by_device {
         throw unimplemented("blas", "portBLAS function", " for row-major");       \
     }
 
-#define CALL_SYCLBLAS_USM_FN(syclblasFunc, ...)                                   \
+#define CALL_PORTBLAS_USM_FN(portblasFunc, ...)                                   \
     if constexpr (is_column_major()) {                                            \
         detail::throw_if_unsupported_by_device<double, sycl::aspect::fp64>{}(     \
-            " SYCL-BLAS function requiring fp64 support", __VA_ARGS__);           \
+            " portBLAS function requiring fp64 support", __VA_ARGS__);           \
         detail::throw_if_unsupported_by_device<sycl::half, sycl::aspect::fp16>{}( \
-            " SYCL-BLAS function requiring fp16 support", __VA_ARGS__);           \
-        auto args = detail::convert_to_syclblas_type(__VA_ARGS__);                \
+            " portBLAS function requiring fp16 support", __VA_ARGS__);           \
+        auto args = detail::convert_to_portblas_type(__VA_ARGS__);                \
         auto fn = [](auto&&... targs) {                                           \
-            return syclblasFunc(std::forward<decltype(targs)>(targs)...).back();  \
+            return portblasFunc(std::forward<decltype(targs)>(targs)...).back();  \
         };                                                                        \
         return std::apply(fn, args);                                              \
     }                                                                             \
     else {                                                                        \
-        throw unimplemented("blas", "SyclBLAS function", " for row-major");       \
+        throw unimplemented("blas", "portBLAS function", " for row-major");       \
     }
 
 } // namespace portblas
