@@ -222,13 +222,13 @@ sycl::event asum(sycl::queue &queue, std::int64_t n, const std::complex<real_t> 
 
 sycl::event asum(sycl::queue &queue, std::int64_t n, const real_t *x, std::int64_t incx,
                  real_t *result, const std::vector<sycl::event> &dependencies) {
-    CALL_SYCLBLAS_USM_FN(::blas::_asum, queue, n, x, incx, result, dependencies);
+    CALL_PORTBLAS_USM_FN(::blas::_asum, queue, n, x, incx, result, dependencies);
 }
 
 sycl::event axpy(sycl::queue &queue, std::int64_t n, real_t alpha, const real_t *x,
                  std::int64_t incx, real_t *y, std::int64_t incy,
                  const std::vector<sycl::event> &dependencies) {
-    CALL_SYCLBLAS_USM_FN(::blas::_axpy, queue, n, alpha, x, incx, y, incy, dependencies);
+    CALL_PORTBLAS_USM_FN(::blas::_axpy, queue, n, alpha, x, incx, y, incy, dependencies);
 }
 
 sycl::event axpy(sycl::queue &queue, std::int64_t n, std::complex<real_t> alpha,
@@ -252,7 +252,7 @@ sycl::event axpby(sycl::queue &queue, std::int64_t n, std::complex<real_t> alpha
 
 sycl::event copy(sycl::queue &queue, std::int64_t n, const real_t *x, std::int64_t incx, real_t *y,
                  std::int64_t incy, const std::vector<sycl::event> &dependencies) {
-    CALL_SYCLBLAS_USM_FN(::blas::_copy, queue, n, x, incx, y, incy, dependencies);
+    CALL_PORTBLAS_USM_FN(::blas::_copy, queue, n, x, incx, y, incy, dependencies);
 }
 
 sycl::event copy(sycl::queue &queue, std::int64_t n, const std::complex<real_t> *x,
@@ -288,7 +288,7 @@ sycl::event nrm2(sycl::queue &queue, std::int64_t n, const std::complex<real_t> 
 
 sycl::event nrm2(sycl::queue &queue, std::int64_t n, const real_t *x, std::int64_t incx,
                  real_t *result, const std::vector<sycl::event> &dependencies) {
-    CALL_SYCLBLAS_USM_FN(::blas::_nrm2, queue, n, x, incx, result, dependencies);
+    CALL_PORTBLAS_USM_FN(::blas::_nrm2, queue, n, x, incx, result, dependencies);
 }
 
 sycl::event rot(sycl::queue &queue, std::int64_t n, std::complex<real_t> *x, std::int64_t incx,
@@ -300,12 +300,12 @@ sycl::event rot(sycl::queue &queue, std::int64_t n, std::complex<real_t> *x, std
 sycl::event rot(sycl::queue &queue, std::int64_t n, real_t *x, std::int64_t incx, real_t *y,
                 std::int64_t incy, real_t c, real_t s,
                 const std::vector<sycl::event> &dependencies) {
-    CALL_SYCLBLAS_USM_FN(::blas::_rot, queue, n, x, incx, y, incy, c, s, dependencies);
+    CALL_PORTBLAS_USM_FN(::blas::_rot, queue, n, x, incx, y, incy, c, s, dependencies);
 }
 
 sycl::event rotg(sycl::queue &queue, real_t *a, real_t *b, real_t *c, real_t *s,
                  const std::vector<sycl::event> &dependencies) {
-    CALL_SYCLBLAS_USM_FN(::blas::_rotg, queue, a, b, c, s, dependencies);
+    CALL_PORTBLAS_USM_FN(::blas::_rotg, queue, a, b, c, s, dependencies);
 }
 
 sycl::event rotg(sycl::queue &queue, std::complex<real_t> *a, std::complex<real_t> *b, real_t *c,
@@ -315,7 +315,7 @@ sycl::event rotg(sycl::queue &queue, std::complex<real_t> *a, std::complex<real_
 
 sycl::event rotm(sycl::queue &queue, std::int64_t n, real_t *x, std::int64_t incx, real_t *y,
                  std::int64_t incy, real_t *param, const std::vector<sycl::event> &dependencies) {
-    CALL_SYCLBLAS_USM_FN(::blas::_rotm, queue, n, x, incx, y, incy, param, dependencies);
+    CALL_PORTBLAS_USM_FN(::blas::_rotm, queue, n, x, incx, y, incy, param, dependencies);
 }
 
 sycl::event rotmg(sycl::queue &queue, real_t *d1, real_t *d2, real_t *x1, real_t y1, real_t *param,
@@ -325,7 +325,7 @@ sycl::event rotmg(sycl::queue &queue, real_t *d1, real_t *d2, real_t *x1, real_t
 
 sycl::event scal(sycl::queue &queue, std::int64_t n, real_t alpha, real_t *x, std::int64_t incx,
                  const std::vector<sycl::event> &dependencies) {
-    CALL_SYCLBLAS_USM_FN(::blas::_scal, queue, n, alpha, x, incx, dependencies);
+    CALL_PORTBLAS_USM_FN(::blas::_scal, queue, n, alpha, x, incx, dependencies);
 }
 
 sycl::event scal(sycl::queue &queue, std::int64_t n, std::complex<real_t> alpha,
@@ -341,7 +341,7 @@ sycl::event scal(sycl::queue &queue, std::int64_t n, real_t alpha, std::complex<
 
 sycl::event swap(sycl::queue &queue, std::int64_t n, real_t *x, std::int64_t incx, real_t *y,
                  std::int64_t incy, const std::vector<sycl::event> &dependencies) {
-    CALL_SYCLBLAS_USM_FN(::blas::_swap, queue, n, x, incx, y, incy, dependencies);
+    CALL_PORTBLAS_USM_FN(::blas::_swap, queue, n, x, incx, y, incy, dependencies);
 }
 
 sycl::event swap(sycl::queue &queue, std::int64_t n, std::complex<real_t> *x, std::int64_t incx,
