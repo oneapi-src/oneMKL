@@ -21,6 +21,8 @@
 #define _ONEMKL_SPARSE_BLAS_DETAIL_MKLCPU_SPARSE_BLAS_CT_HPP_
 
 #include "oneapi/mkl/sparse_blas/types.hpp"
+#include "oneapi/mkl/detail/backends.hpp"
+#include "oneapi/mkl/detail/backend_selector.hpp"
 
 #include "onemkl_sparse_blas_mklcpu.hpp"
 
