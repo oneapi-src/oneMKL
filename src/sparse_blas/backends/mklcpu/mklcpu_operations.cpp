@@ -199,12 +199,12 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemm(
         sycl::queue& queue, layout dense_matrix_layout, transpose transpose_A,                    \
         transpose transpose_B, const FP_TYPE alpha, detail::matrix_handle* A_handle,              \
         const FP_TYPE* B, const std::int64_t columns, const std::int64_t ldb, const FP_TYPE beta, \
-        const FP_TYPE* C, const std::int64_t ldc, const std::vector<sycl::event>& dependencies);
+        const FP_TYPE* C, const std::int64_t ldc, const std::vector<sycl::event>& dependencies)
 
-INSTANTIATE_OPERATIONS(float)
-INSTANTIATE_OPERATIONS(double)
-INSTANTIATE_OPERATIONS(std::complex<float>)
-INSTANTIATE_OPERATIONS(std::complex<double>)
+INSTANTIATE_OPERATIONS(float);
+INSTANTIATE_OPERATIONS(double);
+INSTANTIATE_OPERATIONS(std::complex<float>);
+INSTANTIATE_OPERATIONS(std::complex<double>);
 #undef INSTANTIATE_OPERATIONS
 
 } // namespace oneapi::mkl::sparse::mklcpu

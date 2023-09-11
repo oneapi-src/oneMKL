@@ -79,16 +79,16 @@ std::enable_if_t<detail::are_fp_int_supported_v<fpType, intType>, sycl::event> s
     set_csr_data<FP_TYPE, INT_TYPE>(sycl::queue & queue, detail::matrix_handle * handle,           \
                                     INT_TYPE num_rows, INT_TYPE num_cols, index_base index,        \
                                     INT_TYPE * row_ptr, INT_TYPE * col_ind, FP_TYPE * val,         \
-                                    const std::vector<sycl::event> &dependencies);
+                                    const std::vector<sycl::event> &dependencies)
 
-INSTANTIATE_SET_CSR_DATA(float, std::int32_t)
-INSTANTIATE_SET_CSR_DATA(double, std::int32_t)
-INSTANTIATE_SET_CSR_DATA(std::complex<float>, std::int32_t)
-INSTANTIATE_SET_CSR_DATA(std::complex<double>, std::int32_t)
-INSTANTIATE_SET_CSR_DATA(float, std::int64_t)
-INSTANTIATE_SET_CSR_DATA(double, std::int64_t)
-INSTANTIATE_SET_CSR_DATA(std::complex<float>, std::int64_t)
-INSTANTIATE_SET_CSR_DATA(std::complex<double>, std::int64_t)
+INSTANTIATE_SET_CSR_DATA(float, std::int32_t);
+INSTANTIATE_SET_CSR_DATA(double, std::int32_t);
+INSTANTIATE_SET_CSR_DATA(std::complex<float>, std::int32_t);
+INSTANTIATE_SET_CSR_DATA(std::complex<double>, std::int32_t);
+INSTANTIATE_SET_CSR_DATA(float, std::int64_t);
+INSTANTIATE_SET_CSR_DATA(double, std::int64_t);
+INSTANTIATE_SET_CSR_DATA(std::complex<float>, std::int64_t);
+INSTANTIATE_SET_CSR_DATA(std::complex<double>, std::int64_t);
 #undef INSTANTIATE_SET_CSR_DATA
 
 } // namespace oneapi::mkl::sparse::mklcpu
