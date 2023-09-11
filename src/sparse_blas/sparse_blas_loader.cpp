@@ -29,15 +29,15 @@ static oneapi::mkl::detail::table_initializer<mkl::domain::sparse_blas,
                                               sparse_blas_function_table_t>
     function_tables;
 
-void init_matrix_handle(sycl::queue &queue, matrix_handle_t *handle) {
+void init_matrix_handle(sycl::queue &queue, matrix_handle_t *p_handle) {
     auto libkey = get_device_id(queue);
-    function_tables[libkey].init_matrix_handle(queue, handle);
+    function_tables[libkey].init_matrix_handle(queue, p_handle);
 }
 
-sycl::event release_matrix_handle(sycl::queue &queue, matrix_handle_t *handle,
+sycl::event release_matrix_handle(sycl::queue &queue, matrix_handle_t *p_handle,
                                   const std::vector<sycl::event> &dependencies) {
     auto libkey = get_device_id(queue);
-    return function_tables[libkey].release_matrix_handle(queue, handle, dependencies);
+    return function_tables[libkey].release_matrix_handle(queue, p_handle, dependencies);
 }
 
 #define DEFINE_SET_CSR_DATA(FP_TYPE, FP_SUFFIX, INT_TYPE, INT_SUFFIX)                          \

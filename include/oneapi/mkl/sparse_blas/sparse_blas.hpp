@@ -26,9 +26,9 @@ namespace oneapi {
 namespace mkl {
 namespace sparse {
 
-void init_matrix_handle(sycl::queue &queue, matrix_handle_t *handle);
+void init_matrix_handle(sycl::queue &queue, matrix_handle_t *p_handle);
 
-sycl::event release_matrix_handle(sycl::queue &queue, matrix_handle_t *handle,
+sycl::event release_matrix_handle(sycl::queue &queue, matrix_handle_t *p_handle,
                                   const std::vector<sycl::event> &dependencies = {});
 
 template <typename fpType, typename intType>

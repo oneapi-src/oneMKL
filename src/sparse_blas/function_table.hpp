@@ -24,10 +24,10 @@
 
 typedef struct {
     int version;
-    void (*init_matrix_handle)(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *handle);
+    void (*init_matrix_handle)(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p_handle);
 
     sycl::event (*release_matrix_handle)(sycl::queue &queue,
-                                         oneapi::mkl::sparse::matrix_handle_t *handle,
+                                         oneapi::mkl::sparse::matrix_handle_t *p_handle,
                                          const std::vector<sycl::event> &dependencies);
 
     // set_csr_data

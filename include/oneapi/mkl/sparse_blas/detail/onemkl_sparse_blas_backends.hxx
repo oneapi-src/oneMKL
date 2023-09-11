@@ -20,9 +20,9 @@
 // This file is meant to be included in each backend onemkl_sparse_blas_BACKEND.hpp files.
 // It is used to exports each symbol to the onemkl_sparse_blas_BACKEND library.
 
-ONEMKL_EXPORT void init_matrix_handle(sycl::queue &queue, matrix_handle_t *handle);
+ONEMKL_EXPORT void init_matrix_handle(sycl::queue &queue, matrix_handle_t *p_handle);
 
-ONEMKL_EXPORT sycl::event release_matrix_handle(sycl::queue &queue, matrix_handle_t *handle,
+ONEMKL_EXPORT sycl::event release_matrix_handle(sycl::queue &queue, matrix_handle_t *p_handle,
                                                 const std::vector<sycl::event> &dependencies = {});
 
 template <typename fpType, typename intType>

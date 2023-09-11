@@ -25,14 +25,14 @@
 #endif
 
 inline void init_matrix_handle(backend_selector<backend::BACKEND> selector,
-                               matrix_handle_t *handle) {
-    BACKEND::init_matrix_handle(selector.get_queue(), handle);
+                               matrix_handle_t *p_handle) {
+    BACKEND::init_matrix_handle(selector.get_queue(), p_handle);
 }
 
 inline sycl::event release_matrix_handle(backend_selector<backend::BACKEND> selector,
-                                         matrix_handle_t *handle,
+                                         matrix_handle_t *p_handle,
                                          const std::vector<sycl::event> &dependencies = {}) {
-    return BACKEND::release_matrix_handle(selector.get_queue(), handle, dependencies);
+    return BACKEND::release_matrix_handle(selector.get_queue(), p_handle, dependencies);
 }
 
 template <typename fpType, typename intType>

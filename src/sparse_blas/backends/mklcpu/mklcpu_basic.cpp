@@ -40,13 +40,13 @@ auto get_handle(detail::matrix_handle *handle) {
 
 namespace oneapi::mkl::sparse::mklcpu {
 
-void init_matrix_handle(sycl::queue & /*queue*/, detail::matrix_handle **handle) {
-    oneapi::mkl::sparse::init_matrix_handle(detail::get_handle(handle));
+void init_matrix_handle(sycl::queue & /*queue*/, detail::matrix_handle **p_handle) {
+    oneapi::mkl::sparse::init_matrix_handle(detail::get_handle(p_handle));
 }
 
-sycl::event release_matrix_handle(sycl::queue &queue, detail::matrix_handle **handle,
+sycl::event release_matrix_handle(sycl::queue &queue, detail::matrix_handle **p_handle,
                                   const std::vector<sycl::event> &dependencies) {
-    return oneapi::mkl::sparse::release_matrix_handle(queue, detail::get_handle(handle),
+    return oneapi::mkl::sparse::release_matrix_handle(queue, detail::get_handle(p_handle),
                                                       dependencies);
 }
 
