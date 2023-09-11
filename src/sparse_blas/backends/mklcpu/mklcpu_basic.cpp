@@ -31,10 +31,10 @@
 namespace oneapi::mkl::sparse::detail {
 
 auto get_handle(detail::matrix_handle **handle) {
-    return reinterpret_cast<matrix_handle_t *>(handle);
+    return reinterpret_cast<oneapi::mkl::sparse::matrix_handle_t *>(handle);
 }
 auto get_handle(detail::matrix_handle *handle) {
-    return reinterpret_cast<matrix_handle_t>(handle);
+    return reinterpret_cast<oneapi::mkl::sparse::matrix_handle_t>(handle);
 }
 
 } // namespace oneapi::mkl::sparse::detail
