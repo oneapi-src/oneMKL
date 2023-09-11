@@ -24,7 +24,8 @@
 #include "oneapi/mkl/sparse_blas/detail/helper_types.hpp"
 #include "oneapi/mkl/sparse_blas/detail/mklcpu/onemkl_sparse_blas_mklcpu.hpp"
 
-// Include are set up so that oneapi::mkl::sparse namespace refers to the MKLCPU namespace in this file.
+// Includes are set up so that oneapi::mkl::sparse namespace refers to the MKLCPU backend namespace (oneMKL product)
+// in this file.
 // oneapi::mkl::sparse::detail namespace refers to the oneMKL interface namespace.
 
 namespace oneapi::mkl::sparse::detail {
