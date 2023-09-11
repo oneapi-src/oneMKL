@@ -20,20 +20,20 @@
 /*
 *
 *  Content:
-*       This example demonstrates use of oneAPI Math Kernel Library (oneMKL)
-*       DPCPP USM API oneapi::mkl::sparse::gemv to perform
-*general
-*       sparse matrix-vector  multiplication on a SYCL device (CPU, GPU).
+*       This example demonstrates use of DPCPP API oneapi::mkl::sparse::gemv
+*       using unified shared memory to perform general sparse matrix-vector
+*       multiplication on a SYCL device (HOST, CPU, GPU) that is selected
+*       during runtime.
 *
 *       y = alpha * op(A) * x + beta * y
 *
 *       where op() is defined by one of
-*oneapi::mkl::transpose::{nontrans,trans,conjtrans}
+*
+*           oneapi::mkl::transpose::{nontrans,trans,conjtrans}
 *
 *
-*       The supported floating point data types for gemm matrix data are:
-*           float
-*           double
+*       This example demonstrates only single precision (float) data type for
+*       gemv matrix data
 *
 *
 *******************************************************************************/
@@ -191,8 +191,7 @@ int run_sparse_matrix_vector_multiply_example(const sycl::device &dev) {
 //
 void print_example_banner() {
     std::cout << "" << std::endl;
-    std::cout << "###############################################################"
-                 "#########"
+    std::cout << "########################################################################"
               << std::endl;
     std::cout << "# Sparse Matrix-Vector Multiply Example: " << std::endl;
     std::cout << "# " << std::endl;
@@ -206,12 +205,14 @@ void print_example_banner() {
     std::cout << "# Using apis:" << std::endl;
     std::cout << "#   sparse::gemv" << std::endl;
     std::cout << "# " << std::endl;
-    std::cout << "# Supported floating point type precisions:" << std::endl;
-    std::cout << "#   float" << std::endl;
-    std::cout << "#   double" << std::endl;
+    std::cout << "# Using single precision (float) data type" << std::endl;
     std::cout << "# " << std::endl;
-    std::cout << "###############################################################"
-                 "#########"
+    std::cout << "# Device will be selected during runtime." << std::endl;
+    std::cout << "# The environment variable SYCL_DEVICE_FILTER can be used to specify"
+              << std::endl;
+    std::cout << "# SYCL device" << std::endl;
+    std::cout << "# " << std::endl;
+    std::cout << "########################################################################"
               << std::endl;
     std::cout << std::endl;
 }
