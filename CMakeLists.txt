@@ -237,6 +237,7 @@ if(ENABLE_MKLGPU_BACKEND OR ENABLE_MKLCPU_BACKEND)
   endif()
   # Enable SYCL API
   set(DPCPP_COMPILER ON)
+  set(SYCL_COMPILER ON)
   # In case Intel oneMKL package doesn't include MKLConfig,
   # use MKLConfig from the repo
   find_package(MKL REQUIRED
