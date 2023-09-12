@@ -109,6 +109,14 @@ enum class order : char {
     E = 1,
 };
 
+#if (INTEL_MKL_VERSION >= 20240000)
+template <typename T>
+class value_or_pointer;
+#define ONEMKL_SCALAR(T) value_or_pointer<T>
+#else
+#define ONEMKL_SCALAR(T) T
+#endif
+
 } //namespace mkl
 } //namespace oneapi
 
