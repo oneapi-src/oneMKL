@@ -43,6 +43,9 @@ static inline void host_task_internal(H &cgh, A acc, E e, F f) {
         auto r_ptr = reinterpret_cast<typename A::value_type *>(
             ih.get_native_mem<sycl::backend::ext_oneapi_hip>(acc));
         f(r_ptr);
+
+        hipError_t err;
+        HIP_ERROR_FUNC(hipStreamSynchronize, err, stream);
     });
 }
 
@@ -53,6 +56,9 @@ static inline void host_task_internal(H &cgh, E e, F f) {
         auto stream = ih.get_native_queue<sycl::backend::ext_oneapi_hip>();
         ROCRAND_CALL(rocrand_set_stream, status, e, stream);
         f(ih);
+
+        hipError_t err;
+        HIP_ERROR_FUNC(hipStreamSynchronize, err, stream);
     });
 }
 #endif
