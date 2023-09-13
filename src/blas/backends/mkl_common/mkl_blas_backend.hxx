@@ -50,14 +50,14 @@ void gemm(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m
           std::int64_t ldc);
 
 void gemm(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
-          std::int64_t k, float alpha, sycl::buffer<bfloat16, 1> &a, std::int64_t lda,
-          sycl::buffer<bfloat16, 1> &b, std::int64_t ldb, float beta, sycl::buffer<float, 1> &c,
-          std::int64_t ldc);
+          std::int64_t k, float alpha, sycl::buffer<onemkl_bfloat16, 1> &a, std::int64_t lda,
+          sycl::buffer<onemkl_bfloat16, 1> &b, std::int64_t ldb, float beta,
+          sycl::buffer<float, 1> &c, std::int64_t ldc);
 
 void gemm(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
-          std::int64_t k, float alpha, sycl::buffer<bfloat16, 1> &a, std::int64_t lda,
-          sycl::buffer<bfloat16, 1> &b, std::int64_t ldb, float beta, sycl::buffer<bfloat16, 1> &c,
-          std::int64_t ldc);
+          std::int64_t k, float alpha, sycl::buffer<onemkl_bfloat16, 1> &a, std::int64_t lda,
+          sycl::buffer<onemkl_bfloat16, 1> &b, std::int64_t ldb, float beta,
+          sycl::buffer<onemkl_bfloat16, 1> &c, std::int64_t ldc);
 
 void gemm(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m, std::int64_t n,
           std::int64_t k, float alpha, sycl::buffer<std::int8_t, 1> &a, std::int64_t lda,
@@ -222,14 +222,16 @@ sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, std::in
                  float *c, std::int64_t ldc, const std::vector<sycl::event> &dependencies = {});
 
 sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                 std::int64_t n, std::int64_t k, ONEMKL_SCALAR(float) alpha, const bfloat16 *a,
-                 std::int64_t lda, const bfloat16 *b, std::int64_t ldb, ONEMKL_SCALAR(float) beta,
-                 float *c, std::int64_t ldc, const std::vector<sycl::event> &dependencies = {});
+                 std::int64_t n, std::int64_t k, ONEMKL_SCALAR(float) alpha,
+                 const onemkl_bfloat16 *a, std::int64_t lda, const onemkl_bfloat16 *b,
+                 std::int64_t ldb, ONEMKL_SCALAR(float) beta, float *c, std::int64_t ldc,
+                 const std::vector<sycl::event> &dependencies = {});
 
 sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                 std::int64_t n, std::int64_t k, ONEMKL_SCALAR(float) alpha, const bfloat16 *a,
-                 std::int64_t lda, const bfloat16 *b, std::int64_t ldb, ONEMKL_SCALAR(float) beta,
-                 bfloat16 *c, std::int64_t ldc, const std::vector<sycl::event> &dependencies = {});
+                 std::int64_t n, std::int64_t k, ONEMKL_SCALAR(float) alpha,
+                 const onemkl_bfloat16 *a, std::int64_t lda, const onemkl_bfloat16 *b,
+                 std::int64_t ldb, ONEMKL_SCALAR(float) beta, onemkl_bfloat16 *c, std::int64_t ldc,
+                 const std::vector<sycl::event> &dependencies = {});
 
 sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
                  std::int64_t n, std::int64_t k, ONEMKL_SCALAR(float) alpha, const std::int8_t *a,
@@ -1055,8 +1057,7 @@ void axpy(sycl::queue &queue, std::int64_t n, std::complex<double> alpha,
           sycl::buffer<std::complex<double>, 1> &y, std::int64_t incy);
 
 void axpby(sycl::queue &queue, std::int64_t n, float alpha, sycl::buffer<float, 1> &x,
-           std::int64_t incx, ONEMKL_SCALAR(float) beta, sycl::buffer<float, 1> &y,
-           std::int64_t incy);
+           std::int64_t incx, float beta, sycl::buffer<float, 1> &y, std::int64_t incy);
 
 void axpby(sycl::queue &queue, std::int64_t n, double alpha, sycl::buffer<double, 1> &x,
            std::int64_t incx, double beta, sycl::buffer<double, 1> &y, std::int64_t incy);
@@ -1315,19 +1316,19 @@ sycl::event nrm2(sycl::queue &queue, std::int64_t n, const double *x, std::int64
                  double *result, const std::vector<sycl::event> &dependencies = {});
 
 sycl::event rot(sycl::queue &queue, std::int64_t n, std::complex<float> *x, std::int64_t incx,
-                std::complex<float> *y, std::int64_t incy, float c, float s,
-                const std::vector<sycl::event> &dependencies = {});
+                std::complex<float> *y, std::int64_t incy, ONEMKL_SCALAR(float) c,
+                ONEMKL_SCALAR(float) s, const std::vector<sycl::event> &dependencies = {});
 
 sycl::event rot(sycl::queue &queue, std::int64_t n, std::complex<double> *x, std::int64_t incx,
-                std::complex<double> *y, std::int64_t incy, double c, double s,
-                const std::vector<sycl::event> &dependencies = {});
+                std::complex<double> *y, std::int64_t incy, ONEMKL_SCALAR(double) c,
+                ONEMKL_SCALAR(double) s, const std::vector<sycl::event> &dependencies = {});
 
 sycl::event rot(sycl::queue &queue, std::int64_t n, float *x, std::int64_t incx, float *y,
-                std::int64_t incy, float c, float s,
+                std::int64_t incy, ONEMKL_SCALAR(float) c, ONEMKL_SCALAR(float) s,
                 const std::vector<sycl::event> &dependencies = {});
 
 sycl::event rot(sycl::queue &queue, std::int64_t n, double *x, std::int64_t incx, double *y,
-                std::int64_t incy, double c, double s,
+                std::int64_t incy, ONEMKL_SCALAR(double) c, ONEMKL_SCALAR(double) s,
                 const std::vector<sycl::event> &dependencies = {});
 
 sycl::event rotg(sycl::queue &queue, float *a, float *b, float *c, float *s,
@@ -1360,15 +1361,16 @@ sycl::event rotm(sycl::queue &queue, std::int64_t n, double *x, std::int64_t inc
                  const std::vector<sycl::event> &dependencies = {});
 #endif
 
-sycl::event rotmg(sycl::queue &queue, float *d1, float *d2, float *x1, float y1, float *param,
-                  const std::vector<sycl::event> &dependencies = {});
+sycl::event rotmg(sycl::queue &queue, float *d1, float *d2, float *x1, ONEMKL_SCALAR(float) y1,
+                  float *param, const std::vector<sycl::event> &dependencies = {});
 
-sycl::event rotmg(sycl::queue &queue, double *d1, double *d2, double *x1, double y1, double *param,
-                  const std::vector<sycl::event> &dependencies = {});
+sycl::event rotmg(sycl::queue &queue, double *d1, double *d2, double *x1, ONEMKL_SCALAR(double) y1,
+                  double *param, const std::vector<sycl::event> &dependencies = {});
 
-#if INTEL_MKL_VERSION >= 20240000
-#define ONEMKL_DECLARE_SCAL(T, Ts) \
-sycl::event scal(sycl::queue &queue, std::int64_t n, value_or_pointer<Ts> alpha, T *x, std::int64_t incx, const std::vector<sycl::event> &dependencies = {});
+#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION >= 20240000)
+#define ONEMKL_DECLARE_SCAL(T, Ts)                                                         \
+    sycl::event scal(sycl::queue &queue, std::int64_t n, value_or_pointer<Ts> alpha, T *x, \
+                     std::int64_t incx, const std::vector<sycl::event> &dependencies = {});
 
 ONEMKL_DECLARE_SCAL(float, float)
 ONEMKL_DECLARE_SCAL(double, double)
@@ -1376,8 +1378,10 @@ ONEMKL_DECLARE_SCAL(std::complex<float>, std::complex<float>)
 ONEMKL_DECLARE_SCAL(std::complex<double>, std::complex<double>)
 ONEMKL_DECLARE_SCAL(std::complex<float>, float)
 ONEMKL_DECLARE_SCAL(std::complex<double>, double)
-sycl::event scal(sycl::queue &queue, std::int64_t n, float alpha, std::complex<float> *x, std::int64_t incx, const std::vector<sycl::event> &dependencies = {});
-sycl::event scal(sycl::queue &queue, std::int64_t n, double alpha, std::complex<double> *x, std::int64_t incx, const std::vector<sycl::event> &dependencies = {});
+sycl::event scal(sycl::queue &queue, std::int64_t n, float alpha, std::complex<float> *x,
+                 std::int64_t incx, const std::vector<sycl::event> &dependencies = {});
+sycl::event scal(sycl::queue &queue, std::int64_t n, double alpha, std::complex<double> *x,
+                 std::int64_t incx, const std::vector<sycl::event> &dependencies = {});
 
 #undef ONEMKL_DECLARE_SCAL
 #else
@@ -2130,17 +2134,17 @@ sycl::event gemm_batch(sycl::queue &queue, const transpose *transa, const transp
 
 sycl::event gemm_batch(sycl::queue &queue, const transpose *transa, const transpose *transb,
                        const std::int64_t *m, const std::int64_t *n, const std::int64_t *k,
-                       const float *alpha, const bfloat16 **a, const std::int64_t *lda,
-                       const bfloat16 **b, const std::int64_t *ldb, const float *beta, bfloat16 **c,
-                       const std::int64_t *ldc, std::int64_t group_count,
+                       const float *alpha, const onemkl_bfloat16 **a, const std::int64_t *lda,
+                       const onemkl_bfloat16 **b, const std::int64_t *ldb, const float *beta,
+                       onemkl_bfloat16 **c, const std::int64_t *ldc, std::int64_t group_count,
                        const std::int64_t *groupsize,
                        const std::vector<sycl::event> &dependencies = {});
 
 sycl::event gemm_batch(sycl::queue &queue, const transpose *transa, const transpose *transb,
                        const std::int64_t *m, const std::int64_t *n, const std::int64_t *k,
-                       const float *alpha, const bfloat16 **a, const std::int64_t *lda,
-                       const bfloat16 **b, const std::int64_t *ldb, const float *beta, float **c,
-                       const std::int64_t *ldc, std::int64_t group_count,
+                       const float *alpha, const onemkl_bfloat16 **a, const std::int64_t *lda,
+                       const onemkl_bfloat16 **b, const std::int64_t *ldb, const float *beta,
+                       float **c, const std::int64_t *ldc, std::int64_t group_count,
                        const std::int64_t *groupsize,
                        const std::vector<sycl::event> &dependencies = {});
 
@@ -2191,10 +2195,11 @@ sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, s
                        const std::vector<sycl::event> &dependencies = {});
 
 sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
-                       std::int64_t n, std::int64_t k, sycl::half alpha, const sycl::half *a,
-                       std::int64_t lda, std::int64_t stride_a, const sycl::half *b,
-                       std::int64_t ldb, std::int64_t stride_b, sycl::half beta, sycl::half *c,
-                       std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
+                       std::int64_t n, std::int64_t k, ONEMKL_SCALAR(sycl::half) alpha,
+                       const sycl::half *a, std::int64_t lda, std::int64_t stride_a,
+                       const sycl::half *b, std::int64_t ldb, std::int64_t stride_b,
+                       ONEMKL_SCALAR(sycl::half) beta, sycl::half *c, std::int64_t ldc,
+                       std::int64_t stride_c, std::int64_t batch_size,
                        const std::vector<sycl::event> &dependencies = {});
 
 sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
@@ -2206,16 +2211,16 @@ sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, s
 
 sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
                        std::int64_t n, std::int64_t k, ONEMKL_SCALAR(float) alpha,
-                       const bfloat16 *a, std::int64_t lda, std::int64_t stride_a,
-                       const bfloat16 *b, std::int64_t ldb, std::int64_t stride_b,
-                       ONEMKL_SCALAR(float) beta, bfloat16 *c, std::int64_t ldc,
+                       const onemkl_bfloat16 *a, std::int64_t lda, std::int64_t stride_a,
+                       const onemkl_bfloat16 *b, std::int64_t ldb, std::int64_t stride_b,
+                       ONEMKL_SCALAR(float) beta, onemkl_bfloat16 *c, std::int64_t ldc,
                        std::int64_t stride_c, std::int64_t batch_size,
                        const std::vector<sycl::event> &dependencies = {});
 
 sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
                        std::int64_t n, std::int64_t k, ONEMKL_SCALAR(float) alpha,
-                       const bfloat16 *a, std::int64_t lda, std::int64_t stride_a,
-                       const bfloat16 *b, std::int64_t ldb, std::int64_t stride_b,
+                       const onemkl_bfloat16 *a, std::int64_t lda, std::int64_t stride_a,
+                       const onemkl_bfloat16 *b, std::int64_t ldb, std::int64_t stride_b,
                        ONEMKL_SCALAR(float) beta, float *c, std::int64_t ldc, std::int64_t stride_c,
                        std::int64_t batch_size, const std::vector<sycl::event> &dependencies = {});
 
