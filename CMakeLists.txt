@@ -243,6 +243,7 @@ if(ENABLE_MKLGPU_BACKEND OR ENABLE_MKLCPU_BACKEND)
   find_package(MKL REQUIRED
           HINTS ${MKL_ROOT}/lib/cmake
                 ${MKL_ROOT}/lib/cmake/mkl
+                $ENV{MKLROOT}
                 ${PROJECT_SOURCE_DIR}/cmake/mkl)
 endif()
 
