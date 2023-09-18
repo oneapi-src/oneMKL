@@ -145,8 +145,8 @@ if (NOT PORTBLAS_FOUND)
   FetchContent_MakeAvailable(portBLAS)
   message(STATUS "Looking for portBLAS - downloaded")
 
-  add_library(PORTBLAS::PORTBLAS INTERFACE IMPORTED)
-  target_include_directories(PORTBLAS::PORTBLAS
+  add_library(PORTBLAS::portblas INTERFACE IMPORTED)
+  target_include_directories(PORTBLAS::portblas
     INTERFACE ${FETCHCONTENT_BASE_DIR}/portblas-src/include
     INTERFACE ${FETCHCONTENT_BASE_DIR}/portblas-src/src
   )
@@ -155,7 +155,7 @@ else()
 endif()
 
 # This define is tuning portBLAS in header-only mode
-target_compile_definitions(PORTBLAS::PORTBLAS INTERFACE ${PORTBLAS_TUNING_TARGET})
+target_compile_definitions(PORTBLAS::portblas INTERFACE ${PORTBLAS_TUNING_TARGET})
 
 set(SOURCES
   portblas_level1_double.cpp portblas_level1_float.cpp
@@ -179,7 +179,7 @@ target_include_directories(${LIB_OBJ}
 )
 
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL PORTBLAS::PORTBLAS)
+target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL PORTBLAS::portblas)
 
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON)
