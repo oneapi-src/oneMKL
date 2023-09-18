@@ -21,6 +21,7 @@
 #define _ONEMKL_SPARSE_BLAS_DETAIL_MKLCPU_ONEMKL_SPARSE_BLAS_MKLCPU_HPP_
 
 #include "oneapi/mkl/detail/export.hpp"
+#include "oneapi/mkl/sparse_blas/detail/helper_types.hpp"
 
 namespace oneapi::mkl::sparse::mklcpu {
 

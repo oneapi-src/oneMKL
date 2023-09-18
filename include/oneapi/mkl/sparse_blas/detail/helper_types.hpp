@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef _ONEMKL_SPARSE_BLAS_TYPES_IMPL_HPP_
-#define _ONEMKL_SPARSE_BLAS_TYPES_IMPL_HPP_
+#ifndef _ONEMKL_SPARSE_BLAS_DETAIL_HELPER_TYPES_HPP_
+#define _ONEMKL_SPARSE_BLAS_DETAIL_HELPER_TYPES_HPP_
 
 #include <complex>
 #include <cstdint>
@@ -49,4 +49,4 @@ inline constexpr bool are_fp_int_supported_v =
 } // namespace mkl
 } // namespace oneapi
 
-#endif // _ONEMKL_SPARSE_BLAS_TYPES_IMPL_HPP_
+#endif // _ONEMKL_SPARSE_BLAS_DETAIL_HELPER_TYPES_HPP_
