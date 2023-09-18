@@ -62,44 +62,42 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>> gemv(
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemv(
     sycl::queue &queue, transpose transpose_val, const fpType alpha, matrix_handle_t A_handle,
-    const fpType *x, const fpType beta, const fpType *y,
+    const fpType *x, const fpType beta, fpType *y,
     const std::vector<sycl::event> &dependencies = {});
 
 template <typename fpType>
-std::enable_if_t<detail::is_fp_supported_v<fpType>> gemvdot(sycl::queue &queue,
-                                                            transpose transpose_val, fpType alpha,
-                                                            matrix_handle_t A_handle,
-                                                            sycl::buffer<fpType, 1> &x, fpType beta,
-                                                            sycl::buffer<fpType, 1> &y,
-                                                            sycl::buffer<fpType, 1> &d);
+std::enable_if_t<detail::is_fp_supported_v<fpType>> gemvdot(
+    sycl::queue &queue, transpose transpose_val, const fpType alpha, matrix_handle_t A_handle,
+    sycl::buffer<fpType, 1> &x, const fpType beta, sycl::buffer<fpType, 1> &y,
+    sycl::buffer<fpType, 1> &d);
 
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemvdot(
-    sycl::queue &queue, transpose transpose_val, fpType alpha, matrix_handle_t A_handle, fpType *x,
-    fpType beta, fpType *y, fpType *d, const std::vector<sycl::event> &dependencies = {});
+    sycl::queue &queue, transpose transpose_val, const fpType alpha, matrix_handle_t A_handle,
+    const fpType *x, const fpType beta, fpType *y, fpType *d,
+    const std::vector<sycl::event> &dependencies = {});
 
 template <typename fpType>
-std::enable_if_t<detail::is_fp_supported_v<fpType>> symv(sycl::queue &queue, uplo uplo_val,
-                                                         fpType alpha, matrix_handle_t A_handle,
-                                                         sycl::buffer<fpType, 1> &x, fpType beta,
-                                                         sycl::buffer<fpType, 1> &y);
+std::enable_if_t<detail::is_fp_supported_v<fpType>> symv(
+    sycl::queue &queue, uplo uplo_val, const fpType alpha, matrix_handle_t A_handle,
+    sycl::buffer<fpType, 1> &x, const fpType beta, sycl::buffer<fpType, 1> &y);
 
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> symv(
-    sycl::queue &queue, uplo uplo_val, fpType alpha, matrix_handle_t A_handle, fpType *x,
-    fpType beta, fpType *y, const std::vector<sycl::event> &dependencies = {});
+    sycl::queue &queue, uplo uplo_val, const fpType alpha, matrix_handle_t A_handle,
+    const fpType *x, const fpType beta, fpType *y,
+    const std::vector<sycl::event> &dependencies = {});
 
 template <typename fpType>
-std::enable_if_t<detail::is_fp_supported_v<fpType>> trmv(sycl::queue &queue, uplo uplo_val,
-                                                         transpose transpose_val, diag diag_val,
-                                                         fpType alpha, matrix_handle_t A_handle,
-                                                         sycl::buffer<fpType, 1> &x, fpType beta,
-                                                         sycl::buffer<fpType, 1> &y);
+std::enable_if_t<detail::is_fp_supported_v<fpType>> trmv(
+    sycl::queue &queue, uplo uplo_val, transpose transpose_val, diag diag_val, const fpType alpha,
+    matrix_handle_t A_handle, sycl::buffer<fpType, 1> &x, const fpType beta,
+    sycl::buffer<fpType, 1> &y);
 
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> trmv(
-    sycl::queue &queue, uplo uplo_val, transpose transpose_val, diag diag_val, fpType alpha,
-    matrix_handle_t A_handle, fpType *x, fpType beta, fpType *y,
+    sycl::queue &queue, uplo uplo_val, transpose transpose_val, diag diag_val, const fpType alpha,
+    matrix_handle_t A_handle, const fpType *x, const fpType beta, fpType *y,
     const std::vector<sycl::event> &dependencies = {});
 
 template <typename fpType>
@@ -112,7 +110,7 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>> trsv(sycl::queue &queue, upl
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> trsv(
     sycl::queue &queue, uplo uplo_val, transpose transpose_val, diag diag_val,
-    matrix_handle_t A_handle, fpType *x, fpType *y,
+    matrix_handle_t A_handle, const fpType *x, fpType *y,
     const std::vector<sycl::event> &dependencies = {});
 
 template <typename fpType>
@@ -126,7 +124,7 @@ template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemm(
     sycl::queue &queue, layout dense_matrix_layout, transpose transpose_A, transpose transpose_B,
     const fpType alpha, matrix_handle_t A_handle, const fpType *B, const std::int64_t columns,
-    const std::int64_t ldb, const fpType beta, const fpType *C, const std::int64_t ldc,
+    const std::int64_t ldb, const fpType beta, fpType *C, const std::int64_t ldc,
     const std::vector<sycl::event> &dependencies = {});
 
 } // namespace sparse

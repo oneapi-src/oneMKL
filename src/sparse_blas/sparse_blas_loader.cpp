@@ -100,8 +100,8 @@ sycl::event optimize_trsv(sycl::queue &queue, uplo uplo_val, transpose transpose
     }                                                                                             \
     template <>                                                                                   \
     sycl::event gemv(sycl::queue &queue, transpose transpose_val, const FP_TYPE alpha,            \
-                     matrix_handle_t A_handle, const FP_TYPE *x, const FP_TYPE beta,              \
-                     const FP_TYPE *y, const std::vector<sycl::event> &dependencies) {            \
+                     matrix_handle_t A_handle, const FP_TYPE *x, const FP_TYPE beta, FP_TYPE *y,  \
+                     const std::vector<sycl::event> &dependencies) {                              \
         auto libkey = get_device_id(queue);                                                       \
         return function_tables[libkey].gemv_usm##FP_SUFFIX(queue, transpose_val, alpha, A_handle, \
                                                            x, beta, y, dependencies);             \
@@ -115,17 +115,17 @@ DEFINE_GEMV(std::complex<double>, _cd)
 
 #define DEFINE_GEMVDOT(FP_TYPE, FP_SUFFIX)                                                       \
     template <>                                                                                  \
-    void gemvdot(sycl::queue &queue, transpose transpose_val, FP_TYPE alpha,                     \
-                 matrix_handle_t A_handle, sycl::buffer<FP_TYPE, 1> &x, FP_TYPE beta,            \
+    void gemvdot(sycl::queue &queue, transpose transpose_val, const FP_TYPE alpha,               \
+                 matrix_handle_t A_handle, sycl::buffer<FP_TYPE, 1> &x, const FP_TYPE beta,      \
                  sycl::buffer<FP_TYPE, 1> &y, sycl::buffer<FP_TYPE, 1> &d) {                     \
         auto libkey = get_device_id(queue);                                                      \
         function_tables[libkey].gemvdot_buffer##FP_SUFFIX(queue, transpose_val, alpha, A_handle, \
                                                           x, beta, y, d);                        \
     }                                                                                            \
     template <>                                                                                  \
-    sycl::event gemvdot(sycl::queue &queue, transpose transpose_val, FP_TYPE alpha,              \
-                        matrix_handle_t A_handle, FP_TYPE *x, FP_TYPE beta, FP_TYPE *y,          \
-                        FP_TYPE *d, const std::vector<sycl::event> &dependencies) {              \
+    sycl::event gemvdot(sycl::queue &queue, transpose transpose_val, const FP_TYPE alpha,        \
+                        matrix_handle_t A_handle, const FP_TYPE *x, const FP_TYPE beta,          \
+                        FP_TYPE *y, FP_TYPE *d, const std::vector<sycl::event> &dependencies) {  \
         auto libkey = get_device_id(queue);                                                      \
         return function_tables[libkey].gemvdot_usm##FP_SUFFIX(                                   \
             queue, transpose_val, alpha, A_handle, x, beta, y, d, dependencies);                 \
@@ -139,15 +139,15 @@ DEFINE_GEMVDOT(std::complex<double>, _cd)
 
 #define DEFINE_SYMV(FP_TYPE, FP_SUFFIX)                                                           \
     template <>                                                                                   \
-    void symv(sycl::queue &queue, uplo uplo_val, FP_TYPE alpha, matrix_handle_t A_handle,         \
-              sycl::buffer<FP_TYPE, 1> &x, FP_TYPE beta, sycl::buffer<FP_TYPE, 1> &y) {           \
+    void symv(sycl::queue &queue, uplo uplo_val, const FP_TYPE alpha, matrix_handle_t A_handle,   \
+              sycl::buffer<FP_TYPE, 1> &x, const FP_TYPE beta, sycl::buffer<FP_TYPE, 1> &y) {     \
         auto libkey = get_device_id(queue);                                                       \
         function_tables[libkey].symv_buffer##FP_SUFFIX(queue, uplo_val, alpha, A_handle, x, beta, \
                                                        y);                                        \
     }                                                                                             \
     template <>                                                                                   \
-    sycl::event symv(sycl::queue &queue, uplo uplo_val, FP_TYPE alpha, matrix_handle_t A_handle,  \
-                     FP_TYPE *x, FP_TYPE beta, FP_TYPE *y,                                        \
+    sycl::event symv(sycl::queue &queue, uplo uplo_val, const FP_TYPE alpha,                      \
+                     matrix_handle_t A_handle, const FP_TYPE *x, const FP_TYPE beta, FP_TYPE *y,  \
                      const std::vector<sycl::event> &dependencies) {                              \
         auto libkey = get_device_id(queue);                                                       \
         return function_tables[libkey].symv_usm##FP_SUFFIX(queue, uplo_val, alpha, A_handle, x,   \
@@ -163,16 +163,17 @@ DEFINE_SYMV(std::complex<double>, _cd)
 #define DEFINE_TRMV(FP_TYPE, FP_SUFFIX)                                                           \
     template <>                                                                                   \
     void trmv(sycl::queue &queue, uplo uplo_val, transpose transpose_val, diag diag_val,          \
-              FP_TYPE alpha, matrix_handle_t A_handle, sycl::buffer<FP_TYPE, 1> &x, FP_TYPE beta, \
-              sycl::buffer<FP_TYPE, 1> &y) {                                                      \
+              const FP_TYPE alpha, matrix_handle_t A_handle, sycl::buffer<FP_TYPE, 1> &x,         \
+              const FP_TYPE beta, sycl::buffer<FP_TYPE, 1> &y) {                                  \
         auto libkey = get_device_id(queue);                                                       \
         function_tables[libkey].trmv_buffer##FP_SUFFIX(queue, uplo_val, transpose_val, diag_val,  \
                                                        alpha, A_handle, x, beta, y);              \
     }                                                                                             \
     template <>                                                                                   \
     sycl::event trmv(sycl::queue &queue, uplo uplo_val, transpose transpose_val, diag diag_val,   \
-                     FP_TYPE alpha, matrix_handle_t A_handle, FP_TYPE *x, FP_TYPE beta,           \
-                     FP_TYPE *y, const std::vector<sycl::event> &dependencies) {                  \
+                     const FP_TYPE alpha, matrix_handle_t A_handle, const FP_TYPE *x,             \
+                     const FP_TYPE beta, FP_TYPE *y,                                              \
+                     const std::vector<sycl::event> &dependencies) {                              \
         auto libkey = get_device_id(queue);                                                       \
         return function_tables[libkey].trmv_usm##FP_SUFFIX(                                       \
             queue, uplo_val, transpose_val, diag_val, alpha, A_handle, x, beta, y, dependencies); \
@@ -195,7 +196,7 @@ DEFINE_TRMV(std::complex<double>, _cd)
     }                                                                                            \
     template <>                                                                                  \
     sycl::event trsv(sycl::queue &queue, uplo uplo_val, transpose transpose_val, diag diag_val,  \
-                     matrix_handle_t A_handle, FP_TYPE *x, FP_TYPE *y,                           \
+                     matrix_handle_t A_handle, const FP_TYPE *x, FP_TYPE *y,                     \
                      const std::vector<sycl::event> &dependencies) {                             \
         auto libkey = get_device_id(queue);                                                      \
         return function_tables[libkey].trsv_usm##FP_SUFFIX(                                      \
@@ -223,7 +224,7 @@ DEFINE_TRSV(std::complex<double>, _cd)
     sycl::event gemm(sycl::queue &queue, layout dense_matrix_layout, transpose transpose_A,      \
                      transpose transpose_B, const FP_TYPE alpha, matrix_handle_t A_handle,       \
                      const FP_TYPE *B, const std::int64_t columns, const std::int64_t ldb,       \
-                     const FP_TYPE beta, const FP_TYPE *C, const std::int64_t ldc,               \
+                     const FP_TYPE beta, FP_TYPE *C, const std::int64_t ldc,                     \
                      const std::vector<sycl::event> &dependencies) {                             \
         auto libkey = get_device_id(queue);                                                      \
         return function_tables[libkey].gemm_usm##FP_SUFFIX(                                      \

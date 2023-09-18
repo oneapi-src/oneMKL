@@ -84,7 +84,7 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>> gemv(
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemv(
     backend_selector<backend::BACKEND> selector, transpose transpose_val, const fpType alpha,
-    matrix_handle_t A_handle, const fpType *x, const fpType beta, const fpType *y,
+    matrix_handle_t A_handle, const fpType *x, const fpType beta, fpType *y,
     const std::vector<sycl::event> &dependencies = {}) {
     return BACKEND::gemv(selector.get_queue(), transpose_val, alpha, A_handle, x, beta, y,
                          dependencies);
@@ -92,16 +92,16 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemv(
 
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>> gemvdot(
-    backend_selector<backend::BACKEND> selector, transpose transpose_val, fpType alpha,
-    matrix_handle_t A_handle, sycl::buffer<fpType, 1> &x, fpType beta, sycl::buffer<fpType, 1> &y,
-    sycl::buffer<fpType, 1> &d) {
+    backend_selector<backend::BACKEND> selector, transpose transpose_val, const fpType alpha,
+    matrix_handle_t A_handle, sycl::buffer<fpType, 1> &x, const fpType beta,
+    sycl::buffer<fpType, 1> &y, sycl::buffer<fpType, 1> &d) {
     BACKEND::gemvdot(selector.get_queue(), transpose_val, alpha, A_handle, x, beta, y, d);
 }
 
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemvdot(
-    backend_selector<backend::BACKEND> selector, transpose transpose_val, fpType alpha,
-    matrix_handle_t A_handle, fpType *x, fpType beta, fpType *y, fpType *d,
+    backend_selector<backend::BACKEND> selector, transpose transpose_val, const fpType alpha,
+    matrix_handle_t A_handle, const fpType *x, const fpType beta, fpType *y, fpType *d,
     const std::vector<sycl::event> &dependencies = {}) {
     return BACKEND::gemvdot(selector.get_queue(), transpose_val, alpha, A_handle, x, beta, y, d,
                             dependencies);
@@ -109,15 +109,16 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemvdot(
 
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>> symv(
-    backend_selector<backend::BACKEND> selector, uplo uplo_val, fpType alpha,
-    matrix_handle_t A_handle, sycl::buffer<fpType, 1> &x, fpType beta, sycl::buffer<fpType, 1> &y) {
+    backend_selector<backend::BACKEND> selector, uplo uplo_val, const fpType alpha,
+    matrix_handle_t A_handle, sycl::buffer<fpType, 1> &x, const fpType beta,
+    sycl::buffer<fpType, 1> &y) {
     BACKEND::symv(selector.get_queue(), uplo_val, alpha, A_handle, x, beta, y);
 }
 
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> symv(
-    backend_selector<backend::BACKEND> selector, uplo uplo_val, fpType alpha,
-    matrix_handle_t A_handle, fpType *x, fpType beta, fpType *y,
+    backend_selector<backend::BACKEND> selector, uplo uplo_val, const fpType alpha,
+    matrix_handle_t A_handle, const fpType *x, const fpType beta, fpType *y,
     const std::vector<sycl::event> &dependencies = {}) {
     return BACKEND::symv(selector.get_queue(), uplo_val, alpha, A_handle, x, beta, y, dependencies);
 }
@@ -125,8 +126,8 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> symv(
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>> trmv(
     backend_selector<backend::BACKEND> selector, uplo uplo_val, transpose transpose_val,
-    diag diag_val, fpType alpha, matrix_handle_t A_handle, sycl::buffer<fpType, 1> &x, fpType beta,
-    sycl::buffer<fpType, 1> &y) {
+    diag diag_val, const fpType alpha, matrix_handle_t A_handle, sycl::buffer<fpType, 1> &x,
+    const fpType beta, sycl::buffer<fpType, 1> &y) {
     BACKEND::trmv(selector.get_queue(), uplo_val, transpose_val, diag_val, alpha, A_handle, x, beta,
                   y);
 }
@@ -134,8 +135,8 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>> trmv(
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> trmv(
     backend_selector<backend::BACKEND> selector, uplo uplo_val, transpose transpose_val,
-    diag diag_val, fpType alpha, matrix_handle_t A_handle, fpType *x, fpType beta, fpType *y,
-    const std::vector<sycl::event> &dependencies = {}) {
+    diag diag_val, const fpType alpha, matrix_handle_t A_handle, const fpType *x, const fpType beta,
+    fpType *y, const std::vector<sycl::event> &dependencies = {}) {
     return BACKEND::trmv(selector.get_queue(), uplo_val, transpose_val, diag_val, alpha, A_handle,
                          x, beta, y, dependencies);
 }
@@ -151,7 +152,7 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>> trsv(
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> trsv(
     backend_selector<backend::BACKEND> selector, uplo uplo_val, transpose transpose_val,
-    diag diag_val, matrix_handle_t A_handle, fpType *x, fpType *y,
+    diag diag_val, matrix_handle_t A_handle, const fpType *x, fpType *y,
     const std::vector<sycl::event> &dependencies = {}) {
     return BACKEND::trsv(selector.get_queue(), uplo_val, transpose_val, diag_val, A_handle, x, y,
                          dependencies);
@@ -171,7 +172,7 @@ template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemm(
     backend_selector<backend::BACKEND> selector, layout dense_matrix_layout, transpose transpose_A,
     transpose transpose_B, const fpType alpha, matrix_handle_t A_handle, const fpType *B,
-    const std::int64_t columns, const std::int64_t ldb, const fpType beta, const fpType *C,
+    const std::int64_t columns, const std::int64_t ldb, const fpType beta, fpType *C,
     const std::int64_t ldc, const std::vector<sycl::event> &dependencies = {}) {
     return BACKEND::gemm(selector.get_queue(), dense_matrix_layout, transpose_A, transpose_B, alpha,
                          A_handle, B, columns, ldb, beta, C, ldc, dependencies);

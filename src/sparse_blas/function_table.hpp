@@ -170,34 +170,34 @@ typedef struct {
                            sycl::buffer<std::complex<double>, 1> &y);
     sycl::event (*gemv_usm_sf)(sycl::queue &queue, oneapi::mkl::transpose transpose_val,
                                const float alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
-                               const float *x, const float beta, const float *y,
+                               const float *x, const float beta, float *y,
                                const std::vector<sycl::event> &dependencies);
     sycl::event (*gemv_usm_sd)(sycl::queue &queue, oneapi::mkl::transpose transpose_val,
                                const double alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
-                               const double *x, const double beta, const double *y,
+                               const double *x, const double beta, double *y,
                                const std::vector<sycl::event> &dependencies);
     sycl::event (*gemv_usm_cf)(sycl::queue &queue, oneapi::mkl::transpose transpose_val,
                                const std::complex<float> alpha,
                                oneapi::mkl::sparse::matrix_handle_t A_handle,
                                const std::complex<float> *x, const std::complex<float> beta,
-                               const std::complex<float> *y,
+                               std::complex<float> *y,
                                const std::vector<sycl::event> &dependencies);
     sycl::event (*gemv_usm_cd)(sycl::queue &queue, oneapi::mkl::transpose transpose_val,
                                const std::complex<double> alpha,
                                oneapi::mkl::sparse::matrix_handle_t A_handle,
                                const std::complex<double> *x, const std::complex<double> beta,
-                               const std::complex<double> *y,
+                               std::complex<double> *y,
                                const std::vector<sycl::event> &dependencies);
 
     // gemvdot
-    void (*gemvdot_buffer_sf)(sycl::queue &queue, oneapi::mkl::transpose transpose_val, float alpha,
-                              oneapi::mkl::sparse::matrix_handle_t A_handle,
-                              sycl::buffer<float, 1> &x, float beta, sycl::buffer<float, 1> &y,
-                              sycl::buffer<float, 1> &d);
+    void (*gemvdot_buffer_sf)(sycl::queue &queue, oneapi::mkl::transpose transpose_val,
+                              const float alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
+                              sycl::buffer<float, 1> &x, const float beta,
+                              sycl::buffer<float, 1> &y, sycl::buffer<float, 1> &d);
     void (*gemvdot_buffer_sd)(sycl::queue &queue, oneapi::mkl::transpose transpose_val,
-                              double alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
-                              sycl::buffer<double, 1> &x, double beta, sycl::buffer<double, 1> &y,
-                              sycl::buffer<double, 1> &d);
+                              const double alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
+                              sycl::buffer<double, 1> &x, const double beta,
+                              sycl::buffer<double, 1> &y, sycl::buffer<double, 1> &d);
     void (*gemvdot_buffer_cf)(sycl::queue &queue, oneapi::mkl::transpose transpose_val,
                               std::complex<float> alpha,
                               oneapi::mkl::sparse::matrix_handle_t A_handle,
@@ -211,33 +211,34 @@ typedef struct {
                               sycl::buffer<std::complex<double>, 1> &y,
                               sycl::buffer<std::complex<double>, 1> &d);
     sycl::event (*gemvdot_usm_sf)(sycl::queue &queue, oneapi::mkl::transpose transpose_val,
-                                  float alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
-                                  float *x, float beta, float *y, float *d,
+                                  const float alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
+                                  const float *x, const float beta, float *y, float *d,
                                   const std::vector<sycl::event> &dependencies);
     sycl::event (*gemvdot_usm_sd)(sycl::queue &queue, oneapi::mkl::transpose transpose_val,
-                                  double alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
-                                  double *x, double beta, double *y, double *d,
+                                  const double alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
+                                  const double *x, const double beta, double *y, double *d,
                                   const std::vector<sycl::event> &dependencies);
     sycl::event (*gemvdot_usm_cf)(sycl::queue &queue, oneapi::mkl::transpose transpose_val,
                                   std::complex<float> alpha,
                                   oneapi::mkl::sparse::matrix_handle_t A_handle,
-                                  std::complex<float> *x, std::complex<float> beta,
+                                  const std::complex<float> *x, std::complex<float> beta,
                                   std::complex<float> *y, std::complex<float> *d,
                                   const std::vector<sycl::event> &dependencies);
     sycl::event (*gemvdot_usm_cd)(sycl::queue &queue, oneapi::mkl::transpose transpose_val,
                                   std::complex<double> alpha,
                                   oneapi::mkl::sparse::matrix_handle_t A_handle,
-                                  std::complex<double> *x, std::complex<double> beta,
+                                  const std::complex<double> *x, std::complex<double> beta,
                                   std::complex<double> *y, std::complex<double> *d,
                                   const std::vector<sycl::event> &dependencies);
 
     // symv
-    void (*symv_buffer_sf)(sycl::queue &queue, oneapi::mkl::uplo uplo_val, float alpha,
+    void (*symv_buffer_sf)(sycl::queue &queue, oneapi::mkl::uplo uplo_val, const float alpha,
                            oneapi::mkl::sparse::matrix_handle_t A_handle, sycl::buffer<float, 1> &x,
-                           float beta, sycl::buffer<float, 1> &y);
-    void (*symv_buffer_sd)(sycl::queue &queue, oneapi::mkl::uplo uplo_val, double alpha,
+                           const float beta, sycl::buffer<float, 1> &y);
+    void (*symv_buffer_sd)(sycl::queue &queue, oneapi::mkl::uplo uplo_val, const double alpha,
                            oneapi::mkl::sparse::matrix_handle_t A_handle,
-                           sycl::buffer<double, 1> &x, double beta, sycl::buffer<double, 1> &y);
+                           sycl::buffer<double, 1> &x, const double beta,
+                           sycl::buffer<double, 1> &y);
     void (*symv_buffer_cf)(sycl::queue &queue, oneapi::mkl::uplo uplo_val,
                            std::complex<float> alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
                            sycl::buffer<std::complex<float>, 1> &x, std::complex<float> beta,
@@ -247,35 +248,37 @@ typedef struct {
                            oneapi::mkl::sparse::matrix_handle_t A_handle,
                            sycl::buffer<std::complex<double>, 1> &x, std::complex<double> beta,
                            sycl::buffer<std::complex<double>, 1> &y);
-    sycl::event (*symv_usm_sf)(sycl::queue &queue, oneapi::mkl::uplo uplo_val, float alpha,
-                               oneapi::mkl::sparse::matrix_handle_t A_handle, float *x, float beta,
-                               float *y, const std::vector<sycl::event> &dependencies);
-    sycl::event (*symv_usm_sd)(sycl::queue &queue, oneapi::mkl::uplo uplo_val, double alpha,
-                               oneapi::mkl::sparse::matrix_handle_t A_handle, double *x,
-                               double beta, double *y,
+    sycl::event (*symv_usm_sf)(sycl::queue &queue, oneapi::mkl::uplo uplo_val, const float alpha,
+                               oneapi::mkl::sparse::matrix_handle_t A_handle, const float *x,
+                               const float beta, float *y,
+                               const std::vector<sycl::event> &dependencies);
+    sycl::event (*symv_usm_sd)(sycl::queue &queue, oneapi::mkl::uplo uplo_val, const double alpha,
+                               oneapi::mkl::sparse::matrix_handle_t A_handle, const double *x,
+                               const double beta, double *y,
                                const std::vector<sycl::event> &dependencies);
     sycl::event (*symv_usm_cf)(sycl::queue &queue, oneapi::mkl::uplo uplo_val,
                                std::complex<float> alpha,
                                oneapi::mkl::sparse::matrix_handle_t A_handle,
-                               std::complex<float> *x, std::complex<float> beta,
+                               const std::complex<float> *x, std::complex<float> beta,
                                std::complex<float> *y,
                                const std::vector<sycl::event> &dependencies);
     sycl::event (*symv_usm_cd)(sycl::queue &queue, oneapi::mkl::uplo uplo_val,
                                std::complex<double> alpha,
                                oneapi::mkl::sparse::matrix_handle_t A_handle,
-                               std::complex<double> *x, std::complex<double> beta,
+                               const std::complex<double> *x, std::complex<double> beta,
                                std::complex<double> *y,
                                const std::vector<sycl::event> &dependencies);
 
     // trmv
     void (*trmv_buffer_sf)(sycl::queue &queue, oneapi::mkl::uplo uplo_val,
                            oneapi::mkl::transpose transpose_val, oneapi::mkl::diag diag_val,
-                           float alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
-                           sycl::buffer<float, 1> &x, float beta, sycl::buffer<float, 1> &y);
+                           const float alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
+                           sycl::buffer<float, 1> &x, const float beta, sycl::buffer<float, 1> &y);
     void (*trmv_buffer_sd)(sycl::queue &queue, oneapi::mkl::uplo uplo_val,
                            oneapi::mkl::transpose transpose_val, oneapi::mkl::diag diag_val,
-                           double alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
-                           sycl::buffer<double, 1> &x, double beta, sycl::buffer<double, 1> &y);
+                           const double alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
+                           sycl::buffer<double, 1> &x, const double beta,
+                           sycl::buffer<double, 1> &y);
     void (*trmv_buffer_cf)(sycl::queue &queue, oneapi::mkl::uplo uplo_val,
                            oneapi::mkl::transpose transpose_val, oneapi::mkl::diag diag_val,
                            std::complex<float> alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
@@ -289,25 +292,26 @@ typedef struct {
                            sycl::buffer<std::complex<double>, 1> &y);
     sycl::event (*trmv_usm_sf)(sycl::queue &queue, oneapi::mkl::uplo uplo_val,
                                oneapi::mkl::transpose transpose_val, oneapi::mkl::diag diag_val,
-                               float alpha, oneapi::mkl::sparse::matrix_handle_t A_handle, float *x,
-                               float beta, float *y, const std::vector<sycl::event> &dependencies);
+                               const float alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
+                               const float *x, const float beta, float *y,
+                               const std::vector<sycl::event> &dependencies);
     sycl::event (*trmv_usm_sd)(sycl::queue &queue, oneapi::mkl::uplo uplo_val,
                                oneapi::mkl::transpose transpose_val, oneapi::mkl::diag diag_val,
-                               double alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
-                               double *x, double beta, double *y,
+                               const double alpha, oneapi::mkl::sparse::matrix_handle_t A_handle,
+                               const double *x, const double beta, double *y,
                                const std::vector<sycl::event> &dependencies);
     sycl::event (*trmv_usm_cf)(sycl::queue &queue, oneapi::mkl::uplo uplo_val,
                                oneapi::mkl::transpose transpose_val, oneapi::mkl::diag diag_val,
                                std::complex<float> alpha,
                                oneapi::mkl::sparse::matrix_handle_t A_handle,
-                               std::complex<float> *x, std::complex<float> beta,
+                               const std::complex<float> *x, std::complex<float> beta,
                                std::complex<float> *y,
                                const std::vector<sycl::event> &dependencies);
     sycl::event (*trmv_usm_cd)(sycl::queue &queue, oneapi::mkl::uplo uplo_val,
                                oneapi::mkl::transpose transpose_val, oneapi::mkl::diag diag_val,
                                std::complex<double> alpha,
                                oneapi::mkl::sparse::matrix_handle_t A_handle,
-                               std::complex<double> *x, std::complex<double> beta,
+                               const std::complex<double> *x, std::complex<double> beta,
                                std::complex<double> *y,
                                const std::vector<sycl::event> &dependencies);
 
@@ -332,21 +336,21 @@ typedef struct {
                            sycl::buffer<std::complex<double>, 1> &y);
     sycl::event (*trsv_usm_sf)(sycl::queue &queue, oneapi::mkl::uplo uplo_val,
                                oneapi::mkl::transpose transpose_val, oneapi::mkl::diag diag_val,
-                               oneapi::mkl::sparse::matrix_handle_t A_handle, float *x, float *y,
-                               const std::vector<sycl::event> &dependencies);
+                               oneapi::mkl::sparse::matrix_handle_t A_handle, const float *x,
+                               float *y, const std::vector<sycl::event> &dependencies);
     sycl::event (*trsv_usm_sd)(sycl::queue &queue, oneapi::mkl::uplo uplo_val,
                                oneapi::mkl::transpose transpose_val, oneapi::mkl::diag diag_val,
-                               oneapi::mkl::sparse::matrix_handle_t A_handle, double *x, double *y,
-                               const std::vector<sycl::event> &dependencies);
+                               oneapi::mkl::sparse::matrix_handle_t A_handle, const double *x,
+                               double *y, const std::vector<sycl::event> &dependencies);
     sycl::event (*trsv_usm_cf)(sycl::queue &queue, oneapi::mkl::uplo uplo_val,
                                oneapi::mkl::transpose transpose_val, oneapi::mkl::diag diag_val,
                                oneapi::mkl::sparse::matrix_handle_t A_handle,
-                               std::complex<float> *x, std::complex<float> *y,
+                               const std::complex<float> *x, std::complex<float> *y,
                                const std::vector<sycl::event> &dependencies);
     sycl::event (*trsv_usm_cd)(sycl::queue &queue, oneapi::mkl::uplo uplo_val,
                                oneapi::mkl::transpose transpose_val, oneapi::mkl::diag diag_val,
                                oneapi::mkl::sparse::matrix_handle_t A_handle,
-                               std::complex<double> *x, std::complex<double> *y,
+                               const std::complex<double> *x, std::complex<double> *y,
                                const std::vector<sycl::event> &dependencies);
 
     // gemm
@@ -381,14 +385,14 @@ typedef struct {
                                oneapi::mkl::transpose transpose_B, const float alpha,
                                oneapi::mkl::sparse::matrix_handle_t A_handle, const float *B,
                                const std::int64_t columns, const std::int64_t ldb, const float beta,
-                               const float *C, const std::int64_t ldc,
+                               float *C, const std::int64_t ldc,
                                const std::vector<sycl::event> &dependencies);
     sycl::event (*gemm_usm_sd)(sycl::queue &queue, oneapi::mkl::layout dense_matrix_layout,
                                oneapi::mkl::transpose transpose_A,
                                oneapi::mkl::transpose transpose_B, const double alpha,
                                oneapi::mkl::sparse::matrix_handle_t A_handle, const double *B,
                                const std::int64_t columns, const std::int64_t ldb,
-                               const double beta, const double *C, const std::int64_t ldc,
+                               const double beta, double *C, const std::int64_t ldc,
                                const std::vector<sycl::event> &dependencies);
     sycl::event (*gemm_usm_cf)(sycl::queue &queue, oneapi::mkl::layout dense_matrix_layout,
                                oneapi::mkl::transpose transpose_A,
@@ -396,7 +400,7 @@ typedef struct {
                                oneapi::mkl::sparse::matrix_handle_t A_handle,
                                const std::complex<float> *B, const std::int64_t columns,
                                const std::int64_t ldb, const std::complex<float> beta,
-                               const std::complex<float> *C, const std::int64_t ldc,
+                               std::complex<float> *C, const std::int64_t ldc,
                                const std::vector<sycl::event> &dependencies);
     sycl::event (*gemm_usm_cd)(sycl::queue &queue, oneapi::mkl::layout dense_matrix_layout,
                                oneapi::mkl::transpose transpose_A,
@@ -404,7 +408,7 @@ typedef struct {
                                oneapi::mkl::sparse::matrix_handle_t A_handle,
                                const std::complex<double> *B, const std::int64_t columns,
                                const std::int64_t ldb, const std::complex<double> beta,
-                               const std::complex<double> *C, const std::int64_t ldc,
+                               std::complex<double> *C, const std::int64_t ldc,
                                const std::vector<sycl::event> &dependencies);
 } sparse_blas_function_table_t;
 
