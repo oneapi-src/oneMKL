@@ -17,5 +17,4 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-# TODO: Add tests
-#add_subdirectory(source)
+add_subdirectory(source)

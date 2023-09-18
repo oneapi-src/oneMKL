@@ -17,10 +17,11 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-sycl::event optimize_gemv(sycl::queue& /*queue*/, transpose /*transpose_val*/,
-                          detail::matrix_handle* /*handle*/,
-                          const std::vector<sycl::event>& /*dependencies*/) {
-    throw unimplemented("SPARSE_BLAS", "optimize_gemv");
+sycl::event optimize_gemv(sycl::queue& queue, transpose transpose_val,
+                          detail::matrix_handle* handle,
+                          const std::vector<sycl::event>& dependencies) {
+    return oneapi::mkl::sparse::optimize_gemv(queue, transpose_val, get_handle(handle),
+                                              dependencies);
 }
 
 sycl::event optimize_trmv(sycl::queue& /*queue*/, uplo /*uplo_val*/, transpose /*transpose_val*/,
@@ -37,18 +38,19 @@ sycl::event optimize_trsv(sycl::queue& /*queue*/, uplo /*uplo_val*/, transpose /
 
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>> gemv(
-    sycl::queue& /*queue*/, transpose /*transpose_val*/, const fpType /*alpha*/,
-    detail::matrix_handle* /*A_handle*/, sycl::buffer<fpType, 1>& /*x*/, const fpType /*beta*/,
-    sycl::buffer<fpType, 1>& /*y*/) {
-    throw unimplemented("SPARSE_BLAS", "gemv");
+    sycl::queue& queue, transpose transpose_val, const fpType alpha,
+    detail::matrix_handle* A_handle, sycl::buffer<fpType, 1>& x, const fpType beta,
+    sycl::buffer<fpType, 1>& y) {
+    oneapi::mkl::sparse::gemv(queue, transpose_val, alpha, get_handle(A_handle), x, beta, y);
 }
 
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemv(
-    sycl::queue& /*queue*/, transpose /*transpose_val*/, const fpType /*alpha*/,
-    detail::matrix_handle* /*A_handle*/, const fpType* /*x*/, const fpType /*beta*/, fpType* /*y*/,
-    const std::vector<sycl::event>& /*dependencies*/) {
-    throw unimplemented("SPARSE_BLAS", "gemv");
+    sycl::queue& queue, transpose transpose_val, const fpType alpha,
+    detail::matrix_handle* A_handle, const fpType* x, const fpType beta, fpType* y,
+    const std::vector<sycl::event>& dependencies) {
+    return oneapi::mkl::sparse::gemv(queue, transpose_val, alpha, get_handle(A_handle), x, beta, y,
+                                     dependencies);
 }
 
 template <typename fpType>
