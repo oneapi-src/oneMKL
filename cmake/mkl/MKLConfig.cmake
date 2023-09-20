@@ -861,7 +861,8 @@ if(NOT MKL_THREADING STREQUAL "tbb_thread" AND MKL_THREADING MATCHES "_thread")
              "../../compiler/latest/windows/redist/${MKL_ARCH}_win"
              "../../compiler/latest/windows/redist/${MKL_ARCH}_win/compiler"
              "../../compiler/latest/windows/compiler/redist/${MKL_ARCH}_win"
-             "../../compiler/latest/windows/compiler/redist/${MKL_ARCH}_win/compiler")
+             "../../compiler/latest/windows/compiler/redist/${MKL_ARCH}_win/compiler"
+             "bin) # Support for Conda directory layout, libiomp5md.dll
       find_package_handle_standard_args(MKL REQUIRED_VARS OMP_DLL_DIR)
       set(MKL_ENV_PATH "${OMP_DLL_DIR}")
     endif()
