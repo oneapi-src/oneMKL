@@ -134,7 +134,6 @@ if (NOT PORTBLAS_FOUND)
   set(BLAS_ENABLE_BENCHMARK OFF)
   set(BLAS_ENABLE_TESTING OFF)
   set(ENABLE_EXPRESSION_TESTS OFF)
-  target_compile_options(ONEMKL::SYCL::SYCL INTERFACE "-DSB_ENABLE_USM=ON")
   # Set the policy to forward variables to portBLAS configure step
   set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
   set(FETCHCONTENT_BASE_DIR "${CMAKE_BINARY_DIR}/deps")
@@ -157,6 +156,7 @@ endif()
 
 # This define is tuning portBLAS in header-only mode
 target_compile_definitions(PORTBLAS::portblas INTERFACE ${PORTBLAS_TUNING_TARGET})
+target_compile_options(ONEMKL::SYCL::SYCL INTERFACE "-DSB_ENABLE_USM=ON")
 
 set(SOURCES
   portblas_level1_double.cpp portblas_level1_float.cpp
