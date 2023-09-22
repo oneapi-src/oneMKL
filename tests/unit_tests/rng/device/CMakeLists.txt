@@ -1,5 +1,5 @@
 #===============================================================================
-# Copyright 2020-2021 Intel Corporation
+# Copyright 2023 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,6 +17,5 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-add_subdirectory(device)
+add_subdirectory(moments)
 add_subdirectory(service)
-add_subdirectory(statistics_check)

@@ -56,6 +56,10 @@ set(lapack_TEST_LINK ${LAPACKE_LINK})
 set(rng_TEST_LIST
       rng_statistics
       rng_service)
+set(rng_DEVICE_TEST_LIST
+      rng_device_moments
+      rng_device_service
+)
 
 set(rng_TEST_LINK "")
 
@@ -69,8 +73,10 @@ foreach(domain ${TARGET_DOMAINS})
   # Generate RT and CT test lists
   set(${domain}_TEST_LIST_RT ${${domain}_TEST_LIST})
   set(${domain}_TEST_LIST_CT ${${domain}_TEST_LIST})
+  set(${domain}_DEVICE_TEST_LIST_CT ${${domain}_DEVICE_TEST_LIST})
   list(TRANSFORM ${domain}_TEST_LIST_RT APPEND _rt)
   list(TRANSFORM ${domain}_TEST_LIST_CT APPEND _ct)
+  list(TRANSFORM ${domain}_DEVICE_TEST_LIST_CT APPEND _ct)
 
   add_executable(test_main_${domain}_ct main_test.cpp)
   target_include_directories(test_main_${domain}_ct PUBLIC ${GTEST_INCLUDE_DIR})
@@ -167,6 +173,7 @@ foreach(domain ${TARGET_DOMAINS})
       ${ONEMKL_LIBRARIES_${domain}}
       ONEMKL::SYCL::SYCL
       ${${domain}_TEST_LIST_CT}
+      ${${domain}_DEVICE_TEST_LIST_CT}
   )
 
   string(TOUPPER ${domain} DOMAIN_PREFIX)
