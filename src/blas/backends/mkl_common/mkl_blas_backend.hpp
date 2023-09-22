@@ -27,8 +27,6 @@
 namespace oneapi {
 namespace mkl {
 
-#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION >= 20240000)
-
 template <typename T>
 class value_or_pointer {
     T value_;
@@ -66,18 +64,6 @@ public:
         }
     }
 };
-
-#define ONEMKL_SCALAR(T) value_or_pointer<T>
-
-using onemkl_bfloat16 = sycl::ext::oneapi::bfloat16;
-
-#else
-
-#define ONEMKL_SCALAR(T) T
-
-using onemkl_bfloat16 = oneapi::mkl::bfloat16;
-
-#endif
 
 namespace blas {
 
