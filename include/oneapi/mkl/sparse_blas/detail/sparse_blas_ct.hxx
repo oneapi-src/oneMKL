@@ -55,20 +55,20 @@ std::enable_if_t<detail::are_fp_int_supported_v<fpType, intType>, sycl::event> s
 
 inline sycl::event optimize_gemv(backend_selector<backend::BACKEND> selector,
                                  transpose transpose_val, matrix_handle_t handle,
-                                 const std::vector<sycl::event> &dependencies) {
+                                 const std::vector<sycl::event> &dependencies = {}) {
     return BACKEND::optimize_gemv(selector.get_queue(), transpose_val, handle, dependencies);
 }
 
 inline sycl::event optimize_trmv(backend_selector<backend::BACKEND> selector, uplo uplo_val,
                                  transpose transpose_val, diag diag_val, matrix_handle_t handle,
-                                 const std::vector<sycl::event> &dependencies) {
+                                 const std::vector<sycl::event> &dependencies = {}) {
     return BACKEND::optimize_trmv(selector.get_queue(), uplo_val, transpose_val, diag_val, handle,
                                   dependencies);
 }
 
 inline sycl::event optimize_trsv(backend_selector<backend::BACKEND> selector, uplo uplo_val,
                                  transpose transpose_val, diag diag_val, matrix_handle_t handle,
-                                 const std::vector<sycl::event> &dependencies) {
+                                 const std::vector<sycl::event> &dependencies = {}) {
     return BACKEND::optimize_trsv(selector.get_queue(), uplo_val, transpose_val, diag_val, handle,
                                   dependencies);
 }
