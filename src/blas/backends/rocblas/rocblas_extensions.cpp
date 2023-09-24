@@ -253,6 +253,7 @@ sycl::event omatcopy(const char *func_name, Func func, sycl::queue &queue, trans
                      const std::vector<sycl::event> &dependencies) {
     using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb);
+    const T beta = 0;
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
         const int64_t logical_m = (trans == oneapi::mkl::transpose::nontrans ? m : n);
