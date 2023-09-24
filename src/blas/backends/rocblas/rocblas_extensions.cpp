@@ -416,6 +416,7 @@ void omatcopy(const char *func_name, Func func, sycl::queue &queue, transpose tr
               int64_t ldb) {
     using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb);
+    const T beta = 0;
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
