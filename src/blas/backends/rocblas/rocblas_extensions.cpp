@@ -429,7 +429,7 @@ void omatcopy(const char *func_name, Func func, sycl::queue &queue, transpose tr
             rocblas_status err;
             ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(trans),
                                       get_rocblas_operation(trans), logical_m, logical_n,
-                                      (rocDataType *)&alpha, a_, lda, nullptr, nullptr, lda, b_, ldb);
+                                      (rocDataType *)&alpha, a_, lda,  (rocDataType *)&beta, nullptr, lda, b_, ldb);
         });
     });
 }
