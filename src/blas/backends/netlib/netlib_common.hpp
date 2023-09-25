@@ -32,6 +32,8 @@
 #include "oneapi/mkl/blas/detail/netlib/onemkl_blas_netlib.hpp"
 #include "oneapi/mkl/types.hpp"
 
+#define GET_MULTI_PTR template get_multi_ptr<sycl::access::decorated::yes>().get_raw()
+
 namespace oneapi {
 namespace mkl {
 namespace blas {
