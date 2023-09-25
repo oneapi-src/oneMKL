@@ -32,11 +32,7 @@
 #include "oneapi/mkl/blas/detail/netlib/onemkl_blas_netlib.hpp"
 #include "oneapi/mkl/types.hpp"
 
-#if defined(__SYCL_COMPILER_VERSION) && __SYCL_COMPILER_VERSION <= 20230320
-#define GET_MULTI_PTR get_pointer()
-#else
 #define GET_MULTI_PTR template get_multi_ptr<sycl::access::decorated::yes>().get_raw()
-#endif
 
 namespace oneapi {
 namespace mkl {
