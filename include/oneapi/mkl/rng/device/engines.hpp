@@ -25,7 +25,6 @@
 #include "oneapi/mkl/rng/device/types.hpp"
 #include "oneapi/mkl/rng/device/functions.hpp"
 #include "oneapi/mkl/rng/device/detail/engine_base.hpp"
-// #include "oneapi/mkl/rng/device/detail/engine_helpers_base.hpp"
 
 namespace oneapi::mkl::rng::device {
 
@@ -68,10 +67,6 @@ private:
     template <typename Engine>
     friend void skip_ahead(Engine& engine, std::initializer_list<std::uint64_t> num_to_skip);
 
-//     friend class detail::engine_descriptor_base<philox4x32x10<VecSize>>;
-
-//     friend class detail::engine_accessor_base<philox4x32x10<VecSize>>;
-
     template <typename DistrType>
     friend class detail::distribution_base;
 };
@@ -112,10 +107,6 @@ private:
     template <typename Engine>
     friend void skip_ahead(Engine& engine, std::initializer_list<std::uint64_t> num_to_skip);
 
-//     friend class detail::engine_descriptor_base<mrg32k3a<VecSize>>;
-
-//     friend class detail::engine_accessor_base<mrg32k3a<VecSize>>;
-
     template <typename DistrType>
     friend class detail::distribution_base;
 };
@@ -146,10 +137,6 @@ private:
     template <typename Engine>
     friend void skip_ahead(Engine& engine, std::uint64_t num_to_skip);
 
-//     friend class detail::engine_descriptor_base<mcg31m1<VecSize>>;
-
-//     friend class detail::engine_accessor_base<mcg31m1<VecSize>>;
-
     template <typename DistrType>
     friend class detail::distribution_base;
 };
@@ -179,10 +166,6 @@ public:
 private:
     template <typename Engine>
     friend void skip_ahead(Engine& engine, std::uint64_t num_to_skip);
-
-//     friend class detail::engine_descriptor_base<mcg59<VecSize>>;
-
-//     friend class detail::engine_accessor_base<mcg59<VecSize>>;
 
     template <typename DistrType>
     friend class detail::distribution_base;

@@ -38,9 +38,6 @@
 #endif
 #include "oneapi/mkl/rng/device.hpp"
 
-// local includes
-// #include "common_for_examples.hpp"
-
 bool isDoubleSupported(sycl::device my_dev) {
     return my_dev.get_info<sycl::info::device::double_fp_config>().size() != 0;
 }

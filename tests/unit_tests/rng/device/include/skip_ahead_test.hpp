@@ -47,7 +47,7 @@ public:
 
             sycl::buffer<std::uint32_t, 1> buf(r);
             auto event = queue.submit([&](sycl::handler& cgh) {
-                auto acc = buf.template get_access<sycl::access::mode::write>(cgh);
+                sycl::accessor acc(buf, cgh, sycl::write_only);
                 cgh.parallel_for(range, [=](sycl::item<1> item) {
                     size_t id = item.get_id(0);
                     Engine engine(SEED);

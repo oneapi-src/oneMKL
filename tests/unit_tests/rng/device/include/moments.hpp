@@ -20,7 +20,7 @@
 /*
 *
 *  Content:
-*       oneapi::mkl::rng::device:: distributions moments test (DPC++ interface)
+*       oneapi::mkl::rng::device:: distributions moments test (SYCL interface)
 *
 *******************************************************************************/
 
@@ -54,7 +54,7 @@ public:
 
             sycl::buffer<Type, 1> buf(r);
             auto event = queue.submit([&](sycl::handler& cgh) {
-                auto acc = buf.template get_access<sycl::access::mode::write>(cgh);
+                sycl::accessor acc(buf, cgh, sycl::write_only);
                 cgh.parallel_for(range, [=](sycl::item<1> item) {
                     size_t id = item.get_id(0);
                     auto multiplier = Engine::vec_size;

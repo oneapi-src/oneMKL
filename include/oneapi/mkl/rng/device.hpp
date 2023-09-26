@@ -24,6 +24,5 @@
 #include "oneapi/mkl/rng/device/functions.hpp"
 #include "oneapi/mkl/rng/device/distributions.hpp"
 #include "oneapi/mkl/rng/device/engines.hpp"
-// #include "oneapi/mkl/rng/device/engine_helpers.hpp"
 
 #endif // _MKL_RNG_SYCL_DEVICE_HPP__
