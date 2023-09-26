@@ -45,7 +45,7 @@ public:
         try {
             sycl::range<1> range(N_GEN / Engine::vec_size);
 
-            sycl::buffer<std::uint32_t, 1> buf(r);
+            sycl::buffer<std::uint32_t> buf(r);
             auto event = queue.submit([&](sycl::handler& cgh) {
                 sycl::accessor acc(buf, cgh, sycl::write_only);
                 cgh.parallel_for(range, [=](sycl::item<1> item) {
@@ -78,12 +78,15 @@ public:
         // validation
         Engine engine(SEED);
         oneapi::mkl::rng::device::bits<> distr;
-        for(int i = 0; i < N_GEN; i++) {
+        for(int i = 0; i < N_GEN; i += Engine::vec_size) {
+            auto res = oneapi::mkl::rng::device::generate(distr, engine);
             if constexpr(Engine::vec_size == 1) {
-                r_ref[i] = oneapi::mkl::rng::device::generate(distr, engine);
+                r_ref[i] = res;
             }
             else {
-                r_ref[i] =  oneapi::mkl::rng::device::generate_single(distr, engine);
+                for (int j = 0; j < Engine::vec_size; ++j) {
+                    r_ref[i + j] = res[j];
+                }
             }
         }
 

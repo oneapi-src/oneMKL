@@ -35,13 +35,6 @@ auto generate(Distr& distr, Engine& engine) ->
     return distr.generate(engine);
 }
 
-template <typename Distr, typename Engine>
-typename Distr::result_type generate_single(Distr& distr, Engine& engine) {
-    static_assert(Engine::vec_size > 1,
-                  "oneMKL: rng/generate_single: function works for engines with vec_size > 1");
-    return distr.generate_single(engine);
-}
-
 // SERVICE FUNCTIONS
 
 template <typename Engine>
