@@ -170,21 +170,8 @@ void gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::
                 sycl::buffer<float, 1> &b, std::int64_t ldb, std::int64_t stride_b, float beta,
                 sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
                 std::int64_t batch_size) {
-    // portBLAS's batched GEMM is for matrix strides equal to the size of the matrix only.
-    std::int64_t exp_stride_a =
-        (transa == transpose::nontrans) == is_column_major() ? lda * k : lda * m;
-    std::int64_t exp_stride_b =
-        (transb == transpose::nontrans) == is_column_major() ? ldb * n : ldb * k;
-    std::int64_t exp_stride_c = is_column_major() ? ldc * m : ldc * n;
-    if ((exp_stride_a == stride_a) && (exp_stride_b == stride_b) && (exp_stride_c == stride_c)) {
-        CALL_PORTBLAS_FN(::blas::_gemm_batched, queue, transa, transb, m, n, k, alpha, a, lda, b,
-                         ldb, beta, c, ldc, batch_size, ::blas::gemm_batch_type_t::strided);
-    }
-    else {
-        throw unimplemented("blas", "gemm_batch",
-                            " for strides not equal to the size of the"
-                            "input / output matrices");
-    }
+    CALL_PORTBLAS_FN(::blas::_gemm_strided_batched, queue, transa, transb, m, n, k, alpha, a, lda,
+                     stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, batch_size);
 }
 
 void gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
@@ -193,21 +180,8 @@ void gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::
                 sycl::buffer<double, 1> &b, std::int64_t ldb, std::int64_t stride_b, double beta,
                 sycl::buffer<double, 1> &c, std::int64_t ldc, std::int64_t stride_c,
                 std::int64_t batch_size) {
-    // portBLAS's batched GEMM is for matrix strides equal to the size of the matrix only.
-    std::int64_t exp_stride_a =
-        (transa == transpose::nontrans) == is_column_major() ? lda * k : lda * m;
-    std::int64_t exp_stride_b =
-        (transb == transpose::nontrans) == is_column_major() ? ldb * n : ldb * k;
-    std::int64_t exp_stride_c = is_column_major() ? ldc * m : ldc * n;
-    if ((exp_stride_a == stride_a) && (exp_stride_b == stride_b) && (exp_stride_c == stride_c)) {
-        CALL_PORTBLAS_FN(::blas::_gemm_batched, queue, transa, transb, m, n, k, alpha, a, lda, b,
-                         ldb, beta, c, ldc, batch_size, ::blas::gemm_batch_type_t::strided);
-    }
-    else {
-        throw unimplemented("blas", "gemm_batch",
-                            " for strides not equal to the size of the"
-                            "input / output matrices");
-    }
+    CALL_PORTBLAS_FN(::blas::_gemm_strided_batched, queue, transa, transb, m, n, k, alpha, a, lda,
+                     stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, batch_size);
 }
 
 void gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
