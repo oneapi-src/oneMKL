@@ -191,9 +191,9 @@ struct throw_if_unsupported_by_device {
 #define CALL_PORTBLAS_USM_FN(portblasFunc, ...)                                   \
     if constexpr (is_column_major()) {                                            \
         detail::throw_if_unsupported_by_device<double, sycl::aspect::fp64>{}(     \
-            " portBLAS function requiring fp64 support", __VA_ARGS__);           \
+            " portBLAS function requiring fp64 support", __VA_ARGS__);            \
         detail::throw_if_unsupported_by_device<sycl::half, sycl::aspect::fp16>{}( \
-            " portBLAS function requiring fp16 support", __VA_ARGS__);           \
+            " portBLAS function requiring fp16 support", __VA_ARGS__);            \
         auto args = detail::convert_to_portblas_type(__VA_ARGS__);                \
         auto fn = [](auto&&... targs) {                                           \
             return portblasFunc(std::forward<decltype(targs)>(targs)...).back();  \
