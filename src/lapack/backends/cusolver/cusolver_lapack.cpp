@@ -2458,6 +2458,7 @@ inline void gebrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define GEBRD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2509,6 +2510,7 @@ inline void geqrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, nullptr, lda, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define GEQRF_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2540,6 +2542,7 @@ inline void gesvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define GESVD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2571,6 +2574,7 @@ inline void getrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, nullptr, lda, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define GETRF_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2633,6 +2637,7 @@ inline void heevd_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define HEEVD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                        \
@@ -2665,6 +2670,7 @@ inline void hegvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   lda, nullptr, ldb, nullptr, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define HEGVD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                             \
@@ -2695,6 +2701,7 @@ inline void hetrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, nullptr, nullptr, nullptr, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define HETRD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -2735,6 +2742,7 @@ inline void orgbr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, nullptr, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define ORGBR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                       \
@@ -2765,6 +2773,7 @@ inline void orgtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, nullptr, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define ORGTR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -2794,6 +2803,7 @@ inline void orgqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define ORGQR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2840,6 +2850,7 @@ inline void ormqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, ldc, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define ORMQRF_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2872,6 +2883,7 @@ inline void ormtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, nullptr, nullptr, ldc, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define ORMTR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                             \
@@ -2903,6 +2915,7 @@ inline void potrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define POTRF_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -2950,6 +2963,7 @@ inline void potri_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define POTRI_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -2980,6 +2994,7 @@ inline void sytrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
             CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, n, nullptr, lda, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define SYTRF_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -3012,6 +3027,7 @@ inline void syevd_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define SYEVD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                        \
@@ -3044,6 +3060,7 @@ inline void sygvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   lda, nullptr, ldb, nullptr, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define SYGVD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                             \
@@ -3074,6 +3091,7 @@ inline void sytrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, nullptr, nullptr, nullptr, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define SYTRD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -3134,6 +3152,7 @@ inline void ungbr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, nullptr, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define UNGBR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                       \
@@ -3164,6 +3183,7 @@ inline void ungqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define UNGQR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -3193,6 +3213,7 @@ inline void ungtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, nullptr, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define UNGTR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -3241,6 +3262,7 @@ inline void unmqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, ldc, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define UNMQR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                             \
@@ -3273,6 +3295,7 @@ inline void unmtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
                                   nullptr, lda, nullptr, nullptr, ldc, scratch_size);
         });
     });
+    queue.wait();
 }
 
 #define UNMTR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                             \
