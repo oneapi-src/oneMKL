@@ -161,6 +161,7 @@ void getrf(const char *func_name, Func func, sycl::queue &queue, std::int64_t m,
     });
 
     // Copy from 32-bit buffer to 64-bit
+    queue.wait();
     queue.submit([&](sycl::handler &cgh) {
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::read>(cgh);
         auto ipiv_acc = ipiv.template get_access<sycl::access::mode::write>(cgh);
@@ -1286,6 +1287,7 @@ inline sycl::event getrf(const char *func_name, Func func, sycl::queue &queue, s
     });
 
     // Copy from 32-bit USM to 64-bit
+    queue.wait();
     auto done_casting = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(done);
         cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
