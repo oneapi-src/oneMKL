@@ -22,8 +22,8 @@
 #ifndef _MKL_LAPACK_ROCSOLVER_TASK_HPP_
 #define _MKL_LAPACK_ROCSOLVER_TASK_HPP_
 #include <hip/hip_runtime.h>
-#include <rocblas.h>
-#include <rocsolver.h>
+#include <rocblas/rocblas.h>
+#include <rocsolver/rocsolver.h>
 #include <complex>
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>

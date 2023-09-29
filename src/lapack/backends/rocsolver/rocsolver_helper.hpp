@@ -27,8 +27,8 @@
 #define _ROCSOLVER_HELPER_HPP_
 
 #include <CL/sycl.hpp>
-#include <rocblas.h>
-#include <rocsolver.h>
+#include <rocblas/rocblas.h>
+#include <rocsolver/rocsolver.h>
 #include <hip/hip_runtime.h>
 #include <complex>
 
