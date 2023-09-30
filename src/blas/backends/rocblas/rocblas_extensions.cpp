@@ -107,7 +107,8 @@ void omatcopy(const char *func_name, Func func, sycl::queue &queue, transpose tr
             rocblas_status err;
             ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(trans),
                                       get_rocblas_operation(trans), logical_m, logical_n,
-                                      (rocDataType *)&alpha, a_, lda, (rocDataType *)&beta, nullptr, lda, b_, ldb);
+                                      (rocDataType *)&alpha, a_, lda, (rocDataType *)&beta, nullptr,
+                                      lda, b_, ldb);
         });
     });
 }
@@ -162,18 +163,18 @@ void omatadd(const char *func_name, Func func, sycl::queue &queue, transpose tra
             auto c_ = sc.get_mem<rocDataType *>(c_acc);
             rocblas_status err;
             ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(transa),
-                                      get_rocblas_operation(transb), m, n, (rocDataType *)&alpha, a_,
-                                      lda, (rocDataType *)&beta, b_, ldb, c_, ldc);
+                                      get_rocblas_operation(transb), m, n, (rocDataType *)&alpha,
+                                      a_, lda, (rocDataType *)&beta, b_, ldb, c_, ldc);
         });
     });
 }
 
-#define OMATADD_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                                      \
-    void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,       \
-                 TYPE alpha, sycl::buffer<TYPE, 1> &a, int64_t lda, TYPE beta,                       \
-                 sycl::buffer<TYPE, 1> &b, int64_t ldb, sycl::buffer<TYPE, 1> &c, int64_t ldc) {     \
-        omatadd(#ROCBLAS_ROUTINE, ROCBLAS_ROUTINE, queue, transa, transb, m, n, alpha, a, lda, beta, \
-                b, ldb, c, ldc);                                                                     \
+#define OMATADD_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                                  \
+    void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,   \
+                 TYPE alpha, sycl::buffer<TYPE, 1> &a, int64_t lda, TYPE beta,                   \
+                 sycl::buffer<TYPE, 1> &b, int64_t ldb, sycl::buffer<TYPE, 1> &c, int64_t ldc) { \
+        omatadd(#ROCBLAS_ROUTINE, ROCBLAS_ROUTINE, queue, transa, transb, m, n, alpha, a, lda,   \
+                beta, b, ldb, c, ldc);                                                           \
     }
 
 OMATADD_LAUNCHER(float, rocblas_sgeam)
@@ -182,7 +183,6 @@ OMATADD_LAUNCHER(std::complex<float>, rocblas_cgeam)
 OMATADD_LAUNCHER(std::complex<double>, rocblas_zgeam)
 
 #undef OMATADD_LAUNCHER
-
 
 // USM APIs
 
@@ -266,7 +266,8 @@ sycl::event omatcopy(const char *func_name, Func func, sycl::queue &queue, trans
             rocblas_status err;
             ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(trans),
                                       get_rocblas_operation(trans), logical_m, logical_n,
-                                      (rocDataType *)&alpha, a_, lda,  (rocDataType *)&beta, nullptr, lda, b_, ldb);
+                                      (rocDataType *)&alpha, a_, lda, (rocDataType *)&beta, nullptr,
+                                      lda, b_, ldb);
         });
     });
     return done;
@@ -327,8 +328,8 @@ inline sycl::event omatadd(const char *func_name, Func func, sycl::queue &queue,
             auto c_ = reinterpret_cast<rocDataType *>(c);
             rocblas_status err;
             ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(transa),
-                                      get_rocblas_operation(transb), m, n, (rocDataType *)&alpha, a_,
-                                      lda, (rocDataType *)&beta, b_, ldb, c_, ldc);
+                                      get_rocblas_operation(transb), m, n, (rocDataType *)&alpha,
+                                      a_, lda, (rocDataType *)&beta, b_, ldb, c_, ldc);
         });
     });
     return done;
@@ -430,7 +431,8 @@ void omatcopy(const char *func_name, Func func, sycl::queue &queue, transpose tr
             rocblas_status err;
             ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(trans),
                                       get_rocblas_operation(trans), logical_m, logical_n,
-                                      (rocDataType *)&alpha, a_, lda,  (rocDataType *)&beta, nullptr, lda, b_, ldb);
+                                      (rocDataType *)&alpha, a_, lda, (rocDataType *)&beta, nullptr,
+                                      lda, b_, ldb);
         });
     });
 }
@@ -485,18 +487,18 @@ void omatadd(const char *func_name, Func func, sycl::queue &queue, transpose tra
             auto c_ = sc.get_mem<rocDataType *>(c_acc);
             rocblas_status err;
             ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(transa),
-                                      get_rocblas_operation(transb), n, m, (rocDataType *)&alpha, a_,
-                                      lda, (rocDataType *)&beta, b_, ldb, c_, ldc);
+                                      get_rocblas_operation(transb), n, m, (rocDataType *)&alpha,
+                                      a_, lda, (rocDataType *)&beta, b_, ldb, c_, ldc);
         });
     });
 }
 
-#define OMATADD_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                                      \
-    void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,       \
-                 TYPE alpha, sycl::buffer<TYPE, 1> &a, int64_t lda, TYPE beta,                       \
-                 sycl::buffer<TYPE, 1> &b, int64_t ldb, sycl::buffer<TYPE, 1> &c, int64_t ldc) {     \
-        omatadd(#ROCBLAS_ROUTINE, ROCBLAS_ROUTINE, queue, transa, transb, m, n, alpha, a, lda, beta, \
-                b, ldb, c, ldc);                                                                     \
+#define OMATADD_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                                  \
+    void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,   \
+                 TYPE alpha, sycl::buffer<TYPE, 1> &a, int64_t lda, TYPE beta,                   \
+                 sycl::buffer<TYPE, 1> &b, int64_t ldb, sycl::buffer<TYPE, 1> &c, int64_t ldc) { \
+        omatadd(#ROCBLAS_ROUTINE, ROCBLAS_ROUTINE, queue, transa, transb, m, n, alpha, a, lda,   \
+                beta, b, ldb, c, ldc);                                                           \
     }
 
 OMATADD_LAUNCHER(float, rocblas_sgeam)
@@ -588,7 +590,8 @@ sycl::event omatcopy(const char *func_name, Func func, sycl::queue &queue, trans
             rocblas_status err;
             ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(trans),
                                       get_rocblas_operation(trans), logical_m, logical_n,
-                                      (rocDataType *)&alpha, a_, lda, (rocDataType *)&beta, nullptr, ldb, b_, ldb);
+                                      (rocDataType *)&alpha, a_, lda, (rocDataType *)&beta, nullptr,
+                                      ldb, b_, ldb);
         });
     });
     return done;
@@ -649,8 +652,8 @@ inline sycl::event omatadd(const char *func_name, Func func, sycl::queue &queue,
             auto c_ = reinterpret_cast<rocDataType *>(c);
             rocblas_status err;
             ROCBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(transa),
-                                      get_rocblas_operation(transb), n, m, (rocDataType *)&alpha, a_,
-                                      lda, (rocDataType *)&beta, b_, ldb, c_, ldc);
+                                      get_rocblas_operation(transb), n, m, (rocDataType *)&alpha,
+                                      a_, lda, (rocDataType *)&beta, b_, ldb, c_, ldc);
         });
     });
     return done;
