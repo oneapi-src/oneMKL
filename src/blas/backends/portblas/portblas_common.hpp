@@ -185,7 +185,7 @@ struct throw_if_unsupported_by_device {
         std::apply(fn, args);                                                                   \
     }                                                                                           \
     else {                                                                                      \
-        throw unimplemented("blas", "portBLAS function", " for row-major");                     \
+        throw unimplemented("blas", "portBLAS function");                                       \
     }
 
 #define CALL_PORTBLAS_USM_FN(portblasFunc, ...)                                   \
@@ -201,7 +201,7 @@ struct throw_if_unsupported_by_device {
         return std::apply(fn, args);                                              \
     }                                                                             \
     else {                                                                        \
-        throw unimplemented("blas", "portBLAS function", " for row-major");       \
+        throw unimplemented("blas", "portBLAS function");                         \
     }
 
 } // namespace portblas
