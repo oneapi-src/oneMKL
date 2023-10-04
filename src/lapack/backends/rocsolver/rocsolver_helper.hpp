@@ -254,14 +254,15 @@ inline int get_rocsolver_devinfo(sycl::queue &queue, sycl::buffer<int> &devInfo)
 
 inline int get_rocsolver_devinfo(sycl::queue &queue, const int *devInfo) {
     int dev_info_;
-    queue.wait();
     queue.memcpy(&dev_info_, devInfo, sizeof(int));
+    queue.wait();
     return dev_info_;
 }
 
 template <typename DEVINFO_T>
 inline void lapack_info_check(sycl::queue &queue, DEVINFO_T devinfo, const char *func_name,
                               const char *cufunc_name) {
+    queue.wait();
     const int devinfo_ = get_rocsolver_devinfo(queue, devinfo);
     if (devinfo_ > 0)
         throw oneapi::mkl::lapack::computation_error(
