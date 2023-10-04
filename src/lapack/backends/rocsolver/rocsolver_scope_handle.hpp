@@ -57,7 +57,11 @@ public:
     // will be fixed when SYCL-2020 has been implemented for Pi backend.
     template <typename T, typename U>
     inline T get_mem(U acc) {
+#ifdef SYCL_IMPLEMENTATION_ONEAPI
+        hipDeviceptr_t hipPtr = ih.get_native_mem<sycl::backend::ext_oneapi_hip>(acc);
+#else
         hipDeviceptr_t hipPtr = ih.get_native_mem<sycl::backend::hip>(acc);
+#endif
         return reinterpret_cast<T>(hipPtr);
     }
 };
