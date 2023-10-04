@@ -82,15 +82,7 @@ void overflow_check(Index index, Next... indices) {
 class rocsolver_error : virtual public std::runtime_error {
 protected:
     inline const char *rocsolver_error_map(rocblas_status error) {
-        switch (error) {
-            case rocblas_status_success: return "ROCBLAS_STATUS_SUCCESS";
-
-            case rocblas_status_invalid_value: return "ROCBLAS_STATUS_INVALID_VALUE";
-
-            case rocblas_status_internal_error: return "ROCBLAS_STATUS_INTERNAL_ERROR";
-
-            default: return "<unknown>";
-        }
+        return rocblas_status_to_string(error);
     }
 
     int error_number; ///< Error number
@@ -120,16 +112,7 @@ public:
 class hip_error : virtual public std::runtime_error {
 protected:
     inline const char *hip_error_map(hipError_t result) {
-        switch (result) {
-            case HIP_SUCCESS: return "HIP_SUCCESS";
-            case hipErrorNotInitialized: return "hipErrorNotInitialized";
-            case hipErrorInvalidContext: return "hipErrorInvalidContext";
-            case hipErrorInvalidDevice: return "hipErrorInvalidDevice";
-            case hipErrorInvalidValue: return "hipErrorInvalidValue";
-            case hipErrorMemoryAllocation: return "hipErrorMemoryAllocation";
-            case hipErrorLaunchOutOfResources: return "hipErrorLaunchOutOfResources";
-            default: return "<unknown>";
-        }
+        return hipGetErrorName(result);
     }
     int error_number; ///< error number
 public:
