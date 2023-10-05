@@ -338,9 +338,11 @@ sycl::event rotmg(sycl::queue &queue, real_t *d1, real_t *d2, real_t *x1, real_t
         CALL_PORTBLAS_USM_FN(::blas::_rotmg, queue, d1, d2, x1, y_d, param,
                              std::vector<sycl::event>{ copy_in_event });
     });
-    rotmg_event.wait();
-    sycl::free(y_d, queue);
-    return rotmg_event;
+    auto free_event = queue.submit([&](cl::sycl::handler &cgh) {
+        cgh.depends_on(rotmg_event);
+        cgh.host_task([=]() { sycl::free(y_d, queue); });
+    });
+    return free_event;
 }
 
 sycl::event scal(sycl::queue &queue, std::int64_t n, real_t alpha, real_t *x, std::int64_t incx,
