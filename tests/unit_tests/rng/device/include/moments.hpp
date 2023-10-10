@@ -52,7 +52,7 @@ public:
         try {
             sycl::range<1> range(N_GEN / Engine::vec_size);
 
-            sycl::buffer<Type, 1> buf(r);
+            sycl::buffer<Type> buf(r);
             auto event = queue.submit([&](sycl::handler& cgh) {
                 sycl::accessor acc(buf, cgh, sycl::write_only);
                 cgh.parallel_for(range, [=](sycl::item<1> item) {
