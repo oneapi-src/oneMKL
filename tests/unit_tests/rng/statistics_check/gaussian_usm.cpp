@@ -43,6 +43,8 @@ TEST_P(GaussianIcdfUsmTest, RealSinglePrecision) {
 }
 
 TEST_P(GaussianIcdfUsmTest, RealDoublePrecision) {
+    if(GetParam()->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     rng_test<statistics_usm_test<
         oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>,
         oneapi::mkl::rng::philox4x32x10>>
@@ -69,6 +71,8 @@ TEST_P(GaussianBoxmullerUsmTest, RealSinglePrecision) {
 }
 
 TEST_P(GaussianBoxmullerUsmTest, RealDoublePrecision) {
+    if(GetParam()->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     rng_test<statistics_usm_test<
         oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::box_muller2>,
         oneapi::mkl::rng::philox4x32x10>>
