@@ -175,6 +175,7 @@ foreach(domain ${TARGET_DOMAINS})
       ${${domain}_TEST_LIST_CT}
       ${${domain}_DEVICE_TEST_LIST_CT}
   )
+  target_link_options(test_main_${domain}_ct PUBLIC -fsycl-device-code-split=per_kernel)
 
   string(TOUPPER ${domain} DOMAIN_PREFIX)
 
