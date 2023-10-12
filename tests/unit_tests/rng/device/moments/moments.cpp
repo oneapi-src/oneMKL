@@ -602,7 +602,8 @@ INSTANTIATE_TEST_SUITE_P(Philox4x32x10UniformBitsDeviceMomentsTestsSuite, Philox
 
 class Philox4x32x10GaussianBoxMuller2DeviceMomentsTests : public ::testing::TestWithParam<sycl::device*> {};
 
-TEST_P(Philox4x32x10GaussianBoxMuller2DeviceMomentsTests, RealSinglePrecision) {
+// implementation uses double precision for accuracy
+TEST_P(Philox4x32x10GaussianBoxMuller2DeviceMomentsTests, RealDoublePrecision) {
     rng_device_test<moments_test<
     oneapi::mkl::rng::device::philox4x32x10<1>,
     oneapi::mkl::rng::device::gaussian<float, oneapi::mkl::rng::device::gaussian_method::box_muller2>>> test1;
@@ -615,21 +616,18 @@ TEST_P(Philox4x32x10GaussianBoxMuller2DeviceMomentsTests, RealSinglePrecision) {
     oneapi::mkl::rng::device::philox4x32x10<16>,
     oneapi::mkl::rng::device::gaussian<float, oneapi::mkl::rng::device::gaussian_method::box_muller2>>> test3;
     EXPECT_TRUEORSKIP((test3(GetParam())));
-}
-
-TEST_P(Philox4x32x10GaussianBoxMuller2DeviceMomentsTests, RealDoublePrecision) {
     rng_device_test<moments_test<
     oneapi::mkl::rng::device::philox4x32x10<1>,
-    oneapi::mkl::rng::device::gaussian<double, oneapi::mkl::rng::device::gaussian_method::box_muller2>>> test1;
-    EXPECT_TRUEORSKIP((test1(GetParam())));
+    oneapi::mkl::rng::device::gaussian<double, oneapi::mkl::rng::device::gaussian_method::box_muller2>>> test4;
+    EXPECT_TRUEORSKIP((test4(GetParam())));
     rng_device_test<moments_test<
     oneapi::mkl::rng::device::philox4x32x10<4>,
-    oneapi::mkl::rng::device::gaussian<double, oneapi::mkl::rng::device::gaussian_method::box_muller2>>> test2;
-    EXPECT_TRUEORSKIP((test2(GetParam())));
+    oneapi::mkl::rng::device::gaussian<double, oneapi::mkl::rng::device::gaussian_method::box_muller2>>> test5;
+    EXPECT_TRUEORSKIP((test5(GetParam())));
     rng_device_test<moments_test<
     oneapi::mkl::rng::device::philox4x32x10<16>,
-    oneapi::mkl::rng::device::gaussian<double, oneapi::mkl::rng::device::gaussian_method::box_muller2>>> test3;
-    EXPECT_TRUEORSKIP((test3(GetParam())));
+    oneapi::mkl::rng::device::gaussian<double, oneapi::mkl::rng::device::gaussian_method::box_muller2>>> test6;
+    EXPECT_TRUEORSKIP((test6(GetParam())));
 }
 
 INSTANTIATE_TEST_SUITE_P(Philox4x32x10GaussianBoxMuller2DeviceMomentsTestsSuite, Philox4x32x10GaussianBoxMuller2DeviceMomentsTests,
@@ -674,7 +672,8 @@ class Philox4x32x10ExponentialIcdfDeviceMomentsTests : public ::testing::TestWit
 
 class Philox4x32x10ExponentialIcdfAccDeviceMomentsTests : public ::testing::TestWithParam<sycl::device*> {};
 
-TEST_P(Philox4x32x10ExponentialIcdfDeviceMomentsTests, RealSinglePrecision) {
+// implementation uses double precision for accuracy
+TEST_P(Philox4x32x10ExponentialIcdfDeviceMomentsTests, RealDoublePrecision) {
     rng_device_test<moments_test<
     oneapi::mkl::rng::device::philox4x32x10<1>,
     oneapi::mkl::rng::device::exponential<float, oneapi::mkl::rng::device::exponential_method::icdf>>> test1;
@@ -687,24 +686,22 @@ TEST_P(Philox4x32x10ExponentialIcdfDeviceMomentsTests, RealSinglePrecision) {
     oneapi::mkl::rng::device::philox4x32x10<16>,
     oneapi::mkl::rng::device::exponential<float, oneapi::mkl::rng::device::exponential_method::icdf>>> test3;
     EXPECT_TRUEORSKIP((test3(GetParam())));
-}
-
-TEST_P(Philox4x32x10ExponentialIcdfDeviceMomentsTests, RealDoublePrecision) {
     rng_device_test<moments_test<
     oneapi::mkl::rng::device::philox4x32x10<1>,
-    oneapi::mkl::rng::device::exponential<double, oneapi::mkl::rng::device::exponential_method::icdf>>> test1;
-    EXPECT_TRUEORSKIP((test1(GetParam())));
+    oneapi::mkl::rng::device::exponential<double, oneapi::mkl::rng::device::exponential_method::icdf>>> test4;
+    EXPECT_TRUEORSKIP((test4(GetParam())));
     rng_device_test<moments_test<
     oneapi::mkl::rng::device::philox4x32x10<4>,
-    oneapi::mkl::rng::device::exponential<double, oneapi::mkl::rng::device::exponential_method::icdf>>> test2;
-    EXPECT_TRUEORSKIP((test2(GetParam())));
+    oneapi::mkl::rng::device::exponential<double, oneapi::mkl::rng::device::exponential_method::icdf>>> test5;
+    EXPECT_TRUEORSKIP((test5(GetParam())));
     rng_device_test<moments_test<
     oneapi::mkl::rng::device::philox4x32x10<16>,
-    oneapi::mkl::rng::device::exponential<double, oneapi::mkl::rng::device::exponential_method::icdf>>> test3;
-    EXPECT_TRUEORSKIP((test3(GetParam())));
+    oneapi::mkl::rng::device::exponential<double, oneapi::mkl::rng::device::exponential_method::icdf>>> test6;
+    EXPECT_TRUEORSKIP((test6(GetParam())));
 }
 
-TEST_P(Philox4x32x10ExponentialIcdfAccDeviceMomentsTests, RealSinglePrecision) {
+// implementation uses double precision for accuracy
+TEST_P(Philox4x32x10ExponentialIcdfAccDeviceMomentsTests, RealDoublePrecision) {
     rng_device_test<moments_test<
     oneapi::mkl::rng::device::philox4x32x10<1>,
     oneapi::mkl::rng::device::exponential<float, oneapi::mkl::rng::device::exponential_method::icdf_accurate>>> test1;
@@ -717,21 +714,18 @@ TEST_P(Philox4x32x10ExponentialIcdfAccDeviceMomentsTests, RealSinglePrecision) {
     oneapi::mkl::rng::device::philox4x32x10<16>,
     oneapi::mkl::rng::device::exponential<float, oneapi::mkl::rng::device::exponential_method::icdf_accurate>>> test3;
     EXPECT_TRUEORSKIP((test3(GetParam())));
-}
-
-TEST_P(Philox4x32x10ExponentialIcdfAccDeviceMomentsTests, RealDoublePrecision) {
     rng_device_test<moments_test<
     oneapi::mkl::rng::device::philox4x32x10<1>,
-    oneapi::mkl::rng::device::exponential<double, oneapi::mkl::rng::device::exponential_method::icdf_accurate>>> test1;
-    EXPECT_TRUEORSKIP((test1(GetParam())));
+    oneapi::mkl::rng::device::exponential<double, oneapi::mkl::rng::device::exponential_method::icdf_accurate>>> test4;
+    EXPECT_TRUEORSKIP((test4(GetParam())));
     rng_device_test<moments_test<
     oneapi::mkl::rng::device::philox4x32x10<4>,
-    oneapi::mkl::rng::device::exponential<double, oneapi::mkl::rng::device::exponential_method::icdf_accurate>>> test2;
-    EXPECT_TRUEORSKIP((test2(GetParam())));
+    oneapi::mkl::rng::device::exponential<double, oneapi::mkl::rng::device::exponential_method::icdf_accurate>>> test5;
+    EXPECT_TRUEORSKIP((test5(GetParam())));
     rng_device_test<moments_test<
     oneapi::mkl::rng::device::philox4x32x10<16>,
-    oneapi::mkl::rng::device::exponential<double, oneapi::mkl::rng::device::exponential_method::icdf_accurate>>> test3;
-    EXPECT_TRUEORSKIP((test3(GetParam())));
+    oneapi::mkl::rng::device::exponential<double, oneapi::mkl::rng::device::exponential_method::icdf_accurate>>> test6;
+    EXPECT_TRUEORSKIP((test6(GetParam())));
 }
 
 INSTANTIATE_TEST_SUITE_P(Philox4x32x10ExponentialIcdfDeviceMomentsTestsSuite, Philox4x32x10ExponentialIcdfDeviceMomentsTests,
