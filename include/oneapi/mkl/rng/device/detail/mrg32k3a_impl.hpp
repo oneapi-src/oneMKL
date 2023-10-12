@@ -17,11 +17,10 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-/*
-// Bradley, Thomas & du Toit, Jacques & Giles, Mike & Tong, Robert & Woodhams, Paul.
+// References:
+// [1] Bradley, Thomas & du Toit, Jacques & Giles, Mike & Tong, Robert & Woodhams, Paul.
 // (2011). Parallelisation Techniques for Random Number Generators.
 // GPU Computing Gems Emerald Edition. 10.1016/B978-0-12-384988-5.00016-4
-*/
 
 #ifndef _MKL_RNG_DEVICE_MRG32K3A_IMPL_HPP_
 #define _MKL_RNG_DEVICE_MRG32K3A_IMPL_HPP_
