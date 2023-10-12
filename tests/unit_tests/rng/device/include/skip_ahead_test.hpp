@@ -17,6 +17,14 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
+/*
+*
+*  Content:
+*       oneapi::mkl::rng::device:: engines skip_ahead and skip_ahead_ex tests
+*       (SYCL interface)
+*
+*******************************************************************************/
+
 #ifndef _RNG_DEVICE_SKIP_AHEAD_TEST_HPP__
 #define _RNG_DEVICE_SKIP_AHEAD_TEST_HPP__
 
