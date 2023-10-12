@@ -141,6 +141,8 @@ TEST_P(CopyUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, -2));
 }
 TEST_P(CopyUsmTests, RealDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, -2));
@@ -154,6 +156,8 @@ TEST_P(CopyUsmTests, ComplexSinglePrecision) {
         test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, -2));
 }
 TEST_P(CopyUsmTests, ComplexDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3));
     EXPECT_TRUEORSKIP(

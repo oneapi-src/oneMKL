@@ -206,6 +206,8 @@ TEST_P(TrsmBatchStrideTests, RealSinglePrecision) {
 }
 
 TEST_P(TrsmBatchStrideTests, RealDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
@@ -214,6 +216,8 @@ TEST_P(TrsmBatchStrideTests, ComplexSinglePrecision) {
 }
 
 TEST_P(TrsmBatchStrideTests, ComplexDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 

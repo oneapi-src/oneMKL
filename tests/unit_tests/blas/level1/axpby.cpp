@@ -144,6 +144,8 @@ TEST_P(AxpbyTests, RealSinglePrecision) {
         test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, -2, alpha, beta));
 }
 TEST_P(AxpbyTests, RealDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     double alpha(2.0);
     double beta(3.0);
     EXPECT_TRUEORSKIP(
@@ -164,6 +166,8 @@ TEST_P(AxpbyTests, ComplexSinglePrecision) {
                                                 1357, -3, -2, alpha, beta));
 }
 TEST_P(AxpbyTests, ComplexDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),

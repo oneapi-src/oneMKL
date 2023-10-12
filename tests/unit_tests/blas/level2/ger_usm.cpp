@@ -151,6 +151,8 @@ TEST_P(GerUsmTests, RealSinglePrecision) {
         test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 25, 30, alpha, 1, 1, 42));
 }
 TEST_P(GerUsmTests, RealDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     double alpha(2.0);
     EXPECT_TRUEORSKIP(
         test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 25, 30, alpha, 2, 3, 42));

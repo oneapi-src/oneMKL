@@ -308,6 +308,8 @@ TEST_P(SyrkBatchUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(SyrkBatchUsmTests, RealDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
@@ -317,6 +319,8 @@ TEST_P(SyrkBatchUsmTests, ComplexSinglePrecision) {
 }
 
 TEST_P(SyrkBatchUsmTests, ComplexDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }

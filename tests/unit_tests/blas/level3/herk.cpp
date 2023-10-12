@@ -156,6 +156,8 @@ TEST_P(HerkTests, ComplexSinglePrecision) {
         oneapi::mkl::transpose::conjtrans, 72, 27, 101, 103, alpha, beta)));
 }
 TEST_P(HerkTests, ComplexDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     double alpha(2.0);
     double beta(3.0);
     EXPECT_TRUEORSKIP((test<std::complex<double>, double>(

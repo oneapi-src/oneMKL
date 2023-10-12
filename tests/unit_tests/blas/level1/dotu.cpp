@@ -143,6 +143,8 @@ TEST_P(DotuTests, ComplexSinglePrecision) {
         test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, -2));
 }
 TEST_P(DotuTests, ComplexDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3));
     EXPECT_TRUEORSKIP(

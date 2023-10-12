@@ -221,6 +221,8 @@ TEST_P(RotmgUsmTests, RealSinglePrecision) {
         (test<float, usm::alloc::device>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 TEST_P(RotmgUsmTests, RealDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam())));
     EXPECT_TRUEORSKIP(
         (test<double, usm::alloc::device>(std::get<0>(GetParam()), std::get<1>(GetParam()))));

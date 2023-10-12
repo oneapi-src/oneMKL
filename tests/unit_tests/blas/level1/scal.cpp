@@ -137,6 +137,8 @@ TEST_P(ScalTests, RealSinglePrecision) {
         (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, alpha)));
 }
 TEST_P(ScalTests, RealDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     double alpha(2.0);
     EXPECT_TRUEORSKIP(
         (test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, alpha)));
@@ -151,6 +153,8 @@ TEST_P(ScalTests, ComplexSinglePrecision) {
         std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, alpha)));
 }
 TEST_P(ScalTests, ComplexDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     std::complex<double> alpha(2.0, -0.5);
     EXPECT_TRUEORSKIP((test<std::complex<double>, std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, alpha)));
@@ -165,6 +169,8 @@ TEST_P(ScalTests, ComplexRealSinglePrecision) {
                                                         std::get<1>(GetParam()), 1357, -3, alpha)));
 }
 TEST_P(ScalTests, ComplexRealDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     double alpha(2.0);
     EXPECT_TRUEORSKIP((test<std::complex<double>, double>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, alpha)));

@@ -153,6 +153,8 @@ TEST_P(RotgTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP((test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 TEST_P(RotgTests, RealDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     EXPECT_TRUEORSKIP((test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
     EXPECT_TRUEORSKIP((test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
     EXPECT_TRUEORSKIP((test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
@@ -166,6 +168,8 @@ TEST_P(RotgTests, ComplexSinglePrecision) {
         (test<std::complex<float>, float>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 TEST_P(RotgTests, ComplexDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     EXPECT_TRUEORSKIP(
         (test<std::complex<double>, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
     EXPECT_TRUEORSKIP(

@@ -181,6 +181,8 @@ TEST_P(OmatcopyBatchStrideTests, RealSinglePrecision) {
 }
 
 TEST_P(OmatcopyBatchStrideTests, RealDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
@@ -190,6 +192,8 @@ TEST_P(OmatcopyBatchStrideTests, ComplexSinglePrecision) {
 }
 
 TEST_P(OmatcopyBatchStrideTests, ComplexDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }

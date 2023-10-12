@@ -170,6 +170,8 @@ TEST_P(GbmvUsmTests, RealSinglePrecision) {
                                   42));
 }
 TEST_P(GbmvUsmTests, RealDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     double alpha(2.0);
     double beta(3.0);
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
@@ -223,6 +225,8 @@ TEST_P(GbmvUsmTests, ComplexSinglePrecision) {
                                                 alpha, beta, 1, 1, 42));
 }
 TEST_P(GbmvUsmTests, ComplexDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),

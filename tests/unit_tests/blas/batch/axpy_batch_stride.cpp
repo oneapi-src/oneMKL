@@ -172,6 +172,8 @@ TEST_P(AxpyBatchStrideTests, RealSinglePrecision) {
 }
 
 TEST_P(AxpyBatchStrideTests, RealDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     double alpha = 2.0;
     EXPECT_TRUEORSKIP(
         test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 2, 3, alpha, 15));
@@ -192,6 +194,8 @@ TEST_P(AxpyBatchStrideTests, ComplexSinglePrecision) {
 }
 
 TEST_P(AxpyBatchStrideTests, ComplexDoublePrecision) {
+    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+
     std::complex<double> alpha = std::complex<double>(2.0, -0.5);
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                                  2, 3, alpha, 15));
