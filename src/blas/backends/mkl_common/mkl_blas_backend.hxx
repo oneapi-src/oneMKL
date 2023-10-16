@@ -1254,21 +1254,21 @@ sycl::event axpy(sycl::queue &queue, std::int64_t n, value_or_pointer<std::compl
                  std::int64_t incy, const std::vector<sycl::event> &dependencies = {});
 
 sycl::event axpby(sycl::queue &queue, std::int64_t n, value_or_pointer<float> alpha, const float *x,
-                  std::int64_t incx, const value_or_pointer<float> beta, float *y, std::int64_t incy,
+                  std::int64_t incx, value_or_pointer<float> beta, float *y, std::int64_t incy,
                   const std::vector<sycl::event> &dependencies = {});
 
 sycl::event axpby(sycl::queue &queue, std::int64_t n, value_or_pointer<double> alpha, const double *x,
-                  std::int64_t incx, const value_or_pointer<double> beta, double *y, std::int64_t incy,
+                  std::int64_t incx, value_or_pointer<double> beta, double *y, std::int64_t incy,
                   const std::vector<sycl::event> &dependencies = {});
 
 sycl::event axpby(sycl::queue &queue, std::int64_t n, value_or_pointer<std::complex<float>> alpha,
                   const std::complex<float> *x, std::int64_t incx,
-                  const value_or_pointer<std::complex<float>> beta, std::complex<float> *y,
+                  value_or_pointer<std::complex<float>> beta, std::complex<float> *y,
                   std::int64_t incy, const std::vector<sycl::event> &dependencies = {});
 
 sycl::event axpby(sycl::queue &queue, std::int64_t n, value_or_pointer<std::complex<double>> alpha,
                   const std::complex<double> *x, std::int64_t incx,
-                  const value_or_pointer<std::complex<double>> beta, std::complex<double> *y,
+                  value_or_pointer<std::complex<double>> beta, std::complex<double> *y,
                   std::int64_t incy, const std::vector<sycl::event> &dependencies = {});
 
 sycl::event copy(sycl::queue &queue, std::int64_t n, const float *x, std::int64_t incx, float *y,
