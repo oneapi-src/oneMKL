@@ -23,8 +23,10 @@
 #else
 #include <CL/sycl.hpp>
 #endif
-#if __has_include(<sycl/backend/cuda.hpp>)
+#if __has_include(<sycl/context.hpp>)
+#if __SYCL_COMPILER_VERSION <= 20220930
 #include <sycl/backend/cuda.hpp>
+#endif
 #include <sycl/context.hpp>
 #include <sycl/detail/pi.hpp>
 #else
@@ -77,7 +79,7 @@ cuSolver handle to the SYCL context.
 
 class CusolverScopedContextHandler {
     CUcontext original_;
-    sycl::context placedContext_;
+    sycl::context *placedContext_;
     bool needToRecover_;
     sycl::interop_handler &ih;
     static thread_local cusolver_handle<pi_context> handle_helper;
