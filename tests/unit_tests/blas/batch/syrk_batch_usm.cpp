@@ -106,10 +106,9 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
         beta[i] = rand_scalar<fp>();
         upper_lower[i] = (oneapi::mkl::uplo)(std::rand() % 2);
         if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
-            trans[i] = (std::rand() % 2) == 0
-                           ? oneapi::mkl::transpose::nontrans
-                           : (std::rand() % 2) == 0 ? oneapi::mkl::transpose::trans
-                                                    : oneapi::mkl::transpose::conjtrans;
+            trans[i] = (std::rand() % 2) == 0   ? oneapi::mkl::transpose::nontrans
+                       : (std::rand() % 2) == 0 ? oneapi::mkl::transpose::trans
+                                                : oneapi::mkl::transpose::conjtrans;
         }
         else {
             trans[i] = (std::rand() % 2) == 0 ? oneapi::mkl::transpose::nontrans
@@ -308,7 +307,7 @@ TEST_P(SyrkBatchUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(SyrkBatchUsmTests, RealDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
@@ -319,7 +318,7 @@ TEST_P(SyrkBatchUsmTests, ComplexSinglePrecision) {
 }
 
 TEST_P(SyrkBatchUsmTests, ComplexDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));

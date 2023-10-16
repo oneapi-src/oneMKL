@@ -149,7 +149,7 @@ TEST_P(RotTests, RealSinglePrecision) {
         (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, c, s)));
 }
 TEST_P(RotTests, RealDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     double c(2.0);
     double s(-0.5);
@@ -171,7 +171,7 @@ TEST_P(RotTests, ComplexSinglePrecision) {
         std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, c, s)));
 }
 TEST_P(RotTests, ComplexDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     double c = 2.0;
     double s = -0.5;

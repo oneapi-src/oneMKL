@@ -153,7 +153,7 @@ TEST_P(HpmvTests, ComplexSinglePrecision) {
                                                 oneapi::mkl::uplo::upper, 30, alpha, beta, 1, 1));
 }
 TEST_P(HpmvTests, ComplexDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);

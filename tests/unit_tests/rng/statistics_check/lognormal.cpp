@@ -43,7 +43,7 @@ TEST_P(LognormalIcdfTest, RealSinglePrecision) {
 }
 
 TEST_P(LognormalIcdfTest, RealDoublePrecision) {
-    if(GetParam()->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
 
     rng_test<statistics_test<
         oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::icdf>,
@@ -71,7 +71,7 @@ TEST_P(LognormalBoxmullerTest, RealSinglePrecision) {
 }
 
 TEST_P(LognormalBoxmullerTest, RealDoublePrecision) {
-    if(GetParam()->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
 
     rng_test<statistics_test<
         oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::box_muller2>,

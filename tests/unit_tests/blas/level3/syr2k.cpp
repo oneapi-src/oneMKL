@@ -161,7 +161,7 @@ TEST_P(Syr2kTests, RealSinglePrecision) {
                                   101, 102, 103, alpha, beta));
 }
 TEST_P(Syr2kTests, RealDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     double alpha(3.0);
     double beta(3.0);
@@ -195,7 +195,7 @@ TEST_P(Syr2kTests, ComplexSinglePrecision) {
         oneapi::mkl::transpose::trans, 73, 27, 101, 102, 103, alpha, beta));
 }
 TEST_P(Syr2kTests, ComplexDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     std::complex<double> alpha(3.0, -0.5);
     std::complex<double> beta(3.0, -1.5);

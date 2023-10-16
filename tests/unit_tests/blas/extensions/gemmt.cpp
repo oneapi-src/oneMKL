@@ -184,7 +184,7 @@ TEST_P(GemmtTests, RealSinglePrecision) {
 }
 
 TEST_P(GemmtTests, RealDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     double alpha(2.0);
     double beta(3.0);
@@ -300,7 +300,7 @@ TEST_P(GemmtTests, ComplexSinglePrecision) {
 }
 
 TEST_P(GemmtTests, ComplexDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     std::complex<double> alpha(2.0);
     std::complex<double> beta(3.0);

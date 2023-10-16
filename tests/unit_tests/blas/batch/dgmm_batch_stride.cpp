@@ -195,7 +195,7 @@ TEST_P(DgmmBatchStrideTests, RealSinglePrecision) {
 }
 
 TEST_P(DgmmBatchStrideTests, RealDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                    oneapi::mkl::side::right, 2, 5));
@@ -227,7 +227,7 @@ TEST_P(DgmmBatchStrideTests, ComplexSinglePrecision) {
 }
 
 TEST_P(DgmmBatchStrideTests, ComplexDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                                  oneapi::mkl::side::right, 2, 5));

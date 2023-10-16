@@ -164,7 +164,7 @@ TEST_P(GemvUsmTests, RealSinglePrecision) {
                                   oneapi::mkl::transpose::trans, 25, 30, alpha, beta, 1, 1, 42));
 }
 TEST_P(GemvUsmTests, RealDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     double alpha(2.0);
     double beta(3.0);
@@ -216,7 +216,7 @@ TEST_P(GemvUsmTests, ComplexSinglePrecision) {
                                                 beta, 1, 1, 42));
 }
 TEST_P(GemvUsmTests, ComplexDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);

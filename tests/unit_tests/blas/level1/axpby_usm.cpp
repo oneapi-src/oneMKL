@@ -147,7 +147,7 @@ TEST_P(AxpbyUsmTests, RealSinglePrecision) {
         test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, -2, alpha, beta));
 }
 TEST_P(AxpbyUsmTests, RealDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     double alpha(2.0);
     double beta(3.0);
@@ -169,7 +169,7 @@ TEST_P(AxpbyUsmTests, ComplexSinglePrecision) {
                                                 1357, -3, -2, alpha, beta));
 }
 TEST_P(AxpbyUsmTests, ComplexDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);

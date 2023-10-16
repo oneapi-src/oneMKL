@@ -43,7 +43,7 @@ TEST_P(UniformStdUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(UniformStdUsmTests, RealDoublePrecision) {
-    if(GetParam()->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
 
     rng_test<statistics_usm_test<
         oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::standard>,
@@ -84,7 +84,7 @@ TEST_P(UniformAccurateUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(UniformAccurateUsmTests, RealDoublePrecision) {
-    if(GetParam()->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
 
     rng_test<statistics_usm_test<
         oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::accurate>,

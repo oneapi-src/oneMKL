@@ -153,7 +153,7 @@ TEST_P(HprTests, ComplexSinglePrecision) {
 }
 
 TEST_P(HprTests, ComplexDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     double alpha(2.0);
     EXPECT_TRUEORSKIP((test<std::complex<double>, double>(

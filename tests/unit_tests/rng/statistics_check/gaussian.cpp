@@ -43,7 +43,7 @@ TEST_P(GaussianIcdfTest, RealSinglePrecision) {
 }
 
 TEST_P(GaussianIcdfTest, RealDoublePrecision) {
-    if(GetParam()->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
 
     rng_test<
         statistics_test<oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>,
@@ -71,7 +71,7 @@ TEST_P(GaussianBoxmullerTest, RealSinglePrecision) {
 }
 
 TEST_P(GaussianBoxmullerTest, RealDoublePrecision) {
-    if(GetParam()->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
 
     rng_test<statistics_test<
         oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::box_muller2>,

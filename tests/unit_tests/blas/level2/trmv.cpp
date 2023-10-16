@@ -161,7 +161,7 @@ TEST_P(TrmvTests, RealSinglePrecision) {
                                   oneapi::mkl::diag::nonunit, 30, 2, 42));
 }
 TEST_P(TrmvTests, RealDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                    oneapi::mkl::uplo::lower, oneapi::mkl::transpose::nontrans,
@@ -227,7 +227,7 @@ TEST_P(TrmvTests, ComplexSinglePrecision) {
         oneapi::mkl::transpose::conjtrans, oneapi::mkl::diag::nonunit, 30, 2, 42));
 }
 TEST_P(TrmvTests, ComplexDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::mkl::uplo::lower,

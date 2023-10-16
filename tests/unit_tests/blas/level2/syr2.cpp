@@ -152,7 +152,7 @@ TEST_P(Syr2Tests, RealSinglePrecision) {
                                   oneapi::mkl::uplo::upper, 30, alpha, 1, 1, 42));
 }
 TEST_P(Syr2Tests, RealDoublePrecision) {
-    if(std::get<0>(GetParam())->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP();
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     double alpha(2.0);
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),

@@ -80,50 +80,50 @@ using ComplexDoublePrecisionUsm = std::complex<double>;
     DEFINE_TEST_ACCURACY_USM_COMPLEX(SUITE);                \
     INSTANTIATE_TEST_CLASS(SUITE, AccuracyUsm)
 
-#define DEFINE_TEST_ACCURACY_USM_REAL(SUITE)                                                       \
-    TEST_P(SUITE##AccuracyUsm, RealSinglePrecision) {                                              \
-        test_log::padding = "[          ] ";                                                       \
-        EXPECT_TRUE(accuracy_controller.run(::accuracy<RealSinglePrecisionUsm>, *GetParam()));     \
-    }                                                                                              \
-    TEST_P(SUITE##AccuracyUsm, RealDoublePrecision) {                                              \
-        if(GetParam()->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP(); \
-        test_log::padding = "[          ] ";                                                       \
-        EXPECT_TRUE(accuracy_controller.run(::accuracy<RealDoublePrecisionUsm>, *GetParam()));     \
+#define DEFINE_TEST_ACCURACY_USM_REAL(SUITE)                                                   \
+    TEST_P(SUITE##AccuracyUsm, RealSinglePrecision) {                                          \
+        test_log::padding = "[          ] ";                                                   \
+        EXPECT_TRUE(accuracy_controller.run(::accuracy<RealSinglePrecisionUsm>, *GetParam())); \
+    }                                                                                          \
+    TEST_P(SUITE##AccuracyUsm, RealDoublePrecision) {                                          \
+        CHECK_DOUBLE_ON_DEVICE(GetParam());                                                    \
+        test_log::padding = "[          ] ";                                                   \
+        EXPECT_TRUE(accuracy_controller.run(::accuracy<RealDoublePrecisionUsm>, *GetParam())); \
     }
 
-#define DEFINE_TEST_ACCURACY_USM_COMPLEX(SUITE)                                                    \
-    TEST_P(SUITE##AccuracyUsm, ComplexSinglePrecision) {                                           \
-        test_log::padding = "[          ] ";                                                       \
-        EXPECT_TRUE(accuracy_controller.run(::accuracy<ComplexSinglePrecisionUsm>, *GetParam()));  \
-    }                                                                                              \
-    TEST_P(SUITE##AccuracyUsm, ComplexDoublePrecision) {                                           \
-        if(GetParam()->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP(); \
-        test_log::padding = "[          ] ";                                                       \
-        EXPECT_TRUE(accuracy_controller.run(::accuracy<ComplexDoublePrecisionUsm>, *GetParam()));  \
+#define DEFINE_TEST_ACCURACY_USM_COMPLEX(SUITE)                                                   \
+    TEST_P(SUITE##AccuracyUsm, ComplexSinglePrecision) {                                          \
+        test_log::padding = "[          ] ";                                                      \
+        EXPECT_TRUE(accuracy_controller.run(::accuracy<ComplexSinglePrecisionUsm>, *GetParam())); \
+    }                                                                                             \
+    TEST_P(SUITE##AccuracyUsm, ComplexDoublePrecision) {                                          \
+        CHECK_DOUBLE_ON_DEVICE(GetParam());                                                       \
+        test_log::padding = "[          ] ";                                                      \
+        EXPECT_TRUE(accuracy_controller.run(::accuracy<ComplexDoublePrecisionUsm>, *GetParam())); \
     }
 
-#define DEFINE_TEST_ACCURACY_BUFFER_REAL(SUITE)                                                    \
-    TEST_P(SUITE##AccuracyBuffer, RealSinglePrecision) {                                           \
-        test_log::padding = "[          ] ";                                                       \
-        EXPECT_TRUE(accuracy_controller.run(::accuracy<RealSinglePrecisionBuffer>, *GetParam()));  \
-    }                                                                                              \
-    TEST_P(SUITE##AccuracyBuffer, RealDoublePrecision) {                                           \
-        if(GetParam()->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP(); \
-        test_log::padding = "[          ] ";                                                       \
-        EXPECT_TRUE(accuracy_controller.run(::accuracy<RealDoublePrecisionBuffer>, *GetParam()));  \
+#define DEFINE_TEST_ACCURACY_BUFFER_REAL(SUITE)                                                   \
+    TEST_P(SUITE##AccuracyBuffer, RealSinglePrecision) {                                          \
+        test_log::padding = "[          ] ";                                                      \
+        EXPECT_TRUE(accuracy_controller.run(::accuracy<RealSinglePrecisionBuffer>, *GetParam())); \
+    }                                                                                             \
+    TEST_P(SUITE##AccuracyBuffer, RealDoublePrecision) {                                          \
+        CHECK_DOUBLE_ON_DEVICE(GetParam());                                                       \
+        test_log::padding = "[          ] ";                                                      \
+        EXPECT_TRUE(accuracy_controller.run(::accuracy<RealDoublePrecisionBuffer>, *GetParam())); \
     }
 
-#define DEFINE_TEST_ACCURACY_BUFFER_COMPLEX(SUITE)                                                 \
-    TEST_P(SUITE##AccuracyBuffer, ComplexSinglePrecision) {                                        \
-        test_log::padding = "[          ] ";                                                       \
-        EXPECT_TRUE(                                                                               \
-            accuracy_controller.run(::accuracy<ComplexSinglePrecisionBuffer>, *GetParam()));       \
-    }                                                                                              \
-    TEST_P(SUITE##AccuracyBuffer, ComplexDoublePrecision) {                                        \
-        if(GetParam()->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP(); \
-        test_log::padding = "[          ] ";                                                       \
-        EXPECT_TRUE(                                                                               \
-            accuracy_controller.run(::accuracy<ComplexDoublePrecisionBuffer>, *GetParam()));       \
+#define DEFINE_TEST_ACCURACY_BUFFER_COMPLEX(SUITE)                                           \
+    TEST_P(SUITE##AccuracyBuffer, ComplexSinglePrecision) {                                  \
+        test_log::padding = "[          ] ";                                                 \
+        EXPECT_TRUE(                                                                         \
+            accuracy_controller.run(::accuracy<ComplexSinglePrecisionBuffer>, *GetParam())); \
+    }                                                                                        \
+    TEST_P(SUITE##AccuracyBuffer, ComplexDoublePrecision) {                                  \
+        CHECK_DOUBLE_ON_DEVICE(GetParam());                                                  \
+        test_log::padding = "[          ] ";                                                 \
+        EXPECT_TRUE(                                                                         \
+            accuracy_controller.run(::accuracy<ComplexDoublePrecisionBuffer>, *GetParam())); \
     }
 
 #define INSTANTIATE_GTEST_SUITE_DEPENDENCY(SUITE) \
@@ -142,28 +142,28 @@ using ComplexDoublePrecisionUsm = std::complex<double>;
     DEFINE_TEST_DEPENDENCY_COMPLEX(SUITE);                \
     INSTANTIATE_TEST_CLASS(SUITE, DependencyUsm);
 
-#define DEFINE_TEST_DEPENDENCY_REAL(SUITE)                                                         \
-    TEST_P(SUITE##DependencyUsm, RealSinglePrecision) {                                            \
-        test_log::padding = "[          ] ";                                                       \
-        EXPECT_TRUE(                                                                               \
-            dependency_controller.run(::usm_dependency<RealSinglePrecisionUsm>, *GetParam()));     \
-    }                                                                                              \
-    TEST_P(SUITE##DependencyUsm, RealDoublePrecision) {                                            \
-        if(GetParam()->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP(); \
-        test_log::padding = "[          ] ";                                                       \
-        EXPECT_TRUE(                                                                               \
-            dependency_controller.run(::usm_dependency<RealDoublePrecisionUsm>, *GetParam()));     \
+#define DEFINE_TEST_DEPENDENCY_REAL(SUITE)                                                     \
+    TEST_P(SUITE##DependencyUsm, RealSinglePrecision) {                                        \
+        test_log::padding = "[          ] ";                                                   \
+        EXPECT_TRUE(                                                                           \
+            dependency_controller.run(::usm_dependency<RealSinglePrecisionUsm>, *GetParam())); \
+    }                                                                                          \
+    TEST_P(SUITE##DependencyUsm, RealDoublePrecision) {                                        \
+        CHECK_DOUBLE_ON_DEVICE(GetParam());                                                    \
+        test_log::padding = "[          ] ";                                                   \
+        EXPECT_TRUE(                                                                           \
+            dependency_controller.run(::usm_dependency<RealDoublePrecisionUsm>, *GetParam())); \
     }
 
-#define DEFINE_TEST_DEPENDENCY_COMPLEX(SUITE)                                                      \
-    TEST_P(SUITE##DependencyUsm, ComplexSinglePrecision) {                                         \
-        test_log::padding = "[          ] ";                                                       \
-        EXPECT_TRUE(                                                                               \
-            dependency_controller.run(::usm_dependency<ComplexSinglePrecisionUsm>, *GetParam()));  \
-    }                                                                                              \
-    TEST_P(SUITE##DependencyUsm, ComplexDoublePrecision) {                                         \
-        if(GetParam()->get_info<sycl::info::device::double_fp_config>().size() == 0) GTEST_SKIP(); \
-        test_log::padding = "[          ] ";                                                       \
-        EXPECT_TRUE(                                                                               \
-            dependency_controller.run(::usm_dependency<ComplexDoublePrecisionUsm>, *GetParam()));  \
+#define DEFINE_TEST_DEPENDENCY_COMPLEX(SUITE)                                                     \
+    TEST_P(SUITE##DependencyUsm, ComplexSinglePrecision) {                                        \
+        test_log::padding = "[          ] ";                                                      \
+        EXPECT_TRUE(                                                                              \
+            dependency_controller.run(::usm_dependency<ComplexSinglePrecisionUsm>, *GetParam())); \
+    }                                                                                             \
+    TEST_P(SUITE##DependencyUsm, ComplexDoublePrecision) {                                        \
+        CHECK_DOUBLE_ON_DEVICE(GetParam());                                                       \
+        test_log::padding = "[          ] ";                                                      \
+        EXPECT_TRUE(                                                                              \
+            dependency_controller.run(::usm_dependency<ComplexDoublePrecisionUsm>, *GetParam())); \
     }\

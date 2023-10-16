@@ -53,6 +53,10 @@
             EXPECT_EQ(res, test_passed); \
     } while (0);
 
+#define CHECK_DOUBLE_ON_DEVICE(d)                                        \
+    if (d->get_info<sycl::info::device::double_fp_config>().size() == 0) \
+    GTEST_SKIP()
+
 #if defined(ENABLE_MKLCPU_BACKEND) || defined(ENABLE_NETLIB_BACKEND)
 #ifdef ENABLE_MKLCPU_BACKEND
 #define TEST_RUN_INTELCPU_SELECT_NO_ARGS(q, func) \
