@@ -59,10 +59,8 @@
 //
 // is performed and finally the results are post processed.
 //
+template <typename fp, typename intType>
 int run_sparse_matrix_vector_multiply_example(const sycl::device &cpu_dev) {
-    using fp = float;
-    using intType = std::int32_t;
-
     // Matrix data size
     intType size = 4;
     intType nrows = size * size * size;
@@ -162,25 +160,34 @@ int run_sparse_matrix_vector_multiply_example(const sycl::device &cpu_dev) {
     //
 
     fp *res = y;
+    const bool isConj = (transA == oneapi::mkl::transpose::conjtrans);
     for (intType row = 0; row < nrows; row++) {
-        fp tmp = set_fp_value(fp(0.0));
+        z[row] *= beta;
+    }
+    for (intType row = 0; row < nrows; row++) {
+        fp tmp = alpha * x[row];
         for (intType i = ia[row]; i < ia[row + 1]; i++) {
-            tmp += a[i] * x[ja[i]];
+            if constexpr (is_complex<fp>()) {
+                z[ja[i]] += tmp * (isConj ? std::conj(a[i]) : a[i]);
+            }
+            else {
+                z[ja[i]] += tmp * a[i];
+            }
         }
-        z[row] = alpha * tmp + beta * z[row];
     }
 
-    fp diff = set_fp_value(fp(0.0));
-    for (intType i = 0; i < nrows; i++) {
-        diff += (z[i] - res[i]) * (z[i] - res[i]);
+    bool good = true;
+    for (intType row = 0; row < nrows; row++) {
+        good &= check_result(res[row], z[row], nrows, row);
     }
-    std::cout << "\n\t\t sparse::gemv residual:\n"
-              << "\t\t\t" << diff << "\n\tFinished" << std::endl;
+
+    std::cout << "\n\t\t sparse::gemv example " << (good ? "passed" : "failed") << "\n\tFinished"
+              << std::endl;
 
     free_vec(fp_ptr_vec, cpu_queue);
     free_vec(int_ptr_vec, cpu_queue);
 
-    if (diff > 0)
+    if (!good)
         return 1;
 
     return 0;
@@ -230,7 +237,7 @@ int main(int /*argc*/, char ** /*argv*/) {
                   << std::endl;
         std::cout << "Running with single precision real data type:" << std::endl;
 
-        run_sparse_matrix_vector_multiply_example(cpu_dev);
+        run_sparse_matrix_vector_multiply_example<float, std::int32_t>(cpu_dev);
         std::cout << "Sparse BLAS GEMV USM example ran OK." << std::endl;
     }
     catch (sycl::exception const &e) {

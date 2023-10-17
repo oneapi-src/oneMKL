@@ -26,7 +26,29 @@
 #include <CL/sycl.hpp>
 #endif
 
+#include <complex>
+#include <iostream>
+#include <limits>
+#include <type_traits>
 #include <vector>
+
+// Complex helpers.
+template <typename T>
+struct complex_info {
+    using real_type = T;
+    static const bool is_complex = false;
+};
+
+template <typename T>
+struct complex_info<std::complex<T>> {
+    using real_type = T;
+    static const bool is_complex = true;
+};
+
+template <class T>
+struct is_complex : std::false_type {};
+template <class T>
+struct is_complex<std::complex<T>> : std::true_type {};
 
 //
 // helpers for initializing templated scalar data type values.
@@ -34,6 +56,12 @@
 template <typename fp>
 fp set_fp_value(fp arg1, fp /*arg2*/ = fp(0.0)) {
     return arg1;
+}
+
+template <typename fp>
+std::complex<fp> set_fp_value(std::complex<fp> arg1,
+                              std::complex<fp> arg2 = std::complex<fp>(0.0)) {
+    return std::complex<fp>(arg1.real(), arg2.real());
 }
 
 //
@@ -119,6 +147,28 @@ intType generate_sparse_matrix(const intType nx, intType *ia, intType *ja, fp *a
         } // end iy loop
     } // end iz loop
     return nnz;
+}
+
+template <typename fp, typename fp_real>
+bool check_errors(fp x, fp x_ref, fp_real bound) {
+    fp_real aerr = std::abs(x - x_ref);
+    fp_real rerr = aerr / (std::abs(x_ref) + std::numeric_limits<fp_real>::epsilon());
+    bool ok = (rerr <= bound) || (aerr <= bound);
+    if (!ok)
+        std::cout << "relative error = " << rerr << " absolute error = " << aerr
+                  << " limit = " << bound;
+    return ok;
+}
+
+template <typename fp, typename intType>
+bool check_result(fp res, fp ref, intType nFlops, intType index) {
+    bool check;
+    using fp_real = typename complex_info<fp>::real_type;
+    fp_real bound = std::numeric_limits<fp_real>::epsilon() * static_cast<fp_real>(nFlops);
+    check = check_errors<fp, fp_real>(res, ref, bound);
+    if (!check)
+        std::cout << " in index: " << index << std::endl;
+    return check;
 }
 
 template <typename T>
