@@ -28,36 +28,47 @@ class mcg31m1;
 namespace detail {
 
 template <std::uint64_t VecSize>
-constexpr sycl::vec<std::uint64_t, VecSize> select_vector_a_mcg31m1() {
-    if constexpr (VecSize == 1)
-        return sycl::vec<std::uint64_t, 1>(UINT64_C(1));
-    else if constexpr (VecSize == 2)
-        return sycl::vec<std::uint64_t, 2>({ UINT64_C(1), UINT64_C(1132489760) });
-    else if constexpr (VecSize == 3)
-        return sycl::vec<std::uint64_t, 3>(
-            { UINT64_C(1), UINT64_C(1132489760), UINT64_C(826537482) });
-    else if constexpr (VecSize == 4)
-        return sycl::vec<std::uint64_t, 4>(
-            { UINT64_C(1), UINT64_C(1132489760), UINT64_C(826537482), UINT64_C(289798557) });
-    else if constexpr (VecSize == 8)
-        return sycl::vec<std::uint64_t, 8>({ UINT64_C(1), UINT64_C(1132489760), UINT64_C(826537482),
-                                             UINT64_C(289798557), UINT64_C(480863449),
-                                             UINT64_C(1381340036), UINT64_C(1582925527),
-                                             UINT64_C(1918178478) });
-    else
-        return sycl::vec<std::uint64_t, 16>(
-            { UINT64_C(1), UINT64_C(1132489760), UINT64_C(826537482), UINT64_C(289798557),
-              UINT64_C(480863449), UINT64_C(1381340036), UINT64_C(1582925527), UINT64_C(1918178478),
-              UINT64_C(1286028348), UINT64_C(482167044), UINT64_C(262060616), UINT64_C(1856662125),
-              UINT64_C(839877947), UINT64_C(1997268203), UINT64_C(458714024),
-              UINT64_C(650347998) });
+struct mcg31m1_vector_a_selector {};
+
+template<>
+struct mcg31m1_vector_a_selector<1> {
+    inline static const sycl::vec<std::uint64_t, 1> vector_a{UINT64_C(1)};
 }
 
-template <std::uint64_t VecSize>
-struct mcg31m1_vector_a {
-    static constexpr sycl::vec<std::uint64_t, VecSize> vector_a =
-        select_vector_a_mcg31m1<VecSize>(); // powers of a
-};
+template<>
+struct mcg31m1_vector_a_selector<2> {
+    inline static const sycl::vec<std::uint64_t, 2> vector_a{UINT64_C(1), UINT64_C(1132489760)};
+}
+
+template<>
+struct mcg31m1_vector_a_selector<3> {
+    inline static const sycl::vec<std::uint64_t, 3> vector_a{UINT64_C(1), UINT64_C(1132489760),
+                                                            UINT64_C(826537482)};
+}
+
+template<>
+struct mcg31m1_vector_a_selector<4> {
+    inline static const sycl::vec<std::uint64_t, 4> vector_a{UINT64_C(1), UINT64_C(1132489760),
+                                                            UINT64_C(826537482), UINT64_C(289798557)};
+}
+
+template<>
+struct mcg31m1_vector_a_selector<8> {
+    inline static const sycl::vec<std::uint64_t, 8> vector_a{UINT64_C(1), UINT64_C(1132489760),
+                                                            UINT64_C(826537482), UINT64_C(289798557),
+                                                            UINT64_C(480863449), UINT64_C(1381340036),
+                                                            UINT64_C(1582925527), UINT64_C(1918178478)};
+}
+
+template<>
+struct mcg31m1_vector_a_selector<16> {
+    inline static const sycl::vec<std::uint64_t, 16> vector_a{UINT64_C(1), UINT64_C(1132489760), UINT64_C(826537482),
+                                                            UINT64_C(289798557), UINT64_C(480863449), UINT64_C(1381340036),
+                                                            UINT64_C(1582925527), UINT64_C(1918178478), UINT64_C(1286028348),
+                                                            UINT64_C(482167044), UINT64_C(262060616), UINT64_C(1856662125),
+                                                            UINT64_C(839877947), UINT64_C(1997268203), UINT64_C(458714024),
+                                                            UINT64_C(650347998)};
+}
 
 struct mcg31m1_param {
     static constexpr std::uint32_t a = 1132489760;
@@ -153,7 +164,7 @@ template <std::int32_t VecSize>
 static inline sycl::vec<std::uint32_t, VecSize> generate(
     engine_state<oneapi::mkl::rng::device::mcg31m1<VecSize>>& state) {
     sycl::vec<std::uint64_t, VecSize> x(state.s);
-    sycl::vec<std::uint32_t, VecSize> res = custom_mod(mcg31m1_vector_a<VecSize>::vector_a * x);
+    sycl::vec<std::uint32_t, VecSize> res = custom_mod(mcg31m1_vector_a_selector<VecSize>::vector_a * x);
     state.s =
         custom_mod<std::uint32_t>(mcg31m1_param::a * static_cast<std::uint64_t>(res[VecSize - 1]));
     return res;
