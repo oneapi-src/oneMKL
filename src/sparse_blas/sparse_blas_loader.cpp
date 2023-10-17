@@ -21,23 +21,8 @@
 
 #include "function_table_initializer.hpp"
 #include "sparse_blas/function_table.hpp"
+#include "sparse_blas/macros.hpp"
 #include "oneapi/mkl/detail/get_device_id.hpp"
-
-#define FOR_EACH_FP_TYPE(DEFINE_MACRO)      \
-    DEFINE_MACRO(float, _rf);               \
-    DEFINE_MACRO(double, _rd);              \
-    DEFINE_MACRO(std::complex<float>, _cf); \
-    DEFINE_MACRO(std::complex<double>, _cd)
-
-#define FOR_EACH_FP_AND_INT_TYPE_HELPER(DEFINE_MACRO, INT_TYPE, INT_SUFFIX) \
-    DEFINE_MACRO(float, _rf, INT_TYPE, INT_SUFFIX);                         \
-    DEFINE_MACRO(double, _rd, INT_TYPE, INT_SUFFIX);                        \
-    DEFINE_MACRO(std::complex<float>, _cf, INT_TYPE, INT_SUFFIX);           \
-    DEFINE_MACRO(std::complex<double>, _cd, INT_TYPE, INT_SUFFIX)
-
-#define FOR_EACH_FP_AND_INT_TYPE(DEFINE_MACRO)                         \
-    FOR_EACH_FP_AND_INT_TYPE_HELPER(DEFINE_MACRO, std::int32_t, _i32); \
-    FOR_EACH_FP_AND_INT_TYPE_HELPER(DEFINE_MACRO, std::int64_t, _i64)
 
 namespace oneapi::mkl::sparse {
 
@@ -161,7 +146,3 @@ FOR_EACH_FP_TYPE(DEFINE_GEMM)
 #undef DEFINE_GEMM
 
 } // namespace oneapi::mkl::sparse
-
-#undef FOR_EACH_FP_TYPE
-#undef FOR_EACH_FP_AND_INT_TYPE
-#undef FOR_EACH_FP_AND_INT_TYPE_HELPER
