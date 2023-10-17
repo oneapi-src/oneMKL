@@ -67,7 +67,7 @@ public:
                         acc[id] = res;
                     }
                     else {
-                        res.store(id, acc);
+                        res.store(id, acc.get_multi_ptr());
                     }
                 });
             });
