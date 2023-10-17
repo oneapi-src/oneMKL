@@ -124,6 +124,12 @@ void nrm2(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<real_t>,
 
 void nrm2(sycl::queue &queue, std::int64_t n, sycl::buffer<real_t, 1> &x, std::int64_t incx,
           sycl::buffer<real_t, 1> &result) {
+    // portBLAS nrm2 implementation requires that result is initialized to zero
+    // before performing the computation.
+    queue.submit([&](sycl::handler &cgh) {
+        auto result_acc = result.template get_access<sycl::access::mode::write>(cgh);
+        cgh.single_task([=]() { result_acc[0] = real_t(0); });
+    });
     CALL_PORTBLAS_FN(::blas::_nrm2, queue, n, x, incx, result);
 }
 
@@ -299,6 +305,11 @@ sycl::event nrm2(sycl::queue &queue, std::int64_t n, const std::complex<real_t> 
 
 sycl::event nrm2(sycl::queue &queue, std::int64_t n, const real_t *x, std::int64_t incx,
                  real_t *result, const std::vector<sycl::event> &dependencies) {
+    // portBLAS nrm2 implementation requires result to be initializes to zero
+    // before starting the computation.
+    auto init_res_val = queue.submit(
+        [&](sycl::handler &cgh) { cgh.single_task([=]() { result[0] = real_t(0); }); });
+    init_res_val.wait();
     CALL_PORTBLAS_USM_FN(::blas::_nrm2, queue, n, x, incx, result, dependencies);
 }
 
