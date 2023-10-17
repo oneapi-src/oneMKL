@@ -28,82 +28,50 @@ class mcg59;
 namespace detail {
 
 template <std::uint32_t VecSize>
-sycl::vec<std::uint64_t, VecSize> select_vector_a_mcg59() {
-    return sycl::vec<std::uint64_t, VecSize>{};
-}
+struct vector_a_mcg59_selector {};
 
-template <>
-sycl::vec<std::uint64_t, 1> select_vector_a_mcg59<1>() {
-    return sycl::vec<std::uint64_t, 1>(UINT64_C(1));
-}
+template<>
+struct vector_a_mcg59_selector<1> {
+    inline static const sycl::vec<std::uint64_t, 1> vector_a{UINT64_C(1)};
+};
 
-template <>
-sycl::vec<std::uint64_t, 2> select_vector_a_mcg59<2>() {
-    return sycl::vec<std::uint64_t, 2>({ UINT64_C(1), UINT64_C(0x113769B23C5FD) });
-}
+template<>
+struct vector_a_mcg59_selector<2> {
+    inline static const sycl::vec<std::uint64_t, 2> vector_a{UINT64_C(1), UINT64_C(0x113769B23C5FD)};
+};
 
-template <>
-sycl::vec<std::uint64_t, 3> select_vector_a_mcg59<3>() {
-    return sycl::vec<std::uint64_t, 3>(
-        { UINT64_C(1), UINT64_C(0x113769B23C5FD), UINT64_C(0x65C69FC1A4D5C09) });
-}
+template<>
+struct vector_a_mcg59_selector<3> {
+    inline static const sycl::vec<std::uint64_t, 3> vector_a{
+                                    UINT64_C(1), UINT64_C(0x113769B23C5FD),
+                                    UINT64_C(0x65C69FC1A4D5C09)};
+};
 
-template <>
-sycl::vec<std::uint64_t, 4> select_vector_a_mcg59<4>() {
-    return sycl::vec<std::uint64_t, 4>({ UINT64_C(1), UINT64_C(0x113769B23C5FD),
-                                    UINT64_C(0x65C69FC1A4D5C09), UINT64_C(0x1CE44D68E81E1E5) });
-}
+template<>
+struct vector_a_mcg59_selector<4> {
+    inline static const sycl::vec<std::uint64_t, 4> vector_a{
+                                    UINT64_C(1), UINT64_C(0x113769B23C5FD),
+                                    UINT64_C(0x65C69FC1A4D5C09), UINT64_C(0x1CE44D68E81E1E5)};
+};
 
-template <>
-sycl::vec<std::uint64_t, 8> select_vector_a_mcg59<8>() {
-    return sycl::vec<std::uint64_t, 8>({ UINT64_C(1), UINT64_C(0x113769B23C5FD),
+template<>
+struct vector_a_mcg59_selector<8> {
+    inline static const sycl::vec<std::uint64_t, 8> vector_a{
+                                    UINT64_C(1), UINT64_C(0x113769B23C5FD),
                                     UINT64_C(0x65C69FC1A4D5C09), UINT64_C(0x1CE44D68E81E1E5),
                                     UINT64_C(0x2F861CA52807851), UINT64_C(0x1CCDF2FE3A03D0D),
-                                    UINT64_C(0x707AB5B7C1E56D9), UINT64_C(0x6139AE457BD175) });
-}
+                                    UINT64_C(0x707AB5B7C1E56D9), UINT64_C(0x6139AE457BD175)};
+};
 
-template <>
-sycl::vec<std::uint64_t, 16> select_vector_a_mcg59<16>() {
-    return sycl::vec<std::uint64_t, 16>(
-            { UINT64_C(1), UINT64_C(0x113769B23C5FD), UINT64_C(0x65C69FC1A4D5C09),
-              UINT64_C(0x1CE44D68E81E1E5), UINT64_C(0x2F861CA52807851), UINT64_C(0x1CCDF2FE3A03D0D),
-              UINT64_C(0x707AB5B7C1E56D9), UINT64_C(0x6139AE457BD175), UINT64_C(0x171CF606D8C09A1),
-              UINT64_C(0x3764DC8D2D1691D), UINT64_C(0x50A1576CCF32A9), UINT64_C(0x499F3083ADC1E05),
-              UINT64_C(0x7A30C00B05283F1), UINT64_C(0x4FE299EB607DA2D), UINT64_C(0x51CCFD803CE3F79),
-              UINT64_C(0x58145D06A37D795) });
-}
-
-// template <std::uint32_t VecSize>
-// constexpr sycl::vec<uint64_t, VecSize> select_vector_a_mcg59() {
-//     if constexpr (VecSize == 1)
-//         return sycl::vec<uint64_t, 1>(UINT64_C(1));
-//     else if constexpr (VecSize == 2)
-//         return sycl::vec<uint64_t, 2>({ UINT64_C(1), UINT64_C(0x113769B23C5FD) });
-//     else if constexpr (VecSize == 3)
-//         return sycl::vec<uint64_t, 3>(
-//             { UINT64_C(1), UINT64_C(0x113769B23C5FD), UINT64_C(0x65C69FC1A4D5C09) });
-//     else if constexpr (VecSize == 4)
-//         return sycl::vec<uint64_t, 4>({ UINT64_C(1), UINT64_C(0x113769B23C5FD),
-//                                         UINT64_C(0x65C69FC1A4D5C09), UINT64_C(0x1CE44D68E81E1E5) });
-//     else if constexpr (VecSize == 8)
-//         return sycl::vec<uint64_t, 8>({ UINT64_C(1), UINT64_C(0x113769B23C5FD),
-//                                         UINT64_C(0x65C69FC1A4D5C09), UINT64_C(0x1CE44D68E81E1E5),
-//                                         UINT64_C(0x2F861CA52807851), UINT64_C(0x1CCDF2FE3A03D0D),
-//                                         UINT64_C(0x707AB5B7C1E56D9), UINT64_C(0x6139AE457BD175) });
-//     else
-//         return sycl::vec<uint64_t, 16>(
-//             { UINT64_C(1), UINT64_C(0x113769B23C5FD), UINT64_C(0x65C69FC1A4D5C09),
-//               UINT64_C(0x1CE44D68E81E1E5), UINT64_C(0x2F861CA52807851), UINT64_C(0x1CCDF2FE3A03D0D),
-//               UINT64_C(0x707AB5B7C1E56D9), UINT64_C(0x6139AE457BD175), UINT64_C(0x171CF606D8C09A1),
-//               UINT64_C(0x3764DC8D2D1691D), UINT64_C(0x50A1576CCF32A9), UINT64_C(0x499F3083ADC1E05),
-//               UINT64_C(0x7A30C00B05283F1), UINT64_C(0x4FE299EB607DA2D), UINT64_C(0x51CCFD803CE3F79),
-//               UINT64_C(0x58145D06A37D795) });
-// }
-
-template <std::uint32_t VecSize>
-struct mcg59_vector_a {
-    inline static const sycl::vec<std::uint64_t, VecSize> vector_a =
-        select_vector_a_mcg59<VecSize>(); // powers of a
+template<>
+struct vector_a_mcg59_selector<16> {
+    inline static const sycl::vec<std::uint64_t, 16> vector_a{
+                                UINT64_C(1), UINT64_C(0x113769B23C5FD), UINT64_C(0x65C69FC1A4D5C09),
+                                UINT64_C(0x1CE44D68E81E1E5), UINT64_C(0x2F861CA52807851), UINT64_C(0x1CCDF2FE3A03D0D),
+                                UINT64_C(0x707AB5B7C1E56D9), UINT64_C(0x6139AE457BD175), UINT64_C(0x171CF606D8C09A1),
+                                UINT64_C(0x3764DC8D2D1691D), UINT64_C(0x50A1576CCF32A9), UINT64_C(0x499F3083ADC1E05),
+                                UINT64_C(0x7A30C00B05283F1), UINT64_C(0x4FE299EB607DA2D), UINT64_C(0x51CCFD803CE3F79),
+                                UINT64_C(0x58145D06A37D795)};
 };
 
 struct mcg59_param {
@@ -173,7 +141,7 @@ template <std::int32_t VecSize>
 static inline sycl::vec<std::uint64_t, VecSize> generate(
     engine_state<oneapi::mkl::rng::device::mcg59<VecSize>>& state) {
     sycl::vec<std::uint64_t, VecSize> res(state.s);
-    res = custom_mod(mcg59_vector_a<VecSize>::vector_a * res);
+    res = custom_mod(vector_a_mcg59_selector<VecSize>::vector_a * res);
     state.s = custom_mod(mcg59_param::a * res[VecSize - 1]);
     return res;
 }
