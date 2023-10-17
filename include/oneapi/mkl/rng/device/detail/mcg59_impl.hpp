@@ -102,7 +102,7 @@ sycl::vec<std::uint64_t, 16> select_vector_a_mcg59<16>() {
 
 template <std::uint32_t VecSize>
 struct mcg59_vector_a {
-    inline static sycl::vec<std::uint64_t, VecSize> vector_a =
+    inline static const sycl::vec<std::uint64_t, VecSize> vector_a =
         select_vector_a_mcg59<VecSize>(); // powers of a
 };
 
