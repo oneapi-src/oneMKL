@@ -45,6 +45,7 @@ message(STATUS "SYCL_DEVICE_FILTER will be set to the following value(s): [${DEV
 foreach(rng_device_source ${RNG_DEVICE_SOURCES})
   add_executable(example_${domain}_${rng_device_source} ${rng_device_source}.cpp)
   target_include_directories(example_${domain}_${rng_device_source}
+      PUBLIC ${PROJECT_SOURCE_DIR}/examples/rng/device/include
       PUBLIC ${PROJECT_SOURCE_DIR}/examples/include
       PUBLIC ${PROJECT_SOURCE_DIR}/include
       PUBLIC ${CMAKE_BINARY_DIR}/bin

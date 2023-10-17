@@ -36,7 +36,10 @@
 #else
 #include <CL/sycl.hpp>
 #endif
+
 #include "oneapi/mkl/rng/device.hpp"
+
+#include "rng_example_helper.hpp"
 
 bool isDoubleSupported(sycl::device my_dev) {
     return my_dev.get_info<sycl::info::device::double_fp_config>().size() != 0;
@@ -79,7 +82,7 @@ int run_example(sycl::queue& queue) {
                         r_acc[item_id] = res;
                     }
                     else {
-                        res.store(item_id, r_acc);
+                        res.store(item_id, get_multi_ptr(r_acc));
                     }
                 });
             });
