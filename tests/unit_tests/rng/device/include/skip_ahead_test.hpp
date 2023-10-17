@@ -68,7 +68,7 @@ public:
                         acc[id] = res;
                     }
                     else {
-                        res.store(id, acc.get_multi_ptr());
+                        res.store(id, acc);
                     }
                 });
             });
@@ -131,7 +131,7 @@ public:
                         acc[id] = res;
                     }
                     else {
-                        res.store(id, acc.get_multi_ptr());
+                        res.store(id, acc);
                     }
                 });
             });
