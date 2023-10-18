@@ -54,8 +54,8 @@ inline void gebrd(const char *func_name, Func func, sycl::queue &queue, std::int
             auto tauq_ = sc.get_mem<rocmDataType_A *>(tauq_acc);
             auto taup_ = sc.get_mem<rocmDataType_A *>(taup_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, a_, lda, d_, e_, tauq_,
-                                   taup_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, a_, lda, d_, e_, tauq_,
+                                        taup_);
         });
     });
 }
@@ -112,7 +112,7 @@ inline void geqrf(const char *func_name, Func func, sycl::queue &queue, std::int
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, a_, lda, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, a_, lda, tau_);
         });
     });
 }
@@ -146,7 +146,7 @@ void getrf(const char *func_name, Func func, sycl::queue &queue, std::int64_t m,
     sycl::buffer<int, 1> ipiv32(sycl::range<1>{ ipiv_size });
     sycl::buffer<int> devInfo{ 1 };
 
-    queue.submit([&](sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
@@ -156,12 +156,14 @@ void getrf(const char *func_name, Func func, sycl::queue &queue, std::int64_t m,
             auto ipiv32_ = sc.get_mem<int *>(ipiv32_acc);
             auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, a_, lda, ipiv32_, devInfo_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, a_, lda, ipiv32_,
+                                        devInfo_);
         });
     });
 
     // Copy from 32-bit buffer to 64-bit
     queue.submit([&](sycl::handler &cgh) {
+        cgh.depends_on(done);
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::read>(cgh);
         auto ipiv_acc = ipiv.template get_access<sycl::access::mode::write>(cgh);
         cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
@@ -240,8 +242,8 @@ inline void getrs(const char *func_name, Func func, sycl::queue &queue,
             auto ipiv_ = sc.get_mem<std::int32_t *>(ipiv_acc);
             auto b_ = sc.get_mem<rocmDataType *>(b_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_operation(trans), n,
-                                   nrhs, a_, lda, ipiv_, b_, ldb);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(trans),
+                                        n, nrhs, a_, lda, ipiv_, b_, ldb);
         });
     });
 }
@@ -288,9 +290,10 @@ inline void gesvd(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
             auto scratch_ = sc.get_mem<rocmDataType_B *>(scratch_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocsolver_jobsvd(jobu),
-                                   get_rocsolver_jobsvd(jobvt), m, n, a_, lda, s_, u_, ldu, vt_,
-                                   ldvt, scratch_, rocblas_workmode::rocblas_outofplace, devInfo_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocsolver_jobsvd(jobu),
+                                        get_rocsolver_jobsvd(jobvt), m, n, a_, lda, s_, u_, ldu,
+                                        vt_, ldvt, scratch_, rocblas_workmode::rocblas_outofplace,
+                                        devInfo_);
         });
     });
     lapack_info_check(queue, devInfo, __func__, func_name);
@@ -334,8 +337,9 @@ inline void heevd(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
             auto scratch_ = sc.get_mem<rocmDataType_B *>(scratch_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocsolver_job(jobz),
-                                   get_rocblas_fill_mode(uplo), n, a_, lda, w_, scratch_, devInfo_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocsolver_job(jobz),
+                                        get_rocblas_fill_mode(uplo), n, a_, lda, w_, scratch_,
+                                        devInfo_);
         });
     });
     lapack_info_check(queue, devInfo, __func__, func_name);
@@ -378,9 +382,9 @@ inline void hegvd(const char *func_name, Func func, sycl::queue &queue, std::int
             auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
             auto scratch_ = sc.get_mem<rocmDataType_B *>(scratch_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocsolver_itype(itype),
-                                   get_rocsolver_job(jobz), get_rocblas_fill_mode(uplo), n, a_, lda,
-                                   b_, ldb, w_, scratch_, devInfo_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocsolver_itype(itype),
+                                        get_rocsolver_job(jobz), get_rocblas_fill_mode(uplo), n, a_,
+                                        lda, b_, ldb, w_, scratch_, devInfo_);
         });
     });
     lapack_info_check(queue, devInfo, __func__, func_name);
@@ -408,26 +412,22 @@ inline void hetrd(const char *func_name, Func func, sycl::queue &queue, oneapi::
     using rocmDataType_A = typename RocmEquivalentType<T_A>::Type;
     using rocmDataType_B = typename RocmEquivalentType<T_B>::Type;
     overflow_check(n, lda, scratchpad_size);
-    sycl::buffer<int> devInfo{ 1 };
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto d_acc = d.template get_access<sycl::access::mode::write>(cgh);
         auto e_acc = e.template get_access<sycl::access::mode::write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
-        auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
         onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType_A *>(a_acc);
             auto d_ = sc.get_mem<rocmDataType_B *>(d_acc);
             auto e_ = sc.get_mem<rocmDataType_B *>(e_acc);
             auto tau_ = sc.get_mem<rocmDataType_A *>(tau_acc);
-            auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
-                                   lda, d_, e_, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_fill_mode(uplo),
+                                        n, a_, lda, d_, e_, tau_);
         });
     });
-    lapack_info_check(queue, devInfo, __func__, func_name);
 }
 
 #define HETRD_LAUNCHER(TYPE_A, TYPE_B, ROCSOLVER_ROUTINE)                               \
@@ -471,8 +471,8 @@ inline void orgbr(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_generate(vec), m, n, k,
-                                   a_, lda, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_generate(vec), m,
+                                        n, k, a_, lda, tau_);
         });
     });
 }
@@ -504,7 +504,7 @@ inline void orgqr(const char *func_name, Func func, sycl::queue &queue, std::int
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, k, a_, lda, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, k, a_, lda, tau_);
         });
     });
 }
@@ -536,8 +536,8 @@ inline void orgtr(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
-                                   lda, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_fill_mode(uplo),
+                                        n, a_, lda, tau_);
         });
     });
 }
@@ -573,9 +573,9 @@ inline void ormtr(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
             auto c_ = sc.get_mem<rocmDataType *>(c_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
-                                   get_rocblas_fill_mode(uplo), get_rocblas_operation(trans), m, n,
-                                   a_, lda, tau_, c_, ldc);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_side_mode(side),
+                                        get_rocblas_fill_mode(uplo), get_rocblas_operation(trans),
+                                        m, n, a_, lda, tau_, c_, ldc);
         });
     });
 }
@@ -625,8 +625,9 @@ inline void ormqr(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
             auto c_ = sc.get_mem<rocmDataType *>(c_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
-                                   get_rocblas_operation(trans), m, n, k, a_, lda, tau_, c_, ldc);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_side_mode(side),
+                                        get_rocblas_operation(trans), m, n, k, a_, lda, tau_, c_,
+                                        ldc);
         });
     });
 }
@@ -660,8 +661,8 @@ inline void potrf(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
-                                   lda, devInfo_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_fill_mode(uplo),
+                                        n, a_, lda, devInfo_);
         });
     });
     lapack_info_check(queue, devInfo, __func__, func_name);
@@ -696,8 +697,8 @@ inline void potri(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
-                                   lda, devInfo_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_fill_mode(uplo),
+                                        n, a_, lda, devInfo_);
         });
     });
     lapack_info_check(queue, devInfo, __func__, func_name);
@@ -732,8 +733,8 @@ inline void potrs(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto b_ = sc.get_mem<rocmDataType *>(b_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n,
-                                   nrhs, a_, lda, b_, ldb);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_fill_mode(uplo),
+                                        n, nrhs, a_, lda, b_, ldb);
         });
     });
 }
@@ -772,8 +773,9 @@ inline void syevd(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
             auto scratch_ = sc.get_mem<rocmDataType *>(scratch_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocsolver_job(jobz),
-                                   get_rocblas_fill_mode(uplo), n, a_, lda, w_, scratch_, devInfo_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocsolver_job(jobz),
+                                        get_rocblas_fill_mode(uplo), n, a_, lda, w_, scratch_,
+                                        devInfo_);
         });
     });
     lapack_info_check(queue, devInfo, __func__, func_name);
@@ -814,9 +816,9 @@ inline void sygvd(const char *func_name, Func func, sycl::queue &queue, std::int
             auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
             auto scratch_ = sc.get_mem<rocmDataType *>(scratch_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocsolver_itype(itype),
-                                   get_rocsolver_job(jobz), get_rocblas_fill_mode(uplo), n, a_, lda,
-                                   b_, ldb, w_, scratch_, devInfo_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocsolver_itype(itype),
+                                        get_rocsolver_job(jobz), get_rocblas_fill_mode(uplo), n, a_,
+                                        lda, b_, ldb, w_, scratch_, devInfo_);
         });
     });
     lapack_info_check(queue, devInfo, __func__, func_name);
@@ -855,8 +857,8 @@ inline void sytrd(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto e_ = sc.get_mem<rocmDataType *>(e_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
-                                   lda, d_, e_, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_fill_mode(uplo),
+                                        n, a_, lda, d_, e_, tau_);
         });
     });
 }
@@ -890,7 +892,7 @@ inline void sytrf(const char *func_name, Func func, sycl::queue &queue, oneapi::
     std::uint64_t ipiv_size = n;
     sycl::buffer<int, 1> ipiv32(sycl::range<1>{ ipiv_size });
 
-    queue.submit([&](sycl::handler &cgh) {
+    auto done = queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
@@ -900,13 +902,14 @@ inline void sytrf(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto ipiv32_ = sc.get_mem<int *>(ipiv32_acc);
             auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
-                                   lda, ipiv32_, devInfo_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_fill_mode(uplo),
+                                        n, a_, lda, ipiv32_, devInfo_);
         });
     });
 
     // Copy from 32-bit buffer to 64-bit
     queue.submit([&](sycl::handler &cgh) {
+        cgh.depends_on(done);
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::read>(cgh);
         auto ipiv_acc = ipiv.template get_access<sycl::access::mode::write>(cgh);
         cgh.parallel_for(sycl::range<1>{ ipiv_size }, [=](sycl::id<1> index) {
@@ -973,8 +976,8 @@ inline void ungbr(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_generate(vec), m, n, k,
-                                   a_, lda, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_generate(vec), m,
+                                        n, k, a_, lda, tau_);
         });
     });
 }
@@ -1006,7 +1009,7 @@ inline void ungqr(const char *func_name, Func func, sycl::queue &queue, std::int
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, k, a_, lda, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, k, a_, lda, tau_);
         });
     });
 }
@@ -1038,8 +1041,8 @@ inline void ungtr(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
-                                   lda, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_fill_mode(uplo),
+                                        n, a_, lda, tau_);
         });
     });
 }
@@ -1089,8 +1092,9 @@ inline void unmqr(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
             auto c_ = sc.get_mem<rocmDataType *>(c_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
-                                   get_rocblas_operation(trans), m, n, k, a_, lda, tau_, c_, ldc);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_side_mode(side),
+                                        get_rocblas_operation(trans), m, n, k, a_, lda, tau_, c_,
+                                        ldc);
         });
     });
 }
@@ -1127,9 +1131,9 @@ inline void unmtr(const char *func_name, Func func, sycl::queue &queue, oneapi::
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
             auto c_ = sc.get_mem<rocmDataType *>(c_acc);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
-                                   get_rocblas_fill_mode(uplo), get_rocblas_operation(trans), m, n,
-                                   a_, lda, tau_, c_, ldc);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_side_mode(side),
+                                        get_rocblas_fill_mode(uplo), get_rocblas_operation(trans),
+                                        m, n, a_, lda, tau_, c_, ldc);
         });
     });
 }
@@ -1173,8 +1177,8 @@ inline sycl::event gebrd(const char *func_name, Func func, sycl::queue &queue, s
             auto tauq_ = reinterpret_cast<rocmDataType_A *>(tauq);
             auto taup_ = reinterpret_cast<rocmDataType_A *>(taup);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, a_, lda, d_, e_, tauq_,
-                                   taup_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, a_, lda, d_, e_, tauq_,
+                                        taup_);
         });
     });
     return done;
@@ -1234,7 +1238,7 @@ inline sycl::event geqrf(const char *func_name, Func func, sycl::queue &queue, s
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, a_, lda, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, a_, lda, tau_);
         });
     });
     return done;
@@ -1281,7 +1285,8 @@ inline sycl::event getrf(const char *func_name, Func func, sycl::queue &queue, s
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
             auto ipiv_ = reinterpret_cast<int *>(ipiv32);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, a_, lda, ipiv_, devInfo_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, a_, lda, ipiv_,
+                                        devInfo_);
         });
     });
 
@@ -1293,11 +1298,8 @@ inline sycl::event getrf(const char *func_name, Func func, sycl::queue &queue, s
         });
     });
 
-    queue.wait();
-
-    free(ipiv32, queue);
-
     lapack_info_check(queue, devInfo, __func__, func_name);
+    free(ipiv32, queue);
     free(devInfo, queue);
     return done_casting;
 }
@@ -1372,8 +1374,8 @@ inline sycl::event getrs(const char *func_name, Func func, sycl::queue &queue,
             auto ipiv_ = reinterpret_cast<int *>(ipiv32);
             auto b_ = reinterpret_cast<rocmDataType *>(b);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_operation(trans), n,
-                                   nrhs, a_, lda, ipiv_, b_, ldb);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_operation(trans),
+                                        n, nrhs, a_, lda, ipiv_, b_, ldb);
         });
     });
 
@@ -1424,9 +1426,10 @@ inline sycl::event gesvd(const char *func_name, Func func, sycl::queue &queue,
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
             auto scratch_ = reinterpret_cast<rocmDataType_B *>(scratchpad);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocsolver_jobsvd(jobu),
-                                   get_rocsolver_jobsvd(jobvt), m, n, a_, lda, s_, u_, ldu, vt_,
-                                   ldvt, scratch_, rocblas_workmode::rocblas_outofplace, devInfo_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocsolver_jobsvd(jobu),
+                                        get_rocsolver_jobsvd(jobvt), m, n, a_, lda, s_, u_, ldu,
+                                        vt_, ldvt, scratch_, rocblas_workmode::rocblas_outofplace,
+                                        devInfo_);
         });
     });
     lapack_info_check(queue, devInfo, __func__, func_name);
@@ -1472,8 +1475,9 @@ inline sycl::event heevd(const char *func_name, Func func, sycl::queue &queue,
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
             auto scratch_ = reinterpret_cast<rocmDataType_B *>(scratchpad);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocsolver_job(jobz),
-                                   get_rocblas_fill_mode(uplo), n, a_, lda, w_, scratch_, devInfo_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocsolver_job(jobz),
+                                        get_rocblas_fill_mode(uplo), n, a_, lda, w_, scratch_,
+                                        devInfo_);
         });
     });
     lapack_info_check(queue, devInfo, __func__, func_name);
@@ -1518,9 +1522,9 @@ inline sycl::event hegvd(const char *func_name, Func func, sycl::queue &queue, s
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
             auto scratch_ = reinterpret_cast<rocmDataType_B *>(scratchpad);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocsolver_itype(itype),
-                                   get_rocsolver_job(jobz), get_rocblas_fill_mode(uplo), n, a_, lda,
-                                   b_, ldb, w_, scratch_, devInfo);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocsolver_itype(itype),
+                                        get_rocsolver_job(jobz), get_rocblas_fill_mode(uplo), n, a_,
+                                        lda, b_, ldb, w_, scratch_, devInfo_);
         });
     });
     lapack_info_check(queue, devInfo, __func__, func_name);
@@ -1551,7 +1555,6 @@ inline sycl::event hetrd(const char *func_name, Func func, sycl::queue &queue,
     using rocmDataType_A = typename RocmEquivalentType<T_A>::Type;
     using rocmDataType_B = typename RocmEquivalentType<T_B>::Type;
     overflow_check(n, lda, scratchpad_size);
-    int *devInfo = (int *)malloc_device(sizeof(int), queue);
     auto done = queue.submit([&](sycl::handler &cgh) {
         int64_t num_events = dependencies.size();
         for (int64_t i = 0; i < num_events; i++) {
@@ -1563,14 +1566,11 @@ inline sycl::event hetrd(const char *func_name, Func func, sycl::queue &queue,
             auto d_ = reinterpret_cast<rocmDataType_B *>(d);
             auto e_ = reinterpret_cast<rocmDataType_B *>(e);
             auto tau_ = reinterpret_cast<rocmDataType_A *>(tau);
-            auto devInfo_ = reinterpret_cast<int *>(devInfo);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
-                                   lda, d_, e_, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_fill_mode(uplo),
+                                        n, a_, lda, d_, e_, tau_);
         });
     });
-    lapack_info_check(queue, devInfo, __func__, func_name);
-    free(devInfo, queue);
     return done;
 }
 
@@ -1619,8 +1619,8 @@ inline sycl::event orgbr(const char *func_name, Func func, sycl::queue &queue,
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_generate(vec), m, n, k,
-                                   a_, lda, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_generate(vec), m,
+                                        n, k, a_, lda, tau_);
         });
     });
     return done;
@@ -1657,7 +1657,7 @@ inline sycl::event orgqr(const char *func_name, Func func, sycl::queue &queue, s
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, k, a_, lda, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, k, a_, lda, tau_);
         });
     });
     return done;
@@ -1693,8 +1693,8 @@ inline sycl::event orgtr(const char *func_name, Func func, sycl::queue &queue,
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
-                                   lda, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_fill_mode(uplo),
+                                        n, a_, lda, tau_);
         });
     });
     return done;
@@ -1733,9 +1733,9 @@ inline sycl::event ormtr(const char *func_name, Func func, sycl::queue &queue,
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
             auto c_ = reinterpret_cast<rocmDataType *>(c);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
-                                   get_rocblas_fill_mode(uplo), get_rocblas_operation(trans), m, n,
-                                   a_, lda, tau_, c_, ldc);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_side_mode(side),
+                                        get_rocblas_fill_mode(uplo), get_rocblas_operation(trans),
+                                        m, n, a_, lda, tau_, c_, ldc);
         });
     });
     return done;
@@ -1788,8 +1788,9 @@ inline sycl::event ormqr(const char *func_name, Func func, sycl::queue &queue,
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
             auto c_ = reinterpret_cast<rocmDataType *>(c);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
-                                   get_rocblas_operation(trans), m, n, k, a_, lda, tau_, c_, ldc);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_side_mode(side),
+                                        get_rocblas_operation(trans), m, n, k, a_, lda, tau_, c_,
+                                        ldc);
         });
     });
     return done;
@@ -1828,8 +1829,8 @@ inline sycl::event potrf(const char *func_name, Func func, sycl::queue &queue,
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
-                                   lda, devInfo_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_fill_mode(uplo),
+                                        n, a_, lda, devInfo_);
         });
     });
     lapack_info_check(queue, devInfo, __func__, func_name);
@@ -1871,8 +1872,8 @@ inline sycl::event potri(const char *func_name, Func func, sycl::queue &queue,
             auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
-                                   lda, devInfo_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_fill_mode(uplo),
+                                        n, a_, lda, devInfo_);
         });
     });
     lapack_info_check(queue, devInfo, __func__, func_name);
@@ -1913,8 +1914,8 @@ inline sycl::event potrs(const char *func_name, Func func, sycl::queue &queue,
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto b_ = reinterpret_cast<rocmDataType *>(b);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n,
-                                   nrhs, a_, lda, b_, ldb);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_fill_mode(uplo),
+                                        n, nrhs, a_, lda, b_, ldb);
         });
     });
     return done;
@@ -1956,8 +1957,9 @@ inline sycl::event syevd(const char *func_name, Func func, sycl::queue &queue,
             auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocsolver_job(jobz),
-                                   get_rocblas_fill_mode(uplo), n, a_, lda, w_, scratch_, devInfo_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocsolver_job(jobz),
+                                        get_rocblas_fill_mode(uplo), n, a_, lda, w_, scratch_,
+                                        devInfo_);
         });
     });
     lapack_info_check(queue, devInfo, __func__, func_name);
@@ -2001,9 +2003,9 @@ inline sycl::event sygvd(const char *func_name, Func func, sycl::queue &queue, s
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
             auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocsolver_itype(itype),
-                                   get_rocsolver_job(jobz), get_rocblas_fill_mode(uplo), n, a_, lda,
-                                   b_, ldb, w_, scratch_, devInfo);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocsolver_itype(itype),
+                                        get_rocsolver_job(jobz), get_rocblas_fill_mode(uplo), n, a_,
+                                        lda, b_, ldb, w_, scratch_, devInfo_);
         });
     });
     lapack_info_check(queue, devInfo, __func__, func_name);
@@ -2044,8 +2046,8 @@ inline sycl::event sytrd(const char *func_name, Func func, sycl::queue &queue,
             auto e_ = reinterpret_cast<rocmDataType *>(e);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
-                                   lda, d_, e_, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_fill_mode(uplo),
+                                        n, a_, lda, d_, e_, tau_);
         });
     });
     return done;
@@ -2091,8 +2093,8 @@ inline sycl::event sytrf(const char *func_name, Func func, sycl::queue &queue,
             auto ipiv_ = reinterpret_cast<int *>(ipiv32);
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
-                                   lda, ipiv_, devInfo_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_fill_mode(uplo),
+                                        n, a_, lda, ipiv_, devInfo_);
         });
     });
 
@@ -2104,11 +2106,8 @@ inline sycl::event sytrf(const char *func_name, Func func, sycl::queue &queue,
         });
     });
 
-    queue.wait();
-
-    free(ipiv32, queue);
-
     lapack_info_check(queue, devInfo, __func__, func_name);
+    free(ipiv32, queue);
     free(devInfo, queue);
     return done_casting;
 }
@@ -2174,8 +2173,8 @@ inline sycl::event ungbr(const char *func_name, Func func, sycl::queue &queue,
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_generate(vec), m, n, k,
-                                   a_, lda, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_generate(vec), m,
+                                        n, k, a_, lda, tau_);
         });
     });
     return done;
@@ -2212,7 +2211,7 @@ inline sycl::event ungqr(const char *func_name, Func func, sycl::queue &queue, s
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, k, a_, lda, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, k, a_, lda, tau_);
         });
     });
     return done;
@@ -2248,8 +2247,8 @@ inline sycl::event ungtr(const char *func_name, Func func, sycl::queue &queue,
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_fill_mode(uplo), n, a_,
-                                   lda, tau_);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_fill_mode(uplo),
+                                        n, a_, lda, tau_);
         });
     });
     return done;
@@ -2302,8 +2301,9 @@ inline sycl::event unmqr(const char *func_name, Func func, sycl::queue &queue,
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
             auto c_ = reinterpret_cast<rocmDataType *>(c);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
-                                   get_rocblas_operation(trans), m, n, k, a_, lda, tau_, c_, ldc);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_side_mode(side),
+                                        get_rocblas_operation(trans), m, n, k, a_, lda, tau_, c_,
+                                        ldc);
         });
     });
     return done;
@@ -2344,9 +2344,9 @@ inline sycl::event unmtr(const char *func_name, Func func, sycl::queue &queue,
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
             auto c_ = reinterpret_cast<rocmDataType *>(c);
             rocblas_status err;
-            ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_rocblas_side_mode(side),
-                                   get_rocblas_fill_mode(uplo), get_rocblas_operation(trans), m, n,
-                                   a_, lda, tau_, c_, ldc);
+            ROCSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_rocblas_side_mode(side),
+                                        get_rocblas_fill_mode(uplo), get_rocblas_operation(trans),
+                                        m, n, a_, lda, tau_, c_, ldc);
         });
     });
     return done;
