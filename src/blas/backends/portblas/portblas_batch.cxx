@@ -248,14 +248,16 @@ void omatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64
                     std::int64_t n, float alpha, sycl::buffer<float, 1> &a, std::int64_t lda,
                     std::int64_t stride_a, sycl::buffer<float, 1> &b, std::int64_t ldb,
                     std::int64_t stride_b, std::int64_t batch_size) {
-    throw unimplemented("blas", "omatcopy_batch", "");
+    CALL_PORTBLAS_FN(::blas::_omatcopy_batch, queue, trans, m, n, alpha, a, lda, stride_a, b, ldb,
+                     stride_b, batch_size);
 }
 
 void omatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
                     std::int64_t n, double alpha, sycl::buffer<double, 1> &a, std::int64_t lda,
                     std::int64_t stride_a, sycl::buffer<double, 1> &b, std::int64_t ldb,
                     std::int64_t stride_b, std::int64_t batch_size) {
-    throw unimplemented("blas", "omatcopy_batch", "");
+    CALL_PORTBLAS_FN(::blas::_omatcopy_batch, queue, trans, m, n, alpha, a, lda, stride_a, b, ldb,
+                     stride_b, batch_size);
 }
 
 void omatcopy_batch(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m,
@@ -305,7 +307,8 @@ void omatadd_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mk
                    std::int64_t lda, std::int64_t stride_a, float beta, sycl::buffer<float, 1> &b,
                    std::int64_t ldb, std::int64_t stride_b, sycl::buffer<float, 1> &c,
                    std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size) {
-    throw unimplemented("blas", "omatadd_batch", "");
+    CALL_PORTBLAS_FN(::blas::_omatadd_batch, queue, transa, transb, m, n, alpha, a, lda, stride_a,
+                     beta, b, ldb, stride_b, c, ldc, stride_c, batch_size);
 }
 
 void omatadd_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
@@ -313,7 +316,8 @@ void omatadd_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mk
                    std::int64_t lda, std::int64_t stride_a, double beta, sycl::buffer<double, 1> &b,
                    std::int64_t ldb, std::int64_t stride_b, sycl::buffer<double, 1> &c,
                    std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size) {
-    throw unimplemented("blas", "omatadd_batch", "");
+    CALL_PORTBLAS_FN(::blas::_omatadd_batch, queue, transa, transb, m, n, alpha, a, lda, stride_a,
+                     beta, b, ldb, stride_b, c, ldc, stride_c, batch_size);
 }
 
 void omatadd_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
