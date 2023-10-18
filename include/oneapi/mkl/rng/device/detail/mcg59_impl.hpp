@@ -57,7 +57,7 @@ constexpr sycl::vec<uint64_t, VecSize> select_vector_a_mcg59() {
 #ifndef __HIPSYCL__
 template <std::uint32_t VecSize>
 struct mcg59_vector_a {
-    inline static sycl::vec<std::uint64_t, VecSize> vector_a =
+    static constexpr sycl::vec<std::uint64_t, VecSize> vector_a =
         select_vector_a_mcg59<VecSize>(); // powers of a
 };
 #endif
