@@ -27,7 +27,7 @@ class mcg59;
 
 namespace detail {
 
-template <std::uint32_t VecSize>
+template <std::int32_t VecSize>
 struct vector_a_mcg59_selector {};
 
 template<>

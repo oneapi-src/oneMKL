@@ -27,7 +27,7 @@ class mcg31m1;
 
 namespace detail {
 
-template <std::uint64_t VecSize>
+template <std::int32_t VecSize>
 struct mcg31m1_vector_a_selector {};
 
 template<>
