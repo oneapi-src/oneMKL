@@ -140,6 +140,8 @@ TEST_P(DotTests, RealSinglePrecision) {
         (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, -2)));
 }
 TEST_P(DotTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(
         (test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3)));
     EXPECT_TRUEORSKIP(
@@ -148,6 +150,7 @@ TEST_P(DotTests, RealDoublePrecision) {
         (test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, -2)));
 }
 TEST_P(DotTests, RealDoubleSinglePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
     EXPECT_TRUEORSKIP(
         (test<float, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3)));
     EXPECT_TRUEORSKIP(

@@ -200,6 +200,8 @@ TEST_P(ImatcopyBatchStrideUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(ImatcopyBatchStrideUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
@@ -209,6 +211,8 @@ TEST_P(ImatcopyBatchStrideUsmTests, ComplexSinglePrecision) {
 }
 
 TEST_P(ImatcopyBatchStrideUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }

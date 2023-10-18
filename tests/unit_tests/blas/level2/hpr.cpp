@@ -153,6 +153,8 @@ TEST_P(HprTests, ComplexSinglePrecision) {
 }
 
 TEST_P(HprTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     EXPECT_TRUEORSKIP((test<std::complex<double>, double>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::mkl::uplo::lower, 30, alpha, 2)));

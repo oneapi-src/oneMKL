@@ -219,6 +219,8 @@ TEST_P(GemmUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(GemmUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     double beta(3.0);
     EXPECT_TRUEORSKIP((test<double, double>(
@@ -268,6 +270,8 @@ TEST_P(GemmUsmTests, ComplexSinglePrecision) {
 }
 
 TEST_P(GemmUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
     EXPECT_TRUEORSKIP((test<std::complex<double>, std::complex<double>>(

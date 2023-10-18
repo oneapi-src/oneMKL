@@ -174,6 +174,8 @@ TEST_P(CopyBatchStrideUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(CopyBatchStrideUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha = 2.0;
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 2, 3, 15));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), -2, -3, 15));
@@ -191,6 +193,8 @@ TEST_P(CopyBatchStrideUsmTests, ComplexSinglePrecision) {
 }
 
 TEST_P(CopyBatchStrideUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     std::complex<double> alpha = std::complex<double>(2.0, -0.5);
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 2, 3, 15));

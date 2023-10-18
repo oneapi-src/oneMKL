@@ -179,6 +179,8 @@ TEST_P(AxpyBatchStrideUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(AxpyBatchStrideUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha = 2.0;
     EXPECT_TRUEORSKIP(
         test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 2, 3, alpha, 15));
@@ -199,6 +201,8 @@ TEST_P(AxpyBatchStrideUsmTests, ComplexSinglePrecision) {
 }
 
 TEST_P(AxpyBatchStrideUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     std::complex<double> alpha = std::complex<double>(2.0, -0.5);
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                                  2, 3, alpha, 15));

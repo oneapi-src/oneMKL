@@ -169,6 +169,8 @@ TEST_P(TrsvUsmTests, RealSinglePrecision) {
                                   oneapi::mkl::diag::nonunit, 30, 2, 42));
 }
 TEST_P(TrsvUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                    oneapi::mkl::uplo::lower, oneapi::mkl::transpose::nontrans,
                                    oneapi::mkl::diag::unit, 30, 2, 42));
@@ -233,6 +235,8 @@ TEST_P(TrsvUsmTests, ComplexSinglePrecision) {
         oneapi::mkl::transpose::conjtrans, oneapi::mkl::diag::nonunit, 30, 2, 42));
 }
 TEST_P(TrsvUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::mkl::uplo::lower,
         oneapi::mkl::transpose::nontrans, oneapi::mkl::diag::unit, 30, 2, 42));

@@ -153,6 +153,8 @@ TEST_P(SyrUsmTests, RealSinglePrecision) {
                                   oneapi::mkl::uplo::upper, 30, alpha, 1, 42));
 }
 TEST_P(SyrUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                    oneapi::mkl::uplo::lower, 30, alpha, 2, 42));

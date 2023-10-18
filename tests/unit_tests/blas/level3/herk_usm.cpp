@@ -162,6 +162,8 @@ TEST_P(HerkUsmTests, ComplexSinglePrecision) {
         oneapi::mkl::transpose::conjtrans, 72, 27, 101, 103, alpha, beta)));
 }
 TEST_P(HerkUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     double beta(3.0);
     EXPECT_TRUEORSKIP((test<std::complex<double>, double>(

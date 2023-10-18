@@ -158,6 +158,8 @@ TEST_P(GemvTests, RealSinglePrecision) {
                                   oneapi::mkl::transpose::trans, 25, 30, alpha, beta, 1, 1, 42));
 }
 TEST_P(GemvTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     double beta(3.0);
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
@@ -210,6 +212,8 @@ TEST_P(GemvTests, ComplexSinglePrecision) {
 }
 
 TEST_P(GemvTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),

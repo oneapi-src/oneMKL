@@ -189,6 +189,8 @@ TEST_P(OmataddUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(OmataddUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
@@ -197,6 +199,8 @@ TEST_P(OmataddUsmTests, ComplexSinglePrecision) {
 }
 
 TEST_P(OmataddUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 

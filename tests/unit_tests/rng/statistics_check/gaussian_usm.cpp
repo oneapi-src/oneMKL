@@ -43,6 +43,8 @@ TEST_P(GaussianIcdfUsmTest, RealSinglePrecision) {
 }
 
 TEST_P(GaussianIcdfUsmTest, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_test<statistics_usm_test<
         oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::icdf>,
         oneapi::mkl::rng::philox4x32x10>>
@@ -69,6 +71,8 @@ TEST_P(GaussianBoxmullerUsmTest, RealSinglePrecision) {
 }
 
 TEST_P(GaussianBoxmullerUsmTest, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_test<statistics_usm_test<
         oneapi::mkl::rng::gaussian<double, oneapi::mkl::rng::gaussian_method::box_muller2>,
         oneapi::mkl::rng::philox4x32x10>>

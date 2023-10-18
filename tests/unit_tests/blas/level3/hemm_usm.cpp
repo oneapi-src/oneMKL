@@ -165,6 +165,8 @@ TEST_P(HemmUsmTests, ComplexSinglePrecision) {
                                                 72, 27, 101, 102, 103, alpha, beta));
 }
 TEST_P(HemmUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
