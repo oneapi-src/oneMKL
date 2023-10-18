@@ -148,6 +148,8 @@ TEST_P(GerTests, RealSinglePrecision) {
         test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 25, 30, alpha, 1, 1, 42));
 }
 TEST_P(GerTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     EXPECT_TRUEORSKIP(
         test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 25, 30, alpha, 2, 3, 42));

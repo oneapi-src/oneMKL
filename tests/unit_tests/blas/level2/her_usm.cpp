@@ -160,6 +160,8 @@ TEST_P(HerUsmTests, ComplexSinglePrecision) {
                                           oneapi::mkl::uplo::upper, 30, alpha, 1, 42)));
 }
 TEST_P(HerUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     EXPECT_TRUEORSKIP(
         (test<std::complex<double>, double>(std::get<0>(GetParam()), std::get<1>(GetParam()),

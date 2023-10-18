@@ -204,6 +204,8 @@ TEST_P(GemvBatchStrideUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(GemvBatchStrideUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 2, 3, 5));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), -2, -3, 5));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1, 1, 5));
@@ -217,6 +219,8 @@ TEST_P(GemvBatchStrideUsmTests, ComplexSinglePrecision) {
 }
 
 TEST_P(GemvBatchStrideUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 2, 3, 5);
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), -2, -3, 5);

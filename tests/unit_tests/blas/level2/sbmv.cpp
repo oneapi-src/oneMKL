@@ -155,6 +155,8 @@ TEST_P(SbmvTests, RealSinglePrecision) {
                                   oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 1, 1, 42));
 }
 TEST_P(SbmvTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     double beta(3.0);
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),

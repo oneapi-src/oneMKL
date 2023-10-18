@@ -219,6 +219,8 @@ TEST_P(GemmBatchStrideTests, RealSinglePrecision) {
 }
 
 TEST_P(GemmBatchStrideTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
@@ -228,6 +230,8 @@ TEST_P(GemmBatchStrideTests, ComplexSinglePrecision) {
 }
 
 TEST_P(GemmBatchStrideTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }

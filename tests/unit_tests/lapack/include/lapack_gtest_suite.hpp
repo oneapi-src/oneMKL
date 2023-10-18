@@ -86,6 +86,7 @@ using ComplexDoublePrecisionUsm = std::complex<double>;
         EXPECT_TRUE(accuracy_controller.run(::accuracy<RealSinglePrecisionUsm>, *GetParam())); \
     }                                                                                          \
     TEST_P(SUITE##AccuracyUsm, RealDoublePrecision) {                                          \
+        CHECK_DOUBLE_ON_DEVICE(GetParam());                                                    \
         test_log::padding = "[          ] ";                                                   \
         EXPECT_TRUE(accuracy_controller.run(::accuracy<RealDoublePrecisionUsm>, *GetParam())); \
     }
@@ -96,6 +97,7 @@ using ComplexDoublePrecisionUsm = std::complex<double>;
         EXPECT_TRUE(accuracy_controller.run(::accuracy<ComplexSinglePrecisionUsm>, *GetParam())); \
     }                                                                                             \
     TEST_P(SUITE##AccuracyUsm, ComplexDoublePrecision) {                                          \
+        CHECK_DOUBLE_ON_DEVICE(GetParam());                                                       \
         test_log::padding = "[          ] ";                                                      \
         EXPECT_TRUE(accuracy_controller.run(::accuracy<ComplexDoublePrecisionUsm>, *GetParam())); \
     }
@@ -106,6 +108,7 @@ using ComplexDoublePrecisionUsm = std::complex<double>;
         EXPECT_TRUE(accuracy_controller.run(::accuracy<RealSinglePrecisionBuffer>, *GetParam())); \
     }                                                                                             \
     TEST_P(SUITE##AccuracyBuffer, RealDoublePrecision) {                                          \
+        CHECK_DOUBLE_ON_DEVICE(GetParam());                                                       \
         test_log::padding = "[          ] ";                                                      \
         EXPECT_TRUE(accuracy_controller.run(::accuracy<RealDoublePrecisionBuffer>, *GetParam())); \
     }
@@ -117,6 +120,7 @@ using ComplexDoublePrecisionUsm = std::complex<double>;
             accuracy_controller.run(::accuracy<ComplexSinglePrecisionBuffer>, *GetParam())); \
     }                                                                                        \
     TEST_P(SUITE##AccuracyBuffer, ComplexDoublePrecision) {                                  \
+        CHECK_DOUBLE_ON_DEVICE(GetParam());                                                  \
         test_log::padding = "[          ] ";                                                 \
         EXPECT_TRUE(                                                                         \
             accuracy_controller.run(::accuracy<ComplexDoublePrecisionBuffer>, *GetParam())); \
@@ -145,6 +149,7 @@ using ComplexDoublePrecisionUsm = std::complex<double>;
             dependency_controller.run(::usm_dependency<RealSinglePrecisionUsm>, *GetParam())); \
     }                                                                                          \
     TEST_P(SUITE##DependencyUsm, RealDoublePrecision) {                                        \
+        CHECK_DOUBLE_ON_DEVICE(GetParam());                                                    \
         test_log::padding = "[          ] ";                                                   \
         EXPECT_TRUE(                                                                           \
             dependency_controller.run(::usm_dependency<RealDoublePrecisionUsm>, *GetParam())); \
@@ -157,6 +162,7 @@ using ComplexDoublePrecisionUsm = std::complex<double>;
             dependency_controller.run(::usm_dependency<ComplexSinglePrecisionUsm>, *GetParam())); \
     }                                                                                             \
     TEST_P(SUITE##DependencyUsm, ComplexDoublePrecision) {                                        \
+        CHECK_DOUBLE_ON_DEVICE(GetParam());                                                       \
         test_log::padding = "[          ] ";                                                      \
         EXPECT_TRUE(                                                                              \
             dependency_controller.run(::usm_dependency<ComplexDoublePrecisionUsm>, *GetParam())); \

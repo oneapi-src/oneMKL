@@ -160,6 +160,8 @@ TEST_P(SymvUsmTests, RealSinglePrecision) {
                                   oneapi::mkl::uplo::upper, 30, alpha, beta, 1, 1, 42));
 }
 TEST_P(SymvUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     double beta(3.0);
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),

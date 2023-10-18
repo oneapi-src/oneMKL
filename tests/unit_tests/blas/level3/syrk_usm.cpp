@@ -160,6 +160,8 @@ TEST_P(SyrkUsmTests, RealSinglePrecision) {
                                   101, 103, alpha, beta));
 }
 TEST_P(SyrkUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(3.0);
     double beta(3.0);
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
@@ -192,6 +194,8 @@ TEST_P(SyrkUsmTests, ComplexSinglePrecision) {
         oneapi::mkl::transpose::trans, 73, 27, 101, 103, alpha, beta));
 }
 TEST_P(SyrkUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     std::complex<double> alpha(3.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
     EXPECT_TRUEORSKIP(test<std::complex<double>>(

@@ -195,6 +195,8 @@ TEST_P(DgmmBatchStrideTests, RealSinglePrecision) {
 }
 
 TEST_P(DgmmBatchStrideTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                    oneapi::mkl::side::right, 2, 5));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
@@ -225,6 +227,8 @@ TEST_P(DgmmBatchStrideTests, ComplexSinglePrecision) {
 }
 
 TEST_P(DgmmBatchStrideTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                                  oneapi::mkl::side::right, 2, 5));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),

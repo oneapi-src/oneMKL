@@ -149,6 +149,8 @@ TEST_P(RotTests, RealSinglePrecision) {
         (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, c, s)));
 }
 TEST_P(RotTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double c(2.0);
     double s(-0.5);
     EXPECT_TRUEORSKIP(
@@ -169,6 +171,8 @@ TEST_P(RotTests, ComplexSinglePrecision) {
         std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, c, s)));
 }
 TEST_P(RotTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double c = 2.0;
     double s = -0.5;
     EXPECT_TRUEORSKIP((test<std::complex<double>, double>(

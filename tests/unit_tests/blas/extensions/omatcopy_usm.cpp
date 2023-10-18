@@ -176,6 +176,8 @@ TEST_P(OmatcopyUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(OmatcopyUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
@@ -184,6 +186,8 @@ TEST_P(OmatcopyUsmTests, ComplexSinglePrecision) {
 }
 
 TEST_P(OmatcopyUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
