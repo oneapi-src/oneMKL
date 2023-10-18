@@ -89,6 +89,20 @@ sycl::buffer<typename vec::value_type, 1> make_buffer(const vec &v) {
 }
 
 template <typename fpType>
+struct set_fp_value {
+    inline fpType operator()(fpType real, fpType /*imag*/) {
+        return real;
+    }
+};
+
+template <typename scalarType>
+struct set_fp_value<std::complex<scalarType>> {
+    inline auto operator()(scalarType real, scalarType imag) {
+        return std::complex<scalarType>(real, imag);
+    }
+};
+
+template <typename fpType>
 struct rand_scalar {
     inline fpType operator()(double min, double max) {
         return (fpType(std::rand()) / fpType(RAND_MAX)) * fpType(max - min) - fpType(min);
@@ -110,6 +124,28 @@ void rand_vector(std::vector<fpType> &v, std::size_t n) {
     rand_scalar<fpType> rand;
     for (std::size_t i = 0; i < n; i++) {
         v[i] = rand(fpRealType(-0.5), fpRealType(0.5));
+    }
+}
+
+template <typename fpType>
+void rand_matrix(std::vector<fpType> &m, oneapi::mkl::layout layout_val, std::size_t nrows,
+                 std::size_t ncols, std::size_t ld) {
+    using fpRealType = typename complex_info<fpType>::real_type;
+    std::size_t outer_size = nrows;
+    std::size_t inner_size = ncols;
+    if (layout_val == oneapi::mkl::layout::col_major) {
+        std::swap(outer_size, inner_size);
+    }
+    m.resize(outer_size * ld);
+    rand_scalar<fpType> rand;
+    for (std::size_t i = 0; i < outer_size; ++i) {
+        std::size_t j = 0;
+        for (; j < inner_size; ++j) {
+            m[i * ld + j] = rand(fpRealType(-0.5), fpRealType(0.5));
+        }
+        for (; j < ld; ++j) {
+            m[i * ld + j] = set_fp_value<fpType>()(-1.f, 0.f);
+        }
     }
 }
 
@@ -161,20 +197,6 @@ void shuffle_data(const intType *ia, intType *ja, fpType *a, const std::size_t n
     }
 }
 
-template <typename fpType>
-struct set_fp_value {
-    inline fpType operator()(fpType real, fpType /*imag*/) {
-        return real;
-    }
-};
-
-template <typename scalarType>
-struct set_fp_value<std::complex<scalarType>> {
-    inline auto operator()(scalarType real, scalarType imag) {
-        return std::complex<scalarType>(real, imag);
-    }
-};
-
 inline void wait_and_free(sycl::queue &main_queue, oneapi::mkl::sparse::matrix_handle_t *p_handle) {
     main_queue.wait();
     sycl::event ev_release;
@@ -213,6 +235,10 @@ bool check_equal_vector(const vecType1 &v, const vecType2 &v_ref, double abs_err
         out << "Mismatching size got " << n << " expected " << v_ref.size() << "\n";
         return false;
     }
+    if (n == 0) {
+      return true;
+    }
+
     auto max_norm_ref =
         *std::max_element(std::begin(v_ref), std::end(v_ref),
                           [](const T &a, const T &b) { return std::abs(a) < std::abs(b); });

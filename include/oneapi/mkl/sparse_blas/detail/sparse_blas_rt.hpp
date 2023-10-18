@@ -43,6 +43,9 @@ std::enable_if_t<detail::are_fp_int_supported_v<fpType, intType>, sycl::event> s
     index_base index, intType *row_ptr, intType *col_ind, fpType *val,
     const std::vector<sycl::event> &dependencies = {});
 
+sycl::event optimize_gemm(sycl::queue &queue, transpose transpose_A, matrix_handle_t handle,
+                          const std::vector<sycl::event> &dependencies = {});
+
 sycl::event optimize_gemv(sycl::queue &queue, transpose transpose_val, matrix_handle_t handle,
                           const std::vector<sycl::event> &dependencies = {});
 
