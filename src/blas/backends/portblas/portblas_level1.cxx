@@ -238,8 +238,9 @@ sycl::event asum(sycl::queue &queue, std::int64_t n, const real_t *x, std::int64
     // before starting the computation.
     auto init_res_val = queue.submit(
         [&](sycl::handler &cgh) { cgh.single_task([=]() { result[0] = real_t(0); }); });
-    init_res_val.wait();
-    CALL_PORTBLAS_USM_FN(::blas::_asum, queue, n, x, incx, result, dependencies);
+    std::vector<sycl::event> new_dependencies = dependencies;
+    new_dependencies.push_back(init_res_val);
+    CALL_PORTBLAS_USM_FN(::blas::_asum, queue, n, x, incx, result, new_dependencies);
 }
 
 sycl::event axpy(sycl::queue &queue, std::int64_t n, real_t alpha, const real_t *x,
