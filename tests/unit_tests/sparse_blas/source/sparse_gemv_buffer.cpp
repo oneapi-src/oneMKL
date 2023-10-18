@@ -61,19 +61,20 @@ int test(sycl::device *dev, intType nrows, intType ncols, double density_A_matri
                                                           ia_host, ja_host, a_host);
 
     // Input and output dense vectors
-    // The host and device output are filled with a dummy value to spot mistakes.
-    std::vector<fpType> x_host;
-    std::vector<fpType> y_host(opa_nrows, fpType(2));
+    // The input `x` and the input-output `y` are both initialized to random values on host and device.
+    std::vector<fpType> x_host, y_host;
     rand_vector(x_host, opa_ncols);
+    rand_vector(y_host, opa_nrows);
+    std::vector<fpType> y_ref_host(y_host);
 
     // Shuffle ordering of column indices/values to test sortedness
     shuffle_data(ia_host.data(), ja_host.data(), a_host.data(), static_cast<std::size_t>(nrows));
 
     auto ia_buf = make_buffer(ia_host);
     auto ja_buf = make_buffer(ja_host);
+    auto a_buf = make_buffer(a_host);
     auto x_buf = make_buffer(x_host);
     auto y_buf = make_buffer(y_host);
-    auto a_buf = make_buffer(a_host);
 
     oneapi::mkl::sparse::matrix_handle_t handle = nullptr;
     sycl::event ev_release;
@@ -106,8 +107,6 @@ int test(sycl::device *dev, intType nrows, intType ncols, double density_A_matri
     }
 
     // Compute reference.
-    // The reference is filled with a dummy value to spot mistakes.
-    std::vector<fpType> y_ref_host(opa_nrows, fpType(2));
     prepare_reference_gemv_data(ia_host.data(), ja_host.data(), a_host.data(), nrows, ncols, nnz,
                                 int_index, transpose_val, alpha, beta, x_host.data(),
                                 y_ref_host.data());
@@ -122,6 +121,13 @@ int test(sycl::device *dev, intType nrows, intType ncols, double density_A_matri
 
 class SparseGemvBufferTests : public ::testing::TestWithParam<sycl::device *> {};
 
+/**
+ * Helper function to run tests in different configuration.
+ *
+ * @tparam fpType Complex or scalar, single or double precision type
+ * @param dev Device to test
+ * @param transpose_val Transpose value for the input matrix
+ */
 template <typename fpType>
 void test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val) {
     double density_A_matrix = 0.8;
