@@ -309,8 +309,9 @@ sycl::event nrm2(sycl::queue &queue, std::int64_t n, const real_t *x, std::int64
     // before starting the computation.
     auto init_res_val = queue.submit(
         [&](sycl::handler &cgh) { cgh.single_task([=]() { result[0] = real_t(0); }); });
-    init_res_val.wait();
-    CALL_PORTBLAS_USM_FN(::blas::_nrm2, queue, n, x, incx, result, dependencies);
+    std::vector<sycl::event> new_dependencies = dependencies;
+    new_dependencies.push_back(init_res_val);
+    CALL_PORTBLAS_USM_FN(::blas::_nrm2, queue, n, x, incx, result, new_dependencies);
 }
 
 sycl::event rot(sycl::queue &queue, std::int64_t n, std::complex<real_t> *x, std::int64_t incx,
