@@ -55,7 +55,7 @@
 
 #define CHECK_DOUBLE_ON_DEVICE(d)                                        \
     if (d->get_info<sycl::info::device::double_fp_config>().size() == 0) \
-    GTEST_SKIP()
+    GTEST_SKIP() << "Double precision is not supported on the device"
 
 #if defined(ENABLE_MKLCPU_BACKEND) || defined(ENABLE_NETLIB_BACKEND)
 #ifdef ENABLE_MKLCPU_BACKEND
