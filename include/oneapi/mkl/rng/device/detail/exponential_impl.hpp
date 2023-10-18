@@ -68,7 +68,10 @@ protected:
     auto generate(EngineType& engine) ->
         typename std::conditional<EngineType::vec_size == 1, RealType,
                                   sycl::vec<RealType, EngineType::vec_size>>::type {
-        auto res = engine.generate(RealType(0), RealType(1));
+        using OutType = typename std::conditional<EngineType::vec_size == 1, RealType,
+                                                  sycl::vec<RealType, EngineType::vec_size>>::type;
+
+        OutType res = engine.generate(RealType(0), RealType(1));
         if constexpr (EngineType::vec_size == 1) {
             res = ln_wrapper(res);
         }
@@ -79,7 +82,7 @@ protected:
         }
         res = a_ - res * beta_;
         if constexpr (std::is_same<Method, exponential_method::icdf_accurate>::value) {
-            res = sycl::fmax(res, a_);
+            res = sycl::fmax(res, OutType{a_});
         }
         return res;
     }
