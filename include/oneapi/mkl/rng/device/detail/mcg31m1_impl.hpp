@@ -70,7 +70,7 @@ namespace detail {
 //                                                             UINT64_C(650347998)};
 // };
 
-template <std::uint64_t VecSize>
+template <std::int32_t VecSize>
 constexpr sycl::vec<std::uint64_t, VecSize> select_vector_a_mcg31m1() {
     if constexpr (VecSize == 1)
         return sycl::vec<std::uint64_t, 1>(UINT64_C(1));
@@ -97,7 +97,7 @@ constexpr sycl::vec<std::uint64_t, VecSize> select_vector_a_mcg31m1() {
 }
 
 #ifndef __HIPSYCL__
-template <std::uint64_t VecSize>
+template <std::int32_t VecSize>
 struct mcg31m1_vector_a {
     static constexpr sycl::vec<std::uint64_t, VecSize> vector_a =
         select_vector_a_mcg31m1<VecSize>(); // powers of a

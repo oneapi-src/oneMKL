@@ -27,7 +27,7 @@ class mcg59;
 
 namespace detail {
 
-template <std::uint32_t VecSize>
+template <std::int32_t VecSize>
 constexpr sycl::vec<uint64_t, VecSize> select_vector_a_mcg59() {
     if constexpr (VecSize == 1)
         return sycl::vec<uint64_t, 1>(UINT64_C(1));
@@ -55,7 +55,7 @@ constexpr sycl::vec<uint64_t, VecSize> select_vector_a_mcg59() {
 }
 
 #ifndef __HIPSYCL__
-template <std::uint32_t VecSize>
+template <std::int32_t VecSize>
 struct mcg59_vector_a {
     static constexpr sycl::vec<std::uint64_t, VecSize> vector_a =
         select_vector_a_mcg59<VecSize>(); // powers of a
