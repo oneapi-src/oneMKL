@@ -24,15 +24,16 @@ template <typename T, typename = void>
 struct has_member_code_meta : std::false_type {};
 
 template <typename T>
-struct has_member_code_meta<T, std::void_t<decltype( std::declval<T>().get_multi_ptr() )> > : std::true_type {};
+struct has_member_code_meta<T, std::void_t<decltype(std::declval<T>().get_multi_ptr())>>
+        : std::true_type {};
 
-template <typename T, typename std::enable_if<has_member_code_meta<T>::value>::type* = nullptr >
-auto get_multi_ptr (T acc) {
+template <typename T, typename std::enable_if<has_member_code_meta<T>::value>::type* = nullptr>
+auto get_multi_ptr(T acc) {
     return acc.get_multi_ptr();
 };
 
-template <typename T, typename std::enable_if<!has_member_code_meta<T>::value>::type* = nullptr >
-auto get_multi_ptr (T acc) {
+template <typename T, typename std::enable_if<!has_member_code_meta<T>::value>::type* = nullptr>
+auto get_multi_ptr(T acc) {
     return acc.get_pointer();
 };
 

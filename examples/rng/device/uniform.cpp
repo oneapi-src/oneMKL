@@ -56,7 +56,7 @@ constexpr int n_print = 10;
 //
 template <typename Type, std::int32_t VecSize>
 int run_example(sycl::queue& queue) {
-    if(VecSize == 1) {
+    if (VecSize == 1) {
         std::cout << "\tRunning scalar example" << std::endl;
     }
     else {
@@ -78,7 +78,7 @@ int run_example(sycl::queue& queue) {
                     oneapi::mkl::rng::device::uniform<Type> distr;
 
                     auto res = oneapi::mkl::rng::device::generate(distr, engine);
-                    if constexpr(VecSize == 1) {
+                    if constexpr (VecSize == 1) {
                         r_acc[item_id] = res;
                     }
                     else {
