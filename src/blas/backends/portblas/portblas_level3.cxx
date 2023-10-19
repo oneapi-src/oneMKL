@@ -321,7 +321,8 @@ sycl::event gemmt(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl
 sycl::event omatcopy(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
                      real_t alpha, const real_t *a, std::int64_t lda, real_t *b, std::int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatcopy", "");
+    CALL_PORTBLAS_USM_FN(::blas::_omatcopy, queue, trans, m, n, alpha, a, lda, b, ldb,
+                         dependencies);
 }
 
 sycl::event omatcopy(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
@@ -347,7 +348,8 @@ sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, std:
                     std::int64_t n, real_t alpha, const real_t *a, std::int64_t lda, real_t beta,
                     const real_t *b, std::int64_t ldb, real_t *c, std::int64_t ldc,
                     const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatadd", "");
+    CALL_PORTBLAS_USM_FN(::blas::_omatadd, queue, transa, transb, m, n, alpha, a, lda, beta, b, ldb, c,
+                     ldc, dependencies);
 }
 
 sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,

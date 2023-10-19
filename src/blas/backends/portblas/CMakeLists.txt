@@ -134,7 +134,6 @@ if (NOT PORTBLAS_FOUND)
   set(BLAS_ENABLE_BENCHMARK OFF)
   set(BLAS_ENABLE_TESTING OFF)
   set(ENABLE_EXPRESSION_TESTS OFF)
-  target_compile_options(ONEMKL::SYCL::SYCL INTERFACE "-DSB_ENABLE_USM=ON")
   # Set the policy to forward variables to portBLAS configure step
   set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
   set(FETCHCONTENT_BASE_DIR "${CMAKE_BINARY_DIR}/deps")
