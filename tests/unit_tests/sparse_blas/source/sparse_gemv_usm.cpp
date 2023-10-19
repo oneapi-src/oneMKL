@@ -191,6 +191,7 @@ TEST_P(SparseGemvUsmTests, RealSinglePrecision) {
 
 TEST_P(SparseGemvUsmTests, RealDoublePrecision) {
     using fpType = double;
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
     test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
     test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
 }
@@ -204,6 +205,7 @@ TEST_P(SparseGemvUsmTests, ComplexSinglePrecision) {
 
 TEST_P(SparseGemvUsmTests, ComplexDoublePrecision) {
     using fpType = std::complex<double>;
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
     test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
     test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
     test_helper<fpType>(GetParam(), oneapi::mkl::transpose::conjtrans);
