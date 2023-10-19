@@ -115,7 +115,7 @@ inline void getri_batch(const char *func_name, Func func, sycl::queue &queue, st
             CUresult cuda_result;
             cublasHandle_t cublas_handle;
             CUBLAS_ERROR_FUNC(cublasCreate, err, &cublas_handle);
-            CUstream cu_stream = sycl::get_native<sycl::backend::cuda>(queue);
+            CUstream cu_stream = sycl::get_native<sycl::backend::ext_oneapi_cuda>(queue);
             CUBLAS_ERROR_FUNC(cublasSetStream, err, cublas_handle, cu_stream);
 
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -838,7 +838,7 @@ sycl::event getri_batch(const char *func_name, Func func, sycl::queue &queue, st
             CUresult cuda_result;
             cublasHandle_t cublas_handle;
             CUBLAS_ERROR_FUNC(cublasCreate, err, &cublas_handle);
-            CUstream cu_stream = sycl::get_native<sycl::backend::cuda>(queue);
+            CUstream cu_stream = sycl::get_native<sycl::backend::ext_oneapi_cuda>(queue);
             CUBLAS_ERROR_FUNC(cublasSetStream, err, cublas_handle, cu_stream);
 
             CUdeviceptr a_dev;
