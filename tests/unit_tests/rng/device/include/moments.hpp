@@ -58,7 +58,8 @@ public:
                 cgh.parallel_for(range, [=](sycl::item<1> item) {
                     size_t id = item.get_id(0);
                     auto multiplier = Engine::vec_size;
-                    if constexpr (std::is_same_v<Distribution, oneapi::mkl::rng::device::uniform_bits<uint64_t>>)
+                    if constexpr (std::is_same_v<Distribution,
+                                                 oneapi::mkl::rng::device::uniform_bits<uint64_t>>)
                         multiplier *= 2;
                     Engine engine(SEED, id * multiplier);
                     Distribution distr;
@@ -86,7 +87,8 @@ public:
         }
 
         // validation (statistics check is turned out for mcg59)
-        if constexpr (!std::is_same<Engine, oneapi::mkl::rng::device::mcg59<Engine::vec_size>>::value) {
+        if constexpr (!std::is_same<Engine,
+                                    oneapi::mkl::rng::device::mcg59<Engine::vec_size>>::value) {
             statistics_device<Distribution> stat;
             status = stat.check(r, Distribution{});
         }

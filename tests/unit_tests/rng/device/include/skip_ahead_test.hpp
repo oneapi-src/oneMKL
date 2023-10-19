@@ -64,7 +64,7 @@ public:
                     oneapi::mkl::rng::device::skip_ahead(engine, id * Engine::vec_size);
                     oneapi::mkl::rng::device::bits<UIntType> distr;
                     auto res = oneapi::mkl::rng::device::generate(distr, engine);
-                    if constexpr(Engine::vec_size == 1) {
+                    if constexpr (Engine::vec_size == 1) {
                         acc[id] = res;
                     }
                     else {
@@ -78,9 +78,10 @@ public:
             status = test_skipped;
             return;
         }
-        catch(sycl::exception const& e) {
+        catch (sycl::exception const& e) {
             std::cout << "SYCL exception during generation" << std::endl
-                        << e.what() << std::endl << "Error code: " << get_error_code(e) << std::endl;
+                      << e.what() << std::endl
+                      << "Error code: " << get_error_code(e) << std::endl;
             status = test_failed;
             return;
         }
@@ -88,9 +89,9 @@ public:
         // validation
         Engine engine(SEED);
         oneapi::mkl::rng::device::bits<UIntType> distr;
-        for(int i = 0; i < N_GEN; i += Engine::vec_size) {
+        for (int i = 0; i < N_GEN; i += Engine::vec_size) {
             auto res = oneapi::mkl::rng::device::generate(distr, engine);
-            if constexpr(Engine::vec_size == 1) {
+            if constexpr (Engine::vec_size == 1) {
                 r_ref[i] = res;
             }
             else {
@@ -106,7 +107,7 @@ public:
     int status = test_passed;
 };
 
-template<class Engine>
+template <class Engine>
 class skip_ahead_ex_test {
 public:
     template <typename Queue>
@@ -118,16 +119,17 @@ public:
             sycl::range<1> range(N_GEN / Engine::vec_size);
 
             sycl::buffer<std::uint32_t, 1> buf(r);
-            std::uint64_t skip_num = (std::uint64_t) pow(2,12);
+            std::uint64_t skip_num = (std::uint64_t)pow(2, 12);
             auto event = queue.submit([&](sycl::handler& cgh) {
                 sycl::accessor acc(buf, cgh, sycl::write_only);
                 cgh.parallel_for(range, [=](sycl::item<1> item) {
                     size_t id = item.get_id(0);
                     Engine engine(SEED);
-                    oneapi::mkl::rng::device::skip_ahead(engine, {id * Engine::vec_size, skip_num});
+                    oneapi::mkl::rng::device::skip_ahead(engine,
+                                                         { id * Engine::vec_size, skip_num });
                     oneapi::mkl::rng::device::bits<> distr;
                     auto res = oneapi::mkl::rng::device::generate(distr, engine);
-                    if constexpr(Engine::vec_size == 1) {
+                    if constexpr (Engine::vec_size == 1) {
                         acc[id] = res;
                     }
                     else {
@@ -141,22 +143,23 @@ public:
             status = test_skipped;
             return;
         }
-        catch(sycl::exception const& e) {
+        catch (sycl::exception const& e) {
             std::cout << "SYCL exception during generation" << std::endl
-                        << e.what() << std::endl << "Error code: " << get_error_code(e) << std::endl;
+                      << e.what() << std::endl
+                      << "Error code: " << get_error_code(e) << std::endl;
             status = test_failed;
             return;
         }
 
         // validation
         Engine engine(SEED);
-        for(int j = 0; j < SKIP_TIMES; j++) {
+        for (int j = 0; j < SKIP_TIMES; j++) {
             oneapi::mkl::rng::device::skip_ahead(engine, N_SKIP);
         }
         oneapi::mkl::rng::device::bits<> distr;
-        for(int i = 0; i < N_GEN; i += Engine::vec_size) {
+        for (int i = 0; i < N_GEN; i += Engine::vec_size) {
             auto res = oneapi::mkl::rng::device::generate(distr, engine);
-            if constexpr(Engine::vec_size == 1) {
+            if constexpr (Engine::vec_size == 1) {
                 r_ref[i] = res;
             }
             else {

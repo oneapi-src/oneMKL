@@ -62,7 +62,7 @@ static inline bool check_equal_device(std::uint64_t x, std::uint64_t x_ref) {
 
 template <typename Fp, typename AllocType>
 static inline bool check_equal_vector_device(std::vector<Fp, AllocType>& r1,
-                                      std::vector<Fp, AllocType>& r2) {
+                                             std::vector<Fp, AllocType>& r2) {
     bool good = true;
     for (int i = 0; i < r1.size(); i++) {
         if (!check_equal_device(r1[i], r2[i])) {
@@ -107,20 +107,21 @@ template <typename T, typename = void>
 struct has_member_code_meta : std::false_type {};
 
 template <typename T>
-struct has_member_code_meta<T, std::void_t<decltype( std::declval<T>().get_multi_ptr() )> > : std::true_type {};
+struct has_member_code_meta<T, std::void_t<decltype(std::declval<T>().get_multi_ptr())>>
+        : std::true_type {};
 
-template <typename T, typename std::enable_if<has_member_code_meta<T>::value>::type* = nullptr >
-auto get_multi_ptr (T acc) {
+template <typename T, typename std::enable_if<has_member_code_meta<T>::value>::type* = nullptr>
+auto get_multi_ptr(T acc) {
     return acc.get_multi_ptr();
 };
 
-template <typename T, typename std::enable_if<!has_member_code_meta<T>::value>::type* = nullptr >
-auto get_multi_ptr (T acc) {
+template <typename T, typename std::enable_if<!has_member_code_meta<T>::value>::type* = nullptr>
+auto get_multi_ptr(T acc) {
     return acc.get_pointer();
 };
 
 template <typename T>
-auto get_error_code (T x) {
+auto get_error_code(T x) {
     return x.code().value();
 };
 
@@ -309,7 +310,8 @@ struct statistics_device<oneapi::mkl::rng::device::bernoulli<Fp, Method>> {
 template <typename Fp>
 struct statistics_device<oneapi::mkl::rng::device::bits<Fp>> {
     template <typename AllocType>
-    bool check(const std::vector<Fp, AllocType>& r, const oneapi::mkl::rng::device::bits<Fp>& distr) {
+    bool check(const std::vector<Fp, AllocType>& r,
+               const oneapi::mkl::rng::device::bits<Fp>& distr) {
         return true;
     }
 };
@@ -317,7 +319,8 @@ struct statistics_device<oneapi::mkl::rng::device::bits<Fp>> {
 template <typename Fp>
 struct statistics_device<oneapi::mkl::rng::device::uniform_bits<Fp>> {
     template <typename AllocType>
-    bool check(const std::vector<Fp, AllocType>& r, const oneapi::mkl::rng::device::uniform_bits<Fp>& distr) {
+    bool check(const std::vector<Fp, AllocType>& r,
+               const oneapi::mkl::rng::device::uniform_bits<Fp>& distr) {
         return true;
     }
 };
@@ -326,6 +329,6 @@ template <typename Engine>
 struct is_mcg59 : std::false_type {};
 
 template <std::int32_t VecSize>
-struct is_mcg59<oneapi::mkl::rng::device::mcg59<VecSize>>: std::true_type {};
+struct is_mcg59<oneapi::mkl::rng::device::mcg59<VecSize>> : std::true_type {};
 
 #endif // _RNG_DEVICE_TEST_COMMON_HPP__

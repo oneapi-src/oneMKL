@@ -90,8 +90,8 @@ protected:
         else {
             res = engine.generate(a_, b_);
             if constexpr (std::is_same<Method, uniform_method::accurate>::value) {
-                res = sycl::fmax(res, OutType{a_});
-                res = sycl::fmin(res, OutType{b_});
+                res = sycl::fmax(res, OutType{ a_ });
+                res = sycl::fmin(res, OutType{ b_ });
             }
         }
 

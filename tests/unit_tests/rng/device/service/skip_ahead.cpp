@@ -50,8 +50,9 @@ TEST_P(Philox4x32x10DeviceSkipAheadExTests, BinaryPrecision) {
 INSTANTIATE_TEST_SUITE_P(Philox4x32x10DeviceSkipAheadTestsSuite, Philox4x32x10DeviceSkipAheadTests,
                          ::testing::ValuesIn(devices), ::DeviceNamePrint());
 
-INSTANTIATE_TEST_SUITE_P(Philox4x32x10DeviceSkipAheadExTestsSuite, Philox4x32x10DeviceSkipAheadExTests,
-                         ::testing::ValuesIn(devices), ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(Philox4x32x10DeviceSkipAheadExTestsSuite,
+                         Philox4x32x10DeviceSkipAheadExTests, ::testing::ValuesIn(devices),
+                         ::DeviceNamePrint());
 
 class Mrg32k3aDeviceSkipAheadTests : public ::testing::TestWithParam<sycl::device*> {};
 
@@ -109,4 +110,4 @@ TEST_P(Mcg59DeviceSkipAheadTests, BinaryPrecision) {
 INSTANTIATE_TEST_SUITE_P(Mcg59DeviceSkipAheadTestsSuite, Mcg59DeviceSkipAheadTests,
                          ::testing::ValuesIn(devices), ::DeviceNamePrint());
 
-}
+} // namespace

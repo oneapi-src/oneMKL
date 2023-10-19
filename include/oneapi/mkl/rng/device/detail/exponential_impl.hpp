@@ -82,7 +82,7 @@ protected:
         }
         res = a_ - res * beta_;
         if constexpr (std::is_same<Method, exponential_method::icdf_accurate>::value) {
-            res = sycl::fmax(res, OutType{a_});
+            res = sycl::fmax(res, OutType{ a_ });
         }
         return res;
     }
