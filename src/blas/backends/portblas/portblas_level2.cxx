@@ -237,7 +237,8 @@ sycl::event gemv(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t 
                  real_t alpha, const real_t *a, std::int64_t lda, const real_t *x,
                  std::int64_t incx, real_t beta, real_t *y, std::int64_t incy,
                  const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemv", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_gemv, queue, trans, m, n, alpha, a, lda, x, incx, beta, y, incy,
+                         dependencies);
 }
 
 sycl::event gemv(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
@@ -252,7 +253,8 @@ sycl::event gbmv(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t 
                  std::int64_t kl, std::int64_t ku, real_t alpha, const real_t *a, std::int64_t lda,
                  const real_t *x, std::int64_t incx, real_t beta, real_t *y, std::int64_t incy,
                  const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gbmv", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_gbmv, queue, trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y,
+                         incy, dependencies);
 }
 
 sycl::event gbmv(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,
@@ -266,7 +268,7 @@ sycl::event gbmv(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t 
 sycl::event ger(sycl::queue &queue, std::int64_t m, std::int64_t n, real_t alpha, const real_t *x,
                 std::int64_t incx, const real_t *y, std::int64_t incy, real_t *a, std::int64_t lda,
                 const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "ger", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_ger, queue, m, n, alpha, x, incx, y, incy, a, lda, dependencies);
 }
 
 sycl::event gerc(sycl::queue &queue, std::int64_t m, std::int64_t n, std::complex<real_t> alpha,
@@ -337,50 +339,56 @@ sycl::event sbmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t
                  real_t alpha, const real_t *a, std::int64_t lda, const real_t *x,
                  std::int64_t incx, real_t beta, real_t *y, std::int64_t incy,
                  const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "sbmv", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_sbmv, queue, upper_lower, n, k, alpha, a, lda, x, incx, beta, y,
+                         incy, dependencies);
 }
 
 sycl::event symv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, real_t alpha,
                  const real_t *a, std::int64_t lda, const real_t *x, std::int64_t incx, real_t beta,
                  real_t *y, std::int64_t incy, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "symv", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_symv, queue, upper_lower, n, alpha, a, lda, x, incx, beta, y,
+                         incy, dependencies);
 }
 
 sycl::event syr(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, real_t alpha,
                 const real_t *x, std::int64_t incx, real_t *a, std::int64_t lda,
                 const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "syr", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_syr, queue, upper_lower, n, alpha, x, incx, a, lda, dependencies);
 }
 
 sycl::event syr2(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, real_t alpha,
                  const real_t *x, std::int64_t incx, const real_t *y, std::int64_t incy, real_t *a,
                  std::int64_t lda, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "syr2", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_syr2, queue, upper_lower, n, alpha, x, incx, y, incy, a, lda,
+                         dependencies);
 }
 
 sycl::event spmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, real_t alpha,
                  const real_t *a, const real_t *x, std::int64_t incx, real_t beta, real_t *y,
                  std::int64_t incy, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "spmv", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_spmv, queue, upper_lower, n, alpha, a, x, incx, beta, y, incy,
+                         dependencies);
 }
 
 sycl::event spr(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, real_t alpha,
                 const real_t *x, std::int64_t incx, real_t *a,
                 const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "spr", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_spr, queue, upper_lower, n, alpha, x, incx, a, dependencies);
 }
 
 sycl::event spr2(sycl::queue &queue, oneapi::mkl::uplo upper_lower, std::int64_t n, real_t alpha,
                  const real_t *x, std::int64_t incx, const real_t *y, std::int64_t incy, real_t *a,
                  const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "spr2", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_spr2, queue, upper_lower, n, alpha, x, incx, y, incy, a,
+                         dependencies);
 }
 
 sycl::event tbmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                  oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k, const real_t *a,
                  std::int64_t lda, real_t *x, std::int64_t incx,
                  const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "tbmv", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_tbmv, queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
+                         dependencies);
 }
 
 sycl::event tbmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
@@ -394,7 +402,8 @@ sycl::event tbsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl:
                  oneapi::mkl::diag unit_diag, std::int64_t n, std::int64_t k, const real_t *a,
                  std::int64_t lda, real_t *x, std::int64_t incx,
                  const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "tbsv", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_tbsv, queue, upper_lower, trans, unit_diag, n, k, a, lda, x, incx,
+                         dependencies);
 }
 
 sycl::event tbsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
@@ -407,7 +416,8 @@ sycl::event tbsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl:
 sycl::event tpmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                  oneapi::mkl::diag unit_diag, std::int64_t n, const real_t *a, real_t *x,
                  std::int64_t incx, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "tpmv", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_tpmv, queue, upper_lower, trans, unit_diag, n, a, x, incx,
+                         dependencies);
 }
 
 sycl::event tpmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
@@ -433,7 +443,8 @@ sycl::event tpsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl:
 sycl::event trmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                  oneapi::mkl::diag unit_diag, std::int64_t n, const real_t *a, std::int64_t lda,
                  real_t *x, std::int64_t incx, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "trmv", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_trmv, queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
+                         dependencies);
 }
 
 sycl::event trmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
@@ -446,7 +457,8 @@ sycl::event trmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl:
 sycl::event trsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                  oneapi::mkl::diag unit_diag, std::int64_t n, const real_t *a, std::int64_t lda,
                  real_t *x, std::int64_t incx, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "trsv", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_trsv, queue, upper_lower, trans, unit_diag, n, a, lda, x, incx,
+                         dependencies);
 }
 
 sycl::event trsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
