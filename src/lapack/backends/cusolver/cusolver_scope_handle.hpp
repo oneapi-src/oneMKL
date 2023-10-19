@@ -23,8 +23,10 @@
 #else
 #include <CL/sycl.hpp>
 #endif
-#if __has_include(<sycl/backend/cuda.hpp>)
+#if __has_include(<sycl/context.hpp>)
+#if __SYCL_COMPILER_VERSION <= 20220930
 #include <sycl/backend/cuda.hpp>
+#endif
 #include <sycl/context.hpp>
 #include <sycl/detail/pi.hpp>
 #else
@@ -77,15 +79,15 @@ cuSolver handle to the SYCL context.
 
 class CusolverScopedContextHandler {
     CUcontext original_;
-    sycl::context placedContext_;
+    sycl::context *placedContext_;
     bool needToRecover_;
-    sycl::interop_handler &ih;
+    sycl::interop_handle &ih;
     static thread_local cusolver_handle<pi_context> handle_helper;
     CUstream get_stream(const sycl::queue &queue);
     sycl::context get_context(const sycl::queue &queue);
 
 public:
-    CusolverScopedContextHandler(sycl::queue queue, sycl::interop_handler &ih);
+    CusolverScopedContextHandler(sycl::queue queue, sycl::interop_handle &ih);
 
     ~CusolverScopedContextHandler() noexcept(false);
     /**
@@ -100,8 +102,12 @@ public:
     // will be fixed when SYCL-2020 has been implemented for Pi backend.
     template <typename T, typename U>
     inline T get_mem(U acc) {
-        CUdeviceptr cudaPtr = ih.get_mem<sycl::backend::cuda>(acc);
+        CUdeviceptr cudaPtr = ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(acc);
         return reinterpret_cast<T>(cudaPtr);
+    }
+
+    void wait_stream(const sycl::queue &queue) {
+        cuStreamSynchronize(get_stream(queue));
     }
 };
 
