@@ -1979,7 +1979,7 @@ template <typename fp>
 void omatcopy_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int64_t m, int64_t n,
                   fp alpha, fp *A, int64_t lda, fp *B, int64_t ldb) {
     int64_t logical_m, logical_n;
-    if (layout == oneapi::mkl::layout::column_major) {
+    if (layout == oneapi::mkl::layout::col_major) {
         logical_m = m;
         logical_n = n;
     }
@@ -2015,7 +2015,7 @@ template <typename fp>
 void imatcopy_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int64_t m, int64_t n,
                   fp alpha, fp *A, int64_t lda, int64_t ldb) {
     int64_t logical_m, logical_n;
-    if (layout == oneapi::mkl::layout::column_major) {
+    if (layout == oneapi::mkl::layout::col_major) {
         logical_m = m;
         logical_n = n;
     }
@@ -2070,7 +2070,7 @@ void omatadd_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
                  oneapi::mkl::transpose transb, int64_t m, int64_t n, fp alpha, fp *A, int64_t lda,
                  fp beta, fp *B, int64_t ldb, fp *C, int64_t ldc) {
     int64_t logical_m, logical_n;
-    if (layout == oneapi::mkl::layout::column_major) {
+    if (layout == oneapi::mkl::layout::col_major) {
         logical_m = m;
         logical_n = n;
     }

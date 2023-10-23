@@ -139,7 +139,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t incx, int64_t incy, in
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::gemv_batch(
                     main_queue, transa, m, n, alpha, &A[0], lda, stride_a, &x[0], incx, stride_x,
                     beta, &y[0], incy, stride_y, batch_size, dependencies);
@@ -154,7 +154,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t incx, int64_t incy, in
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::gemv_batch, transa,
                                    m, n, alpha, &A[0], lda, stride_a, &x[0], incx, stride_x, beta,
                                    &y[0], incy, stride_y, batch_size, dependencies);
@@ -229,7 +229,7 @@ TEST_P(GemvBatchStrideUsmTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(GemvBatchStrideUsmTestSuite, GemvBatchStrideUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

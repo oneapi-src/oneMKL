@@ -91,7 +91,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::tbmv(main_queue, upper_lower, transa,
                                                              unit_nonunit, n, k, A.data(), lda,
                                                              x.data(), incx, dependencies);
@@ -106,7 +106,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::tbmv, upper_lower,
                                    transa, unit_nonunit, n, k, A.data(), lda, x.data(), incx,
                                    dependencies);
@@ -279,7 +279,7 @@ TEST_P(TbmvUsmTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(TbmvUsmTestSuite, TbmvUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

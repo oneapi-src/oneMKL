@@ -80,8 +80,8 @@ constexpr T matrix_size(oneapi::mkl::transpose trans, T m, T n, T ldm) {
 }
 template <typename T>
 constexpr T matrix_size(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, T m, T n, T ldm) {
-    return (layout == oneapi::mkl::layout::column_major) ? outer_dimension(trans, m, n) * ldm
-                                                         : inner_dimension(trans, m, n) * ldm;
+    return (layout == oneapi::mkl::layout::col_major) ? outer_dimension(trans, m, n) * ldm
+                                                      : inner_dimension(trans, m, n) * ldm;
 }
 
 // SYCL buffer creation helper.
@@ -235,7 +235,7 @@ void copy_matrix(vec_src &src, oneapi::mkl::layout layout, oneapi::mkl::transpos
     using T_data = typename vec_dest::value_type;
     dest.resize(matrix_size(layout, trans, m, n, ld));
     if (((trans == oneapi::mkl::transpose::nontrans) &&
-         (layout == oneapi::mkl::layout::column_major)) ||
+         (layout == oneapi::mkl::layout::col_major)) ||
         ((trans != oneapi::mkl::transpose::nontrans) &&
          (layout == oneapi::mkl::layout::row_major))) {
         for (int j = 0; j < n; j++)
@@ -253,7 +253,7 @@ template <typename fp>
 void copy_matrix(fp *src, oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int m, int n,
                  int ld, fp *dest) {
     if (((trans == oneapi::mkl::transpose::nontrans) &&
-         (layout == oneapi::mkl::layout::column_major)) ||
+         (layout == oneapi::mkl::layout::col_major)) ||
         ((trans != oneapi::mkl::transpose::nontrans) &&
          (layout == oneapi::mkl::layout::row_major))) {
         for (int j = 0; j < n; j++)
@@ -293,7 +293,7 @@ void rand_matrix(vec &M, oneapi::mkl::layout layout, oneapi::mkl::transpose tran
     M.resize(matrix_size(layout, trans, m, n, ld));
 
     if (((trans == oneapi::mkl::transpose::nontrans) &&
-         (layout == oneapi::mkl::layout::column_major)) ||
+         (layout == oneapi::mkl::layout::col_major)) ||
         ((trans != oneapi::mkl::transpose::nontrans) &&
          (layout == oneapi::mkl::layout::row_major))) {
         for (int j = 0; j < n; j++)
@@ -311,7 +311,7 @@ template <typename fp>
 void rand_matrix(fp *M, oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int m, int n,
                  int ld) {
     if (((trans == oneapi::mkl::transpose::nontrans) &&
-         (layout == oneapi::mkl::layout::column_major)) ||
+         (layout == oneapi::mkl::layout::col_major)) ||
         ((trans != oneapi::mkl::transpose::nontrans) &&
          (layout == oneapi::mkl::layout::row_major))) {
         for (int j = 0; j < n; j++)
@@ -333,7 +333,7 @@ void rand_trsm_matrix(vec &M, oneapi::mkl::layout layout, oneapi::mkl::transpose
     M.resize(matrix_size(layout, trans, m, n, ld));
 
     if (((trans == oneapi::mkl::transpose::nontrans) &&
-         (layout == oneapi::mkl::layout::column_major)) ||
+         (layout == oneapi::mkl::layout::col_major)) ||
         ((trans != oneapi::mkl::transpose::nontrans) &&
          (layout == oneapi::mkl::layout::row_major))) {
         for (int j = 0; j < n; j++)
@@ -359,7 +359,7 @@ template <typename fp>
 void rand_trsm_matrix(fp *M, oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int m, int n,
                       int ld) {
     if (((trans == oneapi::mkl::transpose::nontrans) &&
-         (layout == oneapi::mkl::layout::column_major)) ||
+         (layout == oneapi::mkl::layout::col_major)) ||
         ((trans != oneapi::mkl::transpose::nontrans) &&
          (layout == oneapi::mkl::layout::row_major))) {
         for (int j = 0; j < n; j++)
@@ -392,7 +392,7 @@ void rand_tpsv_matrix(vec &M, oneapi::mkl::layout layout, oneapi::mkl::uplo uppe
     M.resize((m * (m + 1)) / 2);
 
     for (j = 0; j < m; j++) {
-        if (layout == oneapi::mkl::layout::column_major) {
+        if (layout == oneapi::mkl::layout::col_major) {
             start = (upper_lower == oneapi::mkl::uplo::U) ? 0 : j;
             end = (upper_lower == oneapi::mkl::uplo::U) ? j : m - 1;
         }
@@ -417,7 +417,7 @@ void rand_tbsv_matrix(vec &M, oneapi::mkl::layout layout, oneapi::mkl::uplo uppe
     rand_trsm_matrix(tmp, layout, trans, m, m, ld);
     M.resize(matrix_size(layout, trans, m, m, ld));
 
-    if (((layout == oneapi::mkl::layout::column_major) && (upper_lower == oneapi::mkl::uplo::U)) ||
+    if (((layout == oneapi::mkl::layout::col_major) && (upper_lower == oneapi::mkl::uplo::U)) ||
         ((layout == oneapi::mkl::layout::row_major) && (upper_lower == oneapi::mkl::uplo::L))) {
         for (j = 0; j < m; j++) {
             n = k - j;
@@ -570,7 +570,7 @@ bool check_equal_matrix(acc1 &M, acc2 &M_ref, oneapi::mkl::layout layout, int m,
     int idx, count = 0;
     for (int j = 0; j < n; j++) {
         for (int i = 0; i < m; i++) {
-            idx = (layout == oneapi::mkl::layout::column_major) ? i + j * ld : j + i * ld;
+            idx = (layout == oneapi::mkl::layout::col_major) ? i + j * ld : j + i * ld;
             if (!check_equal(M[idx], M_ref[idx], error_mag)) {
                 out << "Difference in entry (" << i << ',' << j << "): DPC++ " << M[idx]
                     << " vs. Reference " << M_ref[idx] << std::endl;
@@ -592,7 +592,7 @@ bool check_equal_matrix(const fp *M, const fp *M_ref, oneapi::mkl::layout layout
     int idx, count = 0;
     for (int j = 0; j < n; j++) {
         for (int i = 0; i < m; i++) {
-            idx = (layout == oneapi::mkl::layout::column_major) ? i + j * ld : j + i * ld;
+            idx = (layout == oneapi::mkl::layout::col_major) ? i + j * ld : j + i * ld;
             if (!check_equal(M[idx], M_ref[idx], error_mag)) {
                 out << "Difference in entry (" << i << ',' << j << "): DPC++ " << M[idx]
                     << " vs. Reference " << M_ref[idx] << std::endl;
@@ -615,7 +615,7 @@ bool check_equal_matrix(acc1 &M, acc2 &M_ref, oneapi::mkl::layout layout,
     int idx, count = 0;
     for (int j = 0; j < n; j++) {
         for (int i = 0; i < m; i++) {
-            idx = (layout == oneapi::mkl::layout::column_major) ? i + j * ld : j + i * ld;
+            idx = (layout == oneapi::mkl::layout::col_major) ? i + j * ld : j + i * ld;
             if (((upper_lower == oneapi::mkl::uplo::upper) && (j >= i)) ||
                 ((upper_lower == oneapi::mkl::uplo::lower) && (j <= i))) {
                 if (!check_equal(M[idx], M_ref[idx], error_mag)) {
@@ -640,7 +640,7 @@ bool check_equal_trsm_matrix(acc1 &M, acc2 &M_ref, oneapi::mkl::layout layout, i
     int idx, count = 0;
     for (int j = 0; j < n; j++) {
         for (int i = 0; i < m; i++) {
-            idx = (layout == oneapi::mkl::layout::column_major) ? i + j * ld : j + i * ld;
+            idx = (layout == oneapi::mkl::layout::col_major) ? i + j * ld : j + i * ld;
             if (!check_equal_trsm(M[idx], M_ref[idx], error_mag)) {
                 out << "Difference in entry (" << i << ',' << j << "): DPC++ " << M[idx]
                     << " vs. Reference " << M_ref[idx] << std::endl;

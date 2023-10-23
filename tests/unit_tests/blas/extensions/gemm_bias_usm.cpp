@@ -85,14 +85,11 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
     rand_matrix(B, layout, transb, k, n, ldb);
     rand_matrix(C, layout, oneapi::mkl::transpose::nontrans, m, n, ldc);
     if (offsetc == oneapi::mkl::offset::fix)
-        rand_matrix(co, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, 1, 1,
-                    1);
+        rand_matrix(co, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, 1, 1, 1);
     if (offsetc == oneapi::mkl::offset::column)
-        rand_matrix(co, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, m, 1,
-                    m);
+        rand_matrix(co, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, m, 1, m);
     if (offsetc == oneapi::mkl::offset::row)
-        rand_matrix(co, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, n, 1,
-                    n);
+        rand_matrix(co, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, n, 1, n);
 
     C_ref.resize(C.size());
     for (int i = 0; i < C.size(); i++)
@@ -118,7 +115,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::gemm_bias(
                     main_queue, transa, transb, offsetc, m, n, k, alpha, A.data(), lda, ao,
                     B.data(), ldb, bo, beta, C.data(), ldc, co.data(), dependencies);
@@ -133,7 +130,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::gemm_bias, transa,
                                    transb, offsetc, m, n, k, alpha, A.data(), lda, ao, B.data(),
                                    ldb, bo, beta, C.data(), ldc, co.data(), dependencies);
@@ -385,7 +382,7 @@ TEST_P(GemmBiasUsmTests, Uint8Uint8Int32Precision) {
 
 INSTANTIATE_TEST_SUITE_P(GemmBiasUsmTestSuite, GemmBiasUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

@@ -220,9 +220,8 @@ class LayoutDeviceNamePrint {
 public:
     std::string operator()(
         testing::TestParamInfo<std::tuple<sycl::device *, oneapi::mkl::layout>> dev) const {
-        std::string layout_name = std::get<1>(dev.param) == oneapi::mkl::layout::column_major
-                                      ? "Column_Major"
-                                      : "Row_Major";
+        std::string layout_name =
+            std::get<1>(dev.param) == oneapi::mkl::layout::col_major ? "Column_Major" : "Row_Major";
         std::string dev_name = std::get<0>(dev.param)->get_info<sycl::info::device::name>();
         for (std::string::size_type i = 0; i < dev_name.size(); ++i) {
             if (!isalnum(dev_name[i]))

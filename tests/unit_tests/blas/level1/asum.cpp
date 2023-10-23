@@ -82,7 +82,7 @@ int test(device* dev, oneapi::mkl::layout layout, int64_t N, int64_t incx) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::asum(main_queue, N, x_buffer, incx, result_buffer);
                 break;
             case oneapi::mkl::layout::row_major:
@@ -92,7 +92,7 @@ int test(device* dev, oneapi::mkl::layout layout, int64_t N, int64_t incx) {
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::asum, N, x_buffer,
                                    incx, result_buffer);
                 break;
@@ -170,7 +170,7 @@ TEST_P(AsumTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(AsumTestSuite, AsumTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

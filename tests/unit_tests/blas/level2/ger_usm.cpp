@@ -90,7 +90,7 @@ int test(device *dev, oneapi::mkl::layout layout, int m, int n, fp alpha, int in
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::ger(main_queue, m, n, alpha, x.data(), incx,
                                                             y.data(), incy, A.data(), lda,
                                                             dependencies);
@@ -105,7 +105,7 @@ int test(device *dev, oneapi::mkl::layout layout, int m, int n, fp alpha, int in
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::ger, m, n, alpha,
                                    x.data(), incx, y.data(), incy, A.data(), lda, dependencies);
                 break;
@@ -164,7 +164,7 @@ TEST_P(GerUsmTests, RealDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(GerUsmTestSuite, GerUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 
