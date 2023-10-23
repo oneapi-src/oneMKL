@@ -109,7 +109,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t incx, int64_t incy, in
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::copy_batch(main_queue, n, &x[0], incx,
                                                                    stride_x, &y[0], incy, stride_y,
                                                                    batch_size, dependencies);
@@ -124,7 +124,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t incx, int64_t incy, in
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::copy_batch, n,
                                    &x[0], incx, stride_x, &y[0], incy, stride_y, batch_size,
                                    dependencies);
@@ -206,7 +206,7 @@ TEST_P(CopyBatchStrideUsmTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(CopyBatchStrideUsmTestSuite, CopyBatchStrideUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

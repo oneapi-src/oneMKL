@@ -86,7 +86,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     int64_t stride_a, stride_b, stride_c;
 
     switch (layout) {
-        case oneapi::mkl::layout::column_major:
+        case oneapi::mkl::layout::col_major:
             stride_a = (transa == oneapi::mkl::transpose::nontrans) ? lda * k : lda * m;
             stride_b = (transb == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * k;
             stride_c = ldc * n;
@@ -154,7 +154,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::gemm_batch(
                     main_queue, transa, transb, m, n, k, alpha, A_buffer, lda, stride_a, B_buffer,
                     ldb, stride_b, beta, C_buffer, ldc, stride_c, batch_size);
@@ -168,7 +168,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::gemm_batch, transa,
                                    transb, m, n, k, alpha, A_buffer, lda, stride_a, B_buffer, ldb,
                                    stride_b, beta, C_buffer, ldc, stride_c, batch_size);
@@ -201,8 +201,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
 
     auto C_accessor = C_buffer.template get_host_access(read_only);
     bool good =
-        check_equal_matrix(C_accessor, C_ref, oneapi::mkl::layout::column_major,
-                           stride_c * batch_size, 1, stride_c * batch_size, 10 * k, std::cout);
+        check_equal_matrix(C_accessor, C_ref, oneapi::mkl::layout::col_major, stride_c * batch_size,
+                           1, stride_c * batch_size, 10 * k, std::cout);
 
     return (int)good;
 }
@@ -238,7 +238,7 @@ TEST_P(GemmBatchStrideTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(GemmBatchStrideTestSuite, GemmBatchStrideTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

@@ -69,7 +69,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
     int64_t size_a, size_b, size_c;
 
     switch (layout) {
-        case oneapi::mkl::layout::column_major:
+        case oneapi::mkl::layout::col_major:
             size_a = (transa == oneapi::mkl::transpose::nontrans) ? lda * n : lda * m;
             size_b = (transb == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * m;
             size_c = ldc * n;
@@ -84,14 +84,14 @@ int test(device *dev, oneapi::mkl::layout layout) {
 
     vector<fp, allocator_helper<fp, 64>> A(size_a), B(size_b), C(size_c), C_ref(size_c);
 
-    rand_matrix(A.data(), oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                size_a, 1, size_a);
-    rand_matrix(B.data(), oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                size_b, 1, size_b);
-    rand_matrix(C.data(), oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                size_c, 1, size_c);
-    copy_matrix(C.data(), oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
-                size_c, 1, size_c, C_ref.data());
+    rand_matrix(A.data(), oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, size_a,
+                1, size_a);
+    rand_matrix(B.data(), oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, size_b,
+                1, size_b);
+    rand_matrix(C.data(), oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, size_c,
+                1, size_c);
+    copy_matrix(C.data(), oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, size_c,
+                1, size_c, C_ref.data());
 
     // Call reference OMATADD.
     int m_ref = (int)m;
@@ -127,7 +127,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::omatadd(main_queue, transa, transb, m, n, alpha,
                                                          A_buffer, lda, beta, B_buffer, ldb,
                                                          C_buffer, ldc);
@@ -141,7 +141,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatadd, transa,
                                    transb, m, n, alpha, A_buffer, lda, beta, B_buffer, ldb,
                                    C_buffer, ldc);
@@ -171,7 +171,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
     // Compare the results of reference implementation and DPC++ implementation.
 
     auto C_accessor = C_buffer.template get_host_access(read_only);
-    bool good = check_equal_matrix(C_accessor, C_ref, oneapi::mkl::layout::column_major, size_c, 1,
+    bool good = check_equal_matrix(C_accessor, C_ref, oneapi::mkl::layout::col_major, size_c, 1,
                                    size_c, 10, std::cout);
 
     return (int)good;
@@ -202,7 +202,7 @@ TEST_P(OmataddTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(OmataddTestSuite, OmataddTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

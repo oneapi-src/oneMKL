@@ -85,7 +85,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
 
     int64_t stride_a, stride_b, stride;
     switch (layout) {
-        case oneapi::mkl::layout::column_major:
+        case oneapi::mkl::layout::col_major:
             stride_a = lda * n;
             stride_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * m;
             stride = std::max(stride_a, stride_b);
@@ -117,9 +117,9 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         ab_ref_array[i] = &AB_ref[i * stride];
     }
 
-    rand_matrix(AB, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+    rand_matrix(AB, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans,
                 stride * batch_size, 1, stride * batch_size);
-    copy_matrix(AB, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+    copy_matrix(AB, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans,
                 stride * batch_size, 1, stride * batch_size, AB_ref);
 
     // Call reference IMATCOPY_BATCH_STRIDE.
@@ -136,7 +136,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::imatcopy_batch(
                     main_queue, trans, m, n, alpha, &AB[0], lda, ldb, stride, batch_size,
                     dependencies);
@@ -151,7 +151,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::imatcopy_batch,
                                    trans, m, n, alpha, &AB[0], lda, ldb, stride, batch_size,
                                    dependencies);
@@ -183,8 +183,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good = check_equal_matrix(AB, AB_ref, oneapi::mkl::layout::column_major,
-                                   stride * batch_size, 1, stride * batch_size, 10, std::cout);
+    bool good = check_equal_matrix(AB, AB_ref, oneapi::mkl::layout::col_major, stride * batch_size,
+                                   1, stride * batch_size, 10, std::cout);
 
     oneapi::mkl::free_shared(ab_array, cxt);
     oneapi::mkl::free_shared(ab_ref_array, cxt);
@@ -219,7 +219,7 @@ TEST_P(ImatcopyBatchStrideUsmTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(ImatcopyBatchStrideUsmTestSuite, ImatcopyBatchStrideUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

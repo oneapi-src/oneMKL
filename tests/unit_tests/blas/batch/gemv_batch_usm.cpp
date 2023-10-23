@@ -129,7 +129,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
 
     idx = 0;
     for (i = 0; i < group_count; i++) {
-        size_a = (layout == oneapi::mkl::layout::column_major) ? lda[i] * n[i] : lda[i] * m[i];
+        size_a = (layout == oneapi::mkl::layout::col_major) ? lda[i] * n[i] : lda[i] * m[i];
         x_len = (transa[i] == oneapi::mkl::transpose::nontrans) ? n[i] : m[i];
         y_len = (transa[i] == oneapi::mkl::transpose::nontrans) ? m[i] : n[i];
         size_x = 1 + (x_len - 1) * std::abs(incx[i]);
@@ -205,7 +205,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::gemv_batch(
                     main_queue, &transa[0], &m[0], &n[0], &alpha[0], (const fp **)&a_array[0],
                     &lda[0], (const fp **)&x_array[0], &incx[0], &beta[0], &y_array[0], &incy[0],
@@ -222,7 +222,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::gemv_batch,
                                    &transa[0], &m[0], &n[0], &alpha[0], (const fp **)&a_array[0],
                                    &lda[0], (const fp **)&x_array[0], &incx[0], &beta[0],
@@ -331,7 +331,7 @@ TEST_P(GemvBatchUsmTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(GemvBatchUsmTestSuite, GemvBatchUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

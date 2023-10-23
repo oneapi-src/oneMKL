@@ -67,7 +67,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     int64_t stride_a, stride_b;
 
     switch (layout) {
-        case oneapi::mkl::layout::column_major:
+        case oneapi::mkl::layout::col_major:
             stride_a = lda * n;
             stride_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * m;
             break;
@@ -121,7 +121,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::omatcopy_batch(main_queue, trans, m, n, alpha,
                                                                 A_buffer, lda, stride_a, B_buffer,
                                                                 ldb, stride_b, batch_size);
@@ -135,7 +135,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatcopy_batch,
                                    trans, m, n, alpha, A_buffer, lda, stride_a, B_buffer, ldb,
                                    stride_b, batch_size);
@@ -167,7 +167,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     // Compare the results of reference implementation and DPC++ implementation.
 
     auto B_accessor = B_buffer.template get_host_access(read_only);
-    bool good = check_equal_matrix(B_accessor, B_ref, oneapi::mkl::layout::column_major,
+    bool good = check_equal_matrix(B_accessor, B_ref, oneapi::mkl::layout::col_major,
                                    stride_b * batch_size, 1, stride_b * batch_size, 10, std::cout);
 
     return (int)good;
@@ -200,7 +200,7 @@ TEST_P(OmatcopyBatchStrideTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(OmatcopyBatchStrideTestSuite, OmatcopyBatchStrideTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 
