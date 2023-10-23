@@ -112,7 +112,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     idx = 0;
     for (i = 0; i < group_count; i++) {
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 size_a = lda[i] * n[i];
                 size_b =
                     (trans[i] == oneapi::mkl::transpose::nontrans) ? ldb[i] * n[i] : ldb[i] * m[i];
@@ -128,9 +128,9 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
         for (j = 0; j < group_size[i]; j++) {
             ab_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size, *dev, cxt);
             ab_ref_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size, *dev, cxt);
-            rand_matrix(ab_array[idx], oneapi::mkl::layout::column_major,
+            rand_matrix(ab_array[idx], oneapi::mkl::layout::col_major,
                         oneapi::mkl::transpose::nontrans, size, 1, size);
-            copy_matrix(ab_array[idx], oneapi::mkl::layout::column_major,
+            copy_matrix(ab_array[idx], oneapi::mkl::layout::col_major,
                         oneapi::mkl::transpose::nontrans, size, 1, size, ab_ref_array[idx]);
             idx++;
         }
@@ -155,7 +155,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::imatcopy_batch(
                     main_queue, trans.data(), m.data(), n.data(), alpha.data(), ab_array.data(),
                     lda.data(), ldb.data(), group_count, group_size.data(), dependencies);
@@ -170,7 +170,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::imatcopy_batch,
                                    trans.data(), m.data(), n.data(), alpha.data(), ab_array.data(),
                                    lda.data(), ldb.data(), group_count, group_size.data(),
@@ -215,7 +215,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     idx = 0;
     for (i = 0; i < group_count; i++) {
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 size_a = lda[i] * n[i];
                 size_b =
                     (trans[i] == oneapi::mkl::transpose::nontrans) ? ldb[i] * n[i] : ldb[i] * m[i];
@@ -229,9 +229,9 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
         }
         size = std::max(size_a, size_b);
         for (j = 0; j < group_size[i]; j++) {
-            good = good && check_equal_matrix(ab_array[idx], ab_ref_array[idx],
-                                              oneapi::mkl::layout::column_major, size, 1, size, 10,
-                                              std::cout);
+            good = good &&
+                   check_equal_matrix(ab_array[idx], ab_ref_array[idx],
+                                      oneapi::mkl::layout::col_major, size, 1, size, 10, std::cout);
             idx++;
         }
     }
@@ -275,7 +275,7 @@ TEST_P(ImatcopyBatchUsmTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(ImatcopyBatchUsmTestSuite, ImatcopyBatchUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

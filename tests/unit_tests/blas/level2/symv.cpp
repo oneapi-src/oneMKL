@@ -89,7 +89,7 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::symv(main_queue, upper_lower, n, alpha, A_buffer,
                                                       lda, x_buffer, incx, beta, y_buffer, incy);
                 break;
@@ -101,7 +101,7 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::symv, upper_lower,
                                    n, alpha, A_buffer, lda, x_buffer, incx, beta, y_buffer, incy);
                 break;
@@ -173,7 +173,7 @@ TEST_P(SymvTests, RealDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(SymvTestSuite, SymvTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 
