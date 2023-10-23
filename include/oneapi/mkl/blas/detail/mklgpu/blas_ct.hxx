@@ -1628,6 +1628,38 @@ void omatcopy(backend_selector<backend::mklgpu> selector, transpose trans, std::
                                                ldb);
 }
 
+void omatcopy2(backend_selector<backend::mklgpu> selector, transpose trans, std::int64_t m,
+               std::int64_t n, float alpha, sycl::buffer<float, 1> &a, std::int64_t lda,
+               std::int64_t stridea, sycl::buffer<float, 1> &b, std::int64_t ldb,
+               std::int64_t strideb) {
+    oneapi::mkl::blas::mklgpu::MAJOR::omatcopy2(selector.get_queue(), trans, m, n, alpha, a, lda,
+                                                stridea, b, ldb, strideb);
+}
+
+void omatcopy2(backend_selector<backend::mklgpu> selector, transpose trans, std::int64_t m,
+               std::int64_t n, double alpha, sycl::buffer<double, 1> &a, std::int64_t lda,
+               std::int64_t stridea, sycl::buffer<double, 1> &b, std::int64_t ldb,
+               std::int64_t strideb) {
+    oneapi::mkl::blas::mklgpu::MAJOR::omatcopy2(selector.get_queue(), trans, m, n, alpha, a, lda,
+                                                stridea, b, ldb, strideb);
+}
+
+void omatcopy2(backend_selector<backend::mklgpu> selector, transpose trans, std::int64_t m,
+               std::int64_t n, std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a,
+               std::int64_t lda, std::int64_t stridea, sycl::buffer<std::complex<float>, 1> &b,
+               std::int64_t ldb, std::int64_t strideb) {
+    oneapi::mkl::blas::mklgpu::MAJOR::omatcopy2(selector.get_queue(), trans, m, n, alpha, a, lda,
+                                                stridea, b, ldb, strideb);
+}
+
+void omatcopy2(backend_selector<backend::mklgpu> selector, transpose trans, std::int64_t m,
+               std::int64_t n, std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+               std::int64_t lda, std::int64_t stridea, sycl::buffer<std::complex<double>, 1> &b,
+               std::int64_t ldb, std::int64_t strideb) {
+    oneapi::mkl::blas::mklgpu::MAJOR::omatcopy2(selector.get_queue(), trans, m, n, alpha, a, lda,
+                                                stridea, b, ldb, strideb);
+}
+
 void imatcopy(backend_selector<backend::mklgpu> selector, transpose trans, std::int64_t m,
               std::int64_t n, float alpha, sycl::buffer<float, 1> &ab, std::int64_t lda,
               std::int64_t ldb) {
@@ -4038,6 +4070,44 @@ sycl::event omatcopy(backend_selector<backend::mklgpu> selector, transpose trans
                      const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::mklgpu::MAJOR::omatcopy(selector.get_queue(), trans, m, n, alpha,
                                                            a, lda, b, ldb, dependencies);
+    return done;
+}
+
+sycl::event omatcopy2(backend_selector<backend::mklgpu> selector, transpose trans, std::int64_t m,
+                      std::int64_t n, float alpha, const float *a, std::int64_t lda,
+                      std::int64_t stridea, float *b, std::int64_t ldb, std::int64_t strideb,
+                      const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::mklgpu::MAJOR::omatcopy2(
+        selector.get_queue(), trans, m, n, alpha, a, lda, stridea, b, ldb, strideb, dependencies);
+    return done;
+}
+
+sycl::event omatcopy2(backend_selector<backend::mklgpu> selector, transpose trans, std::int64_t m,
+                      std::int64_t n, double alpha, const double *a, std::int64_t lda,
+                      std::int64_t stridea, double *b, std::int64_t ldb, std::int64_t strideb,
+                      const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::mklgpu::MAJOR::omatcopy2(
+        selector.get_queue(), trans, m, n, alpha, a, lda, stridea, b, ldb, strideb, dependencies);
+    return done;
+}
+
+sycl::event omatcopy2(backend_selector<backend::mklgpu> selector, transpose trans, std::int64_t m,
+                      std::int64_t n, std::complex<float> alpha, const std::complex<float> *a,
+                      std::int64_t lda, std::int64_t stridea, std::complex<float> *b,
+                      std::int64_t ldb, std::int64_t strideb,
+                      const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::mklgpu::MAJOR::omatcopy2(
+        selector.get_queue(), trans, m, n, alpha, a, lda, stridea, b, ldb, strideb, dependencies);
+    return done;
+}
+
+sycl::event omatcopy2(backend_selector<backend::mklgpu> selector, transpose trans, std::int64_t m,
+                      std::int64_t n, std::complex<double> alpha, const std::complex<double> *a,
+                      std::int64_t lda, std::int64_t stridea, std::complex<double> *b,
+                      std::int64_t ldb, std::int64_t strideb,
+                      const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::mklgpu::MAJOR::omatcopy2(
+        selector.get_queue(), trans, m, n, alpha, a, lda, stridea, b, ldb, strideb, dependencies);
     return done;
 }
 

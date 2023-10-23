@@ -878,6 +878,23 @@ void omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::co
               sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
               sycl::buffer<std::complex<double>, 1> &b, int64_t ldb);
 
+void omatcopy2(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+               sycl::buffer<float, 1> &a, int64_t lda, std::int64_t stridea,
+               sycl::buffer<float, 1> &b, int64_t ldb, std::int64_t strideb);
+
+void omatcopy2(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+               sycl::buffer<double, 1> &a, int64_t lda, std::int64_t stridea,
+               sycl::buffer<double, 1> &b, int64_t ldb, std::int64_t strideb);
+
+void omatcopy2(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<float> alpha,
+               sycl::buffer<std::complex<float>, 1> &a, int64_t lda, std::int64_t stridea,
+               sycl::buffer<std::complex<float>, 1> &b, int64_t ldb, std::int64_t strideb);
+
+void omatcopy2(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+               std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a, int64_t lda,
+               std::int64_t stridea, sycl::buffer<std::complex<double>, 1> &b, int64_t ldb,
+               std::int64_t strideb);
+
 void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
               sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb);
 
@@ -1990,6 +2007,24 @@ sycl::event omatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                      std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
                      std::complex<double> *b, int64_t ldb,
                      const std::vector<sycl::event> &dependencies = {});
+
+sycl::event omatcopy2(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
+                      const float *a, int64_t lda, std::int64_t stridea, float *b, int64_t ldb,
+                      std::int64_t strideb, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event omatcopy2(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
+                      const double *a, int64_t lda, std::int64_t stridea, double *b, int64_t ldb,
+                      std::int64_t strideb, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event omatcopy2(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                      std::complex<float> alpha, const std::complex<float> *a, int64_t lda,
+                      std::int64_t stridea, std::complex<float> *b, int64_t ldb,
+                      std::int64_t strideb, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event omatcopy2(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
+                      std::complex<double> alpha, const std::complex<double> *a, int64_t lda,
+                      std::int64_t stridea, std::complex<double> *b, int64_t ldb,
+                      std::int64_t strideb, const std::vector<sycl::event> &dependencies = {});
 
 sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
                      float *ab, int64_t lda, int64_t ldb,
