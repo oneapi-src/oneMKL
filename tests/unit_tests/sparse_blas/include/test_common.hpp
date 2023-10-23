@@ -70,10 +70,10 @@ struct exception_handler_t {
 
 // Use a unique_ptr to automatically free device memory on unique_ptr destruction.
 template <class T>
-auto malloc_device_uptr(sycl::queue &q, std::size_t num_elts) {
+auto malloc_device_uptr(sycl::queue q, std::size_t num_elts) {
     struct Deleter {
-        sycl::queue &q;
-        Deleter(sycl::queue &_q) : q(_q) {}
+        sycl::queue q;
+        Deleter(sycl::queue _q) : q(_q) {}
         void operator()(T *ptr) {
             sycl::free(ptr, q);
         }
