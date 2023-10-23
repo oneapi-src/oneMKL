@@ -22,7 +22,9 @@
 
 #include <stdlib.h>
 #include <complex>
+#include <cstdint>
 #include "cblas.h"
+#include "oneapi/mkl/types.hpp"
 #include "test_helper.hpp"
 #include "reference_blas_wrappers.hpp"
 
@@ -2009,6 +2011,43 @@ void omatcopy_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int6
             }
         }
     }
+}
+
+template <typename fp>
+void omatcopy2_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, const int64_t &m,
+                   const int64_t &n, const fp &alpha, const fp *in_matrix, const int64_t &ld_in,
+                   const int64_t &inc_in, fp *out_matrix, const int64_t &ld_out,
+                   const int64_t inc_out) {
+    int64_t logical_m, logical_n;
+    if (layout == oneapi::mkl::layout::column_major) {
+        logical_m = m;
+        logical_n = n;
+    }
+    else {
+        logical_m = n;
+        logical_n = m;
+    }
+    if (trans == oneapi::mkl::transpose::trans) {
+        for (int64_t i = 0; i < logical_m; ++i) {
+            for (int64_t j = 0, c = 0; j < logical_n; ++j, ++c) {
+                {
+                    out_matrix[j * inc_out + i * ld_out] =
+                        alpha * in_matrix[i * inc_in + j * ld_in];
+                }
+            }
+        }
+    }
+    else {
+        for (int i = 0; i < logical_n; ++i) {
+            for (int j = 0, c = 0; j < logical_m; ++j, ++c) {
+                {
+                    out_matrix[j * inc_out + i * ld_out] =
+                        alpha * in_matrix[j * inc_in + i * ld_in];
+                }
+            }
+        }
+    }
+    return;
 }
 
 template <typename fp>
