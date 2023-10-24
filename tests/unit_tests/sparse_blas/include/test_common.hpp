@@ -105,7 +105,7 @@ struct set_fp_value<std::complex<scalarType>> {
 template <typename fpType>
 struct rand_scalar {
     inline fpType operator()(double min, double max) {
-        return (fpType(std::rand()) / fpType(RAND_MAX)) * fpType(max - min) - fpType(min);
+        return (fpType(std::rand()) / fpType(RAND_MAX)) * fpType(max - min) + fpType(min);
     }
 };
 
@@ -166,8 +166,18 @@ intType generate_random_matrix(const intType nrows, const intType ncols, const d
     for (intType i = 0; i < nrows; i++) {
         ia.push_back(nnz + indexing); // ending index of row_i.
         for (intType j = 0; j < ncols; j++) {
-            if ((require_diagonal && i == j) || (rand_density(0.0, 1.0) < density_val)) {
-                a.push_back(rand_data(-0.5, 0.5));
+            const bool is_diag = require_diagonal && i == j;
+            if (is_diag || (rand_density(0.0, 1.0) <= density_val)) {
+                fpType val;
+                if (is_diag) {
+                    // Guarantee an amplitude >= 0.1
+                    fpType sign = (std::rand() % 2) * 2 - 1;
+                    val = rand_data(0.1, 0.5) * sign;
+                }
+                else {
+                    val = rand_data(-0.5, 0.5);
+                }
+                a.push_back(val);
                 ja.push_back(j + indexing);
                 nnz++;
             }
