@@ -2019,7 +2019,7 @@ void omatcopy2_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, con
                    const int64_t &inc_in, fp *out_matrix, const int64_t &ld_out,
                    const int64_t inc_out) {
     int64_t logical_m, logical_n;
-    if (layout == oneapi::mkl::layout::column_major) {
+    if (layout == oneapi::mkl::layout::col_major) {
         logical_m = m;
         logical_n = n;
     }

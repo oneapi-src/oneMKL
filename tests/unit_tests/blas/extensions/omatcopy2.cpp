@@ -55,7 +55,6 @@ int test(device *dev, oneapi::mkl::layout layout) {
     int64_t stride_a, stride_b;
     oneapi::mkl::transpose trans;
     fp alpha;
-    int64_t i, tmp;
 
     stride_a = 1 + std::rand() % 50;
     stride_b = 1 + std::rand() % 50;
@@ -66,23 +65,10 @@ int test(device *dev, oneapi::mkl::layout layout) {
     alpha = rand_scalar<fp>();
     trans = rand_trans<fp>();
 
-    /*
-    if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
-        trans = (oneapi::mkl::transpose)(std::rand() % 2);
-    }
-    else {
-        tmp = std::rand() % 3;
-        if (tmp == 2)
-            trans = oneapi::mkl::transpose::conjtrans;
-        else
-            trans = (oneapi::mkl::transpose)tmp;
-    }
-    */
-
     int64_t size_a, size_b;
 
     switch (layout) {
-        case oneapi::mkl::layout::column_major:
+        case oneapi::mkl::layout::col_major:
             size_a = lda * n;
             size_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * m;
             break;
@@ -134,7 +120,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::omatcopy2(main_queue, trans, m, n, alpha, A_buffer,
                                                            lda, stride_a, B_buffer, ldb, stride_b);
                 break;
@@ -146,7 +132,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatcopy2, trans, m,
                                    n, alpha, A_buffer, lda, stride_a, B_buffer, ldb, stride_b);
                 break;
@@ -175,7 +161,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
     // Compare the results of reference implementation and DPC++ implementation.
 
     auto B_accessor = B_buffer.template get_host_access(read_only);
-    bool good = check_equal_matrix(B_accessor, B_ref, oneapi::mkl::layout::column_major, size_b, 1,
+    bool good = check_equal_matrix(B_accessor, B_ref, oneapi::mkl::layout::col_major, size_b, 1,
                                    size_b, 10, std::cout);
 
     return (int)good;
@@ -202,7 +188,7 @@ TEST_P(Omatcopy2Tests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(Omatcopy2TestSuite, Omatcopy2Tests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 
