@@ -21,7 +21,7 @@
 *
 *  Content:
 *       This example demonstrates usage of oneapi::mkl::rng::device::mcg59
-*       random number generators to produce random
+*       random number generator to produce random
 *       numbers using unifrom distribution on a SYCL device (CPU, GPU).
 *
 *******************************************************************************/
@@ -51,7 +51,7 @@ constexpr std::size_t n = 1024;
 constexpr int n_print = 10;
 
 //
-// examples show usage of rng device functionality, which can be called from both
+// example show usage of rng device functionality, which can be called from both
 // host and device sides with scalar and vector generation
 //
 template <typename Type, std::int32_t VecSize>
@@ -63,7 +63,7 @@ int run_example(sycl::queue& queue) {
         std::cout << "\tRunning vector example with " << VecSize << " vector size" << std::endl;
     }
     // prepare array for random numbers
-    std::vector<Type> r_dev(n), r_host(n);
+    std::vector<Type> r_dev(n);
 
     // submit a kernel to generate on device
     {
@@ -108,10 +108,11 @@ int run_example(sycl::queue& queue) {
     oneapi::mkl::rng::device::uniform<Type> distr;
 
     int err = 0;
+    Type res_host;
     for (int i = 0; i < n; i++) {
-        r_host[i] = oneapi::mkl::rng::device::generate(distr, engine);
-        if (r_host[i] != r_dev[i]) {
-            std::cout << "error in " << i << " element " << r_host[i] << " " << r_dev[i]
+        res_host = oneapi::mkl::rng::device::generate(distr, engine);
+        if (res_host != r_dev[i]) {
+            std::cout << "error in " << i << " element " << res_host << " " << r_dev[i]
                       << std::endl;
             err++;
         }

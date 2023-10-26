@@ -51,8 +51,6 @@ foreach(rng_device_source ${RNG_DEVICE_SOURCES})
       PUBLIC ${CMAKE_BINARY_DIR}/bin
   )
 
-  # add_dependencies(example_${domain}_${rng_device_source} onemkl)
-
   if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
     add_sycl_to_target(TARGET example_${domain}_${rng_device_source} SOURCES ${RNG_DEVICE_SOURCES})
   endif()
