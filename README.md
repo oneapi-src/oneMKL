@@ -144,6 +144,8 @@ $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl_blas_mklcpu –lonemkl_blas_c
 
 Supported domains: BLAS, LAPACK, RNG, DFT
 
+Support for SPARSE_BLAS domain is in progress and disabled by default. Use it at your own risks.
+
 #### Linux*
 
 <table>
