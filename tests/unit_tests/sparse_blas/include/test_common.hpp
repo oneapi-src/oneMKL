@@ -236,7 +236,7 @@ bool check_equal_vector(const vecType1 &v, const vecType2 &v_ref, double abs_err
         return false;
     }
     if (n == 0) {
-      return true;
+        return true;
     }
 
     auto max_norm_ref =

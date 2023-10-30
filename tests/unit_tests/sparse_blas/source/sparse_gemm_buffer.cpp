@@ -83,14 +83,13 @@ int test(sycl::device *dev, intType nrows_A, intType ncols_A, intType ncols_C,
     try {
         CALL_RT_OR_CT(oneapi::mkl::sparse::init_matrix_handle, main_queue, &handle);
 
-        CALL_RT_OR_CT(oneapi::mkl::sparse::set_csr_data, main_queue, handle, nrows_A,
-                      ncols_A, nnz, index, ia_buf, ja_buf, a_buf);
+        CALL_RT_OR_CT(oneapi::mkl::sparse::set_csr_data, main_queue, handle, nrows_A, ncols_A, nnz,
+                      index, ia_buf, ja_buf, a_buf);
 
         CALL_RT_OR_CT(oneapi::mkl::sparse::optimize_gemm, main_queue, transpose_A, handle);
 
-        CALL_RT_OR_CT(oneapi::mkl::sparse::gemm, main_queue, dense_matrix_layout,
-                      transpose_A, transpose_B, alpha, handle, b_buf, ncols_C, ldb, beta, c_buf,
-                      ldc);
+        CALL_RT_OR_CT(oneapi::mkl::sparse::gemm, main_queue, dense_matrix_layout, transpose_A,
+                      transpose_B, alpha, handle, b_buf, ncols_C, ldb, beta, c_buf, ldc);
 
         CALL_RT_OR_CT(ev_release = oneapi::mkl::sparse::release_matrix_handle, main_queue, &handle);
     }
@@ -228,7 +227,7 @@ TEST_P(SparseGemmBufferTests, ComplexDoublePrecision) {
     test_helper_transpose<fpType>(GetParam());
 }
 
-INSTANTIATE_TEST_SUITE_P(SparseGemmBufferTestSuite, SparseGemmBufferTests, testing::ValuesIn(devices),
-                         ::DeviceNamePrint());
+INSTANTIATE_TEST_SUITE_P(SparseGemmBufferTestSuite, SparseGemmBufferTests,
+                         testing::ValuesIn(devices), ::DeviceNamePrint());
 
 } // anonymous namespace
