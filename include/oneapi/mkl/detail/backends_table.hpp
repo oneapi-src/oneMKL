@@ -41,7 +41,7 @@ namespace oneapi {
 namespace mkl {
 
 enum class device : uint16_t { x86cpu, intelgpu, nvidiagpu, amdgpu };
-enum class domain : uint16_t { blas, dft, lapack, rng };
+enum class domain : uint16_t { blas, dft, lapack, rng, sparse_blas };
 
 static std::map<domain, std::map<device, std::vector<const char*>>> libraries = {
     { domain::blas,
@@ -161,13 +161,23 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
 #ifdef ENABLE_CURAND_BACKEND
               LIB_NAME("rng_curand")
 #endif
-          } } } }
+          } } } },
+
+    { domain::sparse_blas,
+      { { device::x86cpu,
+          {
+#ifdef ENABLE_MKLCPU_BACKEND
+              LIB_NAME("sparse_blas_mklcpu")
+#endif
+          } } } },
 };
 
 static std::map<domain, const char*> table_names = { { domain::blas, "mkl_blas_table" },
                                                      { domain::lapack, "mkl_lapack_table" },
                                                      { domain::dft, "mkl_dft_table" },
-                                                     { domain::rng, "mkl_rng_table" } };
+                                                     { domain::rng, "mkl_rng_table" },
+                                                     { domain::sparse_blas,
+                                                       "mkl_sparse_blas_table" } };
 
 } //namespace mkl
 } //namespace oneapi
