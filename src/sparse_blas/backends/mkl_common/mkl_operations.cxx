@@ -88,7 +88,7 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemm(
     const fpType alpha, detail::matrix_handle* A_handle, const fpType* B,
     const std::int64_t columns, const std::int64_t ldb, const fpType beta, fpType* C,
     const std::int64_t ldc, const std::vector<sycl::event>& dependencies) {
-    // TODO: Remove const_cast with 2024.0 oneMKL release
+    // TODO: Remove const_cast with 2024.1 oneMKL release
     return oneapi::mkl::sparse::gemm(queue, dense_matrix_layout, transpose_A, transpose_B, alpha,
                                      detail::get_handle(A_handle), const_cast<fpType*>(B), columns,
                                      ldb, beta, C, ldc, dependencies);
