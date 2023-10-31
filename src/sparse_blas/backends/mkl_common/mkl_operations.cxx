@@ -20,7 +20,7 @@
 sycl::event optimize_gemm(sycl::queue& /*queue*/, transpose /*transpose_A*/,
                           detail::matrix_handle* /*handle*/,
                           const std::vector<sycl::event>& /*dependencies*/) {
-    // TODO: Call to optimize_gemm with 2024.0 oneMKL release
+    // TODO: Call to optimize_gemm with 2024.1 oneMKL release
     return {};
 }
 
