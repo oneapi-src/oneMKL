@@ -90,7 +90,7 @@ int test(device *dev, oneapi::mkl::layout layout, int m, int n, fp alpha, int in
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::geru(main_queue, m, n, alpha, x.data(),
                                                              incx, y.data(), incy, A.data(), lda,
                                                              dependencies);
@@ -105,7 +105,7 @@ int test(device *dev, oneapi::mkl::layout layout, int m, int n, fp alpha, int in
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::geru, m, n, alpha,
                                    x.data(), incx, y.data(), incy, A.data(), lda, dependencies);
                 break;
@@ -151,6 +151,8 @@ TEST_P(GeruUsmTests, ComplexSinglePrecision) {
                                                 25, 30, alpha, 1, 1, 42));
 }
 TEST_P(GeruUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     std::complex<double> alpha(2.0, -0.5);
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                                  25, 30, alpha, 2, 3, 42));
@@ -162,7 +164,7 @@ TEST_P(GeruUsmTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(GeruUsmTestSuite, GeruUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

@@ -53,6 +53,10 @@
             EXPECT_EQ(res, test_passed); \
     } while (0);
 
+#define CHECK_DOUBLE_ON_DEVICE(d)                                        \
+    if (d->get_info<sycl::info::device::double_fp_config>().size() == 0) \
+    GTEST_SKIP() << "Double precision is not supported on the device"
+
 #if defined(ENABLE_MKLCPU_BACKEND) || defined(ENABLE_NETLIB_BACKEND)
 #ifdef ENABLE_MKLCPU_BACKEND
 #define TEST_RUN_INTELCPU_SELECT_NO_ARGS(q, func) \
@@ -216,9 +220,8 @@ class LayoutDeviceNamePrint {
 public:
     std::string operator()(
         testing::TestParamInfo<std::tuple<sycl::device *, oneapi::mkl::layout>> dev) const {
-        std::string layout_name = std::get<1>(dev.param) == oneapi::mkl::layout::column_major
-                                      ? "Column_Major"
-                                      : "Row_Major";
+        std::string layout_name =
+            std::get<1>(dev.param) == oneapi::mkl::layout::col_major ? "Column_Major" : "Row_Major";
         std::string dev_name = std::get<0>(dev.param)->get_info<sycl::info::device::name>();
         for (std::string::size_type i = 0; i < dev_name.size(); ++i) {
             if (!isalnum(dev_name[i]))

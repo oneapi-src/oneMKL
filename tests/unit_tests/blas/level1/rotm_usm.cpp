@@ -89,7 +89,7 @@ int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp 
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::rotm(
                     main_queue, N, x.data(), incx, y.data(), incy, param.data(), dependencies);
                 break;
@@ -102,7 +102,7 @@ int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp 
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::rotm, N, x.data(),
                                    incx, y.data(), incy, param.data(), dependencies);
                 break;
@@ -171,6 +171,8 @@ TEST_P(RotmUsmTests, RealSinglePrecision) {
         test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1, 1, flag));
 }
 TEST_P(RotmUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double flag(-1.0);
     EXPECT_TRUEORSKIP(
         test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3, flag));
@@ -203,7 +205,7 @@ TEST_P(RotmUsmTests, RealDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(RotmUsmTestSuite, RotmUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

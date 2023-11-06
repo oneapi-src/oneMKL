@@ -108,7 +108,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::rotmg(main_queue, d1_p, d2_p, x1_p, y1,
                                                               param.data(), dependencies);
                 break;
@@ -121,7 +121,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::rotmg, d1_p, d2_p,
                                    x1_p, y1, param.data(), dependencies);
                 break;
@@ -147,13 +147,63 @@ int test(device *dev, oneapi::mkl::layout layout) {
         std::cout << "Error raised during execution of ROTMG:\n" << error.what() << std::endl;
     }
 
+    int error_mag = 50;
+
     // Compare the results of reference implementation and DPC++ implementation.
 
-    bool good_d1 = check_equal_ptr(main_queue, d1_p, d1_ref, 1, std::cout);
-    bool good_d2 = check_equal_ptr(main_queue, d2_p, d2_ref, 1, std::cout);
-    bool good_x1 = check_equal_ptr(main_queue, x1_p, x1_ref, 1, std::cout);
-    bool good_param = check_equal_vector(param, param_ref, 5, 1, 1, std::cout);
-    bool good = good_d1 && good_d2 && good_x1 && good_param;
+    bool good_d1 = check_equal_ptr(main_queue, d1_p, d1_ref, error_mag, std::cout);
+    bool good_d2 = check_equal_ptr(main_queue, d2_p, d2_ref, error_mag, std::cout);
+    bool good_x1 = check_equal_ptr(main_queue, x1_p, x1_ref, error_mag, std::cout);
+
+    constexpr fp unit_matrix = -2;
+    constexpr fp rescaled_matrix = -1;
+    constexpr fp sltc_matrix = 0;
+    constexpr fp clts_matrix = 1;
+
+    fp param_host[5];
+    main_queue.memcpy(&param_host, param.data(), sizeof(fp) * 5);
+    main_queue.wait();
+
+    fp flag = param_host[0];
+    fp h11 = param_host[1];
+    fp h12 = param_host[3];
+    fp h21 = param_host[2];
+    fp h22 = param_host[4];
+
+    fp flag_ref = param_ref[0];
+    fp h11_ref = param_ref[1];
+    fp h12_ref = param_ref[3];
+    fp h21_ref = param_ref[2];
+    fp h22_ref = param_ref[4];
+
+    bool flag_good = (flag_ref == flag);
+    bool h11_good = true;
+    bool h12_good = true;
+    bool h21_good = true;
+    bool h22_good = true;
+
+    /* Some values of param have to be ignored depending on the flag value since they are
+     * implementation defined */
+    if (flag_ref != unit_matrix) {
+        if (flag_ref == sltc_matrix) {
+            h12_good = check_equal(h12, h12_ref, error_mag, std::cout);
+            h21_good = check_equal(h21, h21_ref, error_mag, std::cout);
+        }
+        else if (flag_ref == clts_matrix) {
+            h11_good = check_equal(h11, h11_ref, error_mag, std::cout);
+            h22_good = check_equal(h22, h22_ref, error_mag, std::cout);
+        }
+        else {
+            flag_good = flag_good && (flag == rescaled_matrix);
+            h11_good = check_equal(h11, h11_ref, error_mag, std::cout);
+            h12_good = check_equal(h12, h12_ref, error_mag, std::cout);
+            h21_good = check_equal(h21, h21_ref, error_mag, std::cout);
+            h22_good = check_equal(h22, h22_ref, error_mag, std::cout);
+        }
+    }
+
+    bool good =
+        good_d1 && good_d2 && good_x1 && flag_good && h11_good && h12_good && h21_good && h22_good;
 
     oneapi::mkl::free_usm(d1_p, cxt);
     oneapi::mkl::free_usm(d2_p, cxt);
@@ -171,6 +221,8 @@ TEST_P(RotmgUsmTests, RealSinglePrecision) {
         (test<float, usm::alloc::device>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 TEST_P(RotmgUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam())));
     EXPECT_TRUEORSKIP(
         (test<double, usm::alloc::device>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
@@ -178,7 +230,7 @@ TEST_P(RotmgUsmTests, RealDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(RotmgUsmTestSuite, RotmgUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

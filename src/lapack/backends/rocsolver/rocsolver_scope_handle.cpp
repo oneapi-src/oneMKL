@@ -45,7 +45,6 @@ RocsolverScopedContextHandler::RocsolverScopedContextHandler(sycl::queue queue,
         : ih(ih),
           needToRecover_(false) {
     placedContext_ = new sycl::context(queue.get_context());
-    auto device = queue.get_device();
     auto desired = sycl::get_native<sycl::backend::ext_oneapi_hip>(*placedContext_);
     hipError_t err;
     HIP_ERROR_FUNC(hipCtxGetCurrent, err, &original_);

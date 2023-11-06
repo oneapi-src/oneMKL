@@ -121,7 +121,7 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right, 
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::dgmm_batch(main_queue, left_right, m, n, A_buffer,
                                                             lda, stride_a, x_buffer, incx, stride_x,
                                                             C_buffer, ldc, stride_c, batch_size);
@@ -135,7 +135,7 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right, 
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::dgmm_batch,
                                    left_right, m, n, A_buffer, lda, stride_a, x_buffer, incx,
                                    stride_x, C_buffer, ldc, stride_c, batch_size);
@@ -195,6 +195,8 @@ TEST_P(DgmmBatchStrideTests, RealSinglePrecision) {
 }
 
 TEST_P(DgmmBatchStrideTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                    oneapi::mkl::side::right, 2, 5));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
@@ -225,6 +227,8 @@ TEST_P(DgmmBatchStrideTests, ComplexSinglePrecision) {
 }
 
 TEST_P(DgmmBatchStrideTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                                  oneapi::mkl::side::right, 2, 5));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
@@ -241,7 +245,7 @@ TEST_P(DgmmBatchStrideTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(DgmmBatchStrideTestSuite, DgmmBatchStrideTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

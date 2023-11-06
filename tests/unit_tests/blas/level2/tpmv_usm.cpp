@@ -89,7 +89,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::tpmv(main_queue, upper_lower, transa,
                                                              unit_nonunit, n, A.data(), x.data(),
                                                              incx, dependencies);
@@ -104,7 +104,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::tpmv, upper_lower,
                                    transa, unit_nonunit, n, A.data(), x.data(), incx, dependencies);
                 break;
@@ -167,6 +167,8 @@ TEST_P(TpmvUsmTests, RealSinglePrecision) {
                                   oneapi::mkl::diag::nonunit, 30, 2));
 }
 TEST_P(TpmvUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                    oneapi::mkl::uplo::lower, oneapi::mkl::transpose::nontrans,
                                    oneapi::mkl::diag::unit, 30, 2));
@@ -231,6 +233,8 @@ TEST_P(TpmvUsmTests, ComplexSinglePrecision) {
         oneapi::mkl::transpose::conjtrans, oneapi::mkl::diag::nonunit, 30, 2));
 }
 TEST_P(TpmvUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::mkl::uplo::lower,
         oneapi::mkl::transpose::nontrans, oneapi::mkl::diag::unit, 30, 2));
@@ -271,7 +275,7 @@ TEST_P(TpmvUsmTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(TpmvUsmTestSuite, TpmvUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

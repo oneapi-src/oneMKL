@@ -92,7 +92,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::rotg(main_queue, a_buffer, b_buffer, c_buffer,
                                                       s_buffer);
                 break;
@@ -104,7 +104,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::rotg, a_buffer,
                                    b_buffer, c_buffer, s_buffer);
                 break;
@@ -153,6 +153,8 @@ TEST_P(RotgTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP((test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 TEST_P(RotgTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP((test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
     EXPECT_TRUEORSKIP((test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
     EXPECT_TRUEORSKIP((test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
@@ -166,6 +168,8 @@ TEST_P(RotgTests, ComplexSinglePrecision) {
         (test<std::complex<float>, float>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
 }
 TEST_P(RotgTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(
         (test<std::complex<double>, double>(std::get<0>(GetParam()), std::get<1>(GetParam()))));
     EXPECT_TRUEORSKIP(
@@ -176,7 +180,7 @@ TEST_P(RotgTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(RotgTestSuite, RotgTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

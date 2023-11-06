@@ -156,6 +156,7 @@ endif()
 
 # This define is tuning portBLAS in header-only mode
 target_compile_definitions(PORTBLAS::portblas INTERFACE ${PORTBLAS_TUNING_TARGET})
+target_compile_options(ONEMKL::SYCL::SYCL INTERFACE "-DSB_ENABLE_USM=ON")
 
 set(SOURCES
   portblas_level1_double.cpp portblas_level1_float.cpp

@@ -105,7 +105,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     int64_t stride_a, stride_b, stride_c;
 
     switch (layout) {
-        case oneapi::mkl::layout::column_major:
+        case oneapi::mkl::layout::col_major:
             stride_a = (transa == oneapi::mkl::transpose::nontrans) ? lda * k : lda * m;
             stride_b = (transb == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * k;
             stride_c = ldc * n;
@@ -147,13 +147,13 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         c_ref_array[i] = &C_ref[i * stride_c];
     }
 
-    rand_matrix(A, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+    rand_matrix(A, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans,
                 stride_a * batch_size, 1, stride_a * batch_size);
-    rand_matrix(B, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+    rand_matrix(B, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans,
                 stride_b * batch_size, 1, stride_b * batch_size);
-    rand_matrix(C, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+    rand_matrix(C, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans,
                 stride_c * batch_size, 1, stride_c * batch_size);
-    copy_matrix(C, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+    copy_matrix(C, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans,
                 stride_c * batch_size, 1, stride_c * batch_size, C_ref);
 
     // Call reference GEMM_BATCH_STRIDE.
@@ -179,7 +179,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::gemm_batch(
                     main_queue, transa, transb, m, n, k, alpha, &A[0], lda, stride_a, &B[0], ldb,
                     stride_b, beta, &C[0], ldc, stride_c, batch_size, dependencies);
@@ -194,7 +194,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::gemm_batch, transa,
                                    transb, m, n, k, alpha, &A[0], lda, stride_a, &B[0], ldb,
                                    stride_b, beta, &C[0], ldc, stride_c, batch_size, dependencies);
@@ -229,9 +229,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good =
-        check_equal_matrix(C, C_ref, oneapi::mkl::layout::column_major, stride_c * batch_size, 1,
-                           stride_c * batch_size, 10 * k, std::cout);
+    bool good = check_equal_matrix(C, C_ref, oneapi::mkl::layout::col_major, stride_c * batch_size,
+                                   1, stride_c * batch_size, 10 * k, std::cout);
 
     oneapi::mkl::free_shared(a_array, cxt);
     oneapi::mkl::free_shared(b_array, cxt);
@@ -253,6 +252,8 @@ TEST_P(GemmBatchStrideUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(GemmBatchStrideUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
@@ -262,13 +263,15 @@ TEST_P(GemmBatchStrideUsmTests, ComplexSinglePrecision) {
 }
 
 TEST_P(GemmBatchStrideUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 INSTANTIATE_TEST_SUITE_P(GemmBatchStrideUsmTestSuite, GemmBatchStrideUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

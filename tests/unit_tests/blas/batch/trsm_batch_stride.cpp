@@ -86,7 +86,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
 
     stride_a = (left_right == oneapi::mkl::side::left) ? lda * m : lda * n;
     switch (layout) {
-        case oneapi::mkl::layout::column_major: stride_b = ldb * n; break;
+        case oneapi::mkl::layout::col_major: stride_b = ldb * n; break;
         case oneapi::mkl::layout::row_major: stride_b = ldb * m; break;
         default: break;
     }
@@ -146,7 +146,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::trsm_batch(
                     main_queue, left_right, upper_lower, trans, unit_nonunit, m, n, alpha, A_buffer,
                     lda, stride_a, B_buffer, ldb, stride_b, batch_size);
@@ -160,7 +160,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::trsm_batch,
                                    left_right, upper_lower, trans, unit_nonunit, m, n, alpha,
                                    A_buffer, lda, stride_a, B_buffer, ldb, stride_b, batch_size);
@@ -192,8 +192,8 @@ int test(device *dev, oneapi::mkl::layout layout) {
     // Compare the results of reference implementation and DPC++ implementation.
     auto B_accessor = B_buffer.template get_host_access(read_only);
     bool good =
-        check_equal_trsm_matrix(B_accessor, B_ref, oneapi::mkl::layout::column_major, total_size_b,
-                                1, total_size_b, 10 * std::max(m, n), std::cout);
+        check_equal_trsm_matrix(B_accessor, B_ref, oneapi::mkl::layout::col_major, total_size_b, 1,
+                                total_size_b, 10 * std::max(m, n), std::cout);
 
     return (int)good;
 }
@@ -206,6 +206,8 @@ TEST_P(TrsmBatchStrideTests, RealSinglePrecision) {
 }
 
 TEST_P(TrsmBatchStrideTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
@@ -214,12 +216,14 @@ TEST_P(TrsmBatchStrideTests, ComplexSinglePrecision) {
 }
 
 TEST_P(TrsmBatchStrideTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 INSTANTIATE_TEST_SUITE_P(TrsmBatchStrideTestSuite, TrsmBatchStrideTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

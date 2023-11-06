@@ -89,7 +89,7 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::sbmv(main_queue, upper_lower, n, k, alpha,
                                                       A_buffer, lda, x_buffer, incx, beta, y_buffer,
                                                       incy);
@@ -102,7 +102,7 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::sbmv, upper_lower,
                                    n, k, alpha, A_buffer, lda, x_buffer, incx, beta, y_buffer,
                                    incy);
@@ -155,6 +155,8 @@ TEST_P(SbmvTests, RealSinglePrecision) {
                                   oneapi::mkl::uplo::upper, 30, 5, alpha, beta, 1, 1, 42));
 }
 TEST_P(SbmvTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     double beta(3.0);
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
@@ -173,7 +175,7 @@ TEST_P(SbmvTests, RealDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(SbmvTestSuite, SbmvTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

@@ -43,6 +43,8 @@ TEST_P(LognormalIcdfUsmTest, RealSinglePrecision) {
 }
 
 TEST_P(LognormalIcdfUsmTest, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_test<statistics_usm_test<
         oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::icdf>,
         oneapi::mkl::rng::philox4x32x10>>
@@ -69,6 +71,8 @@ TEST_P(LognormalBoxmullerUsmTest, RealSinglePrecision) {
 }
 
 TEST_P(LognormalBoxmullerUsmTest, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_test<statistics_usm_test<
         oneapi::mkl::rng::lognormal<double, oneapi::mkl::rng::lognormal_method::box_muller2>,
         oneapi::mkl::rng::philox4x32x10>>

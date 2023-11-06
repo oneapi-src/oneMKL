@@ -105,6 +105,9 @@ if(ENABLE_MKLGPU_BACKEND
 	OR ENABLE_ROCFFT_BACKEND)
   list(APPEND DOMAINS_LIST "dft")
 endif()
+if(ENABLE_MKLCPU_BACKEND)
+  list(APPEND DOMAINS_LIST "sparse_blas")
+endif()
 
 if(ENABLE_PORTBLAS_BACKEND AND
     (ENABLE_MKLCPU_BACKEND OR
@@ -196,7 +199,7 @@ if(WIN32 AND ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++")
 endif()
 
 # Temporary disable sycl 2020 deprecations warnings for cuSOLVER and rocSOLVER
-if(ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++" AND (ENABLE_CUSOLVER_BACKEND OR ENABLE_ROCSOLVER_BACKEND))
+if(ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++" AND (ENABLE_ROCSOLVER_BACKEND))
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSYCL2020_DISABLE_DEPRECATION_WARNINGS")
 endif()
 
@@ -204,6 +207,8 @@ endif()
 if(NOT TARGET_DOMAINS OR TARGET_DOMAINS STREQUAL "None")
   # Set to all by default
   set(TARGET_DOMAINS ${DOMAINS_LIST})
+  # Remove sparse_blas from the default until it is supported by MKLCPU and MKLGPU backends
+  list(REMOVE_ITEM TARGET_DOMAINS "sparse_blas")
 else()
   # Make sure the input was converted to list
   string(REPLACE " " ";" TARGET_DOMAINS ${TARGET_DOMAINS})

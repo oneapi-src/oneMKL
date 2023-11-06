@@ -88,7 +88,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
     int64_t size_a, size_b, size_c;
 
     switch (layout) {
-        case oneapi::mkl::layout::column_major:
+        case oneapi::mkl::layout::col_major:
             size_a = (transa == oneapi::mkl::transpose::nontrans) ? lda * n : lda * m;
             size_b = (transb == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * m;
             size_c = ldc * n;
@@ -109,13 +109,13 @@ int test(device *dev, oneapi::mkl::layout layout) {
     C.resize(size_c);
     C_ref.resize(size_c);
 
-    rand_matrix(A, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size_a, 1,
+    rand_matrix(A, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, size_a, 1,
                 size_a);
-    rand_matrix(B, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size_b, 1,
+    rand_matrix(B, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, size_b, 1,
                 size_b);
-    rand_matrix(C, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size_c, 1,
+    rand_matrix(C, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, size_c, 1,
                 size_c);
-    copy_matrix(C, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size_c, 1,
+    copy_matrix(C, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, size_c, 1,
                 size_c, C_ref);
 
     // Call reference OMATADD.
@@ -131,7 +131,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::omatadd(main_queue, transa, transb, m, n,
                                                                 alpha, &A[0], lda, beta, &B[0], ldb,
                                                                 &C[0], ldc, dependencies);
@@ -146,7 +146,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatadd, transa,
                                    transb, m, n, alpha, &A[0], lda, beta, &B[0], ldb, &C[0], ldc,
                                    dependencies);
@@ -175,8 +175,8 @@ int test(device *dev, oneapi::mkl::layout layout) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good = check_equal_matrix(C, C_ref, oneapi::mkl::layout::column_major, size_c, 1, size_c,
-                                   10, std::cout);
+    bool good = check_equal_matrix(C, C_ref, oneapi::mkl::layout::col_major, size_c, 1, size_c, 10,
+                                   std::cout);
 
     return (int)good;
 }
@@ -189,6 +189,8 @@ TEST_P(OmataddUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(OmataddUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
@@ -197,12 +199,14 @@ TEST_P(OmataddUsmTests, ComplexSinglePrecision) {
 }
 
 TEST_P(OmataddUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 INSTANTIATE_TEST_SUITE_P(OmataddUsmTestSuite, OmataddUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

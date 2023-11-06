@@ -153,7 +153,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::copy_batch(
                     main_queue, n, (const fp **)x_array, incx, y_array, incy, group_count,
                     group_size, dependencies);
@@ -168,7 +168,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::copy_batch, n,
                                    (const fp **)x_array, incx, y_array, incy, group_count,
                                    group_size, dependencies);
@@ -253,6 +253,8 @@ TEST_P(CopyBatchUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(CopyBatchUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
@@ -262,13 +264,15 @@ TEST_P(CopyBatchUsmTests, ComplexSinglePrecision) {
 }
 
 TEST_P(CopyBatchUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 INSTANTIATE_TEST_SUITE_P(CopyBatchUsmTestSuite, CopyBatchUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

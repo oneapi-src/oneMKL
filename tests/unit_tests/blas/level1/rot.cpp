@@ -86,7 +86,7 @@ int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp_
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::rot(main_queue, N, x_buffer, incx, y_buffer, incy,
                                                      c, s);
                 break;
@@ -98,7 +98,7 @@ int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp_
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::rot, N, x_buffer,
                                    incx, y_buffer, incy, c, s);
                 break;
@@ -149,6 +149,8 @@ TEST_P(RotTests, RealSinglePrecision) {
         (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, c, s)));
 }
 TEST_P(RotTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double c(2.0);
     double s(-0.5);
     EXPECT_TRUEORSKIP(
@@ -169,6 +171,8 @@ TEST_P(RotTests, ComplexSinglePrecision) {
         std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -2, -3, c, s)));
 }
 TEST_P(RotTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double c = 2.0;
     double s = -0.5;
     EXPECT_TRUEORSKIP((test<std::complex<double>, double>(
@@ -181,7 +185,7 @@ TEST_P(RotTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(RotTestSuite, RotTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

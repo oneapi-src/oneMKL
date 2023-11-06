@@ -89,7 +89,7 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::spr2(main_queue, upper_lower, n, alpha, x_buffer,
                                                       incx, y_buffer, incy, A_buffer);
                 break;
@@ -101,7 +101,7 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::spr2, upper_lower,
                                    n, alpha, x_buffer, incx, y_buffer, incy, A_buffer);
                 break;
@@ -152,6 +152,8 @@ TEST_P(Spr2Tests, RealSinglePrecision) {
                                   oneapi::mkl::uplo::upper, 30, alpha, 1, 1));
 }
 TEST_P(Spr2Tests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                    oneapi::mkl::uplo::lower, 30, alpha, 2, 3));
@@ -169,7 +171,7 @@ TEST_P(Spr2Tests, RealDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(Spr2TestSuite, Spr2Tests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 
