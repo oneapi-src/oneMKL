@@ -48,6 +48,8 @@ TEST_P(Philox4x32x10UniformStdDeviceMomentsTests, RealSinglePrecision) {
 }
 
 TEST_P(Philox4x32x10UniformStdDeviceMomentsTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_device_test<moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
                                  oneapi::mkl::rng::device::uniform<
                                      double, oneapi::mkl::rng::device::uniform_method::standard>>>
@@ -126,6 +128,8 @@ TEST_P(Philox4x32x10UniformAccDeviceMomentsTests, RealSinglePrecision) {
 }
 
 TEST_P(Philox4x32x10UniformAccDeviceMomentsTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_device_test<moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
                                  oneapi::mkl::rng::device::uniform<
                                      double, oneapi::mkl::rng::device::uniform_method::accurate>>>
@@ -216,6 +220,8 @@ TEST_P(Mrg32k3aUniformStdDeviceMomentsTests, RealSinglePrecision) {
 }
 
 TEST_P(Mrg32k3aUniformStdDeviceMomentsTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_device_test<moments_test<oneapi::mkl::rng::device::mrg32k3a<1>,
                                  oneapi::mkl::rng::device::uniform<
                                      double, oneapi::mkl::rng::device::uniform_method::standard>>>
@@ -294,6 +300,8 @@ TEST_P(Mrg32k3aUniformAccDeviceMomentsTests, RealSinglePrecision) {
 }
 
 TEST_P(Mrg32k3aUniformAccDeviceMomentsTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_device_test<moments_test<oneapi::mkl::rng::device::mrg32k3a<1>,
                                  oneapi::mkl::rng::device::uniform<
                                      double, oneapi::mkl::rng::device::uniform_method::accurate>>>
@@ -384,6 +392,8 @@ TEST_P(Mcg31m1UniformStdDeviceMomentsTests, RealSinglePrecision) {
 }
 
 TEST_P(Mcg31m1UniformStdDeviceMomentsTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_device_test<moments_test<oneapi::mkl::rng::device::mcg31m1<1>,
                                  oneapi::mkl::rng::device::uniform<
                                      double, oneapi::mkl::rng::device::uniform_method::standard>>>
@@ -462,6 +472,8 @@ TEST_P(Mcg31m1UniformAccDeviceMomentsTests, RealSinglePrecision) {
 }
 
 TEST_P(Mcg31m1UniformAccDeviceMomentsTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_device_test<moments_test<oneapi::mkl::rng::device::mcg31m1<1>,
                                  oneapi::mkl::rng::device::uniform<
                                      double, oneapi::mkl::rng::device::uniform_method::accurate>>>
@@ -552,6 +564,8 @@ TEST_P(Mcg59UniformStdDeviceMomentsTests, RealSinglePrecision) {
 }
 
 TEST_P(Mcg59UniformStdDeviceMomentsTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_device_test<moments_test<oneapi::mkl::rng::device::mcg59<1>,
                                  oneapi::mkl::rng::device::uniform<
                                      double, oneapi::mkl::rng::device::uniform_method::standard>>>
@@ -630,6 +644,8 @@ TEST_P(Mcg59UniformAccDeviceMomentsTests, RealSinglePrecision) {
 }
 
 TEST_P(Mcg59UniformAccDeviceMomentsTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_device_test<moments_test<oneapi::mkl::rng::device::mcg59<1>,
                                  oneapi::mkl::rng::device::uniform<
                                      double, oneapi::mkl::rng::device::uniform_method::accurate>>>
@@ -758,6 +774,8 @@ class Philox4x32x10GaussianBoxMuller2DeviceMomentsTests
 
 // implementation uses double precision for accuracy
 TEST_P(Philox4x32x10GaussianBoxMuller2DeviceMomentsTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_device_test<
         moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
                      oneapi::mkl::rng::device::gaussian<
@@ -825,6 +843,8 @@ TEST_P(Philox4x32x10LognormalBoxMuller2DeviceMomentsTests, RealSinglePrecision) 
 }
 
 TEST_P(Philox4x32x10LognormalBoxMuller2DeviceMomentsTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_device_test<
         moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
                      oneapi::mkl::rng::device::lognormal<
@@ -857,6 +877,8 @@ class Philox4x32x10ExponentialIcdfAccDeviceMomentsTests
 
 // implementation uses double precision for accuracy
 TEST_P(Philox4x32x10ExponentialIcdfDeviceMomentsTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_device_test<moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
                                  oneapi::mkl::rng::device::exponential<
                                      float, oneapi::mkl::rng::device::exponential_method::icdf>>>
@@ -891,6 +913,8 @@ TEST_P(Philox4x32x10ExponentialIcdfDeviceMomentsTests, RealDoublePrecision) {
 
 // implementation uses double precision for accuracy
 TEST_P(Philox4x32x10ExponentialIcdfAccDeviceMomentsTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_device_test<
         moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
                      oneapi::mkl::rng::device::exponential<
