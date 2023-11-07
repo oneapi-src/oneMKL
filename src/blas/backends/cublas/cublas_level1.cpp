@@ -911,7 +911,7 @@ inline sycl::event dot(const char *func_name, Func func, sycl::queue &queue, int
             cublasStatus_t err;
             CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, x_, incx, y_, incy, res_);
             if (result_on_device) {
-                cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE);
+                cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
             }
         });
     });
