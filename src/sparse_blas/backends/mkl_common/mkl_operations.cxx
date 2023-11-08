@@ -17,11 +17,15 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-sycl::event optimize_gemm(sycl::queue& /*queue*/, transpose /*transpose_A*/,
+sycl::event optimize_gemm(sycl::queue& queue, transpose /*transpose_A*/,
                           detail::matrix_handle* /*handle*/,
-                          const std::vector<sycl::event>& /*dependencies*/) {
+                          const std::vector<sycl::event>& dependencies) {
     // TODO: Call to optimize_gemm with 2024.1 oneMKL release
-    return {};
+    // Return an event depending on the dependencies
+    return queue.submit([=](sycl::handler& cgh) {
+        cgh.depends_on(dependencies);
+        cgh.host_task([=]() { /* Empty kernel */ });
+    });
 }
 
 sycl::event optimize_gemv(sycl::queue& queue, transpose transpose_val,
