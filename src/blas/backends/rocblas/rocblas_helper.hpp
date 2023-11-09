@@ -182,7 +182,6 @@ public:
     hipError_t hip_err;                                                    \
     HIP_ERROR_FUNC(hipStreamSynchronize, hip_err, currentStreamId);
 
-
 inline rocblas_operation get_rocblas_operation(oneapi::mkl::transpose trn) {
     switch (trn) {
         case oneapi::mkl::transpose::nontrans: return rocblas_operation_none;
