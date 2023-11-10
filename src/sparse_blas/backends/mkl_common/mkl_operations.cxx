@@ -28,6 +28,18 @@ sycl::event optimize_gemm(sycl::queue& queue, transpose /*transpose_A*/,
     });
 }
 
+sycl::event optimize_gemm(sycl::queue& queue, transpose /*transpose_A*/, transpose /*transpose_B*/,
+                          layout /*dense_matrix_layout*/, const std::int64_t /*columns*/,
+                          detail::matrix_handle* /*handle*/,
+                          const std::vector<sycl::event>& dependencies) {
+    // TODO: Call to optimize_gemm with 2024.1 oneMKL release
+    // Return an event depending on the dependencies
+    return queue.submit([=](sycl::handler& cgh) {
+        cgh.depends_on(dependencies);
+        cgh.host_task([=]() { /* Empty kernel */ });
+    });
+}
+
 sycl::event optimize_gemv(sycl::queue& queue, transpose transpose_val,
                           detail::matrix_handle* handle,
                           const std::vector<sycl::event>& dependencies) {

@@ -101,16 +101,20 @@ int test(sycl::device *dev, intType nrows_A, intType ncols_A, intType ncols_C,
     sycl::event ev_copy, ev_release;
     oneapi::mkl::sparse::matrix_handle_t handle = nullptr;
     try {
-        sycl::event ev_set, ev_opt, ev_gemm;
+        sycl::event ev_set, ev_opt1, ev_opt2, ev_gemm;
         CALL_RT_OR_CT(oneapi::mkl::sparse::init_matrix_handle, main_queue, &handle);
 
         CALL_RT_OR_CT(ev_set = oneapi::mkl::sparse::set_csr_data, main_queue, handle, nrows_A,
                       ncols_A, nnz, index, ia_usm, ja_usm, a_usm, mat_dependencies);
 
-        CALL_RT_OR_CT(ev_opt = oneapi::mkl::sparse::optimize_gemm, main_queue, transpose_A, handle,
+        CALL_RT_OR_CT(ev_opt1 = oneapi::mkl::sparse::optimize_gemm, main_queue, transpose_A, handle,
                       { ev_set });
 
-        gemm_dependencies.push_back(ev_opt);
+        CALL_RT_OR_CT(ev_opt2 = oneapi::mkl::sparse::optimize_gemm, main_queue, transpose_A,
+                      transpose_B, dense_matrix_layout, static_cast<std::int64_t>(ncols_C), handle,
+                      { ev_opt1 });
+
+        gemm_dependencies.push_back(ev_opt2);
         CALL_RT_OR_CT(ev_gemm = oneapi::mkl::sparse::gemm, main_queue, dense_matrix_layout,
                       transpose_A, transpose_B, alpha, handle, b_usm, ncols_C, ldb, beta, c_usm,
                       ldc, gemm_dependencies);

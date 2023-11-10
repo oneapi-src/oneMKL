@@ -79,9 +79,15 @@ typedef struct {
     FOR_EACH_FP_AND_INT_TYPE(DEFINE_SET_CSR_DATA);
 
     // optimize_*
-    sycl::event (*optimize_gemm)(sycl::queue &queue, oneapi::mkl::transpose transpose_A,
-                                 oneapi::mkl::sparse::matrix_handle_t handle,
-                                 const std::vector<sycl::event> &dependencies);
+    sycl::event (*optimize_gemm_1_input)(sycl::queue &queue, oneapi::mkl::transpose transpose_A,
+                                         oneapi::mkl::sparse::matrix_handle_t handle,
+                                         const std::vector<sycl::event> &dependencies);
+    sycl::event (*optimize_gemm_2_inputs)(sycl::queue &queue, oneapi::mkl::transpose transpose_A,
+                                          oneapi::mkl::transpose transpose_B,
+                                          oneapi::mkl::layout dense_matrix_layout,
+                                          const std::int64_t columns,
+                                          oneapi::mkl::sparse::matrix_handle_t handle,
+                                          const std::vector<sycl::event> &dependencies);
     sycl::event (*optimize_gemv)(sycl::queue &queue, oneapi::mkl::transpose transpose_val,
                                  oneapi::mkl::sparse::matrix_handle_t handle,
                                  const std::vector<sycl::event> &dependencies);

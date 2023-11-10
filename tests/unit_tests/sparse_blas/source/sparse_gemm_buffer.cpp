@@ -88,6 +88,9 @@ int test(sycl::device *dev, intType nrows_A, intType ncols_A, intType ncols_C,
 
         CALL_RT_OR_CT(oneapi::mkl::sparse::optimize_gemm, main_queue, transpose_A, handle);
 
+        CALL_RT_OR_CT(oneapi::mkl::sparse::optimize_gemm, main_queue, transpose_A, transpose_B,
+                      dense_matrix_layout, static_cast<std::int64_t>(ncols_C), handle);
+
         CALL_RT_OR_CT(oneapi::mkl::sparse::gemm, main_queue, dense_matrix_layout, transpose_A,
                       transpose_B, alpha, handle, b_buf, ncols_C, ldb, beta, c_buf, ldc);
 
