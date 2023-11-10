@@ -17,24 +17,25 @@
 *
 **************************************************************************/
 
-#ifndef _ONEMKL_SPARSE_BLAS_HPP_
-#define _ONEMKL_SPARSE_BLAS_HPP_
+#ifndef _ONEMKL_SPARSE_BLAS_DETAIL_MKLGPU_SPARSE_BLAS_CT_HPP_
+#define _ONEMKL_SPARSE_BLAS_DETAIL_MKLGPU_SPARSE_BLAS_CT_HPP_
 
-#if __has_include(<sycl/sycl.hpp>)
-#include <sycl/sycl.hpp>
-#else
-#include <CL/sycl.hpp>
-#endif
+#include "oneapi/mkl/sparse_blas/types.hpp"
+#include "oneapi/mkl/detail/backends.hpp"
+#include "oneapi/mkl/detail/backend_selector.hpp"
 
-#include "oneapi/mkl/detail/config.hpp"
+#include "onemkl_sparse_blas_mklgpu.hpp"
 
-#ifdef ENABLE_MKLCPU_BACKEND
-#include "sparse_blas/detail/mklcpu/sparse_blas_ct.hpp"
-#endif
-#ifdef ENABLE_MKLGPU_BACKEND
-#include "sparse_blas/detail/mklgpu/sparse_blas_ct.hpp"
-#endif
+namespace oneapi {
+namespace mkl {
+namespace sparse {
 
-#include "sparse_blas/detail/sparse_blas_rt.hpp"
+#define BACKEND mklgpu
+#include "oneapi/mkl/sparse_blas/detail/sparse_blas_ct.hxx"
+#undef BACKEND
 
-#endif // _ONEMKL_SPARSE_BLAS_HPP_
+} //namespace sparse
+} //namespace mkl
+} //namespace oneapi
+
+#endif // _ONEMKL_SPARSE_BLAS_DETAIL_MKLGPU_SPARSE_BLAS_CT_HPP_
