@@ -2029,7 +2029,7 @@ void omatcopy2_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, con
     }
     if (trans == oneapi::mkl::transpose::trans) {
         for (int64_t i = 0; i < logical_m; ++i) {
-            for (int64_t j = 0, c = 0; j < logical_n; ++j, ++c) {
+            for (int64_t j = 0; j < logical_n; ++j) {
                 {
                     out_matrix[j * inc_out + i * ld_out] =
                         alpha * in_matrix[i * inc_in + j * ld_in];
@@ -2037,9 +2037,9 @@ void omatcopy2_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, con
             }
         }
     }
-    else {
+    else if (trans == oneapi::mkl::transpose::nontrans) {
         for (int i = 0; i < logical_n; ++i) {
-            for (int j = 0, c = 0; j < logical_m; ++j, ++c) {
+            for (int j = 0; j < logical_m; ++j) {
                 {
                     out_matrix[j * inc_out + i * ld_out] =
                         alpha * in_matrix[j * inc_in + i * ld_in];
@@ -2047,6 +2047,15 @@ void omatcopy2_ref(oneapi::mkl::layout layout, oneapi::mkl::transpose trans, con
             }
         }
     }
+    else {
+        for (int64_t i = 0; i < logical_m; ++i) {
+            for (int64_t j = 0, c = 0; j < logical_n; ++j, ++c) {
+                out_matrix[j * inc_out + i * ld_out] =
+                    alpha * sametype_conj(in_matrix[i * inc_in + j * ld_in]);
+            }
+        }
+    }
+
     return;
 }
 

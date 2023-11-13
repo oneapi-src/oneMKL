@@ -79,12 +79,12 @@ int test(device *dev, oneapi::mkl::layout layout) {
         default: break;
     }
 
-    vector<fp, allocator_helper<fp, 64>> A(size_a), B(size_b);
+    vector<fp, allocator_helper<fp, 64>> A(size_a), B(size_b), B_ref(size_b);
 
     rand_matrix(A.data(), layout, oneapi::mkl::transpose::nontrans, m, n, lda);
     rand_matrix(B.data(), layout, trans, m, n, ldb);
-
-    vector<fp, allocator_helper<fp, 64>> B_ref = B;
+    copy_matrix(B.data(), oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, size_b,
+                1, size_b, B_ref.data());
 
     // Call reference OMATCOPY2.
     int64_t m_ref = m;
@@ -96,7 +96,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
     omatcopy2_ref(layout, trans, m_ref, n_ref, alpha, A.data(), lda_ref, stride_a_ref, B_ref.data(),
                   ldb_ref, stride_b_ref);
 
-    // Call DPC++ OMATCOPY
+    // Call DPC++ OMATCOPY2
 
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
