@@ -46,7 +46,8 @@ template <typename fpType, typename intType>
 int test(sycl::device *dev, intType nrows_A, intType ncols_A, intType ncols_C,
          double density_A_matrix, oneapi::mkl::index_base index,
          oneapi::mkl::layout dense_matrix_layout, oneapi::mkl::transpose transpose_A,
-         oneapi::mkl::transpose transpose_B, fpType alpha, fpType beta, intType ldb, intType ldc) {
+         oneapi::mkl::transpose transpose_B, fpType alpha, fpType beta, intType ldb, intType ldc,
+         bool opt_1_input, bool opt_2_inputs) {
     sycl::queue main_queue(*dev, exception_handler_t());
 
     intType int_index = (index == oneapi::mkl::index_base::zero) ? 0 : 1;
@@ -86,10 +87,14 @@ int test(sycl::device *dev, intType nrows_A, intType ncols_A, intType ncols_C,
         CALL_RT_OR_CT(oneapi::mkl::sparse::set_csr_data, main_queue, handle, nrows_A, ncols_A, nnz,
                       index, ia_buf, ja_buf, a_buf);
 
-        CALL_RT_OR_CT(oneapi::mkl::sparse::optimize_gemm, main_queue, transpose_A, handle);
+        if (opt_1_input) {
+            CALL_RT_OR_CT(oneapi::mkl::sparse::optimize_gemm, main_queue, transpose_A, handle);
+        }
 
-        CALL_RT_OR_CT(oneapi::mkl::sparse::optimize_gemm, main_queue, transpose_A, transpose_B,
-                      dense_matrix_layout, static_cast<std::int64_t>(ncols_C), handle);
+        if (opt_2_inputs) {
+            CALL_RT_OR_CT(oneapi::mkl::sparse::optimize_gemm, main_queue, transpose_A, transpose_B,
+                          dense_matrix_layout, static_cast<std::int64_t>(ncols_C), handle);
+        }
 
         CALL_RT_OR_CT(oneapi::mkl::sparse::gemm, main_queue, dense_matrix_layout, transpose_A,
                       transpose_B, alpha, handle, b_buf, ncols_C, ldb, beta, c_buf, ldc);
@@ -146,45 +151,61 @@ void test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_A,
     int nrows_A = 4, ncols_A = 6, ncols_C = 5;
     int ldb = transpose_A == oneapi::mkl::transpose::nontrans ? ncols_A : nrows_A;
     int ldc = transpose_A == oneapi::mkl::transpose::nontrans ? nrows_A : ncols_A;
+    bool no_opt_1_input = false;
+    bool opt_2_inputs = true;
 
     // Basic test
     EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
-                           transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc));
+                           transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc, no_opt_1_input,
+                           opt_2_inputs));
     // Test index_base 1
     EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix,
                            oneapi::mkl::index_base::one, col_major, transpose_A, transpose_B,
-                           fp_one, fp_zero, ldb, ldc));
+                           fp_one, fp_zero, ldb, ldc, no_opt_1_input, opt_2_inputs));
     // Test non-default alpha
     EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
                            transpose_A, transpose_B, set_fp_value<fpType>()(2.f, 1.5f), fp_zero,
-                           ldb, ldc));
+                           ldb, ldc, no_opt_1_input, opt_2_inputs));
     // Test non-default beta
     EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
                            transpose_A, transpose_B, fp_one, set_fp_value<fpType>()(3.2f, 1.f), ldb,
-                           ldc));
+                           ldc, no_opt_1_input, opt_2_inputs));
     // Test 0 alpha
     EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
-                           transpose_A, transpose_B, fp_zero, fp_one, ldb, ldc));
+                           transpose_A, transpose_B, fp_zero, fp_one, ldb, ldc, no_opt_1_input,
+                           opt_2_inputs));
     // Test 0 alpha and beta
     EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
-                           transpose_A, transpose_B, fp_zero, fp_zero, ldb, ldc));
+                           transpose_A, transpose_B, fp_zero, fp_zero, ldb, ldc, no_opt_1_input,
+                           opt_2_inputs));
     // Test non-default ldb
     EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
-                           transpose_A, transpose_B, fp_one, fp_zero, ldb + 5, ldc));
+                           transpose_A, transpose_B, fp_one, fp_zero, ldb + 5, ldc, no_opt_1_input,
+                           opt_2_inputs));
     // Test non-default ldc
     EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
-                           transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc + 6));
+                           transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc + 6, no_opt_1_input,
+                           opt_2_inputs));
     // Test row major layout
     EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
                            oneapi::mkl::layout::row_major, transpose_A, transpose_B, fp_one,
-                           fp_zero, ncols_C, ncols_C));
+                           fp_zero, ncols_C, ncols_C, no_opt_1_input, opt_2_inputs));
     // Test int64 indices
     long long_nrows_A = 27, long_ncols_A = 13, long_ncols_C = 6;
     long long_ldb = transpose_A == oneapi::mkl::transpose::nontrans ? long_ncols_A : long_nrows_A;
     long long_ldc = transpose_A == oneapi::mkl::transpose::nontrans ? long_nrows_A : long_ncols_A;
     EXPECT_TRUEORSKIP(test(dev, long_nrows_A, long_ncols_A, long_ncols_C, density_A_matrix,
                            index_zero, col_major, transpose_A, transpose_B, fp_one, fp_zero,
-                           long_ldb, long_ldc));
+                           long_ldb, long_ldc, no_opt_1_input, opt_2_inputs));
+    // Use optimize_gemm with only the sparse gemm input
+    EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
+                           transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc, true, false));
+    // Use the 2 optimize_gemm versions
+    EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
+                           transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc, true, true));
+    // Do not use optimize_gemm
+    EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
+                           transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc, false, false));
 }
 
 /**
