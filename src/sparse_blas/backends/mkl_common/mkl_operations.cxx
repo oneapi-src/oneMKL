@@ -86,7 +86,7 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> trsv(
     sycl::queue& queue, uplo uplo_val, transpose transpose_val, diag diag_val,
     detail::matrix_handle* A_handle, const fpType* x, fpType* y,
     const std::vector<sycl::event>& dependencies) {
-    // TODO: Remove const_cast with 2024.1 oneMKL release
+    // TODO: Remove const_cast in future oneMKL release
     return oneapi::mkl::sparse::trsv(queue, uplo_val, transpose_val, diag_val,
                                      detail::get_handle(A_handle), const_cast<fpType*>(x), y,
                                      dependencies);
