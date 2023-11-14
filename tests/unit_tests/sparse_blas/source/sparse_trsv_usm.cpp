@@ -45,7 +45,7 @@ namespace {
 template <typename fpType, typename intType>
 int test(sycl::device *dev, intType m, double density_A_matrix, oneapi::mkl::index_base index,
          oneapi::mkl::uplo uplo_val, oneapi::mkl::transpose transpose_val,
-         oneapi::mkl::diag diag_val) {
+         oneapi::mkl::diag diag_val, bool use_optimize) {
     sycl::queue main_queue(*dev, exception_handler_t());
 
     intType int_index = (index == oneapi::mkl::index_base::zero) ? 0 : 1;
@@ -102,23 +102,25 @@ int test(sycl::device *dev, intType m, double density_A_matrix, oneapi::mkl::ind
     sycl::event ev_copy, ev_release;
     oneapi::mkl::sparse::matrix_handle_t handle = nullptr;
     try {
-        sycl::event ev_set, ev_opt, ev_trsv;
+        sycl::event event;
         CALL_RT_OR_CT(oneapi::mkl::sparse::init_matrix_handle, main_queue, &handle);
 
-        CALL_RT_OR_CT(ev_set = oneapi::mkl::sparse::set_csr_data, main_queue, handle, m, m, nnz,
+        CALL_RT_OR_CT(event = oneapi::mkl::sparse::set_csr_data, main_queue, handle, m, m, nnz,
                       index, ia_usm, ja_usm, a_usm, mat_dependencies);
 
-        CALL_RT_OR_CT(ev_opt = oneapi::mkl::sparse::optimize_trsv, main_queue, uplo_val,
-                      transpose_val, diag_val, handle, { ev_set });
+        if (use_optimize) {
+            CALL_RT_OR_CT(event = oneapi::mkl::sparse::optimize_trsv, main_queue, uplo_val,
+                          transpose_val, diag_val, handle, { event });
+        }
 
-        trsv_dependencies.push_back(ev_opt);
-        CALL_RT_OR_CT(ev_trsv = oneapi::mkl::sparse::trsv, main_queue, uplo_val, transpose_val,
+        trsv_dependencies.push_back(event);
+        CALL_RT_OR_CT(event = oneapi::mkl::sparse::trsv, main_queue, uplo_val, transpose_val,
                       diag_val, handle, x_usm, y_usm, trsv_dependencies);
 
         CALL_RT_OR_CT(ev_release = oneapi::mkl::sparse::release_matrix_handle, main_queue, &handle,
-                      { ev_trsv });
+                      { event });
 
-        ev_copy = main_queue.memcpy(y_host.data(), y_usm, y_host.size() * sizeof(fpType), ev_trsv);
+        ev_copy = main_queue.memcpy(y_host.data(), y_usm, y_host.size() * sizeof(fpType), event);
     }
     catch (const sycl::exception &e) {
         std::cout << "Caught synchronous SYCL exception during sparse TRSV:\n"
@@ -163,21 +165,28 @@ void test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val) {
     oneapi::mkl::uplo lower = oneapi::mkl::uplo::lower;
     oneapi::mkl::diag nonunit = oneapi::mkl::diag::nonunit;
     int m = 5;
+    bool use_optimize = true;
+
     // Basic test
-    EXPECT_TRUEORSKIP(
-        test<fpType>(dev, m, density_A_matrix, index_zero, lower, transpose_val, nonunit));
+    EXPECT_TRUEORSKIP(test<fpType>(dev, m, density_A_matrix, index_zero, lower, transpose_val,
+                                   nonunit, use_optimize));
     // Test index_base 1
     EXPECT_TRUEORSKIP(test<fpType>(dev, m, density_A_matrix, oneapi::mkl::index_base::one, lower,
-                                   transpose_val, nonunit));
+                                   transpose_val, nonunit, use_optimize));
     // Test upper triangular matrix
     EXPECT_TRUEORSKIP(test<fpType>(dev, m, density_A_matrix, index_zero, oneapi::mkl::uplo::upper,
-                                   transpose_val, nonunit));
+                                   transpose_val, nonunit, use_optimize));
     // Test unit diagonal matrix
     EXPECT_TRUEORSKIP(test<fpType>(dev, m, density_A_matrix, index_zero, lower, transpose_val,
-                                   oneapi::mkl::diag::unit));
+                                   oneapi::mkl::diag::unit, use_optimize));
     // Test int64 indices
-    EXPECT_TRUEORSKIP(
-        test<fpType>(dev, 15L, density_A_matrix, index_zero, lower, transpose_val, nonunit));
+    EXPECT_TRUEORSKIP(test<fpType>(dev, 15L, density_A_matrix, index_zero, lower, transpose_val,
+                                   nonunit, use_optimize));
+    if (!dev->is_cpu()) {
+      // Test without optimize_trsv
+      EXPECT_TRUEORSKIP(
+          test<fpType>(dev, m, density_A_matrix, index_zero, lower, transpose_val, nonunit, false));
+    }
 }
 
 TEST_P(SparseTrsvUsmTests, RealSinglePrecision) {
