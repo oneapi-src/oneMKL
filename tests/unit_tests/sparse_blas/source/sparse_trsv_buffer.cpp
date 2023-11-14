@@ -73,7 +73,6 @@ int test(sycl::device *dev, intType m, double density_A_matrix, oneapi::mkl::ind
     // Shuffle ordering of column indices/values to test sortedness
     shuffle_data(ia_host.data(), ja_host.data(), a_host.data(), mu);
 
-    // TODO(Romain): Use buffer
     auto ia_buf = make_buffer(ia_host);
     auto ja_buf = make_buffer(ja_host);
     auto a_buf = make_buffer(a_host);
