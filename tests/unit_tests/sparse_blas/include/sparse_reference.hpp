@@ -21,6 +21,8 @@
 #define _SPARSE_REFERENCE_HPP__
 
 #include <stdexcept>
+#include <string>
+#include <tuple>
 
 #include "oneapi/mkl.hpp"
 
@@ -99,6 +101,52 @@ void do_csr_transpose(const oneapi::mkl::transpose opA, intType *ia_t, intType *
     ia_t[0] = a_ind;
 }
 
+// Transpose the given sparse matrix if needed
+template <typename fpType, typename intType>
+auto sparse_transpose_if_needed(const intType *ia, const intType *ja, const fpType *a,
+                                intType a_nrows, intType a_ncols, std::size_t nnz, intType a_ind,
+                                oneapi::mkl::transpose transpose_val) {
+    std::vector<intType> iopa;
+    std::vector<intType> jopa;
+    std::vector<fpType> opa;
+    if (transpose_val == oneapi::mkl::transpose::nontrans) {
+        iopa.assign(ia, ia + a_nrows + 1);
+        jopa.assign(ja, ja + nnz);
+        opa.assign(a, a + nnz);
+    }
+    else if (transpose_val == oneapi::mkl::transpose::trans ||
+             transpose_val == oneapi::mkl::transpose::conjtrans) {
+        iopa.resize(static_cast<std::size_t>(a_ncols + 1));
+        jopa.resize(nnz);
+        opa.resize(nnz);
+        do_csr_transpose(transpose_val, iopa.data(), jopa.data(), opa.data(), a_nrows, a_ncols,
+                         a_ind, ia, ja, a);
+    }
+    else {
+        throw std::runtime_error("unsupported transpose_val=" +
+                                 std::to_string(static_cast<char>(transpose_val)));
+    }
+    return std::make_tuple(iopa, jopa, opa);
+}
+
+template <typename fpType>
+auto dense_transpose_if_needed(const fpType *x, std::size_t outer_size, std::size_t inner_size,
+                               std::size_t ld, oneapi::mkl::transpose transpose_val) {
+    std::vector<fpType> opx;
+    if (transpose_val == oneapi::mkl::transpose::nontrans) {
+        opx.assign(x, x + outer_size * ld);
+    }
+    else {
+        opx.resize(outer_size * ld);
+        for (std::size_t i = 0; i < outer_size; ++i) {
+            for (std::size_t j = 0; j < inner_size; ++j) {
+                opx[i + j * ld] = x[i * ld + j];
+            }
+        }
+    }
+    return opx;
+}
+
 template <typename fpType, typename intType>
 void prepare_reference_gemv_data(const intType *ia, const intType *ja, const fpType *a,
                                  intType a_nrows, intType a_ncols, intType a_nnz, intType a_ind,
@@ -107,27 +155,8 @@ void prepare_reference_gemv_data(const intType *ia, const intType *ja, const fpT
     std::size_t opa_nrows =
         static_cast<std::size_t>((opA == oneapi::mkl::transpose::nontrans) ? a_nrows : a_ncols);
     const std::size_t nnz = static_cast<std::size_t>(a_nnz);
-
-    // prepare op(A) locally
-    std::vector<intType> iopa;
-    std::vector<intType> jopa;
-    std::vector<fpType> opa;
-    if (opA == oneapi::mkl::transpose::nontrans) {
-        iopa.assign(ia, ia + a_nrows + 1);
-        jopa.assign(ja, ja + nnz);
-        opa.assign(a, a + nnz);
-    }
-    else if (opA == oneapi::mkl::transpose::trans || opA == oneapi::mkl::transpose::conjtrans) {
-        iopa.resize(opa_nrows + 1);
-        jopa.resize(nnz);
-        opa.resize(nnz);
-        do_csr_transpose(opA, iopa.data(), jopa.data(), opa.data(), a_nrows, a_ncols, a_ind, ia, ja,
-                         a);
-    }
-    else {
-        throw std::runtime_error(
-            "unsupported transpose_val (opA) in prepare_reference_gemv_data()");
-    }
+    auto [iopa, jopa, opa] =
+        sparse_transpose_if_needed(ia, ja, a, a_nrows, a_ncols, nnz, a_ind, opA);
 
     //
     // do GEMV operation
@@ -143,6 +172,63 @@ void prepare_reference_gemv_data(const intType *ia, const intType *ja, const fpT
         }
 
         y_ref[row] = alpha * tmp + beta * y_ref[row];
+    }
+}
+
+template <typename fpType, typename intType>
+void prepare_reference_gemm_data(const intType *ia, const intType *ja, const fpType *a,
+                                 intType a_nrows, intType a_ncols, intType c_ncols, intType a_nnz,
+                                 intType a_ind, oneapi::mkl::layout dense_matrix_layout,
+                                 oneapi::mkl::transpose opA, oneapi::mkl::transpose opB,
+                                 fpType alpha, fpType beta, intType ldb, intType ldc,
+                                 const fpType *b, fpType *c_ref) {
+    std::size_t opa_nrows =
+        static_cast<std::size_t>((opA == oneapi::mkl::transpose::nontrans) ? a_nrows : a_ncols);
+    std::size_t opa_ncols =
+        static_cast<std::size_t>((opA == oneapi::mkl::transpose::nontrans) ? a_ncols : a_nrows);
+    const std::size_t nnz = static_cast<std::size_t>(a_nnz);
+    const std::size_t ldb_u = static_cast<std::size_t>(ldb);
+    const std::size_t ldc_u = static_cast<std::size_t>(ldc);
+    auto [iopa, jopa, opa] =
+        sparse_transpose_if_needed(ia, ja, a, a_nrows, a_ncols, nnz, a_ind, opA);
+
+    std::size_t b_outer_size = static_cast<std::size_t>(opa_ncols);
+    std::size_t b_inner_size = static_cast<std::size_t>(c_ncols);
+    if (dense_matrix_layout == oneapi::mkl::layout::col_major) {
+        std::swap(b_outer_size, b_inner_size);
+    }
+    auto opb = dense_transpose_if_needed(b, b_outer_size, b_inner_size, ldb_u, opB);
+
+    //
+    // do GEMM operation
+    //
+    //  C <- alpha * opA(A) * opB(B) + beta * C
+    //
+    if (dense_matrix_layout == oneapi::mkl::layout::row_major) {
+        for (std::size_t row = 0; row < opa_nrows; row++) {
+            for (std::size_t col = 0; col < static_cast<std::size_t>(c_ncols); col++) {
+                fpType tmp = 0;
+                for (std::size_t i = static_cast<std::size_t>(iopa[row] - a_ind);
+                     i < static_cast<std::size_t>(iopa[row + 1] - a_ind); i++) {
+                    tmp += opa[i] * opb[static_cast<std::size_t>(jopa[i] - a_ind) * ldb_u + col];
+                }
+                fpType &c = c_ref[row * ldc_u + col];
+                c = alpha * tmp + beta * c;
+            }
+        }
+    }
+    else {
+        for (std::size_t col = 0; col < static_cast<std::size_t>(c_ncols); col++) {
+            for (std::size_t row = 0; row < opa_nrows; row++) {
+                fpType tmp = 0;
+                for (std::size_t i = static_cast<std::size_t>(iopa[row] - a_ind);
+                     i < static_cast<std::size_t>(iopa[row + 1] - a_ind); i++) {
+                    tmp += opa[i] * opb[static_cast<std::size_t>(jopa[i] - a_ind) + col * ldb_u];
+                }
+                fpType &c = c_ref[row + col * ldc_u];
+                c = alpha * tmp + beta * c;
+            }
+        }
     }
 }
 

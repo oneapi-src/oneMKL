@@ -53,6 +53,20 @@ std::enable_if_t<detail::are_fp_int_supported_v<fpType, intType>, sycl::event> s
                                  row_ptr, col_ind, val, dependencies);
 }
 
+inline sycl::event optimize_gemm(backend_selector<backend::BACKEND> selector, transpose transpose_A,
+                                 matrix_handle_t handle,
+                                 const std::vector<sycl::event> &dependencies = {}) {
+    return BACKEND::optimize_gemm(selector.get_queue(), transpose_A, handle, dependencies);
+}
+
+inline sycl::event optimize_gemm(backend_selector<backend::BACKEND> selector, transpose transpose_A,
+                                 transpose transpose_B, layout dense_matrix_layout,
+                                 const std::int64_t columns, matrix_handle_t handle,
+                                 const std::vector<sycl::event> &dependencies = {}) {
+    return BACKEND::optimize_gemm(selector.get_queue(), transpose_A, transpose_B,
+                                  dense_matrix_layout, columns, handle, dependencies);
+}
+
 inline sycl::event optimize_gemv(backend_selector<backend::BACKEND> selector,
                                  transpose transpose_val, matrix_handle_t handle,
                                  const std::vector<sycl::event> &dependencies = {}) {
