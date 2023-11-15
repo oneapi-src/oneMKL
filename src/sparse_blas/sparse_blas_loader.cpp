@@ -64,6 +64,20 @@ sycl::event release_matrix_handle(sycl::queue &queue, matrix_handle_t *p_handle,
 FOR_EACH_FP_AND_INT_TYPE(DEFINE_SET_CSR_DATA)
 #undef DEFINE_SET_CSR_DATA
 
+sycl::event optimize_gemm(sycl::queue &queue, transpose transpose_A, matrix_handle_t handle,
+                          const std::vector<sycl::event> &dependencies) {
+    auto libkey = get_device_id(queue);
+    return function_tables[libkey].optimize_gemm_v1(queue, transpose_A, handle, dependencies);
+}
+
+sycl::event optimize_gemm(sycl::queue &queue, transpose transpose_A, transpose transpose_B,
+                          layout dense_matrix_layout, const std::int64_t columns,
+                          matrix_handle_t handle, const std::vector<sycl::event> &dependencies) {
+    auto libkey = get_device_id(queue);
+    return function_tables[libkey].optimize_gemm_v2(
+        queue, transpose_A, transpose_B, dense_matrix_layout, columns, handle, dependencies);
+}
+
 sycl::event optimize_gemv(sycl::queue &queue, transpose transpose_val, matrix_handle_t handle,
                           const std::vector<sycl::event> &dependencies) {
     auto libkey = get_device_id(queue);

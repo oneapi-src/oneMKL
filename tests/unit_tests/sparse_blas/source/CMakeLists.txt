@@ -17,7 +17,12 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-set(SPBLAS_SOURCES "sparse_gemv_usm.cpp" "sparse_gemv_buffer.cpp")
+set(SPBLAS_SOURCES
+  "sparse_gemm_buffer.cpp"
+  "sparse_gemm_usm.cpp"
+  "sparse_gemv_buffer.cpp"
+  "sparse_gemv_usm.cpp"
+)
 
 include(WarningsUtils)
 
