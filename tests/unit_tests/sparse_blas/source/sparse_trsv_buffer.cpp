@@ -159,9 +159,9 @@ void test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val) {
     EXPECT_TRUEORSKIP(test<fpType>(dev, 15L, density_A_matrix, index_zero, lower, transpose_val,
                                    nonunit, use_optimize));
     if (!dev->is_cpu()) {
-      // Test without optimize_trsv
-      EXPECT_TRUEORSKIP(
-          test<fpType>(dev, m, density_A_matrix, index_zero, lower, transpose_val, nonunit, false));
+        // Test without optimize_trsv
+        EXPECT_TRUEORSKIP(test<fpType>(dev, m, density_A_matrix, index_zero, lower, transpose_val,
+                                       nonunit, false));
     }
 }
 

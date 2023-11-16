@@ -154,7 +154,8 @@ auto dense_transpose_if_needed(const fpType *x, std::size_t outer_size, std::siz
 template <typename fpType, typename intType>
 std::vector<fpType> sparse_to_dense(const intType *ia, const intType *ja, const fpType *a,
                                     std::size_t a_nrows, std::size_t a_ncols, intType a_ind,
-                                    oneapi::mkl::transpose transpose_val, oneapi::mkl::diag diag_val) {
+                                    oneapi::mkl::transpose transpose_val,
+                                    oneapi::mkl::diag diag_val) {
     std::vector<fpType> dense_a(a_nrows * a_ncols, fpType(0));
     for (std::size_t row = 0; row < a_nrows; row++) {
         for (intType i = ia[row] - a_ind; i < ia[row + 1] - a_ind; i++) {
@@ -173,9 +174,9 @@ std::vector<fpType> sparse_to_dense(const intType *ia, const intType *ja, const 
         }
     }
     if (diag_val == oneapi::mkl::diag::unit) {
-      for (std::size_t i = 0; i < a_nrows; ++i) {
-        dense_a[i * a_ncols + i] = set_fp_value<fpType>()(1.f, 0.f);
-      }
+        for (std::size_t i = 0; i < a_nrows; ++i) {
+            dense_a[i * a_ncols + i] = set_fp_value<fpType>()(1.f, 0.f);
+        }
     }
     return dense_a;
 }
@@ -268,7 +269,8 @@ void prepare_reference_gemm_data(const intType *ia, const intType *ja, const fpT
 template <typename fpType, typename intType>
 void prepare_reference_trsv_data(const intType *ia, const intType *ja, const fpType *a, intType m,
                                  intType a_ind, oneapi::mkl::uplo uplo_val,
-                                 oneapi::mkl::transpose opA, oneapi::mkl::diag diag_val, const fpType *x, fpType *y_ref) {
+                                 oneapi::mkl::transpose opA, oneapi::mkl::diag diag_val,
+                                 const fpType *x, fpType *y_ref) {
     std::size_t mu = static_cast<std::size_t>(m);
     auto dense_a = sparse_to_dense(ia, ja, a, mu, mu, a_ind, opA, diag_val);
 
@@ -279,7 +281,8 @@ void prepare_reference_trsv_data(const intType *ia, const intType *ja, const fpT
     //
     // Compute each element of the reference one after the other starting from 0 (resp. the end) for a lower (resp. upper) triangular matrix.
     // A matrix is considered lowered if it is lower and not transposed or upper and transposed.
-    const bool is_lower = (uplo_val == oneapi::mkl::uplo::lower) == (opA == oneapi::mkl::transpose::nontrans);
+    const bool is_lower =
+        (uplo_val == oneapi::mkl::uplo::lower) == (opA == oneapi::mkl::transpose::nontrans);
     for (std::size_t row = 0; row < mu; row++) {
         std::size_t uplo_row = is_lower ? row : (mu - 1 - row);
         fpType rhs = x[uplo_row];

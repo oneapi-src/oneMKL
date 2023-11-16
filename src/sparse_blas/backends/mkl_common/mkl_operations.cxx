@@ -47,11 +47,11 @@ sycl::event optimize_gemv(sycl::queue& queue, transpose transpose_val,
                                               dependencies);
 }
 
-sycl::event optimize_trsv(sycl::queue& queue, uplo uplo_val, transpose transpose_val,
-                          diag diag_val, detail::matrix_handle* handle,
+sycl::event optimize_trsv(sycl::queue& queue, uplo uplo_val, transpose transpose_val, diag diag_val,
+                          detail::matrix_handle* handle,
                           const std::vector<sycl::event>& dependencies) {
-    return oneapi::mkl::sparse::optimize_trsv(queue, uplo_val, transpose_val, diag_val, detail::get_handle(handle),
-                                              dependencies);
+    return oneapi::mkl::sparse::optimize_trsv(queue, uplo_val, transpose_val, diag_val,
+                                              detail::get_handle(handle), dependencies);
 }
 
 template <typename fpType>
@@ -73,12 +73,12 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemv(
 
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>> trsv(sycl::queue& queue, uplo uplo_val,
-                                                         transpose transpose_val,
-                                                         diag diag_val,
+                                                         transpose transpose_val, diag diag_val,
                                                          detail::matrix_handle* A_handle,
                                                          sycl::buffer<fpType, 1>& x,
                                                          sycl::buffer<fpType, 1>& y) {
-    oneapi::mkl::sparse::trsv(queue, uplo_val, transpose_val, diag_val, detail::get_handle(A_handle), x, y);
+    oneapi::mkl::sparse::trsv(queue, uplo_val, transpose_val, diag_val,
+                              detail::get_handle(A_handle), x, y);
 }
 
 template <typename fpType>
