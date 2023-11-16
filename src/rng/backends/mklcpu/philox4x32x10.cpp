@@ -68,9 +68,12 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                vsRngUniform(VSL_RNG_METHOD_UNIFORM_STD,
-                             static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                             acc_r.get_pointer(), distr.a(), distr.b());
+                vsRngUniform(
+                    VSL_RNG_METHOD_UNIFORM_STD,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                    distr.a(), distr.b());
             });
         });
     }
@@ -82,9 +85,12 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                vdRngUniform(VSL_RNG_METHOD_UNIFORM_STD,
-                             static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                             acc_r.get_pointer(), distr.a(), distr.b());
+                vdRngUniform(
+                    VSL_RNG_METHOD_UNIFORM_STD,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                    distr.a(), distr.b());
             });
         });
     }
@@ -96,9 +102,12 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                viRngUniform(VSL_RNG_METHOD_UNIFORM_STD,
-                             static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                             acc_r.get_pointer(), distr.a(), distr.b());
+                viRngUniform(
+                    VSL_RNG_METHOD_UNIFORM_STD,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                    distr.a(), distr.b());
             });
         });
     }
@@ -110,9 +119,12 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                vsRngUniform(VSL_RNG_METHOD_UNIFORM_STD_ACCURATE,
-                             static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                             acc_r.get_pointer(), distr.a(), distr.b());
+                vsRngUniform(
+                    VSL_RNG_METHOD_UNIFORM_STD_ACCURATE,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                    distr.a(), distr.b());
             });
         });
     }
@@ -124,9 +136,12 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                vdRngUniform(VSL_RNG_METHOD_UNIFORM_STD_ACCURATE,
-                             static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                             acc_r.get_pointer(), distr.a(), distr.b());
+                vdRngUniform(
+                    VSL_RNG_METHOD_UNIFORM_STD_ACCURATE,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                    distr.a(), distr.b());
             });
         });
     }
@@ -138,9 +153,12 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                vsRngGaussian(VSL_RNG_METHOD_GAUSSIAN_BOXMULLER2,
-                              static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                              acc_r.get_pointer(), distr.mean(), distr.stddev());
+                vsRngGaussian(
+                    VSL_RNG_METHOD_GAUSSIAN_BOXMULLER2,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                    distr.mean(), distr.stddev());
             });
         });
     }
@@ -152,9 +170,12 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_BOXMULLER2,
-                              static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                              acc_r.get_pointer(), distr.mean(), distr.stddev());
+                vdRngGaussian(
+                    VSL_RNG_METHOD_GAUSSIAN_BOXMULLER2,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                    distr.mean(), distr.stddev());
             });
         });
     }
@@ -166,9 +187,12 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                vsRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF,
-                              static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                              acc_r.get_pointer(), distr.mean(), distr.stddev());
+                vsRngGaussian(
+                    VSL_RNG_METHOD_GAUSSIAN_ICDF,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                    distr.mean(), distr.stddev());
             });
         });
     }
@@ -180,9 +204,12 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_ICDF,
-                              static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                              acc_r.get_pointer(), distr.mean(), distr.stddev());
+                vdRngGaussian(
+                    VSL_RNG_METHOD_GAUSSIAN_ICDF,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                    distr.mean(), distr.stddev());
             });
         });
     }
@@ -194,10 +221,12 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                vsRngLognormal(VSL_RNG_METHOD_LOGNORMAL_BOXMULLER2,
-                               static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                               acc_r.get_pointer(), distr.m(), distr.s(), distr.displ(),
-                               distr.scale());
+                vsRngLognormal(
+                    VSL_RNG_METHOD_LOGNORMAL_BOXMULLER2,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                    distr.m(), distr.s(), distr.displ(), distr.scale());
             });
         });
     }
@@ -209,10 +238,12 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                vdRngLognormal(VSL_RNG_METHOD_LOGNORMAL_BOXMULLER2,
-                               static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                               acc_r.get_pointer(), distr.m(), distr.s(), distr.displ(),
-                               distr.scale());
+                vdRngLognormal(
+                    VSL_RNG_METHOD_LOGNORMAL_BOXMULLER2,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                    distr.m(), distr.s(), distr.displ(), distr.scale());
             });
         });
     }
@@ -224,10 +255,12 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                vsRngLognormal(VSL_RNG_METHOD_LOGNORMAL_ICDF,
-                               static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                               acc_r.get_pointer(), distr.m(), distr.s(), distr.displ(),
-                               distr.scale());
+                vsRngLognormal(
+                    VSL_RNG_METHOD_LOGNORMAL_ICDF,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                    distr.m(), distr.s(), distr.displ(), distr.scale());
             });
         });
     }
@@ -239,10 +272,12 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                vdRngLognormal(VSL_RNG_METHOD_LOGNORMAL_ICDF,
-                               static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                               acc_r.get_pointer(), distr.m(), distr.s(), distr.displ(),
-                               distr.scale());
+                vdRngLognormal(
+                    VSL_RNG_METHOD_LOGNORMAL_ICDF,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                    distr.m(), distr.s(), distr.displ(), distr.scale());
             });
         });
     }
@@ -254,9 +289,12 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                viRngBernoulli(VSL_RNG_METHOD_BERNOULLI_ICDF,
-                               static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                               acc_r.get_pointer(), distr.p());
+                viRngBernoulli(
+                    VSL_RNG_METHOD_BERNOULLI_ICDF,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                    distr.p());
             });
         });
     }
@@ -268,10 +306,13 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                std::uint32_t* r_ptr = acc_r.get_pointer();
-                viRngBernoulli(VSL_RNG_METHOD_BERNOULLI_ICDF,
-                               static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                               reinterpret_cast<std::int32_t*>(r_ptr), distr.p());
+                std::uint32_t* r_ptr =
+                    acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw();
+                viRngBernoulli(
+                    VSL_RNG_METHOD_BERNOULLI_ICDF,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, reinterpret_cast<std::int32_t*>(r_ptr), distr.p());
             });
         });
     }
@@ -283,9 +324,12 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                viRngPoisson(VSL_RNG_METHOD_POISSON_POISNORM,
-                             static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                             acc_r.get_pointer(), distr.lambda());
+                viRngPoisson(
+                    VSL_RNG_METHOD_POISSON_POISNORM,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                    distr.lambda());
             });
         });
     }
@@ -297,10 +341,13 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                std::uint32_t* r_ptr = acc_r.get_pointer();
-                viRngPoisson(VSL_RNG_METHOD_POISSON_POISNORM,
-                             static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                             reinterpret_cast<std::int32_t*>(r_ptr), distr.lambda());
+                std::uint32_t* r_ptr =
+                    acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw();
+                viRngPoisson(
+                    VSL_RNG_METHOD_POISSON_POISNORM,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, reinterpret_cast<std::int32_t*>(r_ptr), distr.lambda());
             });
         });
     }
@@ -312,9 +359,11 @@ public:
             auto acc_stream = stream_buf.get_access<sycl::access::mode::read_write>(cgh);
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<philox4x32x10_impl, decltype(distr)>>(cgh, [=]() {
-                viRngUniformBits(VSL_RNG_METHOD_UNIFORMBITS_STD,
-                                 static_cast<VSLStreamStatePtr>(acc_stream.get_pointer()), n,
-                                 acc_r.get_pointer());
+                viRngUniformBits(
+                    VSL_RNG_METHOD_UNIFORMBITS_STD,
+                    static_cast<VSLStreamStatePtr>(
+                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw());
             });
         });
     }
