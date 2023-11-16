@@ -63,6 +63,7 @@ public:
             Engine engine(queue, SEED);
             Distr distr(args...);
             oneapi::mkl::rng::generate(distr, engine, n_gen, r_buffer);
+            QUEUE_WAIT(queue);
         }
         catch (sycl::exception const& e) {
             std::cout << "Caught synchronous SYCL exception during generation:\n"
