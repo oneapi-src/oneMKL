@@ -77,13 +77,6 @@ public:
         *this = external_workspace_helper(ext_workspace_rqd);
     }
 
-    /** Reset. May be required for changing descriptor settings before recommitting. Assumes no change
-     *  in workspace setting.
-    */
-    inline void reset() {
-        *this = external_workspace_helper(m_ext_workspace_rqd);
-    }
-
     /** Get the required workspace bytes for the backend's external workspace.
      *  @param committed_desc The backend's native descriptor.
     */

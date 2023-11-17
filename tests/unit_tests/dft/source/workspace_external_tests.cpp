@@ -51,13 +51,13 @@ int test_workspace_external_usm_impl(std::size_t dftSize, sycl::device* dev) {
     desc.set_value(config_param::WORKSPACE_PLACEMENT, config_value::WORKSPACE_EXTERNAL);
     desc.set_value(config_param::PLACEMENT, config_value::NOT_INPLACE);
     commit_descriptor(desc, sycl_queue);
-    std::int64_t workspaceBytes = -1;
-    desc.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspaceBytes);
-    if (workspaceBytes < 0) {
+    std::int64_t workspace_bytes = -1;
+    desc.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspace_bytes);
+    if (workspace_bytes < 0) {
         return ::testing::Test::HasFailure();
     }
     scalar_t* workspace = sycl::malloc_device<scalar_t>(
-        static_cast<std::size_t>(workspaceBytes) / sizeof(scalar_t), sycl_queue);
+        static_cast<std::size_t>(workspace_bytes) / sizeof(scalar_t), sycl_queue);
     desc.set_workspace(workspace);
     // Generate data
     std::vector<forward_t> hostFwd(static_cast<std::size_t>(dftSize));
@@ -116,12 +116,12 @@ int test_workspace_external_buffer_impl(std::size_t dftSize, sycl::device* dev) 
     desc.set_value(config_param::WORKSPACE_PLACEMENT, config_value::WORKSPACE_EXTERNAL);
     desc.set_value(config_param::PLACEMENT, config_value::NOT_INPLACE);
     commit_descriptor(desc, sycl_queue);
-    std::int64_t workspaceBytes = -1;
-    desc.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspaceBytes);
-    if (workspaceBytes < 0) {
+    std::int64_t workspace_bytes = -1;
+    desc.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspace_bytes);
+    if (workspace_bytes < 0) {
         return ::testing::Test::HasFailure();
     }
-    sycl::buffer<scalar_t> workspace(static_cast<std::size_t>(workspaceBytes) / sizeof(scalar_t));
+    sycl::buffer<scalar_t> workspace(static_cast<std::size_t>(workspace_bytes) / sizeof(scalar_t));
     desc.set_workspace(workspace);
     // Generate data
     std::vector<forward_t> hostFwd(static_cast<std::size_t>(dftSize));
@@ -201,119 +201,157 @@ TEST_P(WorkspaceExternalTests, TestWorkspaceExternalDoubleBuffer) {
 TEST_P(WorkspaceExternalTests, SetWorkspaceOnWorkspaceAutomatic) {
     using namespace oneapi::mkl::dft;
     sycl::queue sycl_queue(*GetParam());
-    const int dftLen = 1024 * 3 * 5 * 7 * 16; // A size likely to require an external workspace.
-    float* fftDataUsm = sycl::malloc_device<float>(dftLen * 2, sycl_queue);
-    sycl::buffer<float> fftDataBuf(dftLen * 2);
-    descriptor<precision::SINGLE, domain::COMPLEX> descUsm(dftLen), descBuf(dftLen);
+    const int dft_len = 1024 * 3 * 5 * 7 * 16; // A size likely to require an external workspace.
+    float* fft_data_usm = sycl::malloc_device<float>(dft_len * 2, sycl_queue);
+    sycl::buffer<float> fft_data_buf(dft_len * 2);
+    descriptor<precision::SINGLE, domain::COMPLEX> desc_usm(dft_len), desc_buf(dft_len);
     // WORKSPACE_EXTERNAL is NOT set.
-    commit_descriptor(descUsm, sycl_queue);
-    commit_descriptor(descBuf, sycl_queue);
-    std::int64_t workspaceBytes = 0;
-    descUsm.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspaceBytes);
+    commit_descriptor(desc_usm, sycl_queue);
+    commit_descriptor(desc_buf, sycl_queue);
+    std::int64_t workspace_bytes = 0;
+    desc_usm.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspace_bytes);
 
     // No workspace set yet: all of the following should work.
-    compute_forward(descUsm, fftDataUsm);
-    compute_forward(descBuf, fftDataBuf);
-    compute_backward(descUsm, fftDataUsm);
-    compute_backward(descBuf, fftDataBuf);
-    compute_forward(descUsm, fftDataBuf);
-    compute_forward(descBuf, fftDataUsm);
-    compute_backward(descUsm, fftDataBuf);
-    compute_backward(descBuf, fftDataUsm);
+    compute_forward(desc_usm, fft_data_usm);
+    compute_forward(desc_buf, fft_data_buf);
+    compute_backward(desc_usm, fft_data_usm);
+    compute_backward(desc_buf, fft_data_buf);
+    compute_forward(desc_usm, fft_data_buf);
+    compute_forward(desc_buf, fft_data_usm);
+    compute_backward(desc_usm, fft_data_buf);
+    compute_backward(desc_buf, fft_data_usm);
     sycl_queue.wait_and_throw();
 
     // Set workspace
-    float* usmWorkspace = sycl::malloc_device<float>(
-        static_cast<std::size_t>(workspaceBytes) / sizeof(float), sycl_queue);
-    sycl::buffer<float> bufferWorkspace(static_cast<std::size_t>(workspaceBytes) / sizeof(float));
-    descUsm.set_workspace(usmWorkspace);
-    descBuf.set_workspace(bufferWorkspace);
+    float* usm_workspace = sycl::malloc_device<float>(
+        static_cast<std::size_t>(workspace_bytes) / sizeof(float), sycl_queue);
+    sycl::buffer<float> bufferWorkspace(static_cast<std::size_t>(workspace_bytes) / sizeof(float));
+    desc_usm.set_workspace(usm_workspace);
+    desc_buf.set_workspace(bufferWorkspace);
 
     // Should work:
-    compute_forward(descUsm, fftDataUsm);
+    compute_forward(desc_usm, fft_data_usm);
     sycl_queue.wait_and_throw();
-    compute_forward(descBuf, fftDataBuf);
+    compute_forward(desc_buf, fft_data_buf);
     sycl_queue.wait_and_throw();
-    compute_backward(descUsm, fftDataUsm);
+    compute_backward(desc_usm, fft_data_usm);
     sycl_queue.wait_and_throw();
-    compute_backward(descBuf, fftDataBuf);
+    compute_backward(desc_buf, fft_data_buf);
     sycl_queue.wait_and_throw();
 
     // Should not work:
-    EXPECT_THROW(compute_forward(descUsm, fftDataBuf), oneapi::mkl::invalid_argument);
-    EXPECT_THROW(compute_forward(descBuf, fftDataUsm), oneapi::mkl::invalid_argument);
-    EXPECT_THROW(compute_backward(descUsm, fftDataBuf), oneapi::mkl::invalid_argument);
-    EXPECT_THROW(compute_backward(descBuf, fftDataUsm), oneapi::mkl::invalid_argument);
+    EXPECT_THROW(compute_forward(desc_usm, fft_data_buf), oneapi::mkl::invalid_argument);
+    EXPECT_THROW(compute_forward(desc_buf, fft_data_usm), oneapi::mkl::invalid_argument);
+    EXPECT_THROW(compute_backward(desc_usm, fft_data_buf), oneapi::mkl::invalid_argument);
+    EXPECT_THROW(compute_backward(desc_buf, fft_data_usm), oneapi::mkl::invalid_argument);
     sycl_queue.wait_and_throw();
 
     // Free any allocations:
-    sycl::free(usmWorkspace, sycl_queue);
-    sycl::free(fftDataUsm, sycl_queue);
+    sycl::free(usm_workspace, sycl_queue);
+    sycl::free(fft_data_usm, sycl_queue);
 }
 
 /// Test that the implementation throws as expected.
 TEST_P(WorkspaceExternalTests, ThrowOnBadCalls) {
     using namespace oneapi::mkl::dft;
     sycl::queue sycl_queue(*GetParam());
-    const int dftLen = 1024 * 3 * 5 * 7 * 16; // A size likely to require an external workspace.
-    float* fftDataUsm = sycl::malloc_device<float>(dftLen * 2, sycl_queue);
-    sycl::buffer<float> fftDataBuf(dftLen * 2);
-    descriptor<precision::SINGLE, domain::COMPLEX> descUsm(dftLen), descBuf(dftLen);
-    descUsm.set_value(config_param::WORKSPACE_PLACEMENT, config_value::WORKSPACE_EXTERNAL);
-    descBuf.set_value(config_param::WORKSPACE_PLACEMENT, config_value::WORKSPACE_EXTERNAL);
+    const int dft_len = 1024 * 3 * 5 * 7 * 16; // A size likely to require an external workspace.
+    float* fft_data_usm = sycl::malloc_device<float>(dft_len * 2, sycl_queue);
+    sycl::buffer<float> fft_data_buf(dft_len * 2);
+    descriptor<precision::SINGLE, domain::COMPLEX> desc_usm(dft_len), desc_buf(dft_len);
+    desc_usm.set_value(config_param::WORKSPACE_PLACEMENT, config_value::WORKSPACE_EXTERNAL);
+    desc_buf.set_value(config_param::WORKSPACE_PLACEMENT, config_value::WORKSPACE_EXTERNAL);
 
     // We expect the following to throw because the decriptor has not been committed.
-    std::int64_t workspaceBytes = -10;
-    float* usmWorkspace = nullptr;
-    EXPECT_THROW(descUsm.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspaceBytes),
+    std::int64_t workspace_bytes = -10;
+    float* usm_workspace = nullptr;
+    EXPECT_THROW(desc_usm.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspace_bytes),
                  oneapi::mkl::invalid_argument);
-    EXPECT_THROW(descUsm.set_workspace(usmWorkspace), oneapi::mkl::uninitialized);
-    commit_descriptor(descUsm, sycl_queue);
-    commit_descriptor(descBuf, sycl_queue);
+    EXPECT_THROW(desc_usm.set_workspace(usm_workspace), oneapi::mkl::uninitialized);
+    commit_descriptor(desc_usm, sycl_queue);
+    commit_descriptor(desc_buf, sycl_queue);
 
-    descUsm.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspaceBytes);
-    EXPECT_GE(workspaceBytes, 0);
+    desc_usm.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspace_bytes);
+    EXPECT_GE(workspace_bytes, 0);
 
     // We haven't set a workspace, so the following should fail;
-    EXPECT_THROW(compute_forward(descUsm, fftDataUsm), oneapi::mkl::invalid_argument);
+    EXPECT_THROW(compute_forward(desc_usm, fft_data_usm), oneapi::mkl::invalid_argument);
     sycl_queue.wait_and_throw();
-    EXPECT_THROW(compute_forward(descUsm, fftDataBuf), oneapi::mkl::invalid_argument);
+    EXPECT_THROW(compute_forward(desc_usm, fft_data_buf), oneapi::mkl::invalid_argument);
     sycl_queue.wait_and_throw();
 
-    if (workspaceBytes > 0) {
-        EXPECT_THROW(descUsm.set_workspace(nullptr), oneapi::mkl::invalid_argument);
-        sycl::buffer<float> undersizeWorkspace(
-            static_cast<std::size_t>(workspaceBytes) / sizeof(float) - 1);
-        EXPECT_THROW(descBuf.set_workspace(undersizeWorkspace), oneapi::mkl::invalid_argument);
+    if (workspace_bytes > 0) {
+        EXPECT_THROW(desc_usm.set_workspace(nullptr), oneapi::mkl::invalid_argument);
+        sycl::buffer<float> undersize_workspace(
+            static_cast<std::size_t>(workspace_bytes) / sizeof(float) - 1);
+        EXPECT_THROW(desc_buf.set_workspace(undersize_workspace), oneapi::mkl::invalid_argument);
     }
 
-    usmWorkspace = sycl::malloc_device<float>(
-        static_cast<std::size_t>(workspaceBytes) / sizeof(float), sycl_queue);
-    sycl::buffer<float> bufferWorkspace(static_cast<std::size_t>(workspaceBytes) / sizeof(float));
+    usm_workspace = sycl::malloc_device<float>(
+        static_cast<std::size_t>(workspace_bytes) / sizeof(float), sycl_queue);
+    sycl::buffer<float> bufferWorkspace(static_cast<std::size_t>(workspace_bytes) / sizeof(float));
 
-    descUsm.set_workspace(usmWorkspace);
-    descBuf.set_workspace(bufferWorkspace);
+    desc_usm.set_workspace(usm_workspace);
+    desc_buf.set_workspace(bufferWorkspace);
 
     // Should work:
-    compute_forward(descUsm, fftDataUsm);
+    compute_forward(desc_usm, fft_data_usm);
     sycl_queue.wait_and_throw();
-    compute_forward(descBuf, fftDataBuf);
+    compute_forward(desc_buf, fft_data_buf);
     sycl_queue.wait_and_throw();
-    compute_backward(descUsm, fftDataUsm);
+    compute_backward(desc_usm, fft_data_usm);
     sycl_queue.wait_and_throw();
-    compute_backward(descBuf, fftDataBuf);
+    compute_backward(desc_buf, fft_data_buf);
     sycl_queue.wait_and_throw();
 
     // Should not work:
-    EXPECT_THROW(compute_forward(descUsm, fftDataBuf), oneapi::mkl::invalid_argument);
-    EXPECT_THROW(compute_forward(descBuf, fftDataUsm), oneapi::mkl::invalid_argument);
-    EXPECT_THROW(compute_backward(descUsm, fftDataBuf), oneapi::mkl::invalid_argument);
-    EXPECT_THROW(compute_backward(descBuf, fftDataUsm), oneapi::mkl::invalid_argument);
+    EXPECT_THROW(compute_forward(desc_usm, fft_data_buf), oneapi::mkl::invalid_argument);
+    EXPECT_THROW(compute_forward(desc_buf, fft_data_usm), oneapi::mkl::invalid_argument);
+    EXPECT_THROW(compute_backward(desc_usm, fft_data_buf), oneapi::mkl::invalid_argument);
+    EXPECT_THROW(compute_backward(desc_buf, fft_data_usm), oneapi::mkl::invalid_argument);
     sycl_queue.wait_and_throw();
 
     // Free any allocations:
-    sycl::free(usmWorkspace, sycl_queue);
-    sycl::free(fftDataUsm, sycl_queue);
+    sycl::free(usm_workspace, sycl_queue);
+    sycl::free(fft_data_usm, sycl_queue);
+}
+
+TEST_P(WorkspaceExternalTests, RecommitBehaviour) {
+    using namespace oneapi::mkl::dft;
+    sycl::queue sycl_queue(*GetParam());
+    const int dft_len = 1024 * 3 * 5 * 7 * 16; // A size likely to require an external workspace.
+    float* fft_data_usm = sycl::malloc_device<float>(dft_len * 2, sycl_queue);
+    descriptor<precision::SINGLE, domain::COMPLEX> desc_usm(dft_len);
+    // WORKSPACE_EXTERNAL is NOT set.
+    commit_descriptor(desc_usm, sycl_queue);
+    std::int64_t workspace_bytes = 0;
+    desc_usm.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspace_bytes);
+    float* usm_workspace = sycl::malloc_device<float>(
+        static_cast<std::size_t>(workspace_bytes) / sizeof(float), sycl_queue);
+
+    // Should work with workspace automatic
+    compute_forward(desc_usm, fft_data_usm);
+    sycl_queue.wait_and_throw();
+
+    desc_usm.set_value(config_param::WORKSPACE_PLACEMENT, config_value::WORKSPACE_EXTERNAL);
+    commit_descriptor(desc_usm, sycl_queue);
+
+    // No workspace, expect throw
+    EXPECT_THROW(compute_forward(desc_usm, fft_data_usm), oneapi::mkl::invalid_argument);
+
+    desc_usm.set_workspace(usm_workspace);
+
+    compute_forward(desc_usm, fft_data_usm);
+    sycl_queue.wait_and_throw();
+
+    // Recommitting should require workspace to be set again.
+    commit_descriptor(desc_usm, sycl_queue);
+    EXPECT_THROW(compute_forward(desc_usm, fft_data_usm), oneapi::mkl::invalid_argument);
+    sycl_queue.wait_and_throw();
+
+    // Free any allocations:
+    sycl::free(usm_workspace, sycl_queue);
+    sycl::free(fft_data_usm, sycl_queue);
 }
 
 INSTANTIATE_TEST_SUITE_P(WorkspaceExternalTestSuite, WorkspaceExternalTests,

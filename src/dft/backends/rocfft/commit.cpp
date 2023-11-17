@@ -137,6 +137,9 @@ public:
 
     void commit(const dft::detail::dft_values<prec, dom>& config_values) override {
         // this could be a recommit
+        this->external_workspace_helper_.reset(
+            config_values.workspace_placement ==
+            oneapi::mkl::dft::detail::config_value::WORKSPACE_EXTERNAL);
         clean_plans();
 
         const rocfft_result_placement placement =
