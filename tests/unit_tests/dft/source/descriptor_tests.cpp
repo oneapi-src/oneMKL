@@ -344,6 +344,23 @@ static void set_and_get_values() {
         descriptor.get_value(oneapi::mkl::dft::config_param::PACKED_FORMAT, &value);
         EXPECT_EQ(oneapi::mkl::dft::config_value::CCE_FORMAT, value);
     }
+
+    {
+        oneapi::mkl::dft::config_value value{
+            oneapi::mkl::dft::config_value::COMMITTED
+        }; // Initialize with invalid value
+        descriptor.get_value(oneapi::mkl::dft::config_param::WORKSPACE_PLACEMENT, &value);
+        EXPECT_EQ(oneapi::mkl::dft::config_value::WORKSPACE_AUTOMATIC, value);
+
+        descriptor.set_value(oneapi::mkl::dft::config_param::WORKSPACE_PLACEMENT,
+                             oneapi::mkl::dft::config_value::WORKSPACE_EXTERNAL);
+
+        value = oneapi::mkl::dft::config_value::COMMITTED; // Initialize with invalid value
+        descriptor.get_value(oneapi::mkl::dft::config_param::WORKSPACE_PLACEMENT, &value);
+        EXPECT_EQ(oneapi::mkl::dft::config_value::WORKSPACE_EXTERNAL, value);
+        descriptor.set_value(oneapi::mkl::dft::config_param::WORKSPACE_PLACEMENT,
+                             oneapi::mkl::dft::config_value::WORKSPACE_AUTOMATIC);
+    }
 }
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>

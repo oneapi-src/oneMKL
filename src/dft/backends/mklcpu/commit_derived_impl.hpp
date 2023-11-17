@@ -39,6 +39,7 @@ enum DIR { fwd = 0, bwd = 1 };
 template <dft::detail::precision prec, dft::detail::domain dom>
 class commit_derived_impl final : public dft::detail::commit_impl<prec, dom> {
 private:
+    using scalar_type = typename dft::detail::commit_impl<prec, dom>::scalar_type;
     static constexpr DFTI_CONFIG_VALUE mklcpu_prec = to_mklcpu(prec);
     static constexpr DFTI_CONFIG_VALUE mklcpu_dom = to_mklcpu(dom);
     using mklcpu_desc_t = DFTI_DESCRIPTOR_HANDLE;

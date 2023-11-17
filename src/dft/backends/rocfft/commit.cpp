@@ -79,6 +79,7 @@ public:
 template <dft::precision prec, dft::domain dom>
 class rocfft_commit final : public dft::detail::commit_impl<prec, dom> {
 private:
+    using scalar_type = typename dft::detail::commit_impl<prec, dom>::scalar_type;
     // For real to complex transforms, the "transform_type" arg also encodes the direction (e.g. rocfft_transform_type_*_forward vs rocfft_transform_type_*_backward)
     // in the plan so we must have one for each direction.
     // We also need this because oneMKL uses a directionless "FWD_DISTANCE" and "BWD_DISTANCE" while rocFFT uses a directional "in_distance" and "out_distance".
@@ -89,7 +90,8 @@ private:
 
 public:
     rocfft_commit(sycl::queue& queue, const dft::detail::dft_values<prec, dom>& config_values)
-            : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::rocfft) {
+            : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::rocfft,
+                                                               config_values) {
         if constexpr (prec == dft::detail::precision::DOUBLE) {
             if (!queue.get_device().has(sycl::aspect::fp64)) {
                 throw mkl::exception("DFT", "commit", "Device does not support double precision.");
@@ -129,20 +131,8 @@ public:
             }
             handles[1].info = std::nullopt;
         }
-        if (handles[0].buffer) {
-            if (hipFree(handles[0].buffer.value()) != hipSuccess) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                     "Failed to free forward buffer.");
-            }
-            handles[0].buffer = std::nullopt;
-        }
-        if (handles[1].buffer) {
-            if (hipFree(handles[1].buffer.value()) != hipSuccess) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                     "Failed to free backward buffer.");
-            }
-            handles[1].buffer = std::nullopt;
-        }
+        free_internal_workspace_if_rqd(handles[0], "clear_plans");
+        free_internal_workspace_if_rqd(handles[1], "clear_plans");
     }
 
     void commit(const dft::detail::dft_values<prec, dom>& config_values) override {
@@ -351,24 +341,17 @@ public:
             }
             handles[0].info = fwd_info;
 
-            // plan work buffer
-            std::size_t work_buf_size;
-            if (rocfft_plan_get_work_buffer_size(fwd_plan, &work_buf_size) !=
-                rocfft_status_success) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                     "Failed to get forward work buffer size.");
-            }
-            if (work_buf_size != 0) {
-                void* work_buf;
-                if (hipMalloc(&work_buf, work_buf_size) != hipSuccess) {
-                    throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                         "Failed to get allocate forward work buffer.");
-                }
-                handles[0].buffer = work_buf;
-                if (rocfft_execution_info_set_work_buffer(fwd_info, work_buf, work_buf_size) !=
-                    rocfft_status_success) {
-                    throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                         "Failed to set forward work buffer.");
+            if (config_values.workspace_placement == config_value::WORKSPACE_AUTOMATIC) {
+                std::int64_t work_buf_size = get_rocfft_workspace_bytes(handles[0], "commit");
+                if (work_buf_size != 0) {
+                    void* work_buf;
+                    if (hipMalloc(&work_buf, work_buf_size) != hipSuccess) {
+                        throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                             "Failed to get allocate forward work buffer.");
+                    }
+                    set_workspace_impl(handles[0], reinterpret_cast<scalar_type*>(work_buf),
+                                       work_buf_size, "commit");
+                    handles[0].buffer = work_buf;
                 }
             }
         }
@@ -412,25 +395,17 @@ public:
             }
             handles[1].info = bwd_info;
 
-            std::size_t work_buf_size;
-            if (rocfft_plan_get_work_buffer_size(bwd_plan, &work_buf_size) !=
-                rocfft_status_success) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                     "Failed to get backward work buffer size.");
-            }
-
-            if (work_buf_size != 0) {
-                void* work_buf;
-                if (hipMalloc(&work_buf, work_buf_size) != hipSuccess) {
-                    throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                         "Failed to get allocate backward work buffer.");
-                }
-                handles[1].buffer = work_buf;
-
-                if (rocfft_execution_info_set_work_buffer(bwd_info, work_buf, work_buf_size) !=
-                    rocfft_status_success) {
-                    throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
-                                         "Failed to set backward work buffer.");
+            if (config_values.workspace_placement == config_value::WORKSPACE_AUTOMATIC) {
+                std::int64_t work_buf_size = get_rocfft_workspace_bytes(handles[1], "commit");
+                if (work_buf_size != 0) {
+                    void* work_buf;
+                    if (hipMalloc(&work_buf, work_buf_size) != hipSuccess) {
+                        throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                             "Failed to get allocate backward work buffer.");
+                    }
+                    set_workspace_impl(handles[1], reinterpret_cast<scalar_type*>(work_buf),
+                                       work_buf_size, "commit");
+                    handles[1].buffer = work_buf;
                 }
             }
         }
@@ -451,6 +426,144 @@ public:
     std::array<std::int64_t, 2> get_offsets() noexcept {
         return offsets;
     }
+
+    /** Get the requried worspace size for a rocfft plan. Implementation to be shared by internal and external workspace mechanisms.
+
+     * @param handle rocfft_handle. Expected to have valid rocfft_plan.
+     * @param function The name of the function to give when generating exceptions
+     * @return Required space in bytes
+    **/
+    std::int64_t get_rocfft_workspace_bytes(rocfft_handle& handle, const char* function) {
+        if (!handle.plan) {
+            throw mkl::exception("dft/backends/rocfft", function, "Missing internal rocfft plan");
+        }
+        std::size_t size = 0;
+        if (rocfft_plan_get_work_buffer_size(*handle.plan, &size) != rocfft_status_success) {
+            throw mkl::exception("dft/backends/rocfft", function,
+                                 "Failed to get rocfft work buffer size.");
+        }
+        return static_cast<std::int64_t>(size);
+    }
+
+    /** Set the rocFFT workspace. Implementation to be shared by internal workspace allocation and external workspace
+     * mechanisms. Does not set handle.buffer.
+     * 
+     * @param handle rocfft_handle. Expected to have valid rocfft_plan and rocfft_info, but no associated buffer.
+     * @param workspace Pointer to allocation to use as workspace
+     * @param workspace_bytes The size (in bytes) of the given workspace
+     * @param function The name of the function to give when generating exceptions
+    **/
+    void set_workspace_impl(const rocfft_handle& handle, scalar_type* workspace,
+                            std::int64_t workspace_bytes, const char* function) {
+        if (!handle.info) {
+            throw mkl::exception(
+                "dft/backends/rocfft", function,
+                "Could not set rocFFT workspace - handle has no associated rocfft_info.");
+        }
+        if (handle.buffer) {
+            throw mkl::exception(
+                "dft/backends/rocfft", function,
+                "Could not set rocFFT workspace - an internal buffer is already set.");
+        }
+        if (workspace_bytes && workspace == nullptr) {
+            throw mkl::exception("dft/backends/rocfft", function, "Trying to nullptr workspace.");
+        }
+        auto info = *handle.info;
+        if (workspace_bytes &&
+            rocfft_execution_info_set_work_buffer(info, static_cast<void*>(workspace),
+                                                  static_cast<std::size_t>(workspace_bytes)) !=
+                rocfft_status_success) {
+            throw mkl::exception("dft/backends/rocfft", function, "Failed to set work buffer.");
+        }
+    }
+
+    void free_internal_workspace_if_rqd(rocfft_handle& handle, const char* function) {
+        if (handle.buffer) {
+            if (hipFree(*handle.buffer) != hipSuccess) {
+                throw mkl::exception("dft/backends/rocfft", function,
+                                     "Failed to free internal buffer.");
+            }
+            handle.buffer = std::nullopt;
+        }
+    }
+
+    virtual void set_workspace(scalar_type* usm_workspace) override {
+        std::int64_t plan0_bytes = get_plan0_workspace_size_bytes();
+        std::int64_t total_workspace_bytes{ this->get_workspace_external_bytes() };
+        std::int64_t plan1_bytes = total_workspace_bytes - plan0_bytes;
+        this->external_workspace_helper_.set_workspace_throw(*this, usm_workspace);
+        if (handles[0].plan) {
+            free_internal_workspace_if_rqd(handles[0], "set_workspace");
+            set_workspace_impl(handles[0], usm_workspace, plan0_bytes, "set_workspace");
+        }
+        if (handles[1].plan) {
+            free_internal_workspace_if_rqd(handles[1], "set_workspace");
+            set_workspace_impl(handles[1], usm_workspace + plan0_bytes / sizeof(scalar_type),
+                               plan1_bytes, "set_workspace");
+        }
+    }
+
+    void set_buffer_workspace(rocfft_handle& handle, sycl::buffer<scalar_type>& buffer_workspace,
+                              std::size_t range, std::size_t offset) {
+        if (range == 0) {
+            return; // Nothing to do.
+        }
+        this->get_queue().submit([&](sycl::handler& cgh) {
+            auto workspace_acc =
+                buffer_workspace.template get_access<sycl::access::mode::read_write>(cgh, range,
+                                                                                     offset);
+            cgh.host_task([=](sycl::interop_handle ih) {
+                auto workspace_native = reinterpret_cast<scalar_type*>(
+                    ih.get_native_mem<sycl::backend::ext_oneapi_hip>(workspace_acc));
+                set_workspace_impl(handle, workspace_native, range * sizeof(scalar_type),
+                                   "set_workspace");
+            });
+        });
+        this->get_queue().wait_and_throw();
+    }
+
+    virtual void set_workspace(sycl::buffer<scalar_type>& buffer_workspace) override {
+        this->external_workspace_helper_.set_workspace_throw(*this, buffer_workspace);
+        std::size_t plan0_count =
+            static_cast<std::size_t>(get_plan0_workspace_size_bytes()) / sizeof(scalar_type);
+        std::size_t total_workspace_count =
+            static_cast<std::size_t>(this->get_workspace_external_bytes()) / sizeof(scalar_type);
+        std::size_t plan1_count = total_workspace_count - plan0_count;
+        if (handles[0].plan) {
+            free_internal_workspace_if_rqd(handles[0], "set_workspace");
+            set_buffer_workspace(handles[0], buffer_workspace, plan0_count, 0);
+        }
+        if (handles[1].plan) {
+            free_internal_workspace_if_rqd(handles[1], "set_workspace");
+            set_buffer_workspace(handles[1], buffer_workspace, plan1_count, plan0_count);
+        }
+    }
+
+    std::int64_t get_plan_workspace_size_bytes(rocfft_plan_t* plan) {
+        // plan work buffer
+        if (plan == nullptr) {
+            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                 "Missing internal rocFFT plan.");
+        }
+        std::size_t work_buf_size;
+        if (rocfft_plan_get_work_buffer_size(plan, &work_buf_size) != rocfft_status_success) {
+            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                 "Failed to get work buffer size.");
+        }
+        return static_cast<std::int64_t>(work_buf_size);
+    }
+
+    std::int64_t get_plan0_workspace_size_bytes() {
+        if (!handles[0].plan) {
+            return 0;
+        }
+        return get_plan_workspace_size_bytes(*handles[0].plan);
+    }
+
+    virtual std::int64_t get_workspace_external_bytes_impl() override {
+        std::int64_t size = handles[1].plan ? get_plan_workspace_size_bytes(*handles[1].plan) : 0;
+        return size + get_plan0_workspace_size_bytes();
+    };
 
 #define BACKEND rocfft
 #include "../backend_compute_signature.cxx"

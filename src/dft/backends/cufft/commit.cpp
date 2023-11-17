@@ -44,15 +44,20 @@ namespace detail {
 template <dft::precision prec, dft::domain dom>
 class cufft_commit final : public dft::detail::commit_impl<prec, dom> {
 private:
+    using scalar_type = typename dft::detail::commit_impl<prec, dom>::scalar_type;
+
     // For real to complex transforms, the "type" arg also encodes the direction (e.g. CUFFT_R2C vs CUFFT_C2R) in the plan so we must have one for each direction.
     // We also need this because oneMKL uses a directionless "FWD_DISTANCE" and "BWD_DISTANCE" while cuFFT uses a directional "idist" and "odist".
     // plans[0] is forward, plans[1] is backward
     std::array<std::optional<cufftHandle>, 2> plans = { std::nullopt, std::nullopt };
     std::array<std::int64_t, 2> offsets;
+    // For using a buffer external workspace, the buffer object itself needs to be kept between compute calls such that accessors can be used.
+    std::optional<sycl::buffer<scalar_type, 1>> buffer_workspace;
 
 public:
     cufft_commit(sycl::queue& queue, const dft::detail::dft_values<prec, dom>& config_values)
-            : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::cufft) {
+            : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::cufft,
+                                                               config_values) {
         if constexpr (prec == dft::detail::precision::DOUBLE) {
             if (!queue.get_device().has(sycl::aspect::fp64)) {
                 throw mkl::exception("DFT", "commit", "Device does not support double precision.");
@@ -266,17 +271,22 @@ public:
 
         if (valid_forward) {
             cufftHandle fwd_plan;
-            auto res = cufftPlanMany(&fwd_plan, // plan
-                                     rank, // rank
-                                     n_copy.data(), // n
-                                     inembed.data(), // inembed
-                                     istride, // istride
-                                     fwd_dist, // idist
-                                     onembed.data(), // onembed
-                                     ostride, // ostride
-                                     bwd_dist, // odist
-                                     fwd_type, // type
-                                     batch // batch
+            auto res = cufftCreate(&fwd_plan);
+            if (res != CUFFT_SUCCESS) {
+                throw mkl::exception("dft/backends/cufft", __FUNCTION__, "cufftCreate failed.");
+            }
+            apply_external_workspace_setting(fwd_plan, config_values.workspace_placement);
+            res = cufftPlanMany(&fwd_plan, // plan
+                                rank, // rank
+                                n_copy.data(), // n
+                                inembed.data(), // inembed
+                                istride, // istride
+                                fwd_dist, // idist
+                                onembed.data(), // onembed
+                                ostride, // ostride
+                                bwd_dist, // odist
+                                fwd_type, // type
+                                batch // batch
             );
 
             if (res != CUFFT_SUCCESS) {
@@ -289,19 +299,23 @@ public:
 
         if (valid_backward) {
             cufftHandle bwd_plan;
-
+            auto res = cufftCreate(&bwd_plan);
+            if (res != CUFFT_SUCCESS) {
+                throw mkl::exception("dft/backends/cufft", __FUNCTION__, "cufftCreate failed.");
+            }
+            apply_external_workspace_setting(bwd_plan, config_values.workspace_placement);
             // flip fwd_distance and bwd_distance because cuFFt uses input distance and output distance.
-            auto res = cufftPlanMany(&bwd_plan, // plan
-                                     rank, // rank
-                                     n_copy.data(), // n
-                                     inembed.data(), // inembed
-                                     istride, // istride
-                                     bwd_dist, // idist
-                                     onembed.data(), // onembed
-                                     ostride, // ostride
-                                     fwd_dist, // odist
-                                     bwd_type, // type
-                                     batch // batch
+            res = cufftPlanMany(&bwd_plan, // plan
+                                rank, // rank
+                                n_copy.data(), // n
+                                inembed.data(), // inembed
+                                istride, // istride
+                                bwd_dist, // idist
+                                onembed.data(), // onembed
+                                ostride, // ostride
+                                fwd_dist, // odist
+                                bwd_type, // type
+                                batch // batch
             );
             if (res != CUFFT_SUCCESS) {
                 throw mkl::exception("dft/backends/cufft", __FUNCTION__,
@@ -315,6 +329,17 @@ public:
         clean_plans();
     }
 
+    static void apply_external_workspace_setting(cufftHandle& handle,
+                                                 const config_value& workspace_setting) {
+        if (workspace_setting == config_value::WORKSPACE_EXTERNAL) {
+            auto res = cufftSetAutoAllocation(handle, 0);
+            if (res != CUFFT_SUCCESS) {
+                throw mkl::exception("dft/backends/cufft", "commit",
+                                     "cufftSetAutoAllocation(plan, 0) failed.");
+            }
+        }
+    }
+
     void* get_handle() noexcept override {
         return plans.data();
     }
@@ -322,6 +347,76 @@ public:
     std::array<std::int64_t, 2> get_offsets() noexcept {
         return offsets;
     }
+
+    virtual void set_workspace(scalar_type* usmWorkspace) override {
+        this->external_workspace_helper_.set_workspace_throw(*this, usmWorkspace);
+        if (plans[0]) {
+            cufftSetWorkArea(*plans[0], usmWorkspace);
+        }
+        if (plans[1]) {
+            cufftSetWorkArea(*plans[1],
+                             usmWorkspace + get_plan0_workspace_size_bytes() / sizeof(scalar_type));
+        }
+    }
+
+    void set_buffer_workspace(cufftHandle plan, sycl::buffer<scalar_type>& bufferWorkspace,
+                              std::size_t range, std::size_t offset) {
+        this->get_queue().submit([&](sycl::handler& cgh) {
+            auto workspace_acc =
+                bufferWorkspace.template get_access<sycl::access::mode::read_write>(cgh, range,
+                                                                                    offset);
+            cgh.host_task([=](sycl::interop_handle ih) {
+                auto stream = ih.get_native_queue<sycl::backend::ext_oneapi_cuda>();
+                auto result = cufftSetStream(plan, stream);
+                if (result != CUFFT_SUCCESS) {
+                    throw oneapi::mkl::exception(
+                        "dft/backends/cufft", "set_workspace",
+                        "cufftSetStream returned " + std::to_string(result));
+                }
+                auto workspace_native = reinterpret_cast<scalar_type*>(
+                    ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(workspace_acc));
+                cufftSetWorkArea(plan, workspace_native);
+            });
+        });
+        this->get_queue().wait_and_throw();
+    }
+
+    virtual void set_workspace(sycl::buffer<scalar_type>& bufferWorkspace) override {
+        this->external_workspace_helper_.set_workspace_throw(*this, bufferWorkspace);
+        std::size_t plan0_count =
+            static_cast<std::size_t>(get_plan0_workspace_size_bytes()) / sizeof(scalar_type);
+        std::size_t total_workspace_count =
+            static_cast<std::size_t>(this->get_workspace_external_bytes()) / sizeof(scalar_type);
+        std::size_t plan1_count = total_workspace_count - plan0_count;
+        buffer_workspace = bufferWorkspace;
+        if (plans[0]) {
+            set_buffer_workspace(*plans[0], bufferWorkspace, plan0_count, 0);
+        }
+        if (plans[1]) {
+            set_buffer_workspace(*plans[1], bufferWorkspace, plan1_count, plan0_count);
+        }
+    }
+
+    std::int64_t get_plan_workspace_size_bytes(cufftHandle handle) {
+        std::size_t size = 0;
+        cufftGetSize(*plans[0], &size);
+        std::int64_t padded_size = static_cast<int64_t>(size);
+        return padded_size;
+    }
+
+    // Separate workspaces are needed for the forward and backward plans. Because the plans[1]'s workspace is offset
+    // by the size of plans[0]'s workspace, we need to be able to get plans[0]'s size individually.
+    std::int64_t get_plan0_workspace_size_bytes() {
+        if (!plans[0]) {
+            return 0;
+        }
+        return get_plan_workspace_size_bytes(*plans[0]);
+    }
+
+    virtual std::int64_t get_workspace_external_bytes_impl() override {
+        std::int64_t size = plans[1] ? get_plan_workspace_size_bytes(*plans[1]) : 0;
+        return size + get_plan0_workspace_size_bytes();
+    };
 
 #define BACKEND cufft
 #include "../backend_compute_signature.cxx"

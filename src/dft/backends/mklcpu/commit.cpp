@@ -45,7 +45,7 @@ namespace detail {
 template <dft::detail::precision prec, dft::detail::domain dom>
 commit_derived_impl<prec, dom>::commit_derived_impl(
     sycl::queue queue, const dft::detail::dft_values<prec, dom>& config_values)
-        : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::mklcpu) {
+        : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::mklcpu, config_values) {
     // create the descriptor once for the lifetime of the descriptor class
     DFT_ERROR status[2] = { DFTI_BAD_DESCRIPTOR, DFTI_BAD_DESCRIPTOR };
 

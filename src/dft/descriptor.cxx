@@ -114,6 +114,12 @@ void descriptor<prec, dom>::set_value(config_param param, ...) {
         case config_param::WORKSPACE:
             detail::set_value<config_param::WORKSPACE>(values_, va_arg(vl, config_value));
             break;
+        case config_param::WORKSPACE_PLACEMENT:
+            detail::set_value<config_param::WORKSPACE_PLACEMENT>(values_, va_arg(vl, config_value));
+            break;
+        case config_param::WORKSPACE_EXTERNAL_BYTES:
+            throw mkl::invalid_argument("DFT", "set_value", "Read-only parameter.");
+            break;
         case config_param::PACKED_FORMAT:
             detail::set_value<config_param::PACKED_FORMAT>(values_, va_arg(vl, config_value));
             break;
@@ -148,6 +154,7 @@ descriptor<prec, dom>::descriptor(std::vector<std::int64_t> dimensions) {
     values_.real_storage = config_value::REAL_REAL;
     values_.conj_even_storage = config_value::COMPLEX_COMPLEX;
     values_.workspace = config_value::ALLOW;
+    values_.workspace_placement = config_value::WORKSPACE_AUTOMATIC;
     values_.ordering = config_value::ORDERED;
     values_.transpose = false;
     values_.packed_format = config_value::CCE_FORMAT;
@@ -214,6 +221,19 @@ void descriptor<prec, dom>::get_value(config_param param, ...) const {
         case config_param::FWD_DISTANCE: *va_arg(vl, std::int64_t*) = values_.fwd_dist; break;
         case config_param::BWD_DISTANCE: *va_arg(vl, std::int64_t*) = values_.bwd_dist; break;
         case config_param::WORKSPACE: *va_arg(vl, config_value*) = values_.workspace; break;
+        case config_param::WORKSPACE_PLACEMENT:
+            *va_arg(vl, config_value*) = values_.workspace_placement;
+            break;
+        case config_param::WORKSPACE_EXTERNAL_BYTES:
+            if (!pimpl_) {
+                throw mkl::invalid_argument(
+                    "DFT", "get_value",
+                    "Cannot query WORKSPACE_EXTERNAL_BYTES on uncommitted descriptor.");
+            }
+            else {
+                *va_arg(vl, std::int64_t*) = pimpl_->get_workspace_external_bytes();
+            }
+            break;
         case config_param::ORDERING: *va_arg(vl, config_value*) = values_.ordering; break;
         case config_param::TRANSPOSE: *va_arg(vl, int*) = values_.transpose; break;
         case config_param::PACKED_FORMAT: *va_arg(vl, config_value*) = values_.packed_format; break;
@@ -224,6 +244,28 @@ void descriptor<prec, dom>::get_value(config_param param, ...) const {
         default: throw mkl::invalid_argument("DFT", "get_value", "Invalid config_param argument.");
     }
     va_end(vl);
+}
+
+template <precision prec, domain dom>
+void descriptor<prec, dom>::set_workspace(scalar_type* usmWorkspace) {
+    if (pimpl_) {
+        return pimpl_->set_workspace(usmWorkspace);
+    }
+    else {
+        throw mkl::uninitialized("DFT", "set_workspace",
+                                 "Can only set workspace on committed descriptor.");
+    }
+}
+
+template <precision prec, domain dom>
+void descriptor<prec, dom>::set_workspace(sycl::buffer<scalar_type>& bufferWorkspace) {
+    if (pimpl_) {
+        return pimpl_->set_workspace(bufferWorkspace);
+    }
+    else {
+        throw mkl::uninitialized("DFT", "set_workspace",
+                                 "Can only set workspace on committed descriptor.");
+    }
 }
 
 template class descriptor<precision::SINGLE, domain::COMPLEX>;

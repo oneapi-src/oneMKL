@@ -27,6 +27,7 @@
 #endif
 
 #include "descriptor_impl.hpp"
+#include "external_workspace_helper.hpp"
 
 namespace oneapi::mkl {
 enum class backend;
@@ -48,7 +49,16 @@ public:
     using bwd_type = typename descriptor_info<descriptor_type>::backward_type;
     using scalar_type = typename descriptor_info<descriptor_type>::scalar_type;
 
-    commit_impl(sycl::queue queue, mkl::backend backend) : queue_(queue), backend_(backend) {}
+protected:
+    external_workspace_helper<prec, dom> external_workspace_helper_;
+
+public:
+    commit_impl(sycl::queue queue, mkl::backend backend,
+                const dft::detail::dft_values<prec, dom> &config_values)
+            : queue_(queue),
+              backend_(backend),
+              external_workspace_helper_(config_values.workspace_placement ==
+                                         dft::detail::config_value::WORKSPACE_EXTERNAL) {}
 
     // rule of three
     commit_impl(const commit_impl &other) = delete;
@@ -66,6 +76,20 @@ public:
     virtual void *get_handle() noexcept = 0;
 
     virtual void commit(const dft_values<prec, dom> &) = 0;
+
+    inline std::int64_t get_workspace_external_bytes() {
+        return external_workspace_helper_.get_rqd_workspace_bytes(*this);
+    };
+
+    // Set workspace by be overrided for any backend that actually uses the workspace.
+    // If these are overrided, get_workspace_external_bytes_impl must also be overrided.
+    // For backends that do not support external workspace, these functions do not need to be overrided.
+    virtual void set_workspace(scalar_type *usm_workspace) {
+        external_workspace_helper_.set_workspace_throw(*this, usm_workspace);
+    };
+    virtual void set_workspace(sycl::buffer<scalar_type> &buffer_workspace) {
+        external_workspace_helper_.set_workspace_throw(*this, buffer_workspace);
+    };
 
     virtual void forward_ip_cc(descriptor_type &desc, sycl::buffer<fwd_type, 1> &inout) = 0;
     virtual void forward_ip_rr(descriptor_type &desc, sycl::buffer<scalar_type, 1> &inout_re,
@@ -108,6 +132,33 @@ public:
     virtual sycl::event backward_op_rr(descriptor_type &desc, scalar_type *in_re,
                                        scalar_type *in_im, scalar_type *out_re, scalar_type *out_im,
                                        const std::vector<sycl::event> &dependencies) = 0;
+
+    /** For compute calls, throw errors for the external workspace as required.
+     * @tparam ArgTs The non-descriptor arg(s) for the compute call. First one is used to check
+     * buffer or USM call.
+     * @param function_name The function name to user in generated exceptions.
+    */
+    template <typename... ArgTs>
+    inline void compute_call_throw(const char *function_name) {
+        external_workspace_helper_.template compute_call_throw<ArgTs...>(function_name);
+    }
+
+    /** Create an accessor out of the workspace buffer when required, to ensure correct dependency
+     *  management for the buffer. To be used by backends that don't natively support sycl::buffers.
+     * @param function_name The function name to user in generated exceptions.
+     * @param cgh The command group handler to associate the accessor with.
+    */
+    inline void get_workspace_buffer_access_if_rqd(const char *function_name, sycl::handler &cgh) {
+        external_workspace_helper_.get_workspace_buffer_access_if_rqd(function_name, cgh);
+    }
+
+protected:
+    friend class external_workspace_helper<prec, dom>;
+
+    // This must be reimplemented for backends that support external workspaces.
+    virtual std::int64_t get_workspace_external_bytes_impl() {
+        return 0;
+    };
 };
 
 } // namespace oneapi::mkl::dft::detail

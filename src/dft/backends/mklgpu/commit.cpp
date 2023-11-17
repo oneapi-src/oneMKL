@@ -54,10 +54,12 @@ private:
     static constexpr dft::precision mklgpu_prec = to_mklgpu(prec);
     static constexpr dft::domain mklgpu_dom = to_mklgpu(dom);
     using mklgpu_descriptor_t = dft::descriptor<mklgpu_prec, mklgpu_dom>;
+    using scalar_type = typename dft::detail::commit_impl<prec, dom>::scalar_type;
 
 public:
     mklgpu_commit(sycl::queue queue, const dft::detail::dft_values<prec, dom>& config_values)
-            : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::mklgpu),
+            : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::mklgpu,
+                                                               config_values),
               handle(config_values.dimensions) {
         // MKLGPU does not throw an informative exception for the following:
         if constexpr (prec == dft::detail::precision::DOUBLE) {
@@ -84,6 +86,16 @@ public:
     }
 
     ~mklgpu_commit() override = default;
+
+    virtual void set_workspace(scalar_type* usmWorkspace) override {
+        this->external_workspace_helper_.set_workspace_throw(*this, usmWorkspace);
+        handle.set_workspace(usmWorkspace);
+    }
+
+    virtual void set_workspace(sycl::buffer<scalar_type>& bufferWorkspace) override {
+        this->external_workspace_helper_.set_workspace_throw(*this, bufferWorkspace);
+        handle.set_workspace(bufferWorkspace);
+    }
 
 #define BACKEND mklgpu
 #include "../backend_compute_signature.cxx"
@@ -122,7 +134,12 @@ private:
         desc.set_value(backend_param::OUTPUT_STRIDES, config.output_strides.data());
         desc.set_value(backend_param::FWD_DISTANCE, config.fwd_dist);
         desc.set_value(backend_param::BWD_DISTANCE, config.bwd_dist);
-        // Setting the workspace causes an FFT_INVALID_DESCRIPTOR.
+        if (config.workspace_placement == dft::detail::config_value::WORKSPACE_EXTERNAL) {
+            // Setting WORKSPACE_INTERNAL (default) causes FFT_INVALID_DESCRIPTOR.
+            desc.set_value(backend_param::WORKSPACE,
+                           to_mklgpu_config_value<onemkl_param::WORKSPACE_PLACEMENT>(
+                               config.workspace_placement));
+        }
         // Setting the ordering causes an FFT_INVALID_DESCRIPTOR. Check that default is used:
         if (config.ordering != dft::detail::config_value::ORDERED) {
             throw mkl::invalid_argument("dft/backends/mklgpu", "commit",
@@ -133,6 +150,13 @@ private:
             throw mkl::invalid_argument("dft/backends/mklgpu", "commit",
                                         "MKLGPU only supports non-transposed.");
         }
+    }
+
+    // This is called by the workspace_helper, and is not part of the user API.
+    virtual std::int64_t get_workspace_external_bytes_impl() override {
+        std::size_t workspaceSize = 0;
+        handle.get_value(dft::config_param::WORKSPACE_BYTES, &workspaceSize);
+        return static_cast<std::int64_t>(workspaceSize);
     }
 };
 } // namespace detail

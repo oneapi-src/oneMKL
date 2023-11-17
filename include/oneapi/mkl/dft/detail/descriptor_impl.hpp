@@ -45,6 +45,9 @@ inline commit_impl<prec, dom>* get_commit(descriptor<prec, dom>& desc);
 
 template <precision prec, domain dom>
 class descriptor {
+private:
+    using scalar_type = typename descriptor_info<descriptor>::scalar_type;
+
 public:
     // Syntax for 1-dimensional DFT
     descriptor(std::int64_t length);
@@ -91,6 +94,10 @@ public:
     const dft_values<prec, dom>& get_values() const noexcept {
         return values_;
     };
+
+    void set_workspace(scalar_type* usmWorkspace);
+
+    void set_workspace(sycl::buffer<scalar_type>& bufferWorkspace);
 
 private:
     // Has a value when the descriptor is committed.
