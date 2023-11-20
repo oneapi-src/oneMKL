@@ -53,6 +53,17 @@
             EXPECT_EQ(res, test_passed); \
     } while (0);
 
+// GTEST_SKIP stops the execution of the program.
+// This macro lets a test use multiple EXPECT_TRUE_OR_FUTURE_SKIP and mark a test as skipped only once at the end.
+#define EXPECT_TRUE_OR_FUTURE_SKIP(a, skip) \
+    do {                                    \
+        int res = a;                        \
+        if (res == test_skipped)            \
+            skip = true;                    \
+        else                                \
+            EXPECT_EQ(res, test_passed);    \
+    } while (0);
+
 #define CHECK_DOUBLE_ON_DEVICE(d)                                        \
     if (d->get_info<sycl::info::device::double_fp_config>().size() == 0) \
     GTEST_SKIP() << "Double precision is not supported on the device"

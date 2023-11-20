@@ -136,7 +136,7 @@ class SparseTrsvBufferTests : public ::testing::TestWithParam<sycl::device *> {}
  * @param transpose_val Transpose value for the input matrix
  */
 template <typename fpType>
-void test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val) {
+bool test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val) {
     double density_A_matrix = 0.144;
     oneapi::mkl::index_base index_zero = oneapi::mkl::index_base::zero;
     oneapi::mkl::uplo lower = oneapi::mkl::uplo::lower;
@@ -144,55 +144,86 @@ void test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val) {
     int m = 277;
     bool use_optimize = true;
 
+    bool skip = false;
     // Basic test
-    EXPECT_TRUEORSKIP(test<fpType>(dev, m, density_A_matrix, index_zero, lower, transpose_val,
-                                   nonunit, use_optimize));
+    EXPECT_TRUE_OR_FUTURE_SKIP(test<fpType>(dev, m, density_A_matrix, index_zero, lower,
+                                            transpose_val, nonunit, use_optimize),
+                               skip);
     // Test index_base 1
-    EXPECT_TRUEORSKIP(test<fpType>(dev, m, density_A_matrix, oneapi::mkl::index_base::one, lower,
-                                   transpose_val, nonunit, use_optimize));
+    EXPECT_TRUE_OR_FUTURE_SKIP(test<fpType>(dev, m, density_A_matrix, oneapi::mkl::index_base::one,
+                                            lower, transpose_val, nonunit, use_optimize),
+                               skip);
     // Test upper triangular matrix
-    EXPECT_TRUEORSKIP(test<fpType>(dev, m, density_A_matrix, index_zero, oneapi::mkl::uplo::upper,
-                                   transpose_val, nonunit, use_optimize));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test<fpType>(dev, m, density_A_matrix, index_zero, oneapi::mkl::uplo::upper, transpose_val,
+                     nonunit, use_optimize),
+        skip);
     // Test unit diagonal matrix
-    EXPECT_TRUEORSKIP(test<fpType>(dev, m, density_A_matrix, index_zero, lower, transpose_val,
-                                   oneapi::mkl::diag::unit, use_optimize));
+    EXPECT_TRUE_OR_FUTURE_SKIP(test<fpType>(dev, m, density_A_matrix, index_zero, lower,
+                                            transpose_val, oneapi::mkl::diag::unit, use_optimize),
+                               skip);
     // Test int64 indices
-    EXPECT_TRUEORSKIP(test<fpType>(dev, 15L, density_A_matrix, index_zero, lower, transpose_val,
-                                   nonunit, use_optimize));
+    EXPECT_TRUE_OR_FUTURE_SKIP(test<fpType>(dev, 15L, density_A_matrix, index_zero, lower,
+                                            transpose_val, nonunit, use_optimize),
+                               skip);
     // Test lower without optimize_trsv
-    EXPECT_TRUEORSKIP(test<fpType>(dev, m, density_A_matrix, index_zero, lower, transpose_val,
-                                    nonunit, false));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test<fpType>(dev, m, density_A_matrix, index_zero, lower, transpose_val, nonunit, false),
+        skip);
     // Test upper without optimize_trsv
-    EXPECT_TRUEORSKIP(test<fpType>(dev, m, density_A_matrix, index_zero, oneapi::mkl::uplo::upper, transpose_val,
-                                    nonunit, false));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test<fpType>(dev, m, density_A_matrix, index_zero, oneapi::mkl::uplo::upper, transpose_val,
+                     nonunit, false),
+        skip);
+    return skip;
 }
 
 TEST_P(SparseTrsvBufferTests, RealSinglePrecision) {
     using fpType = float;
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
+    bool skip = false;
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
+    if (skip) {
+        // Mark that some tests were skipped
+        GTEST_SKIP();
+    }
 }
 
 TEST_P(SparseTrsvBufferTests, RealDoublePrecision) {
     using fpType = double;
     CHECK_DOUBLE_ON_DEVICE(GetParam());
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
+    bool skip = false;
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
+    if (skip) {
+        // Mark that some tests were skipped
+        GTEST_SKIP();
+    }
 }
 
 TEST_P(SparseTrsvBufferTests, ComplexSinglePrecision) {
     using fpType = std::complex<float>;
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::conjtrans);
+    bool skip = false;
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::conjtrans);
+    if (skip) {
+        // Mark that some tests were skipped
+        GTEST_SKIP();
+    }
 }
 
 TEST_P(SparseTrsvBufferTests, ComplexDoublePrecision) {
     using fpType = std::complex<double>;
     CHECK_DOUBLE_ON_DEVICE(GetParam());
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::conjtrans);
+    bool skip = false;
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::conjtrans);
+    if (skip) {
+        // Mark that some tests were skipped
+        GTEST_SKIP();
+    }
 }
 
 INSTANTIATE_TEST_SUITE_P(SparseTrsvBufferTestSuite, SparseTrsvBufferTests,

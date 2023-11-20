@@ -154,65 +154,94 @@ class SparseGemvUsmTests : public ::testing::TestWithParam<sycl::device *> {};
  * @param transpose_val Transpose value for the input matrix
  */
 template <typename fpType>
-void test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val) {
+bool test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val) {
     double density_A_matrix = 0.8;
     fpType fp_zero = set_fp_value<fpType>()(0.f, 0.f);
     fpType fp_one = set_fp_value<fpType>()(1.f, 0.f);
     oneapi::mkl::index_base index_zero = oneapi::mkl::index_base::zero;
     bool use_optimize = true;
 
+    bool skip = false;
     // Basic test
-    EXPECT_TRUEORSKIP(test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_one, fp_zero,
-                           use_optimize));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_one, fp_zero, use_optimize),
+        skip);
     // Test index_base 1
-    EXPECT_TRUEORSKIP(test(dev, 4, 6, density_A_matrix, oneapi::mkl::index_base::one, transpose_val,
-                           fp_one, fp_zero, use_optimize));
+    EXPECT_TRUE_OR_FUTURE_SKIP(test(dev, 4, 6, density_A_matrix, oneapi::mkl::index_base::one,
+                                    transpose_val, fp_one, fp_zero, use_optimize),
+                               skip);
     // Test non-default alpha
-    EXPECT_TRUEORSKIP(test(dev, 4, 6, density_A_matrix, index_zero, transpose_val,
-                           set_fp_value<fpType>()(2.f, 1.5f), fp_zero, use_optimize));
+    EXPECT_TRUE_OR_FUTURE_SKIP(test(dev, 4, 6, density_A_matrix, index_zero, transpose_val,
+                                    set_fp_value<fpType>()(2.f, 1.5f), fp_zero, use_optimize),
+                               skip);
     // Test non-default beta
-    EXPECT_TRUEORSKIP(test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_one,
-                           set_fp_value<fpType>()(3.2f, 1.f), use_optimize));
+    EXPECT_TRUE_OR_FUTURE_SKIP(test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_one,
+                                    set_fp_value<fpType>()(3.2f, 1.f), use_optimize),
+                               skip);
     // Test 0 alpha
-    EXPECT_TRUEORSKIP(test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_zero, fp_one,
-                           use_optimize));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_zero, fp_one, use_optimize),
+        skip);
     // Test 0 alpha and beta
-    EXPECT_TRUEORSKIP(test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_zero, fp_zero,
-                           use_optimize));
+    EXPECT_TRUE_OR_FUTURE_SKIP(test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_zero,
+                                    fp_zero, use_optimize),
+                               skip);
     // Test int64 indices
-    EXPECT_TRUEORSKIP(test(dev, 27L, 13L, density_A_matrix, index_zero, transpose_val, fp_one,
-                           fp_one, use_optimize));
+    EXPECT_TRUE_OR_FUTURE_SKIP(test(dev, 27L, 13L, density_A_matrix, index_zero, transpose_val,
+                                    fp_one, fp_one, use_optimize),
+                               skip);
     // Test without optimize_gemv
-    EXPECT_TRUEORSKIP(
-        test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_one, fp_zero, false));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_one, fp_zero, false), skip);
+    return skip;
 }
 
 TEST_P(SparseGemvUsmTests, RealSinglePrecision) {
     using fpType = float;
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
+    bool skip = false;
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
+    if (skip) {
+        // Mark that some tests were skipped
+        GTEST_SKIP();
+    }
 }
 
 TEST_P(SparseGemvUsmTests, RealDoublePrecision) {
     using fpType = double;
     CHECK_DOUBLE_ON_DEVICE(GetParam());
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
+    bool skip = false;
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
+    if (skip) {
+        // Mark that some tests were skipped
+        GTEST_SKIP();
+    }
 }
 
 TEST_P(SparseGemvUsmTests, ComplexSinglePrecision) {
     using fpType = std::complex<float>;
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::conjtrans);
+    bool skip = false;
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::conjtrans);
+    if (skip) {
+        // Mark that some tests were skipped
+        GTEST_SKIP();
+    }
 }
 
 TEST_P(SparseGemvUsmTests, ComplexDoublePrecision) {
     using fpType = std::complex<double>;
     CHECK_DOUBLE_ON_DEVICE(GetParam());
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
-    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::conjtrans);
+    bool skip = false;
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
+    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::conjtrans);
+    if (skip) {
+        // Mark that some tests were skipped
+        GTEST_SKIP();
+    }
 }
 
 INSTANTIATE_TEST_SUITE_P(SparseGemvUsmTestSuite, SparseGemvUsmTests, testing::ValuesIn(devices),
