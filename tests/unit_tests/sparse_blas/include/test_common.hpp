@@ -20,9 +20,11 @@
 #ifndef _TEST_COMMON_HPP__
 #define _TEST_COMMON_HPP__
 
+#include <complex>
 #include <iostream>
 #include <memory>
 #include <limits>
+#include <vector>
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>

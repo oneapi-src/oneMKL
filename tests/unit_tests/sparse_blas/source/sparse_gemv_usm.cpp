@@ -17,11 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#include <algorithm>
 #include <complex>
-#include <cstdlib>
 #include <iostream>
-#include <limits>
 #include <vector>
 
 #if __has_include(<sycl/sycl.hpp>)
