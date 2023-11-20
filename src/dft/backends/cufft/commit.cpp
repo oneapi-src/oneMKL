@@ -51,8 +51,6 @@ private:
     // plans[0] is forward, plans[1] is backward
     std::array<std::optional<cufftHandle>, 2> plans = { std::nullopt, std::nullopt };
     std::array<std::int64_t, 2> offsets;
-    // For using a buffer external workspace, the buffer object itself needs to be kept between compute calls such that accessors can be used.
-    std::optional<sycl::buffer<scalar_type, 1>> buffer_workspace;
 
 public:
     cufft_commit(sycl::queue& queue, const dft::detail::dft_values<prec, dom>& config_values)
@@ -94,9 +92,10 @@ public:
 
     void commit(const dft::detail::dft_values<prec, dom>& config_values) override {
         // this could be a recommit
-        this->external_workspace_helper_.reset(
-            config_values.workspace_placement ==
-            oneapi::mkl::dft::detail::config_value::WORKSPACE_EXTERNAL);
+        this->external_workspace_helper_ =
+            oneapi::mkl::dft::detail::external_workspace_helper<prec, dom>(
+                config_values.workspace_placement ==
+                oneapi::mkl::dft::detail::config_value::WORKSPACE_EXTERNAL);
         clean_plans();
 
         if (config_values.fwd_scale != 1.0 || config_values.bwd_scale != 1.0) {
@@ -332,8 +331,8 @@ public:
         clean_plans();
     }
 
-    static void apply_external_workspace_setting(cufftHandle& handle,
-                                                 const config_value& workspace_setting) {
+    static void apply_external_workspace_setting(cufftHandle handle,
+                                                 config_value workspace_setting) {
         if (workspace_setting == config_value::WORKSPACE_EXTERNAL) {
             auto res = cufftSetAutoAllocation(handle, 0);
             if (res != CUFFT_SUCCESS) {
@@ -351,52 +350,53 @@ public:
         return offsets;
     }
 
-    virtual void set_workspace(scalar_type* usmWorkspace) override {
-        this->external_workspace_helper_.set_workspace_throw(*this, usmWorkspace);
+    virtual void set_workspace(scalar_type* usm_workspace) override {
+        this->external_workspace_helper_.set_workspace_throw(*this, usm_workspace);
         if (plans[0]) {
-            cufftSetWorkArea(*plans[0], usmWorkspace);
+            cufftSetWorkArea(*plans[0], usm_workspace);
         }
         if (plans[1]) {
-            cufftSetWorkArea(*plans[1],
-                             usmWorkspace + get_plan0_workspace_size_bytes() / sizeof(scalar_type));
+            cufftSetWorkArea(
+                *plans[1], usm_workspace + get_plan0_workspace_size_bytes() / sizeof(scalar_type));
         }
     }
 
-    void set_buffer_workspace(cufftHandle plan, sycl::buffer<scalar_type>& bufferWorkspace,
+    void set_buffer_workspace(cufftHandle plan, sycl::buffer<scalar_type>& buffer_workspace,
                               std::size_t range, std::size_t offset) {
-        this->get_queue().submit([&](sycl::handler& cgh) {
-            auto workspace_acc =
-                bufferWorkspace.template get_access<sycl::access::mode::read_write>(cgh, range,
-                                                                                    offset);
-            cgh.host_task([=](sycl::interop_handle ih) {
-                auto stream = ih.get_native_queue<sycl::backend::ext_oneapi_cuda>();
-                auto result = cufftSetStream(plan, stream);
-                if (result != CUFFT_SUCCESS) {
-                    throw oneapi::mkl::exception(
-                        "dft/backends/cufft", "set_workspace",
-                        "cufftSetStream returned " + std::to_string(result));
-                }
-                auto workspace_native = reinterpret_cast<scalar_type*>(
-                    ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(workspace_acc));
-                cufftSetWorkArea(plan, workspace_native);
-            });
-        });
-        this->get_queue().wait_and_throw();
+        this->get_queue()
+            .submit([&](sycl::handler& cgh) {
+                auto workspace_acc =
+                    buffer_workspace.template get_access<sycl::access::mode::read_write>(cgh, range,
+                                                                                         offset);
+                cgh.host_task([=](sycl::interop_handle ih) {
+                    auto stream = ih.get_native_queue<sycl::backend::ext_oneapi_cuda>();
+                    auto result = cufftSetStream(plan, stream);
+                    if (result != CUFFT_SUCCESS) {
+                        throw oneapi::mkl::exception(
+                            "dft/backends/cufft", "set_workspace",
+                            "cufftSetStream returned " + std::to_string(result));
+                    }
+                    auto workspace_native = reinterpret_cast<scalar_type*>(
+                        ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(workspace_acc));
+                    cufftSetWorkArea(plan, workspace_native);
+                });
+            })
+            .wait_and_throw();
     }
 
-    virtual void set_workspace(sycl::buffer<scalar_type>& bufferWorkspace) override {
-        this->external_workspace_helper_.set_workspace_throw(*this, bufferWorkspace);
+    virtual void set_workspace(sycl::buffer<scalar_type>& buffer_workspace) override {
+        this->external_workspace_helper_.set_workspace_throw(*this, buffer_workspace);
         std::size_t plan0_count =
             static_cast<std::size_t>(get_plan0_workspace_size_bytes()) / sizeof(scalar_type);
         std::size_t total_workspace_count =
             static_cast<std::size_t>(this->get_workspace_external_bytes()) / sizeof(scalar_type);
         std::size_t plan1_count = total_workspace_count - plan0_count;
-        buffer_workspace = bufferWorkspace;
+        buffer_workspace = buffer_workspace;
         if (plans[0]) {
-            set_buffer_workspace(*plans[0], bufferWorkspace, plan0_count, 0);
+            set_buffer_workspace(*plans[0], buffer_workspace, plan0_count, 0);
         }
         if (plans[1]) {
-            set_buffer_workspace(*plans[1], bufferWorkspace, plan1_count, plan0_count);
+            set_buffer_workspace(*plans[1], buffer_workspace, plan1_count, plan0_count);
         }
     }
 

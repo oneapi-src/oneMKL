@@ -81,9 +81,9 @@ public:
         return external_workspace_helper_.get_rqd_workspace_bytes(*this);
     };
 
-    // Set workspace by be overrided for any backend that actually uses the workspace.
+    // set_workspace should be overrided for any backend that enables external workspaces.
     // If these are overrided, get_workspace_external_bytes_impl must also be overrided.
-    // For backends that do not support external workspace, these functions do not need to be overrided.
+    // For backends that do not support external workspaces, these functions do not need to be overrided.
     virtual void set_workspace(scalar_type *usm_workspace) {
         external_workspace_helper_.set_workspace_throw(*this, usm_workspace);
     };

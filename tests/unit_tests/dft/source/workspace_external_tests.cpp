@@ -36,7 +36,7 @@ extern std::vector<sycl::device*> devices;
 class WorkspaceExternalTests : public ::testing::TestWithParam<sycl::device*> {};
 
 template <oneapi::mkl::dft::precision prec, oneapi::mkl::dft::domain dom>
-int test_workspace_external_usm_impl(std::size_t dftSize, sycl::device* dev) {
+int test_workspace_external_usm_impl(std::size_t dft_size, sycl::device* dev) {
     using namespace oneapi::mkl::dft;
     using scalar_t = std::conditional_t<prec == precision::DOUBLE, double, float>;
     using forward_t = std::conditional_t<dom == domain::COMPLEX, std::complex<scalar_t>, scalar_t>;
@@ -46,7 +46,7 @@ int test_workspace_external_usm_impl(std::size_t dftSize, sycl::device* dev) {
     if (prec == precision::DOUBLE && !sycl_queue.get_device().has(sycl::aspect::fp64)) {
         return test_skipped;
     }
-    descriptor<prec, dom> desc(static_cast<std::int64_t>(dftSize));
+    descriptor<prec, dom> desc(static_cast<std::int64_t>(dft_size));
 
     desc.set_value(config_param::WORKSPACE_PLACEMENT, config_value::WORKSPACE_EXTERNAL);
     desc.set_value(config_param::PLACEMENT, config_value::NOT_INPLACE);
@@ -60,48 +60,47 @@ int test_workspace_external_usm_impl(std::size_t dftSize, sycl::device* dev) {
         static_cast<std::size_t>(workspace_bytes) / sizeof(scalar_t), sycl_queue);
     desc.set_workspace(workspace);
     // Generate data
-    std::vector<forward_t> hostFwd(static_cast<std::size_t>(dftSize));
-    std::size_t bwdSize = dom == domain::COMPLEX ? dftSize : dftSize / 2 + 1;
-    std::vector<backward_t> hostBwd(bwdSize);
-    rand_vector(hostFwd, dftSize);
+    std::vector<forward_t> host_fwd(static_cast<std::size_t>(dft_size));
+    std::size_t bwd_size = dom == domain::COMPLEX ? dft_size : dft_size / 2 + 1;
+    std::vector<backward_t> host_bwd(bwd_size);
+    rand_vector(host_fwd, dft_size);
 
     // Allocate enough memory that we don't have to worry about the domain.
-    forward_t* deviceFwd = sycl::malloc_device<forward_t>(dftSize, sycl_queue);
-    backward_t* deviceBwd = sycl::malloc_device<backward_t>(bwdSize, sycl_queue);
-    sycl_queue.copy(hostFwd.data(), deviceFwd, dftSize);
+    forward_t* device_fwd = sycl::malloc_device<forward_t>(dft_size, sycl_queue);
+    backward_t* deviceBwd = sycl::malloc_device<backward_t>(bwd_size, sycl_queue);
+    sycl_queue.copy(host_fwd.data(), device_fwd, dft_size);
     sycl_queue.wait_and_throw();
 
-    compute_forward<decltype(desc), forward_t, backward_t>(desc, deviceFwd, deviceBwd);
+    compute_forward<decltype(desc), forward_t, backward_t>(desc, device_fwd, deviceBwd);
     sycl_queue.wait_and_throw();
 
-    sycl_queue.copy(deviceBwd, hostBwd.data(), bwdSize);
+    sycl_queue.copy(deviceBwd, host_bwd.data(), bwd_size);
     sycl_queue.wait_and_throw();
 
     // To see external workspaces, larger sizes of DFT may be needed. Using the reference DFT with larger sizes is slow,
     // so use Parseval's theorum as a sanity check instead.
-    bool sanityCheckPasses = parseval_check(dftSize, hostFwd.data(), hostBwd.data());
+    bool sanityCheckPasses = parseval_check(dft_size, host_fwd.data(), host_bwd.data());
 
     if (sanityCheckPasses) {
-        sycl_queue.copy(hostFwd.data(), deviceFwd, dftSize);
+        sycl_queue.copy(host_fwd.data(), device_fwd, dft_size);
         sycl_queue.wait_and_throw();
-        compute_backward<decltype(desc), backward_t, forward_t>(desc, deviceBwd, deviceFwd);
+        compute_backward<decltype(desc), backward_t, forward_t>(desc, deviceBwd, device_fwd);
         sycl_queue.wait_and_throw();
-        sycl_queue.copy(deviceFwd, hostFwd.data(), dftSize);
+        sycl_queue.copy(device_fwd, host_fwd.data(), dft_size);
         sycl_queue.wait_and_throw();
         forward_t rescale =
-            static_cast<forward_t>(1) / static_cast<forward_t>(static_cast<scalar_t>(dftSize));
-        sanityCheckPasses = parseval_check(dftSize, hostFwd.data(), hostBwd.data(), rescale);
+            static_cast<forward_t>(1) / static_cast<forward_t>(static_cast<scalar_t>(dft_size));
+        sanityCheckPasses = parseval_check(dft_size, host_fwd.data(), host_bwd.data(), rescale);
     }
 
-    sycl::free(deviceFwd, sycl_queue);
+    sycl::free(device_fwd, sycl_queue);
     sycl::free(deviceBwd, sycl_queue);
     sycl::free(workspace, sycl_queue);
     return sanityCheckPasses ? !::testing::Test::HasFailure() : ::testing::Test::HasFailure();
-    ;
 }
 
 template <oneapi::mkl::dft::precision prec, oneapi::mkl::dft::domain dom>
-int test_workspace_external_buffer_impl(std::size_t dftSize, sycl::device* dev) {
+int test_workspace_external_buffer_impl(std::size_t dft_size, sycl::device* dev) {
     using namespace oneapi::mkl::dft;
     using scalar_t = std::conditional_t<prec == precision::DOUBLE, double, float>;
     using forward_t = std::conditional_t<dom == domain::COMPLEX, std::complex<scalar_t>, scalar_t>;
@@ -111,7 +110,7 @@ int test_workspace_external_buffer_impl(std::size_t dftSize, sycl::device* dev) 
     if (prec == precision::DOUBLE && !sycl_queue.get_device().has(sycl::aspect::fp64)) {
         return test_skipped;
     }
-    descriptor<prec, dom> desc(static_cast<std::int64_t>(dftSize));
+    descriptor<prec, dom> desc(static_cast<std::int64_t>(dft_size));
 
     desc.set_value(config_param::WORKSPACE_PLACEMENT, config_value::WORKSPACE_EXTERNAL);
     desc.set_value(config_param::PLACEMENT, config_value::NOT_INPLACE);
@@ -124,37 +123,37 @@ int test_workspace_external_buffer_impl(std::size_t dftSize, sycl::device* dev) 
     sycl::buffer<scalar_t> workspace(static_cast<std::size_t>(workspace_bytes) / sizeof(scalar_t));
     desc.set_workspace(workspace);
     // Generate data
-    std::vector<forward_t> hostFwd(static_cast<std::size_t>(dftSize));
-    std::size_t bwdSize = dom == domain::COMPLEX ? dftSize : dftSize / 2 + 1; // TODO: Check this!
-    std::vector<backward_t> hostBwd(bwdSize);
-    rand_vector(hostFwd, dftSize);
-    auto hostFwdCpy = hostFwd; // Some backends modify the input data (rocFFT).
+    std::vector<forward_t> host_fwd(static_cast<std::size_t>(dft_size));
+    std::size_t bwd_size =
+        dom == domain::COMPLEX ? dft_size : dft_size / 2 + 1; // TODO: Check this!
+    std::vector<backward_t> host_bwd(bwd_size);
+    rand_vector(host_fwd, dft_size);
+    auto host_fwdCpy = host_fwd; // Some backends modify the input data (rocFFT).
 
     {
-        sycl::buffer<forward_t> bufFwd(hostFwd);
-        sycl::buffer<backward_t> bufBwd(hostBwd);
-        compute_forward<decltype(desc), forward_t, backward_t>(desc, bufFwd, bufBwd);
+        sycl::buffer<forward_t> buf_fwd(host_fwd);
+        sycl::buffer<backward_t> buf_bwd(host_bwd);
+        compute_forward<decltype(desc), forward_t, backward_t>(desc, buf_fwd, buf_bwd);
     }
 
     // To see external workspaces, larger sizes of DFT may be needed. Using the reference DFT with larger sizes is slow,
     // so use Parseval's theorum as a sanity check instead.
-    bool sanityCheckPasses = parseval_check(dftSize, hostFwdCpy.data(), hostBwd.data());
+    bool sanityCheckPasses = parseval_check(dft_size, host_fwdCpy.data(), host_bwd.data());
 
     if (sanityCheckPasses) {
-        auto hostBwdCpy = hostBwd;
+        auto host_bwdCpy = host_bwd;
         {
-            sycl::buffer<forward_t> bufFwd(hostFwd);
-            sycl::buffer<backward_t> bufBwd(hostBwd);
-            compute_backward<decltype(desc), backward_t, forward_t>(desc, bufBwd, bufFwd);
+            sycl::buffer<forward_t> buf_fwd(host_fwd);
+            sycl::buffer<backward_t> buf_bwd(host_bwd);
+            compute_backward<decltype(desc), backward_t, forward_t>(desc, buf_bwd, buf_fwd);
             sycl_queue.wait_and_throw();
         }
         forward_t rescale =
-            static_cast<forward_t>(1) / static_cast<forward_t>(static_cast<scalar_t>(dftSize));
-        sanityCheckPasses = parseval_check(dftSize, hostFwd.data(), hostBwdCpy.data(), rescale);
+            static_cast<forward_t>(1) / static_cast<forward_t>(static_cast<scalar_t>(dft_size));
+        sanityCheckPasses = parseval_check(dft_size, host_fwd.data(), host_bwdCpy.data(), rescale);
     }
 
     return sanityCheckPasses ? !::testing::Test::HasFailure() : ::testing::Test::HasFailure();
-    ;
 }
 
 template <oneapi::mkl::dft::precision prec, oneapi::mkl::dft::domain dom>

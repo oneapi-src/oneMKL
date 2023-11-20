@@ -71,9 +71,10 @@ public:
     }
 
     virtual void commit(const dft::detail::dft_values<prec, dom>& config_values) override {
-        this->external_workspace_helper_.reset(
-            config_values.workspace_placement ==
-            oneapi::mkl::dft::detail::config_value::WORKSPACE_EXTERNAL);
+        this->external_workspace_helper_ =
+            oneapi::mkl::dft::detail::external_workspace_helper<prec, dom>(
+                config_values.workspace_placement ==
+                oneapi::mkl::dft::detail::config_value::WORKSPACE_EXTERNAL);
         set_value(handle, config_values);
         try {
             handle.commit(this->get_queue());

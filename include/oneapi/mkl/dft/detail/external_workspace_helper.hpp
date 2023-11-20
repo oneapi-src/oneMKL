@@ -63,24 +63,16 @@ private:
 public:
     /** Constructor.
      *  @param ext_workspace_rqd True if WORKSPACE_PLACEMENT is set to WORKSPACE_EXTERNAL.
-     *  @param backend_rqd_bytes_fn The function to call to obtain the backend's required workspace size.
     */
-    inline constexpr external_workspace_helper(bool ext_workspace_rqd)
+    constexpr external_workspace_helper(bool ext_workspace_rqd)
             : m_ext_workspace_rqd(ext_workspace_rqd),
               m_workspace_type(ext_workspace_type::not_set),
               m_workspace_bytes_rqd(-1) {}
 
-    /** Reset. May be required for changing descriptor settings before recommitting.
-     *  @param ext_workspace_rqd True if WORKSPACE_PLACEMENT is set to WORKSPACE_EXTERNAL.
-    */
-    inline void reset(bool ext_workspace_rqd) {
-        *this = external_workspace_helper(ext_workspace_rqd);
-    }
-
     /** Get the required workspace bytes for the backend's external workspace.
      *  @param committed_desc The backend's native descriptor.
     */
-    inline std::int64_t get_rqd_workspace_bytes(commit_impl_t& committed_desc) {
+    std::int64_t get_rqd_workspace_bytes(commit_impl_t& committed_desc) {
         if (m_workspace_bytes_rqd == -1) {
             m_workspace_bytes_rqd = committed_desc.get_workspace_external_bytes_impl();
         }
@@ -91,11 +83,10 @@ public:
      *  @param committed_desc The backend's native descriptor.
      *  @param usm_workspace A USM allocation for the workspace. Assumed to be sufficeintly large.
     */
-    inline void set_workspace_throw(commit_impl_t& committed_desc, scalar_t* usm_workspace) {
+    void set_workspace_throw(commit_impl_t& committed_desc, scalar_t* usm_workspace) {
         if (get_rqd_workspace_bytes(committed_desc) > 0 && usm_workspace == nullptr) {
             throw mkl::invalid_argument("DFT", "set_workspace",
-                                        "Provided workspace is too small (nullptr)");
-            return;
+                                        "Backend expected a non-null workspace pointer.");
         }
         m_ext_workspace_rqd = true;
         m_workspace_type = ext_workspace_type::usm;
@@ -105,8 +96,8 @@ public:
      *  @param committed_desc The backend's native descriptor.
      *  @param buffer_workspace A buffer for the workspace
     */
-    inline void set_workspace_throw(commit_impl_t& committed_desc,
-                                    sycl::buffer<scalar_t>& buffer_workspace) {
+    void set_workspace_throw(commit_impl_t& committed_desc,
+                             sycl::buffer<scalar_t>& buffer_workspace) {
         if (static_cast<std::size_t>(get_rqd_workspace_bytes(committed_desc)) / sizeof(scalar_t) >
             buffer_workspace.size()) {
             throw mkl::invalid_argument("DFT", "set_workspace", "Provided workspace is too small");
@@ -123,7 +114,7 @@ public:
     }
 
     template <typename FirstArgT, typename... ArgTs>
-    inline void compute_call_throw(const char* function_name) const {
+    void compute_call_throw(const char* function_name) const {
         constexpr bool is_pointer = std::is_pointer_v<std::remove_reference_t<FirstArgT>>;
         if constexpr (is_pointer) {
             usm_compute_call_throw(function_name);
@@ -133,17 +124,18 @@ public:
         }
     }
 
-    inline void get_workspace_buffer_access_if_rqd(const char* function_name, sycl::handler& cgh) {
+    void get_workspace_buffer_access_if_rqd(const char* function_name, sycl::handler& cgh) {
         if (m_ext_workspace_rqd) {
             if (m_workspace_buffer) {
                 if (m_workspace_buffer->size()) {
                     m_workspace_buffer->template get_access<sycl::access::mode::read_write>(cgh);
                 }
-                return;
             }
-            throw mkl::invalid_argument(
-                "DFT", function_name,
-                "Buffer external workspace must be used with buffer compute calls");
+            else {
+                throw mkl::invalid_argument(
+                    "DFT", function_name,
+                    "Buffer external workspace must be used with buffer compute calls");
+            }
         }
     }
 
@@ -151,7 +143,7 @@ private:
     /** When a compute function using USM arguments is called, throw an exception if an incorrect workspace has been set.
      *  @param function_name The name of the function to use in the error.
     */
-    inline void usm_compute_call_throw(const char* function_name) const {
+    void usm_compute_call_throw(const char* function_name) const {
         if (m_ext_workspace_rqd && m_workspace_type != ext_workspace_type::usm) {
             throw mkl::invalid_argument(
                 "DFT", function_name, "USM external workspace must be used with usm compute calls");
@@ -161,7 +153,7 @@ private:
     /** When a compute function using buffer arguments is called, throw an exception if an incorrect workspace has been set.
      *  @param function_name The name of the function to use in the error.
     */
-    inline void buffer_compute_call_throw(const char* function_name) const {
+    void buffer_compute_call_throw(const char* function_name) const {
         if (m_ext_workspace_rqd && m_workspace_type != ext_workspace_type::buffer) {
             throw mkl::invalid_argument(
                 "DFT", function_name,

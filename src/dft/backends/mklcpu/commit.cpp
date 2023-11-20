@@ -79,9 +79,10 @@ commit_derived_impl<prec, dom>::~commit_derived_impl() {
 template <dft::detail::precision prec, dft::detail::domain dom>
 void commit_derived_impl<prec, dom>::commit(
     const dft::detail::dft_values<prec, dom>& config_values) {
-    this->external_workspace_helper_.reset(
-        config_values.workspace_placement ==
-        oneapi::mkl::dft::detail::config_value::WORKSPACE_EXTERNAL);
+    this->external_workspace_helper_ =
+        oneapi::mkl::dft::detail::external_workspace_helper<prec, dom>(
+            config_values.workspace_placement ==
+            oneapi::mkl::dft::detail::config_value::WORKSPACE_EXTERNAL);
     set_value(bidirection_handle.data(), config_values);
 
     this->get_queue()
