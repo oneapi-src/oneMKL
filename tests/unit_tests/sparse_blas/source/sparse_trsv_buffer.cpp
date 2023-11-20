@@ -137,11 +137,11 @@ class SparseTrsvBufferTests : public ::testing::TestWithParam<sycl::device *> {}
  */
 template <typename fpType>
 void test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val) {
-    double density_A_matrix = 0.8;
+    double density_A_matrix = 0.144;
     oneapi::mkl::index_base index_zero = oneapi::mkl::index_base::zero;
     oneapi::mkl::uplo lower = oneapi::mkl::uplo::lower;
     oneapi::mkl::diag nonunit = oneapi::mkl::diag::nonunit;
-    int m = 5;
+    int m = 277;
     bool use_optimize = true;
 
     // Basic test
