@@ -67,8 +67,12 @@ int test(sycl::device *dev, intType m, double density_A_matrix, oneapi::mkl::ind
     std::vector<fpType> y_host(mu, -2.0f);
     std::vector<fpType> y_ref_host(y_host);
 
-    // Shuffle ordering of column indices/values to test sortedness
-    shuffle_data(ia_host.data(), ja_host.data(), a_host.data(), mu);
+    // Intel oneMKL does not support unsorted data if
+    // `sparse::optimize_trsv()` is not called first.
+    if (use_optimize) {
+      // Shuffle ordering of column indices/values to test sortedness
+      shuffle_data(ia_host.data(), ja_host.data(), a_host.data(), mu);
+    }
 
     auto ia_usm_uptr = malloc_device_uptr<intType>(main_queue, ia_host.size());
     auto ja_usm_uptr = malloc_device_uptr<intType>(main_queue, ja_host.size());
@@ -180,11 +184,9 @@ void test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val) {
     // Test int64 indices
     EXPECT_TRUEORSKIP(test<fpType>(dev, 15L, density_A_matrix, index_zero, lower, transpose_val,
                                    nonunit, use_optimize));
-    if (!dev->is_cpu()) {
-        // Test without optimize_trsv
-        EXPECT_TRUEORSKIP(test<fpType>(dev, m, density_A_matrix, index_zero, lower, transpose_val,
-                                       nonunit, false));
-    }
+    // Test without optimize_trsv
+    EXPECT_TRUEORSKIP(test<fpType>(dev, m, density_A_matrix, index_zero, lower, transpose_val,
+                                    nonunit, false));
 }
 
 TEST_P(SparseTrsvUsmTests, RealSinglePrecision) {
