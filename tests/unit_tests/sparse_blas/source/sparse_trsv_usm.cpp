@@ -184,8 +184,11 @@ void test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val) {
     // Test int64 indices
     EXPECT_TRUEORSKIP(test<fpType>(dev, 15L, density_A_matrix, index_zero, lower, transpose_val,
                                    nonunit, use_optimize));
-    // Test without optimize_trsv
+    // Test lower without optimize_trsv
     EXPECT_TRUEORSKIP(test<fpType>(dev, m, density_A_matrix, index_zero, lower, transpose_val,
+                                    nonunit, false));
+    // Test upper without optimize_trsv
+    EXPECT_TRUEORSKIP(test<fpType>(dev, m, density_A_matrix, index_zero, oneapi::mkl::uplo::upper, transpose_val,
                                     nonunit, false));
 }
 
