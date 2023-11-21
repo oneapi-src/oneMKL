@@ -51,9 +51,8 @@ sycl::event optimize_trsv(sycl::queue& queue, uplo uplo_val, transpose transpose
                           detail::matrix_handle* handle,
                           const std::vector<sycl::event>& dependencies) {
     if (transpose_val != transpose::nontrans) {
-      throw mkl::unimplemented(
-                    "sparse_blas/backends/mkl", __FUNCTION__,
-                    "Transposed or conjugate trsv is not supported");
+        throw mkl::unimplemented("sparse_blas/backends/mkl", __FUNCTION__,
+                                 "Transposed or conjugate trsv is not supported");
     }
     return oneapi::mkl::sparse::optimize_trsv(queue, uplo_val, transpose_val, diag_val,
                                               detail::get_handle(handle), dependencies);
@@ -83,9 +82,8 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>> trsv(sycl::queue& queue, upl
                                                          sycl::buffer<fpType, 1>& x,
                                                          sycl::buffer<fpType, 1>& y) {
     if (transpose_val != transpose::nontrans) {
-      throw mkl::unimplemented(
-                    "sparse_blas/backends/mkl", __FUNCTION__,
-                    "Transposed or conjugate trsv is not supported");
+        throw mkl::unimplemented("sparse_blas/backends/mkl", __FUNCTION__,
+                                 "Transposed or conjugate trsv is not supported");
     }
     oneapi::mkl::sparse::trsv(queue, uplo_val, transpose_val, diag_val,
                               detail::get_handle(A_handle), x, y);
@@ -97,9 +95,8 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> trsv(
     detail::matrix_handle* A_handle, const fpType* x, fpType* y,
     const std::vector<sycl::event>& dependencies) {
     if (transpose_val != transpose::nontrans) {
-      throw mkl::unimplemented(
-                    "sparse_blas/backends/mkl", __FUNCTION__,
-                    "Transposed or conjugate trsv is not supported");
+        throw mkl::unimplemented("sparse_blas/backends/mkl", __FUNCTION__,
+                                 "Transposed or conjugate trsv is not supported");
     }
     // TODO: Remove const_cast in future oneMKL release
     return oneapi::mkl::sparse::trsv(queue, uplo_val, transpose_val, diag_val,

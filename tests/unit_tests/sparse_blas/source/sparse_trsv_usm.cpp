@@ -68,8 +68,8 @@ int test(sycl::device *dev, intType m, double density_A_matrix, oneapi::mkl::ind
     // Intel oneMKL does not support unsorted data if
     // `sparse::optimize_trsv()` is not called first.
     if (use_optimize) {
-      // Shuffle ordering of column indices/values to test sortedness
-      shuffle_data(ia_host.data(), ja_host.data(), a_host.data(), mu);
+        // Shuffle ordering of column indices/values to test sortedness
+        shuffle_data(ia_host.data(), ja_host.data(), a_host.data(), mu);
     }
 
     auto ia_usm_uptr = malloc_device_uptr<intType>(main_queue, ia_host.size());
